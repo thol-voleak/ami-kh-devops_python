@@ -26,9 +26,10 @@
 <body>
 <div class="app layout-fixed-header">
 
-    <!-- sidebar panel -->
-    <div class="sidebar-panel offscreen-left">
 
+    <!-- sidebar panel -->
+    {% block sidebar_panel %}
+    <div class="sidebar-panel offscreen-left">
         <div class="brand">
             <a href="javascript:;" class="toggle-sidebar hidden-xs hamburger-icon v3" data-toggle="layout-small-menu">
                 <span></span>
@@ -36,9 +37,7 @@
                 <span></span>
                 <span></span>
             </a>
-
         </div>
-
         <nav role="navigation">
             <ul class="nav">
                 <li>
@@ -49,13 +48,10 @@
                 </li>
             </ul>
         </nav>
-
     </div>
-    <!-- /sidebar panel -->
-
+    {% endblock %}
     <!-- content panel -->
     <div class="main-panel">
-
         <!-- top header -->
         <header class="header navbar">
 
@@ -69,13 +65,11 @@
                     </a>
                 </div>
                 <!-- /toggle offscreen menu -->
-
                 <!-- logo -->
                 <div class="brand-logo">
                     <img src="images/logo-dark.png" height="15" alt="">
                 </div>
                 <!-- /logo -->
-
                 <!-- toggle chat sidebar small screen-->
                 <div class="toggle-chat">
                     <a href="javascript:;" class="hamburger-icon v2 visible-xs" data-toggle="layout-chat-open">
