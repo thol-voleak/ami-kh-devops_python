@@ -31,10 +31,23 @@ def login(request):
         validateLoginForm(username, password)
 
         # Prepare request
-        url = 'https://api.github.com/some/endpoint'
-        payload = {'username': 'abcxyz',
-                   'password': 'secret123'}
-        headers = {'content-type': 'application/json'}
+
+        clientId = 'J5LMCF6E3LH557FGP81B9AF3ABKM65H3'
+        clientSecret = 'clientsecret_708141166013614699054496606232982517703465896176115'
+        correlationId = 'abcxyz'
+
+        url = 'https://ascendcorp.com/api-gateway/system-user/v1/oauth/token'
+
+        payload = {'username': username,
+                   'password': password,
+                   'grant_type': 'password',
+                   'client_id': clientId}
+
+        headers = {'content-type': 'application/x-www-form-urlencoded', # application/json
+                   'correlation-id': correlationId,
+                   'client_id': clientId,
+                   'client_secret': clientSecret,
+                   }
 
         # Call authen API
         #request = requests.post(url, data=json.dumps(payload), headers=headers)
