@@ -56,23 +56,19 @@ ROOT_URLCONF = 'web_admin.urls'
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_PATH, 'templates'),
-    os.path.join(PROJECT_PATH, 'web', 'templates'),
-)
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
