@@ -6,16 +6,29 @@ import requests, json
 # from django.db.models import F, Count
 #from django.template import loader
 
-def validateLoginForm(params):
-    return HttpResponse("Hello, world. This is Login form.")
+class InvalidUsernamePassword(Exception):
+     pass
+
+def validateLoginForm(username, password):
+
+    if len(username) <= 0:
+        raise InvalidUsernamePassword()
+
+    if len(password) <= 0:
+        raise InvalidUsernamePassword()
+
 
 def form(request):
-    return HttpResponse("Hello, world. This is Login form.")
+    # return HttpResponse("Hello, world. This is Login form.")
+    return render(request, 'authentications/loginForm.html', {})
 
 def login(request):
     try:
         # Validate params
+        username = request.POST['username']
+        password = request.POST['password']
 
+        validateLoginForm(username, password)
 
         # Prepare request
         url = 'https://api.github.com/some/endpoint'
@@ -27,6 +40,12 @@ def login(request):
         #request = requests.post(url, data=json.dumps(payload), headers=headers)
         request = requests.post(url, data=payload, headers=headers)
 
+
+    except InvalidUsernamePassword:
+        # Redisplay the login form.
+        return render(request, 'authentications/loginForm.html', {
+            'error_message': "Invalid Username or Password",
+        })
 
     except requests.exceptions.Timeout:
         # Redisplay the login form.
