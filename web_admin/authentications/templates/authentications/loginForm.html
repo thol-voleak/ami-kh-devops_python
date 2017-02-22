@@ -1,6 +1,11 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'authentications:login' %}" method="post">
+<form action="{% url 'authentications:doLogin' %}" method="post">
 {% csrf_token %}
 
     Username&nbsp;&nbsp;&nbsp;
@@ -13,3 +18,5 @@
     <input type="submit" value="Login">
 
 </form>
+
+{% endblock %}

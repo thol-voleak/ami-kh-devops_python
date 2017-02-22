@@ -30,6 +30,7 @@ class MyCustomBackend:
             # No user was found, return None - triggers default login failed
             return None
 
+
     # Required for your backend to work properly - unchanged in most scenarios
     def get_user(self, user_id):
         try:

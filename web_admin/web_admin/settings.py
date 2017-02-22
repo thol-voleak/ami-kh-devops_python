@@ -55,7 +55,9 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = ('authentications.app.MyCustomBackend', )
+AUTHENTICATION_BACKENDS = ('authentications.apps.MyCustomBackend', )
+# Add this to tell Django where to redirect after
+# successful login
 
 ROOT_URLCONF = 'web_admin.urls'
 
