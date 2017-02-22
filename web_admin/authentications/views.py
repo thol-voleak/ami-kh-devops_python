@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.urls import reverse
 import requests, json
@@ -27,9 +27,11 @@ def form(request):
     return render(request, 'authentications/loginForm.html', {})
 
 def doLogin(request):
+    username = request.POST['username']
+    password = request.POST['password']
 
     if request.user.is_authenticated:
-        # # Do something for authenticated user
+        # Do something for authenticated user
         print('Redirect to a Main page.')
         return HttpResponseRedirect("/")
 
@@ -38,13 +40,9 @@ def doLogin(request):
         # Do something for anonymous users.
         try:
             print('Validate params')
-            username = request.POST['username']
-            password = request.POST['password']
-
             validateLoginForm(username, password)
 
             # Prepare request
-
             clientId = 'J5LMCF6E3LH557FGP81B9AF3ABKM65H3'
             clientSecret = 'clientsecret_708141166013614699054496606232982517703465896176115'
             correlationId = 'abcxyz'
@@ -118,8 +116,8 @@ def doLogin(request):
 
 
 def doLogout(request):
-    pass
+    logout(request)
+    return HttpResponseRedirect("/")
 
-def welcome(request):
-    return HttpResponse("Welcome to Web Admin")
+
 
