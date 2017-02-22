@@ -54,6 +54,11 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Add this to tell Django where to redirect after
+# successful login
+
+LOGIN_REDIRECT_URL = '/'
+
 ROOT_URLCONF = 'web_admin.urls'
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))

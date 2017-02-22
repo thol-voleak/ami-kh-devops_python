@@ -6,6 +6,6 @@ app_name = 'authentications'
 
 urlpatterns = [
     url(r'^$', views.form, name='form'),
-    url(r'^login$', views.login, name='login'),
+    url(r'^doLogin$', views.doLogin, name='doLogin'),
     url(r'^welcome$', views.welcome, name='welcome'),
 ]
