@@ -28,7 +28,7 @@ def form(request):
 
 def doLogin(request):
 
-    if not request.user.is_authenticated:
+    if request.user.is_authenticated:
         # # Do something for authenticated user
         print('Redirect to a Main page.')
         return HttpResponseRedirect("/")
