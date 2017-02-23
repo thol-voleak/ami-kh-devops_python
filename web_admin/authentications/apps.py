@@ -1,6 +1,7 @@
 from django.apps import AppConfig
-from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
+from django.conf import settings
+
 import requests, json
 import logging
 
@@ -15,7 +16,7 @@ class InvalidUsernamePassword(Exception):
     pass
 
 
-class MyCustomBackend:
+class CustomBackend:
     def validateLoginForm(self, username, password):
         if len(username) == 0:
             raise InvalidUsernamePassword()
@@ -28,39 +29,31 @@ class MyCustomBackend:
             logger.info('Validate params')
             self.validateLoginForm(username, password)
 
-            # Prepare request
-            clientId = 'J5LMCF6E3LH557FGP81B9AF3ABKM65H3'
-            clientSecret = 'clientsecret_708141166013614699054496606232982517703465896176115'
-            correlationId = 'abcxyz'
+            client_id = settings.CLIENTID
+            client_secret = settings.CLIENTSECRET
+            url = settings.LOGIN_URL
 
-            # url = 'https://alp-eq-esg-01.tmn-dev.com:443/api-gateway/system-user/v1/oauth/token'
-            url = 'https://github.com/KayEss/django-slumber'
+            #TODO Generate or Random string for correlation id
+            correlation_id = "asdfasdfasdf"
 
             payload = {'username': username,
                        'password': password,
                        'grant_type': 'password',
-                       'client_id': clientId}
+                       'client_id': client_id}
 
-            headers = {'content-type': 'application/x-www-form-urlencoded',  # application/json
-                       'correlation-id': correlationId,
-                       'client_id': clientId,
-                       'client_secret': clientSecret,
+            headers = {'content-type': 'application/x-www-form-urlencoded',
+                       'correlation-id': correlation_id,
+                       'client_id': client_id,
+                       'client_secret': client_secret,
                        }
 
-            logger.info('Call authen API')
-
-            """
-                I'm not sure which line is the correct way to send a POST request. Could you consult me please!
-            """
-            # request = requests.post(url, data=json.dumps(payload), headers=headers)
-            #authRequest = requests.post(url, data=payload, headers=headers)
-            authRequest = requests.post(url, params=payload, headers=headers)
-
+            logger.info('Call authentication api gateway')
+            auth_request = requests.post(url, params=payload, headers=headers)
+            logger.info("response {}".format(auth_request.content))
             logger.info('Check response success or fail')
-            json = authRequest.json()
-            accessToken = json.get('access_token')
-            if (accessToken is not None) and (len(accessToken) > 0):
-                # Succeeded
+            json_data = auth_request.json()
+            access_token = json_data.get('access_token')
+            if (access_token is not None) and (len(access_token) > 0):
                 logger.info('Check if User exists in our system?')
                 user, created = User.objects.get_or_create(username=username)
                 if created:
@@ -74,13 +67,10 @@ class MyCustomBackend:
                     return user
 
             else:
-                # Failed
-                # Redisplay the login form.
                 logger.info('Invalid access token')
                 return None
 
         except InvalidUsernamePassword:
-            # Redisplay the login form.
             logger.info('InvalidUsernamePassword')
             return None
 
@@ -89,20 +79,16 @@ class MyCustomBackend:
             return None
 
         except requests.exceptions.Timeout:
-            # Redisplay the login form.
             logger.info('Timeout')
             return None
 
         except requests.exceptions.TooManyRedirects:
-            # Redisplay the login form.
             logger.info('TooManyRedirects')
             return None
 
         except requests.exceptions.RequestException as e:
-            # Redisplay the login form.
             logger.info('RequestException')
             return None
-
 
     def get_user(self, user_id):
         try:

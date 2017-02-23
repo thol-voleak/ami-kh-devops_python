@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 
-BASE_URL = 'https://abc.com'
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -56,7 +54,13 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = ('authentications.apps.MyCustomBackend', )
+
+# Load configuration from configuration file
+sys.path.append('/data/projects/ami-admin-portal/config')
+
+from global_settings import *
+
+AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend', )
 # Add this to tell Django where to redirect after
 # successful login
 
@@ -95,13 +99,9 @@ STATICFILES_DIRS = (
 WSGI_APPLICATION = 'web_admin.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-# Load configuration from configuration file
-sys.path.append('/data/projects/ami-admin-portal/config')
-
-from global_settings import *
 
 LOG_DIR = '/data/logs/ami-admin-portal'
 LOG_FILENAME = os.path.join(LOG_DIR, 'ami-admin-portal.log')
