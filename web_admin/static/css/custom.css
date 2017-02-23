@@ -1,0 +1,8 @@
+.main-panel > .header,
+.sidebar-panel > .brand {
+    background-color: #ff263b !important;
+}
+
+.sidebar-panel > .brand .hamburger-icon span {
+    background-color: #ffffff;
+}
