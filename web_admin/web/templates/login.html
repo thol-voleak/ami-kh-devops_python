@@ -1,38 +1,27 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>CSS Login form</title>
+      <link rel="stylesheet" href="/static/css/style.css">
+</head>
 
-{% block sidebar_panel %}
-{% endblock %}
-
-{% block content %}
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<body>
+  <div id="boxForm">
+    {% if form.errors %}
+    <div id='error' style='text-align: center'>Your username and password didn't match. Please try again.</div>
 {% endif %}
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <input class='text' type='text' name='mail' placeholder='Username' required>
+    <br>
+    <input class='text' id='pwd'  type='password' placeholder='Password' required>
+    <br>
+    <!-- <input id='rememberMe' name='rememberMe' type='checkbox'> <label>Remember me</label>
+    <br> -->
+    <input class='button' type='submit' value='Login'>
+  </form>
+</div>
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-
-{% endblock %}
+</body>
+</html>
