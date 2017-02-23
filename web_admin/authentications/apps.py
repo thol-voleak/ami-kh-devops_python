@@ -1,9 +1,8 @@
 from django.apps import AppConfig
 from django.contrib.auth.models import User
 from django.conf import settings
+import requests, json, random, string, logging
 
-import requests, json
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +32,9 @@ class CustomBackend:
             client_secret = settings.CLIENTSECRET
             url = settings.LOGIN_URL
 
-            #TODO Generate or Random string for correlation id
-            correlation_id = "asdfasdfasdf"
+            # Generate or Random string for correlation id
+            random = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            correlation_id = random
 
             payload = {'username': username,
                        'password': password,
