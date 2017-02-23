@@ -24,9 +24,8 @@
 </head>
 
 <body>
+{% block body_content %}
 <div class="app layout-fixed-header">
-
-
     <!-- sidebar panel -->
     {% block sidebar_panel %}
     <div class="sidebar-panel offscreen-left">
@@ -101,7 +100,7 @@
     <footer class="content-footer">
     </footer>
 </div>
-
+{% endblock %}
 <!-- build:js({.tmp,app}) scripts/app.min.js -->
 <script src="{% static 'scripts/extentions/modernizr.js' %}"></script>
 <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>

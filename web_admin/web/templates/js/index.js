@@ -1,1 +1,0 @@
-/* Made by Thomas Renaud for his website */

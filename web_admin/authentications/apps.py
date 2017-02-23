@@ -33,8 +33,9 @@ class CustomBackend:
             url = settings.LOGIN_URL
 
             # Generate or Random string for correlation id
-            random = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-            correlation_id = random
+            correlation_id  = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+            # correlation_id = random
 
             payload = {'username': username,
                        'password': password,

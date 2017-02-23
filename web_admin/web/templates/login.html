@@ -1,27 +1,46 @@
-<!DOCTYPE html>
-<html >
-<head>
-  <meta charset="UTF-8">
-  <title>CSS Login form</title>
-      <link rel="stylesheet" href="/static/css/style.css">
-</head>
+{% extends "base.html" %}
 
-<body>
-  <div id="boxForm">
-    {% if form.errors %}
-    <div id='error' style='text-align: center'>Your username and password didn't match. Please try again.</div>
-{% endif %}
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <input class='text' type='text' name='mail' placeholder='Username' required>
-    <br>
-    <input class='text' id='pwd'  type='password' placeholder='Password' required>
-    <br>
-    <!-- <input id='rememberMe' name='rememberMe' type='checkbox'> <label>Remember me</label>
-    <br> -->
-    <input class='button' type='submit' value='Login'>
-  </form>
+{% block body_content %}
+<div class="app layout-fixed-header bg-white usersession">
+    <div class="full-height">
+        <div class="center-wrapper">
+            <div class="center-content">
+                <div class="row no-margin">
+                    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+                        <div action="/" class="form-layout">
+                            <div class="text-center mb15">
+                                <!--<img src="images/logo-dark.png"/>-->
+                            </div>
+                            {% if form.errors %}
+                            <p>Your username and password didn't match. Please try again.</p>
+                            {% endif %}
+
+                            {% if next %}
+                            {% if user.is_authenticated %}
+                            <p>Your account doesn't have access to this page. To proceed,
+                                please login with an account that has access.</p>
+                            {% else %}
+                            <p>Please login to see this page.</p>
+                            {% endif %}
+                            {% endif %}
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                <div class="form-inputs">
+                                    <input id="id_username" maxlength="254" name="username" type="text"
+                                           class="form-control input-lg" placeholder="Username">
+                                    <input id="id_password" name="password" type="password"
+                                           class="form-control input-lg" placeholder="Password">
+                                </div>
+                                <button class="btn btn-success btn-block btn-lg mb15" type="submit" value="login">
+                                    <span>Sign in</span>
+                                </button>
+                                <input type="hidden" name="next" value="{{ next }}" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}
