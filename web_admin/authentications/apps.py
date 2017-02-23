@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 import requests, json
 import logging
@@ -24,7 +25,7 @@ class MyCustomBackend:
 
     def authenticate(self, username=None, password=None):
         try:
-            print('Validate params')
+            logger.info('Validate params')
             self.validateLoginForm(username, password)
 
             # Prepare request
@@ -47,47 +48,61 @@ class MyCustomBackend:
                        }
 
             logger.info('Call authen API')
-            # request = requests.post(url, data=json.dumps(payload), headers=headers)
-            request = requests.post(url, data=payload, headers=headers)
 
-            """TODO Check response success or fail
-            #TODO User exiting in our system?
-            Check user first if already have should get from command --- user, created = User.objects.get_or_create()
             """
-            user = User(username=username)
-            user.is_staff = True
-            user.save()
-            return user
+                I'm not sure which line is the correct way to send a POST request. Could you consult me please!
+            """
+            # request = requests.post(url, data=json.dumps(payload), headers=headers)
+            #authRequest = requests.post(url, data=payload, headers=headers)
+            authRequest = requests.post(url, params=payload, headers=headers)
+
+            logger.info('Check response success or fail')
+            json = authRequest.json()
+            accessToken = json.get('access_token')
+            if (accessToken is not None) and (len(accessToken) > 0):
+                # Succeeded
+                logger.info('Check if User exists in our system?')
+                user, created = User.objects.get_or_create(username=username)
+                if created:
+                    logger.info('user was created')
+                    user = User(username=username)
+                    user.is_staff = True
+                    user.save()
+                    return user
+                else:
+                    logger.info('user was retrieved')
+                    return user
+
+            else:
+                # Failed
+                # Redisplay the login form.
+                logger.info('Invalid access token')
+                return None
 
         except InvalidUsernamePassword:
             # Redisplay the login form.
-            print('InvalidUsernamePassword')
-            return render(request, 'web:login.html', {
-                'error_message': "Invalid Username or Password",
-            })
+            logger.info('InvalidUsernamePassword')
+            return None
+
+        except ValueError:
+            logger.info('No JSON object could be decoded.')
+            return None
 
         except requests.exceptions.Timeout:
             # Redisplay the login form.
-            print('Timeout')
-            return render(request, 'web:login.html', {
-                'error_message': "Request was timeout.",
-            })
+            logger.info('Timeout')
+            return None
 
         except requests.exceptions.TooManyRedirects:
             # Redisplay the login form.
-            print('TooManyRedirects')
-            return render(request, 'web:login.html', {
-                'error_message': "Your URL was bad and try a different one",
-            })
+            logger.info('TooManyRedirects')
+            return None
 
         except requests.exceptions.RequestException as e:
             # Redisplay the login form.
-            print('RequestException')
-            return render(request, 'web:login.html', {
-                'error_message': "Error occurred. Try again!!!",
-            })
-        else:
+            logger.info('RequestException')
             return None
+
 
     def get_user(self, user_id):
         try:
