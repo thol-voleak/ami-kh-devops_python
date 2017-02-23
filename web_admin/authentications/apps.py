@@ -1,30 +1,28 @@
 from django.apps import AppConfig
 from django.contrib.auth.models import User
 import requests, json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AuthenticationsConfig(AppConfig):
     name = 'authentications'
 
+
 class InvalidUsernamePassword(Exception):
     pass
 
+
 class MyCustomBackend:
-
     def validateLoginForm(self, username, password):
-        if len(username) <= 0:
+        if len(username) == 0:
             raise InvalidUsernamePassword()
 
-        if len(password) <= 0:
+        if len(password) == 0:
             raise InvalidUsernamePassword()
 
-
-    # Create an authentication method
-    # This is called by the standard Django login procedure
     def authenticate(self, username=None, password=None):
-        # import pdb;
-        # pdb.set_trace()
-
         try:
             print('Validate params')
             self.validateLoginForm(username, password)
@@ -48,10 +46,18 @@ class MyCustomBackend:
                        'client_secret': clientSecret,
                        }
 
-            print('Call authen API')
+            logger.info('Call authen API')
             # request = requests.post(url, data=json.dumps(payload), headers=headers)
             request = requests.post(url, data=payload, headers=headers)
 
+            """TODO Check response success or fail
+            #TODO User exiting in our system?
+            Check user first if already have should get from command --- user, created = User.objects.get_or_create()
+            """
+            user = User(username=username)
+            user.is_staff = True
+            user.save()
+            return user
 
         except InvalidUsernamePassword:
             # Redisplay the login form.
@@ -81,35 +87,10 @@ class MyCustomBackend:
                 'error_message': "Error occurred. Try again!!!",
             })
         else:
-            print('Assume request was succeeded')
+            return None
 
-            try:
-                # Try to find a user matching your username
-                #
-                # #  Check the password is the reverse of the username
-                # if password == username[::-1]:
-                #     # Yes? return the Django user object
-                #     return user
-                # else:
-                #     # No? return None - triggers default login failed
-                user = User(username=username)
-                user.is_staff = True
-                user.save()
-                return user
-            except User.DoesNotExist:
-                # No user was found, return None - triggers default login failed
-                return None
-
-
-
-
-    # Required for your backend to work properly - unchanged in most scenarios
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
-
-
-    def _login_valid(username, password):
-        pass
