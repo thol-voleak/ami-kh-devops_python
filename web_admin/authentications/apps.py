@@ -6,8 +6,18 @@ import requests, json
 class AuthenticationsConfig(AppConfig):
     name = 'authentications'
 
+class InvalidUsernamePassword(Exception):
+    pass
 
 class MyCustomBackend:
+
+    def validateLoginForm(self, username, password):
+        if len(username) <= 0:
+            raise InvalidUsernamePassword()
+
+        if len(password) <= 0:
+            raise InvalidUsernamePassword()
+
 
     # Create an authentication method
     # This is called by the standard Django login procedure
@@ -17,7 +27,7 @@ class MyCustomBackend:
 
         try:
             print('Validate params')
-            validateLoginForm(username, password)
+            self.validateLoginForm(username, password)
 
             # Prepare request
             clientId = 'J5LMCF6E3LH557FGP81B9AF3ABKM65H3'
@@ -103,15 +113,3 @@ class MyCustomBackend:
 
     def _login_valid(username, password):
         pass
-
-
-    class InvalidUsernamePassword(Exception):
-        pass
-
-
-    def validateLoginForm(username, password):
-        if len(username) <= 0:
-            raise InvalidUsernamePassword()
-
-        if len(password) <= 0:
-            raise InvalidUsernamePassword()
