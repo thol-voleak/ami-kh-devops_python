@@ -6,6 +6,11 @@ user open admin portal
     Open Browser    ${admin_web_url}    browser=${browser}
     Maximize Browser Window
 
+user login
+	username is    	admin
+	password is     pass99word
+	user submit login form
+
 page should display error '${error_message}'
     Wait Until Element Is Visible    id=loginerror
     Element Should Contain    id=loginerror    ${error_message}
