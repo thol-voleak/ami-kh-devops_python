@@ -41,9 +41,15 @@
         <nav role="navigation">
             <ul class="nav">
                 <li>
-                    <a href="#">
+                    <a href="{% url 'web:web-index' %}">
                         <i class="fa fa-flask"></i>
                         <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'oauth_client:auth-index' %}">
+                        <i class="fa fa-flask"></i>
+                        <span>Client Credentials</span>
                     </a>
                 </li>
             </ul>

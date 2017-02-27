@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 from django.contrib.auth.models import User
+from .models import Authentications
 from django.conf import settings
 import requests, json, random, string, logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -16,37 +16,34 @@ class InvalidUsernamePassword(Exception):
 
 
 class CustomBackend:
-    def validateLoginForm(self, username, password):
-        if len(username) == 0:
-            raise InvalidUsernamePassword()
-
-        if len(password) == 0:
-            raise InvalidUsernamePassword()
+    def __init__(self):
+        pass
 
     def authenticate(self, username=None, password=None):
         try:
-            logger.info('Validate params')
-            self.validateLoginForm(username, password)
+            logger.info('========== Start authentication backend service ==========')
+            self._validateLoginForm(username, password)
 
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
             url = settings.LOGIN_URL
 
-            # Generate or Random string for correlation id
-            correlation_id  = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+            correlation_id = ''.join(
+                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-            # correlation_id = random
+            payload = {
+                'username': username,
+                'password': password,
+                'grant_type': 'password',
+                'client_id': client_id
+            }
 
-            payload = {'username': username,
-                       'password': password,
-                       'grant_type': 'password',
-                       'client_id': client_id}
-
-            headers = {'content-type': 'application/x-www-form-urlencoded',
-                       'correlation-id': correlation_id,
-                       'client_id': client_id,
-                       'client_secret': client_secret,
-                       }
+            headers = {
+                'content-type': 'application/x-www-form-urlencoded',
+                'correlation-id': correlation_id,
+                'client_id': client_id,
+                'client_secret': client_secret,
+            }
 
             logger.info('Call authentication api gateway')
             auth_request = requests.post(url, params=payload, headers=headers)
@@ -62,10 +59,11 @@ class CustomBackend:
                     user = User(username=username)
                     user.is_staff = True
                     user.save()
-                    return user
-                else:
-                    logger.info('user was retrieved')
-                    return user
+
+                logger.info("Adding access token for user")
+                auth = Authentications(user=user, access_token=access_token)
+                auth.save()
+                return user
 
             else:
                 logger.info('Invalid access token')
@@ -96,3 +94,10 @@ class CustomBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+    def _validateLoginForm(self, username, password):
+        if len(username) == 0:
+            raise InvalidUsernamePassword()
+
+        if len(password) == 0:
+            raise InvalidUsernamePassword()
