@@ -61,10 +61,15 @@ class CustomBackend:
                     user.save()
 
                 logger.info("Adding access token for user")
-                auth = Authentications(user=user, access_token=access_token)
-                auth.save()
-                return user
 
+                try:
+                    auth = Authentications.objects.get(user=user)
+                    auth.access_token = access_token
+                    auth.save()
+                except:
+                    auth = Authentications(user=user, access_token=access_token)
+                    auth.save()
+                return user
             else:
                 logger.info('Invalid access token')
                 return None

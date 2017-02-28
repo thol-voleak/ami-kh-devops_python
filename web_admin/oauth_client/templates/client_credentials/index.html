@@ -1,7 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>
-    Client Credentials
-</h1>
+    <!-- main area -->
+    <div class="main-content">
+        <div class="panel mb25">
+            <div class="panel-heading">
+                Bootstrap option
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mb0">
+                        <thead>
+                        <tr>
+                            <th>Rendering engine</th>
+                            <th>Browser</th>
+                            <th>Platform(s)</th>
+                            <th>Engine version</th>
+                            <th>CSS grade</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Other browsers</td>
+                            <td>All others</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>U</td>
+                        </tr>
+{#                        {% for r in data %}#}
+{#                            {% cycle '<tr>' '' '' '' %}#}
+{#                            <td>{{ r.content }}</td>#}
+{#                            {% cycle '' '' '' '</tr>' %}#}
+{#                        {% endfor %}#}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /main area -->
+    </div>
+    <!-- /content panel -->
+    </h1>
 {% endblock %}
