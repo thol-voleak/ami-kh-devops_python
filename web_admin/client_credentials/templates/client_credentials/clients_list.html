@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'client_credentials/style.css' %}" />
+
 {% block content %}
 <div class="divTable">
             <div class="divTableBody">
@@ -12,24 +14,20 @@
                     <div class="divTableCell">Edit</div>
                     <div class="divTableCell">Detail&nbsp;</div>
                 </div>
+
+                {% for client in clients_list %}
                 <div class="divTableRow">
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
+                    <div class="divTableCell"> {{client.client_id}} </div>
+                    <div class="divTableCell"> {{client.client_name}} </div>
+                    <div class="divTableCell"> {{client.created_timestamp}} </div>
+                    <div class="divTableCell"> {{client.last_updated_timestamp}} </div>
+                    <div class="divTableCell"> {{client.last_updated_user_id}} </div>
+                    <div class="divTableCell"> Edit Text </div>
+                    <div class="divTableCell"> Detail Text </div>
                 </div>
-                <div class="divTableRow">
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                </div>
+                {% endfor %}
+
+
 
             </div>
 </div>

@@ -41,6 +41,7 @@ class ListView(TemplateView):
             'client_id': client_id,
             'client_secret': client_secret,
             'Authorization': access_token,
+            # 'Authorization': 'Bearer ' + access_token,
         }
 
         logger.info('GET api gateway: /v1/oauths/clients')

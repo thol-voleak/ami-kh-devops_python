@@ -16,34 +16,6 @@ logger = logging.getLogger(__name__)
 class NoDataAvailable(Exception):
     pass
 
-
-def get_clients_list():
-
-     client_id = settings.CLIENTID
-     client_secret = settings.CLIENTSECRET
-     url = settings.CLIENTS_LIST_URL
-     correlation_id = ''.join(
-          random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-     auth = Authentications.objects.all()
-     access_token = auth[0].access_token
-
-     payload = {}
-     headers = {
-          'content-type': 'application/json',
-          'correlation-id': correlation_id,
-          'client_id': client_id,
-          'client_secret': client_secret,
-          'Authorization': access_token,
-     }
-
-     logger.info('GET api gateway: /v1/oauths/clients')
-     auth_request = requests.get(url, params=payload, headers=headers)
-     logger.info("response {}".format(auth_request.content))
-     logger.info('Check response success or fail')
-     json_data = auth_request.json()
-     data = json_data.get('data')
-
 def get_clients_list():
     client_id = settings.CLIENTID
     client_secret = settings.CLIENTSECRET
@@ -60,7 +32,7 @@ def get_clients_list():
         'correlation-id': correlation_id,
         'client_id': client_id,
         'client_secret': client_secret,
-        'Authorization': access_token,
+        'Authorization': 'Bearer ' + access_token,
     }
 
     logger.info('GET api gateway: /v1/oauths/clients')
@@ -83,7 +55,7 @@ def index(request):
 
         data = get_clients_list()
         logger.info('Data is available for usage')
-        context = {'data': data}
+        context = {'clients_list': data}
         return render(request, 'client_credentials/clients_list.html', context)
     except:
         return None
