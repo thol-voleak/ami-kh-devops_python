@@ -1,9 +1,8 @@
 from django.conf.urls import url
-
-from . import views
+from .views import ListView
 
 app_name = 'client_credentials'
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'$', ListView.as_view(), name="client-list"),
 ]

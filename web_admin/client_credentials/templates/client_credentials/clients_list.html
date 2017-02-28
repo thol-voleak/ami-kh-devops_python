@@ -1,34 +1,82 @@
 {% extends "base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'client_credentials/style.css' %}" />
-
 {% block content %}
-<div class="divTable">
-            <div class="divTableBody">
-                <div class="divTableRow">
-                    <div class="divTableCell ClientId">&nbsp;Client Id(required)</div>
-                    <div class="divTableCell ClientName">Client Name</div>
-                    <div class="divTableCell">Created At&nbsp;</div>
-                    <div class="divTableCell">Updated At&nbsp;</div>
-                    <div class="divTableCell">Created By</div>
-                    <div class="divTableCell">Edit</div>
-                    <div class="divTableCell">Detail&nbsp;</div>
-                </div>
-
-                {% for client in clients_list %}
-                <div class="divTableRow">
-                    <div class="divTableCell"> {{client.client_id}} </div>
-                    <div class="divTableCell"> {{client.client_name}} </div>
-                    <div class="divTableCell"> {{client.created_timestamp}} </div>
-                    <div class="divTableCell"> {{client.last_updated_timestamp}} </div>
-                    <div class="divTableCell"> {{client.last_updated_user_id}} </div>
-                    <div class="divTableCell"> Edit Text </div>
-                    <div class="divTableCell"> Detail Text </div>
-                </div>
-                {% endfor %}
-
-
-
+{#    <div class="panel mb25">#}
+{#        <div class="panel-heading">#}
+{#            Client Credentials#}
+{#        </div>#}
+{#        <div class="panel-body">#}
+{#            <div class="table-responsive">#}
+{#                <table class="table table-bordered table-striped mb0">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th>Client ID</th>#}
+{#                        <th>Client name</th>#}
+{#                        <th>Created datetime</th>#}
+{#                        <th>Last updated datetime</th>#}
+{#                        <th>Last updated by</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    {% for client in data %}#}
+{#                        <tr>#}
+{#                            <td>{{ client.client_id }}</td>#}
+{#                            <td>{{ client.client_name }}</td>#}
+{#                            <td>{{ client.created_timestamp }}</td>#}
+{#                            <td>{{ client.last_updated_timestamp }}</td>#}
+{#                            <td>{{ client.last_updated_user_id }}</td>#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                    </tbody>#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+    <div class="panel mb25">
+          <div class="panel-heading">
+            Bootstrap option
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped mb0">
+                <thead>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr>
+                    <td>Other browsers</td>
+                    <td>All others</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>U</td>
+                  </tr>
+                  {% for client in data %}
+                      <tr>
+                          <td>{{ client.client_id }}</td>
+                          <td>{{ client.client_name }}</td>
+                          <td>{{ client.created_timestamp }}</td>
+                          <td>{{ client.last_updated_timestamp }}</td>
+                          <td>{{ client.last_updated_user_id }}</td>
+                      </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
-</div>
+          </div>
+        </div>
 {% endblock %}

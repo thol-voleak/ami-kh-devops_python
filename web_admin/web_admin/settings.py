@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'mod_wsgi.server',
 
     'authentications',
-    'oauth_client',
     'client_credentials',
     'web',
 ]

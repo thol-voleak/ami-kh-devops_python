@@ -21,6 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
     url(r'^home', include('web.urls')),
-    url(r'^client-credentials', include('client-credentials.urls')),
-    url(r'^oauth_client', include('oauth_client.urls')),
+    url(r'^client-credentials', include('client_credentials.urls')),
 ]
