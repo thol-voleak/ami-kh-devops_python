@@ -23,7 +23,7 @@ def get_clients_list():
 
      client_id = settings.CLIENTID
      client_secret = settings.CLIENTSECRET
-     url = settings.Clients_List_URL
+     url = settings.CLIENTS_LIST_URL
      correlation_id = ''.join(
           random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
