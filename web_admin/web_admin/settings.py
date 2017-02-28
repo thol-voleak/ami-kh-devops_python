@@ -59,7 +59,7 @@ MIDDLEWARE_CLASSES = [
 # Load configuration from configuration file
 sys.path.append('/data/projects/ami-admin-portal/config')
 
-from global_settings import *
+from platform_settings import *
 
 AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend', )
 # Add this to tell Django where to redirect after
