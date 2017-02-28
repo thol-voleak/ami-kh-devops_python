@@ -8,3 +8,4 @@ DATABASES = {
 CLIENTID = "A1234567890123456789012345678901"
 CLIENTSECRET = "A123456789012345678901234567890123456789012345678901234567890123"
 LOGIN_URL = 'http://alp-eq-esg-01.tmn-dev.com/api-gateway/system-user/v1/oauth/token'
+CLIENTS_LIST_URL = 'http://alp-eq-esg-01.tmn-dev.com/api-gateway/v1/oauths/clients'

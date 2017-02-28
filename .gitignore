@@ -11,3 +11,4 @@ db.sqlite3
 media
 .idea
 web_admin/collected_static
+web_admin/.idea
