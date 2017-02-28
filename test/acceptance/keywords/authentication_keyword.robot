@@ -13,4 +13,5 @@ user submit login form
     Click Element    id=submitlogin
 
 verify a page should display home page
+    Wait Until Page Contains    Home
 	Page Should Contain    Welcome
