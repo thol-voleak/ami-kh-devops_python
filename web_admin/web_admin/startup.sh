@@ -21,7 +21,7 @@ su -s /bin/sh apache -c "python /var/www/django/web_admin/web_admin/manage.py co
 
 echo '- Prepare httpd Server'
 python /var/www/django/web_admin/web_admin/manage.py runmodwsgi --user apache --group apache --port 9980 \
---log-directory=/data/logs/triple-a/ --access-log --server-root=/opt/httpd --setup-only --process-name=ami-admin-portal \
+--log-directory=/data/logs/ami-admin-portal/ --access-log --server-root=/opt/httpd --setup-only --process-name=ami-admin-portal \
 --threads 200
 
 echo "Start Web Server"
