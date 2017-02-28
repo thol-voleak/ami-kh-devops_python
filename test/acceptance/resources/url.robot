@@ -1,2 +1,2 @@
 *** Variables ***
-${admin_portal_url}    /admin-portal
+${admin_home_url}    /home
