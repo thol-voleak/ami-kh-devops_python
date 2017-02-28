@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mod_wsgi.server',
 
     'authentications',
     'oauth_client',
@@ -58,7 +59,7 @@ MIDDLEWARE_CLASSES = [
 
 
 # Load configuration from configuration file
-sys.path.append('/data/projects/ami-admin-portal/config')
+sys.path.append('/data/projects/admin-portal/config')
 
 from platform_settings import *
 
@@ -105,7 +106,7 @@ WSGI_APPLICATION = 'web_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-LOG_DIR = '/data/logs/ami-admin-portal'
+LOG_DIR = '/data/logs/admin-portal'
 LOG_FILENAME = os.path.join(LOG_DIR, 'ami-admin-portal.log')
 
 # Password validation
