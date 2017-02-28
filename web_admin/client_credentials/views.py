@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.apps import AppConfig
-from web_admin.authentications.models import Authentications
+from authentications.models import Authentications
 from django.conf import settings
 import requests, json, random, string
 
@@ -28,7 +28,7 @@ def get_clients_list():
           random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
      auth = Authentications.objects.all()
-     access_token = auth.access_token
+     access_token = auth[0].access_token
 
      payload = {}
      headers = {
