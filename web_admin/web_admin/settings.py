@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'authentications',
     'oauth_client',
+    'client_credentials',
     'web',
 ]
 
@@ -74,7 +75,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'oauth_client')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'client_credentials', 'oauth_client')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
