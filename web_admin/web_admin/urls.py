@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
     url(r'^$', include('web.urls')),
     url(r'^client-credentials', include('client_credentials.urls')),
-    url(r'^health$', health, name="health"),
+    url(r'^admin-portal/health$', health, name="health"),
 ]
