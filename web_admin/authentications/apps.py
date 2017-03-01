@@ -45,23 +45,23 @@ class CustomBackend:
                 'client_secret': client_secret,
             }
 
-            logger.info('Call authentication api gateway')
+            logger.info('Calling authentication backend')
             auth_request = requests.post(url, params=payload, headers=headers)
-            logger.info("response {}".format(auth_request.content))
-            logger.info('Check response success or fail')
+            logger.info("Authentication response is {}".format(auth_request.status_code))
+
             json_data = auth_request.json()
             access_token = json_data.get('access_token')
             if (access_token is not None) and (len(access_token) > 0):
-                logger.info('Check if User exists in our system?')
+
+                logger.info('Checking user is exit in system')
                 user, created = User.objects.get_or_create(username=username)
                 if created:
-                    logger.info('user was created')
                     user = User(username=username)
                     user.is_staff = True
                     user.save()
+                    logger.info('{} user was created', username)
 
-                logger.info("Adding access token for user")
-
+                logger.info("Adding access token for {} user name", username)
                 try:
                     auth = Authentications.objects.get(user=user)
                     auth.access_token = access_token
@@ -69,29 +69,17 @@ class CustomBackend:
                 except:
                     auth = Authentications(user=user, access_token=access_token)
                     auth.save()
+                logger.info("Authentication success and geraneration session for {} user name" ,username)
+                logger.info('========== Finish authentication backend service ==========')
                 return user
             else:
-                logger.info('Invalid access token')
+                logger.error("Cannot get access token from response of {} user name", username)
+                logger.info('========== Finish authentication backend service ==========')
                 return None
 
-        except InvalidUsernamePassword:
-            logger.info('InvalidUsernamePassword')
-            return None
-
-        except ValueError:
-            logger.info('No JSON object could be decoded.')
-            return None
-
-        except requests.exceptions.Timeout:
-            logger.info('Timeout')
-            return None
-
-        except requests.exceptions.TooManyRedirects:
-            logger.info('TooManyRedirects')
-            return None
-
-        except requests.exceptions.RequestException as e:
-            logger.info('RequestException')
+        except:
+            logger.error("{} user name authentication to backend was failed" ,username)
+            logger.info('========== Finish authentication backend service ==========')
             return None
 
     def get_user(self, user_id):

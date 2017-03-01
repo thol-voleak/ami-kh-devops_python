@@ -15,8 +15,6 @@
                     <th>Created At</th>
                     <th>Updated At</th>
                     <th>Created By</th>
-                    <th>Edit</th>
-                    <th>Detail</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,8 +25,6 @@
                     <td>{{client.created_timestamp|default_if_none:''}}</td>
                     <td>{{client.last_updated_timestamp|default_if_none:''}}</td>
                     <td>{{client.last_updated_user_id|default_if_none:''}}</td>
-                    <td>-</td>
-                    <td>-</td>
                 </tr>
                 {% endfor %}
                 </tbody>

@@ -3,7 +3,7 @@ Resource          ../resources/imports.robot
 
 *** Keywords ***
 user open admin portal
-    Open Browser    ${admin_web_url}${admin_home_url}    browser=${browser}
+    Open Browser    ${admin_web_url}   browser=${browser}
     Maximize Browser Window
 
 page should display error '${error_message}'
