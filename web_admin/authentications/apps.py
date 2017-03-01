@@ -61,7 +61,7 @@ class CustomBackend:
                     user.save()
                     logger.info('{} user was created', username)
 
-                logger.info("Adding access token for {} user name", username)
+                logger.info("Adding access token for {} user name")
                 try:
                     auth = Authentications.objects.get(user=user)
                     auth.access_token = access_token
@@ -69,16 +69,16 @@ class CustomBackend:
                 except:
                     auth = Authentications(user=user, access_token=access_token)
                     auth.save()
-                logger.info("Authentication success and geraneration session for {} user name" ,username)
+                logger.info("Authentication success and geraneration session for {} user name".format(username))
                 logger.info('========== Finish authentication backend service ==========')
                 return user
             else:
-                logger.error("Cannot get access token from response of {} user name", username)
+                logger.error("Cannot get access token from response of {} user name".format(username))
                 logger.info('========== Finish authentication backend service ==========')
                 return None
 
         except:
-            logger.error("{} user name authentication to backend was failed" ,username)
+            logger.error("{} user name authentication to backend was failed".format(username))
             logger.info('========== Finish authentication backend service ==========')
             return None
 
