@@ -20,9 +20,9 @@ from django.contrib.auth import views as auth_views
 from web.views import health
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
-    url(r'^$', include('web.urls')),
-    url(r'^client-credentials', include('client_credentials.urls')),
+    url(r'^admin-portal/admin/', admin.site.urls),
+    url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
+    url(r'^admin-portal/', include('web.urls')),
+    url(r'^admin-portal/client-credentials', include('client_credentials.urls')),
     url(r'^admin-portal/health$', health, name="health"),
 ]
