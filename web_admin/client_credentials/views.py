@@ -1,5 +1,4 @@
 from django.views.generic.base import TemplateView
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import requests, json, random, string
 
