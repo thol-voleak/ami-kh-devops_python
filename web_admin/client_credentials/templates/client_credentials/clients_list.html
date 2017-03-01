@@ -22,11 +22,11 @@
                 <tbody>
                 {% for client in data %}
                 <tr>
-                    <td>{{ client.client_id }}</td>
-                    <td>{{client.client_name}}</td>
-                    <td>{{client.created_timestamp}}</td>
-                    <td>{{client.last_updated_timestamp}}</td>
-                    <td>{{client.last_updated_user_id}}</td>
+                    <td>{{client.client_id}}</td>
+                    <td>{{client.client_name|default_if_none:''}}</td>
+                    <td>{{client.created_timestamp|default_if_none:''}}</td>
+                    <td>{{client.last_updated_timestamp|default_if_none:''}}</td>
+                    <td>{{client.last_updated_user_id|default_if_none:''}}</td>
                     <td>-</td>
                     <td>-</td>
                 </tr>

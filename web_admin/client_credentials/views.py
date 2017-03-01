@@ -22,6 +22,7 @@ class ListView(TemplateView):
             refined_data = self._refine_data(data)
             context = {'data': refined_data}
             logger.info('========== Got Clients List ==========')
+
             return context
         except:
             return None
@@ -29,25 +30,17 @@ class ListView(TemplateView):
     def _refine_data(self, client_list):
 
         for client in client_list:
-
             # Format Creation Date
-            if client['created_timestamp'] is not None:
+            if client['created_timestamp'] is not None and client['created_timestamp'] != "null":
                 created_at = client['created_timestamp'] / 1000.0
                 client['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime('%d-%m-%Y %H:%M')
 
             # Format Modification Date
-            if client['last_updated_timestamp'] is not None:
+            if client['last_updated_timestamp'] is not None and client['last_updated_timestamp'] != "null":
                 created_at = client['last_updated_timestamp'] / 1000.0
                 client['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
                     '%d-%m-%Y %H:%M')
-
-            # Set it blank
-            for k, v in client.iteritems():
-                if v is None:
-                    client[k] = ''
-
         return client_list
-
 
     def _get_clients_list(self):
         client_id = settings.CLIENTID
