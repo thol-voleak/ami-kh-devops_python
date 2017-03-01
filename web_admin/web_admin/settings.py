@@ -91,8 +91,7 @@ TEMPLATES = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
-STATIC_URL = '/static/'
+STATIC_URL = '/admin-portal/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
