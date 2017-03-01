@@ -9,13 +9,13 @@ class AuthenticationTests(TestCase): # or unittest.TestCase
 
     def test_authentication_form_request_status_code(self):
         client = Client()
-        response = client.get('/admin-portal/login/')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/admin-portal')
+        self.assertEqual(response.status_code, 301)
 
     def test_authentication_form_request_redirection(self):
         client = Client()
-        response = client.get('/')
-        self.assertRedirects(response, '/admin-portal/login') # '/admin-portal/login/?next=/'
+        response = self.client.get('/admin-portal/')
+        self.assertRedirects(response, '/admin-portal/login/?next=/admin-portal/')
 
     def test_authentication_form_validation_successfully(self):
         username = 'admin'
