@@ -10,21 +10,25 @@
               <table class="table table-bordered table-striped mb0">
                 <thead>
                   <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
+                    <th>Client Id(required)</th>
+                    <th>Client Name</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Created By</th>
+                    <th>Edit</th>
+                    <th>Detail</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for client in data %}
                       <tr>
                           <td>{{ client.client_id }}</td>
-                          <td>{{ client.client_name }}</td>
-                          <td>{{ client.created_timestamp }}</td>
-                          <td>{{ client.last_updated_timestamp }}</td>
-                          <td>{{ client.last_updated_user_id }}</td>
+                          <td>{{client.client_name}}</td>
+                          <td>{{client.created_timestamp}}</td>
+                          <td>{{client.last_updated_timestamp}}</td>
+                          <td>{{client.last_updated_user_id}}</td>
+                          <td></td>
+                          <td></td>
                       </tr>
                   {% endfor %}
                 </tbody>
