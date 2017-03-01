@@ -17,9 +17,12 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
+from web.views import health
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
-    url(r'^home', include('web.urls')),
+    url(r'^$', include('web.urls')),
     url(r'^client-credentials', include('client_credentials.urls')),
+    url(r'^health$', health, name="health"),
 ]
