@@ -27,20 +27,20 @@ class ListView(TemplateView):
         except:
             return None
 
-    def _refine_data(self, client_list):
+    def _refine_data(self, clients_list):
 
-        for client in client_list:
+        for client in clients_list:
             # Format Creation Date
-            if client['created_timestamp'] is not None and client['created_timestamp'] != "null":
+            if (client['created_timestamp'] is not None) and (client['created_timestamp'] != "null"):
                 created_at = client['created_timestamp'] / 1000.0
                 client['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime('%d-%m-%Y %H:%M')
 
             # Format Modification Date
-            if client['last_updated_timestamp'] is not None and client['last_updated_timestamp'] != "null":
+            if (client['last_updated_timestamp'] is not None) and (client['last_updated_timestamp'] != "null"):
                 created_at = client['last_updated_timestamp'] / 1000.0
                 client['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
                     '%d-%m-%Y %H:%M')
-        return client_list
+        return clients_list
 
     def _get_clients_list(self):
         client_id = settings.CLIENTID
