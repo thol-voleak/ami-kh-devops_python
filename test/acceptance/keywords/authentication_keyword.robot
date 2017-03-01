@@ -14,4 +14,12 @@ user submit login form
 
 verify a page should display home page
     Wait Until Page Contains    Home
-	Page Should Contain    Welcome
+    Page Should Contain    Welcome
+
+verify a page should display login page
+    Wait Until Page Contains    Client
+    Page Should Contain    Please login to see this page.
+
+verify a page should display client list page
+    Wait Until Page Contains    Client
+    Page Should Contain    Client Id
