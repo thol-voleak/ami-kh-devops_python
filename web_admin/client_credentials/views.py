@@ -14,13 +14,13 @@ class ListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Get Clients List ==========')
+            logger.info('========== Start get Clients List ==========')
 
             data = self._get_clients_list()
 
             refined_data = self._refine_data(data)
             context = {'data': refined_data}
-            logger.info('========== Got Clients List ==========')
+            logger.info('========== Finished get Clients List ==========')
 
             return context
         except:
@@ -65,7 +65,7 @@ class ListView(TemplateView):
 
         logger.info('Getting client list from backend')
         auth_request = requests.get(url, params=payload, headers=headers)
-        logger.info("Received data with response {}".format(auth_request.content.count()))
+        logger.info("Received data with response status is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()
         data = json_data.get('data')
