@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Authentications
 from django.conf import settings
 import requests, json, random, string, logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,13 @@ class CustomBackend:
             }
 
             logger.info('Calling authentication backend')
+            # import ipdb;ipdb.set_trace()
+
+            start_date = time.time()
             auth_request = requests.post(url, params=payload, headers=headers)
+
+            done = time.time()
+            logger.info("Response time is {} sec.".format(done-start_date))
             logger.info("Authentication response is {}".format(auth_request.status_code))
 
             json_data = auth_request.json()
@@ -61,7 +68,7 @@ class CustomBackend:
                     user.save()
                     logger.info('{} user was created', username)
 
-                logger.info("Adding access token for {} user name")
+                logger.info("Adding access token for {} user name".format(username))
                 try:
                     auth = Authentications.objects.get(user=user)
                     auth.access_token = access_token
