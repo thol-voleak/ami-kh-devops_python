@@ -56,6 +56,37 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+LOG_DIR = '/data/logs/admin-portal'
+LOG_FILENAME = os.path.join(LOG_DIR, 'ami-admin-portal.log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)s] | %(levelname)s | %(threadName)s | ami-admin-portal | %(name)s.%(funcName)s:%(lineno)s | %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'filename': LOG_FILENAME,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'authentications': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        },
+        'client_credentials': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        },
+    }
+}
 
 # Load configuration from configuration file
 sys.path.append('/data/projects/admin-portal/config')
@@ -104,8 +135,7 @@ WSGI_APPLICATION = 'web_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-LOG_DIR = '/data/logs/admin-portal'
-LOG_FILENAME = os.path.join(LOG_DIR, 'ami-admin-portal.log')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -140,33 +170,5 @@ USE_L10N = True
 USE_TZ = True
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': "[%(asctime)s] | %(levelname)s | %(threadName)s | ami-admin-portal | %(name)s.%(funcName)s:%(lineno)s | %(message)s",
-            'datefmt': "%d/%b/%Y %H:%M:%S"
-        },
-    },
-    'handlers': {
-        'file': {
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'filename': LOG_FILENAME,
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'authentications': {
-            'handlers': ['file'],
-            'level': 'INFO',
-        },
-        'client_credentials': {
-            'handlers': ['file'],
-            'level': 'INFO',
-        },
-    }
-}
 
 
