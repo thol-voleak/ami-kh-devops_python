@@ -14,32 +14,33 @@ class ListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Get Clients List ==========')
+            logger.info('========== Start get Clients List ==========')
 
             data = self._get_clients_list()
 
-            logger.info('Refine Clients List')
             refined_data = self._refine_data(data)
             context = {'data': refined_data}
-            logger.info('========== Got Clients List ==========')
+            logger.info('========== Finished get Clients List ==========')
 
             return context
         except:
             return None
 
     def _refine_data(self, clients_list):
-
+        logger.info("Setting datetime format with dd-mm-yy hh:mm")
         for client in clients_list:
             # Format Creation Date
             if (client['created_timestamp'] is not None) and (client['created_timestamp'] != "null"):
                 created_at = client['created_timestamp'] / 1000.0
-                client['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime('%d-%m-%Y %H:%M')
+                client['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
+                    '%d-%m-%Y %H:%M')
 
             # Format Modification Date
             if (client['last_updated_timestamp'] is not None) and (client['last_updated_timestamp'] != "null"):
                 created_at = client['last_updated_timestamp'] / 1000.0
                 client['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
                     '%d-%m-%Y %H:%M')
+        logger.info("Data was set datetime with dd-mm-yy hh:mm format")
         return clients_list
 
     def _get_clients_list(self):
@@ -62,10 +63,10 @@ class ListView(TemplateView):
             # 'Authorization': 'Bearer ' + access_token,
         }
 
-        logger.info('GET api gateway: /v1/oauths/clients')
+        logger.info('Getting client list from backend')
         auth_request = requests.get(url, params=payload, headers=headers)
-        logger.info("response {}".format(auth_request.content))
-        logger.info('Check response success or fail')
+        logger.info("Received data with response status is {}".format(auth_request.status_code))
+
         json_data = auth_request.json()
         data = json_data.get('data')
 

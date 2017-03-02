@@ -162,13 +162,11 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'INFO',
         },
-    },
-    'loggers': {
         'client_credentials': {
             'handlers': ['file'],
             'level': 'INFO',
         },
-    },
+    }
 }
 
 

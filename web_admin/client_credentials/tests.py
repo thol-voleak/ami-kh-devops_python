@@ -4,6 +4,7 @@ from authentications import apps
 from django.conf import settings
 import requests, json, random, string, logging, datetime
 from authentications.models import Authentications
+
 # from django.contrib.auth.models import User
 # import unittest
 
@@ -12,7 +13,7 @@ access_token = '9233f143-cde8-40f2-b304-9a23fc39160a'
 
 
 # Create your tests here.
-class ClientCredentialsTests(TestCase): # or unittest.TestCase
+class ClientCredentialsTests(TestCase):  # or unittest.TestCase
 
     def test_client_credentials_request_status_code(self):
         client = Client()
@@ -33,8 +34,7 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token,
-             # 'Authorization': 'Bearer ' + access_token,
+            'Authorization': access_token
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -45,7 +45,6 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
             self.assertEqual(1, 1)
         else:
             self.assertEqual(1, 0)
-
 
     def test_client_credentials_created_at_updated_at_right_format(self):
 
@@ -61,8 +60,7 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token,
-             # 'Authorization': 'Bearer ' + access_token,
+            'Authorization': access_token
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -92,7 +90,6 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
         else:
             self.assertEqual(2, 0)
 
-
     def test_client_credentials_clients_id_required(self):
 
         client_id = settings.CLIENTID
@@ -108,7 +105,7 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
             'client_id': client_id,
             'client_secret': client_secret,
             'Authorization': access_token,
-             # 'Authorization': 'Bearer ' + access_token,
+            # 'Authorization': 'Bearer ' + access_token,
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -126,7 +123,6 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
         else:
             self.assertEqual(2, 0)
 
-
     def test_client_credentials_created_at_less_than_updated_at(self):
 
         client_id = settings.CLIENTID
@@ -142,7 +138,6 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
             'client_id': client_id,
             'client_secret': client_secret,
             'Authorization': access_token,
-             # 'Authorization': 'Bearer ' + access_token,
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -151,7 +146,9 @@ class ClientCredentialsTests(TestCase): # or unittest.TestCase
 
         if (data is not None) and (len(data) > 0):
             for client in data:
-                if (client['created_timestamp'] is not None) and (client['created_timestamp'] != "null") and (client['last_updated_timestamp'] is not None) and (client['last_updated_timestamp'] != "null"):
+                if (client['created_timestamp'] is not None) and (client['created_timestamp'] != "null") and (
+                            client['last_updated_timestamp'] is not None) and (
+                            client['last_updated_timestamp'] != "null"):
                     if float(client['created_timestamp']) > float(client['last_updated_timestamp']):
                         self.assertEqual(1, 0)
 
