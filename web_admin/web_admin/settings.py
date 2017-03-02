@@ -81,9 +81,17 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'INFO',
         },
+        'authentications': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+        },
         'client_credentials': {
             'handlers': ['file'],
             'level': 'INFO',
+        },
+        'client_credentials': {
+            'handlers': ['file'],
+            'level': 'ERROR',
         },
     }
 }
