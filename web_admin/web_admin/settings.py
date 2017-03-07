@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mod_wsgi.server',
+    # 'mod_wsgi.server',
 
     'authentications',
     'client_credentials',
@@ -55,7 +55,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 # Load configuration from configuration file
 sys.path.append('/data/projects/admin-portal/config')
@@ -104,8 +103,7 @@ WSGI_APPLICATION = 'web_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-LOG_DIR = '/data/logs/admin-portal'
-LOG_FILENAME = os.path.join(LOG_DIR, 'ami-admin-portal.log')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -141,32 +139,33 @@ USE_TZ = True
 
 
 LOGGING = {
-    'version': 1,
+'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "[%(asctime)s] | %(levelname)s | %(threadName)s | ami-admin-portal | %(name)s.%(funcName)s:%(lineno)s | %(message)s",
-            'datefmt': "%d/%b/%Y %H:%M:%S"
-        },
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | | %(name)s | ami-admin-portal | %(message)s",
+            'datefmt': "%d/%m/%Y %H:%M:%S"
+        }
     },
     'handlers': {
-        'file': {
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'filename': LOG_FILENAME,
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-        },
+            'stream': "ext://sys.stdout"
+        }
     },
     'loggers': {
         'authentications': {
-            'handlers': ['file'],
+                    'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
         },
         'client_credentials': {
-            'handlers': ['file'],
+                    'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
         },
     }
 }
-
 
