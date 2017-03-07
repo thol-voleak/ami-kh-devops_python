@@ -52,6 +52,7 @@ class CustomBackend:
             start_date = time.time()
             auth_request = requests.post(url, params=payload, headers=headers)
 
+            # import ipdb;ipdb.set_trace()
             done = time.time()
             logger.info("Response time is {} sec.".format(done-start_date))
             logger.info("Authentication response is {}".format(auth_request.status_code))
