@@ -1,5 +1,8 @@
 from django.views.generic.base import TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import View
 from django.conf import settings
+from django.http import HttpResponse
 import requests, json, random, string
 
 from authentications.models import *
@@ -7,6 +10,30 @@ from authentications.models import *
 import logging, datetime
 
 logger = logging.getLogger(__name__)
+
+
+class CreateView(View):
+    def get(self, request, *args, **kwargs):
+        # import pdb;pdb.set_trace()
+        client_id = self._generate_client_id()
+        client_secret = self._generate_client_secret()
+        context = {'client_id': client_id,
+                   'client_secret': client_secret}
+
+        return render(request, 'clients/create_client_form.html', context)
+
+    def post(self, request, args, *kwargs):
+        return HttpResponse("abc testing")
+
+    def _generate_client_id(self):
+        client_id = ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
+        return client_id
+
+    def _generate_client_secret(self):
+        client_secret = ''.join(
+            random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(64))
+        return client_secret
 
 
 class ListView(TemplateView):
@@ -74,3 +101,4 @@ class ListView(TemplateView):
             return data
         else:
             return None
+
