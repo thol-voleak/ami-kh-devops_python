@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class ClientCredentialsConfig(AppConfig):
-    name = 'client_credentials'
+    name = 'clients'

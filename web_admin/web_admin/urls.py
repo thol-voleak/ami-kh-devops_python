@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^admin-portal/admin/', admin.site.urls),
     url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
     url(r'^admin-portal/', include('web.urls')),
-    url(r'^admin-portal/client-credentials', include('client_credentials.urls')),
+    url(r'^admin-portal/clients', include('clients.urls')),
     url(r'^admin-portal/health$', health, name="health"),
 ]
