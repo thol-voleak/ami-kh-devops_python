@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListView(TemplateView):
-    template_name = "client_credentials/clients_list.html"
+    template_name = "clients/clients_list.html"
 
     def get_context_data(self, **kwargs):
         try:

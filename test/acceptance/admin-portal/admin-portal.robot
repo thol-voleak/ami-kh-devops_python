@@ -19,7 +19,7 @@ TC_EQP_00162 After super user login success, then can see client list
     [Tags]    regression    superuser    high     client-list
     Given user open admin portal
     AND super user login success
-    When user go to 'client-credentials' menu
+    When user go to 'clients' menu
     Then verify a page should display client list page
 
 TC_EQP_00163 Can't see client id without login
