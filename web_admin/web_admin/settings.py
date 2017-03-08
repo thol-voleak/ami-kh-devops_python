@@ -27,6 +27,7 @@ SECRET_KEY = 'dvph%ti#3)^p^a)+pmi*mv)j%)_4rq)302()yx-_lpj4-!(9_x'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -123,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'web-index'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 

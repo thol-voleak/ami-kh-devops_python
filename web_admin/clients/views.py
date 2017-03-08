@@ -64,7 +64,7 @@ class ListView(TemplateView):
         }
 
         logger.info('Getting client list from backend')
-        auth_request = requests.get(url, params=payload, headers=headers)
+        auth_request = requests.get(url, params=payload, headers=headers, verify=False)
         logger.info("Received data with response status is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()
