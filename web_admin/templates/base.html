@@ -54,11 +54,13 @@
                             </a>
                         </li>
                         <li>
-                        <a href="/admin-portal/logout/">
-                            <i class="fa fa-power-off"></i>
-                            <span class="">Logout</span>
-                        </a>
-                    </li>
+                            {% if user.is_authenticated %}
+                            <a href="/admin-portal/logout/">
+                                <i class="fa fa-power-off"></i>
+                                <span class="">Logout</span>
+                            </a>
+                            {% endif %}
+                        </li>
                     </ul>
                 </nav>
             </div>
