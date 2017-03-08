@@ -19,9 +19,12 @@ class ClientCreate(View):
         client_info = {
             "client_id": client_id,
             "client_secret": client_secret,
+            "authorized_grant_types": None,
+            "access_token_validity": None,
+            "refresh_token_validity": None,
         }
         context = {'client_info': client_info,
-                   'error_msg': ''}
+                   'error_msg': None}
 
         return render(request, 'clients/create_client_form.html', context)
 
@@ -63,26 +66,28 @@ class ClientCreate(View):
             done = time.time()
             logger.info("Response time is {} sec.".format(done-start_date))
             logger.info("Create client response is {}".format(response.status_code))
+            logger.info("Create client response is XXX {}".format(response))
 
             if response.status_code == 200:
-                logger.info("Create client Success.")
+                logger.info("Created Client Successfully.")
                 if response_json['status'].code == "Success":
+                    logger.info('Redirecting to Clients List')
                     return redirect('client-list')
                 else:
-                    logger.info("Create Client Error. !!")
+                    logger.info("Error Creating Client !!!")
                     context = {'client_info': client_info,
-                               'error_msg': 'Something went wrong!'}
+                               'error_msg': response_json['status'].message}
 
                     return render(request, 'clients/create_client_form.html', context)
             else:
-                logger.info("Create Client Error. !!")
+                logger.info("Error Creating Client !!!")
                 context = {'client_info': client_info,
                            'error_msg': 'Something went wrong!'}
 
                 return render(request, 'clients/create_client_form.html', context)
 
         except:
-            logger.info('========== Finish creating  ==========')
+            logger.info('========== Finish creating new client ==========')
             return None
 
 
