@@ -2,83 +2,85 @@
 
 
 {% block content %}
-<div class="panel mb25">
-    <div class="panel-heading border">
-        <h3>Client > Create</h3>
-    </div>
-    <div class="panel-body">
-        <div class="row no-margin">
-            <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post" action="/admin-portal/clients/create/">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Client Id</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" disabled name="client_id" value="{{ client_info.client_id }}">
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Client > Create</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form class="form-horizontal" role="form" method="post" action="/admin-portal/clients/create/">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Client Id</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" disabled name="client_id"
+                                       value="{{ client_info.client_id }}">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Client secret:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" disabled name="client_secret" value="{{ client_info.client_secret }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Client secret:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" disabled name="client_secret"
+                                       value="{{ client_info.client_secret }}">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Client name:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="client_name"
-                                   value="{{ client_info.client_name | default_if_none:'' }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Client name:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="client_name"
+                                       value="{{ client_info.client_name | default_if_none:'' }}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Scope:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="scope"
-                                   value="{{ client_info.scope | default_if_none:'' }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Scope:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="scope"
+                                       value="{{ client_info.scope | default_if_none:'' }}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Authorize grant type:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="authorized_grant_types"
-                                   value="{{ client_info.authorized_grant_types|default_if_none:'password' }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Authorize grant type:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="authorized_grant_types"
+                                       value="{{ client_info.authorized_grant_types|default_if_none:'password' }}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Web service redirect uri:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="redirect_uri"
-                                   value="{{ client_info.redirect_uri | default_if_none:'' }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Web service redirect uri:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="redirect_uri"
+                                       value="{{ client_info.redirect_uri | default_if_none:'' }}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Access token validity:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="access_token_validity"
-                                   value="{{ client_info.access_token_validity|default_if_none:'3600' }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Access token validity:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="access_token_validity"
+                                       value="{{ client_info.access_token_validity|default_if_none:'3600' }}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Refresh token validity:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="refresh_token_validity"
-                                   value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Refresh token validity:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="refresh_token_validity"
+                                       value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
+                            </div>
                         </div>
-                    </div>
-                    <a href="{% url 'clients:client-list' %}">
-                        <input class="btn btn-danger btn-block text-left no-print mb15" type="submit" value="Create"/>
-                    </a>
-                </form>
+                        <a href="{% url 'clients:client-list' %}">
+                            <input class="btn btn-danger btn-block text-left no-print mb15" type="submit"
+                                     value="Create"/>
+                        </a>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="pull-right">
-    <a href="{% url 'clients:client-list' %}">
-        <input class="btn btn-danger btn-block text-left no-print mb15" type="button" value="Back"/>
-    </a>
-
-</div>
+    <div class="pull-right">
+        <a href="{% url 'clients:client-list' %}">
+            <input class="btn btn-danger btn-block text-left no-print mb15" type="button" value="Back"/>
+        </a>
+    </div>
 {% endblock %}

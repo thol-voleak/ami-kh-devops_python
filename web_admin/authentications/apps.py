@@ -50,7 +50,7 @@ class CustomBackend:
             # import ipdb;ipdb.set_trace()
 
             start_date = time.time()
-            auth_request = requests.post(url, params=payload, headers=headers)
+            auth_request = requests.post(url, params=payload, headers=headers, verify=False)
 
             # import ipdb;ipdb.set_trace()
             done = time.time()
