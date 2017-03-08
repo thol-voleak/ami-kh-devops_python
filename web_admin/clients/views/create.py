@@ -36,7 +36,7 @@ class ClientCreate(View):
 
             logger.info('========== Start creating new client ==========')
 
-            url = 'http://alp-eq-esg-01.tmn-dev.com/api-gateway/v1/oauths/clients' # settings.CREATE_CLIENT_URL
+            url = settings.CREATE_CLIENT_URL
 
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -45,18 +45,21 @@ class ClientCreate(View):
             client_secret = request.POST.get('client_secret')
 
             client_info = {
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "client_id": request.POST.get('client_id'),
+                "client_secret": request.POST.get('client_secret'),
+                "scope": "read write",
                 "client_name": request.POST.get('client_name'),
-                "scope": request.POST.get('scope'),
                 "authorized_grant_types": request.POST.get('authorized_grant_types'),
+                "web_server_redirect_uri": request.POST.get('web_server_redirect_uri'),
+                "authorities": "",
                 "redirect_uri": request.POST.get('redirect_uri'),
+                "additional_information": "",
+                "autoapprove": "",
                 "access_token_validity": request.POST.get('access_token_validity'),
                 "refresh_token_validity": request.POST.get('refresh_token_validity'),
             }
 
             logger.info("{} params".format(client_info))
-            print(client_info)
 
             auth = Authentications.objects.get(user=request.user)
             access_token = auth.access_token
@@ -66,7 +69,6 @@ class ClientCreate(View):
                 'correlation-id': correlation_id,
                 'client_id': settings.CLIENTID,
                 'client_secret': settings.CLIENTSECRET,
-                # 'Authorization': access_token,
                 'Authorization': 'Bearer ' + access_token,
             }
 
@@ -75,7 +77,8 @@ class ClientCreate(View):
             # import ipdb;ipdb.set_trace()
 
             start_date = time.time()
-            response = requests.post(url, params=client_info, headers=headers)
+            import pdb;pdb.set_trace()
+            response = requests.post(url, params=client_info, headers=headers, verify=False)
             response_json = response.json()
             # import ipdb;ipdb.set_trace()
             done = time.time()
