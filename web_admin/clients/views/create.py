@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.conf import settings
-import requests, random, string
+import requests, random, string, time
+from django.contrib.auth.models import User
+from authentications.models import Authentications
 
 from authentications.models import *
 
@@ -28,11 +30,13 @@ class ClientCreate(View):
 
         return render(request, 'clients/create_client_form.html', context)
 
-    def post(self, request, args, *kwargs):
+    def post(self, request, *args, **kwargs):
+        # import pdb;pdb.set_trace()
         try:
+
             logger.info('========== Start creating new client ==========')
 
-            url = settings.CREATE_CLIENT_URL
+            url = 'http://alp-eq-esg-01.tmn-dev.com/api-gateway/v1/oauths/clients' # settings.CREATE_CLIENT_URL
 
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -51,10 +55,21 @@ class ClientCreate(View):
                 "refresh_token_validity": request.POST.get('refresh_token_validity'),
             }
 
+            logger.info("{} params".format(client_info))
+            print(client_info)
+
+            auth = Authentications.objects.get(user=request.user)
+            access_token = auth.access_token
+
             headers = {
-                'content-type': 'application/json', # 'application/x-www-form-urlencoded',
+                'content-type': 'application/json',
                 'correlation-id': correlation_id,
+                'client_id': settings.CLIENTID,
+                'client_secret': settings.CLIENTSECRET,
+                # 'Authorization': access_token,
+                'Authorization': 'Bearer ' + access_token,
             }
+
 
             logger.info('Calling API gateway')
             # import ipdb;ipdb.set_trace()
@@ -68,27 +83,54 @@ class ClientCreate(View):
             logger.info("Create client response is {}".format(response.status_code))
             logger.info("Create client response is XXX {}".format(response))
 
-            if response.status_code == 200:
-                logger.info("Created Client Successfully.")
-                if response_json['status'].code == "Success":
-                    logger.info('Redirecting to Clients List')
-                    return redirect('client-list')
-                else:
-                    logger.info("Error Creating Client !!!")
-                    context = {'client_info': client_info,
-                               'error_msg': response_json['status'].message}
-
-                    return render(request, 'clients/create_client_form.html', context)
+            logger.info("Created Client Successfully.")
+            status = response_json['status']
+            if status['code'] == "success":
+                logger.info('Redirecting to Clients List')
+                return redirect('client-list')
             else:
                 logger.info("Error Creating Client !!!")
                 context = {'client_info': client_info,
-                           'error_msg': 'Something went wrong!'}
+                           'error_msg': response_json['status'].message}
 
                 return render(request, 'clients/create_client_form.html', context)
 
-        except:
+            # if response.status_code == 200:
+            #     logger.info("Created Client Successfully.")
+            #     status = response_json['status']
+            #     if status['code'] == "Success":
+            #         logger.info('Redirecting to Clients List')
+            #         return redirect('client-list')
+            #     else:
+            #         logger.info("Error Creating Client !!!")
+            #         context = {'client_info': client_info,
+            #                    'error_msg': response_json['status'].message}
+            #
+            #         return render(request, 'clients/create_client_form.html', context)
+            # else:
+            #     logger.info("Error Creating Client !!!")
+            #     context = {'client_info': client_info,
+            #                'error_msg': 'Something went wrong!'}
+            #
+            #     return render(request, 'clients/create_client_form.html', context)
+
+        except Exception as e:
             logger.info('========== Finish creating new client ==========')
-            return None
+            logger.info(e)
+            client_id = self._generate_client_id()
+            client_secret = self._generate_client_secret()
+            client_info = {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "authorized_grant_types": None,
+                "access_token_validity": None,
+                "refresh_token_validity": None,
+            }
+            context = {'client_info': client_info,
+                       'error_msg': None}
+
+            return render(request, 'clients/create_client_form.html', context)
+
 
 
     def _generate_client_id(self):
