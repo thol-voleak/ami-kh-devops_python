@@ -44,7 +44,8 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Authorize grant type:</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" readonly name="authorized_grant_types"
+                                <input type="text" class="form-control input-rounded" readonly
+                                       name="authorized_grant_types"
                                        value="{{ client_info.authorized_grant_types|default_if_none:'password' }}">
                             </div>
                         </div>
@@ -69,18 +70,20 @@
                                        value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
                             </div>
                         </div>
-                        <a href="{% url 'clients:client-list' %}">
-                            <input class="btn btn-danger btn-block text-left no-print mb15" type="submit"
-                                     value="Create"/>
-                        </a>
+                        <div class="pull-right">
+                            <a href="{% url 'clients:client-list' %}">
+                                <input class="btn btn-success text-left mb15" type="button"
+                                       value="Back"/>
+                            </a>
+                            <a href="{% url 'clients:client-list' %}">
+                                <input class="btn btn-success text-left mb15" type="submit"
+                                       value="Create"/>
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="pull-right">
-        <a href="{% url 'clients:client-list' %}">
-            <input class="btn btn-danger btn-block text-left no-print mb15" type="button" value="Back"/>
-        </a>
-    </div>
+
 {% endblock %}
