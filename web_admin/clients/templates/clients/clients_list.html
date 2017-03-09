@@ -1,41 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="panel mb25">
-        <div class="panel-heading">
-            <h3>Clients</h3>
-        </div>
-        <div class="pull-right mr15 text-right">
-            <a href="{% url 'clients:create-client' %}">
-                <input id="create-client-btn" class="btn btn-success btn-block text-left no-print mb15" type="button" value="Create"/>
-            </a>
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Clients</h3>
+    </div>
+    <div class="pull-right mr15 text-right">
+        <a href="{% url 'clients:create-client' %}">
+            <input id="create-client-btn" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                   value="Create"/>
+        </a>
 
-        </div>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0">
-                    <thead>
-                    <tr>
-                        <th>Client Id</th>
-                        <th>Client Name</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
-                        <th>Created By</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for client in data %}
-                        <tr>
-                            <td><a id="{{ client.client_id }}" class="text-info" href="{%  url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a></td>
-                            <td>{{ client.client_name|default_if_none:'' }}</td>
-                            <td>{{ client.created_timestamp|default_if_none:'' }}</td>
-                            <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Client Id</th>
+                    <th>Client Name</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Created By</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for client in data %}
+                <tr>
+                    <td><a id="{{ client.client_id }}" class="text-info"
+                           href="{%  url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a></td>
+                    <td>{{ client.client_name|default_if_none:'' }}</td>
+                    <td>{{ client.created_timestamp|default_if_none:'' }}</td>
+                    <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 {% endblock %}
