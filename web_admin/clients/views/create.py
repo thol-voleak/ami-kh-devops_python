@@ -87,7 +87,6 @@ class ClientCreate(View):
                 return render(request, 'clients/create_client_form.html', context)
 
         except Exception as e:
-            logger.info('========== Finish create new client ==========')
             logger.info(e)
             client_info = {
                 "client_id": client_id,
@@ -98,7 +97,7 @@ class ClientCreate(View):
             }
             context = {'client_info': client_info,
                        'error_msg': None}
-
+            logger.info('========== Finish create new client ==========')
             return render(request, 'clients/create_client_form.html', context)
 
 

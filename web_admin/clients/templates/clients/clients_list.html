@@ -26,7 +26,7 @@
                     <tbody>
                     {% for client in data %}
                         <tr>
-                            <td>{{ client.client_id }}</td>
+                            <td><a class="text-info" href="{%  url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a></td>
                             <td>{{ client.client_name|default_if_none:'' }}</td>
                             <td>{{ client.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
