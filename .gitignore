@@ -1,0 +1,15 @@
+output.xml
+report.html
+web_admin/.idea/workspace.xml
+### Django ###
+*.log
+*.pot
+*.pyc
+/**/**/*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media
+.idea
+web_admin/collected_static
+web_admin/.idea
