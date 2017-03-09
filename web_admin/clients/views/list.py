@@ -1,6 +1,6 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
-import requests, json, random, string
+import requests, random, string
 
 from authentications.models import *
 
