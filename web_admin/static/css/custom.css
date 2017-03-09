@@ -44,3 +44,13 @@
 .ClientName {
     width: 700px;
 }
+
+.client-details-link {
+    text-decoration: none;
+    color: #4cc3d9 !important;
+}
+
+.client-details-link:hover {
+    text-decoration: underline !important;
+    color: #4cc3d9 !important;
+}

@@ -47,12 +47,12 @@ class DetailView(TemplateView):
         logger.info('Getting client detail from backend')
         start_date = time.time()
         response = requests.get(url, headers=headers, verify=False)
+        logger.info("Get client url: {}".format(url))
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
         logger.info("Received data with response status is {}".format(response.status_code))
 
         response_json = response.json()
-
         if response_json['status']['code'] == "success":
             logger.info("Client detail was fetched.")
             data = response_json.get('data')
