@@ -82,7 +82,7 @@ class ClientCreate(View):
             else:
                 logger.info("Error Creating Client.")
                 context = {'client_info': params,
-                           'error_msg': response_json['status'].message}
+                           'error_msg': response_json['status']['message']}
                 logger.info('========== Finish create new client ==========')
                 return render(request, 'clients/create_client_form.html', context)
 
