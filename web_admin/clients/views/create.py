@@ -71,24 +71,23 @@ class ClientCreate(View):
             response = requests.post(url, headers=headers, json=params, verify=False)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
+
             response_json = response.json()
-            # logger.info("Create client response is {}".format(response.status_code))
-            # logger.info("Create client response is XXX {}".format(response))
-            #
-            # logger.info("Created Client Successfully.")
+
             status = response_json['status']
             if status['code'] == "success":
-                logger.info('Redirecting to Clients List')
+                logger.info("Client was created.")
+                logger.info('========== Finish create new client ==========')
                 return redirect('clients:client-list')
             else:
-                logger.info("Error Creating Client !!!")
+                logger.info("Error Creating Client.")
                 context = {'client_info': params,
                            'error_msg': response_json['status'].message}
-
+                logger.info('========== Finish create new client ==========')
                 return render(request, 'clients/create_client_form.html', context)
 
         except Exception as e:
-            logger.info('========== Finish creating new client ==========')
+            logger.info('========== Finish create new client ==========')
             logger.info(e)
             client_info = {
                 "client_id": client_id,
