@@ -33,13 +33,13 @@ class ListView(TemplateView):
             if (client['created_timestamp'] is not None) and (client['created_timestamp'] != "null"):
                 created_at = client['created_timestamp'] / 1000.0
                 client['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                    '%d-%m-%Y %H:%M')
+                    '%d-%m-%Y %H:%M %p')
 
             # Format Modification Date
             if (client['last_updated_timestamp'] is not None) and (client['last_updated_timestamp'] != "null"):
                 created_at = client['last_updated_timestamp'] / 1000.0
                 client['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                    '%d-%m-%Y %H:%M')
+                    '%d-%m-%Y %H:%M %p')
         logger.info("Data was set datetime with dd-mm-yy hh:mm format")
         return clients_list
 
