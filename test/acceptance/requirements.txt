@@ -1,5 +1,0 @@
-requests==2.7.0
-robotframework==3.0
-robotframework-requests==0.3.8
-robotframework-selenium2library==1.8.0
-PyYAML==3.12
