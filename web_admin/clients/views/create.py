@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 class ClientCreate(View):
     @staticmethod
     def get(request, *args, **kwargs):
-        # import pdb;pdb.set_trace()
         client_id = _generate_client_id()
         client_secret = _generate_client_secret()
         client_info = {
@@ -95,8 +94,7 @@ class ClientCreate(View):
                 "access_token_validity": None,
                 "refresh_token_validity": None,
             }
-            context = {'client_info': client_info,
-                       'error_msg': None}
+            context = {'client_info': client_info, 'error_msg': None}
             logger.info('========== Finish create new client ==========')
             return render(request, 'clients/create_client_form.html', context)
 
