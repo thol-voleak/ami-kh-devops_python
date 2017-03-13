@@ -34,7 +34,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token
+            'Authorization': 'Bearer ' + access_token
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -60,7 +60,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token
+            'Authorization': 'Bearer ' + access_token
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)
@@ -104,7 +104,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token,
+            'Authorization': 'Bearer ' + access_token,
             # 'Authorization': 'Bearer ' + access_token,
         }
 
@@ -137,7 +137,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token,
+            'Authorization': 'Bearer ' + access_token,
         }
 
         auth_request = requests.get(url, params=payload, headers=headers)

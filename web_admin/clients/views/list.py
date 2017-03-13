@@ -34,7 +34,7 @@ class ListView(TemplateView):
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': access_token,
+            'Authorization': 'Bearer ' + access_token,
         }
 
         logger.info('Getting client list from backend')

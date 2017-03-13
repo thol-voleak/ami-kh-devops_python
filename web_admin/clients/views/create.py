@@ -47,7 +47,7 @@ class ClientCreate(View):
                 'correlation-id': correlation_id,
                 'client_id': settings.CLIENTID,
                 'client_secret': settings.CLIENTSECRET,
-                'Authorization': access_token,
+                'Authorization': 'Bearer ' + access_token,
             }
 
             params = {
