@@ -11,6 +11,8 @@ app_name = 'clients'
 urlpatterns = [
     url(r'^$', login_required(ListView.as_view(), login_url='login'), name="client-list"),
     url(r'^create/$', login_required(ClientCreate.as_view(), login_url='login'), name="create-client"),
+    url(r'^(?P<client_id>[^/]+)/delete/$', login_required(ClientApi.delete_client_by_id, login_url='login'),
+        name="delete-client"),
     url(r'^details/(?P<client_id>[0-9A-Za-z]+)/$', login_required(DetailView.as_view(), login_url='login'),
         name="client-detail"),
     url(r'^update/(?P<client_id>[0-9A-Za-z]+)/$', login_required(ClientUpdateForm.as_view(), login_url='login'),
