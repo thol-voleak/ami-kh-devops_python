@@ -8,7 +8,6 @@
     <title>Operation Web</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="shortcut icon" href="/favicon.ico">
 
     <!-- build:css({.tmp,app}) styles/app.min.css -->
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}">
@@ -21,13 +20,14 @@
     <link rel="stylesheet" href="{% static 'styles/urban.css' %}">
     <link rel="stylesheet" href="{% static 'styles/urban.skins.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <!-- endbuild -->
+    {% block body_stylesheet %}
+    {% endblock %}
+
 </head>
 
 <body>
 {% block body_content %}
     <div class="app layout-fixed-header">
-        <!-- sidebar panel -->
         {% block sidebar_panel %}
             <div class="sidebar-panel offscreen-left">
                 <div class="brand">
@@ -55,10 +55,10 @@
                         </li>
                         <li>
                             {% if user.is_authenticated %}
-                            <a href="/admin-portal/logout/">
-                                <i class="fa fa-power-off"></i>
-                                <span class="">Logout</span>
-                            </a>
+                                <a href="/admin-portal/logout/">
+                                    <i class="fa fa-power-off"></i>
+                                    <span class="">Logout</span>
+                                </a>
                             {% endif %}
                         </li>
                     </ul>
@@ -135,6 +135,9 @@
 <script src="{% static 'scripts/ui/toggle.js' %}"></script>
 <script src="{% static 'scripts/urban-constants.js' %}"></script>
 <script src="{% static 'scripts/extentions/lib.js' %}"></script>
+<script src="{% static 'scripts/pages/alert.js' %}"></script>
+{% block body_js %}
+{% endblock %}
 <!-- endbuild -->
 </body>
 

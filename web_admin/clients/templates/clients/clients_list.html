@@ -1,61 +1,138 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="panel mb25">
+    {% csrf_token %}
+    <div class="panel mb25">
+        <div class="panel-heading">
+            <h3>Clients</h3>
+        </div>
 
-    {% if msg is not None %}
-    <div class="alert alert-success alert-dismissable" id="msg-update-client">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <strong>{{msg}}</strong>
-    </div>
-    {% endif %}
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'clients:create-client' %}">
+                <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                       value="Create"/>
+            </a>
 
-
-    <div class="panel-heading">
-        <h3>Clients</h3>
-    </div>
-    <div class="pull-right mr15 text-right">
-        <a href="{% url 'clients:create-client' %}">
-            <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                   value="Create"/>
-        </a>
-
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
-                <thead>
-                <tr>
-                    <th>Client Id</th>
-                    <th>Client Name</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>Created By</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for client in data %}
-                <tr>
-                    <td><a class="client-details-link" id="{{ client.client_id }}" class="text-info"
-                           href="{%  url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a></td>
-                    <td>{{ client.client_name|default_if_none:'' }}</td>
-                    <td>{{ client.created_timestamp|default_if_none:'' }}</td>
-                    <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
-                    <td><a class="" id="update-{{client.client_id}}" class="text-info"
-                           href="{%  url 'clients:client-info' client.client_id %}">
-                        <button id="client-btn-update" class="btn btn-success btn-block btn-sm mb15" type="button"
-                                value="xxx">
-                            <span>Update</span>
-                        </button>
-                    </a></td>
-
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        </div>
+        {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <span id="alert-success-msg"></span>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th>Client Id</th>
+                        <th>Client Name</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Created By</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for client in data %}
+                        <tr>
+                            {% if client.is_deleted %}
+                                <td><a class="client-deleted" id="{{ client.client_id }}"
+                                       href="{% url 'clients:client-detail' client.client_id %}">{{ client.client_id }}
+                                </a>
+                                </td>
+                            {% else %}
+                                <td><a class="client-details-link {{ client.is_deleted|yesno:"text,no-hidden" }}"
+                                       id="{{ client.client_id }}" class="text-info"
+                                       href="{% url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a>
+                                </td>
+                            {% endif %}
+                            <td>{{ client.client_name|default_if_none:'' }}</td>
+                            <td>{{ client.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
+                            <td class="col-xs-4">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <a class="{{ client.is_deleted|yesno:"hidden,no-hidden" }}" class="text-info"
+                                           href="{% url 'clients:client-info' client.client_id %}" role="button">
+                                            <button class="btn btn-success btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    id="client-btn-update-{{ client.client_id }}"
+                                                    type="button"/>
+                                            <span>Update</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                id="client-btn-delete-{{ client.client_id }}"
+                                                data-url="{% url 'clients:delete-client' client.client_id %}"
+                                                onclick="delete_client('{{ client.client_id }}')">
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    <script>
+        function delete_client(client_id) {
+            console.log(client_id);
+            swal({
+                    title: "Are you want to delete?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    closeOnConfirm: true
+                },
+                function () {
+                    var url = $("#client-btn-delete-" + client_id).data("url");
+                    console.log(url);
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            console.log(response);
+                            if (response["code"] == "success") {
+                                $("#client-btn-delete-" + client_id).hide();
+                                $("#alert-success-msg").text('Deleted successful for ' + client_id + ' client ID')
+                                $("#alert-success-client").show();
+                                $("#" + client_id).removeClass("client-details-link");
+                                $("#" + client_id).addClass("client-deleted");
+                            }
+                        },
+                        error: function (response) {
+                        }
+                    });
+                });
+        }
+    </script>
+{% endblock %}
+
+{% block body_js %}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}

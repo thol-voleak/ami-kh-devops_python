@@ -1,10 +1,10 @@
-from django.views.generic.base import TemplateView
-from django.conf import settings
+import logging, datetime, time
 import requests, random, string
 
-from authentications.models import *
+from django.views.generic.base import TemplateView
+from django.conf import settings
 
-import logging, datetime, time
+from authentications.models import *
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,6 @@ class DetailView(TemplateView):
         except:
             context = {'client_info': {},
                        'error_msg': 'Sorry, we cannot get client detail.'}
-
             return context
 
     def _get_client_detail(self, client_id):
