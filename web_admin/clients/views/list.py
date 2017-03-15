@@ -17,7 +17,9 @@ class ListView(TemplateView):
         data = self.get_clients_list()
         refined_data = _refine_data(data)
         logger.info('========== Finished get Clients List ==========')
-        return {'data': refined_data}
+        result = {'data': refined_data,
+                'msg': self.request.session.pop('client_update_msg', None)}
+        return result
 
     def get_clients_list(self):
         client_id = settings.CLIENTID

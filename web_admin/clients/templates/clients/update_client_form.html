@@ -4,13 +4,13 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Clients > Client Detail</h3>
+        <h3>Clients > Update Details Of Client</h3>
     </div>
 
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post" action="">
+                <form class="form-horizontal" role="form" method="post" action="{%  url 'clients:update-client' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Client Id</label>
@@ -32,14 +32,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Client name:</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" readonly name="client_name"
+                            <input type="text" class="form-control input-rounded" name="client_name"
                                    value="{{ client_info.client_name | default_if_none:'' }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Scope:</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" readonly name="scope"
+                            <input type="text" class="form-control input-rounded" name="scope" readonly
                                    value="{{ client_info.scope | default_if_none:'' }}">
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                         <label class="col-sm-2 control-label">Web service redirect uri:</label>
                         <div class="col-sm-8">
 
-                            <input type="text" class="form-control input-rounded" readonly name="web_server_redirect_uri"
+                            <input type="text" class="form-control input-rounded" name="web_server_redirect_uri"
                                    value="{{ client_info.web_server_redirect_uri | default_if_none:'' }}">
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <label class="col-sm-2 control-label">Access token validity:</label>
                         <div class="col-sm-8">
 
-                            <input type="number" class="form-control input-rounded" readonly name="access_token_validity"
+                            <input type="number" class="form-control input-rounded" name="access_token_validity"
                                    value="{{ client_info.access_token_validity|default_if_none:'3600' }}">
                         </div>
                     </div>
@@ -72,16 +72,19 @@
                         <label class="col-sm-2 control-label">Refresh token validity:</label>
                         <div class="col-sm-8">
 
-                            <input type="number" class="form-control input-rounded" readonly name="refresh_token_validity"
+                            <input type="number" class="form-control input-rounded" name="refresh_token_validity"
                                    value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
                         </div>
                     </div>
                     <div class="pull-right">
                         <a href="{% url 'clients:client-list' %}">
-                            <input id="client-btn-back" class="btn btn-success text-left mb15" type="button"
-                                   value="Back"/>
+                            <input id="client-btn-cancel" class="btn btn-success text-left mb15" type="button"
+                                   value="Cancel"/>
                         </a>
-
+                        <a href="{% url 'clients:update-client' %}">
+                            <input id="client-btn-update" class="btn btn-success text-left mb15" type="submit"
+                                   value="Update"/>
+                        </a>
                     </div>
                 </form>
             </div>

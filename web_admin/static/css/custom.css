@@ -54,3 +54,10 @@
     text-decoration: underline !important;
     color: #4cc3d9 !important;
 }
+
+.client-update-link {
+    background-color: red;
+    width: 100%;
+    height: 100%;
+    display: block;
+}

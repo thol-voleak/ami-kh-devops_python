@@ -2,12 +2,21 @@
 
 {% block content %}
 <div class="panel mb25">
+
+    {% if msg is not None %}
+    <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>{{msg}}</strong>
+    </div>
+    {% endif %}
+
+
     <div class="panel-heading">
         <h3>Clients</h3>
     </div>
     <div class="pull-right mr15 text-right">
         <a href="{% url 'clients:create-client' %}">
-            <input id="create-client-btn" class="btn btn-success btn-block text-left no-print mb15" type="button"
+            <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
                    value="Create"/>
         </a>
 
@@ -22,6 +31,7 @@
                     <th>Created At</th>
                     <th>Updated At</th>
                     <th>Created By</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,6 +43,14 @@
                     <td>{{ client.created_timestamp|default_if_none:'' }}</td>
                     <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
                     <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
+                    <td><a class="" id="update-{{client.client_id}}" class="text-info"
+                           href="{%  url 'clients:client-info' client.client_id %}">
+                        <button id="client-btn-update" class="btn btn-success btn-block btn-sm mb15" type="button"
+                                value="xxx">
+                            <span>Update</span>
+                        </button>
+                    </a></td>
+
                 </tr>
                 {% endfor %}
                 </tbody>
