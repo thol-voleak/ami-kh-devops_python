@@ -50,27 +50,33 @@
                     {% for client in data %}
                         <tr>
                             {% if client.is_deleted %}
-                                <td><a class="client-deleted" id="{{ client.client_id }}"
-                                       href="{% url 'clients:client-detail' client.client_id %}">{{ client.client_id }}
-                                </a>
+                                <td class="col-xs-2">
+                                    <a class="client-deleted" id="{{ client.client_id }}"
+                                       href="{% url 'clients:client-detail' client.client_id %}">
+                                        {{ client.client_id }}
+                                    </a>
                                 </td>
                             {% else %}
-                                <td><a class="client-details-link {{ client.is_deleted|yesno:"text,no-hidden" }}"
+                                <td class="col-xs-2">
+                                    <a class="client-details-link {{ client.is_deleted|yesno:"text,no-hidden" }}"
                                        id="{{ client.client_id }}" class="text-info"
-                                       href="{% url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a>
+                                       href="{% url 'clients:client-detail' client.client_id %}">
+                                        {{ client.client_id }}
+                                    </a>
                                 </td>
                             {% endif %}
-                            <td>{{ client.client_name|default_if_none:'' }}</td>
-                            <td>{{ client.created_timestamp|default_if_none:'' }}</td>
-                            <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
-                            <td class="col-xs-4">
+                            <td class="col-xs-2">{{ client.client_name|default_if_none:'' }}</td>
+                            <td class="col-xs-2">{{ client.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-xs-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-xs-1">{{ client.last_updated_user_id|default_if_none:'' }}</td>
+                            <td class="col-xs-3">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-xs-5 mr10">
                                         <a class="{{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                            id="client-btn-update-{{ client.client_id }}" class="text-info"
                                            href="{% url 'clients:client-info' client.client_id %}" role="button">
                                             <button class="btn btn-success btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    id="client-btn-success-update-{{ client.client_id }}"
                                                     type="button"/>
                                             <span>Update</span>
                                         </a>
@@ -97,7 +103,7 @@
         function delete_client(client_id) {
             console.log(client_id);
             swal({
-                    title: "Are you want to delete?",
+                    title: "Are you sure you want to delete?",
                     text: "",
                     type: "warning",
                     showCancelButton: true,
@@ -119,10 +125,12 @@
                             console.log(response);
                             if (response["code"] == "success") {
                                 $("#client-btn-delete-" + client_id).hide();
-                                $("#alert-success-msg").text('Deleted successful for ' + client_id + ' client ID')
+
+                                $("#alert-success-msg").text('Deleted data successfully')
                                 $("#alert-success-client").show();
                                 $("#" + client_id).removeClass("client-details-link");
                                 $("#" + client_id).addClass("client-deleted");
+                                $("#client-btn-success-update-" + client_id).addClass("hidden");
                             }
                         },
                         error: function (response) {
