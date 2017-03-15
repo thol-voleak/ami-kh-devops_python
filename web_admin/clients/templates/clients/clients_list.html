@@ -1,61 +1,109 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-<div class="panel mb25">
+    <div class="panel mb25">
+        <div class="panel-heading">
+            <h3>Clients</h3>
+        </div>
+        <div class="pull-right mr15 text-right mb15">
+            <a href="{% url 'clients:create-client' %}">
+                <input id="client-btn-create" class="btn btn-success btn-block text-left no-print" type="button"
+                       value="Create"/>
+            </a>
+        </div>
+        <div class="panel-body mt30">
+            {% if msg is not None %}
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            {% endif %}
 
-    {% if msg is not None %}
-    <div class="alert alert-success alert-dismissable" id="msg-update-client">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-        <strong>{{msg}}</strong>
-    </div>
-    {% endif %}
+            <div class="alert alert-success" hidden id="alert-success-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <span id="alert-success-msg"></span>
+            </div>
 
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th>Client Id</th>
+                        <th>Client Name</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Created By</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for client in data %}
+                        <tr>
+                            <td><a class="client-details-link" id="{{ client.client_id }}" class="text-info"
+                                   href="{% url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a>
+                            </td>
+                            <td>{{ client.client_name|default_if_none:'' }}</td>
+                            <td>{{ client.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-success btn-block no-print mb15"
+                                        id="client-btn-regenerate-{{ client.client_id }}"
+                                        data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
+                                        onClick="regenerate('{{ client.client_id }}')">
+                                    <span>Regenerate</span>
+                                </button>
+                            </td>
+                            <td><a class="" id="update-{{ client.client_id }}" class="text-info"
+                                   href="{% url 'clients:client-info' client.client_id %}">
+                                <button id="client-btn-update" class="btn btn-primary btn-block btn-sm mb15"
+                                        type="button"
+                                        value="xxx">
+                                    <span>Update</span>
+                                </button>
+                            </a></td>
 
-    <div class="panel-heading">
-        <h3>Clients</h3>
-    </div>
-    <div class="pull-right mr15 text-right">
-        <a href="{% url 'clients:create-client' %}">
-            <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                   value="Create"/>
-        </a>
-
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
-                <thead>
-                <tr>
-                    <th>Client Id</th>
-                    <th>Client Name</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>Created By</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for client in data %}
-                <tr>
-                    <td><a class="client-details-link" id="{{ client.client_id }}" class="text-info"
-                           href="{%  url 'clients:client-detail' client.client_id %}">{{ client.client_id }}</a></td>
-                    <td>{{ client.client_name|default_if_none:'' }}</td>
-                    <td>{{ client.created_timestamp|default_if_none:'' }}</td>
-                    <td>{{ client.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td>{{ client.last_updated_user_id|default_if_none:'' }}</td>
-                    <td><a class="" id="update-{{client.client_id}}" class="text-info"
-                           href="{%  url 'clients:client-info' client.client_id %}">
-                        <button id="client-btn-update" class="btn btn-success btn-block btn-sm mb15" type="button"
-                                value="xxx">
-                            <span>Update</span>
-                        </button>
-                    </a></td>
-
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+
+    <script>
+        function regenerate(client_id) {
+            swal({
+                        title: "Are you sure you want to regenerate client secret?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "OK",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            console.log(client_id)
+                            var url = $("#client-btn-regenerate-" + client_id).data("url");
+                            $.ajax({
+                                url: url,
+                                type: "POST",
+                                data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+                                success: function (response) {
+                                    console.log('success')
+                                    $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
+                                    $("#alert-success-client").show();
+                                },
+                                error: function () {
+                                    console.log('error')
+                                }
+                            });
+                        }
+                    });
+        }
+    </script>
 {% endblock %}
