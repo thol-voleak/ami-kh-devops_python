@@ -26,98 +26,98 @@
 
 </head>
 
-<body>
+<body style="background-color: white;">
 {% block body_content %}
-    <div class="app layout-fixed-header">
-        {% block sidebar_panel %}
-            <div class="sidebar-panel offscreen-left">
-                <div class="brand">
-                    <a href="javascript:;" class="toggle-sidebar hidden-xs hamburger-icon v3"
-                       data-toggle="layout-small-menu">
-                        <span></span>
+<div class="app layout-fixed-header">
+    {% block sidebar_panel %}
+    <div class="sidebar-panel offscreen-left">
+        <div class="brand">
+            <a href="javascript:;" class="toggle-sidebar hidden-xs hamburger-icon v3"
+               data-toggle="layout-small-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <nav role="navigation">
+            <ul class="nav">
+                <li>
+                    <a href="{% url 'web:web-index' %}">
+                        <i class="fa fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'clients:client-list' %}">
+                        <i class="fa fa-signal"></i>
+                        <span>Clients</span>
+                    </a>
+                </li>
+                <li>
+                    {% if user.is_authenticated %}
+                    <a href="/admin-portal/logout/">
+                        <i class="fa fa-power-off"></i>
+                        <span class="">Logout</span>
+                    </a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endblock %}
+    <!-- content panel -->
+    <div class="main-panel">
+        <!-- top header -->
+        <header class="header navbar">
+
+            <div class="brand visible-xs">
+                <!-- toggle offscreen menu -->
+                <div class="toggle-offscreen">
+                    <a href="#" class="hamburger-icon visible-xs" data-toggle="offscreen" data-move="ltr">
                         <span></span>
                         <span></span>
                         <span></span>
                     </a>
                 </div>
-                <nav role="navigation">
-                    <ul class="nav">
-                        <li>
-                            <a href="{% url 'web:web-index' %}">
-                                <i class="fa fa-home"></i>
-                                <span>Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'clients:client-list' %}">
-                                <i class="fa fa-signal"></i>
-                                <span>Clients</span>
-                            </a>
-                        </li>
-                        <li>
-                            {% if user.is_authenticated %}
-                                <a href="/admin-portal/logout/">
-                                    <i class="fa fa-power-off"></i>
-                                    <span class="">Logout</span>
-                                </a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        {% endblock %}
-        <!-- content panel -->
-        <div class="main-panel">
-            <!-- top header -->
-            <header class="header navbar">
-
-                <div class="brand visible-xs">
-                    <!-- toggle offscreen menu -->
-                    <div class="toggle-offscreen">
-                        <a href="#" class="hamburger-icon visible-xs" data-toggle="offscreen" data-move="ltr">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </a>
-                    </div>
-                    <!-- /toggle offscreen menu -->
-                    <!-- logo -->
-                    <div class="brand-logo">
-                        <!--<img src="images/logo-dark.png" height="15" alt="">-->
-                    </div>
-                    <!-- /logo -->
-                    <!-- toggle chat sidebar small screen-->
-                    <div class="toggle-chat">
-                        <a href="javascript:;" class="hamburger-icon v2 visible-xs" data-toggle="layout-chat-open">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </a>
-                    </div>
-                    <!-- /toggle chat sidebar small screen-->
+                <!-- /toggle offscreen menu -->
+                <!-- logo -->
+                <div class="brand-logo">
+                    <!--<img src="images/logo-dark.png" height="15" alt="">-->
                 </div>
-
-                <ul class="nav navbar-nav hidden-xs">
-                    <li>
-                        <!--<p class="navbar-text">-->
-                        <!--Native Form Elements-->
-                        <!--</p>-->
-                    </li>
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right hidden-xs">
-
-                </ul>
-            </header>
-            <div class="main-content">
-                {% block content %}
-                {% endblock %}
+                <!-- /logo -->
+                <!-- toggle chat sidebar small screen-->
+                <div class="toggle-chat">
+                    <a href="javascript:;" class="hamburger-icon v2 visible-xs" data-toggle="layout-chat-open">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </a>
+                </div>
+                <!-- /toggle chat sidebar small screen-->
             </div>
-        </div>
 
-        <footer class="content-footer">
-        </footer>
+            <ul class="nav navbar-nav hidden-xs">
+                <li>
+                    <!--<p class="navbar-text">-->
+                    <!--Native Form Elements-->
+                    <!--</p>-->
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+
+            </ul>
+        </header>
+        <div class="main-content" style="background-color: white;">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
+
+    <footer class="content-footer">
+    </footer>
+</div>
 {% endblock %}
 <!-- build:js({.tmp,app}) scripts/app.min.js -->
 <script src="{% static 'scripts/extentions/modernizr.js' %}"></script>
@@ -138,8 +138,10 @@
 <script src="{% static 'scripts/extentions/lib.js' %}"></script>
 <script src="{% static 'scripts/pages/alert.js' %}"></script>
 <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+
 {% block body_js %}
 {% endblock %}
+
 <!-- endbuild -->
 </body>
 

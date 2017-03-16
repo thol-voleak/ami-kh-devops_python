@@ -72,4 +72,28 @@
 
 .client-deleted {
     text-decoration: line-through !important;
+
+
+
+.table-responsive-custom {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-custom>.table {
+    margin-bottom: 0;
+}
+
+.table-responsive-custom>.table>thead>tr>th,
+.table-responsive-custom>.table>tbody>tr>th,
+.table-responsive-custom>.table>tfoot>tr>th,
+.table-responsive-custom>.table>thead>tr>td,
+.table-responsive-custom>.table>tbody>tr>td,
+.table-responsive-custom>.table>tfoot>tr>td {
+    white-space: nowrap;
 }
