@@ -70,59 +70,53 @@
                             <td class="col-sm-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ client.last_updated_user_id|default_if_none:'' }}</td>
                             <td class="col-sm-3">
-                                <div class="row">
-                                    <div class="col-xs-5 mr10">
+                                <div id="client-btn-group-{{ client.client_id }}">
+                                    <div class="btn-group mb5">
                                         <button type="button"
-                                            class="btn btn-success btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                            id="client-btn-regenerate-{{ client.client_id }}"
-                                            data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
-                                            onClick="regenerate('{{ client.client_id }}')">
-                                            <span>Regenerate</span>
+                                                class="btn btn-outline btn-xs btn-success {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                id="client-btn-regenerate-{{ client.client_id }}"
+                                                data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
+                                                onClick="regenerate('{{ client.client_id }}')">
+                                            <span class="small">Regenerate</span>
                                         </button>
-                                    </div>
-                                    <div class="col-xs-5 mr10">
-                                        <a class="{{ client.is_deleted|yesno:"hidden,no-hidden" }}" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                           role="button"
                                            id="client-btn-update-{{ client.client_id }}" class="text-info"
-                                           href="{% url 'clients:client-info' client.client_id %}" role="button">
-                                            <button class="btn btn-primary btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                                    id="client-btn-success-update-{{ client.client_id }}"
-                                                    type="button"/>
-                                            <span>Update</span>
+                                           href="{% url 'clients:client-info' client.client_id %}" role="button"
+                                           id="client-btn-update-{{ client.client_id }}" class="text-info">
+                                            <span class="small">Update</span>
                                         </a>
                                     </div>
-                                    <div class="col-xs-5">
-                                        <button type="button"
-                                                class="btn btn-danger btn-sm {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                    <div class="btn-group mb5">
+                                        <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                                class="btn btn-outline btn-xs btn-danger {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                                 id="client-btn-delete-{{ client.client_id }}"
                                                 data-url="{% url 'clients:delete-client' client.client_id %}"
                                                 onclick="delete_client('{{ client.client_id }}')">
-                                            <span>Delete</span>
+                                            <span class="small">Delete</span>
                                         </button>
-                                    </div>
-
-                                    <div class="col-xs-5">
                                         {% if client.status == 'active' %}
                                             <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                                    class="btn btn-info btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    class="btn btn-outline btn-info btn-xs mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                                     id="client-btn-status-{{ client.client_id }}"
                                                     data-url="{% url 'clients:suspend-client' client.client_id %}"
                                                     onClick="suspend('{{ client.client_id }}')">
-                                                <span>Suspend</span>
+                                                <span class="small">Suspend</span>
                                             </button>
 
                                         {% else %}
                                             <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                                    class="btn btn-info btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    class="btn btn-outline btn-info btn-xs mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                                     id="client-btn-status-{{ client.client_id }}"
                                                     data-url="{% url 'clients:activate-client' client.client_id %}"
                                                     onClick="activate('{{ client.client_id }}')">
-                                                <span>Activate</span>
+                                                <span class="small">Activate</span>
                                             </button>
 
                                         {% endif %}
                                     </div>
-
                                 </div>
                             </td>
                         </tr>
@@ -199,7 +193,7 @@
                                 $("#client-btn-delete-" + client_id).attr("disable", "true");
                                 $("#client-btn-success-update-" + client_id).attr("disable", "true");
                                 $("#client-btn-update-" + client_id).attr("disable", "true");
-                                $("#client-btn-status-" + client_id).addClass("hidden");
+                                $("#client-btn-group-" + client_id).addClass("hidden");
                                 $("#client-btn-status-" + client_id).attr("disable", "true");
                             }
                         },
