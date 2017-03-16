@@ -81,7 +81,7 @@
                                         </button>
                                     </div>
                                     <div class="col-xs-5 mr10">
-                                        <a class="{{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                        <a class="{{ client.is_deleted|yesno:"hidden,no-hidden" }}" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                                            id="client-btn-update-{{ client.client_id }}" class="text-info"
                                            href="{% url 'clients:client-info' client.client_id %}" role="button">
                                             <button class="btn btn-primary btn-sm mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
@@ -93,6 +93,7 @@
                                     <div class="col-xs-5">
                                         <button type="button"
                                                 class="btn btn-danger btn-sm {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                                                 id="client-btn-delete-{{ client.client_id }}"
                                                 data-url="{% url 'clients:delete-client' client.client_id %}"
                                                 onclick="delete_client('{{ client.client_id }}')">
@@ -166,13 +167,15 @@
                             console.log(response);
                             if (response["code"] == "success") {
                                 $("#client-btn-delete-" + client_id).hide();
-
                                 $("#alert-success-msg").text('Deleted data successfully')
                                 $("#alert-success-client").show();
                                 $("#" + client_id).removeClass("client-details-link");
                                 $("#" + client_id).addClass("client-deleted");
                                 $("#client-btn-success-update-" + client_id).addClass("hidden");
                                 $("#client-btn-regenerate-" + client_id).addClass("hidden");
+                                $("#client-btn-delete-" + client_id).attr("disable", "true");
+                                $("#client-btn-success-update-" + client_id).attr("disable", "true");
+                                $("#client-btn-update-" + client_id).attr("disable", "true");
                             }
                         },
                         error: function (response) {
