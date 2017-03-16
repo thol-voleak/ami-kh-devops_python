@@ -99,7 +99,7 @@
                                         </button>
                                         {% if client.status == 'active' %}
                                             <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                                    class="btn btn-outline btn-info btn-xs mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    class="btn btn-outline btn-info btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                                     id="client-btn-status-{{ client.client_id }}"
                                                     data-url="{% url 'clients:suspend-client' client.client_id %}"
                                                     onClick="suspend('{{ client.client_id }}')">
@@ -108,7 +108,7 @@
 
                                         {% else %}
                                             <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                                    class="btn btn-outline btn-info btn-xs mb2 {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                                    class="btn btn-outline btn-info btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                                     id="client-btn-status-{{ client.client_id }}"
                                                     data-url="{% url 'clients:activate-client' client.client_id %}"
                                                     onClick="activate('{{ client.client_id }}')">

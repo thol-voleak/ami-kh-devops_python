@@ -36,7 +36,8 @@ class ClientApi():
         start_date = time.time()
         response = requests.post(url, headers=headers, verify=False)
         done = time.time()
-        logger.info("Response time for regenerate client secret is {} sec.".format(done - start_date))
+        logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id, done - start_date))
+        logger.info("Response for regenerate client secret for {} client id is {}".format(client_id, response.content))
 
         response_json = response.json()
 
