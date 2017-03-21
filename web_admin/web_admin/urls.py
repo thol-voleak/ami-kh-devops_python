@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^admin-portal/balances/', include('balances.urls')),
     url(r'^admin-portal/health$', health, name="health"),
     url(r'^admin-portal/logout/$', logout_user, name='logout'),
+    url(r'^admin-portal/agent-type/', include('agent_type.urls')),
 ]
