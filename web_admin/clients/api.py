@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 class ClientApi():
-
     def regenerate(request, client_id):
         logger.info('========== Start regenerating client secret ==========')
 
@@ -36,7 +35,8 @@ class ClientApi():
         start_date = time.time()
         response = requests.post(url, headers=headers, verify=False)
         done = time.time()
-        logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id, done - start_date))
+        logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id,
+                                                                                                    done - start_date))
 
         response_json = response.json()
         status = response_json['status']
@@ -48,7 +48,6 @@ class ClientApi():
             logger.info("Error regenerate client secret.")
             logger.info('========== Finish regenerate client secret ==========')
             return HttpResponse(status=500, content=response)
-
 
     def delete_client_by_id(request, client_id):
         logger.info("========== Start delete client id ==========")

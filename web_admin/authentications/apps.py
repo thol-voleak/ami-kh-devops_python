@@ -1,9 +1,16 @@
+import requests
+import random
+import string
+import logging
+import time
+
 from django.apps import AppConfig
 from django.contrib.auth.models import User
-from .models import Authentications
 from django.conf import settings
-import requests, json, random, string, logging
-import time
+from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
+
+from .models import Authentications
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +19,17 @@ class AuthenticationsConfig(AppConfig):
     name = 'authentications'
 
 
-class InvalidUsernamePassword(Exception):
+class InvalidAccessToken(Exception):
+    """Raised when the access token is invalid"""
     pass
+
+
+class InvalidAccessTokenException(object):
+    def process_exception(self, request, exception):
+        if type(exception) == InvalidAccessToken:
+            logout(request)
+            return HttpResponseRedirect(request.path)
+        return None
 
 
 class CustomBackend:
@@ -23,8 +39,6 @@ class CustomBackend:
     def authenticate(self, username=None, password=None):
         try:
             logger.info('========== Start authentication backend service ==========')
-            self._validateLoginForm(username, password)
-
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
             url = settings.LOGIN_URL
@@ -47,14 +61,12 @@ class CustomBackend:
             }
 
             logger.info('Calling authentication backend')
-            # import ipdb;ipdb.set_trace()
 
             start_date = time.time()
             auth_request = requests.post(url, params=payload, headers=headers, verify=False)
 
-            # import ipdb;ipdb.set_trace()
             done = time.time()
-            logger.info("Response time is {} sec.".format(done-start_date))
+            logger.info("Response time is {} sec.".format(done - start_date))
             logger.info("Authentication response is {}".format(auth_request.status_code))
 
             json_data = auth_request.json()
@@ -95,10 +107,3 @@ class CustomBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
-
-    def _validateLoginForm(self, username, password):
-        if len(username) == 0:
-            raise InvalidUsernamePassword()
-
-        if len(password) == 0:
-            raise InvalidUsernamePassword()

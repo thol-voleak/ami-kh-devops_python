@@ -1,10 +1,14 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
-import requests, random, string
+from authentications.apps import InvalidAccessToken
+from authentications.models import Authentications
 
-from authentications.models import *
+import requests
+import random
+import string
+import logging
+import datetime
 
-import logging, datetime
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +18,14 @@ class ListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start get Clients List ==========')
-        data = self.get_clients_list()
+        data = self.get_clients_list
         refined_data = _refine_data(data)
         logger.info('========== Finished get Clients List ==========')
         result = {'data': refined_data,
-                'msg': self.request.session.pop('client_update_msg', None)}
+                  'msg': self.request.session.pop('client_update_msg', None)}
         return result
 
+    @property
     def get_clients_list(self):
         client_id = settings.CLIENTID
         client_secret = settings.CLIENTSECRET
@@ -36,7 +41,7 @@ class ListView(TemplateView):
             'correlation-id': correlation_id,
             'client_id': client_id,
             'client_secret': client_secret,
-            'Authorization': 'Bearer ' + access_token,
+            'Authorization': 'Bearer {}'.format(access_token),
         }
 
         logger.info('Getting client list from backend')
@@ -49,7 +54,11 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["message"]))
+        if json_data["message"] == "Invalid access token":
+            logger.info("{} for {} username".format(json_data["message"], self.request.user))
+            raise InvalidAccessToken(json_data["message"])
+        else:
+            raise Exception('message', auth_request.content)
 
 
 def _refine_data(clients_list):
