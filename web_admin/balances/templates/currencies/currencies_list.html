@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='currencies_list' %}
+        {{block.super}}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+    {% csrf_token %}
+
+    <div class="panel mb25">
+        <div class="panel-heading">
+            <h3>Currencies</h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" id=currency-table>
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="currency">Currency</th>
+                        <th id="decimal">Decimal</th>
+                        <th id="modify-date">Modify Date</th>
+                        <th id="create-by">Create By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for currency in data %}
+                            <tr>
+                                <td class="col-sm-1" id="currency-{{ currency.currency }}">{{ currency.currency|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ currency.decimal|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ currency.last_update_timestamp|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ currency.last_update_by_user_id|default_if_none:'' }}</td>
+                            </tr>
+                        {%  endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -48,10 +48,24 @@
                         <span>Home</span>
                     </a>
                 </li>
+                <li class="menu-accordion class={% if active_tab == 'currencies_list' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                            <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <a href="{% url 'clients:client-list' %}">
                         <i class="fa fa-signal"></i>
                         <span>Clients</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'agent_type:agent-type-list' %}">
+                        <i class="fa fa-tag"></i>
+                        <span>Agent Type</span>
                     </a>
                 </li>
                 <li>
