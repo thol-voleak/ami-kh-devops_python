@@ -16,7 +16,6 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 
 # Application definition
 
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     'authentications',
     'clients',
     'web',
+    'agent_type',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -63,7 +62,7 @@ sys.path.append('/data/projects/admin-portal/config')
 
 from platform_settings import *
 
-AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend', )
+AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend',)
 # Add this to tell Django where to redirect after
 # successful login
 
@@ -76,7 +75,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'agent_type')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,8 +99,6 @@ STATICFILES_DIRS = (
 )
 
 WSGI_APPLICATION = 'web_admin.wsgi.application'
-
-
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -139,9 +137,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 LOGGING = {
-'version': 1,
+    'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
@@ -159,15 +156,19 @@ LOGGING = {
     },
     'loggers': {
         'authentications': {
-                    'handlers': ['console'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
         'clients': {
-                    'handlers': ['console'],
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'agent_type': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
     }
 }
-

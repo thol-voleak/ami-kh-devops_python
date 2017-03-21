@@ -55,6 +55,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'agent_type:agent-type-list' %}">
+                        <i class="fa fa-tag"></i>
+                        <span>Agent Type</span>
+                    </a>
+                </li>
+                <li>
                     {% if user.is_authenticated %}
                     <a href="/admin-portal/logout/">
                         <i class="fa fa-power-off"></i>

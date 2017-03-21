@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Agent Type List</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Agent Type</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Created By</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for agent_type in data %}
+                <tr>
+                    <td class="col-sm-3">
+                        {{ agent_type.name }}
+                    </td>
+                    <td class="col-sm-6">{{ agent_type.description|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ agent_type.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ agent_type.create_by_user_id|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
