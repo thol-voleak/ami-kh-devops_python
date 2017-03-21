@@ -1,10 +1,14 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
-import requests, random, string
+
+import requests
+import random
+import string
+import time
+import logging
+import datetime
 
 from authentications.models import *
-
-import logging, datetime
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +33,7 @@ class ListView(TemplateView):
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
         auth = Authentications.objects.get(user=self.request.user)
+        logger.info("Getting currency list by {} user id".format(auth.user))
         access_token = auth.access_token
 
         headers = {
@@ -38,9 +43,12 @@ class ListView(TemplateView):
             'client_secret': client_secret,
             'Authorization': 'Bearer ' + access_token,
         }
-        logger.info('Getting currency list from backend')
+        logger.info("Getting currency list from backend with {} url".format(url))
+        start_date = time.time()
         response = requests.get(url, headers=headers, verify=False)
+        done = time.time()
         json_data = response.json()
+        logger.info("Response time for get currency list is {} sec.".format(done - start_date))
         logger.info("Received data with response is {}".format(json_data))
         data = json_data.get('data')
         if response.status_code == 200:
