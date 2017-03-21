@@ -65,5 +65,5 @@ def _refine_data(data):
         currencyList.append({'currency':name[0],
                              'decimal': name[1],
                          'last_update_timestamp':data['last_update_timestamp'],
-                         'last_update_by_user_id':data['last_update_by_display_name']})
+                         'last_update_by_user_id':data['last_update_by_user_id']})
     return currencyList
