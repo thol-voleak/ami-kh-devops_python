@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mod_wsgi.server',
-
     'authentications',
     'clients',
+    'balances',
     'web',
 ]
 
@@ -76,7 +76,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -165,6 +165,11 @@ LOGGING = {
         },
         'clients': {
                     'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'balances': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
