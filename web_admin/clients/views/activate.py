@@ -23,8 +23,12 @@ def activate(request, client_id):
 
     try:
         url = settings.ACTIVATE_CLIENT_URL.format(client_id)
-        auth = Authentications.objects.get(user=request.user)
-        access_token = auth.access_token
+
+        try:
+            auth = Authentications.objects.get(user=request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))

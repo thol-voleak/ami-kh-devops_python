@@ -36,8 +36,11 @@ class DetailView(TemplateView):
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-        auth = Authentications.objects.get(user=self.request.user)
-        access_token = auth.access_token
+        try:
+            auth = Authentications.objects.get(user=self.request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         headers = {
             'content-type': 'application/json',
