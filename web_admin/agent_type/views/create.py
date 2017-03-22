@@ -32,8 +32,11 @@ class AgentTypeCreate(View):
 
         try:
             url = settings.AGENT_TYPE_CREATE_URL
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
+            try:
+                auth = Authentications.objects.get(user=request.user)
+                access_token = auth.access_token
+            except Exception as e:
+                raise InvalidAccessToken("{}".format(e))
 
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -72,7 +75,6 @@ class AgentTypeCreate(View):
                 return render(request, 'agent_type/agent_types_list.html', context)
 
         except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
             logger.info(e)
             client_info = {
                 "client_id": settings.CLIENTID,
