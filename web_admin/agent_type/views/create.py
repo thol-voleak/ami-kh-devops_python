@@ -27,13 +27,12 @@ class AgentTypeCreate(View):
     @staticmethod
     def post(request, *args, **kwargs):
         logger.info('========== Start creating new agent type ==========')
-        # client_id = request.POST.get('client_id')
-        # client_secret = request.POST.get('client_secret')
 
         try:
             url = settings.AGENT_TYPE_CREATE_URL
             try:
                 auth = Authentications.objects.get(user=request.user)
+                logger.info("Username: {}".format(auth.user))
                 access_token = auth.access_token
             except Exception as e:
                 raise InvalidAccessToken("{}".format(e))
@@ -54,14 +53,16 @@ class AgentTypeCreate(View):
                 "description": request.POST.get('agent_type_description_input'),
             }
 
+            logger.info("URL: {}".format(url))
+
             start_date = time.time()
             response = requests.post(url, headers=headers, json=params, verify=False)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 
             response_json = response.json()
-            logger.info(response_json)
-
+            logger.info("Received data with response is {}".format(response_json))
+            logger.info("Response status: {}".format(response.status_code))
             status = response_json['status']
             if status['code'] == "success":
                 logger.info("Agent Type was created.")
