@@ -66,6 +66,7 @@ class AgentTypeCreate(View):
             if status['code'] == "success":
                 logger.info("Agent Type was created.")
                 logger.info('========== Finish create new agent type ==========')
+                request.session['agent_type_create_msg'] = 'Added data successfully'
                 return redirect('agent_type:agent-type-list')
             else:
                 logger.info("Error Creating Agent Type.")

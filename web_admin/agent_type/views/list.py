@@ -16,7 +16,8 @@ class ListView(TemplateView):
         data = self.get_agent_types_list()
         refined_data = _refine_data(data)
         logger.info('========== Finished getting Agent Types List ==========')
-        result = {'data': refined_data}
+        result = {'data': refined_data,
+                  'msg': self.request.session.pop('agent_type_create_msg', None)}
 
         return result
 

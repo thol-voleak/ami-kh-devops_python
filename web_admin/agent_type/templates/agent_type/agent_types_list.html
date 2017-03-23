@@ -15,6 +15,21 @@
             </a>
     </div>
 
+    {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <span id="alert-success-msg"></span>
+            </div>
+        </div>
+
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0">
