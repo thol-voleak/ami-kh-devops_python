@@ -54,6 +54,7 @@ class AgentTypeCreate(View):
             }
 
             logger.info("URL: {}".format(url))
+            logger.info("Request: {}".format(params))
 
             start_date = time.time()
             response = requests.post(url, headers=headers, json=params, verify=False)
@@ -61,7 +62,7 @@ class AgentTypeCreate(View):
             logger.info("Response time is {} sec.".format(done - start_date))
 
             response_json = response.json()
-            logger.info("Received data with response is {}".format(response_json))
+            logger.info("Response content: {}".format(response_json))
             logger.info("Response status: {}".format(response.status_code))
             status = response_json['status']
             if status['code'] == "success":
