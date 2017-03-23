@@ -39,17 +39,31 @@
                     <th id="description">Description</th>
                     <th id="created_at">Created At</th>
                     <th id="created_by">Created By</th>
+                    <th id="action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for agent_type in data %}
                 <tr>
-                    <td class="col-sm-3" id="agent-type-{{agent_type.id}}">
+                    <td class="col-sm-3" id="agent_type_{{agent_type.id}}">
                         {{ agent_type.name }}
                     </td>
                     <td class="col-sm-6">{{ agent_type.description|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent_type.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ agent_type.create_by_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-3">
+                        <div id="client_btn_group_{{ agent_type.id }}">
+                            <div class="btn-group mb5">
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="agent_type_btn_detail_{{ agent_type.id }}"
+                                   href="{% url 'agent_type:agent-type-detail' agent_type.id %}">
+                                    <span class="small">Detail</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
