@@ -19,9 +19,11 @@ class ListView(TemplateView):
     def get_context_data(self, **kwargs):
         logger.info('========== Start get Currency List ==========')
         data = self.get_currencies_list()
+        preload_data = self.get_preload_currencies_dropdown()
         refined_data = _refine_data(data)
         logger.info('========== Finished get Currency List ==========')
-        result = {'data': refined_data,
+        result = {'preload_data': preload_data,
+                'data': refined_data,
                 'msg': self.request.session.pop('client_update_msg', None)}
         return result
 
@@ -50,6 +52,38 @@ class ListView(TemplateView):
         json_data = response.json()
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
         logger.info("Received data with response is {}".format(json_data))
+        data = json_data.get('data')
+        if response.status_code == 200:
+            if (data is not None) and (len(data) > 0):
+                return data
+
+        raise Exception("{}".format(json_data["message"]))
+
+    def get_preload_currencies_dropdown(self):
+        client_id = settings.CLIENTID
+        client_secret = settings.CLIENTSECRET
+        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+        correlation_id = ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+        auth = Authentications.objects.get(user=self.request.user)
+        logger.info("Getting preload currency list by {} user id".format(auth.user))
+        access_token = auth.access_token
+
+        headers = {
+            'content-type': 'application/json',
+            'correlation-id': correlation_id,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'Authorization': 'Bearer ' + access_token,
+        }
+        logger.info("Getting preload currency list from backend with {} url".format(url))
+        start_date = time.time()
+        response = requests.get(url, headers=headers, verify=False)
+        done = time.time()
+        json_data = response.json()
+        logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
+        logger.info("Received {} preload currencies".format(len(json_data['data'])))
         data = json_data.get('data')
         if response.status_code == 200:
             if (data is not None) and (len(data) > 0):
