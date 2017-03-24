@@ -1,9 +1,11 @@
-from django.conf import settings
 import requests, random, string, time
-from django.http import HttpResponse
 import copy
 
-from authentications.models import *
+from django.conf import settings
+from django.http import HttpResponse
+
+from authentications.models import Authentications
+from authentications.apps import InvalidAccessToken
 
 import logging
 
@@ -20,8 +22,11 @@ def suspend(request, client_id):
 
     try:
         url = settings.SUSPEND_CLIENT_URL.format(client_id)
-        auth = Authentications.objects.get(user=request.user)
-        access_token = auth.access_token
+        try:
+            auth = Authentications.objects.get(user=request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))

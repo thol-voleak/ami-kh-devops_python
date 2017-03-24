@@ -1,3 +1,6 @@
+from authentications.apps import InvalidAccessToken
+from authentications.models import *
+
 import logging
 import random
 import string
@@ -6,38 +9,34 @@ import requests
 
 from django.conf import settings
 from django.views.generic.base import TemplateView
-from authentications.apps import InvalidAccessToken
 
-from authentications.models import *
 
 logger = logging.getLogger(__name__)
 
 
 class DetailView(TemplateView):
-    template_name = "clients/client_detail.html"
+    template_name = "agent_type/agent_type_detail.html"
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Start getting client detail ==========')
-
+            logger.info('========== Start getting agent type detail ==========')
             context = super(DetailView, self).get_context_data(**kwargs)
-            client_id = context['client_id']
-            logger.info('========== Finished getting client detail ==========')
+            agent_type_id = context['agentTypeId']
 
-            return self._get_client_detail(client_id)
+            return self._get_agent_type_detail(agent_type_id)
         except:
-            context = {'client_info': {},
-                       'error_msg': 'Sorry, we cannot get client detail.'}
+            context = {'agent_type_info': {}}
             return context
 
-    def _get_client_detail(self, client_id):
+    def _get_agent_type_detail(self, agent_type_id):
 
-        url = settings.CLIENTS_LIST_URL + '/' + client_id
+        url = settings.AGENT_TYPE_DETAIL_URL.format(agent_type_id)
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
         try:
             auth = Authentications.objects.get(user=self.request.user)
+            logger.info("Username: {}".format(auth.user))
             access_token = auth.access_token
         except Exception as e:
             raise InvalidAccessToken("{}".format(e))
@@ -50,20 +49,20 @@ class DetailView(TemplateView):
             'Authorization': 'Bearer ' + access_token,
         }
 
-        logger.info('Getting client detail from backend')
         start_date = time.time()
         response = requests.get(url, headers=headers, verify=False)
-        logger.info("Get client url: {}".format(url))
+        logger.info("URL: {}".format(url))
         done = time.time()
-        logger.info("Response time is {} sec.".format(done - start_date))
-        logger.info("Received data with response status is {}".format(response.status_code))
-
         response_json = response.json()
+        logger.info("Response content for get agent type detail: {}".format(response_json))
+        logger.info("Response time is {} sec.".format(done - start_date))
+        logger.info("Response status: {}".format(response.status_code))
+
         if response_json['status']['code'] == "success":
             logger.info("Client detail was fetched.")
             data = response_json.get('data')
-            context = {'client_info': data,
-                       'error_msg': None}
+            context = {'agent_type_info': data}
+            logger.info('========== Finished getting agent type detail ==========')
             return context
 
         if response_json["message"] == "Invalid access token":

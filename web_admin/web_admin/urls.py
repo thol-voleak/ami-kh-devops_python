@@ -19,7 +19,6 @@ from django.contrib.auth import views as auth_views
 from authentications.views import logout_user
 from web.views import health
 
-
 urlpatterns = [
     url(r'^admin-portal/admin/', admin.site.urls),
     url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
@@ -28,4 +27,6 @@ urlpatterns = [
     url(r'^admin-portal/balances/', include('balances.urls')),
     url(r'^admin-portal/health$', health, name="health"),
     url(r'^admin-portal/logout/$', logout_user, name='logout'),
+    url(r'^admin-portal/agent-type/', include('agent_type.urls')),
+    url(r'^admin-portal/configuration/', include('configuration.urls')),
 ]

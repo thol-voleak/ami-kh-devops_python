@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidebar_panel %}
+{% with active_tab='country_code' %}
+{{block.super}}
+{% endwith %}
+{% endblock sidebar_panel %}
+
+{% block body_stylesheet %}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
+
+{% block content %}
+
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3 id="page_title">Add Country Code</h3>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="alert alert-success" hidden id="msg-add-country-code">
+            <span id="alert-msg"></span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Code (*) </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="code" id="code_input"
+                                   value="{{ country_code | default_if_none:'' }}" required
+                                   style="text-transform: uppercase" onfocus="removeRedColor()">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button id='country_btn_save' type="button" class="btn btn-success"
+                                data-url="{% url 'configuration:country-code' %}"
+                                onClick="addCountryCode()">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+
+function removeRedColor() {
+    $('#code_input').css('border-color', '');
+    $("#msg-add-country-code").prop("hidden", true);
+}
+
+function hideMessage() {
+
+    $("#msg-add-country-code").fadeOut(1000);
+}
+
+function showErrorMessage(msg) {
+
+    console.log('showErrorMessage: ' + msg);
+
+    $("#alert-msg").text(msg)
+    $('#msg-add-country-code').removeClass("alert-success");
+    $('#msg-add-country-code').addClass("alert-danger");
+    $("#msg-add-country-code").prop("hidden", false);
+    $("#msg-add-country-code").fadeIn(1000);
+
+}
+
+function showSuccessMessage(msg) {
+
+    $("#alert-msg").text(msg)
+    $('#msg-add-country-code').removeClass("alert-danger");
+    $('#msg-add-country-code').addClass("alert-success");
+    $("#msg-add-country-code").prop("hidden", false);
+    $("#msg-add-country-code").fadeIn(1000);
+
+    setTimeout(function(){
+        hideMessage();
+    }, 5000);
+}
+
+function isValidCode(code) {
+
+    if (!code || (code == '')) {
+        $('#code_input').css('border-color', 'red');
+        return false;
+
+    } else if (code.length != 2) {
+
+        console.log('code.length != 2');
+        showErrorMessage('Code must be 2 characters in length')
+        return false;
+
+    } else {
+        removeRedColor();
+    }
+
+    return true;
+}
+
+function makeFormReadOnly() {
+
+    $("#page_title").text('Country Code');
+    $('#country_btn_save').hide();
+    $("#code_input").prop("readonly", true);
+}
+
+function updateFormStatus() {
+    var code = $("#code_input").val();
+
+    if (code && (code.length > 0)) {
+        console.log('makeFormReadOnly');
+        makeFormReadOnly();
+    }
+}
+
+$(function(){
+    updateFormStatus();
+});
+
+
+
+function addCountryCode() {
+
+            var code = $("#code_input").val();
+            code = code.toUpperCase();
+
+            if (!isValidCode(code)) return;
+            console.log('Show alert');
+            swal({
+                    title: "Are you sure you want to add country code: " + code + "?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        console.log("country code to add: " + code)
+                        var url = $("#country_btn_save").data("url");
+                        console.log(url)
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data: {'country_code': code},
+                            dataType: "json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            },
+                            success: function (response) {
+
+                                var data = JSON.stringify(response); 
+                                var json = $.parseJSON(data);
+                                console.log('JSON: ' + json);
+
+                                if (json.status.code == 'success') {
+                                    console.log('Added country code ' + code);
+                                    makeFormReadOnly()
+                                    showSuccessMessage('Added country code ' +  "'" + code + "'" + ' successfully');
+
+                                } else {
+                                    console.log('Error adding country code ' + code);
+                                    showErrorMessage(json.status.message);
+                                }
+
+                            },
+                            error: function (err) {
+                                var json = JSON.stringify(err); 
+                                console.log('JSON: ' + json);
+
+                                var msg = err.responseJSON.status.message;
+                                console.log('Error message: ' + msg);
+                                showErrorMessage(msg);
+                            }
+                        });
+                    }
+                });
+        }
+
+</script>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}">
+</script>
+{% endblock %}
