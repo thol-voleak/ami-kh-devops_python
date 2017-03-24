@@ -46,6 +46,7 @@ class ListView(TemplateView):
 
         json_data = auth_request.json()
         data = json_data.get('data')
+        logger.info('Total count of Agent Types is {}'.format(len(data)))
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
                 return data

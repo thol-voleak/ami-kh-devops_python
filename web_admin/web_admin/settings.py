@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'balances',
     'web',
     'agent_type',
+    'configuration',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -75,7 +76,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
+                              'configuration')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -170,6 +173,11 @@ LOGGING = {
             'propagate': True,
         },
         'balances': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'configuration': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

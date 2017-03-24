@@ -68,6 +68,14 @@
                         <span>Agent Type</span>
                     </a>
                 </li>
+                <li class="menu-accordion class={% if active_tab == 'country_code' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-sliders"></i> <span>Configuration</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'country_code' %} active{% endif %}">
+                            <a href="{% url 'configuration:country-code' %}"> <span>Country Code</span> </a>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     {% if user.is_authenticated %}
                     <a href="/admin-portal/logout/">
