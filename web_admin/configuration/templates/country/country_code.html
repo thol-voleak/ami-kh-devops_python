@@ -33,13 +33,13 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Code (*) </label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="code" id="code-input"
+                            <input type="text" class="form-control" name="code" id="code_input"
                                    value="{{ country_code | default_if_none:'' }}" required
                                    style="text-transform: uppercase" onfocus="removeRedColor()">
                         </div>
                     </div>
                     <div class="pull-right">
-                        <button id='country-btn-save' type="button" class="btn btn-success"
+                        <button id='country_btn_save' type="button" class="btn btn-success"
                                 data-url="{% url 'configuration:country-code' %}"
                                 onClick="addCountryCode()">
                             Save
@@ -55,7 +55,7 @@
 <script>
 
 function removeRedColor() {
-    $('#code-input').css('border-color', '');
+    $('#code_input').css('border-color', '');
     $("#msg-add-country-code").prop("hidden", true);
 }
 
@@ -92,7 +92,7 @@ function showSuccessMessage(msg) {
 function isValidCode(code) {
 
     if (!code || (code == '')) {
-        $('#code-input').css('border-color', 'red');
+        $('#code_input').css('border-color', 'red');
         return false;
 
     } else if (code.length != 2) {
@@ -111,12 +111,12 @@ function isValidCode(code) {
 function makeFormReadOnly() {
 
     $("#page_title").text('Country Code');
-    $('#country-btn-save').hide();
-    $("#code-input").prop("readonly", true);
+    $('#country_btn_save').hide();
+    $("#code_input").prop("readonly", true);
 }
 
 function updateFormStatus() {
-    var code = $("#code-input").val();
+    var code = $("#code_input").val();
 
     if (code && (code.length > 0)) {
         console.log('makeFormReadOnly');
@@ -132,7 +132,7 @@ $(function(){
 
 function addCountryCode() {
 
-            var code = $("#code-input").val();
+            var code = $("#code_input").val();
             code = code.toUpperCase();
 
             if (!isValidCode(code)) return;
@@ -150,7 +150,7 @@ function addCountryCode() {
                 function (isConfirm) {
                     if (isConfirm) {
                         console.log("country code to add: " + code)
-                        var url = $("#country-btn-save").data("url");
+                        var url = $("#country_btn_save").data("url");
                         console.log(url)
                         $.ajax({
                             url: url,
@@ -169,11 +169,11 @@ function addCountryCode() {
                                 if (json.status.code == 'success') {
                                     console.log('Added country code ' + code);
                                     makeFormReadOnly()
-                                    showSuccessMessage('Added country code ' +  "'" + code + "'" + ' successfully!');
+                                    showSuccessMessage('Added country code ' +  "'" + code + "'" + ' successfully');
 
                                 } else {
                                     console.log('Error adding country code ' + code);
-                                    showErrorMessage('Error occurred! ' + json.status.message);
+                                    showErrorMessage(json.status.message);
                                 }
 
                             },
@@ -183,7 +183,7 @@ function addCountryCode() {
 
                                 var msg = err.responseJSON.status.message;
                                 console.log('Error message: ' + msg);
-                                showErrorMessage('Error occurred! ' + msg);
+                                showErrorMessage(msg);
                             }
                         });
                     }

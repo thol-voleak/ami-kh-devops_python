@@ -55,7 +55,7 @@ class CountryCode(View):
 
             logger.info("Response time is {} sec.".format(done - start_date))
             logger.info("Received data with response status is {}".format(response.status_code))
-            logger.info('Response Content: {}'.format(response))
+            logger.info('Response Content: {}'.format(response_json))
 
             if response.status_code == 200:
 
@@ -85,6 +85,7 @@ class CountryCode(View):
 
         country_code = request.POST.get('country_code')
         logger.info('========== Start adding country code ==========')
+        logger.info('Username: {}'.format(request.user.username))
 
         params = {
             'value': "" + country_code,
