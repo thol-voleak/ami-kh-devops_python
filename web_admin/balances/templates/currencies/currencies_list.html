@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="col-sm-1 mt5 ml5 control-label">Currency</label>
             <div class="col-sm-4 mb15">
-                <select class="form-control" id="currency-ddl" onchange="updateDecimal({{ preload_data }})">
+                <select class="form-control" id="currency_ddl" onchange="updateDecimal({{ preload_data }})">
                     <option value=""></option>
                     {% for preload in preload_data %}
                         <option value="{{ preload.currency_code }}">{{ preload.currency_code }}</option>
@@ -24,32 +24,32 @@
             </div>
             <label class="col-sm-1 mt5 ml15 control-label">Decimal</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="decimal-text" readonly>
+                <input type="text" class="form-control" id="decimal_text" readonly>
             </div>
             <div class="col-sm-1 pull-right mr5">
-                <input id="currency-btn-create" class="btn btn-success btn-block no-print mb15" type="button"
+                <input id="currency_btn_add" class="btn btn-success btn-block no-print mb15" type="button"
                        value="Add" onClick="add()">
             </div>
         </div>
         <div class="panel-body">
-            <div class="alert alert-success alert-dismissable mt30" hidden id="alert-success-currency">
+            <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
                 <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-                <span id="alert-success-msg"></span>
+                <span id="alert_success_msg"></span>
             </div>
-            <div class="table-responsive" id=currency-table>
+            <div class="table-responsive" id=currency_table>
                 <table class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
                         <th id="currency">Currency</th>
                         <th id="decimal">Decimal</th>
-                        <th id="modify-date">Modify Date</th>
-                        <th id="create-by">Create By</th>
+                        <th id="modify_date">Modify Date</th>
+                        <th id="create_by">Create By</th>
                     </tr>
                     </thead>
-                    <tbody id="table-body">
+                    <tbody id="table_body">
                     {% for currency in data %}
                         <tr>
-                            <td class="col-sm-1" id="currency-{{ currency.currency }}">
+                            <td class="col-sm-1" id="currency_{{ currency.currency }}">
                                 {{ currency.currency|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ currency.decimal|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ currency.last_update_timestamp|default_if_none:'' }}</td>
@@ -63,13 +63,13 @@
     </div>
     <script>
         function updateDecimal(preload) {
-            var index = $("#currency-ddl option:selected").index()
-            $("#decimal-text").val(preload[index - 1].decimal_digit)
+            var index = $("#currency_ddl option:selected").index()
+            $("#decimal_text").val(preload[index - 1].decimal_digit)
         }
 
         function add() {
-            var currency = document.getElementById("currency-ddl").value;
-            var decimal = document.getElementById("decimal-text").value;
+            var currency = document.getElementById("currency_ddl").value;
+            var decimal = document.getElementById("decimal_text").value;
             swal({
                         title: 'Are you sure you want to add ' + currency + ' with ' + decimal + ' decimal?',
                         type: "warning",
@@ -88,8 +88,8 @@
                                 type: "GET",
                                 data: {},
                                 success: function (response) {
-                                    $("#alert-success-msg").text('Added data successfully')
-                                    $("#alert-success-currency").show();
+                                    $("#alert_success_msg").text('Added data successfully')
+                                    $("#currency_dialog_success").show();
                                     addSuccessRow(response)
                                 },
                                 error: function (msg) {
@@ -103,7 +103,7 @@
         function addSuccessRow(data) {
             var json = JSON.parse(data);
             var tr, td;
-            var tbody = document.getElementById("table-body");
+            var tbody = document.getElementById("table_body");
             while(tbody.rows[0]) tbody.deleteRow(0);
             for (var i = 0; i < json.length; i++) {
                 tr = tbody.insertRow(tbody.rows.length);

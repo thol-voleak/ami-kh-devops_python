@@ -41,7 +41,7 @@ class BalanceApi():
         params = {
             "value": currency
         }
-
+        logger.info("Add currency from backend with {} request body".format(params))
         start_date = time.time()
         response = requests.put(url, headers=headers, json=params, verify=False)
         logger.info(response)
