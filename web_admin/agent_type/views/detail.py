@@ -64,7 +64,9 @@ class DetailView(TemplateView):
         if response_json['status']['code'] == "success":
             logger.info("Client detail was fetched.")
             data = response_json.get('data')
-            context = {'agent_type_info': data}
+            context = {'agent_type_info': data,
+                      'msg': self.request.session.pop('agent_type_update_msg', None)
+            }
             logger.info('========== Finished getting agent type detail ==========')
             return context
 
