@@ -3,6 +3,8 @@
 from . import views
 from .views.create import AgentTypeCreate
 from .views.detail import DetailView
+from .views.update import AgentTypeUpdateForm
+from .views.update import AgentTypeUpdate
 
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import url
@@ -17,7 +19,10 @@ urlpatterns = [
     url(r'^list/$', login_required(ListView.as_view(), login_url='login'), name="agent-type-list"),
     url(r'^detail/(?P<agentTypeId>[0-9A-Za-z]+)/$', login_required(DetailView.as_view(), login_url='login'),
         name="agent-type-detail"),
-
+    url(r'^update/(?P<agentTypeId>[0-9A-Za-z]+)/$', login_required(AgentTypeUpdateForm.as_view(), login_url='login'),
+        name="agent-type-info"),
+    url(r'^update-submit/(?P<agentTypeId>[0-9A-Za-z]+)/$', login_required(AgentTypeUpdate.as_view(), login_url='login'),
+        name="agent-type-update"),
     ]
 
 

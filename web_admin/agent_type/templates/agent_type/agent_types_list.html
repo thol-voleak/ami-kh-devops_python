@@ -17,7 +17,7 @@
 
     {% if msg is not None %}
             <div class="col-xs-12">
-                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                <div class="alert alert-success alert-dismissable" id="msg-update-agent-type">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                     <strong>{{ msg }}</strong>
                 </div>
@@ -60,6 +60,13 @@
                                    id="agent_type_btn_detail_{{ agent_type.id }}"
                                    href="{% url 'agent_type:agent-type-detail' agent_type.id %}">
                                     <span class="small">Detail</span>
+                                </a>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="agent_type_btn_edit_{{ agent_type.id }}"
+                                   href="{% url 'agent_type:agent-type-info' agent_type.id %}">
+                                    <span class="small">Edit</span>
                                 </a>
                             </div>
                         </div>

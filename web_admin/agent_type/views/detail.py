@@ -24,6 +24,9 @@ class DetailView(TemplateView):
             agent_type_id = context['agentTypeId']
 
             return self._get_agent_type_detail(agent_type_id)
+
+
+
         except:
             context = {'agent_type_info': {}}
             return context
