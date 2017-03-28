@@ -68,6 +68,10 @@
                     <td class="col-sm-3">
                         <div id="client_btn_group_{{ agent_type.id }}">
                             <div class="btn-group mb5">
+
+
+                                {% if agent_type.is_delete %}
+                                {% else %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
@@ -82,8 +86,6 @@
                                    href="{% url 'agent_type:agent-type-info' agent_type.id %}">
                                     <span class="small">Edit</span>
                                 </a>
-                                {% if agent_type.is_delete %}
-                                {% else %}
                                 </br>
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-danger"

@@ -130,7 +130,7 @@ class AgentTypeUpdate(View):
                 if status['code'] == "success":
                     logger.info("Agent Type was updated.")
                     logger.info('========== Finished updating Agent Type ==========')
-                    request.session['msg-update-agent-type'] = 'Updated agent type successfully'
+                    request.session['agent_type_update_msg'] = 'Updated agent type successfully'
                     # return redirect('agent_type:agent-type-detail', kwargs=(agentTypeId=agent_type_id))
                     # return HttpResponseRedirect(reverse('agent_type:agent-type-detail', args=(agent_type_id)))
                     return redirect('agent_type:agent-type-detail', agentTypeId=(agent_type_id))
