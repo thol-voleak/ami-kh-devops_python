@@ -67,8 +67,8 @@ class SystemUserCreate(View):
             response = requests.post(url, headers=headers, json=params, verify=False)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
-            logger.info("Response Code: ".format(response.status_code))
-            logger.info("Response Content: ".format(response.content))
+            logger.info("Response Code: {}".format(response.status_code))
+            logger.info("Response Content: {}".format(response.content))
 
             if response.status_code == 200:
                 response_json = response.json()

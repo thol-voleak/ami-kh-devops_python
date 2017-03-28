@@ -73,7 +73,7 @@ class DeleteView(TemplateView):
 def delete_agent_type(request, agent_type_id):
     try:
         logger.info("========== Start deleting agent type ==========")
-        logger.info('Agent Type ID to be deleted: '.format(agent_type_id))
+        logger.info('Agent Type ID to be deleted: {}'.format(agent_type_id))
         logger.info('Username: {}'.format(request.user.username))
 
         url = settings.DELETE_AGENT_TYPE_URL.format(agent_type_id)
@@ -97,13 +97,11 @@ def delete_agent_type(request, agent_type_id):
         done = time.time()
         logger.info("Response time for delete {} agent type id is {} sec.".format(agent_type_id, done - start_date))
         logger.info("Response for delete {} agent type id is {}".format(agent_type_id, response.content))
-
-        response_json = response.json()
-        status = response_json['status']
-
-        logger.info("Response Code is {}".format(status['code']))
+        logger.info("Response Code is {}".format(response.status_code))
 
         if response.status_code == 200:
+            response_json = response.json()
+            status = response_json['status']
             if status['code'] == "success":
                 logger.info("Agent Type was deleted.")
                 logger.info("========== Finished deleting agent type id ==========")
@@ -115,10 +113,8 @@ def delete_agent_type(request, agent_type_id):
                 raise Exception("{}".format(status["message"]))
         else:
             logger.info("Error deleting agent type {}".format(agent_type_id))
-            logger.info("Status code {}".format(response.status_code))
-
             logger.info("========== Finished deleting agent type id ==========")
-            raise Exception("{}".format(status["message"]))
+            raise Exception("{}".format(response.content))
 
     except Exception as e:
         logger.info('Exception:')

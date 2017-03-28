@@ -21,7 +21,7 @@ class ClientApi():
         pdb.set_trace()
 
         logger.info("========== Start deleting agent type ==========")
-        logger.info('Agent Type ID to be deleted: '.format(agent_type_id))
+        logger.info('Agent Type ID to be deleted: {}'.format(agent_type_id))
         if request.method == "POST":
             url = settings.DELETE_AGENT_TYPE_URL.format(agent_type_id)
             auth = Authentications.objects.get(user=request.user)
