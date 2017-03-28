@@ -21,7 +21,6 @@ class SystemUserCreate(View):
             "lastname": None,
             "email": None,
             "password": None,
-            "confirm_password": None,
         }
         context = {'system_user_info': system_user_info,
                    'error_msg': None}
@@ -38,7 +37,6 @@ class SystemUserCreate(View):
             "lastname": request.POST.get('lastname'),
             "email": request.POST.get('email'),
             "password": request.POST.get('password'),
-            "confirm_password": request.POST.get('confirm_password'),
         }
 
         try:
@@ -63,7 +61,6 @@ class SystemUserCreate(View):
             logger.info("URL: {}".format(url))
             data_log = copy.deepcopy(params)
             data_log.pop('password', None)
-            data_log.pop('confirm_password', None)
             logger.info("Request: {}".format(data_log))
 
             start_date = time.time()
