@@ -22,7 +22,8 @@ class ListView(TemplateView):
         refined_data = _refine_data(data)
         logger.info('========== Finished get system user List ==========')
         result = {'data': refined_data,
-                'msg': self.request.session.pop('client_update_msg', None)}
+                'created_msg': self.request.session.pop('system_user_create_msg', None),
+                'del_msg': self.request.session.pop('system_user_delete_msg', None)}
         return result
 
     def get_system_user_list(self):
