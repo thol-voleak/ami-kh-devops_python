@@ -12,6 +12,20 @@
         <div class="panel-heading">
             <h3>System Users</h3>
         </div>
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'system_user:create-system-user' %}">
+                <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                       value="Add"/>
+            </a>
+        </div>
+        {% if created_msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ created_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
         <div class="panel-body">
             <div class="table-responsive" id=system_user_table>
                 <table class="table table-bordered table-striped mb0">

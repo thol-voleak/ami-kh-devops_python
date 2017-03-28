@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% csrf_token %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Create New System User</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'system_user:create-system-user' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Username *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="username"
+                                   id="username_input"
+                                   value="{{ system_user_info.username | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Firstname *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="firstname"
+                                   id="firstname_input"
+                                   value="{{ system_user_info.firstname | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Lastname</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="lastname"
+                                   id="lastname_input"
+                                   value="{{ system_user_info.lastname | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Email *</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control input-rounded" name="email"
+                                   id="email_input"
+                                   value="{{ system_user_info.email | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Initial password *</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control input-rounded"
+                                   name="password"
+                                   id="initial_password_input"
+                                   value="{{ system_user_info.password | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Re-enter initial password *</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control input-rounded"
+                                   name="confirm_password"
+                                   id="re_enter_initial_password_input"
+                                   value="{{ system_user_info.confirm_password | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <a href="{% url 'system_user:system-user-list' %}">
+                            <input id="system_user_btn_cancel" class="btn btn-success text-left mb15" type="button"
+                                   value="Back"/>
+                        </a>
+
+                        <a href="{% url 'agent_type:create-agent-type' %}">
+                            <input id="system_user_btn_submit" class="btn btn-success text-left mb15" type="submit"
+                                   value="Add"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body_js %}
+<script>
+    var password = document.getElementById("initial_password_input");
+    var confirm_password = document.getElementById("re_enter_initial_password_input");
+
+    function validatePassword() {
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
+{% endblock %}
