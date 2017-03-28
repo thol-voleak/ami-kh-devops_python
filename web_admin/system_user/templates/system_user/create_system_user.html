@@ -50,18 +50,17 @@
                         <div class="col-sm-8">
                             <input type="password" class="form-control input-rounded"
                                    name="password"
-                                   id="initial_password_input"
+                                   id="Password"
                                    value="{{ system_user_info.password | default_if_none:'' }}" required>
                         </div>
                     </div>
                     <div class="pull-right">
                         <a href="{% url 'system_user:system-user-list' %}">
-                            <input id="system_user_btn_cancel" class="btn btn-success text-left mb15" type="button"
+                            <input id="system_user_btn_back" class="btn btn-success text-left mb15" type="button"
                                    value="Back"/>
                         </a>
-
                         <a href="{% url 'agent_type:create-agent-type' %}">
-                            <input id="system_user_btn_submit" class="btn btn-success text-left mb15" type="submit"
+                            <input id="system_user_btn_add" class="btn btn-success text-left mb15" type="submit"
                                    value="Add"/>
                         </a>
                     </div>
