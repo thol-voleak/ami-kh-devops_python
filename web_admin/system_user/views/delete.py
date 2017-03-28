@@ -49,7 +49,6 @@ class DeleteView(TemplateView):
             'client_secret': settings.CLIENTSECRET,
             'Authorization': 'Bearer ' + access_token,
         }
-
         start_date = time.time()
         response = requests.get(url, headers=headers, verify=False)
         logger.info("URL for deleting system user id {} is {}".format(system_user_id, url))
