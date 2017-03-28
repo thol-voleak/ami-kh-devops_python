@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='system_user_list' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+    {% csrf_token %}
+
+    <div class="panel mb30">
+        <div class="panel-heading">
+            <h3>System Users</h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" id=currency_table>
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="username">Username</th>
+                        <th id="firstname_lastname">Firstname Lastname</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="created_by">Created By</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
+                    {% for systemuser in data %}
+                        <tr>
+                            <td class="col-sm-1" id="id_{{ systemuser.id }}">
+                                {{ systemuser.id|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
+                            <td class="col-sm-3">{{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ systemuser.created_by_user_id|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -75,6 +75,12 @@
                         </li>
                     </ul>
                 </li>
+                <li id="system_users" class="class={% if active_tab == 'system_user_list' %} active{% endif %}">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <i class="fa fa-tag"></i>
+                        <span>System Users</span>
+                    </a>
+                </li>
                 <li>
                     {% if user.is_authenticated %}
                     <a href="/admin-portal/logout/">
