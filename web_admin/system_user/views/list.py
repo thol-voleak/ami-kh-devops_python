@@ -52,6 +52,7 @@ class ListView(TemplateView):
         start_date = time.time()
         response = requests.get(url, headers=headers, verify=False)
         done = time.time()
+        logger.info("Response Status {}".format(response))
         json_data = response.json()
         logger.info("Response time for get system user list is {} sec.".format(done - start_date))
         logger.info("Received {} system users".format(len(json_data['data'])))
