@@ -136,12 +136,13 @@ class SystemUserUpdateForm(TemplateView):
 
         response_json = response.json()
         if response_json['status']['code'] == "success":
-            logger.info("System User detail was fetched.")
             data = response_json.get('data')
             context = {'system_user_info': data}
+            logger.info('========== Finished getting system user detail ==========')
             return context
         else:
             logger.info("Error Getting System User Detail.")
             context = {'system_user_info': response_json.get('data')}
+            logger.info('========== Finished getting system user detail ==========')
             return context
 
