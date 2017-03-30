@@ -62,8 +62,7 @@
                                 <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
                             {% endif %}
 
-                            <td class="col-sm-3" style="text-indent: 1em: text-align: left;">
-                                {{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-3" style="text-indent: 1em: text-align: left;">{{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ systemuser.created_by_user_id|default_if_none:'' }}</td>
                             <td class="col-sm-3">
