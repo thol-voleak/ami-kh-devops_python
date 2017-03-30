@@ -57,7 +57,7 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["message"]))
+        raise Exception("{}".format(json_data["status"]["message"]))
 
     def get_preload_currencies_dropdown(self):
         client_id = settings.CLIENTID
@@ -89,7 +89,7 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["message"]))
+        raise Exception("{}".format(json_data["status"]["message"]))
 
 
 def _refine_data(data):

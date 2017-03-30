@@ -65,7 +65,7 @@ class ClientApi():
                 logger.info('========== Finish suspending client ==========')
                 return HttpResponse(status=response.status_code, content=response)
 
-            raise Exception("{}".format(json_data["message"]))
+            raise Exception("{}".format(response_json["status"]["message"]))
         else:
             logger.info('Invalid HTTP Method')
             logger.info("========== Finish deleting agent type ==========")

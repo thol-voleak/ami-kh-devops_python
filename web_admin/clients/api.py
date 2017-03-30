@@ -74,4 +74,4 @@ class ClientApi():
             if response.status_code == 200:
                 return HttpResponse(json.dumps(json_response["status"]), content_type="application/json")
 
-            raise Exception("{}".format(json_data["message"]))
+            raise Exception("{}".format(json_response["status"]["message"]))
