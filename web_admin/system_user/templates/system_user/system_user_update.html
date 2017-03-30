@@ -2,68 +2,57 @@
 {% load static %}
 
 {% block content %}
-    {% csrf_token %}
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3>System User Detail</h3>
+            <h3>Edit System User</h3>
         </div>
-
-        {% if msg is not None %}
-            <div class="col-xs-12">
-                <div class="alert alert-success alert-dismissable" id="system_user_update_msg">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ msg }}</strong>
-                </div>
-            </div>
-        {% endif %}
 
         <div class="panel-body">
             <div class="row no-margin">
                 <div class="col-lg-12">
-                    <form id="submit-form" class="form-horizontal" role="form" method="post">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post" action="{%  url 'system_user:system-user-edit' system_user_info.id %}">
+                        {% csrf_token %}
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Username</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="username_input"
-                                       value="{{ system_user_info.username | default_if_none:'' }}" readonly>
+                                       id="username_input" name="username_input"
+                                       value="{{ system_user_info.username | default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Firstname</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="firstname_input"
-                                       value="{{ system_user_info.firstname | default_if_none:'' }}" readonly>
+                                       id="firstname_input" name="firstname_input"
+                                       value="{{ system_user_info.firstname | default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Lastname</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="lastname_input"
-                                       value="{{ system_user_info.lastname | default_if_none:'' }}" readonly>
+                                       id="lastname_input" name="lastname_input"
+                                       value="{{ system_user_info.lastname | default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Email</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="email_input"
-                                       value="{{ system_user_info.email | default_if_none:'' }}" readonly>
+                                       id="email_input" name="email_input"
+                                       value="{{ system_user_info.email | default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="pull-right">
-                            <a href="{% url 'system_user:system-user-list' %}">
-                                <input id="system_user_btn_back" class="btn btn-success text-left mb15" type="button"
-                                       value="Back"/>
-                            </a>
-                        </div>
+                        <a href="{% url 'system_user:system-user-list' %}">
+                            <input id="system_user_btn_back" class="btn btn-success" type="button" value="Back"/>
+                        </a>
+                        <input id="system_user_btn_save" class="btn btn-success" type="submit" value="Save"/ >
+                    </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-
 {% endblock %}

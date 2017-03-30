@@ -4,6 +4,7 @@ from .views.list import ListView
 from .views.create import SystemUserCreate
 from .views.delete import DeleteView
 from .views.detail import DetailView
+from .views.update import SystemUserUpdateForm
 
 app_name = 'system_user'
 
@@ -13,4 +14,6 @@ urlpatterns = [
     url(r'^(?P<system_user_id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='login'),
         name="delete-system-user"),
     url(r'^detail/(?P<systemUserId>[0-9]+)/$', login_required(DetailView.as_view(), login_url='login'), name="system-user-detail"),
+    url(r'^update/(?P<systemUserId>[0-9A-Za-z]+)/$', login_required(SystemUserUpdateForm.as_view(), login_url='login'),
+        name="system-user-edit")
 ]

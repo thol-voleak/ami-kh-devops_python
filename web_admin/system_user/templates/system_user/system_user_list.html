@@ -1,98 +1,106 @@
 {% extends "base.html" %}
 {% load static %}
 {% block sidebar_panel %}
-{% with active_tab='system_user_list' %}
-{{ block.super }}
-{% endwith %}
+    {% with active_tab='system_user_list' %}
+        {{ block.super }}
+    {% endwith %}
 {% endblock sidebar_panel %}
 {% block content %}
-{% csrf_token %}
+    {% csrf_token %}
 
-<div class="panel mb30">
-    <div class="panel-heading">
-        <h3>System Users</h3>
-    </div>
-    <div class="pull-right mr15 text-right">
-        <a href="{% url 'system_user:create-system-user' %}">
-            <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                   value="Add"/>
-        </a>
-    </div>
-    {% if created_msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ created_msg }}</strong>
+    <div class="panel mb30">
+        <div class="panel-heading">
+            <h3>System Users</h3>
+        </div>
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'system_user:create-system-user' %}">
+                <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                       value="Add"/>
+            </a>
+        </div>
+        {% if created_msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ created_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if del_msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ del_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        <div class="panel-body">
+            <div class="table-responsive" id=system_user_table>
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="username">Username</th>
+                        <th id="firstname_lastname">Firstname Lastname</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="created_by">Created By</th>
+                        <th id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
+                    {% for systemuser in data %}
+                        <tr>
+                            <td class="col-sm-1" id="id_{{ systemuser.id }}">
+                                {{ systemuser.id|default_if_none:'' }}
+                            </td>
+                            {% if systemuser.is_delete %}
+                                <td class="col-sm-1">
+                                    <del>{{ systemuser.username|default_if_none:'' }}</del>
+                                </td>
+                            {% else %}
+                                <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
+                            {% endif %}
+
+                            <td class="col-sm-3" style="text-indent: 1em: text-align: left;">
+                                {{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ systemuser.created_by_user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-3">
+                                <div id="client_btn_group_{{ system_user.id }}">
+                                    <div class="btn-group mb5">
+                                        {% if systemuser.is_delete %}
+                                        {% else %}
+                                            <a type="button"
+                                               class="btn btn-outline btn-xs btn-info"
+                                               role="button"
+                                               id="system_user_btn_detail"
+                                               href="{% url 'system_user:system-user-detail' systemuser.id %}">
+                                                <span class="small">Detail</span>
+                                            </a>
+                                            <a type="button"
+                                               class="btn btn-outline btn-xs btn-primary"
+                                               role="button"
+                                               id="system_user_btn_edit"
+                                               href="{% url 'system_user:system-user-edit' systemuser.id %}">
+                                                <span class="small">Edit</span>
+                                            </a>
+                                            <a type="button"
+                                               class="btn btn-outline btn-xs btn-danger"
+                                               role="button"
+                                               id="system_user_btn_delete"
+                                               href="{% url 'system_user:delete-system-user' systemuser.id %}">
+                                                <span class="small">Delete</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    {% endif %}
-
-    {% if del_msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ del_msg }}</strong>
-        </div>
-    </div>
-    {% endif %}
-    <div class="panel-body">
-        <div class="table-responsive" id=system_user_table>
-            <table class="table table-bordered table-striped mb0">
-                <thead>
-                <tr>
-                    <th id="id">ID</th>
-                    <th id="username">Username</th>
-                    <th id="firstname_lastname">Firstname Lastname</th>
-                    <th id="created_date">Created Date</th>
-                    <th id="created_by">Created By</th>
-                    <th id="action">Action</th>
-                </tr>
-                </thead>
-                <tbody id="table_body">
-                {% for systemuser in data %}
-                <tr>
-                    <td class="col-sm-1" id="id_{{ systemuser.id }}">
-                        {{ systemuser.id|default_if_none:'' }}
-                    </td>
-                    {% if systemuser.is_delete %}
-                    <td class="col-sm-1">
-                        <del>{{ systemuser.username|default_if_none:'' }}</del>
-                    </td>
-                    {% else %}
-                    <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
-                    {% endif %}
-
-                    <td class="col-sm-3" style="text-indent: 1em: text-align: left;">{{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ systemuser.created_by_user_id|default_if_none:'' }}</td>
-                    <td class="col-sm-3">
-                        <div id="client_btn_group_{{ system_user.id }}">
-                            <div class="btn-group mb5">
-                                {% if systemuser.is_delete %}
-                                {% else %}
-                                    <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
-                                   role="button"
-                                   id="system_user_btn_detail"
-                                   href="{% url 'system_user:system-user-detail' systemuser.id %}">
-                                    <span class="small">Detail</span>
-                                </a>
-                                <a type="button"
-                                   class="btn btn-outline btn-xs btn-danger"
-                                   role="button"
-                                   id="system_user_btn_delete"
-                                   href="{% url 'system_user:delete-system-user' systemuser.id %}">
-                                    <span class="small">Delete</span>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 {% endblock %}
