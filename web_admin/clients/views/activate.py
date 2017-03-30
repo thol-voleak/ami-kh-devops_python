@@ -65,8 +65,8 @@ def activate(request, client_id):
                 logger.info('========== Finish activating client ==========')
                 return HttpResponse(status=500, content=response)
 
-        if response_json["message"] == "Invalid access token":
-            raise InvalidAccessToken(response_json["message"])
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])
 
     except Exception as e:
         logger.info(e)

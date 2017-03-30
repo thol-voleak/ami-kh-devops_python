@@ -68,5 +68,5 @@ class DetailView(TemplateView):
             logger.info('========== Finished getting system user detail ==========')
             return context
 
-        if response_json["message"] == "Invalid access token":
-            raise InvalidAccessToken(response_json["message"])
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])

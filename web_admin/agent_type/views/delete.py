@@ -66,8 +66,8 @@ class DeleteView(TemplateView):
             logger.info('========== Finished getting agent type detail ==========')
             return context
 
-        if response_json["message"] == "Invalid access token":
-            raise InvalidAccessToken(response_json["message"])
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])
 
 
 def delete_agent_type(request, agent_type_id):

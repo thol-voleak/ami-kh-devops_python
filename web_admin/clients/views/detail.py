@@ -66,5 +66,5 @@ class DetailView(TemplateView):
                        'error_msg': None}
             return context
 
-        if response_json["message"] == "Invalid access token":
-            raise InvalidAccessToken(response_json["message"])
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])
