@@ -32,7 +32,7 @@ class SystemUserUpdateForm(TemplateView):
             return context
 
     def post(self, request, *args, **kwargs):
-        logger.info('Start updating system user')
+        logger.info('========== Start updating system user ==========')
         system_user_id = kwargs['systemUserId']
         url = settings.UPDATE_SYSTEM_USER_URL.format(system_user_id)
         logger.info("URL: {}".format(url))
