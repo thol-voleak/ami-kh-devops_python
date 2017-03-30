@@ -57,9 +57,9 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        if json_data["message"] == "Invalid access token":
-            logger.info("{} for {} username".format(json_data["message"], self.request.user))
-            raise InvalidAccessToken(json_data["message"])
+        if json_data["status"]["message"] == "Invalid access token":
+            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
+            raise InvalidAccessToken(json_data["status"]["message"])
         else:
             raise Exception('message', auth_request.content)
 

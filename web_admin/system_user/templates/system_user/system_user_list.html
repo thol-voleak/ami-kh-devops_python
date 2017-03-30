@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block sidebar_panel %}
-    {% with active_tab='system_user_list' %}
-        {{ block.super }}
-    {% endwith %}
+{% with active_tab='system_users' %}
+{{ block.super }}
+{% endwith %}
 {% endblock sidebar_panel %}
 {% block content %}
     {% csrf_token %}

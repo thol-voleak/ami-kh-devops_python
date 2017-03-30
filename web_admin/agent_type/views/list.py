@@ -52,7 +52,7 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["message"]))
+        raise Exception("{}".format(json_data["status"]["message"]))
 
 
 def _refine_data(agent_types_list):
