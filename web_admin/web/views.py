@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, 'web/index.html')
 
-@login_required(login_url='login')
 def health(request):
     return render(request, 'web/health.html')
 
