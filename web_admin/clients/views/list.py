@@ -57,12 +57,11 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        if json_data["status"]["message"] == "Invalid access token":
+        if json_data["status"]["code"] == "access_token_expire":
             logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
             raise InvalidAccessToken(json_data["status"]["message"])
         else:
-            raise Exception('message', auth_request.content)
-
+            raise Exception("{}".format(json_data["status"]["message"]))
 
 def _refine_data(clients_list):
     for client in clients_list:
