@@ -9,6 +9,7 @@ import logging
 import datetime
 
 from authentications.models import *
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +58,10 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["status"]["message"]))
+        if json_data["status"]["code"] == "access_token_expire":
+            raise InvalidAccessToken(json_data["status"]["message"])
+        else:
+            raise Exception("{}".format(json_data["status"]["message"]))
 
     def get_preload_currencies_dropdown(self):
         client_id = settings.CLIENTID
@@ -83,13 +87,16 @@ class ListView(TemplateView):
         done = time.time()
         json_data = response.json()
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
-        logger.info("Received {} preload currencies".format(len(json_data['data'])))
         data = json_data.get('data')
         if response.status_code == 200:
             if (data is not None) and (len(data) > 0):
+                logger.info("Received {} preload currencies".format(len(json_data['data'])))
                 return data
 
-        raise Exception("{}".format(json_data["status"]["message"]))
+        if json_data["status"]["code"] == "access_token_expire":
+            raise InvalidAccessToken(json_data["status"]["message"])
+        else:
+            raise Exception("{}".format(json_data["status"]["message"]))
 
 
 def _refine_data(data):

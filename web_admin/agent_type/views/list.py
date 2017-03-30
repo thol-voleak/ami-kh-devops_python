@@ -3,6 +3,7 @@ from django.conf import settings
 import requests, random, string
 from authentications.models import *
 import logging, datetime
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,11 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 return data
 
-        raise Exception("{}".format(json_data["status"]["message"]))
+        if json_data["status"]["code"] == "access_token_expire":
+            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
+            raise InvalidAccessToken(json_data["status"]["message"])
+        else:
+            raise Exception("{}".format(json_data["status"]["message"]))
 
 
 def _refine_data(agent_types_list):
