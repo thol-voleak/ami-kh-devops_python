@@ -54,32 +54,136 @@
                             <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                         </li>
                     </ul>
-                </li>
-                <li>
-                    <a href="{% url 'clients:client-list' %}">
-                        <i class="fa fa-signal"></i>
-                        <span>Clients</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'agent_type:agent-type-list' %}">
-                        <i class="fa fa-tag"></i>
-                        <span>Agent Type</span>
-                    </a>
-                </li>
-                <li class="menu-accordion class={% if active_tab == 'country_code' %} open{% endif %}">
-                    <a href="javascript:;"> <i class="fa fa-sliders"></i> <span>Configuration</span> </a>
                     <ul class="sub-menu">
-                        <li class="class={% if active_tab == 'country_code' %} active{% endif %}">
+                        <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
                             <a href="{% url 'configuration:country-code' %}"> <span>Country Code</span> </a>
                         </li>
                     </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>Company Balance</span> </a>
+                        </li>
+                    </ul>
                 </li>
-                <li id="system_users" class="class={% if active_tab == 'system_user_list' %} active{% endif %}">
-                    <a href="{% url 'system_user:system-user-list' %}">
+                <li class="menu-accordion class={% if active_tab == 'payment_services' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-send"></i> <span>Payment Services</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'payment_services' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>Service Groups</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'payment_services' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>Payment Services</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'payment_services' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>Balance Movement</span> </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'agent' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'agent' %} active{% endif %}">
+                            <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'agent' %} active{% endif %}">
+                            <a href="{% url 'agent_type:agent-type-list' %}"> <span>Agent Types</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'agent' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Create Agent</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'agent' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>View Agent List</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'finance' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-pie-chart"></i> <span>Finance</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'finance' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Settlement</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'finance' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Reconcile</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'member_customers' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Member Customers</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'member_customers' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Member Customers</span> </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'system_users' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>Permission Entities</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Roles</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'platform_management' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-sliders"></i> <span>Platform Management</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'platform_management' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Platform Settings</span> </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'source_of_fund' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-tint"></i> <span>Source of Fund</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'source_of_fund' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Bank Accounts</span> </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'web:backlog' %}">
                         <i class="fa fa-tag"></i>
-                        <span>System Users</span>
+                        <span>Reports</span>
                     </a>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'system_users' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-envelope"></i> <span>Help Page</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"> <span>My profile</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>Workflow</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'web:backlog' %}"><span>How to</span></a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     {% if user.is_authenticated %}

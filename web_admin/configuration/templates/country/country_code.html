@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block sidebar_panel %}
-{% with active_tab='country_code' %}
-{{block.super}}
-{% endwith %}
+    {% with active_tab='currencies_list' %}
+        {{ block.super }}
+    {% endwith %}
 {% endblock sidebar_panel %}
 
 {% block body_stylesheet %}
