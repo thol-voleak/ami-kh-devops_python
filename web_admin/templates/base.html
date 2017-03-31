@@ -134,7 +134,11 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right hidden-xs">
-
+                {% if user.is_authenticated %}
+                <li>
+                    <strong class="navbar-text">username: {{ user.username }} </strong>
+                </li>
+                {% endif %}
             </ul>
         </header>
         <div class="main-content" style="background-color: white;">
