@@ -26,7 +26,6 @@ SECRET_KEY = 'dvph%ti#3)^p^a)+pmi*mv)j%)_4rq)302()yx-_lpj4-!(9_x'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mod_wsgi.server',
+
     'authentications',
     'clients',
     'balances',
