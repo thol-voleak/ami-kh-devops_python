@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='agent' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Agent Type List</h3>
+    </div>
+    <div class="pull-right mr15 text-right">
+        <a href="{% url 'agent_type:create-agent-type' %}">
+            <input id="agent_type_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                   value="Add"/>
+        </a>
+    </div>
+
+    {% if msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if del_msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ del_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <span id="alert-success-msg"></span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th id="agent_type">Agent Type</th>
+                    <th id="description">Description</th>
+                    <th id="created_at">Created At</th>
+                    <th id="created_by">Created By</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for agent_type in data %}
+                <tr>
+                    {% if agent_type.is_delete %}
+                    <td class="col-sm-3" id="agent_type_{{agent_type.id}}">
+                        <del>{{ agent_type.name }}</del>
+                    </td>
+                    {% else %}
+                    <td class="col-sm-3" id="agent_type_{{agent_type.id}}">
+                        {{ agent_type.name }}
+                    </td>
+                    {% endif %}
+                    <td class="col-sm-6">{{ agent_type.description|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ agent_type.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ agent_type.create_by_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-3">
+                        <div id="client_btn_group_{{ agent_type.id }}">
+                            <div class="btn-group mb5">
+
+
+                                {% if agent_type.is_delete %}
+                                {% else %}
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="agent_type_btn_detail_{{ agent_type.id }}"
+                                   href="{% url 'agent_type:agent-type-detail' agent_type.id %}">
+                                    <span class="small">Detail</span>
+                                </a>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="agent_type_btn_edit_{{ agent_type.id }}"
+                                   href="{% url 'agent_type:agent-type-info' agent_type.id %}">
+                                    <span class="small">Edit</span>
+                                </a>
+                                </br>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-danger"
+                                   role="button"
+                                   id="agent_type_btn_delete_{{ agent_type.id }}"
+                                   href="{% url 'agent_type:agent-type-delete' agent_type.id %}">
+                                    <span class="small">Delete</span>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

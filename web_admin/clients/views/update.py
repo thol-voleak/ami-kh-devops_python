@@ -1,14 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.base import TemplateView
 from django.conf import settings
-import requests, random, string, time
+
 from authentications.models import Authentications
-from .detail import DetailView
+from authentications.apps import InvalidAccessToken
+
+import requests, random, string, time
 import copy
-
-from authentications.models import *
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -39,8 +38,11 @@ class ClientUpdateForm(TemplateView):
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-        auth = Authentications.objects.get(user=self.request.user)
-        access_token = auth.access_token
+        try:
+            auth = Authentications.objects.get(user=self.request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         headers = {
             'content-type': 'application/json',
@@ -102,8 +104,12 @@ class ClientUpdate(View):
 
         try:
             url = settings.UPDATE_CLIENT_URL.format(client_id)
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
+
+            try:
+                auth = Authentications.objects.get(user=request.user)
+                access_token = auth.access_token
+            except Exception as e:
+                raise InvalidAccessToken("{}".format(e))
 
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))

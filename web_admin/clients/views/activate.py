@@ -1,14 +1,12 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.views.generic.base import TemplateView, RedirectView
-from django.conf import settings
-import requests, random, string, time
-from authentications.models import Authentications
-from .detail import DetailView
-from django.http import HttpResponse
+import requests
+import random
+import string
+import time
 import copy
 
-from authentications.models import *
+from django.conf import settings
+from django.http import HttpResponse
+from authentications.apps import InvalidAccessToken, Authentications
 
 import logging
 
@@ -16,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 def activate(request, client_id):
-
     logger.info('========== Start activating client ==========')
     logger.info('The Client to be activated {} client id.'.format(client_id))
 
@@ -26,8 +23,12 @@ def activate(request, client_id):
 
     try:
         url = settings.ACTIVATE_CLIENT_URL.format(client_id)
-        auth = Authentications.objects.get(user=request.user)
-        access_token = auth.access_token
+
+        try:
+            auth = Authentications.objects.get(user=request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -63,12 +64,9 @@ def activate(request, client_id):
                 logger.info("Error activating Client {}".format(client_id))
                 logger.info('========== Finish activating client ==========')
                 return HttpResponse(status=500, content=response)
-        else:
-            logger.info("Error activating Client {}".format(client_id))
-            logger.info("Status code {}".format(response.status_code))
 
-            logger.info('========== Finish activating client ==========')
-            return HttpResponse(status=response.status_code, content=response)
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])
 
     except Exception as e:
         logger.info(e)

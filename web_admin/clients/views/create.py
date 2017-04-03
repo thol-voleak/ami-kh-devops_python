@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.conf import settings
+from authentications.apps import InvalidAccessToken
+
 import requests, random, string, time
-from authentications.models import Authentications
+
 
 from authentications.models import *
 
@@ -36,8 +38,12 @@ class ClientCreate(View):
 
         try:
             url = settings.CREATE_CLIENT_URL
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
+
+            try:
+                auth = Authentications.objects.get(user=request.user)
+                access_token = auth.access_token
+            except Exception as e:
+                raise InvalidAccessToken("{}".format(e))
 
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))

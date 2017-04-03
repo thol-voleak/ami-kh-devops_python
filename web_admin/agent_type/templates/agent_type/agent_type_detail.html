@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    {% csrf_token %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Agent Type Detail</h3>
+    </div>
+
+    {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="agent_type_update_msg">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agent_type:create-agent-type' %}" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Agent Type *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"  name="agent_type_input" id="agent_type_input"
+                                   value="{{ agent_type_info.name | default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="agent_type_description_input" id="agent_type_description_input"
+                                   value="{{ agent_type_info.description | default_if_none:'' }}" readonly>
+
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <a href="{% url 'agent_type:agent-type-list' %}">
+                            <input id="agent_type_btn_back" class="btn btn-success text-left mb15" type="button" value="Back"/>
+                        </a>
+                        <a href="{% url 'agent_type:agent-type-info' agent_type_info.id%}">
+                            <input id="agent_type_btn_edit" class="btn btn-success text-left mb15" type="button" value="Edit"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

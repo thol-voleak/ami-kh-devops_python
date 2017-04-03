@@ -18,13 +18,18 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from authentications.views import logout_user
 from web.views import health
-
+from web.views import backlog
 
 urlpatterns = [
     url(r'^admin-portal/admin/', admin.site.urls),
     url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
     url(r'^admin-portal/', include('web.urls')),
     url(r'^admin-portal/clients/', include('clients.urls')),
+    url(r'^admin-portal/balances/', include('balances.urls')),
     url(r'^admin-portal/health$', health, name="health"),
+    url(r'^admin-portal/backlog/$', backlog, name="backlog"),
     url(r'^admin-portal/logout/$', logout_user, name='logout'),
+    url(r'^admin-portal/agent-type/', include('agent_type.urls')),
+    url(r'^admin-portal/configuration/', include('configuration.urls')),
+    url(r'^admin-portal/system-user/', include('system_user.urls')),
 ]

@@ -8,7 +8,6 @@
     <title>Operation Web</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-
     <!-- build:css({.tmp,app}) styles/app.min.css -->
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/perfect-scrollbar/css/perfect-scrollbar.css' %}">
@@ -48,11 +47,40 @@
                         <span>Home</span>
                     </a>
                 </li>
+                <li class="menu-accordion class={% if active_tab == 'currencies_list' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                            <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                            <a href="{% url 'configuration:country-code' %}"> <span>Country Code</span> </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'agent' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'agent' %} active{% endif %}">
+                            <a href="{% url 'agent_type:agent-type-list' %}"> <span>Agent Types</span> </a>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <a href="{% url 'clients:client-list' %}">
-                        <i class="fa fa-signal"></i>
+                        <i class="fa fa-tag"></i>
                         <span>Clients</span>
                     </a>
+                </li>
+                <li class="menu-accordion class={% if active_tab == 'system_users' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                            <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     {% if user.is_authenticated %}
@@ -138,7 +166,6 @@
 <script src="{% static 'scripts/extentions/lib.js' %}"></script>
 <script src="{% static 'scripts/pages/alert.js' %}"></script>
 <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
-
 {% block body_js %}
 {% endblock %}
 

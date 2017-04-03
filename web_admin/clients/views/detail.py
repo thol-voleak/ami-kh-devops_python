@@ -1,8 +1,12 @@
-import logging, datetime, time
-import requests, random, string
+import logging
+import random
+import string
+import time
+import requests
 
-from django.views.generic.base import TemplateView
 from django.conf import settings
+from django.views.generic.base import TemplateView
+from authentications.apps import InvalidAccessToken
 
 from authentications.models import *
 
@@ -32,8 +36,11 @@ class DetailView(TemplateView):
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-        auth = Authentications.objects.get(user=self.request.user)
-        access_token = auth.access_token
+        try:
+            auth = Authentications.objects.get(user=self.request.user)
+            access_token = auth.access_token
+        except Exception as e:
+            raise InvalidAccessToken("{}".format(e))
 
         headers = {
             'content-type': 'application/json',
@@ -58,9 +65,6 @@ class DetailView(TemplateView):
             context = {'client_info': data,
                        'error_msg': None}
             return context
-        else:
-            logger.info("Error Getting Client Detail.")
-            context = {'client_info': response_json.get('data'),
-                       'error_msg': response_json['status']['message']}
 
-            return context
+        if response_json["status"]["message"] == "Invalid access token":
+            raise InvalidAccessToken(response_json["status"]["message"])
