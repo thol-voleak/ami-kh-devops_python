@@ -60,6 +60,14 @@
                         </li>
                     </ul>
                 </li>
+                <li class="menu-accordion class={% if active_tab == 'payment_services' %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
+                    <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'payment_services' %} active{% endif %}">
+                            <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="menu-accordion class={% if active_tab == 'agent' %} open{% endif %}">
                     <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
                     <ul class="sub-menu">
