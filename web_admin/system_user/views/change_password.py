@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.conf import settings
-
 from authentications.utils import get_auth_header
 
 import requests, time
