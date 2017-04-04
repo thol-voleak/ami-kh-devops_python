@@ -5,6 +5,7 @@ from .views.create import SystemUserCreate
 from .views.delete import DeleteView
 from .views.detail import DetailView
 from .views.update import SystemUserUpdateForm
+from .views.change_password import SystemUserChangePassword
 
 app_name = 'system_user'
 
@@ -15,5 +16,7 @@ urlpatterns = [
         name="delete-system-user"),
     url(r'^detail/(?P<systemUserId>[0-9]+)/$', login_required(DetailView.as_view(), login_url='login'), name="system-user-detail"),
     url(r'^update/(?P<systemUserId>[0-9A-Za-z]+)/$', login_required(SystemUserUpdateForm.as_view(), login_url='login'),
-        name="system-user-edit")
+        name="system-user-edit"),
+    url(r'^(?P<systemUserId>[0-9A-Za-z]+)/change-password/$', login_required(SystemUserChangePassword.as_view(), login_url='login'),
+        name="system-user-change-password")
 ]
