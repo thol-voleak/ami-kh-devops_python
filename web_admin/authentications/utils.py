@@ -5,7 +5,6 @@ from authentications.models import Authentications
 import random
 import string
 import logging
-import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -29,18 +28,3 @@ def get_auth_header(user):
         'Authorization': 'Bearer {}'.format(access_token),
     }
     return headers
-
-
-def format_date_time(data):
-    for item in data:
-        if (item['created_timestamp'] is not None) and (item['created_timestamp'] != "null"):
-            created_at = item['created_timestamp'] / 1000.0
-            item['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                '%d-%m-%Y %H:%M %p')
-
-        if (item['last_updated_timestamp'] is not None) and (
-                    item['last_updated_timestamp'] != "null"):
-            created_at = item['last_updated_timestamp'] / 1000.0
-            item['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                '%d-%m-%Y %H:%M %p')
-    return data
