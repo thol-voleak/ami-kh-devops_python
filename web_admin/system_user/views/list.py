@@ -76,5 +76,6 @@ def _refine_data(system_user_list):
             created_at = system_user['created_timestamp'] / 1000.0
             system_user['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
                 '%d-%m-%Y %H:%M %p')
+            system_user['fullname'] = '{} {}'.format(system_user['firstname'], system_user['lastname'])
 
     return system_user_list
