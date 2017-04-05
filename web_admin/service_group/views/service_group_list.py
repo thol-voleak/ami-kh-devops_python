@@ -25,11 +25,8 @@ class ListView(TemplateView):
     def get_service_group_list(self):
         logger.info("Getting service group list by {} user id".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
-
         url = settings.SERVICE_GROUP_LIST_URL
-
         logger.info("Getting service group list from backend with {} url".format(url))
-
         logger.info('Getting service group list from backend')
         auth_request = requests.get(url, headers=headers, verify=False)
         logger.info("Received data with response is {}".format(auth_request.status_code))
