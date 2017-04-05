@@ -16,7 +16,7 @@ class CreateView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         choices, success = self._get_dropdown_choices()
-        if True:
+        if not success:
             messages.add_message(
                 request,
                 messages.INFO,
