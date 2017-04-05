@@ -9,6 +9,7 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
+
 def get_auth_header(user):
     client_id = settings.CLIENTID
     client_secret = settings.CLIENTSECRET

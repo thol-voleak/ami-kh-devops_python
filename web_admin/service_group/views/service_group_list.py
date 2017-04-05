@@ -22,7 +22,6 @@ class ListView(TemplateView):
         return result
 
     def get_service_group_list(self):
-
         logger.info("Getting service group list by {} user id".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
 
@@ -37,6 +36,7 @@ class ListView(TemplateView):
 
         json_data = auth_request.json()
         data = json_data.get('data')
+
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
                 return data
