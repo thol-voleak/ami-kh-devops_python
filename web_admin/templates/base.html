@@ -65,6 +65,9 @@
                         <li class="class={% if active_tab == 'payment_services' %} active{% endif %}">
                             <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
                         </li>
+                        <li class="class={% if active_tab == 'services' %} active{% endif %}">
+                            <a href="{% url 'services:services_list' %}"> <span>Service</span> </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="menu-accordion class={% if active_tab == 'agent' %} open{% endif %}">
