@@ -13,6 +13,22 @@
     <div class="panel-heading">
         <h3>Services</h3>
     </div>
+
+    <div class="pull-right mr15 text-right">
+        <a href="{% url 'services:service_create' %}">
+            <input id="btn_service_add" class="btn btn-success btn-block text-left no-print mb15" type="button" value="Add"/>
+        </a>
+    </div>
+
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0">
