@@ -51,7 +51,8 @@ class ServiceGroupCreate(View):
                     logger.info("Service Group was created.")
                     logger.info('========== Finish creating Service Group ==========')
                     request.session['add_service_group_msg'] = 'Added data successfully'
-                    return redirect('service_group:service_group_list')
+                    service_group_id = json_data['data']['service_group_id']
+                    return redirect('service_group:service_group_detail', ServiceGroupId=(service_group_id))
 
             if json_data["status"]["code"] == "access_token_expire":
                 logger.info("{} for {} username".format(json_data["status"]["message"], request.user))
