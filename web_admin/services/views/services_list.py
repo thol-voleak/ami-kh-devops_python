@@ -29,16 +29,13 @@ class ListView(TemplateView):
         url = settings.SERVICE_LIST_URL
 
         logger.info("Getting service list from backend with {} url".format(url))
-
-        logger.info('Getting service list from backend')
         auth_request = requests.get(url, headers=headers, verify=False)
-        logger.info("Received data with response is {}".format(auth_request.status_code))
-        logger.info("Response is {}".format(auth_request.content))
 
         json_data = auth_request.json()
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
+                logger.info('Service count: {}'.format(len(data)))
                 return data
 
         if json_data["status"]["code"] == "access_token_expire":
