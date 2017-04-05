@@ -13,7 +13,6 @@ class SystemUserChangePassword(TemplateView):
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Start changing system user password ==========')
 
             context = super(SystemUserChangePassword, self).get_context_data(**kwargs)
             system_user_id = context['systemUserId']
@@ -38,6 +37,7 @@ class SystemUserChangePassword(TemplateView):
         password = request.POST.get('newpassword')
 
         params = {"password": password}
+        logger.info("Request: new password is ******")
 
         headers = get_auth_header(self.request.user)
 
