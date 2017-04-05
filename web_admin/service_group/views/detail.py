@@ -1,0 +1,57 @@
+from django.views.generic.base import TemplateView
+from django.conf import settings
+
+from authentications.utils import get_auth_header
+
+import requests, time
+import logging
+
+logger = logging.getLogger(__name__)
+
+class ServiceGroupDetailForm(TemplateView):
+    template_name = "service_group/detail.html"
+
+    def get_context_data(self, **kwargs):
+        try:
+            logger.info('========== Start getting service group detail ==========')
+
+            context = super(ServiceGroupDetailForm, self).get_context_data(**kwargs)
+            service_group_id = context['ServiceGroupId']
+
+            return self._get_service_group_detail(service_group_id)
+
+        except:
+            context = {'service_group_info': {}}
+            return context
+
+
+    def _get_service_group_detail(self, service_group_id):
+
+        url = settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+
+        headers = get_auth_header(self.request.user)
+
+        logger.info("Username: {}".format(self.request.user))
+        logger.info('Getting service group detail from backend')
+        logger.info("URL: {}".format(url))
+        start_date = time.time()
+
+        response = requests.get(url, headers=headers, verify=False)
+
+        logger.info("Response Content: {}".format(response.content))
+        done = time.time()
+        logger.info("Response time is {} sec.".format(done - start_date))
+        logger.info("Received data with response status is {}".format(response.status_code))
+
+        response_json = response.json()
+        if response_json['status']['code'] == "success":
+            data = response_json.get('data')
+            context = {'service_group_info': data}
+            logger.info('========== Finished getting service group detail ==========')
+            return context
+        else:
+            logger.info("Error Getting System User Detail.")
+            context = {'service_group_info': response_json.get('data')}
+            logger.info('========== Finished getting service group detail ==========')
+            return context
+
