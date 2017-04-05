@@ -47,7 +47,8 @@ class ServiceGroupDetailForm(TemplateView):
         if response_json['status']['code'] == "success":
             data = response_json.get('data')
             context = {'service_group_info': data,
-                       'add_service_group_msg': self.request.session.pop('add_service_group_msg', None)}
+                       'add_service_group_msg': self.request.session.pop('add_service_group_msg', None),
+                       'service_group_update_msg': self.request.session.pop('service_group_update_msg', None)}
             logger.info('========== Finished getting service group detail ==========')
             return context
         else:

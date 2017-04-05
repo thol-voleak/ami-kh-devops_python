@@ -21,8 +21,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" rows="5" id="txt_description" name="description"
-                                      value="{{ service_group_info.description | default_if_none:'' }}"/>
+                            <textarea type="text" class="form-control" rows="5" id="txt_description" name="description">{{ service_group_info.description | default_if_none:'' }}</textarea>
                         </div>
                     </div>
                     <div class="pull-right">
