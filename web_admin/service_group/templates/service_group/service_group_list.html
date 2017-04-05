@@ -34,7 +34,7 @@
                     <td class="col-sm-2">{{ service_group.description|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ service_group.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ service_group.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ service_group.last_updated_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ service_group.created_user_id|default_if_none:'' }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
