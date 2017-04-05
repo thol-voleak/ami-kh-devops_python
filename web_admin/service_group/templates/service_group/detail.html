@@ -19,7 +19,7 @@
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Name *</label>
+                        <label class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_name" name="service_group_name"
@@ -30,10 +30,10 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                                <textarea type="text" class="form-control input-rounded"
-                                          id="txa_description" name="description" form="submit-form"
+                                <input type="text" class="form-control input-rounded"
+                                          id="txt_description" name="description" form="submit-form"
                                           value="{{ service_group_info.description | default_if_none:'' }}"
-                                          readonly></textarea>
+                                          readonly/>
                         </div>
                     </div>
                     <div class="pull-right">
