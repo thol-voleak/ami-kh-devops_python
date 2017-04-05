@@ -24,7 +24,8 @@ class ListView(TemplateView):
         logger.info('========== Finished get system user List ==========')
         result = {'data': refined_data,
                 'created_msg': self.request.session.pop('system_user_create_msg', None),
-                'del_msg': self.request.session.pop('system_user_delete_msg', None)}
+                'del_msg': self.request.session.pop('system_user_delete_msg', None),
+                'pw_msg': self.request.session.pop('system_user_change_password_msg', None)}
         return result
 
     def get_system_user_list(self):

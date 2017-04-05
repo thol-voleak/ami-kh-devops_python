@@ -35,6 +35,17 @@
                 </div>
             </div>
         {% endif %}
+
+        {% if pw_msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="system_user_change_password_msg">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ pw_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+
         <div class="panel-body">
             <div class="table-responsive" id=system_user_table>
                 <table class="table table-bordered table-striped mb0">
@@ -90,6 +101,14 @@
                                                id="system_user_btn_delete"
                                                href="{% url 'system_user:delete-system-user' systemuser.id %}">
                                                 <span class="small">Delete</span>
+                                            </a>
+                                            <br/>
+                                            <a type="button"
+                                               class="btn btn-outline btn-xs btn-primary"
+                                               role="button"
+                                               id="btn_system_user_change_password"
+                                               href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                                                <span class="small">ChangePassword</span>
                                             </a>
                                         {% endif %}
                                     </div>
