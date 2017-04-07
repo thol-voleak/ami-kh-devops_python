@@ -61,8 +61,7 @@ class ServiceGroupUpdateForm(TemplateView):
                 logger.info("Service Group was updated.")
                 logger.info('========== Finished updating Service Group ==========')
                 request.session['service_group_update_msg'] = 'Updated service group successfully'
-                # return redirect('service_group:service-group-detail', ServiceGroupId=(service_group_id))
-                return redirect('service_group:service_group_list')
+                return redirect('service_group:service_group_detail', ServiceGroupId=(service_group_id))
             else:
                 logger.info("Error Updating Service Group {}".format(service_group_id))
                 context = {'service_group_info': params}

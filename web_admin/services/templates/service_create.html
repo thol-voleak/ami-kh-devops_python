@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Add New Service</h3>
+    </div>
+
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="{% url 'services:service_create' %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="service_name" id="txt_name" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Group:</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_group" name="service_group_id" required>
+                                {% for group in choices.service_groups %}
+                                    <option value="{{ group.service_group_id }}">{{ group.service_group_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Currency:</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_currency" name="currency" required>
+                                {% for currency in choices.currencies %}
+                                    <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description:</label>
+                        <div class="col-sm-8">
+                            <textarea type="text" class="form-control" name="description" rows="3" id="txt_description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                            <a href="{% url 'services:services_list' %}">
+                                <input id="btn_service_back" class="btn btn-success text-left mb15" type="button"
+                                    value="Back"/>
+                            </a>
+                            <a href="#">
+                                <input id="btn_service_add" class="btn btn-success text-left mb15" type="submit"
+                                   value="Add"/>
+                            </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

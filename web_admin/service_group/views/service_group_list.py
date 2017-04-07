@@ -1,7 +1,6 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
-from authentications.models import Authentications
 from authentications.utils import get_auth_header
 from web_admin.utils import format_date_time
 
