@@ -38,7 +38,9 @@ class CreateView(TemplateView):
             'description': description,
         }
 
+        logger.info('========== Start create new Service ==========')
         data, success = self._create_service(data)
+        logger.info('========== Finished create new Service ==========')
         if success:
             messages.add_message(
                 request,
@@ -64,12 +66,10 @@ class CreateView(TemplateView):
 
         url = settings.SERVICE_CREATE_URL
 
-        logger.info('========== Start create new Service ==========')
         logger.info('Request url: {}'.format(url))
         logger.info('Request body: {}'.format(data))
         response = requests.post(url, headers=self._get_headers(),
                                  json=data, verify=False)
-        logger.info('========== Finished create new Service ==========')
 
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
