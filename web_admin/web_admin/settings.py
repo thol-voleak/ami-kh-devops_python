@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mod_wsgi.server',
 
+    #'debug_toolbar',
+    #'debug_panel',
+
     'authentications',
     'clients',
     'balances',
@@ -49,6 +52,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_panel.middleware.DebugPanelMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

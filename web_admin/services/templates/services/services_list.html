@@ -25,6 +25,7 @@
                     <th id="lbl_created_date">Created Date</th>
                     <th id="lbl_modified_date">Modified Date</th>
                     <th id="lbl_created_by">Created By</th>
+                    <th id="action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,6 +40,19 @@
                     <td class="col-sm-2">{{ services.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ services.created_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-3">
+                        <div id="service_btn_group">
+                            <div class="btn-group mb5">
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="btn_service_detail"
+                                   href="{% url 'services:service_detail' services.service_id %}">
+                                    <span class="small">Detail</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
