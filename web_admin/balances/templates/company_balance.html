@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='company_balance' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Company Balance List</h3>
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency:</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_currency" name="currency" required>
+                        {% for currency in currency_list %}
+                            <option value="{{ currency.0 }}" {% if request.GET.currency == currency.0 %}selected{% endif %}>{{ currency.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th id="lbl_adding_balance">Adding Balance</th>
+                    <th id="lbl_company_balance">Company Balance</th>
+                    <th id="lbl_new_company_balance">New Company Balance</th>
+                    <th id="lbl_created_date">Created Date</th>
+                    <th id="lbl_created_by">Created By</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in objects %}
+                <tr>
+                    <td class="col-sm-2">{{ object.changed_amount }}</td>
+                    <td class="col-sm-2">{{ object.balance_before_change }}</td>
+                    <td class="col-sm-2">{{ object.balance_after_change|floatformat:"-2" }}</td>
+                    <td class="col-sm-2">{{ object.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ object.created_user_id|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script>
+function changeCurrency() {
+    var $currency = $('#ddl_currency');
+    $currency.on('change', function() {
+        var url = window.location.origin + window.location.pathname + '?currency=' + $currency.val();
+        window.location.replace(url);
+    });
+}
+$(document).ready(changeCurrency);
+</script>
+
+{% endblock %}

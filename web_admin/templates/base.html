@@ -49,6 +49,11 @@
                 <li class="menu-accordion class={% if active_tab == 'currencies_list' %} open{% endif %}">
                     <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                     <ul class="sub-menu">
+                        <li class="class={% if active_tab == 'company_balance' %} active{% endif %}">
+                            <a href="{% url 'company_balance' %}"> <span>Company Balance</span> </a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
                         <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
                             <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                         </li>
