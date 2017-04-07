@@ -84,12 +84,14 @@ class CreateView(TemplateView):
             return None, False
 
     def _get_currency_choices(self):
-        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+        url = settings.GET_ALL_CURRENCY_URL
         logger.info('Get currency choice list from backend')
         response = requests.get(url, headers=self._get_headers(), verify=False)
         if response.status_code == 200:
             json_data = response.json()
-            return json_data.get('data'), True
+            value = json_data.get('data', {}).get('value', '')
+            currency_list = map(lambda x: x.split('|'), value.split(','))
+            return currency_list, True
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
         return None, False

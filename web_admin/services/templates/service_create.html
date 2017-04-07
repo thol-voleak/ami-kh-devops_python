@@ -44,7 +44,7 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_currency" name="currency" required>
                                 {% for currency in choices.currencies %}
-                                    <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
+                                    <option value="{{ currency.0 }}">{{ currency.0 }}</option>
                                 {% endfor %}
                             </select>
                         </div>
