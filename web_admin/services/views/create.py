@@ -63,12 +63,17 @@ class CreateView(TemplateView):
         logger.info("Creating service by user {}".format(self.request.user.username))
 
         url = settings.SERVICE_CREATE_URL
-        logger.info('Create service group list in backend')
+
+        logger.info('========== Start create new Service ==========')
+        logger.info('Request url: {}'.format(url))
+        logger.info('Request body: {}'.format(data))
         response = requests.post(url, headers=self._get_headers(),
                                  json=data, verify=False)
+        logger.info('========== Finished create new Service ==========')
 
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
+
 
         json_data = response.json()
         if response.status_code == 200:
