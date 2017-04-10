@@ -68,7 +68,6 @@ class CreateView(TemplateView, GetChoicesMixin):
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
 
-
         json_data = response.json()
         if response.status_code == 200:
             return json_data.get('data'), True

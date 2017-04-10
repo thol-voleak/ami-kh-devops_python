@@ -116,6 +116,7 @@ function saveAgentType() {
 
 
 {% block body_js %}
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}
 

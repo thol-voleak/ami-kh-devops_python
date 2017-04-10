@@ -9,9 +9,7 @@ from authentications.utils import get_auth_header
 logger = logging.getLogger(__name__)
 
 
-
 class GetChoicesMixin(object):
-
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
@@ -50,7 +48,7 @@ class GetChoicesMixin(object):
         currencies, success_currency = async_result.get()
         if success_currency and success_service:
             return {
-                'currencies': currencies,
-                'service_groups': service_groups,
-            }, True
+                       'currencies': currencies,
+                       'service_groups': service_groups,
+                   }, True
         return None, False

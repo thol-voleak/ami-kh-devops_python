@@ -1,5 +1,6 @@
 import datetime
 
+
 def format_date_time(data):
     for item in data:
         if (item.get('created_timestamp') is not None) and (item['created_timestamp'] != "null"):

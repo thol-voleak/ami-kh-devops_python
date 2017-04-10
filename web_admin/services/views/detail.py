@@ -8,6 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class ServiceDetailForm(TemplateView):
     template_name = "services/detail.html"
 
@@ -23,7 +24,6 @@ class ServiceDetailForm(TemplateView):
         except:
             context = {'service_info': {}}
             return context
-
 
     def _get_service_detail(self, service_id):
 
@@ -55,4 +55,3 @@ class ServiceDetailForm(TemplateView):
             context = {'service_info': response_json.get('data')}
             logger.info('========== Finished getting service detail ==========')
             return context
-

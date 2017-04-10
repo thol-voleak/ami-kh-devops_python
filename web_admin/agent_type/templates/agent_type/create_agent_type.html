@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block body_stylesheet %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
@@ -51,5 +52,6 @@
 {% endblock %}
 
 {% block body_js %}
+    {{ block.super }}
     <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}

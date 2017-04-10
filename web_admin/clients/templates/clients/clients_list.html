@@ -6,7 +6,8 @@
 {% endwith %}
 {% endblock sidebar_panel %}
 {% block body_stylesheet %}
-<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -311,5 +312,6 @@
 {% endblock %}
 
 {% block body_js %}
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}
