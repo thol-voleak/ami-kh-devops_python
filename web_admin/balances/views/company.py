@@ -52,7 +52,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         json_data = response.json()
         if response.status_code == 200:
             data = json_data.get('data')
-            logger.info("Total count of Agent Types is {}".format(len(data)))
+            logger.info("Total count of Company Balance is {}".format(len(data)))
             return data, True
         else:
             logger.info("Response content is {}".format(response.content))
