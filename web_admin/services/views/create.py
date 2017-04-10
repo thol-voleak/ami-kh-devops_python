@@ -30,7 +30,7 @@ class CreateView(TemplateView, GetChoicesMixin):
         currency = request.POST.get('currency')
         description = request.POST.get('description')
 
-        data = {
+        body = {
             'service_group_id': service_group_id,
             'service_name': service_name,
             'currency': currency,
@@ -38,7 +38,7 @@ class CreateView(TemplateView, GetChoicesMixin):
         }
 
         logger.info('========== Start create new Service ==========')
-        data, success = self._create_service(data)
+        data, success = self._create_service(body)
         logger.info('========== Finished create new Service ==========')
         if success:
             messages.add_message(
@@ -46,7 +46,7 @@ class CreateView(TemplateView, GetChoicesMixin):
                 messages.SUCCESS,
                 'Added service successfully'
             )
-            return redirect('services:services_list')
+            return redirect('services:service_detail', ServiceId=data['service_id'])
         else:
             messages.add_message(
                 request,
