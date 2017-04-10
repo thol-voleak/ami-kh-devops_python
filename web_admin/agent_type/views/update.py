@@ -8,12 +8,12 @@ from django.urls import reverse
 from authentications.models import Authentications
 from authentications.apps import InvalidAccessToken
 
-
 import requests, random, string, time
 import copy
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class AgentTypeUpdateForm(TemplateView):
     template_name = "agent_type/agent_type_update.html"
@@ -26,11 +26,6 @@ class AgentTypeUpdateForm(TemplateView):
             agent_type_id = context['agentTypeId']
 
             return self._get_agent_type_detail(agent_type_id)
-            # TODO: switch dong tren = 3 dong duoi de test
-            # data = {'name': "name_unique", 'description':"description", 'id':agent_type_id}
-            # context = {'agent_type_info':data}
-            # return context
-
         except:
             context = {'agent_type_info': {}}
             return context
@@ -38,7 +33,8 @@ class AgentTypeUpdateForm(TemplateView):
     def _get_agent_type_detail(self, agent_type_id):
 
         url = settings.AGENT_TYPE_UPDATE_URL.format(agent_type_id)
-        correlation_id = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        correlation_id = ''.join(
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
         try:
             auth = Authentications.objects.get(user=self.request.user)
@@ -57,7 +53,7 @@ class AgentTypeUpdateForm(TemplateView):
         logger.info('Getting agent type detail from backend')
         logger.info("URL: {}".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Response Content: {}".format(response.content))
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
@@ -111,14 +107,9 @@ class AgentTypeUpdate(View):
             }
 
             start_time = time.time()
-
-            # TODO: comment the row below
-            # return redirect('agent_type:agent-type-detail', agentTypeId=agent_type_id)
-
-            response = requests.put(url, headers=headers, json=params, verify=False)
-
-            logger.info("Response: {}".format(response.content))
+            response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
             end_time = time.time()
+            logger.info("Response: {}".format(response.content))
             logger.info("Response time is {} sec.".format(end_time - start_time))
 
             response_json = response.json()
@@ -131,8 +122,6 @@ class AgentTypeUpdate(View):
                     logger.info("Agent Type was updated.")
                     logger.info('========== Finished updating Agent Type ==========')
                     request.session['agent_type_update_msg'] = 'Updated agent type successfully'
-                    # return redirect('agent_type:agent-type-detail', kwargs=(agentTypeId=agent_type_id))
-                    # return HttpResponseRedirect(reverse('agent_type:agent-type-detail', args=(agent_type_id)))
                     return redirect('agent_type:agent-type-detail', agentTypeId=(agent_type_id))
                 else:
                     logger.info("Error Updating Agent {}".format(agent_type_id))

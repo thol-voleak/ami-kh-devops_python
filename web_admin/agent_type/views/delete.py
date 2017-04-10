@@ -51,7 +51,7 @@ class DeleteView(TemplateView):
         }
 
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("URL: {}".format(url))
         done = time.time()
         response_json = response.json()
@@ -93,7 +93,7 @@ def delete_agent_type(request, agent_type_id):
 
         logger.info('URL: {}'.format(url))
         start_date = time.time()
-        response = requests.delete(url, headers=headers, verify=False)
+        response = requests.delete(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for delete {} agent type id is {} sec.".format(agent_type_id, done - start_date))
         logger.info("Response for delete {} agent type id is {}".format(agent_type_id, response.content))

@@ -43,7 +43,7 @@ class SystemUserChangePassword(TemplateView):
 
         start_time = time.time()
 
-        response = requests.put(url, headers=headers, json=params, verify=False)
+        response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
 
         logger.info("Response: {}".format(response.content))
         end_time = time.time()

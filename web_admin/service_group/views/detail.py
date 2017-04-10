@@ -36,7 +36,7 @@ class ServiceGroupDetailForm(TemplateView):
         logger.info("URL: {}".format(url))
         start_date = time.time()
 
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
 
         logger.info("Response Content: {}".format(response.content))
         done = time.time()

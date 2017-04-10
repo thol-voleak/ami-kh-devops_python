@@ -47,7 +47,7 @@ class ListView(TemplateView):
 
         logger.info('Getting agent types list from backend')
         logger.info('URL: {}'.format(url))
-        auth_request = requests.get(url, headers=headers, verify=False)
+        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()

@@ -19,7 +19,7 @@ class GetChoicesMixin(object):
         url = settings.GET_ALL_CURRENCY_URL
         logger.info('Get currency choice list from backend')
         logger.info('Request url: {}'.format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         if response.status_code == 200:
             json_data = response.json()
             value = json_data.get('data', {}).get('value', '')
@@ -33,7 +33,7 @@ class GetChoicesMixin(object):
         url = settings.SERVICE_GROUP_LIST_URL
         logger.info('Get services group list from backend')
         logger.info('Request url: {}'.format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         if response.status_code == 200:
             json_data = response.json()
             return json_data.get('data'), True

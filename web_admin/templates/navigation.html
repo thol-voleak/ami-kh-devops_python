@@ -9,6 +9,7 @@
             <span></span>
         </a>
     </div>
+    {% with request.resolver_match.url_name as url_name %}
     <nav role="navigation">
         <ul class="nav">
             <li>
@@ -17,26 +18,26 @@
                     <span>Home</span>
                 </a>
             </li>
-            <li class="menu-accordion class={% if active_tab == 'currencies_list' %} open{% endif %}">
+            <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                 <ul class="sub-menu">
-                    <li class="class={% if active_tab == 'company_balance' %} active{% endif %}">
-                        <a href="{% url 'company_balance' %}"> <span>Company Balance</span> </a>
-                    </li>
-                </ul>
-                <ul class="sub-menu">
-                    <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                    <li class="{% if url_name == 'currency-list' %}active{% endif %}">
                         <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                     </li>
                 </ul>
                 <ul class="sub-menu">
-                    <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
+                    <li class="{% if url_name == 'country-code' %}active{% endif %}">
                         <a href="{% url 'configuration:country-code' %}"> <span>Country Code</span> </a>
                     </li>
                 </ul>
                 <ul class="sub-menu">
-                    <li class="class={% if active_tab == 'currencies_list' %} active{% endif %}">
-                        <a href="{% url 'balances:setup_company_balance' %}"> <span>Setup Company Balance</span> </a>
+                    <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
+                        <a href="{% url 'balances:initial_company_balance' %}"> <span>Setup Company Balance</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'company_balance' %}active{% endif %}">
+                        <a href="{% url 'balances:company_balance' %}"> <span>Company Balance</span> </a>
                     </li>
                 </ul>
             </li>
@@ -65,10 +66,10 @@
                     <span>Clients</span>
                 </a>
             </li>
-            <li class="menu-accordion class={% if active_tab == 'system_users' %} open{% endif %}">
+            <li class="{% if 'system-user' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                 <ul class="sub-menu">
-                    <li class="class={% if active_tab == 'system_users' %} active{% endif %}">
+                    <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
                         <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
                     </li>
                 </ul>
@@ -83,5 +84,6 @@
             </li>
         </ul>
     </nav>
+    {% endwith %}
 </div>
 {% endblock %}

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class CompanyBalanceView(TemplateView, GetHeaderMixin):
-    template_name = "currencies/setup_company_balance.html"
+    template_name = "currencies/initial_company_balance.html"
     company_agent_id = 1
 
     def get_context_data(self, **kwargs):
@@ -34,7 +34,7 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         url = settings.CREATE_COMPANY_BALANCE.format(currency)
 
         start_date = time.time()
-        response = requests.post(url, headers=headers, verify=False)
+        response = requests.post(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for add company balance is {} sec.".format(done - start_date))
 
@@ -63,7 +63,7 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         logger.info("Getting currency list from backend with {} url".format(url))
 
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
 
@@ -83,7 +83,7 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         url = settings.GET_AGET_BALANCE.format(agent_id)
         headers = self._get_headers()
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for get agent balances is {} sec.".format(done - start_date))
 

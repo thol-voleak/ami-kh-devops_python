@@ -54,7 +54,7 @@ class ClientUpdateForm(TemplateView):
 
         logger.info('Getting client detail from backend')
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Get client url: {}".format(url))
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
@@ -127,7 +127,7 @@ class ClientUpdate(View):
             logger.info("Client info to be updated {}".format(data_log))
 
             start_date = time.time()
-            response = requests.put(url, headers=headers, json=params, verify=False)
+            response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 

@@ -57,7 +57,7 @@ class AgentTypeCreate(View):
             logger.info("Request: {}".format(params))
 
             start_date = time.time()
-            response = requests.post(url, headers=headers, json=params, verify=False)
+            response = requests.post(url, headers=headers, json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 

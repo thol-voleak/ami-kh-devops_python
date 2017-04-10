@@ -98,7 +98,7 @@ class UpdateView(TemplateView):
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('Username {} sends request body: {}'.format(self.request.user.username, data))
         response = requests.put(url, headers=self._get_headers(),
-                                json=data, verify=False)
+                                json=data, verify=settings.CERT)
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
         logger.info('========== Finished updating Service ==========')
@@ -114,7 +114,7 @@ class UpdateView(TemplateView):
         url = settings.GET_ALL_CURRENCY_URL
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
@@ -135,7 +135,7 @@ class UpdateView(TemplateView):
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         logger.info('Get services group list from backend')
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
@@ -153,7 +153,7 @@ class UpdateView(TemplateView):
         url = settings.SERVICE_DETAIL_URL.format(service_id)
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))

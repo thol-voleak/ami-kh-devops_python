@@ -19,7 +19,6 @@ from django.contrib.auth import views as auth_views
 from authentications.views import logout_user
 from web.views import health
 from web.views import backlog
-from balances.views.company import company_balance
 
 urlpatterns = [
     url(r'^admin-portal/admin/', admin.site.urls),
@@ -35,5 +34,4 @@ urlpatterns = [
     url(r'^admin-portal/system-user/', include('system_user.urls')),
     url(r'^admin-portal/service-group/', include('service_group.urls')),
     url(r'^admin-portal/services/', include('services.urls')),
-    url(r'^admin-portal/company-balance/', company_balance, name="company_balance"),
 ]

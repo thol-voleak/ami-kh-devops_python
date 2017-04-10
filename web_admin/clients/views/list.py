@@ -28,7 +28,7 @@ class ListView(TemplateView):
         headers = get_auth_header(self.request.user)
 
         logger.info('Getting client list from backend')
-        auth_request = requests.get(url, headers=headers, verify=False)
+        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()

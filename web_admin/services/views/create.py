@@ -63,7 +63,7 @@ class CreateView(TemplateView, GetChoicesMixin):
         logger.info('Request url: {}'.format(url))
         logger.info('Request body: {}'.format(data))
         response = requests.post(url, headers=self._get_headers(),
-                                 json=data, verify=False)
+                                 json=data, verify=settings.CERT)
 
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))

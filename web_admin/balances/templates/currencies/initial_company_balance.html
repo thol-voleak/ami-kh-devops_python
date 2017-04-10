@@ -21,7 +21,7 @@
                 </div>
             </div>
             {% endfor %}
-            <form class="form-horizontal" role="form" method="post" action="{% url 'balances:setup_company_balance' %}">
+            <form class="form-horizontal" role="form" method="post" action="{% url 'balances:initial_company_balance' %}">
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="col-xs-2 control-label">Company Balance</label>

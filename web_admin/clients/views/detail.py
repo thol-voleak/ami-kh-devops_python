@@ -30,7 +30,7 @@ class DetailView(TemplateView, GetChoicesMixin):
 
     def _get_client_scopes(self, client_id):
         url = settings.CLIENT_SCOPES.format(client_id=client_id)
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         logger.info("Get client scopes url: {}".format(url))
         logger.info("Received data with response status: {}".format(response.status_code))
 
@@ -42,7 +42,7 @@ class DetailView(TemplateView, GetChoicesMixin):
 
     def _get_client_detail(self, client_id):
         url = settings.CLIENTS_LIST_URL + '/' + client_id
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         logger.info("Get client url: {}".format(url))
         logger.info("Received data with response status: {}".format(response.status_code))
 

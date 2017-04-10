@@ -33,7 +33,7 @@ class ClientApi():
         }
 
         start_date = time.time()
-        response = requests.post(url, headers=headers, verify=False)
+        response = requests.post(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id,
                                                                                                     done - start_date))
@@ -64,7 +64,7 @@ class ClientApi():
                 'Authorization': 'Bearer {}'.format(access_token),
             }
             start_date = time.time()
-            response = requests.delete(url, headers=headers, verify=False)
+            response = requests.delete(url, headers=headers, verify=settings.CERT)
             done = time.time()
             logger.info("Response time for delete {} client id is {} sec.".format(client_id, done - start_date))
             logger.info("Response for delete {} client id is {}".format(client_id, response.content))

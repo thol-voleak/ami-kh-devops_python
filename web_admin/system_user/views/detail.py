@@ -51,7 +51,7 @@ class DetailView(TemplateView):
         }
 
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("URL: {}".format(url))
         done = time.time()
         response_json = response.json()

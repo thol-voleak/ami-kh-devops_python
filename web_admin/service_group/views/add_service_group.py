@@ -38,7 +38,7 @@ class ServiceGroupCreate(View):
             logger.info('username {} creating service group with params: {}'.format(request.user.username, params))
 
             start_date = time.time()
-            response = requests.post(url, headers=headers, json=params, verify=False)
+            response = requests.post(url, headers=headers, json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
             logger.info("username {} Received response code is {}".format(request.user.username, response.status_code))

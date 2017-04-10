@@ -29,7 +29,7 @@ class ListView(TemplateView):
         url = settings.SERVICE_LIST_URL
 
         logger.info("Getting service list from backend with {} url".format(url))
-        auth_request = requests.get(url, headers=headers, verify=False)
+        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
 
         json_data = auth_request.json()
         data = json_data.get('data')

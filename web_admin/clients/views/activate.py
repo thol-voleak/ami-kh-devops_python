@@ -46,7 +46,7 @@ def activate(request, client_id):
         logger.info("Expected client status {}".format(data_log))
 
         start_date = time.time()
-        response = requests.put(url, headers=headers, json=params, verify=False)
+        response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
 

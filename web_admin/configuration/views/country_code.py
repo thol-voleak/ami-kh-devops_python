@@ -47,7 +47,7 @@ class CountryCode(View):
 
             logger.info('Sending request to API-Gateway')
             start_date = time.time()
-            response = requests.get(url, headers=headers, verify=False)
+            response = requests.get(url, headers=headers, verify=settings.CERT)
             done = time.time()
 
             response_json = response.json()
@@ -120,7 +120,7 @@ class CountryCode(View):
             logger.info("Expected country code {}".format(data_log))
 
             start_date = time.time()
-            response = requests.put(url, headers=headers, json=params, verify=False)
+            response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 

@@ -70,7 +70,7 @@ class SystemUserUpdateForm(TemplateView):
 
             start_time = time.time()
 
-            response = requests.put(url, headers=headers, json=params, verify=False)
+            response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
 
             logger.info("Response: {}".format(response.content))
             end_time = time.time()
@@ -128,7 +128,7 @@ class SystemUserUpdateForm(TemplateView):
         logger.info('Getting system user detail from backend')
         logger.info("URL: {}".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Response Content: {}".format(response.content))
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))

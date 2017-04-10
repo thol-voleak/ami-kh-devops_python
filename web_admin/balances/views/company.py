@@ -43,7 +43,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         url = settings.COMPANY_BALANCE_HISTORY + currency
         logger.info("Request url: {}".format(url))
 
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         logger.info("Received response with status {} of user id {}".format(
             response.status_code,
             self.request.user.id,

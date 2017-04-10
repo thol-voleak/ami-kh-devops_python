@@ -52,7 +52,7 @@ class ListView(TemplateView):
         }
         logger.info("Getting currency list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         json_data = response.json()
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
@@ -90,7 +90,7 @@ class ListView(TemplateView):
         }
         logger.info("Getting preload currency list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         json_data = response.json()
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))

@@ -52,7 +52,7 @@ class ListView(TemplateView):
 
         logger.info("Getting system user list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response Status {}".format(response))
         json_data = response.json()

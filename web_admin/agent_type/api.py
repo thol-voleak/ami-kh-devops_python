@@ -39,7 +39,7 @@ class ClientApi():
             }
 
             start_date = time.time()
-            response = requests.delete(url, headers=headers, verify=False)
+            response = requests.delete(url, headers=headers, verify=settings.CERT)
             done = time.time()
             logger.info("Response time for delete {} agent type id is {} sec.".format(agent_type_id, done - start_date))
             logger.info("Response for delete {} agent type id is {}".format(agent_type_id, response.content))
