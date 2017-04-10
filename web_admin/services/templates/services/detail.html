@@ -39,7 +39,7 @@
                         <label class="col-sm-2 control-label">Group</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
-                                   id="txt_name" name="service_group"
+                                   id="txt_group" name="service_group"
                                    value="{{ service_info.service_group_id | default_if_none:'' }}"
                                    readonly>
                         </div>
@@ -48,7 +48,7 @@
                         <label class="col-sm-2 control-label">Currency</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
-                                   id="txt_name" name="service_currency"
+                                   id="txt_currency" name="service_currency"
                                    value="{{ service_info.currency | default_if_none:'' }}"
                                    readonly>
                         </div>
@@ -57,7 +57,7 @@
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
                                 <textarea type="text" class="form-control input-rounded"
-                                          id="txa_description" name="description" form="submit-form"
+                                          id="txt_description" name="description" form="submit-form"
                                           readonly>{{ service_info.description | default_if_none:'' }}</textarea>
                         </div>
                     </div>
