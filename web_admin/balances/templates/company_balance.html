@@ -10,11 +10,8 @@
 {% csrf_token %}
 
 <div class="panel mb25">
-    <div class="panel-heading">
-        <h3>Company Balance List</h3>
-    </div>
 
-    <div class="panel-body">
+    <div>
         <form class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="col-sm-2 control-label">Currency:</label>
@@ -27,6 +24,14 @@
                 </div>
             </div>
         </form>
+    </div>
+
+
+    <div class="panel-heading">
+        <h3>Company Balance List</h3>
+    </div>
+
+    <div class="panel-body">
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0">
@@ -36,7 +41,7 @@
                     <th id="lbl_company_balance">Company Balance</th>
                     <th id="lbl_new_company_balance">New Company Balance</th>
                     <th id="lbl_created_date">Created Date</th>
-                    <th id="lbl_created_by">Created By</th>
+                    <th id="lbl_create_by">Create By</th>
                 </tr>
                 </thead>
                 <tbody>
