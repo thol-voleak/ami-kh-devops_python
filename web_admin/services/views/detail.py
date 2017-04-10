@@ -47,7 +47,8 @@ class ServiceDetailForm(TemplateView):
         if response_json['status']['code'] == "success":
             data = response_json.get('data')
             context = {'service_info': data,
-                       'add_service_msg': self.request.session.pop('add_service_msg', None)}
+                       'add_service_msg': self.request.session.pop('add_service_msg', None),
+                       'update_service_msg': self.request.session.pop('update_service_msg', None)}
             logger.info('========== Finished getting service detail ==========')
             return context
         else:
