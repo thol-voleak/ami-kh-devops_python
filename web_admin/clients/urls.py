@@ -27,6 +27,6 @@ urlpatterns = [
         name="suspend-client"),
     url(r'^activate/(?P<client_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='login'),
         name="activate-client"),
-    url(r'^scope/(?P<client_id>[0-9A-Za-z]+)/$', login_required(ScopeList.as_view(), login_url='login'),
+    url(r'^scopes/(?P<client_id>[0-9A-Za-z]+)/$', login_required(ScopeList.as_view(), login_url='login'),
         name="scope-client"),
 ]
