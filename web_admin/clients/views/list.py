@@ -33,7 +33,7 @@ class ListView(TemplateView):
         json_data = auth_request.json()
         data = json_data.get('data')
         if auth_request.status_code == 200:
-            logger.info('Total count of Agent Types is {}'.format(len(data)))
+            logger.info('Total count of client list is {}'.format(len(data)))
             refined_data = _refine_data(data)
             return refined_data
 
