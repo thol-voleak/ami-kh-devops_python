@@ -1,7 +1,7 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import redirect
 
 import requests
 import time
@@ -41,16 +41,13 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         json_data = response.json()
         if response.status_code == 200:
             if json_data["status"]["code"] == "success":
-                currencies = self.get_currencies_list()
-                agent_balance_list = self._get_agent_balances(self.company_agent_id)
                 messages.add_message(
                     request,
                     messages.SUCCESS,
                     'Added company balance with {} currency successfully'.format(currency)
                 )
                 logger.info('========== Finished create company balance ==========')
-                return render(request, self.template_name,
-                              {'currencies': currencies, 'agent_balance_list': agent_balance_list})
+                return redirect('balances:initial_company_balance')
         else:
             if json_data["status"]["code"] == "access_token_expire":
                 raise InvalidAccessToken(json_data["status"]["message"])
