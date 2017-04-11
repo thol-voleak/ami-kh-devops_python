@@ -29,9 +29,10 @@ class DetailView(TemplateView, GetChoicesMixin):
         return context
 
     def _get_client_scopes(self, client_id):
+        import ipdb;ipdb.set_trace()
         logger.info("Getting client scopes by user: {}".format(self.request.user.username))
         url = settings.CLIENT_SCOPES.format(client_id)
-        response = requests.get(url, headers=self._get_headers(), verify=False)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         logger.info("Get client scopes url: {}".format(url))
         logger.info("Received data with response status: {}".format(response.status_code))
 
