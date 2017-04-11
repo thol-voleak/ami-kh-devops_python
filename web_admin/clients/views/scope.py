@@ -40,9 +40,10 @@ class ScopeList(TemplateView, GetChoicesMixin):
         logger.info("Received data with response status: {}".format(response.status_code))
 
         if response.status_code == 200:
-            logger.info("Client scopes was fetched.")
             response_json = response.json()
-            return response_json.get('data').get('apis', [])
+            apis = response_json.get('data').get('apis', [])
+            logger.info('Total count of all scopes is {}'.format(len(apis)))
+            return apis
         return []
 
     def _get_client_scopes(self, client_id):
@@ -52,19 +53,20 @@ class ScopeList(TemplateView, GetChoicesMixin):
         logger.info("Received data with response status: {}".format(response.status_code))
 
         if response.status_code == 200:
-            logger.info("Client scopes was fetched.")
             response_json = response.json()
-            return response_json.get('data').get('scopes', [])
+            client_scopes = response_json.get('data').get('scopes', [])
+            logger.info('Total count of  scopes is {}'.format(len(client_scopes)))
+            return client_scopes
         return []
 
-    def update_granted_scopes_for_all_scopes(self, all_scope, client_scope ):
-        client_scope_id = [x['id'] for x in client_scope]
-        for x in all_scope:
-            if x['id'] in client_scope_id:
+    def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes ):
+        client_scopes_id = [x['id'] for x in client_scopes]
+        for x in all_scopes:
+            if x['id'] in client_scopes_id:
                 x['is_granted'] = True
             else:
                 x['is_granted'] = False
-        return all_scope
+        return all_scopes
 
 
 
