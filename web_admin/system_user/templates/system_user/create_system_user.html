@@ -82,14 +82,34 @@
 
 {% block body_js %}
 <script>
+    // Password Validation Rule
+    // at least 1 lowercase letter
+    // at least 1 upper case letter
+    // at least 1 number
+    // at least 1 special character ( !@#$%^&*()_+ )
+    // at least 8 character length
+    // pattern = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}";
+
     var password = document.getElementById("password_input");
     var confirm_password = document.getElementById("txt_reenter_initial_password");
 
     function validatePassword() {
+        var re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}$");
+        if (!re.test(password)) {
+            password.setCustomValidity("Password should contains at least lowercase, uppercase letter, number, special character and 8 characters in length");
+        } else {
+            password.setCustomValidity('');
+        }
+
         if(password.value != confirm_password.value) {
-            confirm_password.setCustomValidity("Passwords Don't Match");
+            confirm_password.setCustomValidity("Password and Re-enter Password don't match");
+
+        } else if(password.value.length < 8) {
+            password.setCustomValidity("Password must be at least 8 characters in length");
+
         } else {
             confirm_password.setCustomValidity('');
+            password.setCustomValidity('');
         }
     }
 
