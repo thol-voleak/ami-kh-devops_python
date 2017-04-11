@@ -126,8 +126,18 @@
                                 onClick="activate('{{ client.client_id }}')">
                                 <span class="small">Activate</span>
                                 </button>
-
                                 {% endif %}
+
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary {{ client.is_deleted|yesno:"
+                                   hidden,no-hidden" }}"
+                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                role="button"
+                                id="btn_scope_{{ client.client_id }}" class="text-info"
+                                href="{% url 'clients:scope-client' client.client_id %}" role="button"
+                                id="client-btn-scope-{{ client.client_id }}" class="text-info">
+                                <span class="small">Scope</span>
+                                </a>
                             </div>
                         </div>
                     </td>

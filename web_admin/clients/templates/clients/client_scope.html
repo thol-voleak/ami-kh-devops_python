@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Clients > Client Scope</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+
+                    <div class="pull-right">
+                        <a href="{% url 'clients:client-list' %}">
+                            <input id="btn_back" class="btn btn-success text-left mb15" type="button"
+                                   value="Back"/>
+                        </a>
+                        <a href="{% url 'clients:update-client' %}">
+                            <input id="btn_save" class="btn btn-success text-left mb15" type="submit"
+                                   value="Save"/>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-10">
+                        <div class="table-responsive">
+                            <h4>Scopes</h4>
+                            <table class="table table-bordered table-striped mb0">
+                                <thead>
+                                <tr>
+                                    <th id="cbx_granted">Granted</th>
+                                    <th id="lbl_id">ID</th>
+                                    <th id="lbl_name">Name</th>
+                                    <th id="lbl_path">Path</th>
+                                    <th id="lbl_method">Http Method</th>
+                                    <th id="lbl_pattern">Pattern</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for object in all_scopes %}
+                                <tr>
+                                    <td class="col-sm-2"><input type="checkbox" name="scope-cbx-{{ object.id }}"
+                                                                id="scope-cbx-{{ object.id }}" value="{{ object.id }}"
+                                                                {{ object.is_granted|yesno:" checked, "}}>
+                                    </td>
+                                    <td class="col-sm-2">{{ object.id }}</td>
+                                    <td class="col-sm-2">{{ object.name }}</td>
+                                    <td class="col-sm-1">{{ object.path }}</td>
+                                    <td class="col-sm-1">{{ object.http_method }}</td>
+                                    <td class="col-sm-1">{{ object.pattern }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
