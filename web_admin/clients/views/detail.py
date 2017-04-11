@@ -22,6 +22,9 @@ class DetailView(TemplateView, GetChoicesMixin):
 
         logger.info('========== Start getting client scopes ==========')
         client_scopes, success_scope = self._get_client_scopes(client_id)
+        logger.info('Total count of Scope is: {}'.format(
+            len(client_scopes.get('scopes', [])))
+        )
         logger.info('========== Finished getting client scopes ==========')
 
         context['client_info'] = client_info
