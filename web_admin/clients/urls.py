@@ -7,6 +7,7 @@ from .views.update import ClientUpdate, ClientUpdateForm
 from .api import ClientApi
 from .views.suspend import suspend
 from .views.activate import activate
+from .views.scope import ScopeList
 
 app_name = 'clients'
 
@@ -26,4 +27,6 @@ urlpatterns = [
         name="suspend-client"),
     url(r'^activate/(?P<client_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='login'),
         name="activate-client"),
+    url(r'^scope/(?P<client_id>[0-9A-Za-z]+)/$', login_required(ScopeList.as_view(), login_url='login'),
+        name="scope-client"),
 ]
