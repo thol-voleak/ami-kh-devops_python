@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from django.conf import settings
 from .models import Authentications
 from .apps import InvalidAccessToken
-
 import time
 import random
 import string
