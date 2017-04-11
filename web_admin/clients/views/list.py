@@ -1,4 +1,3 @@
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.base import TemplateView
 from django.conf import settings
 
@@ -34,19 +33,9 @@ class ListView(TemplateView):
         json_data = auth_request.json()
         data = json_data.get('data')
         if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                refined_data = _refine_data(data)
-                logger.info('Total count of Agent Types is {}'.format(len(data)))
-                paginator = Paginator(refined_data, 15)
-                page = self.request.GET.get('page')
-                try:
-                    contacts = paginator.page(page)
-                except PageNotAnInteger:
-                    contacts = paginator.page(1)
-                except EmptyPage:
-                    contacts = paginator.page(paginator.num_pages)
-
-                return contacts
+            logger.info('Total count of Agent Types is {}'.format(len(data)))
+            refined_data = _refine_data(data)
+            return refined_data
 
         if json_data["status"]["code"] == "access_token_expire":
             logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
