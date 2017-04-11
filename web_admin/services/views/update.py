@@ -123,10 +123,20 @@ class UpdateView(TemplateView):
         if response.status_code == 200:
             json_data = response.json()
             value = json_data.get('data', {}).get('value', '')
-            currency_list = map(lambda x: x.split('|'), value.split(','))
+            currency_list = self._get_currency_list(value)
             dict[procnum] = currency_list, True
         else:
             dict[procnum] = None, False
+
+    def _get_currency_list(self, value):
+        result = []
+        list = value.split(',')
+        for item in list:
+            currency = item.split('|')
+            result.append(currency)
+
+        return result
+
 
     def _get_service_group_choices(self, procnum, dict):
         logger.info('Start getting service groups from backend')
@@ -138,7 +148,7 @@ class UpdateView(TemplateView):
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
+        # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
         logger.info('Finish getting service groups from backend')
 
         if response.status_code == 200:
@@ -156,7 +166,7 @@ class UpdateView(TemplateView):
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
+        # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
         logger.info('Finish getting service detail from backend')
 
         if response.status_code == 200:
