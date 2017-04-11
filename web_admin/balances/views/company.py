@@ -2,8 +2,9 @@ import logging
 
 import requests
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 
 from web_admin.mixins import GetChoicesMixin
@@ -29,7 +30,25 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             data = self._get_new_company_balance(data)
 
         return render(request, self.template_name,
-                      {'objects': data, 'currency_list': currency_list})
+                      {'objects': list(data), 'currency_list': currency_list})
+
+    def post(self, request, *args, **kwargs):
+        amount = request.POST.get('adding_balance')
+        currency = request.POST.get('currency')
+
+        data = {'amount': amount}
+
+        logger.info('========== Start adding company balance ==========')
+        success = self._add_company_balance(currency, data)
+        logger.info('========== Finished adding company balance ==========')
+
+        if success:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Added balance successfully'
+            )
+            return redirect(request.META['HTTP_REFERER'])
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
@@ -57,6 +76,22 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         else:
             logger.info("Response content is {}".format(response.content))
             return [], False
+
+    def _add_company_balance(self, currency, data):
+        logger.info("Adding company balance by user {}".format(self.request.user.username))
+        url = settings.COMPANY_BALANCE_ADD + currency
+        logger.info("Request url: {}".format(url))
+
+        logger.info("Request body: {}".format(data))
+        response = requests.post(url, headers=self._get_headers(), json=data, verify=False)
+
+        logger.info("Response content: {}".format(response.content))
+        if response.status_code == 200:
+            return True
+        else:
+            logger.info("Received response with status {}".format(
+                response.status_code))
+            return False
 
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')
