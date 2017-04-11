@@ -22,7 +22,7 @@ class ServiceDetailForm(TemplateView):
             return self._get_service_detail(service_id)
 
         except:
-            context = {'service_info': {}}
+            context['service_info'] = {}
             return context
 
     def _get_service_detail(self, service_id):
