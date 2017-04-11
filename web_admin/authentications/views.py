@@ -24,7 +24,6 @@ def logout_user(request):
         raise InvalidAccessToken("{}".format(e))
 
     headers = get_auth_header(request.user)
-
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)
     end_time = time.time()
