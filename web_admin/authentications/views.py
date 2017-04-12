@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from .models import Authentications
 from .apps import InvalidAccessToken
+from django.http import HttpResponseRedirect
 import time
 import random
 import string
@@ -17,10 +18,19 @@ def logout_user(request):
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 
-    headers = get_auth_header(request.user)
+    headers = None
+    try:
+        headers = get_auth_header(request.user)
+    except Exception as e:
+        logger.info("Exception: {}".format(e))
+        logout(request)
+        logger.info('========== Finished to logout ==========')
+        return redirect('login')
+
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)
     end_time = time.time()
+
     logger.info("username {} got logout response Code: {}".format(username, response.status_code))
     logger.info("username {} got logout response: {}".format(username, response.content))
     logger.info("username {} got logout response time: {} sec.".format(username, end_time - start_time))

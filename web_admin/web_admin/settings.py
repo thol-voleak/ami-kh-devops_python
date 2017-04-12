@@ -134,7 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'web-index'
+LOGIN_REDIRECT_URL = 'web:web-index'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
