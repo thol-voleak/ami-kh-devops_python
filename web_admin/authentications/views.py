@@ -12,6 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def logout_user(request):
+    logger.info('========== Start to logout ==========')
     url = settings.LOGOUT_URL
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
@@ -36,10 +37,13 @@ def logout_user(request):
                     auth.delete()
             logout(request)
             logger.info("username {} was logged out".format(username, request.user))
+            logger.info('========== Finished to logout ==========')
             return redirect('/admin-portal/')
         else:
+            logger.info('========== Finished to logout ==========')
             pass
     else:
+        logger.info('========== Finished to logout ==========')
         code = response_json.get('status', {}).get('code', '')
         if (code is not None) and (code == 'access_token_expire'):
             raise InvalidAccessToken()
