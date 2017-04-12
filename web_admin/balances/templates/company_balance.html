@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Total Initial Balance:</label>
                 <div class="col-sm-4">
-                    <input value="{% firstof total_balance.balance|floatformat:"-2" "0" %}" type="number" class="form-control" name="total_initital_balance" id="txt_total_initital_balance" disabled />
+                    <input value="{% firstof total_balance.balance|floatformat:decimal "0" %}" type="number" class="form-control" name="total_initital_balance" id="txt_total_initital_balance" disabled />
                 </div>
                 <label class="col-sm-2 control-label">Company Balance:</label>
                 <div class="col-sm-4">
