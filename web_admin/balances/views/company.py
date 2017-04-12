@@ -51,7 +51,14 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
                 messages.SUCCESS,
                 'Added balance successfully'
             )
-            return redirect(request.META['HTTP_REFERER'])
+        else:
+            messages.add_message(
+                request,
+                messages.error,
+                'Something wrong happened'
+            )
+
+        return redirect(request.META['HTTP_REFERER'])
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
