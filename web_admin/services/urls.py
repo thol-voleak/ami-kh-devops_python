@@ -11,7 +11,7 @@ app_name = "services"
 
 urlpatterns = [
     url(r'^$', login_required(ListView.as_view(), login_url='login'), name="services_list"),
-    url(r'^(?P<ServiceId>[0-9A-Za-z]+)/details/$', login_required(ServiceDetailForm.as_view(), login_url='login'),
+    url(r'^/details/(?P<ServiceId>[0-9A-Za-z]+)/$', login_required(ServiceDetailForm.as_view(), login_url='login'),
         name="service_detail"),
     url(r'^add/$', login_required(CreateView.as_view(), login_url='login'), name="service_create"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/update/$', login_required(UpdateView.as_view(), login_url='login'),
