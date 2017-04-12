@@ -13,20 +13,17 @@
                 <form class="form-horizontal" role="form" method="post" action="">
                     {% csrf_token %}
 
-                    <div class="pull-right">
-                        <a href="{% url 'clients:client-list' %}">
-                            <input id="btn_back" class="btn btn-success text-left mb15" type="button"
-                                   value="Back"/>
-                        </a>
-
-                        <input id="btn_save" class="btn btn-success text-left mb15" type="button"
-                                   value="Save"/>
-
-                    </div>
 
                     <div class="col-lg-10">
                         <div class="table-responsive">
-                            <h4>Scopes</h4>
+                            <div class="pull-right">
+                                <a href="{% url 'clients:client-list' %}">
+                                    <input id="btn_back" class="btn btn-success text-left mb15" type="button"
+                                           value="Back"/>
+                                </a>
+                                <input id="btn_save" class="btn btn-success text-left mb15" type="button"
+                                       value="Save"/>
+                            </div>
                             <table class="table table-bordered table-striped mb0">
                                 <thead>
                                 <tr>
