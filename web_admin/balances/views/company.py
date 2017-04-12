@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class CompanyBalanceView(TemplateView, GetChoicesMixin):
     template_name = "company_balance.html"
+    company_agent_id = 1
 
     def get(self, request, *args, **kwargs):
         currency_list, success_currency = self._get_currency_choices()
@@ -66,9 +67,9 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_total_initial_company_balance(self, currency):
-        logger.info("Getting total initial balance by user and currency: {}".format(self.request.user.username), currency)
-
-        url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(agent_id=self.request.user.id, currency=currency)
+        logger.info("Getting total initial balance by user and currency: {}".format(self.request.user.username),
+                    currency)
+        url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(agent_id=self.company_agent_id, currency=currency)
         logger.info("Request url: {}".format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -90,6 +91,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         def calculate_balance_after_change(x):
             x['balance_after_change'] = x['balance_before_change'] + x['changed_amount']
             return x
+
         return map(calculate_balance_after_change, data)
 
     def _get_company_balance_history(self, currency):
