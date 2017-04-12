@@ -133,9 +133,8 @@
                                    hidden,no-hidden" }}"
                                 {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                                 role="button"
-                                id="btn_scope_{{ client.client_id }}" class="text-info"
-                                href="{% url 'clients:scope-client' client.client_id %}" role="button"
-                                id="btn_scopes" class="text-info">
+                                id="btn_scopes" class="text-info"
+                                href="{% url 'clients:scope-client' client.client_id %}" role="button">
                                 <span class="small">Scope</span>
                                 </a>
                             </div>

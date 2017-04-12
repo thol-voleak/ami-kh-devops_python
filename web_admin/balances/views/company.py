@@ -20,6 +20,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         currency_list, success_currency = self._get_currency_choices()
         currency_list = list(currency_list)
         currency = request.GET.get('currency', currency_list[0][0])
+        decimal = currency_list[0][1]
 
         logger.info('========== Start get Company Balance List ==========')
         data, success_balance = self._get_company_balance_history(currency)
@@ -34,7 +35,10 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         logger.info('========== Finished get Total Initial Company Balance ==========')
 
         return render(request, self.template_name,
-                      {'objects': list(data), 'currency_list': currency_list, 'total_balance': totalData})
+                      {'objects': list(data),
+                       'currency_list': currency_list,
+                       'decimal': decimal,
+                       'total_balance': totalData})
 
     def post(self, request, *args, **kwargs):
         amount = request.POST.get('adding_balance')
