@@ -16,13 +16,6 @@ def logout_user(request):
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 
-    try:
-        auth = Authentications.objects.get(user=request.user)
-        access_token = auth.access_token
-        logger.info("logout access_token: {}".format(access_token))
-    except Exception as e:
-        raise InvalidAccessToken("{}".format(e))
-
     headers = get_auth_header(request.user)
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)

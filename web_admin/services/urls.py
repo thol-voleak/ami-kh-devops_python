@@ -15,5 +15,5 @@ urlpatterns = [
         name="service_detail"),
     url(r'^add/$', login_required(CreateView.as_view(), login_url='login'), name="service_create"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/update/$', login_required(UpdateView.as_view(), login_url='login'),
-        name="update-service"),
+        name="update_service"),
 ]

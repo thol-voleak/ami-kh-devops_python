@@ -3,6 +3,7 @@ from django.conf import settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
+from django.contrib import messages
 
 import requests
 import logging
@@ -78,7 +79,11 @@ class UpdateView(TemplateView):
         data, success = self._update_service(service_id, data)
         logger.info('========== Finish updating service ==========')
         if success:
-            request.session['update_service_msg'] = 'Updated data successfully'
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Updated data successfully'
+            )
             return redirect('services:service_detail', ServiceId=(service_id))
         else:
             return None

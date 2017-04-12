@@ -14,14 +14,6 @@
         </div>
     </div>
     {% endif %}
-    {% if update_service_msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-service">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ update_service_msg }}</strong>
-        </div>
-    </div>
-    {% endif %}
     {% for msg in messages %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="msg-update-client">
@@ -73,7 +65,7 @@
                         <a href="{% url 'services:services_list' %}">
                             <input id="btn_service_back" class="btn btn-success" type="button" value="Back"/>
                         </a>
-                        <a href="{% url 'services:update-service' service_info.service_id %}">
+                        <a href="{% url 'services:update_service' service_info.service_id %}">
                             <input id="btn_service_edit" class="btn btn-success" type="button" value="Edit">
                         </a>
                     </div>
