@@ -30,10 +30,15 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             data = format_date_time(data)
             data = self._get_new_company_balance(data)
 
+        logger.info('========== Start get Total Initial Company Balance ==========')
+        totalData, success_total_balance = self._get_total_initial_company_balance(currency)
+        logger.info('========== Finished get Total Initial Company Balance ==========')
+
         return render(request, self.template_name,
                       {'objects': list(data),
                        'currency_list': currency_list,
-                       'decimal': decimal})
+                       'decimal': decimal,
+                       'total_balance': totalData})
 
     def post(self, request, *args, **kwargs):
         amount = request.POST.get('adding_balance')
@@ -59,6 +64,27 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             )
 
         return redirect(request.META['HTTP_REFERER'])
+
+    def _get_total_initial_company_balance(self, currency):
+        logger.info("Getting total initial balance by user and currency: {}".format(self.request.user.username), currency)
+
+        url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(agent_id=self.request.user.id, currency=currency)
+        logger.info("Request url: {}".format(url))
+
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        logger.info("Received response with status {} of user id {}".format(
+            response.status_code,
+            self.request.user.id,
+        ))
+
+        json_data = response.json()
+        if response.status_code == 200:
+            data = json_data.get('data')
+            logger.info("Total Initial Balance is {}".format(len(data)))
+            return data, True
+        else:
+            logger.info("Response content is {}".format(response.content))
+            return [], False
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
