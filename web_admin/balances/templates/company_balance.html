@@ -94,7 +94,8 @@ function changeValue() {
     var $amount = $('#txt_adding_balance');
     var $new_balance = $('#txt_new_company_balance');
     $amount.on('change', function() {
-        $new_balance.val(parseFloat($('#txt_company_balance').val()) + parseFloat($('#txt_adding_balance').val()));
+        var value = parseFloat($('#txt_company_balance').val()) + parseFloat($('#txt_adding_balance').val())
+        $new_balance.val(value.toFixed(2));
     });
 }
 $(document).ready(changeValue);
