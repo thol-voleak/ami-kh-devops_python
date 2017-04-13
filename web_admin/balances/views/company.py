@@ -21,7 +21,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         currency_list, success_currency = self._get_currency_choices()
         currency_list = list(currency_list)
         currency = request.GET.get('currency', currency_list[0][0])
-        decimal = currency_list[0][1]
+        decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
 
         logger.info('========== Start get Company Balance List ==========')
         data, success_balance = self._get_company_balance_history(currency)
