@@ -100,7 +100,7 @@ function changeValue() {
     $amount.on('input', function() {
 
         var value = parseFloat($('#txt_company_balance_hidden').val()) + parseFloat($('#txt_adding_balance').val())
-        $new_balance.val(value.toFixed({{ decimal }}));
+        $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     });
     $('#txt_adding_balance').keydown(function(event){
         var keyCode = (event.keyCode ? event.keyCode : event.which);
