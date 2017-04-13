@@ -104,6 +104,10 @@ function changeValue() {
             event.preventDefault();
         }
     });
+    $('#txt_adding_balance').on('change', function() {
+        var value = parseFloat($('#txt_adding_balance').val());
+        $('#txt_adding_balance').val(value.toFixed({{ decimal }}));
+    });
 }
 
 $(changeValue);
