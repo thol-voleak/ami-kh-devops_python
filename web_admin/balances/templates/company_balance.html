@@ -100,13 +100,18 @@ function changeValue() {
 }
 
 $(function(){
-    changeValue();
     $('#txt_adding_balance').keydown(function(event){
-    var keyCode = (event.keyCode ? event.keyCode : event.which);
-    if (keyCode == 13) {
-        event.preventDefault();
-    }
-});
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
+        if (keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
+    $('#txt_adding_balance').on('input', function() {
+        var value = parseFloat($('#txt_company_balance').val()) + parseFloat($(this).val() )
+        $('#txt_new_company_balance').val(value.toFixed(2));
+
+    });
 
 });
 
