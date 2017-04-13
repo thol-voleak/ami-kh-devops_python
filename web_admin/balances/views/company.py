@@ -67,8 +67,11 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_total_initial_company_balance(self, currency):
-        logger.info("Getting total initial balance by user and currency: {}".format(self.request.user.username),
-                    currency)
+        logger.info("Getting total initial balance by username: {}".format(self.request.user.username))
+        logger.info("Getting total initial balance by agent id: {} and currency: {}".format(
+            self.company_agent_id,
+            currency,
+        ))
         url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(agent_id=self.company_agent_id, currency=currency)
         logger.info("Request url: {}".format(url))
 
@@ -81,7 +84,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         json_data = response.json()
         if response.status_code == 200:
             data = json_data.get('data')
-            logger.info("Total Initial Balance is {}".format(len(data)))
+            logger.info("Total Initial Balance is {}".format(data['balance']))
+
             return data, True
         else:
             logger.info("Response content is {}".format(response.content))
