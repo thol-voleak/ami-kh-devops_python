@@ -52,7 +52,7 @@
                     <button id="btn_cancel" class="btn btn-success text-left mb15" type="reset">Cancel</button>
 
                     <!-- Mapping raw hidden value -->
-                    <input value="{{ objects.0.balance_after_change }}" type="hidden" id="txt_company_balance_hidden" />
+                    <input value="{{ objects.0.balance_after_change|default:0 }}" type="hidden" id="txt_company_balance_hidden" />
                 </div>
             </div>
         </form>
