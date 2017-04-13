@@ -98,7 +98,19 @@ function changeValue() {
         $new_balance.val(value.toFixed(2));
     });
 }
-$(document).ready(changeValue);
+
+$(function(){
+    changeValue();
+    $('#txt_adding_balance').keydown(function(event){
+    var keyCode = (event.keyCode ? event.keyCode : event.which);
+    if (keyCode == 13) {
+        event.preventDefault();
+    }
+});
+
+});
+
+
 </script>
 
 {% endblock %}
