@@ -7,6 +7,15 @@
         <h3>Clients > Scopes</h3>
     </div>
 
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-scope">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
@@ -21,7 +30,7 @@
                                     <input id="btn_back" class="btn btn-success text-left mb15" type="button"
                                            value="Back"/>
                                 </a>
-                                <input id="btn_save" class="btn btn-success text-left mb15" type="button"
+                                <input id="btn_save" class="btn btn-success text-left mb15" type="submit"
                                        value="Save"/>
                             </div>
                             <table class="table table-bordered table-striped mb0">
@@ -37,7 +46,7 @@
                                 <tbody>
                                 {% for object in all_scopes %}
                                 <tr>
-                                    <td class="col-sm-2"><input type="checkbox" name="scope-cbx-{{ object.id }}"
+                                    <td class="col-sm-2"><input type="checkbox" name="scope"
                                                                 id="scope-cbx-{{ object.id }}" value="{{ object.id }}"
                                                                 {{ object.is_granted|yesno:" checked, "}}>
                                     </td>
@@ -50,9 +59,7 @@
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
-
                 </form>
             </div>
         </div>
