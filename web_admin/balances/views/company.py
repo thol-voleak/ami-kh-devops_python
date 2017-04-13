@@ -81,7 +81,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         json_data = response.json()
         if response.status_code == 200:
             data = json_data.get('data')
-            logger.info("Total Initial Balance is {}".format(len(data)))
+            logger.info("Total Initial Balance is {}".format(data['balance']))
+
             return data, True
         else:
             logger.info("Response content is {}".format(response.content))
