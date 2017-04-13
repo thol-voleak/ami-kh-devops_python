@@ -47,7 +47,7 @@
                                 {% for object in all_scopes %}
                                 <tr>
                                     <td class="col-sm-2"><input type="checkbox" name="scope"
-                                                                id="scope-cbx-{{ object.id }}" value="{{ object.id }}"
+                                                                id="chb_scope" value="{{ object.id }}"
                                                                 {{ object.is_granted|yesno:" checked, "}}>
                                     </td>
                                     <td class="col-sm-2">{{ object.id }}</td>
