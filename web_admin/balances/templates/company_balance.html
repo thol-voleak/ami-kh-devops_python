@@ -103,9 +103,9 @@ function changeValue() {
     var $new_balance = $('#txt_new_company_balance');
     var $company_balance = $('#txt_company_balance_hidden');
     $amount.on('input', function() {
-
         var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
-        $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        value ? $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+        : $new_balance.val($company_balance.val());
     });
     $('#txt_adding_balance').keydown(function(event){
         var keyCode = (event.keyCode ? event.keyCode : event.which);
@@ -116,7 +116,7 @@ function changeValue() {
 
 
     var $input = $('#txt_adding_balance');
-    $input.on( "keyup", function( event ) {
+    $input.on( "change", function( event ) {
 
         var selection = window.getSelection().toString();
         if ( selection !== '' ) {
@@ -132,13 +132,12 @@ function changeValue() {
 
         var input = toNumber(input);
 
-        if (input.indexOf('.') === input.length - 1) return;
-        if (input.indexOf('-') === input.length - 1) return;
-
-        input = input ? parseFloat( input ) : 0;
+        input = input ? parseFloat(input) : 0;
+        input = input ? input : 0;
 
         $this.val( function() {
-            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }} });
+            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }},
+             minimumFractionDigits: {{ decimal}} });
         } );
 
     });
