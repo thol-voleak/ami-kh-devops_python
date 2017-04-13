@@ -67,6 +67,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_total_initial_company_balance(self, currency):
+        logger.info("Getting total initial balance by username: {}".format(self.request.user.username))
         logger.info("Getting total initial balance by agent id and currency: {}".format(currency))
         url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(agent_id=self.company_agent_id, currency=currency)
         logger.info("Request url: {}".format(url))
