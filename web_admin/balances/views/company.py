@@ -43,6 +43,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
     def post(self, request, *args, **kwargs):
         amount = request.POST.get('adding_balance')
+        if isinstance(amount, str):
+            amount = float(amount.replace(',', ''))
         currency = request.POST.get('currency')
 
         data = {'amount': amount}
