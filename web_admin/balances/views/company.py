@@ -18,13 +18,13 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
     company_agent_id = 1
 
     def get(self, request, *args, **kwargs):
+        logger.info('========== Start get Company Balance List ==========')
         currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
         currency_list, success_currency = self._get_currency_choices()
         currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
         currency = request.GET.get('currency', currency_list[0][0])
         decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
 
-        logger.info('========== Start get Company Balance List ==========')
         data, success_balance = self._get_company_balance_history(currency)
         logger.info('========== Finished get Company Balance List ==========')
 
@@ -140,17 +140,18 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
     def _get_currency_choices_by_agent(self,agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
-        logger.info('Get currency choice list by agent from backend')
+        logger.info('Getting currency list by agent')
+        logger.info("Username: {}".format(self.request.user.username))
         logger.info('Request url: {}'.format(url))
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        logger.info("Received response with status {}".format(response.status_code))
+
         if response.status_code == 200:
             json_data = response.json()
             data = json_data.get('data', {})
             currency_list = [x['currency'] for x in data]
+            logger.info("Total count of Currency List is {}".format(len(currency_list)))
             return currency_list, True
-        logger.info("Received response with status {}".format(response.status_code))
-        logger.info("Response content is {}".format(response.content))
         return None, False
-
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')
