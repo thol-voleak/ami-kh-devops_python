@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='services' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Fee Tier List</h3>
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal" role="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Service name:</label>
+                <div class="col-sm-4">
+                    <input value="{{ service_id }}" type="text" class="form-control" name="service_name" id="txt_service_name" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Command:</label>
+                <div class="col-sm-4">
+                    <input type="text" value="{{ command_id }}" class="form-control" name="command" id="txt_command" disabled/>
+                </div>
+            </div>
+            <div class="form-group pull-right">
+                <a href="{% url 'services:command_list' service_id %}">
+                    <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
+                </a>
+            </div>
+        </form>
+
+        <div class="table-responsive row">
+            <table class="table table-bordered table-striped mb0" id="tbl_fee_tier_list">
+                <thead>
+                <tr>
+                    <th id="lbl_name">Condition</th>
+                    <th id="lbl_group">Amount</th>
+                    <th id="lbl_currency">Fee Type</th>
+                    <th id="lbl_description">Fee Amount</th>
+                    <th id="lbl_created_date">Bonus Type</th>
+                    <th id="lbl_created_date">From</th>
+                    <th id="lbl_created_date">Bonus Amount</th>
+                    <th id="lbl_modified_date">Created Date</th>
+                    <th id="lbl_modified_date">Modified Date</th>
+                    <th id="lbl_created_by">Create By</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for fee_tier in data %}
+                <tr>
+                    <td class="col-sm-2">{{ fee_tier.fee_tier_condition|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.condition_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.fee_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.fee_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.bonus_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.amount_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.bonus_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.created_user_id|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
