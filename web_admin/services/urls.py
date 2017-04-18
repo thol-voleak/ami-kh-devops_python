@@ -5,6 +5,7 @@ from .views.create import CreateView
 from .views.services_list import ListView
 from .views.detail import ServiceDetailForm
 from .views.update import UpdateView
+from .views.command.list import ListCommandView
 
 
 app_name = "services"
@@ -16,4 +17,6 @@ urlpatterns = [
     url(r'^add/$', login_required(CreateView.as_view(), login_url='login'), name="service_create"),
     url(r'^update/(?P<service_id>[0-9A-Za-z]+)/$', login_required(UpdateView.as_view(), login_url='login'),
         name="update_service"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands$', login_required(ListCommandView.as_view(), login_url='login'),
+        name="command_list"),
 ]
