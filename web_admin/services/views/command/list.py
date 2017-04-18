@@ -25,7 +25,7 @@ class ListCommandView(TemplateView):
         return context
 
     def get_commands_list(self, service_id):
-        logger.info("Getting command list by {} user id".format(self.request.user.username))
+        logger.info("Getting command list by user {}".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
 
         url = settings.COMMAND_LIST_BY_SERVICE_URL.format(service_id)
@@ -43,7 +43,7 @@ class ListCommandView(TemplateView):
 
         if auth_request.status_code == 200:
             if data is not None:
-                logger.info('Service count: {}'.format(len(data)))
+                logger.info('Command count: {}'.format(len(data)))
                 return data, service_name
 
         if json_data["status"]["code"] == "access_token_expire":
