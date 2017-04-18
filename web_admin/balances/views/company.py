@@ -18,8 +18,9 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
     company_agent_id = 1
 
     def get(self, request, *args, **kwargs):
+        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
         currency_list, success_currency = self._get_currency_choices()
-        currency_list = list(currency_list)
+        currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
         currency = request.GET.get('currency', currency_list[0][0])
         decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
 
@@ -136,6 +137,20 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             logger.info("Received response with status {}".format(
                 response.status_code))
             return False
+
+    def _get_currency_choices_by_agent(self,agent_id):
+        url = settings.GET_AGET_BALANCE.format(agent_id)
+        logger.info('Get currency choice list by agent from backend')
+        logger.info('Request url: {}'.format(url))
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        if response.status_code == 200:
+            json_data = response.json()
+            data = json_data.get('data', {})
+            currency_list = [x['currency'] for x in data]
+            return currency_list, True
+        logger.info("Received response with status {}".format(response.status_code))
+        logger.info("Response content is {}".format(response.content))
+        return None, False
 
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')
