@@ -5,6 +5,15 @@
     <div class="panel-heading border">
         <h3>Edit Service</h3>
     </div>
+
+    {% for message in messages %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+    {% endfor %}
     
     <div class="panel-body">
         <div class="row no-margin">

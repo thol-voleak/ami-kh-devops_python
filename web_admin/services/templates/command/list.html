@@ -15,55 +15,77 @@
     </div>
 
     <div class="panel-body">
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Service Name:</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="service_name" value="{{ service_name }}" id="txt_service_name" disabled/>
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post"
+                      action="{% url 'services:command_list' service_id %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Service Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" name="service_name" value="{{ service_name }}" id="txt_service_name" disabled/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Command:</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="ddl_command" name="command_id" required>
+                                {% for command in commands_dd_list %}
+                                    <option value="{{ command.command_id }}">{{ command.command_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped mb0">
+                                <thead>
+                                <tr>
+                                    <th id="lbl_command">Command</th>
+                                    <th id="lbl_created_date">Created date</th>
+                                    <th id="lbl_modified_date">Modified date</th>
+                                    <th id="lbl_created_by">Created by</th>
+                                    <th id="lbl_action">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for command in data %}
+                                    <tr>
+                                        <td class="col-sm-2">{{ command.command_id|default_if_none:'' }}</td>
+                                        <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
+                                        <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
+                                        <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
+                                        <td class="col-sm-2"><a type="button"
+                                                                class="btn btn-outline btn-xs btn-primary"
+                                                                role="button"
+                                                                id="tier-list-btn-{{ command.service_command_id }}" class="text-info"
+                                                                href="{% url 'services:fee_tier_list' service_id command.service_command_id %}" role="button"
+                                                                class="text-info">
+                                            <span class="small">Tiers</span>
+                                        </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="pull-right">
+                            <a href="{% url 'services:services_list' %}">
+                                <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
+                            </a>
+                            <a href="#">
+                                <input id="btn_add" class="btn btn-success" type="submit" value="Add">
+                            </a>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
-                <thead>
-                <tr>
-                    <th id="lbl_command">Command</th>
-                    <th id="lbl_created_date">Created date</th>
-                    <th id="lbl_modified_date">Modified date</th>
-                    <th id="lbl_created_by">Created by</th>
-                    <th id="lbl_action">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for command in data %}
-                <tr>
-                    <td class="col-sm-2">{{ command.command_name|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
-                    <td class="col-sm-2"><a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
-                        role="button"
-                        id="tier-list-btn-{{ command.service_command_id }}" class="text-info"
-                        href="{% url 'services:fee_tier_list' service_id command.service_command_id %}" role="button"
-                        class="text-info">
-                        <span class="small">Tiers</span>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="panel-body">
-        <div class="pull-right">
-            <a href="{% url 'services:services_list' %}">
-                <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
-            </a>
-            <a href="#">
-                <input id="btn_add" class="btn btn-success" type="button" value="Add">
-            </a>
         </div>
     </div>
 </div>

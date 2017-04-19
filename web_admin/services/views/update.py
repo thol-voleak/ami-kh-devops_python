@@ -85,8 +85,6 @@ class UpdateView(TemplateView):
                 'Updated data successfully'
             )
             return redirect('services:service_detail', ServiceId=(service_id))
-        else:
-            return None
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
