@@ -20,7 +20,7 @@ urlpatterns = [
         name="update_service"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/$', login_required(ListCommandView.as_view(), login_url='login'),
         name="command_list"),
-    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/tiers/$',
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<service_command_id>[0-9A-Za-z]+)/tiers/$',
         login_required(FeeTierListView.as_view(), login_url='login'),
         name="fee_tier_list"),
 ]
