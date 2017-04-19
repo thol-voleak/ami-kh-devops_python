@@ -18,13 +18,16 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
     company_agent_id = 1
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start get Company Balance List ==========')
+        logger.info('========== Start get Currency List ==========')
         currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
         currency_list, success_currency = self._get_currency_choices()
+        logger.info('========== Finished get Currency List ==========')
+
         currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
         currency = request.GET.get('currency', currency_list[0][0])
         decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
 
+        logger.info('========== Start get Company Balance List ==========')
         data, success_balance = self._get_company_balance_history(currency)
         logger.info('========== Finished get Company Balance List ==========')
 
