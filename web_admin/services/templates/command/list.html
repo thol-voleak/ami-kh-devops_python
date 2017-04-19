@@ -31,6 +31,7 @@
                     <th id="lbl_created_date">Created date</th>
                     <th id="lbl_modified_date">Modified date</th>
                     <th id="lbl_created_by">Created by</th>
+                    <th id="lbl_action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,7 @@
                     <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-2"><u><a href="{% url 'services:fee_tier_list' service_id command.command_id %}">Tier</a></u></td>
                 </tr>
                 {% endfor %}
                 </tbody>
