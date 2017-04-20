@@ -59,9 +59,9 @@
                                         <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
                                         <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
                                         <td class="col-sm-2"><a type="button"
-                                                       class="btn btn-outline btn-xs btn-primary"
+                                            class="btn btn-outline btn-xs btn-primary"
                                             role="button"
-                                            id="tier-list-btn-{{ command.service_command_id }}" class="text-info"
+                                            id="btn_tier" class="text-info"
                                             href="{% url 'services:fee_tier_list' service_id command.command_id command.service_command_id %}" role="button"
                                             class="text-info">
                                             <span class="small">Tiers</span>
