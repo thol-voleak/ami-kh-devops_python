@@ -28,7 +28,7 @@ class ListCommandView(TemplateView):
         }
 
         data, success = self._add_service_command(data)
-        logger.info('========== Finish updating service command ==========')
+        logger.info('========== Finish adding service command ==========')
         if success:
             messages.add_message(
                 request,
@@ -45,15 +45,15 @@ class ListCommandView(TemplateView):
         return self._headers
 
     def _add_service_command(self, data):
-        logger.info("Updating service by user {}".format(self.request.user.username))
+        logger.info("Updating service command by user {}".format(self.request.user.username))
 
         url = settings.SERVICE_COMMAND_ADD_URL
 
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-        logger.info('Username {} sends request body: {}'.format(self.request.user.username, data))
+        logger.info('Updating service command request url: {}'.format(self.request.user.username, url))
+        logger.info('Updating service command request body: {}'.format(self.request.user.username, data))
         response = requests.post(url, headers=self._get_headers(), json=data, verify=settings.CERT)
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
+        logger.info("Updating service command response code {}".format(self.request.user.username, response.status_code))
+        logger.info("Updating service command response content {}".format(self.request.user.username, response.content))
 
         if response.status_code == 200:
             json_data = response.json()
