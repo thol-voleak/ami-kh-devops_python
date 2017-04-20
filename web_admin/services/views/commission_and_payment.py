@@ -4,9 +4,9 @@ import requests
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import format_date_time
@@ -37,10 +37,13 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         choices = self._get_choices()
 
-        context['data'] = data
+        context['data'] = self._filter_deleted_items(data)
+        context['bonus'] = self._filter_deleted_items(bonus)
         context['choices'] = choices
-        context['bonus'] = bonus
         return context
+
+    def _filter_deleted_items(self, data):
+        return filter(lambda x: not x['is_deleted'], data)
 
     def _get_choices(self):
         url_list = [settings.ACTION_TYPES_URL, settings.AMOUNT_TYPES_URL,
@@ -95,7 +98,7 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         return [], False
 
 
-class PaymentAndFeeStructureView(TemplateView, GetHeaderMixin):
+class PaymentAndFeeStructureView(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         service_id = kwargs.get('service_id')
@@ -179,3 +182,33 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
                         command_id=command_id,
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
+
+
+class PaymentAndFeeStructureDetailView(View, GetHeaderMixin):
+
+    def delete(self, request, *args, **kwargs):
+        balance_distribution_id = kwargs.get('balance_distribution_id')
+
+        success = self._delete_balance_distribution(balance_distribution_id)
+
+        if success:
+            return HttpResponse(status=204)
+        return HttpResponseBadRequest()
+
+    def _delete_balance_distribution(self, balance_distribution_id):
+        url = settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(
+            balance_distribution_id=balance_distribution_id
+        )
+        logger.info("Delete balance distribution by user: {} with url: {}".format(
+            self.request.user.username,
+            url,
+        ))
+        response = requests.delete(url, headers=self._get_headers(),
+                                   verify=settings.CERT)
+        logger.info("Response status: {}, reponse content: {}".format(
+            response.status_code,
+            response.content,
+        ))
+        if response.status_code == 200:
+            return True
+        return False

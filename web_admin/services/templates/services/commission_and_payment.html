@@ -14,14 +14,16 @@
         <h3>Commission And Payment Method</h3>
     </div>
 
-    {% for message in messages %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-add-service">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message|capfirst }}</strong>
+    <div id="ajax-messages">
+        {% for message in messages %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     <div class="panel-body">
         <div class="form-horizontal">
@@ -77,8 +79,7 @@
             <h4>II. Setting Payment & Fee Structure</h4>
         </div>
 
-        <form method="POST" class="form-horizontal" role="form"
-              action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}">
+        <form method="POST" class="form-horizontal" role="form" action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}" id="payment_and_fee_stucture_form">
 
             {% csrf_token %}
             <div class="form-group table-responsive row">
@@ -97,7 +98,7 @@
                     </thead>
                     <tbody>
                     {% for d in data %}
-                    <tr>
+                    <tr id="balance-distribution-{{ d.balance_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -106,20 +107,19 @@
                         <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
                         <td class="col-sm-1">
-                            <a type="button" class="btn btn-outline btn-xs btn-primary"
-                               role="button"
-                               id="btn_setting_payment_fee_structure_edit" class="text-info"
-                               href="#" role="button"
-                               class="text-info">
-                                <span class="small">Edit</span>
-                            </a>
-                            <a type="button" class="btn btn-outline btn-xs btn-primary"
-                               role="button"
-                               id="btn_setting_payment_fee_structure_delete" class="text-info"
-                               href="#" role="button"
-                               class="text-info">
-                                <span class="small">Delete</span>
-                            </a>
+                            <span type="button" class="btn btn-outline btn-xs btn-primary"
+                            id="btn_setting_payment_fee_structure_edit" class="text-info"
+                            role="button"
+                            class="text-info">
+                            <span class="small">Edit</span>
+                            </span>
+                            <span type="button" class="btn btn-outline btn-xs btn-primary"
+                            id="btn_setting_payment_fee_structure_delete" class="text-info"
+                            role="button"
+                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')"
+                            class="text-info">
+                            <span class="small">Delete</span>
+                            </span>
                         </td>
                     </tr>
                     {% endfor %}
@@ -158,16 +158,13 @@
                 </table>
             </div>
 
+
             <div class="form-group pull-right">
                 <a href="#">
                     <input id="btn_setting_payment_fee_strucure_add" class="btn btn-success" type="submit" value="Add"/>
                 </a>
             </div>
         </form>
-
-
-        <br/>
-        <br/>
 
         <div class="panel-heading">
             <h4>III. Setting Bonus</h4>
@@ -268,5 +265,35 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+function deleteDistribution(distributionId) {
+    var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
+    $.ajax({
+        url: url,
+        type: "DELETE",
+        dataType: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        },
+        success: function () {
+            $('#balance-distribution-' + distributionId).remove();
+            addMessage("Delete successfully!");
+        },
+        error: function() {
+            addMessage("Delete failed!");
+        }
+    });
+}
+
+function addMessage(message) {
+    $("#ajax-messages").empty().append(
+    '<div class="col-xs-12">' +
+        '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+            '<strong>' + message + '</strong>' +
+        '</div>' +
+    '</div>')
+}
+</script>
 
 {% endblock %}
