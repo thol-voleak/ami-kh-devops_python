@@ -47,7 +47,7 @@
                 <tbody>
                 {% for services in data %}
                 <tr>
-                    <td class="col-sm-2">{{ services.service_id|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ services.service_name|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.service_group_id|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.currency|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.description|default_if_none:'' }}</td>

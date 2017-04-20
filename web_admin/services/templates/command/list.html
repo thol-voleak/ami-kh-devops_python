@@ -54,7 +54,7 @@
                                 <tbody>
                                 {% for command in data %}
                                     <tr>
-                                        <td class="col-sm-2">{{ command.command_name|default_if_none:'' }}</td>
+                                        <td class="col-sm-2">{{ command.command_id|default_if_none:'' }}</td>
                                         <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
                                         <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
                                         <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
