@@ -45,15 +45,15 @@ class ListCommandView(TemplateView):
         return self._headers
 
     def _add_service_command(self, data):
-        logger.info("Updating service command by user {}".format(self.request.user.username))
+        logger.info("Adding service command by user {}".format(self.request.user.username))
 
         url = settings.SERVICE_COMMAND_ADD_URL
 
-        logger.info('Updating service command request url: {}'.format(url))
-        logger.info('Updating service command request body: {}'.format(data))
+        logger.info('Adding service command request url: {}'.format(url))
+        logger.info('Adding service command request body: {}'.format(data))
         response = requests.post(url, headers=self._get_headers(), json=data, verify=settings.CERT)
-        logger.info("Updating service command response code {}".format(response.status_code))
-        logger.info("Updating service command response content {}".format(response.content))
+        logger.info("Adding service command response code {}".format(response.status_code))
+        logger.info("Adding service command response content {}".format(response.content))
 
         if response.status_code == 200:
             json_data = response.json()
