@@ -1,14 +1,14 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from .views.create import CreateView
-from .views.services_list import ListView
-from .views.detail import ServiceDetailForm
-from .views.update import UpdateView
 from .views.command.list import ListCommandView
-from .views.fee_tier import FeeTierListView
 from .views.command.tier.add import AddView
-
+from .views.commission_and_payment import CommissionAndPaymentView
+from .views.create import CreateView
+from .views.detail import ServiceDetailForm
+from .views.fee_tier import FeeTierListView
+from .views.services_list import ListView
+from .views.update import UpdateView
 
 app_name = "services"
 
@@ -27,4 +27,7 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/add/$',
         login_required(AddView.as_view(), login_url='login'),
         name="add_tier"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/$',
+        login_required(CommissionAndPaymentView.as_view(), login_url='login'),
+        name="commission_and_payment"),
 ]

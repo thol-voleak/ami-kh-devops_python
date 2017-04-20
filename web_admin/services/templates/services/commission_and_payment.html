@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='services' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Commission And Payment Method</h3>
+    </div>
+
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Service name:</label>
+                <div class="col-sm-4">
+                    <input value="{{ service_id }}" type="text" class="form-control" name="service_name" id="txt_service_name" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Command:</label>
+                <div class="col-sm-4">
+                    <input type="text" value="{{ command_id }}" class="form-control" name="command" id="txt_command" disabled/>
+                </div>
+            </div>
+        </div>
+
+        {% comment %}
+        <div class="panel-heading">
+            <h4>I. Fee & Bonus</h4>
+        </div>
+
+        <div class="form-inline">
+            <label class="col-sm-2 control-label">Fee:</label>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input value="{{ service_id }}" type="text" class="form-control" name="service_name" id="txt_service_name" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="text" value="{{ command_id }}" class="form-control" name="command" id="txt_command" disabled/>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-inline">
+            <label class="col-sm-2 control-label">Bonus:</label>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input value="{{ service_id }}" type="text" class="form-control" name="service_name" id="txt_service_name" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="text" value="{{ command_id }}" class="form-control" name="command" id="txt_command" disabled/>
+                </div>
+            </div>
+        </div>
+        {% endcomment %}
+
+        <div class="panel-heading">
+            <h4>II. Setting Payment & Fee Structure</h4>
+        </div>
+
+        <form method="POST" class="form-horizontal" role="form">
+        {% csrf_token %}
+        <div class="form-group table-responsive row">
+            <table class="table table-bordered table-striped mb0" id="tbl_setting_payment_fee_structure">
+                <thead>
+                <tr>
+                    <th id="lbl_db">Debit/Credit</th>
+                    <th id="lbl_actor">Actor</th>
+                    <th id="lbl_specific_id">Specific ID</th>
+                    <th id="lbl_source_of_fund">Source of Fund</th>
+                    <th id="lbl_specific_source">Specific Source of Fund</th>
+                    <th id="lbl_from_amount">From Amount</th>
+                    <th id="lbl_rate">Rate %</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d in data %}
+                <tr>
+                    <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ d.sof_type_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="col-sm-1">
+                        <select class="form-control" name="action_type">
+                            {% for action_type in choices.action_types %}
+                            <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-sm-1">
+                        <select class="form-control" name="actor_type">
+                            {% for actor_type in choices.actor_types %}
+                            <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                            {% endfor %}
+                        </select>
+                    <td class="col-sm-1"></td>
+                    <td class="col-sm-1">
+                        <select class="form-control" name="sof_type_id">
+                            {% for sof_type in choices.sof_types %}
+                            <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-sm-1"><input class="form-control" name="specific_sof"></input></td>
+                    <td class="col-sm-1">
+                        <select class="form-control" name="amount_type">
+                            {% for amount_type in choices.amount_types %}
+                            <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                            {% endfor %}
+                        </select>
+                    <td class="col-sm-2"><input class="form-control" name="rate" required></input></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="form-group pull-right">
+            <a href="{% url 'services:command_list' service_id %}">
+                <input id="btn_setting_payment_fee_strucure_add" class="btn btn-success" type="submit" value="Add"/>
+            </a>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+{% endblock %}

@@ -72,6 +72,7 @@
                     <th id="lbl_created_date">Created Date</th>
                     <th id="lbl_modified_date">Modified Date</th>
                     <th id="lbl_created_by">Create By</th>
+                    <th id="lbl_action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -87,6 +88,15 @@
                     <td class="col-sm-2">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.created_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"
+                        role="button"
+                        id="commission-btn-{{ fee_tier.fee_tier_id }}" class="text-info"
+                        href="{% url 'services:commission_and_payment' service_id command_id service_command_id fee_tier.fee_tier_id %}" role="button"
+                        class="text-info">
+                        <span class="small">Commission</span>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
