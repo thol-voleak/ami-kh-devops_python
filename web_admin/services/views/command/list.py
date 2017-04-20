@@ -49,11 +49,11 @@ class ListCommandView(TemplateView):
 
         url = settings.SERVICE_COMMAND_ADD_URL
 
-        logger.info('Updating service command request url: {}'.format(self.request.user.username, url))
-        logger.info('Updating service command request body: {}'.format(self.request.user.username, data))
+        logger.info('Updating service command request url: {}'.format(url))
+        logger.info('Updating service command request body: {}'.format(data))
         response = requests.post(url, headers=self._get_headers(), json=data, verify=settings.CERT)
-        logger.info("Updating service command response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Updating service command response content {}".format(self.request.user.username, response.content))
+        logger.info("Updating service command response code {}".format(response.status_code))
+        logger.info("Updating service command response content {}".format(response.content))
 
         if response.status_code == 200:
             json_data = response.json()
