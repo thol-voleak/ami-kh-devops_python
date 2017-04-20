@@ -165,7 +165,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
             messages.add_message(
                 request,
                 messages.INFO,
-                'Adding success!'
+                'Added setting bonus successfully'
             )
         else:
             messages.add_message(
