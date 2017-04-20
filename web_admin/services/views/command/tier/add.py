@@ -79,7 +79,7 @@ class AddView(TemplateView):
         service_command_id = kwargs['service_command_id']
 
         data = {
-            "fee_tier_condition_name": request.POST.get('condition'),
+            "fee_tier_condition": request.POST.get('condition'),
             "condition_amount": request.POST.get('condition_amount'),
             "fee_type": request.POST.get('fee_type'),
             "fee_amount": request.POST.get('fee_amount'),
