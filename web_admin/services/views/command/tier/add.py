@@ -70,7 +70,7 @@ class AddView(TemplateView):
                 'command_name': command_name,
             })
             logger.info('========== Finish getting tier data ==========')
-            return render(request, self.template_name, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start adding tier for service command ==========')
@@ -88,14 +88,13 @@ class AddView(TemplateView):
             "amount_type": request.POST.get('amount_type'),
         }
 
-        success = self._add_tier(command_id, data)
+        success = self._add_tier(service_command_id, data)
         logger.info('========== Finish adding tier for service command ==========')
         if success:
             request.session['add_tier_msg'] = 'Added data successfully'
-            return redirect('services:fee_tier_list', service_id=(service_id), command_id=(command_id),
-                            service_command_id=(service_command_id))
-        else:
-            return None
+        return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
+                        service_command_id=service_command_id)
+
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
@@ -120,10 +119,7 @@ class AddView(TemplateView):
             status = response_json['status']
             if status['code'] == "success":
                 return True
-            else:
-                return False
-        else:
-            return False
+        return False
 
     def _get_tier_condition(self, procnum, dict):
         logger.info('Start getting fee tier condition from backend')
