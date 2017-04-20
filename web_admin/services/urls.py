@@ -1,13 +1,15 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from .views.create import CreateView
-from .views.services_list import ListView
-from .views.detail import ServiceDetailForm
-from .views.update import UpdateView
 from .views.command.list import ListCommandView
+from .views.command.tier.add import AddView
+from .views.commission_and_payment import (CommissionAndPaymentView,
+                                           PaymentAndFeeStructureView)
+from .views.create import CreateView
+from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
-
+from .views.services_list import ListView
+from .views.update import UpdateView
 
 app_name = "services"
 
@@ -23,4 +25,13 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/$',
         login_required(FeeTierListView.as_view(), login_url='login'),
         name="fee_tier_list"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/add/$',
+        login_required(AddView.as_view(), login_url='login'),
+        name="add_tier"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/$',
+        login_required(CommissionAndPaymentView.as_view(), login_url='login'),
+        name="commission_and_payment"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/payment-and-fee-structure/$',
+        login_required(PaymentAndFeeStructureView.as_view(), login_url='login'),
+        name="payment_and_fee_stucture"),
 ]
