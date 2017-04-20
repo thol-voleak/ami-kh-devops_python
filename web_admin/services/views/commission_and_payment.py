@@ -31,10 +31,15 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         data, success = self._get_commission_and_payment_list(tier_id)
         logger.info('========== Finish get commission and payment list ==========')
 
+        logger.info('========== Start get setting bonus list ==========')
+        bonus, success = self._get_setting_bonus_list(tier_id)
+        logger.info('========== Finish get setting bonus list ==========')
+
         choices = self._get_choices()
 
         context['data'] = data
         context['choices'] = choices
+        context['bonus'] = bonus
         return context
 
     def _get_choices(self):
@@ -74,6 +79,21 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
             logger.info("Response content: {}".format(response.content))
         return [], False
 
+    def _get_setting_bonus_list(self, fee_tier_id):
+        url = settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        json_data = response.json()
+        logger.info("Response status: {}".format(response.status_code))
+        if response.status_code == 200:
+            data = json_data.get('data', [])
+            logger.info("Setting Bonus list count: {}".format(len(data)))
+            data = format_date_time(data)
+            return data, True
+        else:
+            logger.info("Response content: {}".format(response.content))
+        return [], False
+
 
 class PaymentAndFeeStructureView(TemplateView, GetHeaderMixin):
 
@@ -84,6 +104,49 @@ class PaymentAndFeeStructureView(TemplateView, GetHeaderMixin):
         service_command_id = kwargs.get('service_command_id')
 
         url = settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
+
+        data = request.POST.copy()
+        post_data = {
+            "action_type": data.get("action_type"),
+            "actor_type": data.get("actor_type"),
+            "sof_type_id": data.get("sof_type_id"),
+            "specific_sof": data.get('specific_sof'),
+            "amount_type": data.get("amount_type"),
+            "rate": data.get("rate"),
+        }
+        response = requests.post(url, headers=self._get_headers(),
+                                 json=post_data, verify=settings.CERT)
+
+        logger.info("Response status: {}".format(response.status_code))
+        if response.status_code == 200:
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Adding success!'
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Something wrong happened!'
+            )
+            logger.info("Response content: {}".format(response.content))
+        return redirect('services:commission_and_payment',
+                        service_id=service_id,
+                        command_id=command_id,
+                        service_command_id=service_command_id,
+                        fee_tier_id=fee_tier_id)
+
+
+class SettingBonusView(TemplateView, GetHeaderMixin):
+
+    def post(self, request, *args, **kwargs):
+        service_id = kwargs.get('service_id')
+        fee_tier_id = kwargs.get('fee_tier_id')
+        command_id = kwargs.get('command_id')
+        service_command_id = kwargs.get('service_command_id')
+
+        url = settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
 
         data = request.POST.copy()
         post_data = {

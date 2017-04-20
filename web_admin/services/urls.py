@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .views.command.list import ListCommandView
 from .views.command.tier.add import AddView
 from .views.commission_and_payment import (CommissionAndPaymentView,
-                                           PaymentAndFeeStructureView)
+                                           PaymentAndFeeStructureView,
+                                           SettingBonusView)
 from .views.create import CreateView
 from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
@@ -34,4 +35,7 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/payment-and-fee-structure/$',
         login_required(PaymentAndFeeStructureView.as_view(), login_url='login'),
         name="payment_and_fee_stucture"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/$',
+        login_required(SettingBonusView.as_view(), login_url='login'),
+        name="setting_bonus"),
 ]
