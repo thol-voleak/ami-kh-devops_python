@@ -7,6 +7,7 @@ from .views.detail import ServiceDetailForm
 from .views.update import UpdateView
 from .views.command.list import ListCommandView
 from .views.fee_tier import FeeTierListView
+from .views.command.tier.add import AddView
 
 
 app_name = "services"
@@ -23,4 +24,7 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/$',
         login_required(FeeTierListView.as_view(), login_url='login'),
         name="fee_tier_list"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/add/$',
+        login_required(AddView.as_view(), login_url='login'),
+        name="add_tier"),
 ]

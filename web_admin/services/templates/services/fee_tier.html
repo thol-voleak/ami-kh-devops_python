@@ -23,6 +23,15 @@
         </div>
     {% endfor %}
 
+    {% if msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="panel-body">
         <form class="form-horizontal" role="form">
             {% csrf_token %}
@@ -41,6 +50,10 @@
             <div class="form-group pull-right">
                 <a href="{% url 'services:command_list' service_id %}">
                     <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
+                </a>
+
+                <a href="{% url 'services:add_tier' service_id=service_id command_id=1 service_command_id=service_command_id %}">
+                    <input id="btn_add" class="btn btn-success" type="button" value="Add"/>
                 </a>
             </div>
         </form>

@@ -30,6 +30,7 @@ class FeeTierListView(TemplateView, GetHeaderMixin):
             data = format_date_time(data)
 
         context['data'] = data
+        context['msg'] = self.request.session.pop('add_tier_msg', None)
         return context
 
     def _get_fee_tier_list(self, service_command_id):
