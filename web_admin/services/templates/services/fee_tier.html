@@ -32,6 +32,15 @@
     </div>
     {% endif %}
 
+    {% if edit_msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ edit_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="panel-body">
         <form class="form-horizontal" role="form">
             {% csrf_token %}
@@ -89,6 +98,10 @@
                     <td class="col-sm-2">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.created_user_id|default_if_none:'' }}</td>
                     <td class="col-sm-1">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"  id="btn_edit" class="text-info"
+                            href="{% url 'services:update_tier' service_id command_id service_command_id fee_tier.fee_tier_id %}"
+                            role="button"> <span class="small">Edit</span>
+                        </a>
                         <a type="button" class="btn btn-outline btn-xs btn-primary"
                         role="button"
                         id="btn_commission" class="text-info"

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from .views.command.list import ListCommandView
 from .views.command.tier.add import AddView
+from .views.command.tier.update import UpdateView as TierUpdateView
 from .views.commission_and_payment import (CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
@@ -50,4 +51,7 @@ urlpatterns = [
     url(r'^bonus-distributions/(?P<bonus_distributions_id>[0-9A-Za-z]+)/$',
         login_required(BonusDistributionsUpdate.as_view(), login_url='login'),
         name="setting_bonus_update"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/update/$',
+        login_required(TierUpdateView.as_view(), login_url='login'),
+        name="update_tier"),
 ]
