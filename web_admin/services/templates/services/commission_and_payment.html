@@ -77,7 +77,8 @@
             <h4>II. Setting Payment & Fee Structure</h4>
         </div>
 
-        <form method="POST" class="form-horizontal" role="form">
+        <form method="POST" class="form-horizontal" role="form" action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}">
+
         {% csrf_token %}
         <div class="form-group table-responsive row">
             <table class="table table-bordered table-striped mb0" id="tbl_setting_payment_fee_structure">
