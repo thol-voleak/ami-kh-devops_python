@@ -37,6 +37,46 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         context['choices'] = choices
         return context
 
+    def _get_choices(self):
+        url_list = [settings.ACTION_TYPES_URL, settings.AMOUNT_TYPES_URL,
+                    settings.SOF_TYPES_URL, settings.ACTOR_TYPES_URL]
+        pool = ThreadPool(processes=1)
+
+        async_list = map(lambda url: pool.apply_async(lambda: self._get_choices_types(url)),
+                         url_list)
+        result_list = list(map(lambda x: x.get(), async_list))
+        return {
+            'action_types': result_list[0],
+            'amount_types': result_list[1],
+            'sof_types': result_list[2],
+            'actor_types': result_list[3],
+        }
+
+    def _get_choices_types(self, url):
+        logger.info("Get choices for table from url: {}".format(url))
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        json_data = response.json()
+        logger.info("Reponse status code: {}".format(response.status_code))
+        return json_data['data']
+
+    def _get_commission_and_payment_list(self, fee_tier_id):
+        url = settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        json_data = response.json()
+        logger.info("Response status: {}".format(response.status_code))
+        if response.status_code == 200:
+            data = json_data.get('data', [])
+            logger.info("Commission and payment list count: {}".format(len(data)))
+            data = format_date_time(data)
+            return data, True
+        else:
+            logger.info("Response content: {}".format(response.content))
+        return [], False
+
+
+class PaymentAndFeeStructureView(TemplateView, GetHeaderMixin):
+
     def post(self, request, *args, **kwargs):
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
@@ -76,41 +116,3 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
                         command_id=command_id,
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
-
-
-    def _get_choices(self):
-        url_list = [settings.ACTION_TYPES_URL, settings.AMOUNT_TYPES_URL,
-                    settings.SOF_TYPES_URL, settings.ACTOR_TYPES_URL]
-        pool = ThreadPool(processes=1)
-
-        async_list = map(lambda url: pool.apply_async(lambda: self._get_choices_types(url)),
-                         url_list)
-        result_list = list(map(lambda x: x.get(), async_list))
-        return {
-            'action_types': result_list[0],
-            'amount_types': result_list[1],
-            'sof_types': result_list[2],
-            'actor_types': result_list[3],
-        }
-
-    def _get_choices_types(self, url):
-        logger.info("Get choices for table from url: {}".format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        json_data = response.json()
-        logger.info("Reponse status code: {}".format(response.status_code))
-        return json_data['data']
-
-    def _get_commission_and_payment_list(self, fee_tier_id):
-        url = settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        json_data = response.json()
-        logger.info("Response status: {}".format(response.status_code))
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            logger.info("Commission and payment list count: {}".format(len(data)))
-            data = format_date_time(data)
-            return data, True
-        else:
-            logger.info("Response content: {}".format(response.content))
-        return [], False

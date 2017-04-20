@@ -36,9 +36,7 @@ class ListCommandView(TemplateView):
                 'Added command successfully'
             )
 
-        return redirect(request.META['HTTP_REFERER'])
-
-        # return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id)
+        return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id, service_command_id=0)
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
