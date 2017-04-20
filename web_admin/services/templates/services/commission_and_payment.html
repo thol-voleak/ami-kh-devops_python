@@ -91,6 +91,7 @@
                     <th id="lbl_specific_source">Specific Source of Fund</th>
                     <th id="lbl_from_amount">From Amount</th>
                     <th id="lbl_rate">Rate %</th>
+                    <th id="lbl_actions">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -103,6 +104,22 @@
                     <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
+                    <td class="col-sm-1">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"
+                        role="button"
+                        id="btn_setting_payment_fee_structure_edit" class="text-info"
+                        href="#" role="button"
+                        class="text-info">
+                        <span class="small">Edit</span>
+                        </a>
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"
+                        role="button"
+                        id="btn_setting_payment_fee_structure_delete" class="text-info"
+                        href="#" role="button"
+                        class="text-info">
+                        <span class="small">Delete</span>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
                 <tr>
@@ -135,12 +152,13 @@
                             {% endfor %}
                         </select>
                     <td class="col-sm-2"><input class="form-control" name="rate" required></input></td>
+                    <td></td>
                 </tr>
             </table>
         </div>
 
         <div class="form-group pull-right">
-            <a href="{% url 'services:command_list' service_id %}">
+            <a href="#">
                 <input id="btn_setting_payment_fee_strucure_add" class="btn btn-success" type="submit" value="Add"/>
             </a>
         </div>
