@@ -27,9 +27,9 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
             self.request.user.username
         ))
 
-        logger.info('========== Start get commission and payment list ==========')
+        logger.info('========== Start get Setting Payment & Fee Structure list ==========')
         data, success = self._get_commission_and_payment_list(tier_id)
-        logger.info('========== Finish get commission and payment list ==========')
+        logger.info('========== Finish Setting Payment & Fee Structure list ==========')
 
         logger.info('========== Start get setting bonus list ==========')
         bonus, success = self._get_setting_bonus_list(tier_id)
@@ -108,6 +108,12 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
 
         url = settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
+        logger.info('========== Start create Setting Payment & Fee Structure ==========')
+        logger.info('Create Payment and Fee Structure by user: {}, with url {}.'.format(
+            self.request.user.username,
+            url,
+        ))
+
         data = request.POST.copy()
         post_data = {
             "action_type": data.get("action_type"),
@@ -121,11 +127,12 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
                                  json=post_data, verify=settings.CERT)
 
         logger.info("Response status: {}".format(response.status_code))
+        logger.info("Response content: {}".format(response.content))
         if response.status_code == 200:
             messages.add_message(
                 request,
                 messages.INFO,
-                'Adding success!'
+                'Added data successfully'
             )
         else:
             messages.add_message(
@@ -133,7 +140,8 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
                 messages.INFO,
                 'Something wrong happened!'
             )
-            logger.info("Response content: {}".format(response.content))
+        logger.info('========== Finish create Setting Payment & Fee Structure ==========')
+
         return redirect('services:commission_and_payment',
                         service_id=service_id,
                         command_id=command_id,
