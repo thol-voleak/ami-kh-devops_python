@@ -197,7 +197,9 @@ class PaymentAndFeeStructureDetailView(View, GetHeaderMixin):
     def delete(self, request, *args, **kwargs):
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
+        logger.info('========== Start delete Setting Payment & Fee Structure ==========')
         success = self._delete_balance_distribution(balance_distribution_id)
+        logger.info('========== Finish delete Setting Payment & Fee Structure ==========')
 
         if success:
             return HttpResponse(status=204)

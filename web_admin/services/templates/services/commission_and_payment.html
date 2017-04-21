@@ -277,7 +277,7 @@ function deleteDistribution(distributionId) {
         },
         success: function () {
             $('#balance-distribution-' + distributionId).remove();
-            addMessage("Delete successfully!");
+            addMessage("Deleted data successfully");
         },
         error: function() {
             addMessage("Delete failed!");
