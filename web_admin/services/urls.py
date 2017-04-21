@@ -7,7 +7,8 @@ from .views.commission_and_payment import (CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
                                            SettingBonusView,
-                                           BalanceDistributionsUpdate)
+                                           BalanceDistributionsUpdate,
+                                           BonusDistributionsUpdate)
 from .views.create import CreateView
 from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
@@ -43,8 +44,10 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/payment-and-fee-structure/(?P<balance_distribution_id>[0-9A-Za-z]+)/$',
         login_required(PaymentAndFeeStructureDetailView.as_view(), login_url='login'),
         name="payment_and_fee_stucture_detail"),
-
     url(r'^balance-distributions/(?P<balance_distributions_id>[0-9A-Za-z]+)/$',
         login_required(BalanceDistributionsUpdate.as_view(), login_url='login'),
         name="payment_and_fee_stucture_update"),
+    url(r'^bonus-distributions/(?P<bonus_distributions_id>[0-9A-Za-z]+)/$',
+        login_required(BonusDistributionsUpdate.as_view(), login_url='login'),
+        name="setting_bonus_update"),
 ]

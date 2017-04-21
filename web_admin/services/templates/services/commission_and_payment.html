@@ -187,7 +187,7 @@
                     </thead>
                     <tbody>
                     {% for d in bonus %}
-                    <tr role="row">
+                    <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}" data-id="{{ d.bonus_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -196,7 +196,7 @@
                         <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
                         <td class="col-sm-1">
-                            <a type="button" class="btn btn-outline btn-xs btn-primary"
+                            <a type="button" class="edit btn btn-outline btn-xs btn-primary"
                                role="button"
                                id="btn_setting_bonus_edit" class="text-info"
                                href="#" role="button"
@@ -296,7 +296,7 @@ function addMessage(message) {
     '</div>')
 }
 
-function onInlineSetupDataTable() {
+function onInlineSetupDataTable(tableId) {
 
     var nEditing = null;
     var oTable;
@@ -360,6 +360,8 @@ function onInlineSetupDataTable() {
         var htmlDDAmountTypes = '';
         var amount_type = {{ choices.amount_types|safe }};
         jQuery.each(amount_type, function() {
+            console.log('aData: ' + JSON.stringify(aData, null, 4));
+
             if (aData[5].toLowerCase() == this.amount_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';
             } else {
@@ -400,17 +402,22 @@ function onInlineSetupDataTable() {
         oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
 
         var htmlButtonEdit = '<a class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\' role=\'button\'>Edit</a>';
-        var htmlButtonDelete = '' +
-            '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + balance_distribution_id + ')\'>' +
-            '<span class=\'small\'>' +
-            'Delete' +
-            '</span>' +
-            '</span>';
+        var htmlButtonDelete = '';
+
+        if (tableId == "tbl_setting_payment_fee_structure") {
+            htmlButtonDelete = '' +
+                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + balance_distribution_id + ')\'>' +
+                '<span class=\'small\'>' +
+                'Delete' +
+                '</span>' +
+                '</span>';
+        }
 
         oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
         oTable.fnDraw();
     }
 
+    // For Balance
     function saveRowToServer(oTable, nRow) {
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
@@ -461,7 +468,57 @@ function onInlineSetupDataTable() {
         });
     }
 
-    oTable = $('#tbl_setting_payment_fee_structure').dataTable({
+    function saveRowBonusToServer(oTable, nRow) {
+        var jqInputs = $('input', nRow);
+        var jqSelects = $('select', nRow);
+        var url = $(nRow).data('url');
+
+        // Request to server
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                "action_type": $(jqSelects[0]).find(":selected").html(),
+                "actor_type": $(jqSelects[1]).find(":selected").html(),
+                // 2 = empty data
+                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
+                "specific_sof": jqInputs[0].value,
+                "amount_type": $(jqSelects[3]).find(":selected").html(),
+                "rate": jqInputs[1].value,
+                "specific_actor_id": ''
+            },
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+
+                var data = JSON.stringify(response);
+                var json = $.parseJSON(data);
+                console.log('JSON: ');
+                console.log(json);
+
+                if (json.status.code == 'success') {
+                    console.log('Saved row data');
+                    saveRow(oTable, nRow);
+                    addMessage("Edit successfully!");
+                } else {
+                    console.log('Error adding row data');
+                    addMessage("Edit error!");
+                }
+
+            },
+            error: function (err) {
+                var json = JSON.stringify(err);
+                console.log('JSON: ');
+                console.log(json);
+
+                addMessage("Edit error!");
+            }
+        });
+    }
+
+    oTable = $('#' + tableId).dataTable({
         "searching":  false,
         "paging":   false,
         "ordering": false,
@@ -469,26 +526,20 @@ function onInlineSetupDataTable() {
     });
 
     function onBindingButtonsCancelEvent() {
-        $('#tbl_setting_payment_fee_structure').on('click', 'a.cancel', function (e) {
+        $('#' + tableId).on('click', 'a.cancel', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */
             var nRow = $(this).parents('tr')[0];
-            {#            console.log(nRow);#}
 
             restoreRow(oTable, nEditing);
-            // editRow(oTable, nRow);
-            // nEditing = nRow;
-
-            console.log("0 - cancel");
-            onBindingButtonsEditEvent();
+            nEditing = nRow;
         });
     }
 
     function onBindingButtonsEditEvent() {
-        console.log("-1");
 
-        $('#tbl_setting_payment_fee_structure').on('click', 'a.edit', function (e) {
+        $('#' + tableId).on('click', 'a.edit', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */
@@ -501,10 +552,14 @@ function onInlineSetupDataTable() {
                 nEditing = nRow;
             } else if (nEditing === nRow && this.innerHTML === 'Save') {
                 /* Editing this row and want to save it */
-                saveRowToServer(oTable, nEditing);
+
+                if (tableId == "tbl_setting_payment_fee_structure")
+                    saveRowToServer(oTable, nEditing);
+                else
+                    saveRowBonusToServer(oTable, nEditing);
+
                 nEditing = null;
             } else {
-                console.log("3");
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
                 nEditing = nRow;
@@ -519,7 +574,8 @@ function onInlineSetupDataTable() {
 
 $( document ).ready(function() {
     'use strict';
-    onInlineSetupDataTable();
+    onInlineSetupDataTable('tbl_setting_payment_fee_structure');       // Balance
+    onInlineSetupDataTable('tbl_setting_bonus');                       // Bonus
 });
 
 </script>

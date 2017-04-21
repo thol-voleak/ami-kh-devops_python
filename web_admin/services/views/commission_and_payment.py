@@ -182,14 +182,6 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate")
         }
 
-        # {'fee_tier_id': '1173',
-        #  'action_type': 'Credit',
-        #  'actor_type': 'Grand Parent',
-        #  'sof_type_id': '1',
-        #  'specific_sof': '21',
-        #  'amount_type': 'Amount',
-        #  'rate': '212'}
-
         logger.info("update balance distributions request body: {}".format(post_data))
 
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
@@ -206,6 +198,50 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Finish update balance distributions ==========")
         return httpResponse
 
+class BonusDistributionsUpdate(View, GetHeaderMixin):
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+
+        return self._headers
+
+    def post(self, request, *args, **kwargs):
+        logger.info("========== Start update bonus distributions ==========")
+        logger.info("update bonus distributions user: {}".format(self.request.user))
+
+        bonus_distributions_id = kwargs.get('bonus_distributions_id')
+        logger.info("update bonus distributions id: {}".format(bonus_distributions_id))
+
+        url = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
+        logger.info("update bonus distributions url: {}".format(url))
+
+        data = request.POST.copy()
+
+        post_data = {
+            "action_type": data.get("action_type"),
+            "actor_type": data.get("actor_type"),
+            "sof_type_id": data.get('sof_type_id'),
+            "specific_sof": data.get("specific_sof"),
+            "amount_type": data.get("amount_type"),
+            "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
+        }
+        logger.info("update bonus distributions request body: {}".format(post_data))
+
+        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        logger.info("update bonus distributions response status: {}".format(response.status_code))
+        logger.info("update bonus distributions response content: {}".format(response.content))
+
+        if response.status_code == 200:
+            logger.info("update bonus distributions: row saving success!")
+            httpResponse = HttpResponse(status=200, content=response)
+        else:
+            logger.info("update bonus distributions: Something wrong happened!")
+            httpResponse = HttpResponse(status=response.status_code, content=response)
+
+        logger.info("========== Finish update bonus distributions ==========")
+        return httpResponse
 
 class SettingBonusView(TemplateView, GetHeaderMixin):
 
