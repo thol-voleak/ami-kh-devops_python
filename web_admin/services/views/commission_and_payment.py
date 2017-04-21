@@ -196,8 +196,6 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         logger.info("update balance distributions response status: {}".format(response.status_code))
         logger.info("update balance distributions response content: {}".format(response.content))
 
-
-
         if response.status_code == 200:
             logger.info("update balance distributions: row saving success!")
             httpResponse = HttpResponse(status=200, content=response)
