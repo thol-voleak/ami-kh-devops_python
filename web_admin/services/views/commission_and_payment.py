@@ -123,6 +123,7 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
         }
+        logger.info("Request body: {}".format(post_data))
         response = requests.post(url, headers=self._get_headers(),
                                  json=post_data, verify=settings.CERT)
 
@@ -172,6 +173,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
                                  json=post_data, verify=settings.CERT)
 
         logger.info("Response status: {}".format(response.status_code))
+        logger.info("Response content: {}".format(response.content))
         if response.status_code == 200:
             messages.add_message(
                 request,
@@ -184,7 +186,6 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
                 messages.INFO,
                 'Something wrong happened!'
             )
-            logger.info("Response content: {}".format(response.content))
         return redirect('services:commission_and_payment',
                         service_id=service_id,
                         command_id=command_id,
