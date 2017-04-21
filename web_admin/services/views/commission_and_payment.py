@@ -123,6 +123,7 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
         }
+        logger.info("Request body: {}".format(post_data))
         response = requests.post(url, headers=self._get_headers(),
                                  json=post_data, verify=settings.CERT)
 
