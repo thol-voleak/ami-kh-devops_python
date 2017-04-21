@@ -85,8 +85,10 @@ class AddView(TemplateView):
             "fee_amount": request.POST.get('fee_amount'),
             "bonus_type": request.POST.get('bonus_type'),
             "bonus_amount": request.POST.get('bonus_amount'),
-            "amount_type": request.POST.get('amount_type'),
         }
+
+        if(request.POST.get('bonus_type') != 'Flat value'):
+            data['amount_type'] = request.POST.get('amount_type')
 
         success = self._add_tier(service_command_id, data)
         logger.info('========== Finish adding tier for service command ==========')
