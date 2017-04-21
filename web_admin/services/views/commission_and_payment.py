@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
+from authentications.utils import get_auth_header
 
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import format_date_time
@@ -103,6 +104,7 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 class PaymentAndFeeStructureView(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
+
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
@@ -150,6 +152,61 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
                         command_id=command_id,
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
+
+class BalanceDistributionsUpdate(View, GetHeaderMixin):
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+
+        return self._headers
+
+    def post(self, request, *args, **kwargs):
+        logger.info("========== Start update balance distributions ==========")
+        logger.info("update balance distributions user: {}".format(self.request.user))
+
+        balance_distribution_id = kwargs.get('balance_distributions_id')
+        logger.info("update balance distributions id: {}".format(balance_distribution_id))
+
+        url = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
+        logger.info("update balance distributions url: {}".format(url))
+
+        data = request.POST.copy()
+        post_data = {
+            "fee_tier_id": data.get("fee_tier_id"),
+            "action_type": data.get("action_type"),
+            "actor_type": data.get("actor_type"),
+            "sof_type_id": data.get('sof_type_id'),
+            "specific_sof": data.get("specific_sof"),
+            "amount_type": data.get("amount_type"),
+            "rate": data.get("rate")
+        }
+
+        # {'fee_tier_id': '1173',
+        #  'action_type': 'Credit',
+        #  'actor_type': 'Grand Parent',
+        #  'sof_type_id': '1',
+        #  'specific_sof': '21',
+        #  'amount_type': 'Amount',
+        #  'rate': '212'}
+
+        logger.info("update balance distributions request body: {}".format(post_data))
+
+        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        logger.info("update balance distributions response status: {}".format(response.status_code))
+        logger.info("update balance distributions response content: {}".format(response.content))
+
+
+
+        if response.status_code == 200:
+            logger.info("update balance distributions: row saving success!")
+            httpResponse = HttpResponse(status=200, content=response)
+        else:
+            logger.info("update balance distributions: Something wrong happened!")
+            httpResponse = HttpResponse(status=response.status_code, content=response)
+
+        logger.info("========== Finish update balance distributions ==========")
+        return httpResponse
 
 
 class SettingBonusView(TemplateView, GetHeaderMixin):

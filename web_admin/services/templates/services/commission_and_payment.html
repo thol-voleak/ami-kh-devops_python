@@ -83,7 +83,7 @@
 
             {% csrf_token %}
             <div class="form-group table-responsive row">
-                <table class="table table-bordered table-striped mb0" id="tbl_setting_payment_fee_structure">
+                <table class="table table-bordered table-striped datatable editable-datatable  mb0" id="tbl_setting_payment_fee_structure">
                     <thead>
                     <tr>
                         <th id="lbl_db">Debit/Credit</th>
@@ -98,7 +98,7 @@
                     </thead>
                     <tbody>
                     {% for d in data %}
-                    <tr id="balance-distribution-{{ d.balance_distribution_id }}">
+                    <tr id="balance-distribution-{{ d.balance_distribution_id }}" data-url="{% url "services:payment_and_fee_stucture_update" d.balance_distribution_id %}" data-id="{{ d.balance_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -107,12 +107,9 @@
                         <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
                         <td class="col-sm-1">
-                            <span type="button" class="btn btn-outline btn-xs btn-primary"
-                            id="btn_setting_payment_fee_structure_edit" class="text-info"
-                            role="button"
-                            class="text-info">
-                            <span class="small">Edit</span>
-                            </span>
+                            <a class="btn btn-outline btn-xs btn-primary edit text-info small"
+                            id="btn_setting_payment_fee_structure_edit"
+                            role="button">Edit</a>
                             <span type="button" class="btn btn-outline btn-xs btn-primary"
                             id="btn_setting_payment_fee_structure_delete" class="text-info"
                             role="button"
@@ -190,7 +187,7 @@
                     </thead>
                     <tbody>
                     {% for d in bonus %}
-                    <tr>
+                    <tr role="row">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -267,7 +264,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
 <script>
+
 function deleteDistribution(distributionId) {
     var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
     $.ajax({
@@ -296,6 +295,242 @@ function addMessage(message) {
         '</div>' +
     '</div>')
 }
+
+function onInlineSetupDataTable() {
+
+    var nEditing = null;
+    var oTable;
+
+    function restoreRow(oTable, nRow) {
+        var aData = oTable.fnGetData(nRow);
+        var jqTds = $('>td', nRow);
+
+        for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
+            oTable.fnUpdate(aData[i], nRow, i, false);
+        }
+
+        oTable.fnDraw();
+    }
+
+    function editRow(oTable, nRow) {
+        var aData = oTable.fnGetData(nRow);
+        var jqTds = $('>td', nRow);
+
+{#        console.log(aData);#}
+{#        console.log(jqTds);#}
+
+        var htmlSelected = '';
+        // Master: ActionTypes Dropdown
+        var htmlDDActionTypes = '';
+        var action_types = {{ choices.action_types|safe }};
+        jQuery.each(action_types, function() {
+            if (aData[0].toLowerCase() == this.action_type.toLowerCase()) {
+                htmlSelected = ' selected=\"selected\" ';
+            } else {
+                htmlSelected = ' ';
+            }
+
+            htmlDDActionTypes += '<option value="' + this.action_type_id + '"' + htmlSelected + '>' + this.action_type + '</option>';
+        });
+
+        // Master: Actors Dropdown
+        var htmlDDActors = '';
+        var actor_types = {{ choices.actor_types|safe }};
+        jQuery.each(actor_types, function() {
+            if (aData[1].toLowerCase() == this.actor_type.toLowerCase()) {
+                htmlSelected = ' selected=\"selected\" ';
+            } else {
+                htmlSelected = ' ';
+            }
+
+            htmlDDActors += '<option value="' + this.actor_type_id + '"' + htmlSelected + '>' + this.actor_type + '</option>';
+        });
+
+        // Master: SOFTypes Dropdown
+        var htmlDDSOFTypes = '';
+        var sof_types = {{ choices.sof_types|safe }};
+        jQuery.each(sof_types, function() {
+            if (aData[3].toLowerCase() == this.sof_type.toLowerCase()) {
+                htmlSelected = ' selected=\"selected\" ';
+            } else {
+                htmlSelected = ' ';
+            }
+
+            htmlDDSOFTypes += '<option value="' + this.sof_type_id + '"' + htmlSelected + '>' + this.sof_type + '</option>';
+        });
+
+        // Master: AmountTypes Dropdown
+        var htmlDDAmountTypes = '';
+        var amount_type = {{ choices.amount_types|safe }};
+        jQuery.each(amount_type, function() {
+            if (aData[5].toLowerCase() == this.amount_type.toLowerCase()) {
+                htmlSelected = ' selected=\"selected\" ';
+            } else {
+                htmlSelected = ' ';
+            }
+
+            htmlDDAmountTypes += '<option value="' + this.amount_type_id + '"' + htmlSelected + '>' + this.amount_type + '</option>';
+        });
+
+        jqTds[0].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'action_type\'>' + htmlDDActionTypes + '</select>';
+        jqTds[1].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[2].innerHTML = '';
+        jqTds[3].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[4].innerHTML = '<input type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
+        jqTds[5].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
+        jqTds[6].innerHTML = '<input type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+
+        // Action Buttons
+        var htmlButtonSave = '<a class=\'edit btn btn-outline btn-xs btn-primary text-info small\' role=\'button\' id=\'payment_and_fee_stucture_btn_save\'>Save</a>';
+        var htmlButtonCancel = '<a class=\'cancel btn btn-outline btn-xs btn-primary text-info small\' role=\'button\'>Cancel</a>';
+
+        jqTds[7].innerHTML = htmlButtonSave + htmlButtonCancel;
+
+        onBindingButtonsCancelEvent();
+    }
+
+    function saveRow(oTable, nRow) {
+        var jqInputs = $('input', nRow);
+        var jqSelects = $('select', nRow);
+        var balance_distribution_id = $(nRow).data('id');
+
+        oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
+        oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
+                                                                                        // Specific ID
+        oTable.fnUpdate($(jqSelects[2]).find(":selected").val(), nRow, 3, false);       // Sof Type ID
+        oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
+        oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
+        oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
+
+        var htmlButtonEdit = '<a class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\' role=\'button\'>Edit</a>';
+{#        var htmlButtonDelete = '<a class=\'delete btn btn-outline btn-xs btn-primary delete text-info small\' role=\'button\'>Delete</a>';#}
+        var htmlButtonDelete = '' +
+            '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + balance_distribution_id + ')\'>' +
+            '<span class=\'small\'>' +
+            'Delete' +
+            '</span>' +
+            '</span>';
+
+        oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
+        oTable.fnDraw();
+    }
+
+    function saveRowToServer(oTable, nRow) {
+        var jqInputs = $('input', nRow);
+        var jqSelects = $('select', nRow);
+        var url = $(nRow).data('url');
+
+        // Request to server
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                "fee_tier_id": {{ fee_tier_id  }},
+                "action_type": $(jqSelects[0]).find(":selected").html(),
+                "actor_type": $(jqSelects[1]).find(":selected").html(),
+                // 2 = empty data
+                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
+                "specific_sof": jqInputs[0].value,
+                "amount_type": $(jqSelects[3]).find(":selected").html(),
+                "rate": jqInputs[1].value
+            },
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+
+                var data = JSON.stringify(response);
+                var json = $.parseJSON(data);
+                console.log('JSON: ' + json);
+
+                if (json.status.code == 'success') {
+                    console.log('Saved row data');
+                    addMessage("Edit successfully!");
+                } else {
+                    console.log('Error adding row data');
+                    addMessage("Edit error!");
+                }
+
+            },
+            error: function (err) {
+                var json = JSON.stringify(err);
+                console.log('JSON: ' + json);
+
+                addMessage("Edit error!");
+            }
+        });
+    }
+
+    oTable = $('#tbl_setting_payment_fee_structure').dataTable({
+        "searching":  false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false
+    });
+
+    function onBindingButtonsCancelEvent() {
+        $('#tbl_setting_payment_fee_structure').on('click', 'a.cancel', function (e) {
+            e.preventDefault();
+
+            /* Get the row as a parent of the link that was clicked on */
+            var nRow = $(this).parents('tr')[0];
+            {#            console.log(nRow);#}
+
+            restoreRow(oTable, nEditing);
+            // editRow(oTable, nRow);
+            // nEditing = nRow;
+
+            console.log("0 - cancel");
+            onBindingButtonsEditEvent();
+        });
+    }
+
+    function onBindingButtonsEditEvent() {
+
+        $('#tbl_setting_payment_fee_structure').on('click', 'a.edit', function (e) {
+            e.preventDefault();
+
+            /* Get the row as a parent of the link that was clicked on */
+{#            console.log($(this).parents('tr'));#}
+            var nRow = $(this).parents('tr')[0];
+
+{#            console.log(nRow);#}
+            console.log("0");
+
+            if (nEditing !== null && nEditing !== nRow) {
+                console.log("1");
+                /* Currently editing - but not this row - restore the old before continuing to edit mode */
+                restoreRow(oTable, nEditing);
+                editRow(oTable, nRow);
+                nEditing = nRow;
+            } else if (nEditing === nRow && this.innerHTML === 'Save') {
+                console.log("2");
+                /* Editing this row and want to save it */
+                saveRowToServer(oTable, nEditing);
+                saveRow(oTable, nEditing);
+                nEditing = null;
+
+                onBindingButtonsEditEvent();
+
+            } else {
+                console.log("3");
+                /* No edit in progress - let's start one */
+                editRow(oTable, nRow);
+                nEditing = nRow;
+            }
+
+            return false;
+        });
+    }
+    onBindingButtonsEditEvent();
+}
+
+$( document ).ready(function() {
+    'use strict';
+    onInlineSetupDataTable();
+});
+
 </script>
 
 {% endblock %}
