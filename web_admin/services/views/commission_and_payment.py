@@ -67,6 +67,8 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         url = settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        logger.info("Get Setting Payment & Fee Structure from list url: {}".format(url))
+
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         json_data = response.json()
