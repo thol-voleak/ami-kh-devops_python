@@ -7,6 +7,7 @@ from authentications.utils import get_auth_header
 
 import logging
 import requests
+import time
 
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import format_date_time
@@ -36,11 +37,13 @@ class AgentBonusDistributions(View, GetHeaderMixin):
             "specific_actor_id": data.get("specific_actor_id", "")
         }
 
-        logger.info("Request: {}".format(post_data))
+        logger.info("Request data for add agent hierarchy distribution bonus {}".format(post_data))
+        start_date = time.time()
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        done = time.time()
+        logger.info('Response time for add agent hierarchy distribution bonus is {} s.'.format(done - start_date))
+        logger.info("Response status for add agent hierarchy distribution bonus is {}".format(response.status_code))
 
-        logger.info("Response status: {}".format(response.status_code))
-        logger.info("Response content: {}".format(response.content))
         if response.status_code == 200:
             messages.add_message(
                 request,
@@ -48,6 +51,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
                 'Added Agent Hierarchy Distribution - Bonus Successfully'
             )
         else:
+            logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response.content))
             messages.add_message(
                 request,
                 messages.INFO,
@@ -55,7 +59,6 @@ class AgentBonusDistributions(View, GetHeaderMixin):
             )
 
         logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
-
         return redirect('services:commission_and_payment',
                         service_id=service_id,
                         command_id=command_id,
