@@ -83,7 +83,7 @@
 
             {% csrf_token %}
             <div class="form-group table-responsive row">
-                <table class="table table-bordered table-striped mb0" id="tbl_setting_payment_fee_structure">
+                <table class="table table-bordered table-striped datatable editable-datatable  mb0" id="tbl_setting_payment_fee_structure">
                     <thead>
                     <tr>
                         <th id="lbl_db">Debit/Credit</th>
@@ -98,7 +98,7 @@
                     </thead>
                     <tbody>
                     {% for d in data %}
-                    <tr id="balance-distribution-{{ d.balance_distribution_id }}">
+                    <tr id="balance-distribution-{{ d.balance_distribution_id }}" data-url="{% url "services:payment_and_fee_stucture_update" d.balance_distribution_id %}" data-id="{{ d.balance_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -107,12 +107,9 @@
                         <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
                         <td class="col-sm-1">
-                            <span type="button" class="btn btn-outline btn-xs btn-primary"
-                            id="btn_setting_payment_fee_structure_edit" class="text-info"
-                            role="button"
-                            class="text-info">
-                            <span class="small">Edit</span>
-                            </span>
+                            <a class="btn btn-outline btn-xs btn-primary edit text-info small"
+                            id="btn_setting_payment_fee_structure_edit"
+                            role="button">Edit</a>
                             <span type="button" class="btn btn-outline btn-xs btn-primary"
                             id="btn_setting_payment_fee_structure_delete" class="text-info"
                             role="button"
@@ -190,7 +187,7 @@
                     </thead>
                     <tbody>
                     {% for d in bonus %}
-                    <tr>
+                    <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}" data-id="{{ d.bonus_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -199,7 +196,7 @@
                         <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.rate|default_if_none:'' }}</td>
                         <td class="col-sm-1">
-                            <a type="button" class="btn btn-outline btn-xs btn-primary"
+                            <a type="button" class="edit btn btn-outline btn-xs btn-primary"
                                role="button"
                                id="btn_setting_bonus_edit" class="text-info"
                                href="#" role="button"
@@ -267,35 +264,55 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="{% static 'js/services/commission_and_payment.js' %}"></script>
 <script>
-function deleteDistribution(distributionId) {
-    var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
-    $.ajax({
-        url: url,
-        type: "DELETE",
-        dataType: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-        },
-        success: function () {
-            $('#balance-distribution-' + distributionId).remove();
-            addMessage("Deleted data successfully");
-        },
-        error: function() {
-            addMessage("Delete failed!");
-        }
-    });
-}
 
-function addMessage(message) {
-    $("#ajax-messages").empty().append(
-    '<div class="col-xs-12">' +
-        '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+    function deleteDistribution(distributionId) {
+        var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function () {
+                $('#balance-distribution-' + distributionId).remove();
+                addMessage("Deleted data successfully");
+            },
+            error: function() {
+                addMessage("Delete failed!");
+            }
+        });
+    }
+
+    function addMessage(message) {
+        $("#ajax-messages").empty().append(
+            '<div class="col-xs-12">' +
+            '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
             '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
             '<strong>' + message + '</strong>' +
-        '</div>' +
-    '</div>')
-}
+            '</div>' +
+            '</div>')
+    }
+
+    // Edit row feature
+    $( document ).ready(function() {
+
+        // Build up master data from Server
+        var m_action_types = {{ choices.action_types|safe }};
+        var m_actor_types = {{ choices.actor_types|safe }};
+        var m_sof_types = {{ choices.sof_types|safe }};
+        var m_amount_type = {{ choices.amount_types|safe }};
+        var current_fee_tier_id = {{ fee_tier_id  }};
+        var csrf_token = "{{ csrf_token }}";
+
+        // Balance Table
+        onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, 0, csrf_token);
+
+        // Bonus Table
+        onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+    });
 </script>
 
 {% endblock %}
