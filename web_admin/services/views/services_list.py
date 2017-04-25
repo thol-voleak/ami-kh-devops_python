@@ -22,14 +22,13 @@ class ListView(TemplateView):
         return result
 
     def get_services_list(self):
-
         logger.info("Getting service list by {} user id".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
-
         url = settings.SERVICE_LIST_URL
 
         logger.info("Getting service list from backend with {} url".format(url))
         auth_request = requests.get(url, headers=headers, verify=settings.CERT)
+        logger.info("Get service list response status is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()
         data = json_data.get('data')
