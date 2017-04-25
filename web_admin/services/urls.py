@@ -14,7 +14,8 @@ from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
-from.views.delete_setting_bonus import DeleteSettingBonus
+from .views.delete_setting_bonus import DeleteSettingBonus
+
 
 app_name = "services"
 
