@@ -159,10 +159,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Edit successfully!");
+                    addMessage("Updated Setting Payment & Fee Structure Successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Edit error!");
+                    addMessage("Updated Setting Payment & Fee Structure got error!");
                 }
 
             },
