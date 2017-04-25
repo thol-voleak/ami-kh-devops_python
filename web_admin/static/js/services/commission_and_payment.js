@@ -209,10 +209,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Edit successfully!");
+                    addMessage("Updated Setting Bonus Successfully!");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Edit error!");
+                    addMessage("Updated Setting Bonus got error!");
                 }
 
             },
@@ -247,7 +247,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
     function onBindingButtonsDeleteEvent() {
 
-        $('.datatable').on('click', 'span.delete', function (e) {
+        $('#' + tableId).on('click', 'span.delete', function (e) {
             e.preventDefault();
 
             var nRow = $(this).parents('tr')[0];

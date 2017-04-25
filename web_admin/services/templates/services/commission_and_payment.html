@@ -308,9 +308,9 @@
             '</div>' +
             '</div>')
     }
-    
-    function onInlineEditingRowTableSetup() {
 
+    // Edit row feature
+    $( document ).ready(function() {
         // Build up master data from Server
         var m_action_types = {{ choices.action_types|safe }};
         var m_actor_types = {{ choices.actor_types|safe }};
@@ -324,11 +324,6 @@
 
         // Bonus Table
         onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
-    }
-
-    // Edit row feature
-    $( document ).ready(function() {
-        onInlineEditingRowTableSetup();
     });
 </script>
 
