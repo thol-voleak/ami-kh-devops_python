@@ -232,13 +232,13 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update bonus distributions ==========")
-        logger.info("update bonus distributions user: {}".format(self.request.user))
+        logger.info("update setting distributions user: {}".format(self.request.user))
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
-        logger.info("update bonus distributions id: {}".format(bonus_distributions_id))
+        logger.info("update setting distributions id: {}".format(bonus_distributions_id))
 
         url = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
-        logger.info("update bonus distributions url: {}".format(url))
+        logger.info("update setting distributions url: {}".format(url))
 
         data = request.POST.copy()
 
@@ -254,17 +254,17 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
         logger.info("update bonus distributions request body: {}".format(post_data))
 
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        logger.info("update bonus distributions response status: {}".format(response.status_code))
-        logger.info("update bonus distributions response content: {}".format(response.content))
+        logger.info("update setting distributions response status: {}".format(response.status_code))
+        logger.info("update setting distributions response content: {}".format(response.content))
 
         if response.status_code == 200:
-            logger.info("update bonus distributions: row saving success!")
+            logger.info("update setting distributions: row saving success!")
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            logger.info("update bonus distributions: Something wrong happened!")
+            logger.info("update setting distributions: Something wrong happened!")
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
-        logger.info("========== Finish update bonus distributions ==========")
+        logger.info("========== Finish update setting distributions ==========")
         return httpResponse
 
 class SettingBonusView(TemplateView, GetHeaderMixin):
