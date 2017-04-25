@@ -1,45 +1,27 @@
-import json
 import logging
-import requests
 import time
-import random
-import string
 
+import requests
 from django.conf import settings
-from django.http import HttpResponse
-
-from authentications.models import Authentications
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
 
 class ClientApi():
     def delete_agent_type_by_id(request, agent_type_id):
-        import pdb;
-        pdb.set_trace()
 
         logger.info("========== Start deleting agent type ==========")
         logger.info('Agent Type ID to be deleted: {}'.format(agent_type_id))
         if request.method == "POST":
             url = settings.DELETE_AGENT_TYPE_URL.format(agent_type_id)
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer {}'.format(access_token),
-            }
 
             start_date = time.time()
-            response = requests.delete(url, headers=headers, verify=settings.CERT)
+            response = requests.delete(url, headers=get_auth_header(request.user),
+                                       verify=settings.CERT)
             done = time.time()
             logger.info("Response time for delete {} agent type id is {} sec.".format(agent_type_id, done - start_date))
             logger.info("Response for delete {} agent type id is {}".format(agent_type_id, response.content))

@@ -1,14 +1,15 @@
+import logging
+import time
+
+import requests
+from django.conf import settings
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.conf import settings
-from .models import Authentications
+
+from authentications.utils import get_auth_header
+
 from .apps import InvalidAccessToken
-from django.http import HttpResponseRedirect
-import time
-import random
-import string
-import requests
-import logging
+from .models import Authentications
 
 logger = logging.getLogger(__name__)
 
@@ -57,24 +58,3 @@ def logout_user(request):
         code = response_json.get('status', {}).get('code', '')
         if (code is not None) and (code == 'access_token_expire'):
             raise InvalidAccessToken()
-
-def get_auth_header(user):
-    client_id = settings.CLIENTID
-    client_secret = settings.CLIENTSECRET
-    correlation_id = ''.join(
-        random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-    try:
-        auth = Authentications.objects.get(user=user)
-        access_token = auth.access_token
-    except Exception as e:
-        raise InvalidAccessToken("{}".format(e))
-
-    headers = {
-        'content-type': 'application/x-www-form-urlencoded',
-        'correlation-id': correlation_id,
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'Authorization': 'Bearer {}'.format(access_token),
-    }
-    return headers
