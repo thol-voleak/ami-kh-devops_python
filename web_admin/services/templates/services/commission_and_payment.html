@@ -110,7 +110,7 @@
                             <a class="btn btn-outline btn-xs btn-primary edit text-info small"
                             id="btn_setting_payment_fee_structure_edit"
                             role="button">Edit</a>
-                            <span type="button" class="btn btn-outline btn-xs btn-primary"
+                            <span type="button" class="btn btn-outline btn-xs btn-primary delete"
                             id="btn_setting_payment_fee_structure_delete" class="text-info"
                             role="button"
                             onclick="deleteDistribution('{{ d.balance_distribution_id }}')"
@@ -203,7 +203,7 @@
                                class="text-info">
                                 <span class="small">Edit</span>
                             </a>
-                            <span type="button" class="btn btn-outline btn-xs btn-primary"
+                            <span type="button" class="btn btn-outline btn-xs btn-primary delete"
                             id="btn_setting_bonus_delete" class="text-info"
                             role="button"
                             onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')"
@@ -312,9 +312,8 @@
             '</div>' +
             '</div>')
     }
-
-    // Edit row feature
-    $( document ).ready(function() {
+    
+    function onInlineEditingRowTableSetup() {
 
         // Build up master data from Server
         var m_action_types = {{ choices.action_types|safe }};
@@ -325,10 +324,15 @@
         var csrf_token = "{{ csrf_token }}";
 
         // Balance Table
-        onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, 0, csrf_token);
+        onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
         // Bonus Table
         onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+    }
+
+    // Edit row feature
+    $( document ).ready(function() {
+        onInlineEditingRowTableSetup();
     });
 </script>
 
