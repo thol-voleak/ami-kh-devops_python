@@ -34,16 +34,25 @@ class AddView(TemplateView):
         process_get_service_detail.start()
         process_get_command_name = Process(target=self._get_command_name, args=(4, return_dict, command_id))
         process_get_command_name.start()
+        process_get_fee_types = Process(target=self._get_fee_types, args=(5, return_dict))
+        process_get_fee_types.start()
+        process_get_bonus_types = Process(target=self._get_bonus_types, args=(6, return_dict))
+        process_get_bonus_types.start()
+
 
         process_get_tier_condition.join()
         process_get_amount_types.join()
         process_get_service_detail.join()
         process_get_command_name.join()
+        process_get_fee_types.join()
+        process_get_bonus_types.join()
 
         tier_conditions, status1 = return_dict[1]
         amount_types, status2 = return_dict[2]
         service_detail, status3 = return_dict[3]
         command_name, status4 = return_dict[4]
+        fee_types, status5 = return_dict[5]
+        bonus_types, status6 = return_dict[6]
 
         if process_get_tier_condition.is_alive():
             process_get_tier_condition.terminate()
@@ -57,10 +66,13 @@ class AddView(TemplateView):
         if process_get_command_name.is_alive():
             process_get_command_name.terminate()
 
-        fee_types = self._get_fee_types()
-        bonus_types = self._get_bonus_types()
+        if process_get_fee_types.is_alive():
+            process_get_fee_types.terminate()
 
-        if status1 and status2 and status3 and status4:
+        if process_get_bonus_types.is_alive():
+            process_get_bonus_types.terminate()
+
+        if status1 and status2 and status3 and status4 and status5 and status6:
             context.update({
                 'conditions': tier_conditions,
                 'fee_types': fee_types,
@@ -229,8 +241,56 @@ class AddView(TemplateView):
         else:
             dict[procnum] = None, False
 
-    def _get_fee_types(self):
-        return ['Flat value', 'Rate %', 'Non']
+    def _get_fee_types(self, procnum, dict):
+        logger.info('Start getting fee types from backend')
+        api_path = settings.GET_FEE_TYPES_PATH
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
+        logger.info('API-Path: {path}'.format(path=api_path))
 
-    def _get_bonus_types(self):
-        return ['Rate %', 'Flat value', 'Non']
+        start_date = time.time()
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        done = time.time()
+        logger.info('Reponse_time: {}'.format(done - start_date))
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.content))
+        logger.info('Finish getting fee types from backend')
+
+        if response.status_code == 200:
+            json_data = response.json()
+            status = json_data['status']
+            if status['code'] == "success":
+                fee_types = json_data.get('data', {})
+                dict[procnum] = fee_types, True
+            else:
+                dict[procnum] = None, False
+        else:
+            dict[procnum] = None, False
+
+    def _get_bonus_types(self, procnum, dict):
+        logger.info('Start getting bonus types from backend')
+        api_path = settings.GET_BONUS_TYPES_PATH
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
+        logger.info('API-Path: {path}'.format(path=api_path))
+
+        start_date = time.time()
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        done = time.time()
+        logger.info('Reponse_time: {}'.format(done - start_date))
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.content))
+        logger.info('Finish getting bonus types from backend')
+
+        if response.status_code == 200:
+            json_data = response.json()
+            status = json_data['status']
+            if status['code'] == "success":
+                fee_types = json_data.get('data', {})
+                dict[procnum] = fee_types, True
+            else:
+                dict[procnum] = None, False
+        else:
+            dict[procnum] = None, False

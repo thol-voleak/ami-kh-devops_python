@@ -34,10 +34,16 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         bonus, success = self._get_setting_bonus_list(tier_id)
         logger.info('========== Finish get Setting Bonus List ==========')
 
+        logger.info('========== Start get Agent Fee List ==========')
+        fee, success = self._get_agent_fee_distribution_list(tier_id)
+        logger.info('========== Finish get Agent Fee List ==========')
+
+
         choices = self._get_choices()
 
         context['data'] = self._filter_deleted_items(data)
         context['bonus'] = self._filter_deleted_items(bonus)
+        context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         return context
 
@@ -99,6 +105,24 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         else:
             logger.info("Response content: {}".format(response.content))
         return [], False
+
+    def _get_agent_fee_distribution_list(self, fee_tier_id):
+        url = settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        json_data = response.json()
+        logger.info("Username: {}".format(self.request.user.username))
+        logger.info("URL: {}".format(url))
+        logger.info("Response status: {}".format(response.status_code))
+        if response.status_code == 200:
+            data = json_data.get('data', [])
+            logger.info("Agent Fee list count: {}".format(len(data)))
+            data = format_date_time(data)
+            return data, True
+        else:
+            logger.info("Response content: {}".format(response.content))
+        return [], False
+
 
 
 class PaymentAndFeeStructureView(View, GetHeaderMixin):
