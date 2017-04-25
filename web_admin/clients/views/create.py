@@ -1,14 +1,14 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.conf import settings
-from authentications.apps import InvalidAccessToken
-
-import requests, random, string, time
-
-
-from authentications.models import *
-
 import logging
+import random
+import string
+import time
+
+import requests
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.views import View
+
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -39,23 +39,6 @@ class ClientCreate(View):
         try:
             url = settings.CREATE_CLIENT_URL
 
-            try:
-                auth = Authentications.objects.get(user=request.user)
-                access_token = auth.access_token
-            except Exception as e:
-                raise InvalidAccessToken("{}".format(e))
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer ' + access_token,
-            }
-
             params = {
                 "client_id": client_id,
                 "client_secret": client_secret,
@@ -73,7 +56,8 @@ class ClientCreate(View):
             }
 
             start_date = time.time()
-            response = requests.post(url, headers=headers, json=params, verify=settings.CERT)
+            response = requests.post(url, headers=get_auth_header(request.user),
+                                     json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 

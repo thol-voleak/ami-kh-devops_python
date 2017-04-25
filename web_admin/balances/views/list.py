@@ -1,15 +1,13 @@
-from django.views.generic.base import TemplateView
-from django.conf import settings
+import datetime
+import logging
+import time
 
 import requests
-import random
-import string
-import time
-import logging
-import datetime
+from django.conf import settings
+from django.views.generic.base import TemplateView
 
-from authentications.models import *
 from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -29,30 +27,12 @@ class ListView(TemplateView):
         return result
 
     def get_currencies_list(self):
-        client_id = settings.CLIENTID
-        client_secret = settings.CLIENTSECRET
         url = settings.GET_ALL_CURRENCY_URL
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            logger.info("Getting currency list by {} user id".format(auth.user))
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'Authorization': 'Bearer ' + access_token,
-        }
         logger.info("Getting currency list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
         done = time.time()
         json_data = response.json()
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
@@ -68,29 +48,12 @@ class ListView(TemplateView):
             raise Exception("{}".format(json_data["status"]["message"]))
 
     def get_preload_currencies_dropdown(self):
-        client_id = settings.CLIENTID
-        client_secret = settings.CLIENTSECRET
         url = settings.GET_ALL_PRELOAD_CURRENCY_URL
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            logger.info("Getting preload currency list by {} user id".format(auth.user))
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'Authorization': 'Bearer ' + access_token,
-        }
         logger.info("Getting preload currency list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
         done = time.time()
         json_data = response.json()
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))

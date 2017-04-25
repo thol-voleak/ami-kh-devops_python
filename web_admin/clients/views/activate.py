@@ -1,12 +1,11 @@
 import requests
-import random
-import string
 import time
 import copy
 
 from django.conf import settings
 from django.http import HttpResponse
-from authentications.apps import InvalidAccessToken, Authentications
+from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 import logging
 
@@ -23,30 +22,13 @@ def activate(request, client_id):
 
     try:
         url = settings.ACTIVATE_CLIENT_URL.format(client_id)
-
-        try:
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': settings.CLIENTID,
-            'client_secret': settings.CLIENTSECRET,
-            'Authorization': 'Bearer {}'.format(access_token),
-        }
-
         data_log = copy.deepcopy(params)
         data_log['client_secret'] = ''
         logger.info("Expected client status {}".format(data_log))
 
         start_date = time.time()
-        response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
+        response = requests.put(url, headers=get_auth_header(request.user),
+                                json=params, verify=settings.CERT)
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
 

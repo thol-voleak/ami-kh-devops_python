@@ -31,6 +31,7 @@ class FeeTierListView(TemplateView, GetHeaderMixin):
 
         context['data'] = data
         context['msg'] = self.request.session.pop('add_tier_msg', None)
+        context['edit_msg'] = self.request.session.pop('edit_tier_msg', None)
         return context
 
     def _get_fee_tier_list(self, service_command_id):

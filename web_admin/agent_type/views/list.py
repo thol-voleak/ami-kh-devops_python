@@ -1,9 +1,12 @@
-from django.views.generic.base import TemplateView
+import datetime
+import logging
+
+import requests
 from django.conf import settings
-import requests, random, string
-from authentications.models import *
-import logging, datetime
+from django.views.generic.base import TemplateView
+
 from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -24,30 +27,12 @@ class ListView(TemplateView):
         return result
 
     def get_agent_types_list(self):
-        client_id = settings.CLIENTID
-        client_secret = settings.CLIENTSECRET
         url = settings.AGENT_TYPES_LIST_URL
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            logger.info("Username: {}".format(auth.user))
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'Authorization': 'Bearer ' + access_token,
-        }
 
         logger.info('Getting agent types list from backend')
         logger.info('URL: {}'.format(url))
-        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
+        auth_request = requests.get(url, headers=get_auth_header(self.request.user),
+                                    verify=settings.CERT)
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()

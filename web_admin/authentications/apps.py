@@ -71,6 +71,8 @@ class CustomBackend:
             if auth_response.status_code == 200:
                 json_data = auth_response.json()
                 access_token = json_data.get('access_token')
+                correlation_id = json_data.get('correlation_id')
+
                 if (access_token is not None) and (len(access_token) > 0):
 
                     logger.info('Checking user is exit in system')
@@ -85,10 +87,13 @@ class CustomBackend:
                     try:
                         auth = Authentications.objects.get(user=user)
                         auth.access_token = access_token
+                        auth.correlation_id = correlation_id
                         auth.save()
                     except Exception as ex:
                         logger.info(ex)
-                        auth = Authentications(user=user, access_token=access_token)
+                        auth = Authentications(user=user,
+                                               access_token=access_token,
+                                               correlation_id=correlation_id)
                         auth.save()
 
                     logger.info("Authentication success and generate session for {} user name".format(username))
