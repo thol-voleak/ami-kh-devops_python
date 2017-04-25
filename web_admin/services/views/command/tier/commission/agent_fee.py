@@ -44,7 +44,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
             messages.add_message(
                 request,
                 messages.INFO,
-                'Added agent hierarchy successfully'
+                'Added Agent Hierarchy Distribution - Fee successfully'
             )
         else:
             messages.add_message(
