@@ -168,7 +168,7 @@
         </div>
 
         <form method="POST" class="form-horizontal" role="form"
-              action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}">
+              action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" id="Setting_Bonus_Form">
 
             {% csrf_token %}
             <div class="form-group table-responsive row">
@@ -187,7 +187,7 @@
                     </thead>
                     <tbody>
                     {% for d in bonus %}
-                    <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}" data-id="{{ d.bonus_distribution_id }}">
+                    <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}" data-id="{{ d.bonus_distribution_id }}" id="bonus-distribution-{{ d.bonus_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -203,15 +203,13 @@
                                class="text-info">
                                 <span class="small">Edit</span>
                             </a>
-                            {% comment %}
-                            <a type="button" class="btn btn-outline btn-xs btn-primary"
-                               role="button"
-                               id="btn_setting_bonus_delete" class="text-info"
-                               href="#" role="button"
-                               class="text-info">
-                                <span class="small">Delete</span>
-                            </a>
-                            {% endcomment %}
+                            <span type="button" class="btn btn-outline btn-xs btn-primary"
+                            id="btn_setting_bonus_delete" class="text-info"
+                            role="button"
+                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')"
+                            class="text-info">
+                            <span class="small">Delete</span>
+                            </span>
                         </td>
                     </tr>
                     {% endfor %}
@@ -282,6 +280,25 @@
             },
             error: function() {
                 addMessage("Delete failed!");
+            }
+        });
+    }
+
+    function deleteSettingBonus(bonus_distributions_id) {
+        var url = $('#Setting_Bonus_Form').attr('action') + bonus_distributions_id;
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function () {
+                $('#bonus-distribution-' + bonus_distributions_id).remove();
+                addMessage("Deleted Setting Bonus successfully");
+            },
+            error: function() {
+                addMessage("Failed to Delete Setting Bonus");
             }
         });
     }

@@ -15,6 +15,8 @@ from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
+from .views.delete_setting_bonus import DeleteSettingBonus
+
 
 app_name = "services"
 
@@ -54,4 +56,7 @@ urlpatterns = [
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/update/$',
         login_required(TierUpdateView.as_view(), login_url='login'),
         name="update_tier"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<bonus_distribution_id>[0-9A-Za-z]+)/$',
+        login_required(DeleteSettingBonus.as_view(), login_url='login'),
+        name="delete_setting_bonus"),
 ]
