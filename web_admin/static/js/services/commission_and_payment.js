@@ -69,17 +69,62 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlDDAmountTypes += '<option value="' + this.amount_type_id + '"' + htmlSelected + '>' + this.amount_type + '</option>';
         });
 
-        jqTds[0].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'action_type\'>' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        // Build up HTML ID Element
+        // Row data
+        var htmlIDActionTypes = 'id=\'';
+        var htmlIDActorTypes = 'id=\'';
+        var htmlIDSpecificID = 'id=\'';         // Unused Now
+        var htmlIDSOFTypes = 'id=\'';
+        var htmlIDSpecificSOF = 'id=\'';
+        var htmlIDRate = 'id=\'';
+        var htmlIDAmount = 'id=\'';
+
+        // Buttons
+        var htmlIDBtnSave = 'id=\'';
+        var htmlIDBtnCancel = 'id=\'';
+
+        if (tableId == 'tbl_setting_payment_fee_structure') {
+            htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
+            htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
+            htmlIDSpecificID += 'txt_setting_payment_fee_structure_specific_id_edit';
+            htmlIDSOFTypes += 'txt_setting_payment_fee_structure_source_of_fund_edit';
+            htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
+            htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
+            htmlIDRate += 'ddl_setting_payment_fee_structure_rate_edit';
+            htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
+            htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
+        } else if (tableId == 'tbl_setting_bonus') {
+            htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
+            htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
+            htmlIDSpecificID += 'ddl_setting_bonus_actor_edit';
+            htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
+            htmlIDSpecificSOF += 'txt_setting_bonus_spec_src_fund_edit';
+            htmlIDAmount += 'ddl_setting_bonus_amount_edit';
+            htmlIDRate += 'txt_setting_bonus_rate_edit';
+            htmlIDBtnSave += 'btn_setting_bonus_save';
+            htmlIDBtnCancel += 'btn_setting_bonus_cancel';
+        }
+        htmlIDActionTypes += '\'';
+        htmlIDActorTypes += '\'';
+        htmlIDSpecificID += '\'';
+        htmlIDSOFTypes += '\'';
+        htmlIDSpecificSOF += '\'';
+        htmlIDAmount += '\'';
+        htmlIDRate += '\'';
+        htmlIDBtnSave += '\'';
+        htmlIDBtnCancel += '\'';
+
+        jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
+        jqTds[1].innerHTML = '<select c type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '';
-        jqTds[3].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<input type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
-        jqTds[5].innerHTML = '<select type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[4].innerHTML = '<input ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
+        jqTds[5].innerHTML = '<select ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
+        jqTds[6].innerHTML = '<input ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
         // Action Buttons
-        var htmlButtonSave = '<a class=\'edit btn btn-outline btn-xs btn-primary text-info small\' role=\'button\' id=\'payment_and_fee_stucture_btn_save\'>Save</a>';
-        var htmlButtonCancel = '<a class=\'cancel btn btn-outline btn-xs btn-primary text-info small\' role=\'button\'>Cancel</a>';
+        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'edit btn btn-outline btn-xs btn-primary text-info small\'>Save</button>';
+        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'cancel btn btn-outline btn-xs btn-primary text-info small\'>Cancel</button>';
 
         jqTds[7].innerHTML = htmlButtonSave + htmlButtonCancel;
 
@@ -100,24 +145,25 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
         oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
 
-        var htmlButtonEdit = '<a class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\' role=\'button\'>Edit</a>';
-        var htmlButtonDelete = '';
-
-        if (tableId == "tbl_setting_payment_fee_structure") {
-            htmlButtonDelete = '' +
-                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + distribution_id + ')\'>' +
-                    '<span class=\'small\'>' +
-                        'Delete' +
-                    '</span>' +
-                '</span>';
-        } else if (tableId == "tbl_setting_bonus") {
-            htmlButtonDelete = '' +
-                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_bonus_delete\' onclick=\'deleteSettingBonus(' + distribution_id + ')\'>' +
-                '<span class=\'small\'>' +
-                'Delete' +
-                '</span>' +
-                '</span>';
+        // Build up HTML ID Element
+        var htmlIDBtnEdit = 'id=\'';
+        var htmlIDBtnDelete = 'id=\'';
+        var htmlEventBtnDelete = 'onclick=\'';
+        if (tableId == 'tbl_setting_payment_fee_structure') {
+            htmlIDBtnEdit += 'btn_setting_payment_fee_structure_edit';
+            htmlIDBtnDelete += 'btn_setting_payment_fee_structure_delete';
+            htmlEventBtnDelete += 'deleteDistribution(' + distribution_id + ')';
+        } else if (tableId == 'tbl_setting_bonus') {
+            htmlIDBtnEdit += 'btn_setting_bonus_save';
+            htmlIDBtnDelete += 'btn_setting_bonus_delete';
+            htmlEventBtnDelete += 'deleteSettingBonus(' + distribution_id + ')';
         }
+        htmlIDBtnEdit += '\'';
+        htmlIDBtnDelete += '\'';
+        htmlEventBtnDelete += '\'';
+
+        var htmlButtonEdit = '<button ' + htmlIDBtnEdit + 'type=\'button\' class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\'>Edit</button>';
+        var htmlButtonDelete = '<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
 
         oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
         oTable.fnDraw();
@@ -234,7 +280,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
     });
 
     function onBindingButtonsCancelEvent() {
-        $('#' + tableId).on('click', 'a.cancel', function (e) {
+        $('#' + tableId).on('click', 'button.cancel', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */
@@ -247,7 +293,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
     function onBindingButtonsDeleteEvent() {
 
-        $('#' + tableId).on('click', 'span.delete', function (e) {
+        $('#' + tableId).on('click', 'button.delete', function (e) {
             e.preventDefault();
 
             var nRow = $(this).parents('tr')[0];
@@ -257,7 +303,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
     function onBindingButtonsEditEvent() {
 
-        $('#' + tableId).on('click', 'a.edit', function (e) {
+        $('#' + tableId).on('click', 'button.edit', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */

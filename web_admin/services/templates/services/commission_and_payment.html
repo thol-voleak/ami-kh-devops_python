@@ -84,14 +84,14 @@
                            id="tbl_setting_payment_fee_structure">
                         <thead>
                         <tr>
-                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
-                            <th class="col-sm-2" id="lbl_actor">Actor</th>
-                            <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
-                            <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
-                            <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
-                            <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
-                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
-                            <th class="col-sm-2" id="lbl_actions">Actions</th>
+                            <th id="lbl_db">Debit/Credit</th>
+                            <th id="lbl_actor">Actor</th>
+                            <th id="lbl_specific_id">Specific ID</th>
+                            <th id="lbl_source_of_fund">Source of Fund</th>
+                            <th id="lbl_specific_source">Specific Source of Fund</th>
+                            <th id="lbl_from_amount">From Amount</th>
+                            <th id="lbl_rate">Rate %</th>
+                            <th id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -111,52 +111,50 @@
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
-                                    <a class="btn btn-outline btn-xs btn-primary edit text-info small"
-                                       id="btn_setting_payment_fee_structure_edit"
-                                       role="button">Edit</a>
-                                    <span type="button" class="btn btn-outline btn-xs btn-primary delete"
-                                          id="btn_setting_payment_fee_structure_delete" class="text-info"
-                                          role="button"
-                                          onclick="deleteDistribution('{{ d.balance_distribution_id }}')"
-                                          class="text-info">
-                            <span class="small">Delete</span>
-                            </span>
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_payment_fee_structure_edit">Edit</button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_payment_fee_structure_delete"
+                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete</button>
                                 </td>
                             </tr>
                         {% endfor %}
                         <tr>
                             <td>
-                                <select class="form-control" name="action_type" id="action_type">
+                                <select class="form-control" name="action_type" id="ddl_setting_payment_fee_structure_dc">
                                     {% for action_type in choices.action_types %}
                                         <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="actor_type" id="actor_type"
-                                        onchange="changeSpecificActorType('#actor_type', '#txt_fee_specific_actor_id')">
+                                <select class="form-control" name="actor_type" id="ddl_setting_payment_fee_structure_actor">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
                             <td>
-                                <input name="specific_actor_id" id="txt_fee_specific_actor_id" class="form-control" disabled>
+                                <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
                             </td>
                             <td>
-                                <select class="form-control" name="sof_type_id" id="sof_type_id">
+                                <select class="form-control" name="sof_type_id" id="txt_setting_payment_fee_structure_specific_id">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input class="form-control" name="specific_sof"/></td>
                             <td>
-                                <select class="form-control" name="amount_type">
+                                <input class="form-control" name="specific_sof" id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
+                            </td>
+                            <td>
+                                <select class="form-control" name="amount_type" id="ddl_setting_payment_fee_structure_from_amount">
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" required/></td>
+                            <td><input class="form-control" name="rate" id="ddl_setting_payment_fee_structure_rate" required /></td>
                             <td></td>
                         </tr>
                     </table>
@@ -165,7 +163,7 @@
 
                 <div class="form-group pull-right">
                     <a href="#">
-                        <input id="btn_setting_payment_fee_strucure_add" class="btn btn-success" type="submit"
+                        <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
                                value="Add"/>
                     </a>
                 </div>
@@ -184,14 +182,14 @@
                     <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
                         <thead>
                         <tr>
-                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
-                            <th class="col-sm-2" id="lbl_actor">Actor</th>
-                            <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
-                            <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
-                            <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
-                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
-                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
-                            <th class="col-sm-2" id="lbl_actions">Actions</th>
+                            <th id="lbl_db">Debit/Credit</th>
+                            <th id="lbl_actor">Actor</th>
+                            <th id="lbl_specific_id">Specific ID</th>
+                            <th id="lbl_source_of_fund">Source of Fund</th>
+                            <th id="lbl_specific_source">Specific Source of Fund</th>
+                            <th id="lbl_from_amount">Amount</th>
+                            <th id="lbl_rate">Rate %</th>
+                            <th id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -211,20 +209,13 @@
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
-                                    <a type="button" class="edit btn btn-outline btn-xs btn-primary"
-                                       role="button"
-                                       id="btn_setting_bonus_edit" class="text-info"
-                                       href="#" role="button"
-                                       class="text-info">
-                                        <span class="small">Edit</span>
-                                    </a>
-                                    <div type="button" class="btn btn-outline btn-xs btn-primary delete"
-                                         id="btn_setting_bonus_delete" class="text-info"
-                                         role="button"
-                                         onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')"
-                                         class="text-info">
-                                        <span class="small">Delete</span>
-                                    </div>
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_bonus_edit">Edit</button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_bonus_delete"
+                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -237,15 +228,12 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
-                                    onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_actor_id')">
+                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td>
-                                <input name="specific_actor_id" id="txt_setting_bonus_actor_id" class="form-control" disabled>
-                            </td>
+                            <td></td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
                                     {% for sof_type in choices.sof_types %}
@@ -254,7 +242,7 @@
                                 </select>
                             </td>
                             <td><input class="form-control" id="txt_setting_bonus_spec_src_fund"
-                                       name="specific_sof"/>
+                                       name="specific_sof"></input>
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount">
@@ -280,12 +268,11 @@
 
         </div>
     </div>
-{% endblock %}
 
-{% block body_js %}
-    {{ block.super }}
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
     <script>
+
         function deleteDistribution(distributionId) {
             var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
             $.ajax({
@@ -324,6 +311,26 @@
             });
         }
 
+
+        function deleteAgentFee(agent_fee_id) {
+            var url = $('#agent-hierarchy-distribution-form').attr('action') + agent_fee_id;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
+                    addMessage("Deleted Agent Hierarchy successfully");
+                },
+                error: function() {
+                    addMessage("Failed to Delete Agent Hierarchy");
+                }
+            });
+        }
+
         function addMessage(message) {
             $("#ajax-messages").empty().append(
                 '<div class="col-xs-12">' +
@@ -332,14 +339,6 @@
                 '<strong>' + message + '</strong>' +
                 '</div>' +
                 '</div>')
-        }
-
-        function changeSpecificActorType(actorType, specificActorId) {
-            if ($(actorType).find(":selected").html() == "Specific ID") {
-                $(specificActorId).prop('disabled', false);
-            } else {
-                $(specificActorId).prop('disabled', true);
-            }
         }
 
         // Edit row feature
@@ -359,4 +358,5 @@
             onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
         });
     </script>
+
 {% endblock %}
