@@ -1,15 +1,13 @@
-from authentications.apps import InvalidAccessToken
-from authentications.models import *
-from django.shortcuts import redirect
-
 import logging
-import random
-import string
 import time
-import requests
 
+import requests
 from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
+
+from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -35,26 +33,11 @@ class DeleteView(TemplateView):
             logger.info('Username: {}'.format(request.user.username))
 
             url = settings.DELETE_SYSTEM_USER_URL.format(system_user_id)
-            try:
-                auth = Authentications.objects.get(user=request.user)
-                access_token = auth.access_token
-            except Exception as e:
-                raise InvalidAccessToken("{}".format(e))
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer {}'.format(access_token),
-            }
 
             logger.info('URL: {}'.format(url))
             start_date = time.time()
-            response = requests.delete(url, headers=headers, verify=settings.CERT)
+            response = requests.delete(url, headers=get_auth_header(request.user),
+                                       verify=settings.CERT)
             done = time.time()
             logger.info(
                 "Response time for delete {} system user id is {} sec.".format(system_user_id, done - start_date))
@@ -85,25 +68,9 @@ class DeleteView(TemplateView):
     def _get_system_user_detail(self, system_user_id):
 
         url = settings.SYSTEM_USER_DETAIL_URL.format(system_user_id)
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            logger.info("Username: {}".format(self.request.user.username))
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': settings.CLIENTID,
-            'client_secret': settings.CLIENTSECRET,
-            'Authorization': 'Bearer ' + access_token,
-        }
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
         logger.info("URL for deleting system user id {} is {}".format(system_user_id, url))
         done = time.time()
         response_json = response.json()

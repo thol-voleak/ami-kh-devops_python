@@ -1,14 +1,14 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.views.generic.base import TemplateView
-from django.conf import settings
-
-from authentications.models import Authentications
-from authentications.apps import InvalidAccessToken
-
-import requests, random, string, time
 import copy
 import logging
+import time
+
+import requests
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.views import View
+from django.views.generic.base import TemplateView
+
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -35,26 +35,10 @@ class ClientUpdateForm(TemplateView):
     def _get_client_detail(self, client_id):
 
         url = settings.CLIENTS_LIST_URL + '/' + client_id
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': settings.CLIENTID,
-            'client_secret': settings.CLIENTSECRET,
-            'Authorization': 'Bearer ' + access_token,
-        }
-
         logger.info('Getting client detail from backend')
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
         logger.info("Get client url: {}".format(url))
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
@@ -105,29 +89,13 @@ class ClientUpdate(View):
         try:
             url = settings.UPDATE_CLIENT_URL.format(client_id)
 
-            try:
-                auth = Authentications.objects.get(user=request.user)
-                access_token = auth.access_token
-            except Exception as e:
-                raise InvalidAccessToken("{}".format(e))
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer {}'.format(access_token),
-            }
-
             data_log = copy.deepcopy(params)
             data_log['client_secret'] = ''
             logger.info("Client info to be updated {}".format(data_log))
 
             start_date = time.time()
-            response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
+            response = requests.put(url, headers=get_auth_header(request.user),
+                                    json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 

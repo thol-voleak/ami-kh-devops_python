@@ -52,7 +52,7 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_fee_type" name="fee_type" required>
                                 {% for item in fee_types %}
-                                <option value="{{ item }}">{{ item }}</option>
+                                <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -70,7 +70,7 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_bonus_type" name="bonus_type" required>
                                 {% for item in bonus_types %}
-                                <option value="{{ item }}">{{ item }}</option>
+                                <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
                                 {% endfor %}
                             </select>
                         </div>

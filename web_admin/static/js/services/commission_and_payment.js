@@ -89,12 +89,13 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
     function saveRow(oTable, nRow) {
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
-        var balance_distribution_id = $(nRow).data('id');
+
+        var distribution_id = $(nRow).data('id');
 
         oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
         oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
                                                                                         // Specific ID
-        oTable.fnUpdate($(jqSelects[2]).find(":selected").val(), nRow, 3, false);       // Sof Type ID
+        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
         oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
         oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
         oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
@@ -104,7 +105,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         if (tableId == "tbl_setting_payment_fee_structure") {
             htmlButtonDelete = '' +
-                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + balance_distribution_id + ')\'>' +
+                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_payment_fee_structure_delete\' onclick=\'deleteDistribution(' + distribution_id + ')\'>' +
+                    '<span class=\'small\'>' +
+                        'Delete' +
+                    '</span>' +
+                '</span>';
+        } else if (tableId == "tbl_setting_bonus") {
+            htmlButtonDelete = '' +
+                '<span type=\'button\' class=\'btn btn-outline btn-xs delete btn-primary text-info\' role=\'button\' id=\'btn_setting_bonus_delete\' onclick=\'deleteSettingBonus(' + distribution_id + ')\'>' +
                 '<span class=\'small\'>' +
                 'Delete' +
                 '</span>' +
@@ -113,6 +121,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
         oTable.fnDraw();
+
+        onBindingButtonsDeleteEvent();
     }
 
     // For Balance
@@ -129,7 +139,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 "fee_tier_id": fee_tier_id,
                 "action_type": $(jqSelects[0]).find(":selected").html(),
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
-                    // 2 = empty data
+                // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
                 "specific_sof": jqInputs[0].value,
                 "amount_type": $(jqSelects[3]).find(":selected").html(),
@@ -149,10 +159,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Edit successfully!");
+                    addMessage("Updated Setting Payment & Fee Structure Successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Edit error!");
+                    addMessage("Updated Setting Payment & Fee Structure got error!");
                 }
 
             },
@@ -199,10 +209,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Edit successfully!");
+                    addMessage("Updated Setting Bonus Successfully!");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Edit error!");
+                    addMessage("Updated Setting Bonus got error!");
                 }
 
             },
@@ -232,6 +242,16 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
             restoreRow(oTable, nEditing);
             nEditing = nRow;
+        });
+    }
+
+    function onBindingButtonsDeleteEvent() {
+
+        $('#' + tableId).on('click', 'span.delete', function (e) {
+            e.preventDefault();
+
+            var nRow = $(this).parents('tr')[0];
+            oTable.fnDeleteRow(nRow);
         });
     }
 
@@ -268,5 +288,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
     }
 
     onBindingButtonsEditEvent();
+    onBindingButtonsDeleteEvent();
 }
 

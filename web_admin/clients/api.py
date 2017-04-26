@@ -1,14 +1,12 @@
 import json
 import logging
-import requests
 import time
-import random
-import string
 
+import requests
 from django.conf import settings
 from django.http import HttpResponse
 
-from authentications.models import Authentications
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -18,22 +16,10 @@ class ClientApi():
         logger.info('========== Start regenerating client secret ==========')
 
         url = settings.REGENERATE_CLIENT_SECRET_URL.format(client_id)
-        auth = Authentications.objects.get(user=request.user)
-        access_token = auth.access_token
-
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': settings.CLIENTID,
-            'client_secret': settings.CLIENTSECRET,
-            'Authorization': 'Bearer {}'.format(access_token),
-        }
 
         start_date = time.time()
-        response = requests.post(url, headers=headers, verify=settings.CERT)
+        response = requests.post(url, headers=get_auth_header(request.user),
+                                 verify=settings.CERT)
         done = time.time()
         logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id,
                                                                                                     done - start_date))
@@ -53,18 +39,9 @@ class ClientApi():
         logger.info("========== Start delete client id ==========")
         if request.method == "POST":
             url = settings.DELETE_CLIENT_URL.format(client_id)
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': "xxxxx",
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer {}'.format(access_token),
-            }
             start_date = time.time()
-            response = requests.delete(url, headers=headers, verify=settings.CERT)
+            response = requests.delete(url, headers=get_auth_header(request.user),
+                                       verify=settings.CERT)
             done = time.time()
             logger.info("Response time for delete {} client id is {} sec.".format(client_id, done - start_date))
             logger.info("Response for delete {} client id is {}".format(client_id, response.content))

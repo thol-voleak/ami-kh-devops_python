@@ -12,7 +12,6 @@
                 <form class="form-horizontal" role="form" method="post"
                       action="{% url 'services:update_tier' service_id command_id service_command_id update_tier.fee_tier_id%}">
                     {% csrf_token %}
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Service Name</label>
                         <div class="col-sm-8">
@@ -57,10 +56,10 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_fee_type" name="fee_type" required>
                                 {% for item in fee_types %}
-                                    {% if item == update_tier.fee_type %}
-                                        <option value="{{ item }}" selected="selected">{{ item }}</option>
+                                    {% if item.fee_type == update_tier.fee_type %}
+                                        <option value="{{ item.fee_type }}" selected="selected">{{ item.fee_type }}</option>
                                     {% else %}
-                                        <option value="{{ item }}">{{ item }}</option>
+                                        <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -79,10 +78,10 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_bonus_type" name="bonus_type" required>
                                 {% for item in bonus_types %}
-                                    {% if item == update_tier.bonus_type %}
-                                        <option value="{{ item }}" selected="selected" >{{ item }}</option>
+                                    {% if item.bonus_type == update_tier.bonus_type %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
-                                        <option value="{{ item }}">{{ item }}</option>
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>

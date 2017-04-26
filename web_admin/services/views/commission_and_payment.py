@@ -34,10 +34,20 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         bonus, success = self._get_setting_bonus_list(tier_id)
         logger.info('========== Finish get Setting Bonus List ==========')
 
+        logger.info('========== Start get Setting Bonus List ==========')
+        agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
+        # import ipdb;ipdb.set_trace()
+        logger.info('========== Finish get Setting Bonus List ==========')
+
+        logger.info('========== Start get Agent Fee List ==========')
+        fee, success = self._get_agent_fee_distribution_list(tier_id)
+        logger.info('========== Finish get Agent Fee List ==========')
         choices = self._get_choices()
 
         context['data'] = self._filter_deleted_items(data)
         context['bonus'] = self._filter_deleted_items(bonus)
+        context['agent_bonus_distribution'] = self._filter_deleted_items(agent_bonus_distribution)
+        context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         return context
 
@@ -100,9 +110,42 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
             logger.info("Response content: {}".format(response.content))
         return [], False
 
+    def _get_agent_bonus_distribution_list(self, tf_fee_tier_id):
+        agent_bonus_distribution_url = settings.DOMAIN_NAMES + settings.AGENT_BONUS_DISTRIBUTION_URL.format(
+            tf_fee_tier_id=tf_fee_tier_id)
+        logger.info("Agent bonus distribution url is {}".format(agent_bonus_distribution_url))
+        response = requests.get(agent_bonus_distribution_url, headers=self._get_headers(), verify=settings.CERT)
+        json_data = response.json()
+
+        logger.info("Get agent bonus distribution response status code is {}".format(response.status_code))
+        if response.status_code == 200:
+            data = json_data.get('data', [])
+            logger.info("Total agent bonus list is {}".format(len(data)))
+            data = format_date_time(data)
+            return data, True
+        else:
+            logger.info("Agent bonus distribution response content is {}".format(response.content))
+        return [], False
+
+    def _get_agent_fee_distribution_list(self, fee_tier_id):
+        url = settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+
+        json_data = response.json()
+        logger.info("Username: {}".format(self.request.user.username))
+        logger.info("URL: {}".format(url))
+        logger.info("Response status: {}".format(response.status_code))
+        if response.status_code == 200:
+            data = json_data.get('data', [])
+            logger.info("Agent Fee list count: {}".format(len(data)))
+            data = format_date_time(data)
+            return data, True
+        else:
+            logger.info("Response content: {}".format(response.content))
+        return [], False
+
 
 class PaymentAndFeeStructureView(View, GetHeaderMixin):
-
     def post(self, request, *args, **kwargs):
 
         service_id = kwargs.get('service_id')
@@ -153,8 +196,8 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
 
-class BalanceDistributionsUpdate(View, GetHeaderMixin):
 
+class BalanceDistributionsUpdate(View, GetHeaderMixin):
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
@@ -198,8 +241,8 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Finish update balance distributions ==========")
         return httpResponse
 
-class BonusDistributionsUpdate(View, GetHeaderMixin):
 
+class BonusDistributionsUpdate(View, GetHeaderMixin):
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
@@ -208,13 +251,13 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update bonus distributions ==========")
-        logger.info("update bonus distributions user: {}".format(self.request.user))
+        logger.info("update setting distributions user: {}".format(self.request.user))
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
-        logger.info("update bonus distributions id: {}".format(bonus_distributions_id))
+        logger.info("update setting distributions id: {}".format(bonus_distributions_id))
 
         url = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
-        logger.info("update bonus distributions url: {}".format(url))
+        logger.info("update setting distributions url: {}".format(url))
 
         data = request.POST.copy()
 
@@ -230,21 +273,21 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
         logger.info("update bonus distributions request body: {}".format(post_data))
 
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        logger.info("update bonus distributions response status: {}".format(response.status_code))
-        logger.info("update bonus distributions response content: {}".format(response.content))
+        logger.info("update setting distributions response status: {}".format(response.status_code))
+        logger.info("update setting distributions response content: {}".format(response.content))
 
         if response.status_code == 200:
-            logger.info("update bonus distributions: row saving success!")
+            logger.info("update setting distributions: row saving success!")
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            logger.info("update bonus distributions: Something wrong happened!")
+            logger.info("update setting distributions: Something wrong happened!")
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
-        logger.info("========== Finish update bonus distributions ==========")
+        logger.info("========== Finish update setting distributions ==========")
         return httpResponse
 
-class SettingBonusView(TemplateView, GetHeaderMixin):
 
+class SettingBonusView(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
@@ -253,7 +296,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
 
         url = settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Setting Bonus ==========')
-        logger.info('Username: {}, with url {}.'.format(self.request.user.username,url))
+        logger.info('Username: {}, with url {}.'.format(self.request.user.username, url))
 
         data = request.POST.copy()
         post_data = {
@@ -294,7 +337,6 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
 
 
 class PaymentAndFeeStructureDetailView(View, GetHeaderMixin):
-
     def delete(self, request, *args, **kwargs):
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
