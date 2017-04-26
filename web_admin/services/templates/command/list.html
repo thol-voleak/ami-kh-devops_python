@@ -13,18 +13,22 @@
     <div class="panel-heading">
         <h3>Service Commands</h3>
     </div>
-    {% if msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ msg }}</strong>
-        </div>
+
+    <div id="ajax-messages">
+        {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
+
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post"
+                <form class="form-horizontal" role="form" method="post" id="service_command_form"
                       action="{% url 'services:command_list' service_id %}">
                     {% csrf_token %}
 
@@ -60,23 +64,25 @@
                                 </thead>
                                 <tbody>
                                 {% for command in data %}
-                                    <tr>
-                                        <td class="col-sm-2">{{ command.command_name|default_if_none:'' }}</td>
-                                        <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
-                                        <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
-                                        <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
-                                        <td class="col-sm-2"><a type="button"
-                                            class="btn btn-outline btn-xs btn-primary"
-                                            role="button"
-                                            id="btn_tier" class="text-info"
-                                            href="{% url 'services:fee_tier_list' service_id command.command_id command.service_command_id %}" role="button"
-                                            class="text-info">
-                                            <span class="small">Tier</span>
-                                            </a>
-                                        </td>
-                                        </a>
-                                        </td>
-                                    </tr>
+                                    {% if not command.is_deleted %}
+                                        <tr id="service_command_{{ command.service_command_id }}">
+                                            <td class="col-sm-2">{{ command.command_name|default_if_none:'' }}</td>
+                                            <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
+                                            <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
+                                            <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
+                                            <td class="col-sm-2"><a type="button"
+                                                class="btn btn-outline btn-xs btn-primary"
+                                                role="button"
+                                                id="btn_tier" class="text-info"
+                                                href="{% url 'services:fee_tier_list' service_id command.command_id command.service_command_id %}" role="button"
+                                                class="text-info">
+                                                <span class="small">Tier</span>
+                                                </a>
+                                                <button type="button" class="btn btn-outline btn-xs btn-danger small" id="btn_delete"
+                                                onclick="deleteCommand('{{ command.service_command_id }}')">Delete</button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -99,4 +105,36 @@
     </div>
 </div>
 
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
+    <script>
+        function deleteCommand(svCommandId) {
+            var url = $('#service_command_form').attr('action') + svCommandId;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    $('#service_command_' + svCommandId).remove();
+                    addMessage("Deleted data successfully");
+                },
+                error: function () {
+                    addMessage("Delete failed!");
+                }
+            });
+        }
+
+        function addMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+    </script>
 {% endblock %}

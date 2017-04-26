@@ -6,9 +6,8 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from web_admin.utils import format_date_time
-from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ class ListCommandView(TemplateView):
         logger.info('========== Finished get Services Command List ==========')
 
         logger.info('========== Start get Command List ==========')
-        commands_dd_list = self._get_commands_dd_list();
+        commands_dd_list = self._get_commands_dd_list()
         logger.info('========== Finished get Command List ==========')
 
         context['data'] = refined_data
@@ -97,7 +96,7 @@ class ListCommandView(TemplateView):
 
         if auth_request.status_code == 200:
             if data is not None:
-                logger.info('Command count: {}'.format(len(data)))
+                logger.info('Service command count: {}'.format(len(data)))
                 return data, service_name
 
         if json_data["status"]["code"] == "access_token_expire":
@@ -123,7 +122,7 @@ class ListCommandView(TemplateView):
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
-                logger.info('Service command count: {}'.format(len(data)))
+                logger.info('Command count: {}'.format(len(data)))
                 return data
 
         if json_data["status"]["code"] == "access_token_expire":

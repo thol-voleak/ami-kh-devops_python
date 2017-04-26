@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .views.agent_bonus_distribution import (AgentBonusDistributions,
                                              AgentFeeHierarchyDistributionsDetail)
 from .views.command.list import ListCommandView
+from .views.command.delete import DeleteCommand
 from .views.command.tier.add import AddView
 from .views.command.tier.commission.agent_fee import AgentFeeView
 from .views.command.tier.update import UpdateView as TierUpdateView
@@ -35,6 +36,8 @@ urlpatterns = [
         name="update_service"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/$', login_required(ListCommandView.as_view(), login_url='login'),
         name="command_list"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<service_command_id>[0-9A-Za-z]+)$', login_required(DeleteCommand.as_view(), login_url='login'),
+        name="command_delete"),
     url(
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/$',
         login_required(FeeTierListView.as_view(), login_url='login'),
