@@ -35,7 +35,7 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         logger.info('========== Start get Setting Bonus List ==========')
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
-        # import ipdb;ipdb.set_trace()
+
         logger.info('========== Finish get Setting Bonus List ==========')
 
         logger.info('========== Start get Agent Fee List ==========')

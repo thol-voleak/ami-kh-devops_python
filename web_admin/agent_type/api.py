@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 class ClientApi():
     def delete_agent_type_by_id(request, agent_type_id):
-
         logger.info("========== Start deleting agent type ==========")
         logger.info('Agent Type ID to be deleted: {}'.format(agent_type_id))
         if request.method == "POST":
