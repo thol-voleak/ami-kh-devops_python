@@ -221,7 +221,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        logger.info('========== Start edit tier for service command ==========')
+        logger.info('========== Start editing tier for service command ==========')
         command_id = context['command_id']
         service_id = context['service_id']
         service_command_id = context['service_command_id']

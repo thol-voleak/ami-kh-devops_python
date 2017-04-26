@@ -77,7 +77,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bonus Type</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_bonus" name="bonus_type" required>
+                            <select class="form-control" id="ddl_bonus_type" name="bonus_type" required>
                                 {% for item in bonus_types %}
                                     {% if item == update_tier.bonus_type %}
                                         <option value="{{ item }}" selected="selected" >{{ item }}</option>
@@ -130,7 +130,7 @@
 
 <script>
 function changeValue() {
-    var $bonus_type = $('#ddl_bonus');
+    var $bonus_type = $('#ddl_bonus_type');
 
     function toggleFromDropdownList() {
         if($bonus_type.val() === 'Flat value') {
