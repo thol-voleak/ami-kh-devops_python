@@ -304,7 +304,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
         success = self._edit_tier(fee_tier_id, data)
         logger.info('========== Finish editing tier for service command ==========')
         if success:
-            request.session['edit_tier_msg'] = 'Edited data successfully'
+            request.session['edit_tier_msg'] = 'Updated data successfully'
         return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
                         service_command_id=service_command_id)
 

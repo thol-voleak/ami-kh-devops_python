@@ -331,15 +331,34 @@
             });
         }
 
-        function addMessage(message) {
-            $("#ajax-messages").empty().append(
-                '<div class="col-xs-12">' +
-                '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
-                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
-                '<strong>' + message + '</strong>' +
-                '</div>' +
-                '</div>')
-        }
+    function deleteAgentBonus(agent_bonus_distribution_id) {
+        var url = $('#agent_bonus_distribution_form').attr('action') + agent_bonus_distribution_id + '/';
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function () {
+                $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
+                addMessage("Deleted Agent Bonus successfully");
+            },
+            error: function() {
+                addMessage("Failed to Delete Agent Bonus");
+            }
+        });
+    }
+
+    function addMessage(message) {
+        $("#ajax-messages").empty().append(
+            '<div class="col-xs-12">' +
+            '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+            '<strong>' + message + '</strong>' +
+            '</div>' +
+            '</div>')
+    }
 
         // Edit row feature
         $(document).ready(function () {

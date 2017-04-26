@@ -19,6 +19,9 @@ from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
+from .views.delete_setting_bonus import DeleteSettingBonus
+from .views.command.tier.commission.agent_fee import AgentFeeView
+from .views.delete_agent_bonus import DeleteAgentBonus
 
 app_name = "services"
 
@@ -81,4 +84,9 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-fee/(?P<agent_fee_distribution_id>[0-9A-Za-z]+)/$',
         login_required(AgentFeeHierarchyDistributionsDetail.as_view(), login_url='login'),
         name="agent_fee_distribution_detail"),
+    url(
+        '^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
+        login_required(DeleteAgentBonus.as_view(), login_url='login'),
+        name="delete_agent_bonus_distribution"),
+
 ]

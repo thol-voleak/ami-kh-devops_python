@@ -4,7 +4,7 @@
 
 <form method="POST" class="form-horizontal" role="form"
       action="{% url 'services:agent_bonus_distribution' service_id command_id service_command_id fee_tier_id %}"
-      id="payment_and_fee_stucture_form">
+      id="agent_bonus_distribution_form">
 
     {% csrf_token %}
     <div class="form-group table-responsive row">
@@ -24,38 +24,33 @@
             </thead>
             <tbody>
             {% for d in agent_bonus_distribution %}
-                <tr id="balance-distribution-{{ d.balance_distribution_id }}"
-                    data-id="{{ d.balance_distribution_id }}">
-                    <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                    <td class="col-sm-2">
-                        {% for sof_type in choices.sof_types %}
-                            {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}
-                        {% endfor %}
-                    </td>
-                    <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
-                    <td class="col-sm-2">
-                        {#                        <a class="btn btn-outline btn-xs btn-primary edit text-info small"#}
-                        {#                           id="btn_setting_payment_fee_structure_edit"#}
-                        {#                           role="button">Edit</a>#}
-                        {#                        <span type="button" class="btn btn-outline btn-xs btn-primary"#}
-                        {#                              id="btn_setting_payment_fee_structure_delete" class="text-info"#}
-                        {#                              role="button"#}
-                        {#                              onclick="deleteDistribution('{{ d.balance_distribution_id }}')"#}
-                        {#                              class="text-info">#}
-                        {#                            <span class="small">Delete</span>#}
-                        {#                            </span>#}
-                    </td>
-                </tr>
+            <tr id="agent-bonus-distribution-{{ d.agent_bonus_distribution_id }}"
+                data-id="{{ d.agent_bonus_distribution_id }}">
+                <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
+                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
+                <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
+                <td class="col-sm-2">
+                    {% for sof_type in choices.sof_types %}
+                    {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}
+                    {% endfor %}
+                </td>
+                <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
+                <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
+                <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
+                <td class="col-sm-2">
+                    <button type="button" class="btn btn-outline btn-xs btn-danger delete"
+                            id="btn_setting_bonus_delete"
+                            onclick="deleteAgentBonus('{{ d.agent_bonus_distribution_id }}')">
+                        Delete
+                    </button>
+                </td>
+            </tr>
             {% endfor %}
             <tr>
                 <td>
                     <select class="form-control" name="action_type" id="ddl_bonus_dc">
                         {% for action_type in choices.action_types %}
-                            <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                        <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -63,7 +58,7 @@
                     <select class="form-control" name="actor_type" id="ddl_bonus_actor"
                             onchange="changeSpecificActorType('#ddl_bonus_actor', '#txt_bonus_actor_id')">
                         {% for actor_type in choices.actor_types %}
-                            <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                        <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                         {% endfor %}
                     </select>
                 <td>
@@ -72,7 +67,7 @@
                 <td>
                     <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund">
                         {% for sof_type in choices.sof_types %}
-                            <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                        <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -81,7 +76,7 @@
                 <td>
                     <select class="form-control" name="amount_type" id="ddl_amount">
                         {% for amount_type in choices.amount_types %}
-                            <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                        <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
                     </select>
                 <td><input class="form-control" name="rate" id="txt_bonus_rate" required/></td>
