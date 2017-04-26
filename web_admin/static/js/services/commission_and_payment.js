@@ -123,10 +123,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         jqTds[6].innerHTML = '<input ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
         // Action Buttons
-        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'edit btn btn-outline btn-xs btn-primary text-info small\'>Save</button>';
-        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'cancel btn btn-outline btn-xs btn-primary text-info small\'>Cancel</button>';
+        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
+        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-outline btn-xs cancel btn-primary text-info small\'>Cancel</button>';
 
-        jqTds[7].innerHTML = htmlButtonSave + htmlButtonCancel;
+        jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
     }
@@ -163,7 +163,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlEventBtnDelete += '\'';
 
         var htmlButtonEdit = '<button ' + htmlIDBtnEdit + 'type=\'button\' class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\'>Edit</button>';
-        var htmlButtonDelete = '<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
+        var htmlButtonDelete = '&nbsp;<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
 
         oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
         oTable.fnDraw();
