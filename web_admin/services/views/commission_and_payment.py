@@ -11,15 +11,18 @@ from django.views.generic.base import TemplateView, View
 from authentications.utils import get_auth_header
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import format_date_time
+from .mixins import GetCommandNameAndServiceNameMixin
 
 logger = logging.getLogger(__name__)
 
 
-class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
+class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
     template_name = "services/commission_and_payment.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super(CommissionAndPaymentView, self).get_context_data(*args, **kwargs)
+        command_id = kwargs.get('command_id')
+        service_id = kwargs.get('service_id')
         tier_id = kwargs.get('fee_tier_id')
         if not tier_id:
             raise Http404
@@ -50,6 +53,8 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
+        context['command_name'] = self._get_command_name_by_id(command_id)
+        context['service_name'] = self._get_service_name_by_id(service_id)
         return context
 
     def _filter_deleted_items(self, data):
