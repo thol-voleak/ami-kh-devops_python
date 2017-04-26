@@ -12,14 +12,14 @@
                id="tbl_bonus">
             <thead>
             <tr>
-                <th id="lbl_db">Debit/Credit</th>
-                <th id="lbl_actor">Actor</th>
-                <th id="lbl_specific_id">Specific ID</th>
-                <th id="lbl_source_of_fund">Source of Fund</th>
-                <th id="lbl_specific_source">Specific Source of Fund</th>
-                <th id="lbl_from_amount">From Amount</th>
-                <th id="lbl_rate">Rate %</th>
-                <th id="lbl_actions">Actions</th>
+                <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                <th class="col-sm-2" id="lbl_actor">Actor</th>
+                <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
+                <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
+                <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
+                <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
+                <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                <th class="col-sm-2" id="lbl_actions">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -27,20 +27,15 @@
                 <tr id="balance-distribution-{{ d.balance_distribution_id }}"
                     data-id="{{ d.balance_distribution_id }}">
                     <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ d.actor_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                    <td class="col-sm-1">
-                        <select class="form-control" disabled>
-                            {% for sof_type in choices.sof_types %}
-                                <option value="{{ d.sof_type_id|default_if_none:'' }}"
-                                        {% if sof_type.sof_type_id == d.sof_type_id %}selected="selected"{% endif %}>
-                                    {{ sof_type.sof_type }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                    <td class="col-sm-2">
+                        {% for sof_type in choices.sof_types %}
+                            {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}
+                        {% endfor %}
                     </td>
                     <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ d.amount_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                     <td class="col-sm-2">
                         {#                        <a class="btn btn-outline btn-xs btn-primary edit text-info small"#}
@@ -57,36 +52,36 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td class="col-sm-1">
+                <td>
                     <select class="form-control" name="action_type" id="ddl_bonus_dc">
                         {% for action_type in choices.action_types %}
                             <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td class="col-sm-1">
+                <td>
                     <select class="form-control" name="actor_type" id="ddl_bonus_actor">
                         {% for actor_type in choices.actor_types %}
                             <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                         {% endfor %}
                     </select>
-                <td class="col-sm-1"></td>
-                <td class="col-sm-1">
+                <td></td>
+                <td>
                     <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund">
                         {% for sof_type in choices.sof_types %}
                             <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td class="col-sm-1"><input class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund"/>
+                <td><input class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund"/>
                 </td>
-                <td class="col-sm-1">
+                <td>
                     <select class="form-control" name="amount_type" id="ddl_bonus_amount">
                         {% for amount_type in choices.amount_types %}
                             <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
                     </select>
-                <td class="col-sm-2"><input class="form-control" name="rate" id="txt_bonus_rate" required /></td>
+                <td><input class="form-control" name="rate" id="txt_bonus_rate" required/></td>
                 <td></td>
             </tr>
         </table>

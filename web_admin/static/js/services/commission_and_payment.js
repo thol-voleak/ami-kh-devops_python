@@ -95,7 +95,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
         oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
                                                                                         // Specific ID
-        oTable.fnUpdate($(jqSelects[2]).find(":selected").val(), nRow, 3, false);       // Sof Type ID
+        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
         oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
         oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
         oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
