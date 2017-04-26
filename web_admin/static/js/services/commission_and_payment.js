@@ -87,7 +87,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
             htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
             htmlIDSpecificID += 'txt_setting_payment_fee_structure_specific_id_edit';
-            htmlIDSOFTypes += 'txt_setting_payment_fee_structure_source_of_fund_edit';
+            htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
             htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'ddl_setting_payment_fee_structure_rate_edit';
@@ -103,10 +103,20 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDRate += 'txt_setting_bonus_rate_edit';
             htmlIDBtnSave += 'btn_setting_bonus_save';
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
+        } else if (tableId == 'tbl_bonus') {
+            htmlIDActionTypes += 'ddl_bonus_dc_edit';
+            htmlIDActorTypes += 'ddl_bonus_actor_edit';
+            htmlIDSpecificID += 'ddl_bonus_actor_edit';
+            htmlIDSOFTypes += 'ddl_bonus_src_fund_edit';
+            htmlIDSpecificSOF += 'txt_bonus_spec_src_fund_edit';
+            htmlIDAmount += 'ddl_bonus_amount_edit';
+            htmlIDRate += 'txt_bonus_rate_edit';
+            htmlIDBtnSave += 'btn_bonus_save';
+            htmlIDBtnCancel += 'btn_bonus_cancel';
         }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
-        htmlIDSpecificID += '\'';
+        htmlIDSpecificID += '\'';   // Unused
         htmlIDSOFTypes += '\'';
         htmlIDSpecificSOF += '\'';
         htmlIDAmount += '\'';
@@ -115,7 +125,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlIDBtnCancel += '\'';
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select c type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[1].innerHTML = '<select ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '';
         jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<input ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
@@ -123,10 +133,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         jqTds[6].innerHTML = '<input ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
         // Action Buttons
-        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'edit btn btn-outline btn-xs btn-primary text-info small\'>Save</button>';
-        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'cancel btn btn-outline btn-xs btn-primary text-info small\'>Cancel</button>';
+        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
+        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-outline btn-xs cancel btn-primary text-info small\'>Cancel</button>';
 
-        jqTds[7].innerHTML = htmlButtonSave + htmlButtonCancel;
+        jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
     }
@@ -157,17 +167,24 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnEdit += 'btn_setting_bonus_save';
             htmlIDBtnDelete += 'btn_setting_bonus_delete';
             htmlEventBtnDelete += 'deleteSettingBonus(' + distribution_id + ')';
+<<<<<<< HEAD
         else if (tableId == 'tbl_agent_hier_fee') {
             htmlIDBtnEdit += 'btn_agent_hier_fee_save';
             htmlIDBtnDelete += 'btn_agent_hier_fee_delete';
             htmlEventBtnDelete += 'deleteAgentFee(' + distribution_id + ')';
+=======
+        } else if (tableId == 'tbl_bonus') {
+            htmlIDBtnEdit += 'btn_bonus_save';
+            htmlIDBtnDelete += 'btn_bonus_delete';
+            htmlEventBtnDelete += '';
+>>>>>>> 869f4ee90b8b9b248e67d5918a98589f6f492159
         }
         htmlIDBtnEdit += '\'';
         htmlIDBtnDelete += '\'';
         htmlEventBtnDelete += '\'';
 
         var htmlButtonEdit = '<button ' + htmlIDBtnEdit + 'type=\'button\' class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\'>Edit</button>';
-        var htmlButtonDelete = '<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
+        var htmlButtonDelete = '&nbsp;<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
 
         oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
         oTable.fnDraw();
@@ -175,7 +192,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         onBindingButtonsDeleteEvent();
     }
 
-    // For Balance
+    // Commission and Payment Table
     function saveRowToServer(oTable, nRow) {
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
@@ -187,7 +204,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             type: "POST",
             data: {
                 "fee_tier_id": fee_tier_id,
-                "action_type": $(jqSelects[0]).find(":selected").html(),
+                "action_type": $(jqSelects[0]).find(":selected").html(),    // 0
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
                 // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
@@ -226,7 +243,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         });
     }
 
-    function saveRowBonusToServer(oTable, nRow) {
+    // Setting Bonus Table
+    function saveSettingBonusToServer(oTable, nRow) {
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
@@ -259,7 +277,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Updated Setting Bonus Successfully!");
+                    addMessage("Updated Setting Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
                     addMessage("Updated Setting Bonus got error!");
@@ -275,6 +293,66 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             }
         });
     }
+
+    // Agent Bonus Table
+    function saveAgentBonusToServer(oTable, nRow) {
+        var jqInputs = $('input', nRow);
+        var jqSelects = $('select', nRow);
+        var url = $(nRow).data('url');
+
+        // Request to server
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                "action_type": $(jqSelects[0]).find(":selected").html(),
+                "fee_tier_id": fee_tier_id,
+                "actor_type": $(jqSelects[1]).find(":selected").html(),
+                // 2 = empty data
+                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
+                "specific_sof": jqInputs[0].value,
+                "amount_type": $(jqSelects[3]).find(":selected").html(),
+                "rate": jqInputs[1].value,
+                "specific_actor_id": ''
+            },
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            },
+            success: function (response) {
+
+                var data = JSON.stringify(response);
+                var json = $.parseJSON(data);
+                console.log('JSON: ');
+                console.log(json);
+
+                if (json.status.code == 'success') {
+                    console.log('Saved row data');
+                    saveRow(oTable, nRow);
+
+                    addMessage("Updated Bonus Successfully");
+                } else {
+                    console.log('Error adding row data');
+                    addMessage("Updated Bonus got error!");
+                }
+
+            },
+            error: function (err) {
+                var json = JSON.stringify(err);
+                console.log('JSON: ');
+                console.log(json);
+                addMessage("Edit error!");
+            }
+        });
+    }
+
+    oTable = $('#' + tableId).dataTable({
+        "searching":  false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false
+    });
+
 
     // for Agent Hierrachy Distribution - Fee
     function saveRowFeeToServer(oTable, nRow) {
@@ -315,7 +393,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                     console.log('Error adding row data');
                     addMessage("Updated Agent Hirarchy Distribution - Fee got error!");
                 }
-
             },
             error: function (err) {
                 var json = JSON.stringify(err);
@@ -373,11 +450,12 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 if (tableId == "tbl_setting_payment_fee_structure")
                     saveRowToServer(oTable, nEditing);
-
                 else if (tableId == "tbl_agent_hier_fee")
                     saveRowFeeToServer(oTable, nEditing);
-                else
-                    saveRowBonusToServer(oTable, nEditing);
+                else if (tableId == "tbl_setting_bonus")
+                    saveSettingBonusToServer(oTable, nEditing);
+                else if (tableId == "tbl_bonus")
+                    saveAgentBonusToServer(oTable, nEditing);
 
                 nEditing = null;
             } else {

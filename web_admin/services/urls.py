@@ -13,7 +13,8 @@ from .views.commission_and_payment import (BalanceDistributionsUpdate,
                                            CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
-                                           SettingBonusView)
+                                           SettingBonusView,
+                                           AgentBonusDistributionsUpdate)
 from .views.create import CreateView
 from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
@@ -90,4 +91,7 @@ urlpatterns = [
     url(r'^fee-distribution/(?P<fee_distributions_id>[0-9A-Za-z]+)/$',
         login_required(FeeDistributionsUpdate.as_view(), login_url='login'),
         name="agent_fee_update"),
+    url(r'^agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
+        login_required(AgentBonusDistributionsUpdate.as_view(), login_url='login'),
+        name="agent_bonus_distributions_update"),
 ]
