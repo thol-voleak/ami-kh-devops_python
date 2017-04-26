@@ -280,7 +280,8 @@
                     </a>
                 </div>
             </form>
-            {% include "services/agent_fee.html" %}
+
+            {% include "commission_and_payment/agent_fee.html" %}
             {% include "commission_and_payment/agent_hierarchy_distribution_bonus.html" %}
 
         </div>
@@ -402,10 +403,15 @@
             // 2. Setting Bonus Table
             onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
+            // Agent Fee Table
+            onInlineSetupDataTable('tbl_agent_hier_fee', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+
             // 3. Placeholder
 
             // 4. Bonus Table
             onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
         });
     </script>
 

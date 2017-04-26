@@ -2,7 +2,7 @@
 
 <div class="panel-heading">
     <h4>IV. Agent Hierrachy Distribution</h4>
-    <h5>Fee</h5>
+    <h4>Fee</h4>
 </div>
 
 <form method="POST" class="form-horizontal" role="form"
@@ -26,7 +26,9 @@
             </thead>
             <tbody>
             {% for d in fee %}
-                <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}">
+                <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}"
+                    data-url="{% url "services:agent_fee_update" d.fee_distribution_id %}"
+                    data-id="{{ d.fee_distribution_id }}">
                     <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -66,15 +68,12 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor"
-                            onchange="changeSpecificActorType('#ddl_agent_hier_fee_actor', '#txt_agent_hier_fee_specific_id')">
+                    <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor">
                         {% for actor_type in choices.actor_types %}
                             <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                         {% endfor %}
                     </select>
-                <td>
-                    <input name="specific_actor_id" id="txt_agent_hier_fee_specific_id" class="form-control" disabled>
-                </td>
+                <td></td>
                 <td>
                     <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund">
                         {% for sof_type in choices.sof_types %}
