@@ -71,13 +71,13 @@
                     </td>
                     <td>
                         <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor"
-                            onchange="changeSpecificActorType('#ddl_agent_hier_fee_actor', '#txt_agent_hier_fee_actor_id')">
+                            onchange="changeSpecificActorType('#ddl_agent_hier_fee_actor', '#txt_agent_hier_fee_specific_id')">
                             {% for actor_type in choices.actor_types %}
-                                <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                                <option value="{{actor_type.actor_type}}">{{actor_type.actor_type}}</option>
                             {% endfor %}
                         </select>
                     <td>
-                        <input name="specific_actor_id" id="txt_agent_hier_fee_actor_id" class="form-control" disabled>
+                        <input name="specific_actor_id" id="txt_agent_hier_fee_specific_id" class="form-control" disabled>
                     </td>
                     <td>
                         <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund">
