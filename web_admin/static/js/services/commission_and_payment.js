@@ -157,6 +157,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnEdit += 'btn_setting_bonus_save';
             htmlIDBtnDelete += 'btn_setting_bonus_delete';
             htmlEventBtnDelete += 'deleteSettingBonus(' + distribution_id + ')';
+        else if (tableId == 'tbl_agent_hier_fee') {
+            htmlIDBtnEdit += 'btn_agent_hier_fee_save';
+            htmlIDBtnDelete += 'btn_agent_hier_fee_delete';
+            htmlEventBtnDelete += 'deleteAgentFee(' + distribution_id + ')';
         }
         htmlIDBtnEdit += '\'';
         htmlIDBtnDelete += '\'';
@@ -272,6 +276,56 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         });
     }
 
+    // for Agent Hierrachy Distribution - Fee
+    function saveRowFeeToServer(oTable, nRow) {
+        var jqInputs = $('input', nRow);
+        var jqSelects = $('select', nRow);
+        var url = $(nRow).data('url');
+
+        // Request to server
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                "action_type": $(jqSelects[0]).find(":selected").html(),
+                "actor_type": $(jqSelects[1]).find(":selected").html(),
+                // 2 = empty data
+                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
+                "specific_sof": jqInputs[0].value,
+                "amount_type": $(jqSelects[3]).find(":selected").html(),
+                "rate": jqInputs[1].value,
+                "specific_actor_id": ''
+            },
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            },
+            success: function (response) {
+
+                var data = JSON.stringify(response);
+                var json = $.parseJSON(data);
+                console.log('JSON: ');
+                console.log(json);
+
+                if (json.status.code == 'success') {
+                    console.log('Saved row data');
+                    saveRow(oTable, nRow);
+                    addMessage("Updated Agent Hirarchy Distribution - Fee successfully");
+                } else {
+                    console.log('Error adding row data');
+                    addMessage("Updated Agent Hirarchy Distribution - Fee got error!");
+                }
+
+            },
+            error: function (err) {
+                var json = JSON.stringify(err);
+                console.log('JSON: ');
+                console.log(json);
+                addMessage("Edit error!");
+            }
+        });
+    }
+
     oTable = $('#' + tableId).dataTable({
         "searching":  false,
         "paging":   false,
@@ -319,6 +373,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 if (tableId == "tbl_setting_payment_fee_structure")
                     saveRowToServer(oTable, nEditing);
+
+                else if (tableId == "tbl_agent_hier_fee")
+                    saveRowFeeToServer(oTable, nEditing);
                 else
                     saveRowBonusToServer(oTable, nEditing);
 

@@ -1,11 +1,12 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
+from .views.agent_fee_distribution import (AgentFeeView,
+                                            FeeDistributionsUpdate)
 from .views.agent_bonus_distribution import (AgentBonusDistributions,
                                              AgentFeeHierarchyDistributionsDetail)
 from .views.command.list import ListCommandView
 from .views.command.tier.add import AddView
-from .views.command.tier.commission.agent_fee import AgentFeeView
 from .views.command.tier.update import UpdateView as TierUpdateView
 from .views.commission_and_payment import (BalanceDistributionsUpdate,
                                            BonusDistributionsUpdate,
@@ -14,13 +15,11 @@ from .views.commission_and_payment import (BalanceDistributionsUpdate,
                                            PaymentAndFeeStructureView,
                                            SettingBonusView)
 from .views.create import CreateView
-from .views.delete_setting_bonus import DeleteSettingBonus
 from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
 from .views.delete_setting_bonus import DeleteSettingBonus
-from .views.command.tier.commission.agent_fee import AgentFeeView
 from .views.delete_agent_bonus import DeleteAgentBonus
 
 app_name = "services"
@@ -88,5 +87,7 @@ urlpatterns = [
         '^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
         login_required(DeleteAgentBonus.as_view(), login_url='login'),
         name="delete_agent_bonus_distribution"),
-
+    url(r'^fee-distribution/(?P<fee_distributions_id>[0-9A-Za-z]+)/$',
+        login_required(FeeDistributionsUpdate.as_view(), login_url='login'),
+        name="agent_fee_update"),
 ]
