@@ -111,49 +111,50 @@
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
-                                    <a class="btn btn-outline btn-xs btn-primary edit text-info small"
-                                       id="btn_setting_payment_fee_structure_edit"
-                                       role="button">Edit</a>
-                                    <span type="button" class="btn btn-outline btn-xs btn-primary delete"
-                                          id="btn_setting_payment_fee_structure_delete" class="text-info"
-                                          role="button"
-                                          onclick="deleteDistribution('{{ d.balance_distribution_id }}')"
-                                          class="text-info">
-                            <span class="small">Delete</span>
-                            </span>
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_payment_fee_structure_edit">Edit</button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_payment_fee_structure_delete"
+                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete</button>
                                 </td>
                             </tr>
                         {% endfor %}
                         <tr>
                             <td>
-                                <select class="form-control" name="action_type">
+                                <select class="form-control" name="action_type" id="ddl_setting_payment_fee_structure_dc">
                                     {% for action_type in choices.action_types %}
                                         <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="actor_type">
+                                <select class="form-control" name="actor_type" id="ddl_setting_payment_fee_structure_actor">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td></td>
                             <td>
-                                <select class="form-control" name="sof_type_id">
+                                <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
+                            </td>
+                            <td>
+                                <select class="form-control" name="sof_type_id" id="txt_setting_payment_fee_structure_specific_id">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input class="form-control" name="specific_sof"></input></td>
                             <td>
-                                <select class="form-control" name="amount_type">
+                                <input class="form-control" name="specific_sof" id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
+                            </td>
+                            <td>
+                                <select class="form-control" name="amount_type" id="ddl_setting_payment_fee_structure_from_amount">
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" required/></td>
+                            <td><input class="form-control" name="rate" id="ddl_setting_payment_fee_structure_rate" required /></td>
                             <td></td>
                         </tr>
                     </table>
@@ -162,7 +163,7 @@
 
                 <div class="form-group pull-right">
                     <a href="#">
-                        <input id="btn_setting_payment_fee_strucure_add" class="btn btn-success" type="submit"
+                        <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
                                value="Add"/>
                     </a>
                 </div>
@@ -208,20 +209,13 @@
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
-                                    <a type="button" class="edit btn btn-outline btn-xs btn-primary"
-                                       role="button"
-                                       id="btn_setting_bonus_edit" class="text-info"
-                                       href="#" role="button"
-                                       class="text-info">
-                                        <span class="small">Edit</span>
-                                    </a>
-                                    <div type="button" class="btn btn-outline btn-xs btn-primary delete"
-                                         id="btn_setting_bonus_delete" class="text-info"
-                                         role="button"
-                                         onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')"
-                                         class="text-info">
-                                        <span class="small">Delete</span>
-                                    </div>
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_bonus_edit">Edit</button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_bonus_delete"
+                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete</button>
                                 </td>
                             </tr>
                         {% endfor %}
