@@ -33,12 +33,11 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "is_deleted":0
+            "is_deleted": 0
         }
 
         logger.info("Request: {}".format(post_data))
-        response = requests.post(url, headers=self._get_headers(),
-                                 json=post_data, verify=settings.CERT)
+        response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
 
         logger.info("Response status: {}".format(response.status_code))
         logger.info("Response content: {}".format(response.content))

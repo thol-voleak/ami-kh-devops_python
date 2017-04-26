@@ -1,9 +1,3 @@
-{% load static %}
-
-<body>
-{% block 'body' %}
-
-
 <div class="panel-heading">
     <h4>IV. Agent Hierrachy Distribution</h4>
     <h4>Fee</h4>
@@ -31,8 +25,8 @@
             <tbody>
             {% for d in fee %}
             <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}"
-                data-url="{% url "services:agent_fee_update" d.fee_distribution_id %}"
-                data-id="{{ d.fee_distribution_id }}">
+                data-url="{% url "services:agent_fee_update" d.agent_fee_distribution_id %}"
+                data-id="{{ d.agent_fee_distribution_id }}">
             <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
             <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
             <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -45,21 +39,16 @@
             <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
             <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
             <td class="col-sm-2">
-                <a type="button" class="edit btn btn-outline btn-xs btn-primary"
-                   role="button"
-                   id="btn_agent_hier_fee_edit" class="text-info"
-                   href="#" role="button"
-                   class="text-info">
-                    <span class="small">Edit</span>
-                </a>
-                <a type="button" class="btn btn-outline btn-xs btn-primary"
-                   role="button"
-                   id="btn_agent_hier_fee_delete" class="text-info"
-                   href="#" role="button"
-                   onclick="deleteAgentFee('{{ d.agent_fee_distribution_id }}')"
-                   class="text-info">
-                    <span class="small">Delete</span>
-                </a>
+
+                <button type="button"
+                        class="edit btn btn-outline btn-xs btn-primary text-info small"
+                        id="btn_agent_bonus_edit">Edit
+                </button>
+                <button type="button" class="btn btn-outline btn-xs btn-danger delete"
+                        id="btn_setting_bonus_delete"
+                        onclick="deleteAgentFee('{{ d.agent_fee_distribution_id }}')">
+                    Delete
+                </button>
             </td>
             </tr>
             {% endfor %}
@@ -107,6 +96,3 @@
         </a>
     </div>
 </form>
-
-{% endblock %}
-</body>
