@@ -35,6 +35,8 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         logger.info('========== Start get Setting Bonus List ==========')
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
+        context['agent_bonus_distribution'] = self._filter_deleted_items(agent_bonus_distribution)
+        logger.info("Total agent bonus list to display on table is  {}".format(len(context['agent_bonus_distribution'])))
         logger.info('========== Finish get Setting Bonus List ==========')
 
         logger.info('========== Start get Agent Fee List ==========')
@@ -44,7 +46,6 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         context['data'] = self._filter_deleted_items(data)
         context['bonus'] = self._filter_deleted_items(bonus)
-        context['agent_bonus_distribution'] = self._filter_deleted_items(agent_bonus_distribution)
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         return context
