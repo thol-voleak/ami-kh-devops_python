@@ -24,7 +24,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
         service_command_id = kwargs.get('service_command_id')
         url = settings.DOMAIN_NAMES + settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
 
-        logger.info('Add agent hierarchy distribution bonus url id {}'.format(self.request.user.username, url))
+        logger.info('Add agent hierarchy distribution bonus url is {}'.format(url))
 
         data = request.POST.copy()
         post_data = {
@@ -34,15 +34,15 @@ class AgentBonusDistributions(View, GetHeaderMixin):
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "specific_actor_id": data.get("specific_actor_id", "")
+            "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        logger.info("Request data for add agent hierarchy distribution bonus {}".format(post_data))
+        logger.info("Params for add agent hierarchy distribution bonus is {}".format(post_data))
         start_date = time.time()
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
         done = time.time()
-        logger.info('Response time for add agent hierarchy distribution bonus is {} s.'.format(done - start_date))
         logger.info("Response status for add agent hierarchy distribution bonus is {}".format(response.status_code))
+        logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response.content))
 
         response_json = response.json()
         if response.status_code == 200 and response_json['status']['code'] == "success":
@@ -58,7 +58,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
                 messages.INFO,
                 'Something wrong happened!'
             )
-
+        logger.info('Response time for add agent hierarchy distribution bonus is {} sec.'.format(done - start_date))
         logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
         return redirect('services:commission_and_payment',
                         service_id=service_id,

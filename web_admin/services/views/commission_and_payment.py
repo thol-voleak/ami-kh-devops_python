@@ -36,7 +36,6 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         logger.info('========== Start get Setting Bonus List ==========')
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
-        # import ipdb;ipdb.set_trace()
         logger.info('========== Finish get Setting Bonus List ==========')
 
         logger.info('========== Start get Agent Fee List ==========')
@@ -169,10 +168,11 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
         }
+
         logger.info("Request body: {}".format(post_data))
-        response = requests.post(url, headers=self._get_headers(),
-                                 json=post_data, verify=settings.CERT)
+        response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
 
         logger.info("Response status: {}".format(response.status_code))
         logger.info("Response content: {}".format(response.content))
@@ -222,7 +222,8 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
             "sof_type_id": data.get('sof_type_id'),
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
-            "rate": data.get("rate")
+            "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
         }
 
         logger.info("update balance distributions request body: {}".format(post_data))
@@ -306,6 +307,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
         }
 
         logger.info("Request: {}".format(post_data))

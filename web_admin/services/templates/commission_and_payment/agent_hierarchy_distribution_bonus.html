@@ -1,5 +1,5 @@
 <div class="panel-heading">
-    <h4>Bonus</h4>
+    <h5>Bonus</h5>
 </div>
 
 <form method="POST" class="form-horizontal" role="form"
@@ -17,7 +17,7 @@
                 <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
                 <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
                 <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
-                <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
+                <th class="col-sm-2" id="lbl_from_amount">Amount</th>
                 <th class="col-sm-1" id="lbl_rate">Rate %</th>
                 <th class="col-sm-2" id="lbl_actions">Actions</th>
             </tr>
@@ -60,12 +60,15 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="actor_type" id="ddl_bonus_actor">
+                    <select class="form-control" name="actor_type" id="ddl_bonus_actor"
+                            onchange="changeSpecificActorType('#ddl_bonus_actor', '#txt_bonus_actor_id')">
                         {% for actor_type in choices.actor_types %}
                             <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                         {% endfor %}
                     </select>
-                <td></td>
+                <td>
+                    <input name="specific_actor_id" id="txt_bonus_actor_id" class="form-control" disabled>
+                </td>
                 <td>
                     <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund">
                         {% for sof_type in choices.sof_types %}
@@ -73,10 +76,10 @@
                         {% endfor %}
                     </select>
                 </td>
-                <td><input class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund"/>
+                <td><input class="form-control" name="specific_sof" id="txt_bonus_specific_source_of_fund"/>
                 </td>
                 <td>
-                    <select class="form-control" name="amount_type" id="ddl_bonus_amount">
+                    <select class="form-control" name="amount_type" id="ddl_amount">
                         {% for amount_type in choices.amount_types %}
                             <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
@@ -87,10 +90,10 @@
         </table>
     </div>
 
-
     <div class="form-group pull-right">
-        <a href="#">
-            <input id="btn_agent_hierarchy_distribution_bonus_add" class="btn btn-success" type="submit" value="Add"/>
-        </a>
+        <button class="btn btn-success" type="submit" role="button"
+                id="btn_agent_hierarchy_distribution_bonus_add">
+            Add
+        </button>
     </div>
 </form>
