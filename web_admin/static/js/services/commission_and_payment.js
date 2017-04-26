@@ -116,7 +116,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
-        htmlIDSpecificID += '\'';
+        htmlIDSpecificID += '\'';   // Unused
         htmlIDSOFTypes += '\'';
         htmlIDSpecificSOF += '\'';
         htmlIDAmount += '\'';
@@ -125,7 +125,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlIDBtnCancel += '\'';
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select c type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[1].innerHTML = '<select ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '';
         jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<input ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
@@ -270,7 +270,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Updated Setting Bonus Successfully!");
+                    addMessage("Updated Setting Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
                     addMessage("Updated Setting Bonus got error!");
@@ -322,7 +322,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Updated Bonus Successfully!");
+                    addMessage("Updated Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
                     addMessage("Updated Bonus got error!");

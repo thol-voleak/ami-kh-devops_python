@@ -204,8 +204,9 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start updating setting payment & fee structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
-        url = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
-        logger.info("API-Path: {}".format(url))
+        api_path = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info("API-Path: {}".format(api_path))
 
         data = request.POST.copy()
         post_data = {
@@ -281,7 +282,7 @@ class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
         agent_bonus_distribution_id = kwargs.get('agent_bonus_distribution_id')
         api_path = settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
         url = settings.DOMAIN_NAMES + api_path
-        logger.info("API-Path: {}".format(url))
+        logger.info("API-Path: {}".format(api_path))
 
         data = request.POST.copy()
         post_data = {
