@@ -134,12 +134,15 @@
                             </td>
                             <td>
                                 <select class="form-control" name="actor_type"
-                                        id="ddl_setting_payment_fee_structure_actor">
+                                        id="ddl_setting_payment_fee_structure_actor"
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#txt_setting_payment_fee_structure_specific_id')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
                             <td>
+                                <input name="specific_actor_id"
+                                       id="txt_setting_payment_fee_structure_specific_id" class="form-control" disabled>
                                 <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
                             </td>
                             <td>
@@ -238,12 +241,16 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor">
+                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
+                                    onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_actor_specific_id')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td></td>
+                            <td>
+                                <input name="specific_actor_id"
+                                       id="txt_setting_bonus_actor_specific_id" class="form-control" disabled>
+                            </td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
                                     {% for sof_type in choices.sof_types %}
@@ -251,8 +258,9 @@
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input class="form-control" id="txt_setting_bonus_spec_src_fund"
-                                       name="specific_sof"></input>
+                            <td>
+                                <input class="form-control" id="txt_setting_bonus_spec_src_fund"
+                                       name="specific_sof">
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount">
@@ -272,7 +280,6 @@
                     </a>
                 </div>
             </form>
-
             {% include "services/agent_fee.html" %}
             {% include "commission_and_payment/agent_hierarchy_distribution_bonus.html" %}
 
