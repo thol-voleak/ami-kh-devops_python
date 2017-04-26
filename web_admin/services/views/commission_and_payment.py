@@ -274,6 +274,43 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Finish update setting bonus ==========")
         return httpResponse
 
+class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
+    def post(self, request, *args, **kwargs):
+        logger.info("========== Start updating agent bonus distribution ==========")
+
+        agent_bonus_distribution_id = kwargs.get('agent_bonus_distribution_id')
+        api_path = settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info("API-Path: {}".format(url))
+
+        data = request.POST.copy()
+        post_data = {
+            "fee_tier_id": data.get("fee_tier_id"),
+            "action_type": data.get("action_type"),
+            "actor_type": data.get("actor_type"),
+            "sof_type_id": data.get('sof_type_id'),
+            "specific_sof": data.get("specific_sof"),
+            "amount_type": data.get("amount_type"),
+            "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
+        }
+        logger.info("Params: {}".format(post_data))
+
+        start_date = time.time()
+        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        end_date = time.time()
+
+        logger.info("Response_code: {}".format(response.status_code))
+        logger.info("Response_content: {}".format(response.content))
+        logger.info("Response_time: {} sec.".format(end_date - start_date))
+
+        if response.status_code == 200:
+            httpResponse = HttpResponse(status=200, content=response)
+        else:
+            httpResponse = HttpResponse(status=response.status_code, content=response)
+
+        logger.info("========== Finished updating agent bonus distribution ==========")
+        return httpResponse
 
 class SettingBonusView(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
@@ -323,7 +360,6 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
                         command_id=command_id,
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
-
 
 class PaymentAndFeeStructureDetailView(View, GetHeaderMixin):
     def delete(self, request, *args, **kwargs):

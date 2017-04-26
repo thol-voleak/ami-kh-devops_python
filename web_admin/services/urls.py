@@ -12,7 +12,8 @@ from .views.commission_and_payment import (BalanceDistributionsUpdate,
                                            CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
-                                           SettingBonusView)
+                                           SettingBonusView,
+                                           AgentBonusDistributionsUpdate)
 from .views.create import CreateView
 from .views.delete_setting_bonus import DeleteSettingBonus
 from .views.detail import ServiceDetailForm
@@ -88,5 +89,7 @@ urlpatterns = [
         '^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
         login_required(DeleteAgentBonus.as_view(), login_url='login'),
         name="delete_agent_bonus_distribution"),
-
+    url(r'^agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
+        login_required(AgentBonusDistributionsUpdate.as_view(), login_url='login'),
+        name="agent_bonus_distributions_update"),
 ]

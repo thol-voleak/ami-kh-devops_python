@@ -8,8 +8,7 @@
 
     {% csrf_token %}
     <div class="form-group table-responsive row">
-        <table class="table table-bordered table-striped datatable editable-datatable  mb0"
-               id="tbl_bonus">
+        <table class="table table-bordered table-striped datatable editable-datatable mb0" id="tbl_bonus">
             <thead>
             <tr>
                 <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
@@ -25,7 +24,8 @@
             <tbody>
             {% for d in agent_bonus_distribution %}
             <tr id="agent-bonus-distribution-{{ d.agent_bonus_distribution_id }}"
-                data-id="{{ d.agent_bonus_distribution_id }}">
+                data-id="{{ d.agent_bonus_distribution_id }}"
+                data-url="{% url "services:agent_bonus_distributions_update" d.agent_bonus_distribution_id %}">
                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -38,6 +38,10 @@
                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                 <td class="col-sm-2">
+                    <button type="button"
+                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                            id="btn_agent_bonus_edit">Edit
+                    </button>
                     <button type="button" class="btn btn-outline btn-xs btn-danger delete"
                             id="btn_setting_bonus_delete"
                             onclick="deleteAgentBonus('{{ d.agent_bonus_distribution_id }}')">
