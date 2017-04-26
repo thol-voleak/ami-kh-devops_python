@@ -44,7 +44,8 @@ class AgentBonusDistributions(View, GetHeaderMixin):
         logger.info('Response time for add agent hierarchy distribution bonus is {} s.'.format(done - start_date))
         logger.info("Response status for add agent hierarchy distribution bonus is {}".format(response.status_code))
 
-        if response.status_code == 200:
+        response_json = response.json()
+        if response.status_code == 200 and response_json['status']['code'] == "success":
             messages.add_message(
                 request,
                 messages.INFO,
