@@ -22,7 +22,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
         service_command_id = kwargs.get('service_command_id')
         url = settings.DOMAIN_NAMES + settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
 
-        logger.info('Add agent hierarchy distribution bonus url is {}'.format(url))
+        logger.info('API-Path for add agent hierarchy distribution bonus is {}'.format(url))
 
         data = request.POST.copy()
         post_data = {
