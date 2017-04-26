@@ -37,7 +37,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         }
 
         logger.info("Request: {}".format(post_data))
-        response = requests.post(url, headers=self._get_headers(),
+        response = requests.post(url, headers=self._get_heagent_feeaders(),
                                  json=post_data, verify=settings.CERT)
 
         logger.info("Response status: {}".format(response.status_code))

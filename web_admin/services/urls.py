@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from .views.agent_fee_distribution import (AgentFeeView,
-                                            FeeDistributionsUpdate)
+                                           FeeDistributionsUpdate)
 from .views.agent_bonus_distribution import (AgentBonusDistributions,
                                              AgentFeeHierarchyDistributionsDetail)
 from .views.command.list import ListCommandView
