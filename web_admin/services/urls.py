@@ -1,23 +1,24 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
+from .views.agent_bonus_distribution import (AgentBonusDistributions,
+                                             AgentFeeHierarchyDistributionsDetail)
 from .views.command.list import ListCommandView
 from .views.command.tier.add import AddView
-from .views.agent_bonus_distribution import AgentBonusDistributions
+from .views.command.tier.commission.agent_fee import AgentFeeView
 from .views.command.tier.update import UpdateView as TierUpdateView
-from .views.commission_and_payment import (CommissionAndPaymentView,
+from .views.commission_and_payment import (BalanceDistributionsUpdate,
+                                           BonusDistributionsUpdate,
+                                           CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
-                                           SettingBonusView,
-                                           BalanceDistributionsUpdate,
-                                           BonusDistributionsUpdate)
+                                           SettingBonusView)
 from .views.create import CreateView
+from .views.delete_setting_bonus import DeleteSettingBonus
 from .views.detail import ServiceDetailForm
 from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
-from .views.delete_setting_bonus import DeleteSettingBonus
-from .views.command.tier.commission.agent_fee import AgentFeeView
 
 app_name = "services"
 
@@ -76,4 +77,8 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-fee/$',
         login_required(AgentFeeView.as_view(), login_url='login'),
         name="agent_fee"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-fee/(?P<agent_fee_distribution_id>[0-9A-Za-z]+)/$',
+        login_required(AgentFeeHierarchyDistributionsDetail.as_view(), login_url='login'),
+        name="agent_fee_distribution_detail"),
 ]
