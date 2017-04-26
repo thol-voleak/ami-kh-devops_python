@@ -167,17 +167,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnEdit += 'btn_setting_bonus_save';
             htmlIDBtnDelete += 'btn_setting_bonus_delete';
             htmlEventBtnDelete += 'deleteSettingBonus(' + distribution_id + ')';
-<<<<<<< HEAD
-        else if (tableId == 'tbl_agent_hier_fee') {
+        } else if (tableId == 'tbl_agent_hier_fee') {
             htmlIDBtnEdit += 'btn_agent_hier_fee_save';
             htmlIDBtnDelete += 'btn_agent_hier_fee_delete';
             htmlEventBtnDelete += 'deleteAgentFee(' + distribution_id + ')';
-=======
         } else if (tableId == 'tbl_bonus') {
             htmlIDBtnEdit += 'btn_bonus_save';
             htmlIDBtnDelete += 'btn_bonus_delete';
             htmlEventBtnDelete += '';
->>>>>>> 869f4ee90b8b9b248e67d5918a98589f6f492159
         }
         htmlIDBtnEdit += '\'';
         htmlIDBtnDelete += '\'';
@@ -329,11 +326,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-
-                    addMessage("Updated Bonus Successfully");
+                    addMessage("Updated Agent Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Updated Bonus got error!");
+                    addMessage("Updated Agent Bonus got error!");
                 }
 
             },

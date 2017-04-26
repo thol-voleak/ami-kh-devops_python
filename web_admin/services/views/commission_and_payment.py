@@ -244,8 +244,10 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start update setting bonus ==========")
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
-        url = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
-        logger.info("API-Path: {}".format(url))
+
+        api_path = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info("API-Path: {}".format(api_path))
 
         data = request.POST.copy()
 
