@@ -197,11 +197,6 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
 
 
 class BalanceDistributionsUpdate(View, GetHeaderMixin):
-    def _get_headers(self):
-        if getattr(self, '_headers', None) is None:
-            self._headers = get_auth_header(self.request.user)
-
-        return self._headers
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update balance distributions ==========")
@@ -242,11 +237,6 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
 
 
 class BonusDistributionsUpdate(View, GetHeaderMixin):
-    def _get_headers(self):
-        if getattr(self, '_headers', None) is None:
-            self._headers = get_auth_header(self.request.user)
-
-        return self._headers
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update bonus distributions ==========")

@@ -311,6 +311,26 @@
             });
         }
 
+
+        function deleteAgentFee(agent_fee_id) {
+            var url = $('#agent-hierarchy-distribution-form').attr('action') + agent_fee_id;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
+                    addMessage("Deleted Agent Hierarchy successfully");
+                },
+                error: function() {
+                    addMessage("Failed to Delete Agent Hierarchy");
+                }
+            });
+        }
+
         function addMessage(message) {
             $("#ajax-messages").empty().append(
                 '<div class="col-xs-12">' +
