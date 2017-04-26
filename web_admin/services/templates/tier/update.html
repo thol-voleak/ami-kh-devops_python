@@ -12,7 +12,6 @@
                 <form class="form-horizontal" role="form" method="post"
                       action="{% url 'services:update_tier' service_id command_id service_command_id update_tier.fee_tier_id%}">
                     {% csrf_token %}
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Service Name</label>
                         <div class="col-sm-8">
