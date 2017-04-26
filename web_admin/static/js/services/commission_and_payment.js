@@ -87,7 +87,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
             htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
             htmlIDSpecificID += 'txt_setting_payment_fee_structure_specific_id_edit';
-            htmlIDSOFTypes += 'txt_setting_payment_fee_structure_source_of_fund_edit';
+            htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
             htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'ddl_setting_payment_fee_structure_rate_edit';

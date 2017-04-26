@@ -139,7 +139,7 @@
                                 <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
                             </td>
                             <td>
-                                <select class="form-control" name="sof_type_id" id="txt_setting_payment_fee_structure_specific_id">
+                                <select class="form-control" name="sof_type_id" id="ddl_setting_payment_fee_structure_source_of_fund">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -154,7 +154,7 @@
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" id="ddl_setting_payment_fee_structure_rate" required /></td>
+                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate" required /></td>
                             <td></td>
                         </tr>
                     </table>
