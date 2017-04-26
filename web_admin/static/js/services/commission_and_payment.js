@@ -322,10 +322,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Updated Bonus Successfully");
+                    addMessage("Updated Agent Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Updated Bonus got error!");
+                    addMessage("Updated Agent Bonus got error!");
                 }
 
             },
