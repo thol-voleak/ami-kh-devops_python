@@ -10,7 +10,8 @@
     </div>
 
     <form method="POST" class="form-horizontal" role="form"
-          action="{% url 'services:agent_fee' service_id command_id service_command_id fee_tier_id %}">
+          action="{% url 'services:agent_fee' service_id command_id service_command_id fee_tier_id %}"
+          id="agent-hierarchy-distribution-form">
 
         {% csrf_token %}
         <div class="form-group table-responsive row">
@@ -29,7 +30,7 @@
                 </thead>
                 <tbody>
                 {% for d in fee %}
-                    <tr role="row">
+                <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}">
                         <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                         <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
@@ -49,15 +50,14 @@
                                class="text-info">
                                 <span class="small">Edit</span>
                             </a>
-                            {% comment %}
-                    <a type="button" class="btn btn-outline btn-xs btn-primary"
-                       role="button"
-                       id="btn_agent_hier_fee_delete" class="text-info"
-                       href="#" role="button"
-                       class="text-info">
-                        <span class="small">Delete</span>
-                    </a>
-                    {% endcomment %}
+                            <a type="button" class="btn btn-outline btn-xs btn-primary"
+                               role="button"
+                               id="btn_agent_hier_fee_delete" class="text-info"
+                               href="#" role="button"
+                               onclick="deleteAgentFee('{{ d.agent_fee_distribution_id }}')"
+                               class="text-info">
+                                <span class="small">Delete</span>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
