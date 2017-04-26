@@ -201,7 +201,7 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
 
 class BalanceDistributionsUpdate(View, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start update balance distributions ==========")
+        logger.info("========== Start updating setting payment & fee structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
         url = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
@@ -233,7 +233,7 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         else:
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
-        logger.info("========== Finish update balance distributions ==========")
+        logger.info("========== Finished updating setting payment & fee structure ==========")
         return httpResponse
 
 
