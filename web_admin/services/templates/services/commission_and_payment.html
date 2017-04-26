@@ -113,24 +113,28 @@
                                 <td class="col-sm-2">
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
-                                            id="btn_setting_payment_fee_structure_edit">Edit</button>
+                                            id="btn_setting_payment_fee_structure_edit">Edit
+                                    </button>
                                     <button type="button"
                                             class="delete btn btn-outline btn-xs btn-danger text-info small"
                                             id="btn_setting_payment_fee_structure_delete"
-                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete</button>
+                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}
                         <tr>
                             <td>
-                                <select class="form-control" name="action_type" id="ddl_setting_payment_fee_structure_dc">
+                                <select class="form-control" name="action_type"
+                                        id="ddl_setting_payment_fee_structure_dc">
                                     {% for action_type in choices.action_types %}
                                         <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" name="actor_type" id="ddl_setting_payment_fee_structure_actor">
+                                <select class="form-control" name="actor_type"
+                                        id="ddl_setting_payment_fee_structure_actor">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -139,22 +143,26 @@
                                 <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
                             </td>
                             <td>
-                                <select class="form-control" name="sof_type_id" id="txt_setting_payment_fee_structure_specific_id">
+                                <select class="form-control" name="sof_type_id"
+                                        id="txt_setting_payment_fee_structure_specific_id">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                             <td>
-                                <input class="form-control" name="specific_sof" id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
+                                <input class="form-control" name="specific_sof"
+                                       id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
                             </td>
                             <td>
-                                <select class="form-control" name="amount_type" id="ddl_setting_payment_fee_structure_from_amount">
+                                <select class="form-control" name="amount_type"
+                                        id="ddl_setting_payment_fee_structure_from_amount">
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" id="ddl_setting_payment_fee_structure_rate" required /></td>
+                            <td><input class="form-control" name="rate" id="ddl_setting_payment_fee_structure_rate"
+                                       required/></td>
                             <td></td>
                         </tr>
                     </table>
@@ -211,11 +219,13 @@
                                 <td class="col-sm-2">
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
-                                            id="btn_setting_bonus_edit">Edit</button>
+                                            id="btn_setting_bonus_edit">Edit
+                                    </button>
                                     <button type="button"
                                             class="delete btn btn-outline btn-xs btn-danger text-info small"
                                             id="btn_setting_bonus_delete"
-                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete</button>
+                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -325,40 +335,48 @@
                     $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
                     addMessage("Deleted Agent Hierarchy successfully");
                 },
-                error: function() {
+                error: function () {
                     addMessage("Failed to Delete Agent Hierarchy");
                 }
             });
         }
 
-    function deleteAgentBonus(agent_bonus_distribution_id) {
-        var url = $('#agent_bonus_distribution_form').attr('action') + agent_bonus_distribution_id + '/';
-        $.ajax({
-            url: url,
-            type: "DELETE",
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function () {
-                $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
-                addMessage("Deleted Agent Bonus successfully");
-            },
-            error: function() {
-                addMessage("Failed to Delete Agent Bonus");
-            }
-        });
-    }
+        function deleteAgentBonus(agent_bonus_distribution_id) {
+            var url = $('#agent_bonus_distribution_form').attr('action') + agent_bonus_distribution_id + '/';
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
+                    addMessage("Deleted Agent Bonus successfully");
+                },
+                error: function () {
+                    addMessage("Failed to Delete Agent Bonus");
+                }
+            });
+        }
 
-    function addMessage(message) {
-        $("#ajax-messages").empty().append(
-            '<div class="col-xs-12">' +
-            '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
-            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
-            '<strong>' + message + '</strong>' +
-            '</div>' +
-            '</div>')
-    }
+        function addMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+        function changeSpecificActorType(actorType, specificActorId) {
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+            } else {
+                $(specificActorId).prop('disabled', true);
+            }
+        }
+
 
         // Edit row feature
         $(document).ready(function () {
