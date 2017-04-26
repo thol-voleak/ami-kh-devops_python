@@ -36,6 +36,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
             "is_deleted": 0
         }
 
+
         logger.info("Request: {}".format(post_data))
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
 
