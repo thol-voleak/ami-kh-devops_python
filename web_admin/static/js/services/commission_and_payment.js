@@ -349,7 +349,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         "info":     false
     });
 
-
     // for Agent Hierrachy Distribution - Fee
     function saveRowFeeToServer(oTable, nRow) {
         var jqInputs = $('input', nRow);
@@ -398,13 +397,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             }
         });
     }
-
-    oTable = $('#' + tableId).dataTable({
-        "searching":  false,
-        "paging":   false,
-        "ordering": false,
-        "info":     false
-    });
 
     function onBindingButtonsCancelEvent() {
         $('#' + tableId).on('click', 'button.cancel', function (e) {
