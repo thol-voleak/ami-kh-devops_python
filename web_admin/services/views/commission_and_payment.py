@@ -132,11 +132,9 @@ class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
 
         api_path = settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         url = settings.DOMAIN_NAMES + api_path
-
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
 
         json_data = response.json()
-        # logger.info("Username: {}".format(self.request.user.username))
         logger.info("API-Path: {}".format(api_path))
         logger.info("Response code: {}".format(response.status_code))
         if response.status_code == 200:

@@ -104,7 +104,7 @@
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
                                     {% for sof_type in choices.sof_types %}
-                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}
+                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}
                                     {% endfor %}
                                 </td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
@@ -146,7 +146,8 @@
                                 <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
                             </td>
                             <td>
-                                <select class="form-control" name="sof_type_id" id="ddl_setting_payment_fee_structure_source_of_fund">
+                                <select class="form-control" name="sof_type_id"
+                                        id="ddl_setting_payment_fee_structure_source_of_fund">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -163,7 +164,8 @@
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate" required /></td>
+                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate"
+                                       required/></td>
                             <td></td>
                         </tr>
                     </table>
@@ -191,27 +193,27 @@
                     <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
                         <thead>
                         <tr>
-                            <th id="lbl_db">Debit/Credit</th>
-                            <th id="lbl_actor">Actor</th>
-                            <th id="lbl_specific_id">Specific ID</th>
-                            <th id="lbl_source_of_fund">Source of Fund</th>
-                            <th id="lbl_specific_source">Specific Source of Fund</th>
-                            <th id="lbl_from_amount">Amount</th>
-                            <th id="lbl_rate">Rate %</th>
-                            <th id="lbl_actions">Actions</th>
+                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                            <th class="col-sm-2" id="lbl_actor">Actor</th>
+                            <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
+                            <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
+                            <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
+                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                            <th class="col-sm-2" id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for d in bonus %}
                             <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"
-                                data-id="{{ d.bonus_distribution_id }}"
+                                data-id="{{d.bonus_distribution_id}}"
                                 id="bonus-distribution-{{ d.bonus_distribution_id }}">
                                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
                                     {% for sof_type in choices.sof_types %}
-                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}
+                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}
                                     {% endfor %}
                                 </td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
@@ -240,19 +242,19 @@
                             </td>
                             <td>
                                 <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
-                                    onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_actor_specific_id')">
+                                        onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_specific_id')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
                             <td>
                                 <input name="specific_actor_id"
-                                       id="txt_setting_bonus_actor_specific_id" class="form-control" disabled>
+                                       id="txt_setting_bonus_specific_id" class="form-control" disabled>
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
                                     {% for sof_type in choices.sof_types %}
-                                        <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                                        <option value="{{sof_type.sof_type_id}}">{{sof_type.sof_type}}</option>
                                     {% endfor %}
                                 </select>
                             </td>
@@ -263,7 +265,7 @@
                             <td>
                                 <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount">
                                     {% for amount_type in choices.amount_types %}
-                                        <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                                        <option value="{{amount_type.amount_type}}">{{amount_type.amount_type}}</option>
                                     {% endfor %}
                                 </select>
                             <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required/></td>
@@ -296,7 +298,7 @@
                 type: "DELETE",
                 dataType: "json",
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function () {
                     $('#balance-distribution-' + distributionId).remove();
@@ -315,7 +317,7 @@
                 type: "DELETE",
                 dataType: "json",
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function () {
                     $('#bonus-distribution-' + bonus_distributions_id).remove();
@@ -335,7 +337,7 @@
                 type: "DELETE",
                 dataType: "json",
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function () {
                     $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
@@ -354,7 +356,7 @@
                 type: "DELETE",
                 dataType: "json",
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function () {
                     $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
