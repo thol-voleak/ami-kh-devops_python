@@ -1,6 +1,7 @@
 import logging
-
+import time
 import requests
+
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
 from django.contrib import messages
@@ -8,12 +9,10 @@ from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from authentications.utils import get_auth_header
-
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import format_date_time
 
 logger = logging.getLogger(__name__)
-
 
 class CommissionAndPaymentView(TemplateView, GetHeaderMixin):
     template_name = "services/commission_and_payment.html"
@@ -206,13 +205,10 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update balance distributions ==========")
-        logger.info("update balance distributions user: {}".format(self.request.user))
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
-        logger.info("update balance distributions id: {}".format(balance_distribution_id))
-
         url = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
-        logger.info("update balance distributions url: {}".format(url))
+        logger.info("API-Path: {}".format(url))
 
         data = request.POST.copy()
         post_data = {
@@ -225,17 +221,20 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate")
         }
 
-        logger.info("update balance distributions request body: {}".format(post_data))
+        logger.info("Params: {}".format(post_data))
 
+        # Reponse_time: 1 sec.
+        start_date = time.time()
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        logger.info("update balance distributions response status: {}".format(response.status_code))
-        logger.info("update balance distributions response content: {}".format(response.content))
+        end_date = time.time()
+
+        logger.info("Response_code: {}".format(response.status_code))
+        logger.info("Response_content: {}".format(response.content))
+        logger.info("Response_time: {} sec.".format(end_date - start_date))
 
         if response.status_code == 200:
-            logger.info("update balance distributions: row saving success!")
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            logger.info("update balance distributions: Something wrong happened!")
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
         logger.info("========== Finish update balance distributions ==========")
