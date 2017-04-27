@@ -23,7 +23,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
 
         url = settings.DOMAIN_NAMES + settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Agent Hierarchy Fee ==========')
-        logger.info('Username: {}, with url {}.'.format(self.request.user.username,url))
+        logger.info('API-Path: {}.'.format(url))
 
         data = request.POST.copy()
         post_data = {
@@ -37,11 +37,14 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         }
 
 
-        logger.info("Request: {}".format(post_data))
+        logger.info("Params: {}".format(post_data))
+        start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        end_time = time.time()
 
-        logger.info("Response status: {}".format(response.status_code))
+        logger.info("Response code: {}".format(response.status_code))
         logger.info("Response content: {}".format(response.content))
+        logger.info("Response time: {} sec.".format(end_time - start_time))
         if response.status_code == 200:
             messages.add_message(
                 request,

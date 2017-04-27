@@ -54,14 +54,14 @@
                 <td>
                     <select class="form-control" name="action_type" id="ddl_agent_hier_fee_dc">
                         {% for action_type in choices.action_types %}
-                            <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                            <option value="{{ action_type.action_type_id }}">{{ action_type.action_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
                     <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor">
                         {% for actor_type in choices.actor_types %}
-                            <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                            <option value="{{ actor_type.actor_type_id }}">{{ actor_type.actor_type }}</option>
                         {% endfor %}
                     </select>
                 <td></td>
@@ -78,7 +78,7 @@
                 <td>
                     <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount">
                         {% for amount_type in choices.amount_types %}
-                            <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                            <option value="{{ amount_type.amount_type_id }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
                     </select>
                 <td>
