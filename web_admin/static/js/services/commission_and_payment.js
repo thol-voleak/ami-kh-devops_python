@@ -90,7 +90,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
             htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
-            htmlIDRate += 'ddl_setting_payment_fee_structure_rate_edit';
+            htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
         } else if (tableId == 'tbl_setting_bonus') {
