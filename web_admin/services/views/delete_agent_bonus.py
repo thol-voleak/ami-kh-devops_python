@@ -30,9 +30,9 @@ class DeleteAgentBonus(View, GetHeaderMixin):
         response = requests.delete(url, headers=self._get_headers(),
                                    verify=settings.CERT)
         done = time.time()
-        logger.info('Response_time: {} sec.'.format(done - start_date))
         logger.info('Response_code: {}'.format(response.status_code))
         logger.info('Response_content: {}'.format(response.content))
+        logger.info('Response_time: {} sec.'.format(done - start_date))
 
         if response.status_code == 200:
             return True
