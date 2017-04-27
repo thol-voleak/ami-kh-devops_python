@@ -326,10 +326,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
-                    addMessage("Updated Agent Bonus Successfully");
+                    addMessage("Updated Agent Hierrachy Distribution - Bonus Successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Updated Agent Bonus got error!");
+                    addMessage("Updated Agent Hierrachy Distribution - Bonus got error!");
                 }
 
             },
