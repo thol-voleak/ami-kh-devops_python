@@ -70,9 +70,9 @@ class AgentFeeHierarchyDistributionsDetail(View, GetHeaderMixin):
     def delete(self, request, *args, **kwargs):
         agent_fee_distribution_id = kwargs.get('agent_fee_distribution_id')
 
-        logger.info('========== Start delete Agent Fee Hierarchy ==========')
+        logger.info('========== Start deleting Agent Hirarchy Distribution - Fee ==========')
         success = self._delete_agent_distribution(agent_fee_distribution_id)
-        logger.info('========== Finish delete Agent Fee Hierarchy ==========')
+        logger.info('========== Finish deleting Agent Hirarchy Distribution - Fee ==========')
 
         if success:
             return HttpResponse(status=204)
