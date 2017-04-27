@@ -164,15 +164,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnDelete += 'btn_setting_payment_fee_structure_delete';
             htmlEventBtnDelete += 'deleteDistribution(' + distribution_id + ')';
         } else if (tableId == 'tbl_setting_bonus') {
-            htmlIDBtnEdit += 'btn_setting_bonus_save';
+            htmlIDBtnEdit += 'btn_setting_bonus_edit';
             htmlIDBtnDelete += 'btn_setting_bonus_delete';
             htmlEventBtnDelete += 'deleteSettingBonus(' + distribution_id + ')';
         } else if (tableId == 'tbl_agent_hier_fee') {
-            htmlIDBtnEdit += 'btn_agent_hier_fee_save';
+            htmlIDBtnEdit += 'btn_agent_hier_fee_edit';
             htmlIDBtnDelete += 'btn_agent_hier_fee_delete';
             htmlEventBtnDelete += 'deleteAgentFee(' + distribution_id + ')';
         } else if (tableId == 'tbl_bonus') {
-            htmlIDBtnEdit += 'btn_bonus_save';
+            htmlIDBtnEdit += 'btn_bonus_edit';
             htmlIDBtnDelete += 'btn_bonus_delete';
             htmlEventBtnDelete += '';
         }
