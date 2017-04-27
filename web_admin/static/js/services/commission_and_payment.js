@@ -106,9 +106,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         } else if (tableId == 'tbl_bonus') {
             htmlIDActionTypes += 'ddl_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_bonus_actor_edit';
-            htmlIDSpecificID += 'ddl_bonus_actor_edit';
-            htmlIDSOFTypes += 'ddl_bonus_src_fund_edit';
-            htmlIDSpecificSOF += 'txt_bonus_spec_src_fund_edit';
+            htmlIDSpecificID += 'txt_bonus_specific_id_edit';
+            htmlIDSOFTypes += 'ddl_bonus_source_of_fund_edit';
+            htmlIDSpecificSOF += 'txt_bonus_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_bonus_amount_edit';
             htmlIDRate += 'txt_bonus_rate_edit';
             htmlIDBtnSave += 'btn_bonus_save';
