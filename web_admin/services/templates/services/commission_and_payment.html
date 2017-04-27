@@ -281,8 +281,9 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
+    <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>
     <script>
-
+        var csrf_token = "{{ csrf_token }}";
         function deleteDistribution(distributionId) {
             var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
             $.ajax({
@@ -386,7 +387,7 @@
             var m_sof_types = {{ choices.sof_types|safe }};
             var m_amount_type = {{ choices.amount_types|safe }};
             var current_fee_tier_id = {{ fee_tier_id  }};
-            var csrf_token = "{{ csrf_token }}";
+            //var csrf_token = "{{ csrf_token }}";
 
             // 1. Balance and Payment Fee Table
             onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);

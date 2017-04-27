@@ -70,18 +70,20 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
 class FeeDistributionsUpdate(View, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
+
         logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
         logger.info("User: {}".format(self.request.user))
 
-        fee_distributions_id = kwargs.get('fee_distributions_id')
-        logger.info("updating Agent Hierarchy Distribution - Fee id: {}".format(fee_distributions_id))
+        agent_fee_distribution_id = kwargs.get('fee_distributions_id')
+        logger.info("updating Agent Hierarchy Distribution - Fee id: {}".format(agent_fee_distribution_id))
 
-        url = settings.DOMAIN_NAMES + settings.FEE_DISTRIBUTION_UPDATE_URL.format(fee_distributions_id=fee_distributions_id)
+        url = settings.DOMAIN_NAMES + settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
         logger.info("Url: {}".format(url))
 
         data = request.POST.copy()
 
         post_data = {
+            "fee_tier_id": data.get("fee_tier_id"),
             "action_type": data.get("action_type"),
             "actor_type": data.get("actor_type"),
             "sof_type_id": data.get('sof_type_id'),
