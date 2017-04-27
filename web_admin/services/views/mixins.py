@@ -8,19 +8,19 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-    
+
 class GetCommandNameAndServiceNameMixin(GetHeaderMixin):
 
     def _get_command_name_by_id(self, command_id):
         url = settings.COMMAND_LIST_URL
-        logger.info('URL: {}'.format(url))
+        logger.info('API-Path: {}'.format(url))
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(),
                                 verify=settings.CERT)
         done = time.time()
-        logger.info('Reponse time: {} sec.'.format(done - start_date))
         logger.info('Response code: {}'.format(response.status_code))
         logger.info('Response content: {}'.format(response.content))
+        logger.info('Response time: {} sec.'.format(done - start_date))
 
         json_response = response.json()
         if response.status_code == 200 and json_response['status']['code'] == 'success':
