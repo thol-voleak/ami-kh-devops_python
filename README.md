@@ -18,3 +18,20 @@ python manage.py runserver
 
 - Create setting file
 /data/projects/admin-portal/config/platform_settings.py
+
+
+# Generate SQL for migration file
+
+- List all migrations by apply order
+
+python manage.py showmigrations --plan
+
+
+- Show SQL command for a specific migration
+
+python manage.py sqlmigrate app_name migration_number
+
+
+- Generate SQL for all exist migrations (combination of 2 commands above):
+
+python generate_sql.py
