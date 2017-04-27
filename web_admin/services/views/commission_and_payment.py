@@ -325,6 +325,7 @@ class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
         logger.info("========== Finished updating agent bonus distribution ==========")
+        
         return httpResponse
 
 class SettingBonusView(TemplateView, GetHeaderMixin):
