@@ -72,13 +72,11 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
 
         logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
-        logger.info("User: {}".format(self.request.user))
 
         agent_fee_distribution_id = kwargs.get('fee_distributions_id')
-        logger.info("updating Agent Hierarchy Distribution - Fee id: {}".format(agent_fee_distribution_id))
-
-        url = settings.DOMAIN_NAMES + settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
-        logger.info("Url: {}".format(url))
+        api_path = settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info('updating Agent Hierarchy Distribution - Fee API-Path: {path}'.format(path=api_path))
 
         data = request.POST.copy()
 
@@ -97,15 +95,13 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
         done = time.time()
 
-        logger.info("updating Agent Hierarchy Distribution - Fee response status: {}".format(response.status_code))
-        logger.info("updating Agent Hierarchy Distribution - Fee response content: {}".format(response.content))
-        logger.info("Response time: {} sec.".format(done - start_date))
+        logger.info('updating Agent Hierarchy Distribution - Fee Reponse_time: {}'.format(done - start_date))
+        logger.info('updating Agent Hierarchy Distribution - Fee Response_code: {}'.format(response.status_code))
+        logger.info('updating Agent Hierarchy Distribution - Fee Response_content: {}'.format(response.content))
 
         if response.status_code == 200:
-            logger.info("updating Agent Hierarchy Distribution - Fee: row saving success!")
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            logger.info("updating Agent Hierarchy Distribution - Fee: Something wrong happened!")
             httpResponse = HttpResponse(status=response.status_code, content=response)
 
         logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
