@@ -53,8 +53,13 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
+        logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
+        logger.info('========== Finish get command name ==========')
+
+        logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
+        logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
