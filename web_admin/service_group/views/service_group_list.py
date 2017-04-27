@@ -33,17 +33,17 @@ class ListView(TemplateView):
         json_data = auth_request.json()
         data = json_data.get('data')
 
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info("Response count is {}".format(len(data)))
-                return data
+        if auth_request.status_code == 200 and json_data["status"]["code"] == 'success':
+            logger.info("Response count is {}".format(len(data)))
+            return data
 
-        if json_data.get('message') == 'Unauthorized client or scope in request':
+        elif json_data.get('message') == 'Unauthorized client or scope in request':
             raise Exception("{}".format(json_data.get('message')))
 
-        if json_data["status"]["code"] == "access_token_expire":
+        elif json_data["status"]["code"] == "access_token_expire":
             logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
             raise InvalidAccessToken(json_data["status"]["message"])
+
         else:
             raise Exception("{}".format(json_data["status"]["message"]))
 

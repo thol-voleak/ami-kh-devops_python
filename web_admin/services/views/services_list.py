@@ -32,13 +32,14 @@ class ListView(TemplateView):
 
         json_data = auth_request.json()
         data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Service count: {}'.format(len(data)))
-                return data
 
-        if json_data["status"]["code"] == "access_token_expire":
+        if auth_request.status_code == 200 and json_data["status"]["code"] == 'success':
+            logger.info('Service count: {}'.format(len(data)))
+            return data
+
+        elif json_data["status"]["code"] == "access_token_expire":
             logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
             raise InvalidAccessToken(json_data["status"]["message"])
+
         else:
             raise Exception("{}".format(json_data["status"]["message"]))
