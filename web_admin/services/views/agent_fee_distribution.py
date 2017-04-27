@@ -21,7 +21,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Agent Hierarchy Fee ==========')
         logger.info('Username: {}, with url {}.'.format(self.request.user.username,url))
 
@@ -70,7 +70,7 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
         logger.info("User: {}".format(self.request.user))
 
-        fee_distributions_id = kwargs.get('bonus_distributions_id')
+        fee_distributions_id = kwargs.get('fee_distributions_id')
         logger.info("updating Agent Hierarchy Distribution - Fee id: {}".format(fee_distributions_id))
 
         url = settings.DOMAIN_NAMES + settings.FEE_DISTRIBUTION_UPDATE_URL.format(fee_distributions_id=fee_distributions_id)
