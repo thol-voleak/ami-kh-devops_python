@@ -102,11 +102,7 @@
                                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td class="col-sm-2">
-                                    {% for sof_type in choices.sof_types %}
-                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}
-                                    {% endfor %}
-                                </td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
@@ -211,11 +207,7 @@
                                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td class="col-sm-2">
-                                    {% for sof_type in choices.sof_types %}
-                                        {% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}
-                                    {% endfor %}
-                                </td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
