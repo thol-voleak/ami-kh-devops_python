@@ -54,9 +54,9 @@ def logout_user(request):
             pass
     else:
         logger.info('========== Finished to logout ==========')
-        code = response_json.get('status', {}).get('code', '')
-        if (code is not None) and (code == 'access_token_expire'):
-            raise InvalidAccessToken()
+        # code = response_json.get('status', {}).get('code', '')
+        # if (code is not None) and (code == 'access_token_expire'):
+        raise InvalidAccessToken()
 
 def get_auth_header(user):
     client_id = settings.CLIENTID
