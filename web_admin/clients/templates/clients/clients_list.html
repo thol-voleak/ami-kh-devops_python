@@ -47,7 +47,6 @@
                     <th>Client Name</th>
                     <th>Created At</th>
                     <th>Updated At</th>
-                    <th>Created By</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -73,7 +72,6 @@
                     <td class="col-sm-2">{{ client.client_name|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ client.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ client.last_updated_user_id|default_if_none:'' }}</td>
                     <td class="col-sm-3">
                         <div id="client-btn-group-{{ client.client_id }}">
                             <div class="btn-group mb5">

@@ -44,7 +44,6 @@
                     <th id="currency">Currency</th>
                     <th id="decimal">Decimal</th>
                     <th id="modify_date">Modify Date</th>
-                    <th id="create_by">Create By</th>
                 </tr>
                 </thead>
                 <tbody id="table_body">
@@ -55,7 +54,6 @@
                     </td>
                     <td class="col-sm-1">{{ currency.decimal|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ currency.last_update_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ currency.last_update_by_user_id|default_if_none:'' }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>

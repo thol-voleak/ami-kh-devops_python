@@ -40,23 +40,21 @@
                     <th id="lbl_description">Description</th>
                     <th id="lbl_created_date">Created Date</th>
                     <th id="lbl_modified_date">Modified Date</th>
-                    <th id="lbl_created_by">Created By</th>
                     <th id="action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for services in data %}
                 <tr>
-                    <td class="col-sm-2">{{ services.service_name|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ services.service_group_id|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ services.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ services.service_name|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ services.service_group_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ services.currency|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.description|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ services.created_user_id|default_if_none:'' }}</td>
                     <td class="col-sm-3">
                         <div id="service_btn_group">
-                            <div class="btn-group mb5">
+                            <div class="btn-group">
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"

@@ -67,7 +67,6 @@
                     <th id="lbl_company_balance">Company Balance</th>
                     <th id="lbl_new_company_balance">New Company Balance</th>
                     <th id="lbl_created_date">Created Date</th>
-                    <th id="lbl_create_by">Create By</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,8 +75,7 @@
                     <td class="col-sm-2">{{ object.changed_amount|floatformat:decimal|intcomma }}</td>
                     <td class="col-sm-2">{{ object.balance_before_change|floatformat:decimal|intcomma }}</td>
                     <td class="col-sm-2">{{ object.balance_after_change|floatformat:decimal|intcomma }}</td>
-                    <td class="col-sm-2">{{ object.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ object.created_user_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ object.created_timestamp|default_if_none:'' }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
