@@ -58,7 +58,6 @@
                                     <th id="lbl_command">Command</th>
                                     <th id="lbl_created_date">Created Date</th>
                                     <th id="lbl_modified_date">Modified Date</th>
-                                    <th id="lbl_created_by">Created By</th>
                                     <th id="lbl_action">Action</th>
                                 </tr>
                                 </thead>
@@ -69,7 +68,6 @@
                                             <td class="col-sm-2">{{ command.command_name|default_if_none:'' }}</td>
                                             <td class="col-sm-2">{{ command.created_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-2">{{ command.last_updated_timestamp|default_if_none:'' }}</td>
-                                            <td class="col-sm-2">{{ command.created_user_id|default_if_none:'' }}</td>
                                             <td class="col-sm-2"><a type="button"
                                                 class="btn btn-outline btn-xs btn-primary"
                                                 role="button"

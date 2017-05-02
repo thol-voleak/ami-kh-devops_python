@@ -7,7 +7,6 @@ from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect
-from web_admin.utils import format_date_time
 
 logger = logging.getLogger(__name__)
 
@@ -62,14 +61,13 @@ class ListCommandView(TemplateView):
 
         logger.info('========== Start get Services Command List ==========')
         data, service_name = self.get_commands_list(service_id)
-        refined_data = format_date_time(data)
         logger.info('========== Finished get Services Command List ==========')
 
         logger.info('========== Start get Command List ==========')
         commands_dd_list = self._get_commands_dd_list()
         logger.info('========== Finished get Command List ==========')
 
-        context['data'] = refined_data
+        context['data'] = data
         context['service_name'] = service_name
         context['command_id'] = commands_dd_list[0]["command_id"]
         context['commands_dd_list'] = commands_dd_list

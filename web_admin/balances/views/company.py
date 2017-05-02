@@ -8,7 +8,6 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 
 from web_admin.mixins import GetChoicesMixin
-from web_admin.utils import format_date_time
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,6 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         logger.info('========== Finished get Company Balance List ==========')
 
         if success_balance:
-            data = format_date_time(data)
             data = self._get_new_company_balance(data)
 
         logger.info('========== Start get Total Initial Company Balance ==========')

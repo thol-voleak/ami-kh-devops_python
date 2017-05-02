@@ -18,9 +18,8 @@ class ListView(TemplateView):
         logger.info('========== Start getting Agent Types List ==========')
         logger.info('Username {}'.format(self.request.user.username))
         data = self.get_agent_types_list()
-        refined_data = _refine_data(data)
         logger.info('========== Finished getting Agent Types List ==========')
-        result = {'data': refined_data,
+        result = {'data': data,
                   'msg': self.request.session.pop('agent_type_create_msg', None),
                   'del_msg': self.request.session.pop('agent_type_delete_msg', None)}
 
@@ -47,13 +46,3 @@ class ListView(TemplateView):
             raise InvalidAccessToken(json_data["status"]["message"])
         else:
             raise Exception("{}".format(json_data["status"]["message"]))
-
-
-def _refine_data(agent_types_list):
-    for agent_type in agent_types_list:
-        if (agent_type['created_timestamp'] is not None) and (agent_type['created_timestamp'] != "null"):
-            created_at = agent_type['created_timestamp'] / 1000.0
-            agent_type['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                '%d-%m-%Y %H:%M %p')
-
-    return agent_types_list

@@ -80,7 +80,6 @@
                     <th id="lbl_bonus_amount">Bonus Amount</th>
                     <th id="lbl_created_date">Created Date</th>
                     <th id="lbl_modified_date">Modified Date</th>
-                    <th id="lbl_created_by">Create By</th>
                     <th id="lbl_action">Action</th>
                 </tr>
                 </thead>
@@ -96,7 +95,6 @@
                     <td class="col-sm-2">{{ fee_tier.bonus_amount|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ fee_tier.created_user_id|default_if_none:'' }}</td>
                     <td class="col-sm-1">
                         <a type="button" class="btn btn-outline btn-xs btn-primary"  id="btn_edit" class="text-info"
                             href="{% url 'services:update_tier' service_id command_id service_command_id fee_tier.fee_tier_id %}"

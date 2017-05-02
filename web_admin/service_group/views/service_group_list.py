@@ -2,7 +2,6 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
-from web_admin.utils import format_date_time
 
 import requests
 import logging
@@ -16,9 +15,8 @@ class ListView(TemplateView):
     def get_context_data(self, **kwargs):
         logger.info('========== Start get Service Group List ==========')
         data = self.get_service_group_list()
-        refined_data = format_date_time(data)
         logger.info('========== Finished get Service Group List ==========')
-        result = {'data': refined_data}
+        result = {'data': data}
         return result
 
     def get_service_group_list(self):

@@ -49,11 +49,6 @@ class BalanceApi():
 
 def refine_data(data):
 
-    if (data['last_update_timestamp'] is not None) and (data['last_update_timestamp'] != "null"):
-        last_update_timestamp = data['last_update_timestamp'] / 1000.0
-        data['last_update_timestamp'] = datetime.datetime.fromtimestamp(float(last_update_timestamp)).strftime(
-                '%d-%m-%Y %H:%M %p')
-
     currencies = data['value'].split(',')
     currencyList = []
 

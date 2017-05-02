@@ -22,9 +22,8 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         logger.info('========== Start get Currency List ==========')
         currencies = self._get_currencies_list()
         agent_balance_list = self._get_agent_balances(self.company_agent_id)
-        balance_list = self._get_date_format(agent_balance_list)
         logger.info('========== Finished get Currency List ==========')
-        result = {'currencies': currencies, 'agent_balance_list': balance_list}
+        result = {'currencies': currencies, 'agent_balance_list': agent_balance_list}
         return result
 
     def post(self, request, *args, **kwargs):
@@ -94,10 +93,3 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
             else:
                 raise Exception("{}".format(json_data["status"]["message"]))
 
-    def _get_date_format(self, data):
-        for item in data:
-            if (item.get('last_update') is not None) and (item['last_update'] != "null"):
-                last_update = item['last_update'] / 1000.0
-                item['last_update'] = datetime.datetime.fromtimestamp(float(last_update)).strftime(
-                    '%d-%m-%Y %H:%M %p')
-        return data

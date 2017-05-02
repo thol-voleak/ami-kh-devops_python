@@ -18,9 +18,8 @@ class ListView(TemplateView):
     def get_context_data(self, **kwargs):
         logger.info('========== Start get system user List ==========')
         data = self.get_system_user_list()
-        refined_data = _refine_data(data)
         logger.info('========== Finished get system user List ==========')
-        result = {'data': refined_data,
+        result = {'data': data,
                 'created_msg': self.request.session.pop('system_user_create_msg', None),
                 'del_msg': self.request.session.pop('system_user_delete_msg', None),
                 'pw_msg': self.request.session.pop('system_user_change_password_msg', None)}
@@ -48,14 +47,3 @@ class ListView(TemplateView):
             raise InvalidAccessToken(json_data["status"]["message"])
         else:
             raise Exception("{}".format(json_data["status"]["message"]))
-
-
-def _refine_data(system_user_list):
-    for system_user in system_user_list:
-        if (system_user['created_timestamp'] is not None) and (system_user['created_timestamp'] != "null"):
-            created_at = system_user['created_timestamp'] / 1000.0
-            system_user['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                '%d-%m-%Y %H:%M %p')
-            system_user['fullname'] = '{} {}'.format(system_user['firstname'], system_user['lastname'])
-
-    return system_user_list
