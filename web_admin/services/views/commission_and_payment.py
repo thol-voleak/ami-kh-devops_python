@@ -10,7 +10,6 @@ from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from authentications.utils import get_auth_header
 from web_admin.get_header_mixins import GetHeaderMixin
-from web_admin.utils import format_date_time
 from .mixins import GetCommandNameAndServiceNameMixin
 
 logger = logging.getLogger(__name__)
@@ -98,7 +97,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         if response.status_code == 200:
             data = json_data.get('data', [])
             logger.info("Commission and payment list count: {}".format(len(data)))
-            data = format_date_time(data)
             return data, True
         else:
             logger.info("Response content: {}".format(response.content))
@@ -115,7 +113,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         if response.status_code == 200:
             data = json_data.get('data', [])
             logger.info("Setting Bonus list count: {}".format(len(data)))
-            data = format_date_time(data)
             return data, True
         else:
             logger.info("Response content: {}".format(response.content))
@@ -132,7 +129,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         if response.status_code == 200:
             data = json_data.get('data', [])
             logger.info("Total agent bonus list is {}".format(len(data)))
-            data = format_date_time(data)
             return data, True
         else:
             logger.info("Agent bonus distribution response content is {}".format(response.content))
@@ -151,7 +147,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
             data = json_data.get('data', [])
             logger.info("Response Content - all Agent Fee list count: {}".format(len(data)))
             logger.info("Response Content - displayed Agent Fee list count: {}".format(len(self._filter_deleted_items(data))))
-            data = format_date_time(data)
             return data, True
         else:
             logger.info("Response content: {}".format(response.content))

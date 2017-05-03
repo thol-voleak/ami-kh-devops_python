@@ -6,7 +6,6 @@ from django.conf import settings
 from django.http import Http404
 from django.views.generic.base import TemplateView
 
-from web_admin.utils import format_date_time
 from .mixins import GetCommandNameAndServiceNameMixin
 
 logger = logging.getLogger(__name__)
@@ -27,9 +26,6 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin):
         logger.info('========== Start get Fee Tier List ==========')
         data, success = self._get_fee_tier_list(service_command_id)
         logger.info('========== Finished get Fee Tier List ==========')
-
-        if success:
-            data = format_date_time(data)
 
         context['data'] = data
         context['msg'] = self.request.session.pop('add_tier_msg', None)
