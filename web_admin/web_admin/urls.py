@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^admin-portal/system-user/', include('system_user.urls')),
     url(r'^admin-portal/service-group/', include('service_group.urls')),
     url(r'^admin-portal/services/', include('services.urls')),
+    url(r'^admin-portal/agents/', include('agents.urls')),
 ]
