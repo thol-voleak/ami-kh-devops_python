@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'mod_wsgi.server',
 
-    #'debug_toolbar',
-    #'debug_panel',
+    # 'debug_toolbar',
+    # 'debug_panel',
 
     'authentications',
     'clients',
@@ -50,11 +50,12 @@ INSTALLED_APPS = [
     'system_user',
     'service_group',
     'services',
+    'agents',
 ]
 
 MIDDLEWARE_CLASSES = [
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-    #'debug_panel.middleware.DebugPanelMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_panel.middleware.DebugPanelMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,7 +89,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
-                              'configuration', 'system_user', 'service_group', 'services')],
+                              'configuration', 'system_user', 'service_group', 'services', 'agents')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -201,11 +202,16 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
-        },'services': {
+        },
+        'services': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'agents': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
     }
 }
-
