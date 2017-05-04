@@ -9,5 +9,5 @@ app_name = 'agents'
 urlpatterns = [
     url(r'^$', login_required(ListView.as_view(), login_url='login'), name="agent-list"),
     url(r'^registration/$', login_required(AgentRegistration.as_view(), login_url='login'), name="agent_registration"),
-    url(r'^update/$', login_required(AgentUpdate.as_view(), login_url='login'), name="agent_update"),
+    url(r'^update/(?P<AgentId>[0-9A-Za-z]+)/$', login_required(AgentUpdate.as_view(), login_url='login'), name="agent_update"),
 ]

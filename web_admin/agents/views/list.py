@@ -57,6 +57,9 @@ class ListView(TemplateView):
 
     def format_data(self, data):
         for i in data:
-            i['kyc_status'] = KYC.get(i['kyc_status'])
-            i['status'] = STATUS.get(i['status'])
+            #logger.info('kyc_status = '.format(KYC.get(i['kyc_status'])))
+            # if not i.get('kyc_status'):
+            #     print(i)
+            i['kyc_status'] = KYC.get(i.get('kyc_status'))
+            i['status'] = STATUS.get(i.get('status'))
         return data

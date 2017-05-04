@@ -44,7 +44,7 @@
                             <td class="col-sm-3">
                                 <div class="btn-group">
                                     <button id="btn_detail">Detail</button>
-                                    <button id="btn_edit">Edit</button>
+                                    <button id="btn_edit btn-primary" type="button" onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                                     <button id="btn_delete">Delete</button>
                                 </div>
                             </td>
