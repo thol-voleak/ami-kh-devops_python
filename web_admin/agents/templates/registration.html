@@ -13,14 +13,14 @@
         <h3>Agent Register</h3>
     </div>
 
-    {% for message in messages %}
+    {% if msg is not None %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="msg-add-service">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message|capfirst }}</strong>
+            <strong>{{ msg }}</strong>
         </div>
     </div>
-    {% endfor %}
+    {% endif %}
 
     <div class="panel-body">
         <div class="row no-margin">
@@ -103,7 +103,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Currency *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_currency" name="ddl_currency" required>
+                                <select class="form-control" id="ddl_currency" name="currency" required>
                                     <option value=""></option>
                                     {% for currency in preload_currencies %}
                                     <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>

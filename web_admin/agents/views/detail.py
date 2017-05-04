@@ -40,7 +40,8 @@ class DetailView(TemplateView):
             if (response_json['status']['code'] == "success"):
                 data = response_json.get('data')
                 context = {'agent': data,
-                           'agent_id': agent_id}
+                           'agent_id': agent_id,
+                           'msg': self.request.session.pop('agent_registration_msg', None)}
                 logger.info('========== Finished getting Agent detail ==========')
                 return context
 
