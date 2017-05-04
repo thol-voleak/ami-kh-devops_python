@@ -10,7 +10,7 @@
 {% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Agent Registration</h3>
+        <h3>Agent Register</h3>
     </div>
 
     {% for message in messages %}
@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Agent ID</label>
+                            <label class="col-sm-4 control-label"></label>
                             <div class="col-sm-8"></div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_agent_type" name="ddl_agent_type">
+                                <select class="form-control" id="ddl_agent_type" name="ddl_agent_type" required>
                                     <option value=""></option>
                                     {% for agent_type in agent_types_list %}
                                     <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
@@ -75,7 +75,7 @@
                             <label class="col-sm-4 control-label">User Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="username"
-                                       id="txt_user_name"/>
+                                       id="txt_user_name" required/>
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                             <label class="col-sm-4 control-label">Password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="password"
-                                       id="txt_password"/>
+                                       id="txt_password" required/>
                             </div>
                         </div>
                     </div>
@@ -101,9 +101,9 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Currency</label>
+                            <label class="col-sm-4 control-label">Currency *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_currency" name="ddl_currency">
+                                <select class="form-control" id="ddl_currency" name="ddl_currency" required>
                                     <option value=""></option>
                                     {% for currency in preload_currencies %}
                                     <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
@@ -115,7 +115,7 @@
                             <label class="col-sm-4 control-label">Re-password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="re_password"
-                                       id="txt_re_password"/>
+                                       id="txt_re_password" required/>
                             </div>
                         </div>
                     </div>
@@ -189,14 +189,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Sim ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="sim_id"
+                                <input type="number" class="form-control input-rounded" name="sim_id"
                                        id="txt_sim_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Adapter ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="adapter_id"
+                                <input type="number" class="form-control input-rounded" name="adapter_id"
                                        id="txt_adapter_id"/>
                             </div>
                         </div>
@@ -240,14 +240,14 @@
                             <label class="col-sm-4 control-label">Last Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_last_name"/>
+                                       id="txt_last_name" required />
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">First Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_first_name"/>
+                                       id="txt_first_name" required />
                             </div>
                         </div>
                     </div>
@@ -355,7 +355,7 @@
                     <!-- Begin section 7 [Secondary Identify] -->
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
+                            <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
                             <div class="col-sm-8"></div>
                         </div>
                         <div class="form-group col-md-6">
@@ -486,7 +486,7 @@
                             <label class="col-sm-4 control-label">Primary Phone *</label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control input-rounded" name="primary_phone"
-                                       id="txt_primary_phone"/>
+                                       id="txt_primary_phone" required/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -521,14 +521,14 @@
                             <label class="col-sm-4 control-label">Tertiary Phone</label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control input-rounded" name="tertiary_phone"
-                                       id="txt_secondary_phone"/>
+                                       id="txt_tertiary_phone"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Shop Product</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="shop_name"
-                                       id="txt_shop_name"/>
+                                <input type="text" class="form-control input-rounded" name="shop_product"
+                                       id="txt_shop_product"/>
                             </div>
                         </div>
                     </div>
@@ -536,7 +536,7 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">KYC STATUS</label>
+                            <label class="col-sm-4 control-label">KYC Status</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="kyc_status"
                                        id="txt_kyc_status" value="NO" disabled/>
@@ -547,12 +547,12 @@
                     <hr/>
 
                     <div class="pull-right">
-                        <a href="{% url 'agent_type:agent-type-list' %}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
-                        </a>
-
                         <a href="{% url 'agents:agent_registration' %}">
                             <input id="btn_create" class="btn btn-success text-left mb15" type="submit" value="Create"/>
+                        </a>
+
+                        <a href="{% url 'agents:agent-list' %}">
+                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
                     </div>
                 </form>
