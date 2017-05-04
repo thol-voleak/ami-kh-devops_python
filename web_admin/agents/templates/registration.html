@@ -64,8 +64,10 @@
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_agent_type" name="ddl_agent_type">
-                                    <option value="dealer" selected>Dealer</option>
-                                    <option value="agent">Agent</option>
+                                    <option value=""></option>
+                                    {% for agent_type in agent_types_list %}
+                                    <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -102,8 +104,10 @@
                             <label class="col-sm-4 control-label">Currency</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_currency" name="ddl_currency">
-                                    <option value="usd" selected>USD</option>
-                                    <option value="vnd">VND</option>
+                                    <option value=""></option>
+                                    {% for currency in preload_currencies %}
+                                    <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>

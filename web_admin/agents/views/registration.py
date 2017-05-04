@@ -3,6 +3,10 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from web_admin.mixins import GetChoicesMixin
+from django.views.generic.base import TemplateView
+
+from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 import requests
 import logging
@@ -11,8 +15,72 @@ import time
 logger = logging.getLogger(__name__)
 
 
-class AgentRegistration(TemplateView, GetChoicesMixin):
+class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
+
+    def _get_agent_types_list(self):
+        url = settings.AGENT_TYPES_LIST_URL
+
+        logger.info('Getting agent types list from backend')
+        logger.info('URL: {}'.format(url))
+        auth_request = requests.get(url, headers=get_auth_header(self.request.user),
+                                    verify=settings.CERT)
+        logger.info("Received data with response is {}".format(auth_request.status_code))
+
+        json_data = auth_request.json()
+        data = json_data.get('data')
+        if auth_request.status_code == 200:
+            if (data is not None) and (len(data) > 0):
+                logger.info('Total count of Agent Types is {}'.format(len(data)))
+                return data
+
+        if json_data["status"]["code"] == "access_token_expire":
+            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
+            raise InvalidAccessToken(json_data["status"]["message"])
+        else:
+            raise Exception("{}".format(json_data["status"]["message"]))
+
+
+    def _get_preload_currencies_dropdown(self):
+        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+
+        logger.info("Getting preload currency list from backend with {} url".format(url))
+        start_date = time.time()
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
+        done = time.time()
+        json_data = response.json()
+        logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
+        data = json_data.get('data')
+        if response.status_code == 200:
+            if (data is not None) and (len(data) > 0):
+                logger.info("Received {} preload currencies".format(len(json_data['data'])))
+                return data
+
+        if json_data["status"]["code"] == "access_token_expire":
+            raise InvalidAccessToken(json_data["status"]["message"])
+        else:
+            raise Exception("{}".format(json_data["status"]["message"]))
+
+
+class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownList):
     template_name = "registration.html"
+
+
+    def get_context_data(self, *arg, **kwargs):
+        logger.info('========== Start get Currency List ==========')
+        preload_currencies = self._get_preload_currencies_dropdown()
+        logger.info('========== Finished get Currency List ==========')
+
+        logger.info('========== Start get Agent Types List =========')
+        agent_types_list = self._get_agent_types_list()
+
+        #print('----------------------------------------- {}'.format(agent_types_list))
+        logging.info('========= Finish get Agent Types List =========')
+
+        result = {'preload_currencies': preload_currencies,
+                  'agent_types_list': agent_types_list}
+        return result
+
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start Registering Agent Profile ==========')
@@ -188,3 +256,7 @@ class AgentRegistration(TemplateView, GetChoicesMixin):
                 'Something wrong happened!',
             )
             return redirect('agents:agent_registration')
+
+
+
+
