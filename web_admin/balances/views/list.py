@@ -70,7 +70,10 @@ class ListView(TemplateView):
 
 
 def _refine_data(data):
-    currencies = data['value'].split(',')
+    if isinstance(data['value'], str):
+        currencies = data['value'].split(',')
+    else:
+        return []
     currencyList = []
 
     for currency in currencies:
