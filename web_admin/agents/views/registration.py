@@ -116,7 +116,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         self._create_agent_balance(request, agent_id)
         logger.info('========== Finished create agent balance ==========')
 
-        request.session['agent_registration_msg'] = 'Registering Agent successfully'
+        request.session['agent_registration_msg'] = 'Added agent successfully'
 
         return redirect('agents:agent_detail', agent_id=agent_id)
 
