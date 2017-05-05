@@ -41,11 +41,11 @@ class ListView(TemplateView):
         if response.status_code == 200:
             if (data is not None) and (len(data) > 0):
                 return data
-
-        if json_data["status"]["code"] == "access_token_expire":
-            raise InvalidAccessToken(json_data["status"]["message"])
-        else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+        return []
+        # if json_data["status"]["code"] == "access_token_expire":
+        #     raise InvalidAccessToken(json_data["status"]["message"])
+        # else:
+        #     raise Exception("{}".format(json_data["status"]["message"]))
 
     def get_preload_currencies_dropdown(self):
         url = settings.GET_ALL_PRELOAD_CURRENCY_URL

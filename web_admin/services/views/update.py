@@ -129,7 +129,7 @@ class UpdateView(TemplateView):
             currency_list = self._get_currency_list(value)
             dict[procnum] = currency_list, True
         else:
-            dict[procnum] = None, False
+            dict[procnum] = [], False
 
     def _get_currency_list(self, value):
         result = []
