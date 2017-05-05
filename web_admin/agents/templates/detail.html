@@ -65,7 +65,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
-                                <input type="text" id="txt_agent_type" value="{{ agent.agent_type_id | default_if_none:'' }}" class="form-control input-rounded" disabled required/>
+                                <input type="text" id="txt_agent_type" value="{{ agent_type_name | default_if_none:'' }}" class="form-control input-rounded" disabled required/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -521,7 +521,7 @@
                             <label class="col-sm-4 control-label">Shop Product</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="shop_name"
-                                       id="txt_shop_name" value="{{ agent.shop_product | default_if_none:'' }}" disabled/>
+                                       id="txt_shop_product" value="{{ agent.shop_product | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
