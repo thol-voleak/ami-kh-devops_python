@@ -12,6 +12,10 @@
     <div class="panel-heading border">
         <h3>Currencies</h3>
     </div>
+    <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
+        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+        <span id="alert_success_msg"></span>
+    </div>
     <div class="panel-body">
         <div class="form-group">
             <label class="col-sm-1 mt5 ml5 control-label">Currency</label>
@@ -31,11 +35,6 @@
                 <input id="currency_btn_add" class="btn btn-success btn-block no-print mb15" type="button"
                        value="Add" onClick="add()">
             </div>
-        </div>
-
-        <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <span id="alert_success_msg"></span>
         </div>
         <div class="table-responsive" id=currency_table>
             <table class="table table-bordered table-striped mb0">
