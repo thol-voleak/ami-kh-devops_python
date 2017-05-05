@@ -64,7 +64,6 @@
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_agent_type" name="ddl_agent_type" required>
-                                    <option value=""></option>
                                     {% for agent_type in agent_types_list %}
                                     <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
                                     {% endfor %}
@@ -104,7 +103,6 @@
                             <label class="col-sm-4 control-label">Currency *</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_currency" name="currency" required>
-                                    <option value=""></option>
                                     {% for currency in preload_currencies %}
                                     <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
                                     {% endfor %}
