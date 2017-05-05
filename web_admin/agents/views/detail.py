@@ -28,10 +28,9 @@ class DetailView(TemplateView):
         url = settings.DOMAIN_NAMES + api_path
         logger.info('Getting Agent detail - API-Path: {path}'.format(path=api_path))
         start_date = time.time()
-        response = requests.get(url, headers=get_auth_header(self.request.user),
-                                verify=settings.CERT)
+        response = requests.get(url, headers=get_auth_header(self.request.user), verify=settings.CERT)
         done = time.time()
-        logger.info('Getting Agent detail - Reponse_time: {}'.format(done - start_date))
+        logger.info('Getting Agent detail - Response_time: {}'.format(done - start_date))
         logger.info('Getting Agent detail - Response_code: {}'.format(response.status_code))
         logger.info('Getting Agent detail - Response_content: {}'.format(response.content))
         response_json = response.json()

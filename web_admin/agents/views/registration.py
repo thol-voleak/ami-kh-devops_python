@@ -72,9 +72,9 @@ Author: Steve Le
 History:
 - 2017-05-03: Initialize empty Class with template HTML name (Steve Le)
 - 2017-05-04: Add logic for Agent registration (Gate Nguyen)
--- API 1: POST api-gateway/agent/v1/agents/{agent_id}/profiles [METHOD = _create_agent_profile]
--- API 2: POST ...
--- API 3: POST ...
+-- API 1: POST api-gateway/agent/v1/agents/{agent_id}/profiles                      [METHOD = _create_agent_profile]
+-- API 2: POST api-gateway/agent/v1/agents/{agent_id}/identities                    [METHOD = _create_agent_identity]
+-- API 3: POST api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}    [METHOD = _create_agent_balance]
 - 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
 -- Added logging format and more.
 '''
@@ -140,13 +140,26 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         date_of_birth = request.POST.get('date_of_birth')
         gender = request.POST.get('gender')
         national = request.POST.get('national')
+        # Primary Section
         primary_Identify_id = request.POST.get('primary_Identify_id')
         primary_Identify_type = request.POST.get('primary_Identify_type')
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
         primary_issue_Date = request.POST.get('primary_issue_Date')
         primary_expire_Date = request.POST.get('primary_expire_Date')
+        # Secondary Section
         secondary_Identify_id = request.POST.get('secondary_Identify_id')
         secondary_Identify_type = request.POST.get('secondary_Identify_type')
+        secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
+        secondary_issue_Date = request.POST.get('secondary_issue_Date')
+        secondary_expire_Date = request.POST.get('secondary_expire_Date')
+        # Contact Info Section
+        nationality = request.POST.get('nationality')
+        province = request.POST.get('province')
+        district = request.POST.get('district')
+        commune = request.POST.get('commune')
+        address = request.POST.get('address')
+        primary_phone = request.POST.get('primary_phone')
+        secondary_phone = request.POST.get('secondary_phone')
         tertiary_phone = request.POST.get('tertiary_phone')
         email = request.POST.get('email')
         shop_name = request.POST.get('shop_name')
@@ -180,6 +193,16 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
             'primary_expire_Date': primary_expire_Date,
             'secondary_Identify_id': secondary_Identify_id,
             'secondary_Identify_type': secondary_Identify_type,
+            'secondary_place_of_issue': secondary_place_of_issue,
+            'secondary_issue_Date': secondary_issue_Date,
+            'secondary_expire_Date': secondary_expire_Date,
+            'nationality': nationality,
+            'province': province,
+            'district': district,
+            'commune': commune,
+            'address': address,
+            'primary_phone': primary_phone,
+            'secondary_phone': secondary_phone,
             'tertiary_phone': tertiary_phone,
             'email': email,
             'shop_name': shop_name,
