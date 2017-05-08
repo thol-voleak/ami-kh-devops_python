@@ -85,20 +85,18 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         logger.info("Request url: {}".format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        logger.info("Received response with status {} of user id {}".format(
+        logger.info("_get_total_initial_company_balance response with status {} of user id {}".format(
             response.status_code,
             self.request.user.id,
         ))
 
         json_data = response.json()
         if response.status_code == 200:
-            data = json_data.get('data')
-            logger.info("Total Initial Balance is {}".format(data['balance']))
-
+            data = json_data.get('data', {})
             return data, True
         else:
-            logger.info("Response content is {}".format(response.content))
-            return [], False
+            logger.info("_get_total_initial_company_balance Response is {}".format(response.text))
+            return {}, False
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
@@ -125,7 +123,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             logger.info("Total count of Company Balance is {}".format(len(data)))
             return data, True
         else:
-            logger.info("Response content is {}".format(response.content))
+            logger.info("_get_company_balance_history Response is {}".format(response.text))
             return [], False
 
     def _add_company_balance(self, currency, data):
@@ -140,8 +138,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         if response.status_code == 200:
             return True
         else:
-            logger.info("Received response with status {}".format(
-                response.status_code))
+            logger.info("_add_company_balance response with status {}".format(
+                response.text))
             return False
 
     def _get_currency_choices_by_agent(self,agent_id):
@@ -158,6 +156,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             currency_list = [x['currency'] for x in data]
             logger.info("Total count of Currency List is {}".format(len(currency_list)))
             return currency_list, True
+        logger.info('_get_currency_choices_by_agent response: {}'.format(response.text))
         return [], False
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')

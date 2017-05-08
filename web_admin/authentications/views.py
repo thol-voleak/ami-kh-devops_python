@@ -32,7 +32,7 @@ def logout_user(request):
     end_time = time.time()
 
     logger.info("username {} got logout response Code: {}".format(username, response.status_code))
-    logger.info("username {} got logout response: {}".format(username, response.content))
+    logger.info("username {} got logout response: {}".format(username, response.text))
     logger.info("username {} got logout response time: {} sec.".format(username, end_time - start_time))
 
     response_json = response.json()
