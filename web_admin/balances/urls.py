@@ -5,6 +5,7 @@ from .api import BalanceApi
 
 from balances.views.company_balance import CompanyBalanceView
 from balances.views.company import company_balance
+from balances.views.country_code import CountryCode
 
 app_name = 'balances'
 
@@ -15,4 +16,5 @@ urlpatterns = [
     url(r'^initial-company-balance/$', login_required(CompanyBalanceView.as_view(), login_url='login'),
         name="initial_company_balance"),
     url(r'^company-balance/$', company_balance, name="company_balance"),
+    url(r'^country-code/$', login_required(CountryCode.as_view(), login_url='login'), name="country-code"),
 ]

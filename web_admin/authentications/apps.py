@@ -84,17 +84,10 @@ class CustomBackend:
                         logger.info('{} user was created', username)
 
                     logger.info("Adding access token for {} user name".format(username))
-                    try:
-                        auth = Authentications.objects.get(user=user)
-                        auth.access_token = access_token
-                        auth.correlation_id = correlation_id
-                        auth.save()
-                    except Exception as ex:
-                        logger.info(ex)
-                        auth = Authentications(user=user,
-                                               access_token=access_token,
-                                               correlation_id=correlation_id)
-                        auth.save()
+                    auth, created_token = Authentications.objects.get_or_create(user=user)
+                    auth.access_token = access_token
+                    auth.correlation_id = correlation_id
+                    auth.save()
 
                     logger.info("Authentication success and generate session for {} user name".format(username))
                     logger.info('========== Finish authentication backend service ==========')

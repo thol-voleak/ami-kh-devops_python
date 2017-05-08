@@ -17,7 +17,7 @@
 
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3 id="page_title">Add Country Code</h3>
+        <h3 id="page_title">Country Code</h3>
     </div>
 
     <div class="col-xs-12">
@@ -36,12 +36,13 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="code" id="code_input"
                                    value="{{ country_code | default_if_none:'' }}" required
-                                   style="text-transform: uppercase" onfocus="removeRedColor()">
+                                   style="text-transform: uppercase" onfocus="removeRedColor()"
+                                    {% if country_code is not None %} readonly {% endif %}>
                         </div>
                     </div>
-                    <div class="pull-right">
+                    <div class="pull-right {% if country_code is not None %} hidden {% endif %}">
                         <button id='country_btn_save' type="button" class="btn btn-success"
-                                data-url="{% url 'configuration:country-code' %}"
+                                data-url="{% url 'balances:country-code' %}"
                                 onClick="addCountryCode()">
                             Save
                         </button>
@@ -52,7 +53,6 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>
 
 function removeRedColor() {

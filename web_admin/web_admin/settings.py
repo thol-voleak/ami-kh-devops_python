@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'balances',
     'web',
     'agent_type',
-    'configuration',
     'system_user',
     'service_group',
     'services',

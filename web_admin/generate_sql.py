@@ -7,7 +7,7 @@ def get_app_and_migration(line):
     Get app name and migration name from line like this
     [X] contenttypes.0001_initial
     """
-    text = line.split()[1]
+    text = line.split()[2]
     return text.split(".")
 
 

@@ -30,7 +30,6 @@ urlpatterns = [
     url(r'^admin-portal/backlog/$', backlog, name="backlog"),
     url(r'^admin-portal/logout/$', logout_user, name='logout'),
     url(r'^admin-portal/agent-type/', include('agent_type.urls')),
-    url(r'^admin-portal/configuration/', include('configuration.urls')),
     url(r'^admin-portal/system-user/', include('system_user.urls')),
     url(r'^admin-portal/service-group/', include('service_group.urls')),
     url(r'^admin-portal/services/', include('services.urls')),

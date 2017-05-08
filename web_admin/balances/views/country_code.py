@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from authentications.apps import InvalidAccessToken
 
 from authentications.utils import get_auth_header
 
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 class CountryCode(View):
     @staticmethod
     def get(request, *args, **kwargs):
-
         try:
             logger.info('========== Start getting global configurations ==========')
 
