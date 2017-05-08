@@ -36,7 +36,7 @@ class CountryCode(View):
 
             logger.info("Response time is {} sec.".format(done - start_date))
             logger.info("Received data with response status is {}".format(response.status_code))
-            logger.info('Response Content: {}'.format(response_json))
+            logger.info('Response Content: {}'.format(response.text))
 
             if response.status_code == 200:
 
@@ -89,7 +89,7 @@ class CountryCode(View):
             status = response_json['status']
 
             logger.info("Response Code is {}".format(status['code']))
-            logger.info("Response JSON is {}".format(response_json))
+            logger.info("Response JSON is {}".format(response.text))
 
             if response.status_code == 200:
 

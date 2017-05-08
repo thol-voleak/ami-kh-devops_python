@@ -23,11 +23,14 @@ class GetChoicesMixin(object):
         if response.status_code == 200:
             json_data = response.json()
             value = json_data.get('data', {}).get('value', '')
-            currency_list = map(lambda x: x.split('|'), value.split(','))
+            if isinstance(value, str):
+                currency_list = map(lambda x: x.split('|'), value.split(','))
+            else:
+                currency_list = []
             return currency_list, True
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
-        return None, False
+        return [], False
 
     def _get_service_group_choices(self):
         url = settings.SERVICE_GROUP_LIST_URL

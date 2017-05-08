@@ -45,21 +45,12 @@ class ListView(TemplateView):
             if (data is not None) and (len(data) > 0):
                 logger.info('Agent count: {};'.format(len(data)))
                 return data
-
-        if auth_request.status_code == 200:
-            json_data = auth_request.json()
-            data = json_data.get('data', [])
-            logger.info('Agent_count: {}'.format(len(data)))
-            return data, True
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
-            return [], False
+            return []
 
     def format_data(self, data):
         for i in data:
-            #logger.info('kyc_status = '.format(KYC.get(i['kyc_status'])))
-            # if not i.get('kyc_status'):
-            #     print(i)
             i['kyc_status'] = KYC.get(i.get('kyc_status'))
             i['status'] = STATUS.get(i.get('status'))
         return data

@@ -64,16 +64,18 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
 
         json_data = response.json()
-        logger.info("Received data with response is {}".format(json_data))
+
+        logger.info("_get_currencies_list response is {}".format(response.text))
         if response.status_code == 200:
             value = json_data.get('data', {}).get('value', '')
             currency_list = map(lambda x: x.split('|'), value.split(','))
             return currency_list
         else:
-            if json_data["status"]["code"] == "access_token_expire":
-                raise InvalidAccessToken(json_data["status"]["message"])
-            else:
-                raise Exception("{}".format(json_data["status"]["message"]))
+            return []
+            # if json_data["status"]["code"] == "access_token_expire":
+            #     raise InvalidAccessToken(json_data["status"]["message"])
+            # else:
+            #     raise Exception("{}".format(json_data["status"]["message"]))
 
     def _get_agent_balances(self, agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
@@ -85,11 +87,13 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
 
         json_data = response.json()
         if response.status_code == 200:
-            data = json_data.get('data', {})
+            data = json_data.get('data', [])
             return data
         else:
-            if json_data["status"]["code"] == "access_token_expire":
-                raise InvalidAccessToken(json_data["status"]["message"])
-            else:
-                raise Exception("{}".format(json_data["status"]["message"]))
+            logger.info('_get_agent_balances response: {}'.format(response.text))
+            return []
+            # if json_data["status"]["code"] == "access_token_expire":
+            #     raise InvalidAccessToken(json_data["status"]["message"])
+            # else:
+            #     raise Exception("{}".format(json_data["status"]["message"]))
 

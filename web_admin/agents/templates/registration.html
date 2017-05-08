@@ -10,17 +10,17 @@
 {% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Agent Registration</h3>
+        <h3>Agent Register</h3>
     </div>
 
-    {% for message in messages %}
+    {% if msg is not None %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="msg-add-service">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message|capfirst }}</strong>
+            <strong>{{ msg }}</strong>
         </div>
     </div>
-    {% endfor %}
+    {% endif %}
 
     <div class="panel-body">
         <div class="row no-margin">
@@ -34,12 +34,12 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Status *</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_status" id="txt_status"
-                                       value="active" disabled/>
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_status"
+                                       value="Active" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Agent ID</label>
+                            <label class="col-sm-4 control-label"></label>
                             <div class="col-sm-8"></div>
                         </div>
                     </div>
@@ -63,17 +63,18 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_agent_type" name="ddl_agent_type">
-                                    <option value="dealer" selected>Dealer</option>
-                                    <option value="agent">Agent</option>
+                                <select class="form-control" id="ddl_agent_type" name="agent_type_id" required>
+                                    {% for agent_type in agent_types_list %}
+                                        <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">User Name *</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_user_name"
-                                       id="txt_user_name"/>
+                                <input type="text" class="form-control input-rounded" name="username"
+                                       id="txt_user_name" required/>
                             </div>
                         </div>
                     </div>
@@ -83,15 +84,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Parent ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_parent_id"
+                                <input type="text" class="form-control input-rounded" name="parent_id"
                                        id="txt_parent_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Password *</label>
                             <div class="col-sm-8">
-                                <input type="password" class="form-control input-rounded" name="txt_password"
-                                       id="txt_password"/>
+                                <input type="password" class="form-control input-rounded" name="password"
+                                       id="txt_password" required/>
                             </div>
                         </div>
                     </div>
@@ -99,19 +100,20 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Currency</label>
+                            <label class="col-sm-4 control-label">Currency *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_currency" name="ddl_currency">
-                                    <option value="usd" selected>USD</option>
-                                    <option value="vnd">VND</option>
+                                <select class="form-control" id="ddl_currency" name="currency" required>
+                                    {% for currency in preload_currencies %}
+                                    <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Re-password *</label>
                             <div class="col-sm-8">
-                                <input type="password" class="form-control input-rounded" name="txt_password"
-                                       id="txt_re_password"/>
+                                <input type="password" class="form-control input-rounded" name="re_password"
+                                       id="txt_re_password" required/>
                             </div>
                         </div>
                     </div>
@@ -135,14 +137,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Bank Name</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_bank_name"
+                                <input type="text" class="form-control input-rounded" name="bank_name"
                                        id="txt_bank_name"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Agent Bank Acc.</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_bank_account"
+                                <input type="text" class="form-control input-rounded" name="agent_bank_account"
                                        id="txt_bank_account"/>
                             </div>
                         </div>
@@ -167,14 +169,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Card ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_card_id"
+                                <input type="text" class="form-control input-rounded" name="card_id"
                                        id="txt_card_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">EDC ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_edc_id"
+                                <input type="text" class="form-control input-rounded" name="edc_id"
                                        id="txt_edc_id"/>
                             </div>
                         </div>
@@ -185,14 +187,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Sim ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_sim_id"
+                                <input type="number" class="form-control input-rounded" name="sim_id"
                                        id="txt_sim_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Adapter ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_adapter_id"
+                                <input type="number" class="form-control input-rounded" name="adapter_id"
                                        id="txt_adapter_id"/>
                             </div>
                         </div>
@@ -203,14 +205,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Battery ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_battery_id"
+                                <input type="text" class="form-control input-rounded" name="battery_id"
                                        id="txt_battery_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">EDC App Version</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_edc_version"
+                                <input type="text" class="form-control input-rounded" name="edc_app_version"
                                        id="txt_edc_version"/>
                             </div>
                         </div>
@@ -235,15 +237,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Last Name *</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_last_name"
-                                       id="txt_last_name"/>
+                                <input type="text" class="form-control input-rounded" name="lastname"
+                                       id="txt_last_name" required />
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">First Name *</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_first_name"
-                                       id="txt_first_name"/>
+                                <input type="text" class="form-control input-rounded" name="firstname"
+                                       id="txt_first_name" required />
                             </div>
                         </div>
                     </div>
@@ -253,14 +255,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Date of Birth</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="dtp_birth_date"
+                                <input type="date" class="form-control input-rounded" name="date_of_birth"
                                        id="dtp_birth_date"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Gender</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_gender"
+                                <input type="text" class="form-control input-rounded" name="gender"
                                        id="txt_gender"/>
                             </div>
                         </div>
@@ -271,7 +273,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">National</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_national"
+                                <input type="text" class="form-control input-rounded" name="national"
                                        id="txt_national"/>
                             </div>
                         </div>
@@ -300,7 +302,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify Type</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_primary_identify_type"
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
                                        id="txt_primary_identify_type"/>
                             </div>
                         </div>
@@ -315,14 +317,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_primary_identify_id"
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_id"
                                        id="txt_primary_identify_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Place of Issue</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_primary_place_issue"
+                                <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
                                        id="txt_primary_place_issue"/>
                             </div>
                         </div>
@@ -333,14 +335,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="dtp_primary_issue_date"
+                                <input type="date" class="form-control input-rounded" name="primary_issue_Date"
                                        id="dtp_primary_issue_date"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="dtp_primary_expire_date"
+                                <input type="date" class="form-control input-rounded" name="primary_expire_Date"
                                        id="dtp_primary_expire_date"/>
                             </div>
                         </div>
@@ -351,7 +353,7 @@
                     <!-- Begin section 7 [Secondary Identify] -->
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
+                            <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
                             <div class="col-sm-8"></div>
                         </div>
                         <div class="form-group col-md-6">
@@ -365,7 +367,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify Type</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_secondary_identify_type"
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_type"
                                        id="txt_secondary_identify_type"/>
                             </div>
                         </div>
@@ -380,14 +382,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_secondary_identify_id"
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_id"
                                        id="txt_secondary_identify_id"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Place of Issue</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_secondary_place_issue"
+                                <input type="text" class="form-control input-rounded" name="secondary_place_of_issue"
                                        id="txt_secondary_place_issue"/>
                             </div>
                         </div>
@@ -398,14 +400,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="dtp_secondary_issue_date"
+                                <input type="date" class="form-control input-rounded" name="secondary_issue_Date"
                                        id="dtp_secondary_issue_date"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="dtp_secondary_expire_date"
+                                <input type="date" class="form-control input-rounded" name="secondary_expire_Date"
                                        id="dtp_secondary_expire_date"/>
                             </div>
                         </div>
@@ -430,14 +432,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Nationality</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_nationality"
+                                <input type="text" class="form-control input-rounded" name="nationality"
                                        id="txt_nationality"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Province</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_province"
+                                <input type="text" class="form-control input-rounded" name="province"
                                        id="txt_province"/>
                             </div>
                         </div>
@@ -448,14 +450,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">District</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_district"
+                                <input type="text" class="form-control input-rounded" name="district"
                                        id="txt_district"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Commune</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_commune"
+                                <input type="text" class="form-control input-rounded" name="commune"
                                        id="txt_commune"/>
                             </div>
                         </div>
@@ -466,7 +468,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Address</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_address"
+                                <input type="text" class="form-control input-rounded" name="address"
                                        id="txt_address"/>
                             </div>
                         </div>
@@ -481,14 +483,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Primary Phone *</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="txt_primary_phone"
-                                       id="txt_primary_phone"/>
+                                <input type="number" class="form-control input-rounded" name="primary_phone"
+                                       id="txt_primary_phone" required/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Email</label>
                             <div class="col-sm-8">
-                                <input type="email" class="form-control input-rounded" name="txt_email" id="txt_email"/>
+                                <input type="email" class="form-control input-rounded" name="email" id="txt_email"/>
                             </div>
                         </div>
                     </div>
@@ -498,14 +500,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Secondary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="txt_secondary_phone"
+                                <input type="number" class="form-control input-rounded" name="secondary_phone"
                                        id="txt_secondary_phone"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Shop Name</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_shop_name"
+                                <input type="text" class="form-control input-rounded" name="shop_name"
                                        id="txt_shop_name"/>
                             </div>
                         </div>
@@ -516,15 +518,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Tertiary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="txt_secondary_phone"
-                                       id="txt_secondary_phone"/>
+                                <input type="number" class="form-control input-rounded" name="tertiary_phone"
+                                       id="txt_tertiary_phone"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Shop Product</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="txt_shop_name"
-                                       id="txt_shop_name"/>
+                                <input type="text" class="form-control input-rounded" name="shop_product"
+                                       id="txt_shop_product"/>
                             </div>
                         </div>
                     </div>
@@ -532,24 +534,23 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">KYC</label>
-                            <div class="col-sm-8 control-label">NO</div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
+                            <label class="col-sm-4 control-label">KYC Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="kyc_status"
+                                       id="txt_kyc_status" value="NO" disabled/>
+                            </div>
                         </div>
                     </div>
                     <!-- End section 8 - row 8 -->
                     <hr/>
 
                     <div class="pull-right">
-                        <a href="{% url 'agent_type:agent-type-list' %}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
-                        </a>
-
                         <a href="{% url 'agents:agent_registration' %}">
                             <input id="btn_create" class="btn btn-success text-left mb15" type="submit" value="Create"/>
+                        </a>
+
+                        <a onclick="location.reload();">
+                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
                     </div>
                 </form>
