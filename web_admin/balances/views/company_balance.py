@@ -63,19 +63,24 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         done = time.time()
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
 
-        json_data = response.json()
+        response_json = response.json()
 
         logger.info("_get_currencies_list response is {}".format(response.text))
-        if response.status_code == 200:
-            value = json_data.get('data', {}).get('value', '')
+
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            value = response_json.get('data', {}).get('value', '')
             currency_list = map(lambda x: x.split('|'), value.split(','))
-            return currency_list
+
         else:
-            return []
-            # if json_data["status"]["code"] == "access_token_expire":
-            #     raise InvalidAccessToken(json_data["status"]["message"])
-            # else:
-            #     raise Exception("{}".format(json_data["status"]["message"]))
+            currency_list = []
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return currency_list
+
 
     def _get_agent_balances(self, agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
@@ -84,16 +89,16 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         response = requests.get(url, headers=headers, verify=settings.CERT)
         done = time.time()
         logger.info("Response time for get agent balances is {} sec.".format(done - start_date))
+        response_json = response.json()
 
-        json_data = response.json()
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            return data
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
         else:
-            logger.info('_get_agent_balances response: {}'.format(response.text))
-            return []
-            # if json_data["status"]["code"] == "access_token_expire":
-            #     raise InvalidAccessToken(json_data["status"]["message"])
-            # else:
-            #     raise Exception("{}".format(json_data["status"]["message"]))
+            data = []
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
 
+        return data

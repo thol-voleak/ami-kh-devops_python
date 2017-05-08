@@ -1,6 +1,6 @@
 import logging
 from multiprocessing.pool import ThreadPool
-
+from authentications.apps import InvalidAccessToken
 import requests
 from django.conf import settings
 
@@ -20,29 +20,46 @@ class GetChoicesMixin(object):
         logger.info('Get currency choice list from backend')
         logger.info('Request url: {}'.format(url))
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        if response.status_code == 200:
-            json_data = response.json()
-            value = json_data.get('data', {}).get('value', '')
+
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            value = response_json.get('data', {}).get('value', '')
             if isinstance(value, str):
                 currency_list = map(lambda x: x.split('|'), value.split(','))
             else:
                 currency_list = []
-            return currency_list, True
-        logger.info("Received response with status {}".format(response.status_code))
-        logger.info("Response content is {}".format(response.content))
-        return [], False
+            result = currency_list, True
+        else:
+            result = [], False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
+
 
     def _get_service_group_choices(self):
         url = settings.SERVICE_GROUP_LIST_URL
         logger.info('Get services group list from backend')
         logger.info('Request url: {}'.format(url))
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        if response.status_code == 200:
+
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
             json_data = response.json()
             return json_data.get('data'), True
-        logger.info("Received response with status {}".format(response.status_code))
-        logger.info("Response content is {}".format(response.content))
-        return None, False
+        else:
+            result = [], False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
+
 
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)

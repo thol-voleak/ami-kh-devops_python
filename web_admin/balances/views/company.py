@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
-
+from authentications.apps import InvalidAccessToken
 from web_admin.mixins import GetChoicesMixin
 
 logger = logging.getLogger(__name__)
@@ -90,13 +90,21 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             self.request.user.id,
         ))
 
-        json_data = response.json()
-        if response.status_code == 200:
-            data = json_data.get('data', {})
-            return data, True
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', {})
+            result = data, True
         else:
-            logger.info("_get_total_initial_company_balance Response is {}".format(response.text))
-            return {}, False
+            result = {}, False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
+
+
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
@@ -117,14 +125,21 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             self.request.user.id,
         ))
 
-        json_data = response.json()
-        if response.status_code == 200:
-            data = json_data.get('data')
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data')
             logger.info("Total count of Company Balance is {}".format(len(data)))
-            return data, True
+            result = data, True
         else:
-            logger.info("_get_company_balance_history Response is {}".format(response.text))
-            return [], False
+            result = [], False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
+
 
     def _add_company_balance(self, currency, data):
         logger.info("Adding company balance by user {}".format(self.request.user.username))
@@ -133,14 +148,21 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
         logger.info("Request body: {}".format(data))
         response = requests.post(url, headers=self._get_headers(), json=data, verify=False)
+        logger.info("Response content: {}".format(response.text))
 
-        logger.info("Response content: {}".format(response.content))
-        if response.status_code == 200:
-            return True
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            result = True
         else:
-            logger.info("_add_company_balance response with status {}".format(
-                response.text))
-            return False
+            result = False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
+
 
     def _get_currency_choices_by_agent(self,agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
@@ -150,13 +172,20 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         logger.info("Received response with status {}".format(response.status_code))
 
-        if response.status_code == 200:
-            json_data = response.json()
-            data = json_data.get('data', {})
+        response_json = response.json()
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', {})
             currency_list = [x['currency'] for x in data]
             logger.info("Total count of Currency List is {}".format(len(currency_list)))
-            return currency_list, True
-        logger.info('_get_currency_choices_by_agent response: {}'.format(response.text))
-        return [], False
+            result = currency_list, True
+        else:
+            result = [], False
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return result
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')

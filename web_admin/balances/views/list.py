@@ -34,18 +34,24 @@ class ListView(TemplateView):
         response = requests.get(url, headers=get_auth_header(self.request.user),
                                 verify=settings.CERT)
         done = time.time()
-        json_data = response.json()
+
         logger.info("Response time for get currency list is {} sec.".format(done - start_date))
-        logger.info("Received data with response is {}".format(json_data))
-        data = json_data.get('data')
-        if response.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                return data
-        return []
-        # if json_data["status"]["code"] == "access_token_expire":
-        #     raise InvalidAccessToken(json_data["status"]["message"])
-        # else:
-        #     raise Exception("{}".format(json_data["status"]["message"]))
+        logger.info("Received data with response is {}".format(response.text))
+
+        response_json = response.json()
+
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
+        else:
+            data = []
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return data
+
 
     def get_preload_currencies_dropdown(self):
         url = settings.GET_ALL_PRELOAD_CURRENCY_URL
@@ -55,18 +61,22 @@ class ListView(TemplateView):
         response = requests.get(url, headers=get_auth_header(self.request.user),
                                 verify=settings.CERT)
         done = time.time()
-        json_data = response.json()
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
-        data = json_data.get('data')
-        if response.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info("Received {} preload currencies".format(len(json_data['data'])))
-                return data
 
-        if json_data["status"]["code"] == "access_token_expire":
-            raise InvalidAccessToken(json_data["status"]["message"])
+        response_json = response.json()
+
+        code = response_json.get('status', {}).get('code', '')
+        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
         else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+            data = []
+            if code == "access_token_expire":
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return data
+
 
 
 def _refine_data(data):
