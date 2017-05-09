@@ -95,14 +95,15 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
 
         api_path = settings.TIER_PATH.format(fee_tier_id)
         url = settings.DOMAIN_NAMES + api_path
-        logger.info('_get_fee_tier_detail - API-Path: {path}'.format(path=api_path))
+        logger.info('API-Path: {path}'.format(path=api_path))
 
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
-        logger.info('_get_fee_tier_detail - Response_time: {}'.format(done - start_date))
-        logger.info('_get_fee_tier_detail - Response_code: {}'.format(response.status_code))
-        logger.info('_get_fee_tier_detail - Response_content: {}'.format(response.text))
+        logger.info("Params: fee_tier_id = {} ".format(fee_tier_id))
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.text))
+        logger.info('Response_time: {}'.format(done - start_date))
         response_json = response.json()
 
         status = response_json.get('status', {})
