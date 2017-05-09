@@ -1,0 +1,67 @@
+import requests
+import logging
+import time
+
+from django.conf import settings
+from authentications.apps import InvalidAccessToken
+from django.views.generic.base import TemplateView
+
+from authentications.utils import get_auth_header
+
+logger = logging.getLogger(__name__)
+
+STATUS = {
+    1: 'Active',
+}
+
+KYC = {
+    True: 'YES',
+    False: 'NO',
+}
+
+class ListView(TemplateView):
+    template_name = 'member_customer_list.html'
+
+    def get_context_data(self, **kwargs):
+        logger.info('========== Start getting Customer List ==========')
+        customer_list = self.get_member_customer_list()
+        logger.info('========== Finished getting Customer List ==========')
+        result = {'data': self.format_data(customer_list)}
+        return result
+
+    def get_member_customer_list(self):
+        api_path = settings.AGENT_LIST_PATH
+        url = settings.DOMAIN_NAMES + api_path
+
+        logger.info('API-Path: {};'.format(api_path))
+        start = time.time()
+        auth_request = requests.get(url, headers=get_auth_header(self.request.user),verify=settings.CERT)
+        end = time.time()
+        logger.info("Response_code: {};".format(auth_request.status_code))
+        logger.info("Response_time: {} sec.".format(end - start))
+        logger.info('Response_content: {}'.format(auth_request.text))
+
+        response_json = auth_request.json()
+
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
+            logger.info('Customer count: {};'.format(len(data)))
+        else:
+            data = []
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return data
+
+    def format_data(self, data):
+        for i in data:
+            i['kyc_status'] = KYC.get(i.get('kyc_status'))
+            i['status'] = STATUS.get(i.get('status'))
+        return data
