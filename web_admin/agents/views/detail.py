@@ -20,6 +20,7 @@ class DetailView(TemplateView):
             agent_id = context['agent_id']
 
             context, status = self._get_agent_detail(agent_id)
+            context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
             if status:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])
                 if status:
@@ -50,6 +51,7 @@ class DetailView(TemplateView):
         if (response.status_code == 200):
             if (response_json['status']['code'] == "success"):
                 data = response_json.get('data')
+
                 context = {'agent': data,
                            'agent_id': agent_id,
                            'msg': self.request.session.pop('agent_registration_msg', None)}
