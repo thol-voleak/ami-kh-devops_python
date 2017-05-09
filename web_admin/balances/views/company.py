@@ -91,14 +91,17 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         ))
 
         response_json = response.json()
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', {})
             result = data, True
         else:
             result = {}, False
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -126,15 +129,18 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         ))
 
         response_json = response.json()
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data')
             logger.info("Total count of Company Balance is {}".format(len(data)))
             result = data, True
         else:
             result = [], False
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -151,13 +157,16 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         logger.info("Response content: {}".format(response.text))
 
         response_json = response.json()
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             result = True
         else:
             result = False
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -173,8 +182,11 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         logger.info("Received response with status {}".format(response.status_code))
 
         response_json = response.json()
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', {})
             currency_list = [x['currency'] for x in data]
@@ -182,7 +194,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
             result = currency_list, True
         else:
             result = [], False
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 

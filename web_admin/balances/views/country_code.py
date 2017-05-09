@@ -37,13 +37,16 @@ class CountryCode(View):
         logger.info("Received data with response status is {}".format(response.status_code))
         logger.info('Response Content: {}'.format(response.text))
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             logger.info("Global configuration was fetched.")
             context = {'country_code': response_json['data']['country']}
         else:
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, request.user))
                 raise InvalidAccessToken(message)
             context = {'country_code': None}
@@ -77,14 +80,17 @@ class CountryCode(View):
         logger.info("Response JSON is {}".format(response.text))
         response_json = response.json()
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             logger.info("Country code was added.")
             logger.info('========== Finish adding country code ==========')
             return HttpResponse(status=200, content=response)
         else:
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, request.user))
                 raise InvalidAccessToken(message)
             return HttpResponse(status=response.status_code, content=response)

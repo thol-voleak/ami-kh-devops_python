@@ -67,15 +67,18 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
 
         logger.info("_get_currencies_list response is {}".format(response.text))
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             value = response_json.get('data', {}).get('value', '')
             currency_list = map(lambda x: x.split('|'), value.split(','))
 
         else:
             currency_list = []
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -91,13 +94,17 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         logger.info("Response time for get agent balances is {} sec.".format(done - start_date))
         response_json = response.json()
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', [])
         else:
             data = []
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 

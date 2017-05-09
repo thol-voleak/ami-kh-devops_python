@@ -37,26 +37,25 @@ def logout_user(request):
 
     response_json = response.json()
 
-    if response.status_code == 200:
-        status = response_json['status']
-        if status['code'] == "success":
-            if request.user.is_authenticated:
-                auth = Authentications.objects.get(user=request.user)
-                if auth is not None:
-                    logger.info('username {} deleting current session info'.format(username))
-                    auth.delete()
-            logout(request)
-            logger.info("username {} was logged out".format(username, request.user))
-            logger.info('========== Finished to logout ==========')
-            return redirect('/admin-portal/')
-        else:
-            logger.info('========== Finished to logout ==========')
-            pass
+    status = response_json.get('status', {})
+    if not isinstance(status, dict):
+        status = {}
+    code = status.get('code', '')
+    message = status.get('message', 'Something went wrong.')
+    if code == "success":
+        if request.user.is_authenticated:
+            auth = Authentications.objects.get(user=request.user)
+            if auth is not None:
+                logger.info('username {} deleting current session info'.format(username))
+                auth.delete()
+        logout(request)
+        logger.info("username {} was logged out".format(username, request.user))
+        logger.info('========== Finished to logout ==========')
+        return redirect('/admin-portal/')
     else:
         logger.info('========== Finished to logout ==========')
-        # code = response_json.get('status', {}).get('code', '')
-        # if (code is not None) and (code == 'access_token_expire'):
-        raise InvalidAccessToken()
+        pass
+
 
 def get_auth_header(user):
     client_id = settings.CLIENTID

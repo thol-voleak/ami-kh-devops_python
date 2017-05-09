@@ -40,13 +40,16 @@ class ListView(TemplateView):
 
         response_json = response.json()
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', [])
         else:
             data = []
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -65,13 +68,16 @@ class ListView(TemplateView):
 
         response_json = response.json()
 
-        code = response_json.get('status', {}).get('code', '')
-        message = response_json.get('status', {}).get('message', 'Something went wrong.')
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', [])
         else:
             data = []
-            if code == "access_token_expire":
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
@@ -80,8 +86,9 @@ class ListView(TemplateView):
 
 
 def _refine_data(data):
-    if isinstance(data['value'], str):
-        currencies = data['value'].split(',')
+    value = data.get('value', '')
+    if value != '':
+        currencies = value.split(',')
     else:
         return []
     currencyList = []
