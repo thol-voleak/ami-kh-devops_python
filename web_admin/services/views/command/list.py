@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListCommandView(TemplateView):
-    template_name = "command/profile.html"
+    template_name = "command/list.html"
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start adding service command ==========')
