@@ -12,21 +12,11 @@
     <div class="panel-heading border">
         <h3>Edit Agent</h3>
     </div>
-
-    {% for message in messages %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-add-service">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message|capfirst }}</strong>
-        </div>
-    </div>
-    {% endfor %}
-
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="#">
+                      action="">
                     {% csrf_token %}
 
                     <!-- Begin section 1 -->
@@ -127,106 +117,6 @@
                     <!-- End section 2 - row 4 -->
                     <hr/>
 
-                    <!-- Begin section 3 [Bank Info] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Banks Info</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 3 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Bank Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="bank_name"
-                                       id="txt_bank_name" value="{{ agent_profile.bank_name|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Agent Bank Acc.</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_bank_account"
-                                       id="txt_bank_account" value="{{ agent_profile.agent_bank_account|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 3 - row 2 -->
-                    <hr/>
-
-                    <!-- Begin section 4 [Equipment Info] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Equipment Info</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 4 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Card ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="card_id"
-                                       id="txt_card_id" value="{{ agent_profile.card_id|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">EDC ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="edc_id"
-                                       id="txt_edc_id" value="{{ agent_profile.edc_id|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 4 - row 2 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Sim ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="sim_id"
-                                       id="txt_sim_id" value="{{ agent_profile.sim_id|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Adapter ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="adapter_id"
-                                       id="txt_adapter_id" value="{{ agent_profile.adapter_id|default_if_none:'' }}"/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 4 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Battery ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="battery_id"
-                                       id="txt_battery_id" value="{{ agent_profile.battery_id|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">EDC App Version</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="edc_app_version"
-                                       id="txt_edc_version" value="{{ agent_profile.edc_app_version|default_if_none:'' }}"/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 4 - row 4 -->
-                    <hr/>
-
                     <!-- Begin section 5 [Agent Info] -->
                     <div class="row">
                         <div class="form-group col-md-6">
@@ -263,7 +153,7 @@
                             <label class="col-sm-4 control-label">Date of Birth</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="date_of_birth"
-                                       id="dtp_birth_date" value="{{ agent_profile.date_of_birth|default_if_none:'' }}" />
+                                       id="dtp_birth_date" value="{{ agent_profile.date_of_birth|date:'Y-m-d' }}" />
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -490,8 +380,8 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Primary Phone *</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="primary_phone"
-                                       id="txt_primary_phone" value="{{ agent_profile.primary_phone|default_if_none:'' }}"/>
+                                <input type="number" class="form-control input-rounded" name="primary_mobile_number"
+                                       id="txt_primary_mobile_number" value="{{ agent_profile.primary_mobile_number|default_if_none:'' }}"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -508,15 +398,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Secondary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="secondary_phone"
-                                       id="txt_secondary_phone" value="{{ agent_profile.secondary_phone|default_if_none:'' }}"/>
+                                <input type="number" class="form-control input-rounded" name="secondary_mobile_number"
+                                       id="txt_secondary_mobile_number" value="{{ agent_profile.secondary_mobile_number|default_if_none:'' }}"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Shop Name</label>
+                            <label class="col-sm-4 control-label">Unique Reference</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="shop_name"
-                                       id="txt_shop_name" value="{{ agent_profile.shop_name|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="unique_reference"
+                                       id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}"/>
                             </div>
                         </div>
                     </div>
@@ -526,15 +416,8 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Tertiary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="tertiary_phone"
-                                       id="txt_tertiary_phone" value="{{ agent_profile.tertiary_phone|default_if_none:'' }}" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Shop Product</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="shop_product"
-                                       id="txt_shop_product" value="{{ agent_profile.shop_product|default_if_none:'' }}"/>
+                                <input type="number" class="form-control input-rounded" name="tertiary_mobile_number"
+                                       id="txt_tertiary_mobile_number" value="{{ agent_profile.tertiary_mobile_number|default_if_none:'' }}" />
                             </div>
                         </div>
                     </div>
@@ -557,7 +440,7 @@
                     <hr/>
 
                     <div class="pull-right">
-                        <a href="#">
+                        <a>
                             <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
                         </a>
 
@@ -565,7 +448,7 @@
                             <input id="btn_delete" class="btn btn-danger text-left mb15" type="button" value="Delete"/>
                         </a>
 
-                        <a href="{% url 'agent_type:agent-type-list' %}">
+                        <a href="{{request.META.HTTP_REFERER}}">
                             <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
                     </div>
