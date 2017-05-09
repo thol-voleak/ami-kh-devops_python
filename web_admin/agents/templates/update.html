@@ -10,7 +10,7 @@
 {% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Agent Update</h3>
+        <h3>Edit Agent</h3>
     </div>
 
     {% for message in messages %}
@@ -35,7 +35,7 @@
                             <label class="col-sm-4 control-label">Status *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_status"
-                                       value="active" disabled/>
+                                       value="Active" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -67,8 +67,13 @@
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_agent_type" name="agent_type_id">
-                                    <option value="dealer" selected>Dealer</option>
-                                    <option value="agent">Agent</option>
+                                    {% for item in agent_types %}
+                                        {% if item.id != agent_profile.agent_type_id %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -105,8 +110,9 @@
                             <label class="col-sm-4 control-label">Currency</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_currency" name="currency">
-                                    <option value="usd" selected>USD</option>
-                                    <option value="vnd">VND</option>
+                                    {% for item in currencies %}
+                                        <option value="{{ item.1 }}">{{ item.0 }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -520,15 +526,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Tertiary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="secondary_phone"
-                                       id="txt_secondary_phone" value="{{ agent_profile.secondary_phone|default_if_none:'' }}" />
+                                <input type="number" class="form-control input-rounded" name="tertiary_phone"
+                                       id="txt_tertiary_phone" value="{{ agent_profile.tertiary_phone|default_if_none:'' }}" />
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Shop Product</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="shop_name"
-                                       id="txt_shop_name" value="{{ agent_profile.shop_name|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="shop_product"
+                                       id="txt_shop_product" value="{{ agent_profile.shop_product|default_if_none:'' }}"/>
                             </div>
                         </div>
                     </div>
@@ -556,7 +562,7 @@
                         </a>
 
                         <a href="#">
-                            <input id="btn_save" class="btn btn-danger text-left mb15" type="button" value="Delete"/>
+                            <input id="btn_delete" class="btn btn-danger text-left mb15" type="button" value="Delete"/>
                         </a>
 
                         <a href="{% url 'agent_type:agent-type-list' %}">
