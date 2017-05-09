@@ -11,6 +11,7 @@ from django.views.generic.base import TemplateView, View
 from authentications.utils import get_auth_header
 from web_admin.get_header_mixins import GetHeaderMixin
 from .mixins import GetCommandNameAndServiceNameMixin
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
             raise Http404
 
         logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+
+        fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
         logger.info('========== Start get Setting Payment & Fee Structure list ==========')
         data, success = self._get_commission_and_payment_list(tier_id)
@@ -47,6 +50,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         logger.info('========== Finish get Agent Hierarchy Distribution Fee List ==========')
         choices = self._get_choices()
 
+        context['fee_tier_detail'] = fee_tier_detail
         context['data'] = self._filter_deleted_items(data)
         context['bonus'] = self._filter_deleted_items(bonus)
         context['agent_bonus_distribution'] = total_bonus_distribution
@@ -85,6 +89,39 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         json_data = response.json()
         logger.info("Reponse status code: {}".format(response.status_code))
         return json_data['data']
+
+    def _get_fee_tier_detail(self, fee_tier_id):
+        logger.info('========== Start getting Fee Tier Detail ==========')
+
+        api_path = settings.TIER_PATH.format(fee_tier_id)
+        url = settings.DOMAIN_NAMES + api_path
+        logger.info('_get_fee_tier_detail - API-Path: {path}'.format(path=api_path))
+
+        start_date = time.time()
+        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        done = time.time()
+        logger.info('_get_fee_tier_detail - Response_time: {}'.format(done - start_date))
+        logger.info('_get_fee_tier_detail - Response_code: {}'.format(response.status_code))
+        logger.info('_get_fee_tier_detail - Response_content: {}'.format(response.text))
+        response_json = response.json()
+
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+
+        if code == "success":
+            data = response_json.get('data', [])
+            result = data, True
+            logger.info('========== Finished getting Fee Tier Detail ==========')
+        else:
+            logger.info('========== Finished getting Fee Tier Detail ==========')
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                raise InvalidAccessToken(message)
+            result = [], False
+        return result
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         url = settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
