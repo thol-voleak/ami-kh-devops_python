@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='cards' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Card Profile</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <thead>
+                <tr>
+                    <th id="agent_type">Agent ID</th>
+                    <th id="last_name">Last Name</th>
+                    <th id="first_name">First Name</th>
+                    <th id="phone">Phone</th>
+                    <th id="kyc">KYC</th>
+                    <th id="created_at">Created Date</th>
+                    <th id="modified_at">Modified Date</th>
+                    <th id="status">Status</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

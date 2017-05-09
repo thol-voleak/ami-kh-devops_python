@@ -19,7 +19,7 @@ KYC = {
 }
 
 class ListView(TemplateView):
-    template_name = 'list.html'
+    template_name = 'profile.html'
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start getting Agent List ==========')
