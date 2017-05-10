@@ -82,19 +82,24 @@ class DetailView(TemplateView):
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
         logger.info('Finish getting agent types list from backend')
 
-        if response.status_code == 200:
-            json_data = response.json()
-            status = json_data['status']
-            if status['code'] == "success":
-                agent_types_list = json_data.get('data', {})
-                my_id = int(agent_type_id)
-                for x in agent_types_list:
-                    if x['id'] == my_id:
-                        agent_type_name = x['name']
-                        return agent_type_name, True
-
-                return 'Unknown', True
-            else:
-                return None, False
+        response_json = response.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            agent_types_list = response_json.get('data', {})
+            my_id = int(agent_type_id)
+            for x in agent_types_list:
+                if x['id'] == my_id:
+                    agent_type_name = x['name']
+                    return agent_type_name, True
+            data = 'Unknown', True
         else:
-            return None, False
+            data = None, False
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return data

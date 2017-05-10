@@ -4,7 +4,7 @@ import time
 
 from django.conf import settings
 from django.views.generic.base import TemplateView
-
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
@@ -39,15 +39,24 @@ class ListView(TemplateView):
         logger.info("Response_code: {};".format(auth_request.status_code))
         logger.info("Response_time: {} sec.".format(end - start))
 
-        json_data = auth_request.json()
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Agent count: {};'.format(len(data)))
-                return data
+        response_json = auth_request.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
+            logger.info('Agent count: {};'.format(len(data)))
         else:
-            logger.info('Response_content: {}'.format(auth_request.content))
-            return []
+            data = []
+            logger.info('get_agent_list Response_content: {}'.format(auth_request.text))
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
+        return data
+
 
     def format_data(self, data):
         for i in data:

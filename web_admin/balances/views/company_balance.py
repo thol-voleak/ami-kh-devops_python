@@ -93,7 +93,6 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         done = time.time()
         logger.info("Response time for get agent balances is {} sec.".format(done - start_date))
         response_json = response.json()
-
         status = response_json.get('status', {})
         # if not isinstance(status, dict):
         #     status = {}

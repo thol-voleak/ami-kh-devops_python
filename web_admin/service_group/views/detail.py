@@ -2,7 +2,7 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 
 from authentications.utils import get_auth_header
-
+from authentications.apps import InvalidAccessToken
 import requests, time
 import logging
 
@@ -44,7 +44,13 @@ class ServiceGroupDetailForm(TemplateView):
         logger.info("Received data with response status is {}".format(response.status_code))
 
         response_json = response.json()
-        if response_json['status']['code'] == "success":
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
             data = response_json.get('data')
             context = {'service_group_info': data,
                        'add_service_group_msg': self.request.session.pop('add_service_group_msg', None),
@@ -52,8 +58,13 @@ class ServiceGroupDetailForm(TemplateView):
             logger.info('========== Finished getting service group detail ==========')
             return context
         else:
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
             logger.info("Error Getting System User Detail.")
             context = {'service_group_info': response_json.get('data')}
             logger.info('========== Finished getting service group detail ==========')
             return context
+
 

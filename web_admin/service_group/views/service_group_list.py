@@ -25,23 +25,23 @@ class ListView(TemplateView):
         url = settings.SERVICE_GROUP_LIST_URL
         logger.info("Getting service group list from backend with {} url".format(url))
         logger.info('Getting service group list from backend')
-        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
-        logger.info("Received data with response is {}".format(auth_request.status_code))
+        response = requests.get(url, headers=headers, verify=settings.CERT)
+        logger.info("Received data with response is {}".format(response.status_code))
 
-        json_data = auth_request.json()
-        data = json_data.get('data')
+        response_json = response.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
 
-        if auth_request.status_code == 200 and json_data["status"]["code"] == 'success':
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
             logger.info("Response count is {}".format(len(data)))
-            return data
-
-        elif json_data.get('message') == 'Unauthorized client or scope in request':
-            raise Exception("{}".format(json_data.get('message')))
-
-        elif json_data["status"]["code"] == "access_token_expire":
-            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
-            raise InvalidAccessToken(json_data["status"]["message"])
-
         else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+            data = []
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
 
+        return data

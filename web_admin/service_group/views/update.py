@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.conf import settings
-
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 
 import requests, time
@@ -50,26 +50,26 @@ class ServiceGroupUpdateForm(TemplateView):
         logger.info("Response: {}".format(response.content))
         end_time = time.time()
         logger.info("Response time is {} sec.".format(end_time - start_time))
+        logger.info("Response Code is {}".format(response.status_code))
 
         response_json = response.json()
-        status = response_json['status']
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
 
-        logger.info("Response Code is {}".format(status['code']))
-
-        if response.status_code == 200:
-            if status['code'] == "success":
-                logger.info("Service Group was updated.")
-                logger.info('========== Finished updating Service Group ==========')
-                request.session['service_group_update_msg'] = 'Updated service group successfully'
-                return redirect('service_group:service_group_detail', ServiceGroupId=(service_group_id))
-            else:
-                logger.info("Error Updating Service Group {}".format(service_group_id))
-                context = {'service_group_info': params}
-                logger.info('========== Finish updating service group ==========')
-                return render(request, 'service_group/update.html', context)
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            logger.info("Service Group was updated.")
+            logger.info('========== Finished updating Service Group ==========')
+            request.session['service_group_update_msg'] = 'Updated service group successfully'
+            return redirect('service_group:service_group_detail', ServiceGroupId=(service_group_id))
         else:
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
             logger.info("Error Updating Service Group {}".format(service_group_id))
-            logger.info("Status code {}".format(response.status_code))
             context = {'service_group_info': params}
             logger.info('========== Finish updating service group ==========')
             return render(request, 'service_group/update.html', context)
@@ -94,12 +94,22 @@ class ServiceGroupUpdateForm(TemplateView):
         logger.info("Received data with response status is {}".format(response.status_code))
 
         response_json = response.json()
-        if response_json['status']['code'] == "success":
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
             data = response_json.get('data')
             context = {'service_group_info': data}
             logger.info('========== Finished getting service group detail ==========')
             return context
         else:
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
             logger.info("Error Getting System User Detail.")
             context = {'service_group_info': response_json.get('data')}
             logger.info('========== Finished getting service group detail ==========')
