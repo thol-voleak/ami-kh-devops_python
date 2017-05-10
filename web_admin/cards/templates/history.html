@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='card-history' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Card History</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <thead>
+                <tr>
+                    <th id="user_id">User ID</th>
+                    <th id="user_type">User Type</th>
+                    <th id="pan_number">PAN Number</th>
+                    <th id="card_type">Card Type</th>
+                    <th id="card_identifier">Card Identifier</th>
+                    <th id="firstname">First Name</th>
+                    <th id="lastname">Last Name</th>
+                    <th id="expiry_date">Expiry Date</th>
+                    <th id="is_stopped">Is Stopped</th>
+                    <th id="created_date">Created Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
