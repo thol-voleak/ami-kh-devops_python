@@ -10,15 +10,6 @@ from web_admin.get_header_mixins import GetHeaderMixin
 
 logger = logging.getLogger(__name__)
 
-STATUS = {
-    1: 'Active',
-}
-
-KYC = {
-    True: 'YES',
-    False: 'NO',
-}
-
 class ListView(TemplateView, GetHeaderMixin):
     template_name = 'member_customer_list.html'
 
@@ -26,7 +17,7 @@ class ListView(TemplateView, GetHeaderMixin):
         logger.info('========== Start getting Customer List ==========')
         customer_list = self.get_member_customer_list()
         logger.info('========== Finished getting Customer List ==========')
-        result = {'data': self.format_data(customer_list)}
+        result = {'data': customer_list}
         return result
 
     def get_member_customer_list(self):
@@ -59,10 +50,4 @@ class ListView(TemplateView, GetHeaderMixin):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
 
-        return data
-
-    def format_data(self, data):
-        for i in data:
-            i['kyc_status'] = KYC.get(i.get('kyc_status'))
-            i['status'] = STATUS.get(i.get('status'))
         return data
