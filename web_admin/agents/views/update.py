@@ -86,27 +86,35 @@ class AgentUpdate( TemplateView ):
 
         headers = get_auth_header(self.request.user)
 
+        # Do request
         start_time = time.time()
         response = requests.get(url, headers=headers, verify=settings.CERT)
         end_time = time.time()
-
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        agent_profile = {}
-        if response.status_code != 200:
-            logger.info("Getting agent detail got error.")
-        else:
-            response_json = response.json()
-            status = response_json['status']
+        # Get data
+        response_json = response.json()
+        status = response_json.get('status', {})
 
-            if status['code'] == "success":
-                agent_profile = response_json.get('data', {})
+        # Validate data response
+        if not isinstance(status, dict):
+            status = {}
+
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', {})
+        else:
+            data = {}
+            logger.info("Getting agent detail got error.")
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
 
         logger.info('========== Finish getting agent detail ========== ')
-
-        return agent_profile
+        return data
 
     '''
     Author: Steve Le
@@ -126,26 +134,35 @@ class AgentUpdate( TemplateView ):
 
         headers = get_auth_header(self.request.user)
 
+        # Do request
         start_time = time.time()
         response = requests.get(url, headers=headers, verify=settings.CERT)
         end_time = time.time()
-
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        agent_types_list = {}
-        if response.status_code != 200:
-            logger.info("Getting agent types list got error.")
-        else:
-            response_json = response.json()
-            status = response_json['status']
+        # Get data
+        response_json = response.json()
+        status = response_json.get('status', {})
 
-            if status['code'] == "success":
-                agent_types_list = response_json.get('data', {})
+        # Validate data response
+        if not isinstance(status, dict):
+            status = {}
+
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            data = response_json.get('data', [])
+        else:
+            data = []
+            logger.info("Getting agent types list got error.")
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
 
         logger.info('========== Finish getting agent types list ========== ')
-        return agent_types_list
+        return data
 
     '''
     Author: Steve Le
@@ -165,27 +182,37 @@ class AgentUpdate( TemplateView ):
 
         headers = get_auth_header(self.request.user)
 
+        # Do request
         start_time = time.time()
         response = requests.get(url, headers=headers, verify=settings.CERT)
         end_time = time.time()
-
+        logger.info("Response_time: {} sec.".format(end_time - start_time))
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        currencies = {}
-        if response.status_code != 200:
-            logger.info("Getting currencies got error.")
+        # Get data
+        response_json = response.json()
+        status = response_json.get('status', {})
+
+        # Validate data response
+        if not isinstance(status, dict):
+            status = {}
+
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+
+        if code == "success":
+            data = response_json.get('data', [])
+            values = data.get('value', '')
+            currencies = map(lambda x: x.split('|'), values.split(','))
         else:
-            response_json = response.json()
-            status = response_json['status']
-
-            if status['code'] == "success":
-                values = response_json.get('data', {}).get('value', '')
-                currencies = map(lambda x: x.split('|'), values.split(','))
+            currencies = []
+            logger.info("Getting currencies got error.")
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
 
         logger.info('========== Finish getting currencies list ========== ')
-
         return currencies
 
     def post(self, request, *args, **kwargs):
