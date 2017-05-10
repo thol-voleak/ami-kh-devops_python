@@ -220,11 +220,12 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
             "fee_tier_id": data.get("fee_tier_id"),
             "action_type": data.get("action_type"),
             "actor_type": data.get("actor_type"),
+            "specific_actor_id": data.get("specific_actor_id"),
             "sof_type_id": data.get('sof_type_id'),
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "specific_actor_id": data.get("specific_actor_id"),
+            # "specific_actor_id": data.get("specific_actor_id"),
         }
         logger.info("Params: {}".format(post_data))
 

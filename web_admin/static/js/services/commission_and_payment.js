@@ -58,8 +58,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         // Master: AmountTypes Dropdown
         var htmlDDAmountTypes = '';
         jQuery.each(m_amount_type, function() {
-            console.log('aData: ' + JSON.stringify(aData, null, 4));
-
             if (aData[5].toLowerCase() == this.amount_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';
             } else {
@@ -73,11 +71,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         // Row data
         var htmlIDActionTypes = 'id=\'';
         var htmlIDActorTypes = 'id=\'';
-        var htmlIDSpecificID = 'id=\'';         // Unused Now
+        var htmlIDSpecificID = 'id=\'';
         var htmlIDSOFTypes = 'id=\'';
         var htmlIDSpecificSOF = 'id=\'';
         var htmlIDRate = 'id=\'';
         var htmlIDAmount = 'id=\'';
+
+        // For SpecificID changing according to Actor Types.
+        var htmlIDSpecificIDDisabled = '';
+        var htmlActorEventJS = "";
 
         // Buttons
         var htmlIDBtnSave = 'id=\'';
@@ -93,16 +95,22 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
+
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#txt_setting_payment_fee_structure_specific_id_edit')\"";
+
         } else if (tableId == 'tbl_setting_bonus') {
             htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
-            htmlIDSpecificID += 'ddl_setting_bonus_actor_edit';
+            htmlIDSpecificID += 'txt_setting_bonus_specific_id_edit';
             htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
             htmlIDSpecificSOF += 'txt_setting_bonus_spec_src_fund_edit';
             htmlIDAmount += 'ddl_setting_bonus_amount_edit';
             htmlIDRate += 'txt_setting_bonus_rate_edit';
             htmlIDBtnSave += 'btn_setting_bonus_save';
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
+
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#txt_setting_bonus_specific_id_edit')\"";
+
         } else if (tableId == 'tbl_bonus') {
             htmlIDActionTypes += 'ddl_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_bonus_actor_edit';
@@ -113,10 +121,12 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDRate += 'txt_bonus_rate_edit';
             htmlIDBtnSave += 'btn_bonus_save';
             htmlIDBtnCancel += 'btn_bonus_cancel';
+
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#txt_bonus_specific_id_edit')\"";
         }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
-        htmlIDSpecificID += '\'';   // Unused
+        htmlIDSpecificID += '\'';
         htmlIDSOFTypes += '\'';
         htmlIDSpecificSOF += '\'';
         htmlIDAmount += '\'';
@@ -124,9 +134,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlIDBtnSave += '\'';
         htmlIDBtnCancel += '\'';
 
+        if (aData[1] === 'Specific ID')
+            htmlIDSpecificIDDisabled = '';
+        else
+            htmlIDSpecificIDDisabled = 'disabled';
+
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '';
+        jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[2].innerHTML = '<input ' + htmlIDSpecificIDDisabled + ' ' + htmlIDSpecificID + ' type=\'text\' class=\'form-control\' name=\'specific_id\' value=\'' + aData[2] + '\'>';
         jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<input ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
         jqTds[5].innerHTML = '<select ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
@@ -147,13 +162,21 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         var distribution_id = $(nRow).data('id');
 
+        // DD Type
         oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
         oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
-                                                                                        // Specific ID
         oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
-        oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
         oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
-        oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
+
+        // Input Text Type
+        if (jqInputs.length > 2) { // In case we got "Specific ID"
+            oTable.fnUpdate(jqInputs[0].value, nRow, 2, false);                             // Specific ID
+            oTable.fnUpdate(jqInputs[1].value, nRow, 4, false);                             // Specific SOF
+            oTable.fnUpdate(jqInputs[2].value, nRow, 6, false);                             // Rate
+        } else {
+            oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
+            oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
+        }
 
         // Build up HTML ID Element
         var htmlIDBtnEdit = 'id=\'';
@@ -195,19 +218,23 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
 
+        // console.log(jqInputs[0].value);
+        // console.log(jqInputs[1].value);
+        // console.log(jqInputs[2].value);
+
         // Request to server
         $.ajax({
             url: url,
             type: "POST",
             data: {
                 "fee_tier_id": fee_tier_id,
-                "action_type": $(jqSelects[0]).find(":selected").html(),    // 0
+                "action_type": $(jqSelects[0]).find(":selected").html(),
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
-                // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "specific_sof": jqInputs[0].value,
                 "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "rate": jqInputs[1].value
+                "specific_actor_id": jqInputs[0].value,
+                "specific_sof": jqInputs[1].value,
+                "rate": jqInputs[2].value
             },
             dataType: "json",
                 beforeSend: function (xhr) {
@@ -253,12 +280,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             data: {
                 "action_type": $(jqSelects[0]).find(":selected").html(),
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
-                // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "specific_sof": jqInputs[0].value,
                 "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "rate": jqInputs[1].value,
-                "specific_actor_id": ''
+                "specific_actor_id": jqInputs[0].value,
+                "specific_sof": jqInputs[1].value,
+                "rate": jqInputs[2].value
             },
             dataType: "json",
             beforeSend: function (xhr) {
@@ -302,15 +328,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             url: url,
             type: "POST",
             data: {
-                "action_type": $(jqSelects[0]).find(":selected").html(),
                 "fee_tier_id": fee_tier_id,
+                "action_type": $(jqSelects[0]).find(":selected").html(),
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
-                // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "specific_sof": jqInputs[0].value,
                 "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "rate": jqInputs[1].value,
-                "specific_actor_id": ''
+                "specific_actor_id": jqInputs[0].value,
+                "specific_sof": jqInputs[1].value,
+                "rate": jqInputs[2].value
             },
             dataType: "json",
             beforeSend: function (xhr) {
@@ -342,13 +367,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         });
     }
 
-    oTable = $('#' + tableId).dataTable({
-        "searching":  false,
-        "paging":   false,
-        "ordering": false,
-        "info":     false
-    });
-
     // for Agent Hierrachy Distribution - Fee
     function saveRowFeeToServer(oTable, nRow) {
         var jqInputs = $('input', nRow);
@@ -362,12 +380,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             data: {
                 "action_type": $(jqSelects[0]).find(":selected").html(),
                 "actor_type": $(jqSelects[1]).find(":selected").html(),
-                // 2 = empty data
                 "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "specific_sof": jqInputs[0].value,
                 "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "rate": jqInputs[1].value,
-                "specific_actor_id": ''
+                "specific_actor_id": jqInputs[0].value,
+                "specific_sof": jqInputs[1].value,
+                "rate": jqInputs[2].value
             },
             dataType: "json",
             beforeSend: function (xhr) {
@@ -455,6 +472,13 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             return false;
         });
     }
+
+    oTable = $('#' + tableId).dataTable({
+        "searching":  false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false
+    });
 
     onBindingButtonsEditEvent();
     onBindingButtonsDeleteEvent();

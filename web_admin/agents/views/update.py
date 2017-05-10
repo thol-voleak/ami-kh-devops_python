@@ -3,6 +3,10 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
+from datetime import datetime
+from django.utils import dateparse
+
+from django.utils import formats
 from django.contrib import messages
 
 import requests, time, logging
@@ -38,6 +42,27 @@ class AgentUpdate( TemplateView ):
         # API 3: Get Agent Profile
         agent_profile = self._get_agent_profile(agent_id)
 
+        # Format dates
+        if agent_profile['date_of_birth'] is not None:
+            date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
+            agent_profile['date_of_birth'] = date_of_birth
+
+        if agent_profile['primary_issue_date'] is not None:
+            primary_issue_date = dateparse.parse_datetime(agent_profile['primary_issue_date'])
+            agent_profile['primary_issue_date'] = primary_issue_date
+
+        if agent_profile['primary_expire_date'] is not None:
+            primary_expire_date = dateparse.parse_datetime(agent_profile['primary_expire_date'])
+            agent_profile['primary_expire_date'] = primary_expire_date
+
+        if agent_profile['secondary_issue_date'] is not None:
+            secondary_issue_date = dateparse.parse_datetime(agent_profile['secondary_issue_date'])
+            agent_profile['secondary_issue_date'] = secondary_issue_date
+
+        if agent_profile['secondary_expire_date'] is not None:
+            secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
+            agent_profile['secondary_expire_date'] = secondary_expire_date
+
         context = {
             'agent_types': agent_types_list,
             'currencies': currencies,
@@ -46,6 +71,10 @@ class AgentUpdate( TemplateView ):
 
         return render(request, self.template_name, context)
 
+    '''
+    Author: Steve Le
+    # 2017-05-05
+    '''
     def _get_agent_profile(self, agent_id):
         logger.info('========== Start getting agent detail ========== ')
 
@@ -156,4 +185,5 @@ class AgentUpdate( TemplateView ):
                 currencies = map(lambda x: x.split('|'), values.split(','))
 
         logger.info('========== Finish getting currencies list ========== ')
+
         return currencies

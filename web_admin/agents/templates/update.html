@@ -263,7 +263,7 @@
                             <label class="col-sm-4 control-label">Date of Birth</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="date_of_birth"
-                                       id="dtp_birth_date" value="{{ agent_profile.date_of_birth|default_if_none:'' }}" />
+                                       id="dtp_birth_date" value="{{ agent_profile.date_of_birth|date:'Y-m-d'|default_if_none:'' }}" />
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -343,14 +343,14 @@
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="primary_issue_date"
-                                       id="dtp_primary_issue_date" value="{{ agent_profile.primary_issue_date|default_if_none:'' }}"/>
+                                       id="dtp_primary_issue_date" value="{{ agent_profile.primary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="primary_expire_date"
-                                       id="dtp_primary_expire_date" value="{{ agent_profile.primary_expire_date|default_if_none:'' }}"/>
+                                       id="dtp_primary_expire_date" value="{{ agent_profile.primary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                             </div>
                         </div>
                     </div>
@@ -408,14 +408,14 @@
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="secondary_issue_date"
-                                       id="dtp_secondary_issue_date" value="{{ agent_profile.secondary_issue_date|default_if_none:'' }}"/>
+                                       id="dtp_secondary_issue_date" value="{{ agent_profile.secondary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
                                 <input type="date" class="form-control input-rounded" name="secondary_expire_date"
-                                       id="dtp_secondary_expire_date" value="{{ agent_profile.secondary_expire_date|default_if_none:'' }}"/>
+                                       id="dtp_secondary_expire_date" value="{{ agent_profile.secondary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                             </div>
                         </div>
                     </div>
