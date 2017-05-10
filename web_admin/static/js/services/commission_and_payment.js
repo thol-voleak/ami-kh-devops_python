@@ -218,10 +218,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
 
-        // console.log(jqInputs[0].value);
-        // console.log(jqInputs[1].value);
-        // console.log(jqInputs[2].value);
-
         // Request to server
         $.ajax({
             url: url,
@@ -244,8 +240,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 var data = JSON.stringify(response);
                 var json = $.parseJSON(data);
-                console.log('JSON: ');
-                console.log(json);
 
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
@@ -259,8 +253,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             error: function (err) {
                 var json = JSON.stringify(err);
-                console.log('JSON: ');
-                console.log(json);
 
                 addMessage("Edit error!");
             }
@@ -294,8 +286,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 var data = JSON.stringify(response);
                 var json = $.parseJSON(data);
-                console.log('JSON: ');
-                console.log(json);
 
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
@@ -309,8 +299,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             error: function (err) {
                 var json = JSON.stringify(err);
-                console.log('JSON: ');
-                console.log(json);
 
                 addMessage("Edit error!");
             }
@@ -345,8 +333,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 var data = JSON.stringify(response);
                 var json = $.parseJSON(data);
-                console.log('JSON: ');
-                console.log(json);
 
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
@@ -360,8 +346,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             error: function (err) {
                 var json = JSON.stringify(err);
-                console.log('JSON: ');
-                console.log(json);
                 addMessage("Edit error!");
             }
         });
@@ -394,8 +378,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
                 var data = JSON.stringify(response);
                 var json = $.parseJSON(data);
-                console.log('JSON: ');
-                console.log(json);
 
                 if (json.status.code == 'success') {
                     console.log('Saved row data');
@@ -408,8 +390,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             error: function (err) {
                 var json = JSON.stringify(err);
-                console.log('JSON: ');
-                console.log(json);
                 addMessage("Edit error!");
             }
         });

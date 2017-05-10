@@ -134,8 +134,6 @@ function saveAgentHierarchyDistribution(nRow) {
 
             var data = JSON.stringify(response);
             var json = $.parseJSON(data);
-            console.log('JSON: ');
-            console.log(json);
 
             if (json.status.code == 'success') {
                 console.log('Saved row data');
@@ -149,8 +147,6 @@ function saveAgentHierarchyDistribution(nRow) {
         },
         error: function (err) {
             var json = JSON.stringify(err);
-            console.log('JSON: ');
-            console.log(json);
             addMessage("Edit error!");
         }
     });

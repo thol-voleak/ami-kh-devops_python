@@ -349,9 +349,6 @@
         function changeSpecificActorTypeRelative(actorType) {
             specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_edit");
 
-            console.log("actorType: " + actorType);
-            console.log("specificActorId: " + specificActorId);
-
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
             } else {
