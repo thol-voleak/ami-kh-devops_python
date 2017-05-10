@@ -14,3 +14,4 @@ def format_date_time(data):
             item['last_updated_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
                 '%d-%m-%Y %H:%M %p')
     return data
+

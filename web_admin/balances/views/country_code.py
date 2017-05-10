@@ -38,8 +38,8 @@ class CountryCode(View):
         logger.info('Response Content: {}'.format(response.text))
 
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
@@ -81,8 +81,8 @@ class CountryCode(View):
         response_json = response.json()
 
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":

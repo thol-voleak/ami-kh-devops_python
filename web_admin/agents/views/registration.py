@@ -1,10 +1,7 @@
-from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.shortcuts import redirect, render
-from django.contrib import messages
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
-
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 
@@ -32,18 +29,21 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
                                     verify=settings.CERT)
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
-        json_data = auth_request.json()
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Total count of Agent Types is {}'.format(len(data)))
-                return data
-
-        if json_data["status"]["code"] == "access_token_expire":
-            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
-            raise InvalidAccessToken(json_data["status"]["message"])
+        response_json = auth_request.json()
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = response_json.get('data', [])
+            logger.info('Total count of Agent Types is {}'.format(len(result)))
         else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+            result = []
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+        return result
 
 
     def _get_preload_currencies_dropdown(self):
@@ -54,18 +54,24 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
         response = requests.get(url, headers=get_auth_header(self.request.user),
                                 verify=settings.CERT)
         done = time.time()
-        json_data = response.json()
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
-        data = json_data.get('data')
-        if response.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info("Received {} preload currencies".format(len(json_data['data'])))
-                return data
 
-        if json_data["status"]["code"] == "access_token_expire":
-            raise InvalidAccessToken(json_data["status"]["message"])
+        response_json = response.json()
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = response_json.get('data', [])
+            logger.info("Received {} preload currencies".format(len(result)))
         else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+            result = []
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+        return result
+
 
 '''
 Author: Steve Le
@@ -102,11 +108,15 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start Registering Agent Profile ==========')
-        agent_profile_reponse = self._create_agent_profile(request)
+        agent_profile_reponse, success = self._create_agent_profile(request)
         logger.info('========== Finished Registering Agent Profile ==========')
 
-        if agent_profile_reponse is not None:
+        agent_id = ''
+        if success:
             agent_id = agent_profile_reponse['id']
+        else:
+            request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
+            return redirect('agents:agent_registration')
 
         logger.info('========== Start create agent identity ==========')
         self._create_agent_identity(request, agent_id)
@@ -126,15 +136,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         password = request.POST.get('password')
         agent_type_id = request.POST.get('agent_type_id')
         parent_id = request.POST.get('parent_id')
-        grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
-        bank_name =  request.POST.get('bank_name')
-        agent_bank_account =  request.POST.get('agent_bank_account')
-        card_id = request.POST.get('card_id')
-        edc_id = request.POST.get('edc_id')
-        sim_id =  request.POST.get('sim_id')
-        adapter_id = request.POST.get('adapter_id')
-        battery_id = request.POST.get('battery_id')
-        edc_app_version = request.POST.get('edc_app_version')
+        #grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
         firstname =  request.POST.get('firstname')
         lastname = request.POST.get('lastname')
         date_of_birth = request.POST.get('date_of_birth')
@@ -162,25 +164,16 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         secondary_phone = request.POST.get('secondary_phone')
         tertiary_phone = request.POST.get('tertiary_phone')
         email = request.POST.get('email')
-        shop_name = request.POST.get('shop_name')
-        shop_product = request.POST.get('shop_product')
+        unique_reference = request.POST.get('unique_reference')
         kyc_status = request.POST.get('kyc_status')
-        status = request.POST.get('status')
+        status = 1  # request.POST.get('status') TODO hard fix
 
         body = {
             'password': password,
             'agent_type_id': agent_type_id,
             'parent_id': parent_id,
-            'grand_parent_id': grand_parent_id,
+            #'grand_parent_id': grand_parent_id,
             'password': password,
-            'bank_name': bank_name,
-            'agent_bank_account': agent_bank_account,
-            'card_id': card_id,
-            'edc_id': edc_id,
-            'sim_id': sim_id,
-            'adapter_id': adapter_id,
-            'battery_id': battery_id,
-            'edc_app_version': edc_app_version,
             'firstname': firstname,
             'lastname': lastname,
             'date_of_birth': date_of_birth,
@@ -189,13 +182,13 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
             'primary_Identify_id': primary_Identify_id,
             'primary_Identify_type': primary_Identify_type,
             'primary_place_of_issue': primary_place_of_issue,
-            'primary_issue_Date': primary_issue_Date,
-            'primary_expire_Date': primary_expire_Date,
+            'primary_issue_date': primary_issue_Date,
+            'primary_expire_date': primary_expire_Date,
             'secondary_Identify_id': secondary_Identify_id,
             'secondary_Identify_type': secondary_Identify_type,
             'secondary_place_of_issue': secondary_place_of_issue,
-            'secondary_issue_Date': secondary_issue_Date,
-            'secondary_expire_Date': secondary_expire_Date,
+            'secondary_issue_date': secondary_issue_Date,
+            'secondary_expire_date': secondary_expire_Date,
             'nationality': nationality,
             'province': province,
             'district': district,
@@ -205,11 +198,13 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
             'secondary_phone': secondary_phone,
             'tertiary_phone': tertiary_phone,
             'email': email,
-            'shop_name': shop_name,
-            'shop_product': shop_product,
+            'unique_reference': unique_reference,
             'kyc_status': kyc_status,
             'status': status,
         }
+
+        remove = [key for key, value in body.items() if not value]
+        for key in remove: del body[key]
 
         api_path = settings.AGENT_REGISTRATION_URL
         url = settings.DOMAIN_NAMES + api_path
@@ -225,12 +220,21 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        json_data = response.json()
-        if response.status_code == 200:
-            return json_data.get('data')
+        response_json = response.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = response_json.get('data', {}), True
         else:
-            request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
-            return redirect('agents:agent_registration')
+            result = {}, False
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+        return result
+
 
     def _create_agent_identity(self, request, agent_id):
 
@@ -256,11 +260,23 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        if response.status_code == 200:
-            return True
+        response_json = response.json()
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = True
         else:
+            result = False
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
             request.session['agent_registration_msg'] = 'Agent registration - identity: Something wrong happened!'
             return redirect('agents:agent_registration')
+        return result
+
 
     def _create_agent_balance(self, request, agent_id):
 
@@ -282,8 +298,19 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {} sec.".format(end_time - start_time))
 
-        if response.status_code == 200:
-            return True
+        response_json = response.json()
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = True
         else:
+            result = False
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
             request.session['agent_registration_msg'] = 'Agent registration - balance: Something wrong happened!'
             return redirect('agents:agent_registration')
+        return result

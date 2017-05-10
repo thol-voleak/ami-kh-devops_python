@@ -68,8 +68,8 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         logger.info("_get_currencies_list response is {}".format(response.text))
 
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
@@ -95,8 +95,8 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         response_json = response.json()
 
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
 
         message = status.get('message', 'Something went wrong.')

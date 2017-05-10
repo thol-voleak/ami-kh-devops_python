@@ -92,8 +92,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
         response_json = response.json()
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
@@ -130,8 +130,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
         response_json = response.json()
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
@@ -158,8 +158,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
         response_json = response.json()
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
@@ -183,8 +183,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
 
         response_json = response.json()
         status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
+        # if not isinstance(status, dict):
+        #     status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
