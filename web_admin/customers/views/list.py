@@ -59,7 +59,7 @@ class ListView(TemplateView, GetHeaderMixin):
         logger.info('API-Path: {};'.format(api_path))
 
         search = request.POST.get('search')
-        if search is None:
+        if search == '':
             params = {}
         else:
             params = {"mobile_number": search}
