@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'service_group',
     'services',
     'agents',
+    'customers',
+    'cards',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -88,7 +90,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
-                              'configuration', 'system_user', 'service_group', 'services', 'agents')],
+                              'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers', 'cards')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -208,6 +210,16 @@ LOGGING = {
             'propagate': True,
         },
         'agents': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'customers': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'cards': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

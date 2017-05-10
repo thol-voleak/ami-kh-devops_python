@@ -35,26 +35,15 @@ def logout_user(request):
     logger.info("username {} got logout response: {}".format(username, response.text))
     logger.info("username {} got logout response time: {} sec.".format(username, end_time - start_time))
 
-    response_json = response.json()
-
-    status = response_json.get('status', {})
-    if not isinstance(status, dict):
-        status = {}
-    code = status.get('code', '')
-    message = status.get('message', 'Something went wrong.')
-    if code == "success":
-        if request.user.is_authenticated:
-            auth = Authentications.objects.get(user=request.user)
-            if auth is not None:
-                logger.info('username {} deleting current session info'.format(username))
-                auth.delete()
-        logout(request)
-        logger.info("username {} was logged out".format(username, request.user))
-        logger.info('========== Finished to logout ==========')
-        return redirect('/admin-portal/')
-    else:
-        logger.info('========== Finished to logout ==========')
-        pass
+    if request.user.is_authenticated:
+        auth = Authentications.objects.get(user=request.user)
+        if auth is not None:
+            logger.info('username {} deleting current session info'.format(username))
+            auth.delete()
+    logout(request)
+    logger.info("username {} was logged out".format(username, request.user))
+    logger.info('========== Finished to logout ==========')
+    return redirect('/admin-portal/')
 
 
 def get_auth_header(user):

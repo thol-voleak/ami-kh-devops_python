@@ -77,11 +77,32 @@
                             <span>Clients</span>
                         </a>
                     </li>
+                    <li class="{% if 'customers' in request.path %} open{% endif %}">
+                        <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
+                        <ul class="sub-menu">
+                            <li id="customers_menu" class="{% if url_name == 'customer-list' %}active{% endif %}">
+                                <a href="{% url 'customers:customer-list' %}"><span>Member Customers Profile</span></a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="{% if 'system-user' in request.path %} open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                         <ul class="sub-menu">
                             <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
                                 <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-accordion {% if 'cards' in request.path %}open{% endif %}">
+                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'card-profile' %}active{% endif %}">
+                                <a href="{% url 'cards:profile' %}"> <span>Profile</span> </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'card-history' %}active{% endif %}">
+                                <a href="{% url 'cards:profile' %}"> <span>History</span> </a>
                             </li>
                         </ul>
                     </li>

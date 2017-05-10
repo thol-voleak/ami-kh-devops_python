@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-
+from authentications.apps import InvalidAccessToken
 from django.conf import settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
@@ -187,3 +187,121 @@ class AgentUpdate( TemplateView ):
         logger.info('========== Finish getting currencies list ========== ')
 
         return currencies
+
+    def post(self, request, *args, **kwargs):
+        logger.info('========== Start updating Agent ==========')
+        agent_id = kwargs['agent_id']
+
+        agent_type_id = request.POST.get('agent_type_id')
+        parent_id = request.POST.get('parent_id')
+        # grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        date_of_birth = request.POST.get('date_of_birth')
+        gender = request.POST.get('gender')
+        national = request.POST.get('national')
+        # Primary Section
+        primary_Identify_id = request.POST.get('primary_Identify_id')
+        primary_Identify_type = request.POST.get('primary_Identify_type')
+        primary_place_of_issue = request.POST.get('primary_place_of_issue')
+        primary_issue_Date = request.POST.get('primary_issue_Date')
+        primary_expire_Date = request.POST.get('primary_expire_Date')
+        # Secondary Section
+        secondary_Identify_id = request.POST.get('secondary_Identify_id')
+        secondary_Identify_type = request.POST.get('secondary_Identify_type')
+        secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
+        secondary_issue_Date = request.POST.get('secondary_issue_Date')
+        secondary_expire_Date = request.POST.get('secondary_expire_Date')
+        # Contact Info Section
+        nationality = request.POST.get('nationality')
+        province = request.POST.get('province')
+        district = request.POST.get('district')
+        commune = request.POST.get('commune')
+        address = request.POST.get('address')
+        primary_mobile_number = request.POST.get('primary_mobile_number')
+        secondary_mobile_number = request.POST.get('secondary_mobile_number')
+        tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
+        email = request.POST.get('email')
+        unique_reference = request.POST.get('unique_reference')
+        kyc_status = request.POST.get('kyc_status')
+        status = 1 # request.POST.get('status') TODO hard fix
+
+        data = {
+            'agent_type_id': agent_type_id,
+            'parent_id': parent_id,
+            'firstname': firstname,
+            'lastname': lastname,
+            'date_of_birth': date_of_birth,
+            'gender': gender,
+            'national': national,
+            'primary_Identify_id': primary_Identify_id,
+            'primary_Identify_type': primary_Identify_type,
+            'primary_place_of_issue': primary_place_of_issue,
+            'primary_issue_Date': primary_issue_Date,
+            'primary_expire_Date': primary_expire_Date,
+            'secondary_Identify_id': secondary_Identify_id,
+            'secondary_Identify_type': secondary_Identify_type,
+            'secondary_place_of_issue': secondary_place_of_issue,
+            'secondary_issue_Date': secondary_issue_Date,
+            'secondary_expire_Date': secondary_expire_Date,
+            'nationality': nationality,
+            'province': province,
+            'district': district,
+            'commune': commune,
+            'address': address,
+            'primary_mobile_number': primary_mobile_number,
+            'secondary_mobile_number': secondary_mobile_number,
+            'tertiary_mobile_number': tertiary_mobile_number,
+            'email': email,
+            'unique_reference': unique_reference,
+            'kyc_status': kyc_status,
+            'status': status,
+        }
+
+        for key, value in data.items():
+            if not value:
+                data[key] = ''
+
+        data, success = self._update_agent(agent_id, data)
+        if success:
+            request.session['agent_update_msg'] = 'Updated data successfully'
+            return redirect('agents:agent_detail', agent_id=(agent_id))
+        return redirect(request.META['HTTP_REFERER'])
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+
+        return self._headers
+
+    def _update_agent(self, agent_id, data):
+        api_path = settings.AGENT_UPDATE_PATH.format(agent_id=agent_id)
+        url = settings.DOMAIN_NAMES + api_path
+
+        logger.info('Updating Agent - API-Path: {path}'.format(path=api_path))
+        logger.info('Updating Agent - Params: {}'.format(data))
+
+        start_date = time.time()
+        response = requests.put(url, headers=self._get_headers(),
+                                json=data, verify=settings.CERT)
+        done = time.time()
+        logger.info('Getting Agent detail - Response_time: {}'.format(done - start_date))
+        logger.info('Getting Agent detail - Response_code: {}'.format(response.status_code))
+        logger.info('Getting Agent detail - Response_content: {}'.format(response.text))
+
+        response_json = response.json()
+        status = response_json.get('status', {})
+        if not isinstance(status, dict):
+            status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = response_json.get('data', {}), True
+            logger.info('========== Finished updating Agent ==========')
+        else:
+            logger.info('========== Finished updating Agent ==========')
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+            result = None, False
+        return result
