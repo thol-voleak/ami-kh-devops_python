@@ -12,5 +12,5 @@ from authentications.utils import get_auth_header
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView):
-    template_name = "profile.html"
+class HistoryView(TemplateView):
+    template_name = "history.html"

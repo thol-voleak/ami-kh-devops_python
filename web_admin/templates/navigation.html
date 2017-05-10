@@ -96,13 +96,13 @@
                     <li class="menu-accordion {% if 'cards' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
                         <ul class="sub-menu">
-                            <li class="{% if url_name == 'card-profile' %}active{% endif %}">
+                            <li class="{% if url_name == 'profile' %}active{% endif %}">
                                 <a href="{% url 'cards:profile' %}"> <span>Profile</span> </a>
                             </li>
                         </ul>
                         <ul class="sub-menu">
-                            <li class="{% if url_name == 'card-history' %}active{% endif %}">
-                                <a href="{% url 'cards:profile' %}"> <span>History</span> </a>
+                            <li class="{% if url_name == 'history' %}active{% endif %}">
+                                <a href="{% url 'cards:history' %}"> <span>History</span> </a>
                             </li>
                         </ul>
                     </li>
