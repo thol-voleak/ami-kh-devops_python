@@ -33,8 +33,12 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "specific_actor_id": data.get("specific_actor_id"),
             "is_deleted": 0
         }
+
+        if post_data['actor_type'] != 'Specific ID':
+            post_data['specific_actor_id'] = ''
 
         logger.info("Params: {}".format(post_data))
         start_time = time.time()
