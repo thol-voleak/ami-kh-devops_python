@@ -84,7 +84,6 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
 
         return currency_list
 
-
     def _get_agent_balances(self, agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
         headers = self._get_headers()

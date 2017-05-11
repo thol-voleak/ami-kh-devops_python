@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'agents',
     'customers',
     'cards',
+    'api_management',
 ]
 
 MIDDLEWARE_CLASSES = [
