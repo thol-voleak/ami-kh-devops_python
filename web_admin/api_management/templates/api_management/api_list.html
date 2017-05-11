@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="panel-heading border">
+    <h3>Api management</h3>
+</div>
+
+<div class="panel-body">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mb0">
+            <thead>
+            <tr>
+                <th class="col-sm-1" id="id">ID</th>
+                <th class="col-sm-2" id="name">Name</th>
+                <th class="col-sm-1" id="http_method">Http Method</th>
+                <th class="col-sm-2" id="pattern">Pattern</th>
+                <th class="col-sm-1" id="is_internal">Internal</th>
+                <th class="col-sm-2" id="is_required_access_token">Access Token</th>
+                <th class="col-sm-1" id="prefix">Prefix</th>
+                <th class="col-sm-2" id="service">Service</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for api in data %}
+            <tr>
+                <td class="col-sm-1">{{ api.id|default_if_none:'' }}</td>
+                <td class="col-sm-2">{{ api.name|default_if_none:'' }}</td>
+                <td class="col-sm-1">{{ api.http_method|default_if_none:'' }}</td>
+                <td class="col-sm-2">{{ api.pattern|default_if_none:'' }}</td>
+                <td class="col-sm-1">{{ api.is_internal|default_if_none:'-' }}</td>
+                <td class="col-sm-2">{{ api.is_required_access_token|default_if_none:'' }}</td>
+                <td class="col-sm-1">{{ api.prefix|default_if_none:'-' }}</td>
+                <td class="col-sm-2">{{ api.service.name|default_if_none:'' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
