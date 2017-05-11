@@ -71,7 +71,7 @@
                             <label class="col-sm-4 control-label">User Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="user_name"
-                                       id="txt_user_name" />
+                                       id="txt_user_name" disabled />
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                             <label class="col-sm-4 control-label">Password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="password"
-                                       id="txt_password"/>
+                                       id="txt_password" disabled/>
                             </div>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Currency</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_currency" name="currency">
+                                <select class="form-control" id="ddl_currency" name="currency" disabled>
                                     {% for item in currencies %}
                                         <option value="{{ item.1 }}">{{ item.0 }}</option>
                                     {% endfor %}
@@ -110,7 +110,7 @@
                             <label class="col-sm-4 control-label">Re-password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="re_password"
-                                       id="txt_re_password"/>
+                                       id="txt_re_password" disabled/>
                             </div>
                         </div>
                     </div>
@@ -403,10 +403,10 @@
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Unique Reference</label>
+                            <label class="col-sm-4 control-label">Unique Reference *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="unique_reference"
-                                       id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}"/>
+                                       id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}" required/>
                             </div>
                         </div>
                     </div>
