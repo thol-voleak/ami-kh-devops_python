@@ -14,23 +14,52 @@
     </div>
 
     <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:history' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Trans ID</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="trans_id" value="{{ trans_id }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">Card ID</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="card_id" value="{{ card_id }}"/>
+                    </div>
+                    <div class="col-sm-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
                 <thead>
                 <tr>
-                    <th id="user_id">User ID</th>
-                    <th id="user_type">User Type</th>
-                    <th id="pan_number">PAN Number</th>
-                    <th id="card_type">Card Type</th>
-                    <th id="card_identifier">Card Identifier</th>
-                    <th id="firstname">First Name</th>
-                    <th id="lastname">Last Name</th>
-                    <th id="expiry_date">Expiry Date</th>
-                    <th id="is_stopped">Is Stopped</th>
+                    <th id="trans_id">Trans ID</th>
+                    <th id="card_id">Card ID</th>
+                    <th id="card_action">Action</th>
+                    <th id="actor">Actor (ID)</th>
+                    <th id="status">Status</th>
                     <th id="created_date">Created Date</th>
+                    <th id="last_updated">Last Updated</th>
+                    <th id="status_code">Code</th>
+                    <th id="status_message">Message</th>
                 </tr>
                 </thead>
                 <tbody>
+                {% for card in data %}
+                        <tr>
+                            <td class="col-sm-1">{{ card.trans_id }}</td>
+                            <td class="col-sm-1">{{ card.card.id }}</td>
+                            <td class="col-sm-1">{{ card.card_action.name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ card.actor_user_type.name|default_if_none:'' }} ({{ card.actor_user_id|default_if_none:'' }})</td>
+                            <td class="col-sm-1">{{ card.is_success|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ card.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ card.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ card.status_code|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ card.status_message|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

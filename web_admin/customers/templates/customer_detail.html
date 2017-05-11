@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>View Profile</h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Mobile Number</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_mobile_number"
+                                       value="{{ customer_info.mobile_number | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Firstname</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_firstname"
+                                       value="{{ customer_info.firstname | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Lastname</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_lastname"
+                                       value="{{ customer_info.lastname | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Place of Birth</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_place_of_birth"
+                                       value="{{ customer_info.place_of_birth | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Date of Birth</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_date_of_birth"
+                                       value="{{ customer_info.date_of_birth | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">National ID/Passport ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_national_id/passport_id"
+                                       value="{% firstof customer_info.citizen_card_id customer_info.passport_id '' %}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">National/Passport Date of Issued</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_national/passport_date_of_issued"
+                                       value="{% firstof customer_info.citizen_card_date_of_issue customer_info.passport_date_of_issue '' %}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">National/Passport Place of Issued</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_national/passport_place_of_issued"
+                                       value="{% firstof customer_info.citizen_card_place_of_issue customer_info.passport_place_of_issue '' %}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Permanent Address</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_permanent_address"
+                                       value="{{ customer_info.permanent_address | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>        
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Current Address</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_current_address"
+                                       value="{{ customer_info.current_address | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Email Address</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_email_address"
+                                       value="{{ customer_info.email | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Occupations</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_occupations"
+                                       value="{{ customer_info.occupations | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Nationality</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_nationality"
+                                       value="{{ customer_info.nationality | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">The Beneficiary</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_the_beneficiary"
+                                       value="{{ customer_info.beneficiary | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">KYC Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_kyc_status"
+                                       value="{{ customer_info.kyc_status | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Profile Create Date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_profile_create_date"
+                                       value="{{ customer_info.created_timestamp | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Profile Update Date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_profile_update_date"
+                                       value="{{ customer_info.last_updated_timestamp | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <a href="{% url 'customers:customer-list' %}">
+                                <input id="system_user_btn_back" class="btn btn-success text-left mb15" type="button"
+                                       value="Back"/>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
