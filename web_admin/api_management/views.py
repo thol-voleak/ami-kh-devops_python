@@ -21,16 +21,16 @@ class APIListView(TemplateView):
         logger.info('========== Finished getting api List ==========')
         json_data = response.json()
         data = json_data.get('data')
-        logger.info("{}".format(response.content))
+
         status = json_data.get('status', {})
         if status.get('code', '') == "success":
-            logger.info("response: {}".format(json_data))
             result = {'data': data.get('apis')}
-            logger.info('========== End get order history list ==========')
+            logger.info("All api is {} apis".format(len(data.get('apis'))))
+            logger.info('========== End get all api list ==========')
             return result
         else:
             if status.get('code', '') == "access_token_expire":
-                logger.info('========== End get order history list ==========')
+                logger.info('========== End get all api list ==========')
                 raise InvalidAccessToken(status.get('message', ''))
 
         raise Exception(response.content)
