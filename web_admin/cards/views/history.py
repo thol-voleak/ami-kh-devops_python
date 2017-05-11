@@ -25,15 +25,24 @@ class HistoryView(TemplateView):
 
         trans_id = request.POST.get('trans_id')
         card_id = request.POST.get('card_id')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
 
         logger.info('trans_id: {}'.format(trans_id))
         logger.info('card_id: {}'.format(card_id))
+        logger.info('user_id: {}'.format(user_id))
+        logger.info('user_type_id: {}'.format(user_type_id))
 
         body = {}
         if trans_id is not '':
             body['trans_id'] = trans_id
         if card_id is not '':
             body['card_id'] = int(card_id)
+        if user_id is not '':
+            body['user_id'] = user_id
+        if user_type_id is not '' and user_type_id is not '0':
+            body['user_type_id'] = int(user_type_id)
+
 
         data = self.get_card_history_list(body)
         if data is not None:
@@ -43,7 +52,9 @@ class HistoryView(TemplateView):
 
         context = {'data': result_data,
                    'trans_id': trans_id,
-                   'card_id': card_id
+                   'card_id': card_id,
+                   'user_id': user_id,
+                   'user_type_id': user_type_id
                    }
 
         logger.info('========== End search card history ==========')
