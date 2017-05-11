@@ -32,7 +32,7 @@ class HistoryView(TemplateView):
         body = {}
         if trans_id is not '':
             body['trans_id'] = trans_id
-        if trans_id is not '':
+        if card_id is not '':
             body['card_id'] = int(card_id)
 
         data = self.get_card_history_list(body)
