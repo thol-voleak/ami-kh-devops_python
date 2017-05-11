@@ -160,9 +160,9 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         district = request.POST.get('district')
         commune = request.POST.get('commune')
         address = request.POST.get('address')
-        primary_phone = request.POST.get('primary_phone')
-        secondary_phone = request.POST.get('secondary_phone')
-        tertiary_phone = request.POST.get('tertiary_phone')
+        primary_mobile_number = request.POST.get('primary_mobile_number')
+        secondary_mobile_number = request.POST.get('secondary_mobile_number')
+        tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
         email = request.POST.get('email')
         unique_reference = request.POST.get('unique_reference')
         kyc_status = request.POST.get('kyc_status')
@@ -194,9 +194,9 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
             'district': district,
             'commune': commune,
             'address': address,
-            'primary_phone': primary_phone,
-            'secondary_phone': secondary_phone,
-            'tertiary_phone': tertiary_phone,
+            'primary_mobile_number': primary_mobile_number,
+            'secondary_mobile_number': secondary_mobile_number,
+            'tertiary_mobile_number': tertiary_mobile_number,
             'email': email,
             'unique_reference': unique_reference,
             'kyc_status': kyc_status,
