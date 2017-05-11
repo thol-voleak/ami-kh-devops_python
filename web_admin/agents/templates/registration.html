@@ -103,8 +103,8 @@
                             <label class="col-sm-4 control-label">Currency *</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="ddl_currency" name="currency" required>
-                                    {% for currency in preload_currencies %}
-                                    <option value="{{ currency.currency_code }}">{{ currency.currency_code }}</option>
+                                    {% for currency in currencies %}
+                                    <option value="{{ currency }}">{{ currency }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -438,6 +438,7 @@
                     <!-- End section 8 - row 8 -->
                     <hr/>
 
+                    
                     <div class="pull-right">
                         <a href="{% url 'agents:agent_registration' %}">
                             <input id="btn_create" class="btn btn-success text-left mb15" type="submit" value="Create"/>
