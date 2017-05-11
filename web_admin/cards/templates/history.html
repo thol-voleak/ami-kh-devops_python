@@ -52,7 +52,7 @@
                             <td class="col-sm-1">{{ card.trans_id }}</td>
                             <td class="col-sm-1">{{ card.card.id }}</td>
                             <td class="col-sm-1">{{ card.card_action.name|default_if_none:'' }}</td>
-                            <td class="col-sm-1">{{ card.actor_user_type.name|default_if_none:'' }} ({{ card.actor_user_type.id|default_if_none:'' }})</td>
+                            <td class="col-sm-1">{{ card.actor_user_type.name|default_if_none:'' }} ({{ card.actor_user_id|default_if_none:'' }})</td>
                             <td class="col-sm-1">{{ card.is_success|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ card.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ card.last_updated_timestamp|default_if_none:'' }}</td>

@@ -43,7 +43,7 @@ class HistoryView(TemplateView):
 
         context = {'data': result_data,
                    'trans_id': trans_id,
-                   'card_id': int(card_id)
+                   'card_id': card_id
                    }
 
         logger.info('========== End search card history ==========')
