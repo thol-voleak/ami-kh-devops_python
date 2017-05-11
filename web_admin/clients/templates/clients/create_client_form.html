@@ -67,6 +67,16 @@
                                    value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Authorization code validity:</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control input-rounded" name="authorization_code_validity"
+                                   value="{{ client_info.authorization_code_validity|default_if_none:600 }}">
+                        </div>
+                    </div>
+
+
                     <div class="pull-right">
                         <a href="{% url 'clients:client-list' %}">
                             <input id="client-btn-cancel" class="btn btn-success text-left mb15" type="button"
