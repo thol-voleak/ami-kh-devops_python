@@ -24,6 +24,7 @@ class ClientCreate(View):
             "authorized_grant_types": None,
             "access_token_validity": None,
             "refresh_token_validity": None,
+            "authorization_code_validity": None
         }
         context = {'client_info': client_info,
                    'error_msg': None}
@@ -49,10 +50,7 @@ class ClientCreate(View):
                 "authorities": "",
                 "access_token_validity": request.POST.get('access_token_validity'),
                 "refresh_token_validity": request.POST.get('refresh_token_validity'),
-                "additional_information": "",
-                "resource_ids": "",
-                "authorities": "",
-                "autoapprove": ""
+                "authorization_code_validity": request.POST.get('authorization_code_validity')
             }
 
             start_date = time.time()
