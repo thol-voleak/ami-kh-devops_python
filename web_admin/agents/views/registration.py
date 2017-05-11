@@ -18,7 +18,7 @@ History:
 -- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
 -- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
 '''
-class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
+class AgentTypeAndCurrenciesDropDownList(TemplateView):
 
     def _get_agent_types_list(self):
         url = settings.AGENT_TYPES_LIST_URL
@@ -46,8 +46,8 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
         return result
 
 
-    def _get_preload_currencies_dropdown(self):
-        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+    def _get_currencies_dropdown(self):
+        url = settings.GET_ALL_CURRENCY_URL
 
         logger.info("Getting preload currency list from backend with {} url".format(url))
         start_date = time.time()
@@ -57,13 +57,20 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
 
         response_json = response.json()
+        print('-----------------{}--------------------'.format(response_json))
+
         status = response_json.get('status', {})
         if not isinstance(status, dict):
             status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
-            result = response_json.get('data', [])
+            try:
+                value = response_json['data']['value']
+            except:
+                return {}
+            currencies = value.split(',')
+            result = [ currency.split("|")[0] for currency in currencies]
             logger.info("Received {} preload currencies".format(len(result)))
         else:
             result = []
@@ -84,14 +91,14 @@ History:
 - 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
 -- Added logging format and more.
 '''
-class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownList):
+class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "registration.html"
 
     def get_context_data(self, *arg, **kwargs):
 
         # Get API that inherits from parent Class
         logger.info('========== Start get Currency List ==========')
-        preload_currencies = self._get_preload_currencies_dropdown()
+        currencies = self._get_currencies_dropdown()
         logger.info('========== Finished get Currency List ==========')
 
         logger.info('========== Start get Agent Types List =========')
@@ -99,7 +106,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         logging.info('========= Finish get Agent Types List =========')
 
         result = {
-            'preload_currencies': preload_currencies,
+            'currencies': currencies,
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
