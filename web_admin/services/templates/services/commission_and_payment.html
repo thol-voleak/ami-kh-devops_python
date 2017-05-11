@@ -389,6 +389,17 @@
             }
         }
 
+        function changeSpecificActorTypeRelativeAdd(actorType) {
+            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id");
+
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+            } else {
+                $(specificActorId).prop('disabled', true);
+                $(specificActorId).val("");
+            }
+        }
+
         // Edit row feature
         $(document).ready(function () {
             // Build up master data from Server
