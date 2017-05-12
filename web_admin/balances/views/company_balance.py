@@ -37,21 +37,25 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
         done = time.time()
         logger.info("Response time for add company balance is {} sec.".format(done - start_date))
 
-        json_data = response.json()
-        if response.status_code == 200:
-            if json_data["status"]["code"] == "success":
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    'Added company balance with {} currency successfully'.format(currency)
-                )
-                logger.info('========== Finished create company balance ==========')
-                return redirect('balances:initial_company_balance')
+        response_json = response.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Added company balance with {} currency successfully'.format(currency)
+            )
+            logger.info('========== Finished create company balance ==========')
+            return redirect('balances:initial_company_balance')
         else:
-            if json_data["status"]["code"] == "access_token_expire":
-                raise InvalidAccessToken(json_data["status"]["message"])
-            else:
-                raise Exception("{}".format(json_data["status"]["message"]))
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
+
 
     def _get_currencies_list(self):
         headers = self._get_headers()
@@ -83,7 +87,6 @@ class CompanyBalanceView(TemplateView, GetHeaderMixin):
                 raise InvalidAccessToken(message)
 
         return currency_list
-
 
     def _get_agent_balances(self, agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)

@@ -18,7 +18,7 @@ History:
 -- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
 -- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
 '''
-class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
+class AgentTypeAndCurrenciesDropDownList(TemplateView):
 
     def _get_agent_types_list(self):
         url = settings.AGENT_TYPES_LIST_URL
@@ -46,8 +46,8 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
         return result
 
 
-    def _get_preload_currencies_dropdown(self):
-        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+    def _get_currencies_dropdown(self):
+        url = settings.GET_ALL_CURRENCY_URL
 
         logger.info("Getting preload currency list from backend with {} url".format(url))
         start_date = time.time()
@@ -57,13 +57,20 @@ class AgentTypeAndPreloadCurrenciesDropDownList(TemplateView):
         logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
 
         response_json = response.json()
+        print('-----------------{}--------------------'.format(response_json))
+
         status = response_json.get('status', {})
         if not isinstance(status, dict):
             status = {}
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
-            result = response_json.get('data', [])
+            try:
+                value = response_json['data']['value']
+            except:
+                return {}
+            currencies = value.split(',')
+            result = [ currency.split("|")[0] for currency in currencies]
             logger.info("Received {} preload currencies".format(len(result)))
         else:
             result = []
@@ -84,14 +91,14 @@ History:
 - 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
 -- Added logging format and more.
 '''
-class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownList):
+class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "registration.html"
 
     def get_context_data(self, *arg, **kwargs):
 
         # Get API that inherits from parent Class
         logger.info('========== Start get Currency List ==========')
-        preload_currencies = self._get_preload_currencies_dropdown()
+        currencies = self._get_currencies_dropdown()
         logger.info('========== Finished get Currency List ==========')
 
         logger.info('========== Start get Agent Types List =========')
@@ -99,7 +106,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         logging.info('========= Finish get Agent Types List =========')
 
         result = {
-            'preload_currencies': preload_currencies,
+            'currencies': currencies,
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
@@ -146,23 +153,23 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
         primary_Identify_id = request.POST.get('primary_Identify_id')
         primary_Identify_type = request.POST.get('primary_Identify_type')
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
-        primary_issue_Date = request.POST.get('primary_issue_Date')
-        primary_expire_Date = request.POST.get('primary_expire_Date')
+        primary_issue_Date = request.POST.get('primary_issue_date')
+        primary_expire_Date = request.POST.get('primary_expire_date')
         # Secondary Section
         secondary_Identify_id = request.POST.get('secondary_Identify_id')
         secondary_Identify_type = request.POST.get('secondary_Identify_type')
         secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
-        secondary_issue_Date = request.POST.get('secondary_issue_Date')
-        secondary_expire_Date = request.POST.get('secondary_expire_Date')
+        secondary_issue_Date = request.POST.get('secondary_issue_date')
+        secondary_expire_Date = request.POST.get('secondary_expire_date')
         # Contact Info Section
         nationality = request.POST.get('nationality')
         province = request.POST.get('province')
         district = request.POST.get('district')
         commune = request.POST.get('commune')
         address = request.POST.get('address')
-        primary_phone = request.POST.get('primary_phone')
-        secondary_phone = request.POST.get('secondary_phone')
-        tertiary_phone = request.POST.get('tertiary_phone')
+        primary_mobile_number = request.POST.get('primary_mobile_number')
+        secondary_mobile_number = request.POST.get('secondary_mobile_number')
+        tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
         email = request.POST.get('email')
         unique_reference = request.POST.get('unique_reference')
         kyc_status = request.POST.get('kyc_status')
@@ -194,9 +201,9 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndPreloadCurrenciesDropDownLi
             'district': district,
             'commune': commune,
             'address': address,
-            'primary_phone': primary_phone,
-            'secondary_phone': secondary_phone,
-            'tertiary_phone': tertiary_phone,
+            'primary_mobile_number': primary_mobile_number,
+            'secondary_mobile_number': secondary_mobile_number,
+            'tertiary_mobile_number': tertiary_mobile_number,
             'email': email,
             'unique_reference': unique_reference,
             'kyc_status': kyc_status,

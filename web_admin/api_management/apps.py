@@ -80,6 +80,7 @@ class CustomBackend:
                     logger.info('Checking user is exit in system')
                     user, created = User.objects.get_or_create(username=username)
                     if created:
+                        user = User(username=username)
                         user.is_staff = True
                         user.save()
                         logger.info('{} user was created', username)

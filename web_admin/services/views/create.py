@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from web_admin.mixins import GetChoicesMixin
-
+from authentications.apps import InvalidAccessToken
 import requests
 import logging
 
@@ -68,10 +68,21 @@ class CreateView(TemplateView, GetChoicesMixin):
         logger.info("Received response with status {}".format(response.status_code))
         logger.info("Response content is {}".format(response.content))
 
-        json_data = response.json()
-        if response.status_code == 200:
-            return json_data.get('data'), True
+        response_json = response.json()
+        status = response_json.get('status', {})
+        # if not isinstance(status, dict):
+        #     status = {}
+
+        code = status.get('code', '')
+        message = status.get('message', 'Something went wrong.')
+        if code == "success":
+            result = response_json.get('data', {}), True
         else:
+            result = None, False
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                logger.info("{} for {} username".format(message, self.request.user))
+                raise InvalidAccessToken(message)
             logger.info("Received response with status {}".format(response.status_code))
             logger.info("Response content is {}".format(response.content))
-            return None, False
+        return result
+

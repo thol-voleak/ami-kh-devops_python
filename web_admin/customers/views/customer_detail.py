@@ -18,8 +18,7 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
         logger.info('========== Start getting customer detail ==========')
 
         customer_id = int(kwargs.get('customerId'))
-        data = self.get_member_detail(customer_id=customer_id)
-        
+        data = self.get_member_detail(customer_id=customer_id)        
         logger.info('========== Finished getting customer detail ==========')
 
         return data
@@ -28,8 +27,8 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
         api_path = settings.MEMBER_CUSTOMER_PATH
         url = settings.DOMAIN_NAMES + api_path
 
-        logger.info('API-Path: {};'.format(api_path))
-        logger.info('Param : {}'.format(customer_id))
+        logger.info('API-Path: {}/{};'.format(api_path, customer_id))
+        #logger.info('Param : {}'.format(customer_id))
         
         body = {}
 
@@ -53,9 +52,9 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
             data = response_json.get('data', [])
             for i in data:
                 if i['id'] == customer_id:
-                    logger.info("Response content for get customer detail: {}".format(i))
-                    context = {'customer_info': i,
-                               'msg': self.request.session.pop('msg', None)}
+
+                    logger.info("Response_content: {}".format(i))
+                    context = {'customer_info': i}
                     return context
             return {}
         else:

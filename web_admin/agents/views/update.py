@@ -227,17 +227,17 @@ class AgentUpdate( TemplateView ):
         gender = request.POST.get('gender')
         national = request.POST.get('national')
         # Primary Section
-        primary_Identify_id = request.POST.get('primary_Identify_id')
-        primary_Identify_type = request.POST.get('primary_Identify_type')
+        primary_Identify_id = request.POST.get('primary_identify_id')
+        primary_Identify_type = request.POST.get('primary_identify_type')
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
-        primary_issue_Date = request.POST.get('primary_issue_Date')
-        primary_expire_Date = request.POST.get('primary_expire_Date')
+        primary_issue_Date = request.POST.get('primary_issue_date')
+        primary_expire_Date = request.POST.get('primary_expire_date')
         # Secondary Section
-        secondary_Identify_id = request.POST.get('secondary_Identify_id')
-        secondary_Identify_type = request.POST.get('secondary_Identify_type')
+        secondary_Identify_id = request.POST.get('secondary_identify_id')
+        secondary_Identify_type = request.POST.get('secondary_identify_type')
         secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
-        secondary_issue_Date = request.POST.get('secondary_issue_Date')
-        secondary_expire_Date = request.POST.get('secondary_expire_Date')
+        secondary_issue_Date = request.POST.get('secondary_issue_date')
+        secondary_expire_Date = request.POST.get('secondary_expire_date')
         # Contact Info Section
         nationality = request.POST.get('nationality')
         province = request.POST.get('province')
@@ -260,13 +260,13 @@ class AgentUpdate( TemplateView ):
             'date_of_birth': date_of_birth,
             'gender': gender,
             'national': national,
-            'primary_Identify_id': primary_Identify_id,
-            'primary_Identify_type': primary_Identify_type,
+            'primary_identify_id': primary_Identify_id,
+            'primary_identify_type': primary_Identify_type,
             'primary_place_of_issue': primary_place_of_issue,
             'primary_issue_date': primary_issue_Date,
             'primary_expire_date': primary_expire_Date,
-            'secondary_Identify_id': secondary_Identify_id,
-            'secondary_Identify_type': secondary_Identify_type,
+            'secondary_identify_id': secondary_Identify_id,
+            'secondary_identify_type': secondary_Identify_type,
             'secondary_place_of_issue': secondary_place_of_issue,
             'secondary_issue_date': secondary_issue_Date,
             'secondary_expire_date': secondary_expire_Date,
