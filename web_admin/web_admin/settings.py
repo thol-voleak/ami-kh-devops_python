@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'customers',
     'cards',
     'api_management',
+    'centralize_configuration',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -227,6 +228,11 @@ LOGGING = {
             'propagate': True,
         },
         'api_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'centralize_configuration': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

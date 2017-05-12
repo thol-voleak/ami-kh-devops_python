@@ -83,6 +83,12 @@
                             <!--<span>Api management</span>-->
                         <!--</a>-->
                     <!--</li>-->
+                    <li class="class={% if url_name == 'scope_list' %} active{% endif %}">
+                        <a href="{% url 'centralize_configuration:scope_list' %}">
+                            <i class="fa fa-sort-numeric-asc"></i>
+                            <span>Centralize configuration</span>
+                        </a>
+                    </li>
                     <li class="{% if 'customers' in request.path %} open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
                         <ul class="sub-menu">

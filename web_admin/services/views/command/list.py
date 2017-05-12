@@ -83,9 +83,9 @@ class ListCommandView(TemplateView):
 
         logger.info("Getting command list from backend with {} url".format(url))
         auth_request = requests.get(url, headers=headers, verify=settings.CERT)
+        logger.info("Response for get command list is {}".format(auth_request.content))
 
         json_data = auth_request.json()
-
         detail_url = settings.SERVICE_DETAIL_URL.format(service_id)
         service_detail = requests.get(detail_url, headers=headers, verify=settings.CERT)
         service_detail = service_detail.json().get("data")
