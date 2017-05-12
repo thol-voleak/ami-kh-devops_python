@@ -297,7 +297,7 @@ class AgentUpdate( TemplateView ):
         data, success = self._update_agent(agent_id, data)
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
-            return redirect('agents:agent_detail', agent_id=(agent_id))
+            return redirect('agents:agent-list')
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):

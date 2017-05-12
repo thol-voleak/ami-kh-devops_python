@@ -5,6 +5,14 @@
     <div class="panel-heading border">
         <h3>Agent List</h3>
     </div>
+    {% if agent_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ agent_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="panel-body">
         <div class="table-responsive">
