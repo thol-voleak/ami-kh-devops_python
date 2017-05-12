@@ -12,7 +12,6 @@ class SearchView(TemplateView):
     template_name = "system_user/system_user_list.html"
 
     def get(self, request):
-        logger.info("#####Bossss#######")
         return render(request, 'system_user/system_user_list.html')
 
     def post(self, request, *args, **kwargs):
@@ -30,7 +29,6 @@ class SearchView(TemplateView):
         search_response = requests.post(search_url, headers=get_auth_header(self.request.user), json=body,
                                         verify=settings.CERT)
         logger.info('Got search result from backend with [{}] http status'.format(search_response.status_code))
-        logger.info(search_response.json())
         json_data = search_response.json()
 
         if json_data.get('status').get('code') == 'success':
