@@ -54,8 +54,7 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
                 if i['id'] == customer_id:
 
                     logger.info("Response_content: {}".format(i))
-                    context = {'customer_info': i,
-                               'msg': self.request.session.pop('msg', None)}
+                    context = {'customer_info': i}
                     return context
             return {}
         else:

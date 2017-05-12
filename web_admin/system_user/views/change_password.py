@@ -5,6 +5,7 @@ from authentications.utils import get_auth_header
 
 import requests, time
 import logging
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -58,8 +59,8 @@ class SystemUserChangePassword(TemplateView):
             if status['code'] == "success":
                 logger.info("System User password was changed.")
                 logger.info('========== Finished changing System User Password ==========')
-                request.session['system_user_change_password_msg'] = 'Password has been changed successfully'
-                return redirect('system_user:system-user-list')
+                messages.add_message(request, messages.SUCCESS, 'Password has been changed successfully')
+                return redirect('system_user:search')
             else:
                 logger.info("Error changing password of System User {}".format(system_user_id))
                 context = {'system_user_info': params}

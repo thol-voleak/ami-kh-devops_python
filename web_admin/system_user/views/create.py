@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 
 from authentications.utils import get_auth_header
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -63,8 +64,8 @@ class SystemUserCreate(View):
                 if status['code'] == "success":
                     logger.info("system user was created.")
                     logger.info('========== Finish creating new system user ==========')
-                    request.session['system_user_create_msg'] = 'Added data successfully'
-                    return redirect('system_user:system-user-list')
+                    messages.add_message(request, messages.SUCCESS, 'Added data successfully')
+                    return redirect('system_user:search')
                 else:
                     logger.info("Error Creating system user.")
                     logger.info('{}'.format(status['message']))
