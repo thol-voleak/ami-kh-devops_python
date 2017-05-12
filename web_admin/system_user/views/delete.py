@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -51,8 +52,8 @@ class DeleteView(TemplateView):
                 if status['code'] == "success":
                     logger.info("system user was deleted.")
                     logger.info("========== Finished deleting system user id ==========")
-                    request.session['system_user_delete_msg'] = 'Deleted data successfully'
-                    return redirect('system_user:system-user-list')
+                    messages.add_message(request, messages.SUCCESS, 'Deleted data successfully')
+                    return redirect('system_user:search')
                 else:
                     logger.info("Error deleting system user {}".format(system_user_id))
                     logger.info("========== Finished deleting system user id ==========")
