@@ -6,11 +6,12 @@ from .views.delete import DeleteView
 from .views.detail import DetailView
 from .views.update import SystemUserUpdateForm
 from .views.change_password import SystemUserChangePassword
-
+from .views.search import SearchView
 app_name = 'system_user'
 
 urlpatterns = [
     url(r'^list/$', login_required(ListView.as_view(), login_url='login'), name="system-user-list"),
+    url(r'^search/$', login_required(SearchView.as_view(), login_url='login'), name="search"),
     url(r'^create/$', login_required(SystemUserCreate.as_view(), login_url='login'), name="create-system-user"),
     url(r'^(?P<system_user_id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='login'),
         name="delete-system-user"),
