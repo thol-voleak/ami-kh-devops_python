@@ -29,7 +29,7 @@
                     <td class="col-sm-3">{{ agent.id }}</td>
                     <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
                     <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ agent.primary_phone|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
@@ -42,7 +42,7 @@
                             <button id="btn_edit" class="btn btn-outline btn-xs btn-primary"
                                     onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit
                             </button>
-                            <button id="btn_delete">Delete</button>
+                            <button id="btn_delete" hidden>Delete</button>
                         </div>
                     </td>
                 </tr>
