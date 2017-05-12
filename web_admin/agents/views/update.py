@@ -5,6 +5,7 @@ from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from datetime import datetime
 from django.utils import dateparse
+from django.http import HttpResponseRedirect
 
 from django.utils import formats
 from django.contrib import messages
@@ -297,7 +298,8 @@ class AgentUpdate( TemplateView ):
         data, success = self._update_agent(agent_id, data)
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
-            return redirect('agents:agent-list')
+            previous_page = request.POST.get('previous_page')
+            return HttpResponseRedirect(previous_page)
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):
