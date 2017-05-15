@@ -19,6 +19,7 @@ class ListView(TemplateView, GetHeaderMixin):
         customer_list = self.get_member_customer_list()
         logger.info('========== Finished getting Customer List ==========')
         context['data'] = customer_list
+        context['search_count'] = len(customer_list)
         return context
 
     def get_member_customer_list(self):
@@ -80,13 +81,14 @@ class ListView(TemplateView, GetHeaderMixin):
         message = status.get('message', 'Something went wrong.')
         if code == "success":
             data = response_json.get('data', [])
-            logger.info('Response content: {};'.format(data))
+            logger.info('Response count: {};'.format(len(data)))
         else:
             data = []
             if (code == "access_token_expire") or (code == 'access_token_not_found'):
                 logger.info("{} for {} username".format(message, request.user))
                 raise InvalidAccessToken(message)
 
+        context['search_count'] = len(data)
         context['data'] = data
         logger.info('========== Finished searching Customer ==========')
         return render(request, 'member_customer_list.html', context)
