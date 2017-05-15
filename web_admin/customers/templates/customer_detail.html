@@ -53,27 +53,51 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">National ID/Passport ID</label>
+                            <label class="col-sm-2 control-label">National ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="txt_national_id/passport_id"
-                                       value="{% firstof customer_info.citizen_card_id customer_info.passport_id '' %}" readonly>
+                                       id="txt_national_id"
+                                       value="{{ customer_info.citizen_card_id | default_if_none:'' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">National/Passport Date of Issued</label>
+                            <label class="col-sm-2 control-label">Passport ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="txt_national/passport_date_of_issued"
-                                       value="{% firstof customer_info.citizen_card_date_of_issue customer_info.passport_date_of_issue '' %}" readonly>
+                                       id="txt_passport_id"
+                                       value="{{ customer_info.passport_id | default_if_none:'' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">National/Passport Place of Issued</label>
+                            <label class="col-sm-2 control-label">National Date of Issued</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="txt_national/passport_place_of_issued"
-                                       value="{% firstof customer_info.citizen_card_place_of_issue customer_info.passport_place_of_issue '' %}" readonly>
+                                       id="txt_national_date_of_issued"
+                                       value="{{ customer_info.citizen_card_date_of_issue | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Passport Date of Issued</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_passport_date_of_issued"
+                                       value="{{ customer_info.passport_date_of_issue | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">National Place of Issued</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_national_place_of_issued"
+                                       value="{{ customer_info.citizen_card_place_of_issue | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Passport Place of Issued</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_passport_place_of_issued"
+                                       value="{{ customer_info.passport_place_of_issue | default_if_none:'' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group">
