@@ -13,31 +13,6 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-class ScopeListView(TemplateView):
-    template_name = 'centralize_configuration/scope_list.html'
-
-    def get_context_data(self, **kwargs):
-        logger.info('========== Start get all configuration scope ==========')
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes"
-        headers = get_auth_header(self.request.user)
-
-        response = requests.get(url=url, headers=headers, verify=settings.CERT)
-        json_data = response.json()
-        data = {'scopes': json_data.get('data')}
-
-        status = json_data.get('status', {})
-        if status.get('code', '') == "success":
-            logger.info("All scope is {} scopes".format(len(data)))
-            logger.info('========== End get all configuration scope ==========')
-            return data
-        else:
-            if status.get('code', '') == "access_token_expire":
-                logger.info('========== End get all configuration scope ==========')
-                raise InvalidAccessToken(status.get('message', ''))
-
-        raise Exception(response.content)
-
-
 class ConfigurationListView(TemplateView):
     template_name = 'centralize_configuration/configuration_list.html'
 
@@ -46,11 +21,12 @@ class ConfigurationListView(TemplateView):
         headers = get_auth_header(self.request.user)
         context = super(ConfigurationListView, self).get_context_data(**kwargs)
         scope = context['scope']
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations".format(scope=scope)
+        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations".format(
+            scope=scope)
 
         logger.info("Request get configuration scope for {} is {}".format(scope, url))
         response = requests.get(url=url, headers=headers, verify=settings.CERT)
-        
+
         json_data = response.json()
         status = json_data.get('status', '')
         data = json_data.get('data')
@@ -79,7 +55,8 @@ class ConfigurationDetailsView(TemplateView):
         context = super(ConfigurationDetailsView, self).get_context_data(**kwargs)
         scope = context['scope']
         conf_key = context['conf_key']
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/".format(scope=scope, key=conf_key)
+        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/".format(
+            scope=scope, key=conf_key)
 
         response = requests.get(url=url, headers=headers, verify=settings.CERT)
         json_data = response.json()
@@ -108,12 +85,13 @@ class ConfigurationDetailsView(TemplateView):
         conf_value = request.POST.get('conf_value')
 
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{conf_key}/".format(scope=scope, conf_key=conf_key)
+        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{conf_key}/".format(
+            scope=scope, conf_key=conf_key)
         params = {
             'value': conf_value
         }
 
-        response = requests.put(url=url, headers=headers, json=params ,verify=settings.CERT)
+        response = requests.put(url=url, headers=headers, json=params, verify=settings.CERT)
         json_data = response.json()
         status = json_data.get('status', '')
         data = json_data.get('data')
@@ -133,4 +111,3 @@ class ConfigurationDetailsView(TemplateView):
                 raise InvalidAccessToken(status.get('message', ''))
 
         raise Exception(response.content)
-        
