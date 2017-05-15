@@ -133,6 +133,19 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
+                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
+                                <a href="{% url 'cash_sofs:cash_sof' %}"> <span>Source of Fund</span> </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'cash_transaction' %}active{% endif %}">
+                                <a href="{% url 'cash_sofs:cash_transaction' %}"> <span>Transaction</span> </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li>
                         {% if user.is_authenticated %}
                             <a href="/admin-portal/logout/">

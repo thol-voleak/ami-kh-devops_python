@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+        <div class="panel-heading border">
+            <h3>Cash Transaction</h3>
+        </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_transaction' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">SOF ID</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="sof_id" value="{{ sof_id }}">
+                    </div>
+                    <label class="col-sm-2 control-label">ORDER ID</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="order_id" value="{{ order_id }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="user_type_ddl" name="type">
+                            <option value='' {% if type == '' %}selected="selected"{% endif %}>All</option>
+                            <option value='initiate' {% if type == 'initiate' %}selected="selected"{% endif %}>Initiate</option>
+                            <option value='deduction' {% if type == 'deduction' %}selected="selected"{% endif %}>Deduction</option>
+                            <option value='addition' {% if type == 'addition' %}selected="selected"{% endif %}>Addition</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="sof_id">SOF ID</th>
+                        <th id="order_id">Order ID</th>
+                        <th id="balance">Type</th>
+                        <th id="currency">Amount</th>
+                        <th id="created_date">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for transaction in transaction_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ transaction.id }}</td>
+                            <td class="col-sm-2">{{ transaction.sof_id }}</td>
+                            <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
+                            <td class="col-sm-2">{{ transaction.type }}</td>
+                            <td class="col-sm-2">{{ transaction.amount }}</td>
+                            <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

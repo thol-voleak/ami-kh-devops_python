@@ -7,15 +7,15 @@ from django.views.generic.base import TemplateView
 from multiprocessing import Process, Manager
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
-class DetailView(TemplateView):
+class DetailView(TemplateView, RESTfulMethods):
     template_name = "detail.html"
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Start getting Agent detail ==========')
             context = super(DetailView, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
 
@@ -37,59 +37,22 @@ class DetailView(TemplateView):
             return context
 
     def _get_agent_detail(self, agent_id):
-        api_path = settings.AGENT_DETAIL_PATH.format(agent_id=agent_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info('Getting Agent detail - API-Path: {path}'.format(path=api_path))
-        start_date = time.time()
-        response = requests.get(url, headers=get_auth_header(self.request.user), verify=settings.CERT)
-        done = time.time()
-        logger.info('Getting Agent detail - Response_time: {}'.format(done - start_date))
-        logger.info('Getting Agent detail - Response_code: {}'.format(response.status_code))
-        logger.info('Getting Agent detail - Response_content: {}'.format(response.content))
-        response_json = response.json()
-
-        if (response.status_code == 200):
-            if (response_json['status']['code'] == "success"):
-                data = response_json.get('data')
-
-                context = {'agent': data,
-                           'agent_id': agent_id,
-                           'msg': self.request.session.pop('agent_registration_msg', None)}
-                logger.info('========== Finished getting Agent detail ==========')
-                return context, True
-
-        logger.info('========== Finished getting Agent detail ==========')
-
-        if response_json["status"]["code"] == "access_token_expire":
-            raise InvalidAccessToken(response_json["status"]["message"])
-        else:
-            raise Exception("{}".format(response_json["status"]["message"]))
-
+        data, success = self._get_method(api_path=settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+                                         func_description="Agent detail",
+                                         logger=logger)
+        context = {
+            'agent': data,
+            'agent_id': agent_id,
+            'msg': self.request.session.pop('agent_registration_msg', None)
+        }
+        return context, success
     
     def _get_agent_type_name(self, agent_type_id):
-        logger.info('Start getting agent types list from backend')
-
-        url = settings.AGENT_TYPES_LIST_URL
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-
-        headers = get_auth_header(self.request.user)
-
-        start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time is {} sec.".format(done - start_date))
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
-        logger.info('Finish getting agent types list from backend')
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            agent_types_list = response_json.get('data', {})
+        agent_types_list, success = self._get_method(api_path=settings.AGENT_TYPES_LIST_URL,
+                                                     func_description="Agent types list from backend",
+                                                     logger=logger,
+                                                     is_getting_list=True)
+        if success:
             my_id = int(agent_type_id)
             for x in agent_types_list:
                 if x['id'] == my_id:
@@ -98,8 +61,4 @@ class DetailView(TemplateView):
             data = 'Unknown', True
         else:
             data = None, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
         return data

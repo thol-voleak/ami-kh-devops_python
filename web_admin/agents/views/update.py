@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 
 from django.utils import formats
 from django.contrib import messages
+from web_admin.restful_methods import RESTfulMethods
 
 import requests, time, logging
 
@@ -23,7 +24,7 @@ History:
 -- Load Data
 - API 3: GET /api-gateway/agent/v1/agents/{agent_id}
 '''
-class AgentUpdate( TemplateView ):
+class AgentUpdate(TemplateView, RESTfulMethods):
 
     template_name = "update.html"
 
@@ -216,7 +217,6 @@ class AgentUpdate( TemplateView ):
         return currencies
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start updating Agent ==========')
         agent_id = kwargs['agent_id']
 
         agent_type_id = request.POST.get('agent_type_id')
@@ -309,33 +309,7 @@ class AgentUpdate( TemplateView ):
         return self._headers
 
     def _update_agent(self, agent_id, data):
-        api_path = settings.AGENT_UPDATE_PATH.format(agent_id=agent_id)
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('Updating Agent - API-Path: {path}'.format(path=api_path))
-        logger.info('Updating Agent - Params: {}'.format(data))
-
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(),
-                                json=data, verify=settings.CERT)
-        done = time.time()
-        logger.info('Getting Agent detail - Response_time: {}'.format(done - start_date))
-        logger.info('Getting Agent detail - Response_code: {}'.format(response.status_code))
-        logger.info('Getting Agent detail - Response_content: {}'.format(response.text))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = response_json.get('data', {}), True
-            logger.info('========== Finished updating Agent ==========')
-        else:
-            logger.info('========== Finished updating Agent ==========')
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-            result = None, False
-        return result
+        data, success = self._put_method(api_path=settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
+                                         func_description="Agent",
+                                         logger=logger, params=data)
+        return data, success

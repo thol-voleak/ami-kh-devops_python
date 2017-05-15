@@ -4,6 +4,7 @@ from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
+from web_admin.restful_methods import RESTfulMethods
 
 import requests
 import logging
@@ -18,9 +19,7 @@ History:
 -- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
 -- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
 '''
-
-
-class AgentTypeAndCurrenciesDropDownList(TemplateView):
+class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
         url = settings.AGENT_TYPES_LIST_URL
 
@@ -116,9 +115,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         return result
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start Registering Agent Profile ==========')
         agent_profile_reponse, success = self._create_agent_profile(request)
-        logger.info('========== Finished Registering Agent Profile ==========')
 
         agent_id = ''
         if success:
@@ -127,9 +124,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
             return redirect('agents:agent_registration')
 
-        logger.info('========== Start create agent identity ==========')
         self._create_agent_identity(request, agent_id)
-        logger.info('========== Finished create agent identity ==========')
 
         logger.info('========== Start create agent balance ==========')
         self._create_agent_balance(request, agent_id)
@@ -215,34 +210,10 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         remove = [key for key, value in body.items() if not value]
         for key in remove: del body[key]
 
-        api_path = settings.AGENT_REGISTRATION_URL
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('API-Path: {}'.format(api_path))
-        logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = response_json.get('data', {}), True
-        else:
-            result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-        return result
+        data, success = self._post_method(api_path=settings.AGENT_REGISTRATION_URL,
+                                         func_description="Agent Profile",
+                                         logger=logger, params=body)
+        return data, success
 
     def _create_agent_identity(self, request, agent_id):
 
@@ -254,36 +225,13 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'password': password,
         }
 
-        api_path = settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id)
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('API-Path: {}'.format(api_path))
-        # logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = True
-        else:
-            result = False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
+        data, success = self._post_method(api_path=settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
+                                          func_description="Agent Identity",
+                                          logger=logger, params=body)
+        if not success:
             request.session['agent_registration_msg'] = 'Agent registration - identity: Something wrong happened!'
             return redirect('agents:agent_registration')
-        return result
+        return success
 
     def _create_agent_balance(self, request, agent_id):
 
@@ -291,33 +239,10 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         sof_type = "cash"  # TODO: Hard code for Sof_Type
         body = {}
 
-        api_path = settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency)
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('API-Path: {}'.format(api_path))
-        logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = True
-        else:
-            result = False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
+        data, success = self._post_method(api_path=settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
+                                          func_description="Agent Balance",
+                                          logger=logger, params=body)
+        if not success:
             request.session['agent_registration_msg'] = 'Agent registration - balance: Something wrong happened!'
             return redirect('agents:agent_registration')
-        return result
+        return success

@@ -12,11 +12,12 @@ from authentications.utils import get_auth_header
 from web_admin.get_header_mixins import GetHeaderMixin
 from .mixins import GetCommandNameAndServiceNameMixin
 from authentications.apps import InvalidAccessToken
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
 
-class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
+class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission_and_payment.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -31,23 +32,14 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
-        logger.info('========== Start get Setting Payment & Fee Structure list ==========')
         data, success = self._get_commission_and_payment_list(tier_id)
-        logger.info('========== Finish Setting Payment & Fee Structure list ==========')
 
-        logger.info('========== Start get Setting Bonus List ==========')
         bonus, success = self._get_setting_bonus_list(tier_id)
-        logger.info('========== Finish get Setting Bonus List ==========')
 
-        logger.info('========== Start get Setting Bonus List ==========')
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
-        logger.info("Total agent bonus list to display on table is {}".format(len(list(total_bonus_distribution))))
-        logger.info('========== Finish get Setting Bonus List ==========')
 
-        logger.info('========== Start get Agent Hierarchy Distribution Fee List ==========')
         fee, success = self._get_agent_fee_distribution_list(tier_id)
-        logger.info('========== Finish get Agent Hierarchy Distribution Fee List ==========')
         choices = self._get_choices()
 
         context['fee_tier_detail'] = fee_tier_detail
@@ -91,105 +83,39 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         return json_data['data']
 
     def _get_fee_tier_detail(self, fee_tier_id):
-        logger.info('========== Start getting Fee Tier Detail ==========')
-
-        api_path = settings.TIER_PATH.format(fee_tier_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info('API-Path: {path}'.format(path=api_path))
-
-        start_date = time.time()
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        done = time.time()
-        logger.info("Params: fee_tier_id = {} ".format(fee_tier_id))
-        logger.info('Response_code: {}'.format(response.status_code))
-        logger.info('Response_content: {}'.format(response.text))
-        logger.info('Response_time: {}'.format(done - start_date))
-        response_json = response.json()
-
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-
-        if code == "success":
-            data = response_json.get('data', [])
-            result = data, True
-            logger.info('========== Finished getting Fee Tier Detail ==========')
-        else:
-            logger.info('========== Finished getting Fee Tier Detail ==========')
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                raise InvalidAccessToken(message)
-            result = [], False
-        return result
+        # api_path, header, verify, func_description, logger, is_getting_list = False, params = {}
+        data, success = self._get_method(api_path=settings.TIER_PATH.format(fee_tier_id),
+                                         func_description="Fee Tier Detail",
+                                         logger=logger)
+        return data, success
 
     def _get_commission_and_payment_list(self, fee_tier_id):
-        url = settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        logger.info("Get Setting Payment & Fee Structure from list url: {}".format(url))
-
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        json_data = response.json()
-        logger.info("Response status: {}".format(response.status_code))
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            logger.info("Commission and payment list count: {}".format(len(data)))
-            return data, True
-        else:
-            logger.info("Response content: {}".format(response.content))
-        return [], False
+        data, success = self._get_method(api_path=settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+                                         func_description="Setting Payment & Fee Structure from list url",
+                                         logger=logger,
+                                         is_getting_list=True)
+        return data, success
 
     def _get_setting_bonus_list(self, fee_tier_id):
-        url = settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        json_data = response.json()
-        logger.info("Username: {}".format(self.request.user.username))
-        logger.info("URL: {}".format(url))
-        logger.info("Response status: {}".format(response.status_code))
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            logger.info("Setting Bonus list count: {}".format(len(data)))
-            return data, True
-        else:
-            logger.info("Response content: {}".format(response.content))
-        return [], False
+        data, success = self._get_method(api_path=settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+                                         func_description="Setting Bonus List",
+                                         logger=logger,
+                                         is_getting_list=True)
+        return data, success
 
     def _get_agent_bonus_distribution_list(self, tf_fee_tier_id):
-        agent_bonus_distribution_url = settings.DOMAIN_NAMES + settings.AGENT_BONUS_DISTRIBUTION_URL.format(
-            tf_fee_tier_id=tf_fee_tier_id)
-        logger.info("Agent bonus distribution url is {}".format(agent_bonus_distribution_url))
-        response = requests.get(agent_bonus_distribution_url, headers=self._get_headers(), verify=settings.CERT)
-        json_data = response.json()
-
-        logger.info("Get agent bonus distribution response status code is {}".format(response.status_code))
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            logger.info("Total agent bonus list is {}".format(len(data)))
-            return data, True
-        else:
-            logger.info("Agent bonus distribution response content is {}".format(response.content))
-        return [], False
+        data, success = self._get_method(api_path=settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id),
+                                         func_description="Agent bonus distribution",
+                                         logger=logger,
+                                         is_getting_list=True)
+        return data, success
 
     def _get_agent_fee_distribution_list(self, fee_tier_id):
-
-        api_path = settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        url = settings.DOMAIN_NAMES + api_path
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        json_data = response.json()
-        logger.info("API-Path: {}".format(api_path))
-        logger.info("Response code: {}".format(response.status_code))
-        if response.status_code == 200:
-            data = json_data.get('data', [])
-            logger.info("Response Content - all Agent Fee list count: {}".format(len(data)))
-            logger.info("Response Content - displayed Agent Fee list count: {}".format(len(self._filter_deleted_items(data))))
-            return data, True
-        else:
-            logger.info("Response content: {}".format(response.content))
-        return [], False
-
+        data, success = self._get_method(api_path=settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+                                         func_description="Agent Fee Distribution List",
+                                         logger=logger,
+                                         is_getting_list=True)
+        return data, success
 
 class PaymentAndFeeStructureView(View, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
@@ -411,32 +337,18 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
 
-class PaymentAndFeeStructureDetailView(View, GetHeaderMixin):
+class PaymentAndFeeStructureDetailView(View, RESTfulMethods):
     def delete(self, request, *args, **kwargs):
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
-        logger.info('========== Start delete Setting Payment & Fee Structure ==========')
         success = self._delete_balance_distribution(balance_distribution_id)
-        logger.info('========== Finish delete Setting Payment & Fee Structure ==========')
 
         if success:
             return HttpResponse(status=204)
         return HttpResponseBadRequest()
 
     def _delete_balance_distribution(self, balance_distribution_id):
-        url = settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(
-            balance_distribution_id=balance_distribution_id
-        )
-        logger.info("Delete balance distribution by user: {} with url: {}".format(
-            self.request.user.username,
-            url,
-        ))
-        response = requests.delete(url, headers=self._get_headers(),
-                                   verify=settings.CERT)
-        logger.info("Response status: {}, reponse content: {}".format(
-            response.status_code,
-            response.content,
-        ))
-        if response.status_code == 200:
-            return True
-        return False
+        data, success = self._delete_method(api_path=settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
+                                         func_description="Balance Distribution",
+                                         logger=logger)
+        return success
