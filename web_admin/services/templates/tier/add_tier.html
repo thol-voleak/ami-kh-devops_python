@@ -128,6 +128,27 @@ function changeValue() {
     });
 
     toggleFromDropdownList();
+
+    <!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
+    var $condition = $('#ddl_condition');
+    function updateByConditionType() {
+        var $condition_amount = $('#txt_amount');
+        var $fee_amount = $('#txt_fee_amount');
+        var $bonus_amount = $('#txt_bonus_amount');
+        if ($condition.val() == 'unlimit') {
+            $condition_amount.removeAttr('required');
+            $fee_amount.removeAttr('required');
+            $bonus_amount.removeAttr('required');
+        } else {
+            $condition_amount.attr('required', true);
+            $fee_amount.attr('required', true);
+            $bonus_amount.attr('required', true);
+        }
+    }
+    updateByConditionType();
+    $condition.on('change', function() {
+        updateByConditionType();
+    });
 }
 
 $(changeValue);
