@@ -77,10 +77,16 @@
                             <span>Clients</span>
                         </a>
                     </li>
-                    <li class="class={% if url_name == 'api_list' %} active{% endif %}">
-                        <a href="{% url 'api_management:api_list' %}">
+                    <!--<li class="class={% if url_name == 'api_list' %} active{% endif %}">-->
+                        <!--<a href="{% url 'api_management:api_list' %}">-->
+                            <!--<i class="fa fa-sort-numeric-asc"></i>-->
+                            <!--<span>Api management</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <li class="class={% if url_name == 'scope_list' %} active{% endif %}">
+                        <a href="{% url 'centralize_configuration:scope_list' %}">
                             <i class="fa fa-sort-numeric-asc"></i>
-                            <span>Api management</span>
+                            <span>Centralize configuration</span>
                         </a>
                     </li>
                     <li class="{% if 'customers' in request.path %} open{% endif %}">
@@ -95,7 +101,7 @@
                         <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                         <ul class="sub-menu">
                             <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
-                                <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
+                                <a href="{% url 'system_user:search' %}"><span>System Users</span></a>
                             </li>
                         </ul>
                     </li>

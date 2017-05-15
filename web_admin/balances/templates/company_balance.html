@@ -1,14 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
-{% block sidebar_panel %}
-    {% with active_tab='company_balance' %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock sidebar_panel %}
-
 {% block content %}
-{% csrf_token %}
 
 <div class="panel mb25">
     <div class="panel-body">
@@ -142,7 +135,6 @@ function changeValue() {
 }
 
 $(changeValue);
-
 </script>
 
 {% endblock %}

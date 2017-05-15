@@ -22,7 +22,6 @@
             <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
                    value="Create"/>
         </a>
-
     </div>
     {% if msg is not None %}
     <div class="col-xs-12">
@@ -167,6 +166,7 @@
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
                             console.log('success')
+                            location.reload(true)
                             $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
                             $("#alert-success-client").show();
                         },

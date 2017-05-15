@@ -22,11 +22,14 @@ class ListView(TemplateView):
     template_name = 'list.html'
 
     def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
         logger.info('========== Start getting Agent List ==========')
         data = self.get_agent_list()
         logger.info('========== Finished getting Agent List ==========')
-        result = {'data': self.format_data(data)}
-        return result
+        context.update({'data': self.format_data(data)})
+        context.update({'agent_update_msg': self.request.session.pop(
+            'agent_update_msg', None)})
+        return context
 
     def get_agent_list(self):
         url = settings.DOMAIN_NAMES + settings.AGENT_LIST_PATH

@@ -18,8 +18,9 @@ History:
 -- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
 -- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
 '''
-class AgentTypeAndCurrenciesDropDownList(TemplateView):
 
+
+class AgentTypeAndCurrenciesDropDownList(TemplateView):
     def _get_agent_types_list(self):
         url = settings.AGENT_TYPES_LIST_URL
 
@@ -45,7 +46,6 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView):
                 raise InvalidAccessToken(message)
         return result
 
-
     def _get_currencies_dropdown(self):
         url = settings.GET_ALL_CURRENCY_URL
 
@@ -70,7 +70,7 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView):
             except:
                 return {}
             currencies = value.split(',')
-            result = [ currency.split("|")[0] for currency in currencies]
+            result = [currency.split("|")[0] for currency in currencies]
             logger.info("Received {} preload currencies".format(len(result)))
         else:
             result = []
@@ -91,6 +91,8 @@ History:
 - 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
 -- Added logging format and more.
 '''
+
+
 class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "registration.html"
 
@@ -143,8 +145,8 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         password = request.POST.get('password')
         agent_type_id = request.POST.get('agent_type_id')
         parent_id = request.POST.get('parent_id')
-        #grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
-        firstname =  request.POST.get('firstname')
+        # grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
+        firstname = request.POST.get('firstname')
         lastname = request.POST.get('lastname')
         date_of_birth = request.POST.get('date_of_birth')
         gender = request.POST.get('gender')
@@ -179,7 +181,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'password': password,
             'agent_type_id': agent_type_id,
             'parent_id': parent_id,
-            #'grand_parent_id': grand_parent_id,
+            # 'grand_parent_id': grand_parent_id,
             'password': password,
             'firstname': firstname,
             'lastname': lastname,
@@ -242,7 +244,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
                 raise InvalidAccessToken(message)
         return result
 
-
     def _create_agent_identity(self, request, agent_id):
 
         username = request.POST.get('username')
@@ -257,7 +258,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         url = settings.DOMAIN_NAMES + api_path
 
         logger.info('API-Path: {}'.format(api_path))
-        logger.info('Params: {}'.format(body))
+        # logger.info('Params: {}'.format(body))
 
         start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
@@ -283,7 +284,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             request.session['agent_registration_msg'] = 'Agent registration - identity: Something wrong happened!'
             return redirect('agents:agent_registration')
         return result
-
 
     def _create_agent_balance(self, request, agent_id):
 

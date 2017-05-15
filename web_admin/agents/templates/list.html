@@ -5,6 +5,14 @@
     <div class="panel-heading border">
         <h3>Agent List</h3>
     </div>
+    {% if agent_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ agent_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="panel-body">
         <div class="table-responsive">
@@ -37,11 +45,9 @@
                     <td class="col-sm-3">
                         <div class="btn-group">
                             <button id="btn_detail" class="btn btn-outline btn-xs btn-primary"
-                                    onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail
-                            </button>
+                                    onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                             <button id="btn_edit" class="btn btn-outline btn-xs btn-primary"
-                                    onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit
-                            </button>
+                                    onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                             <button id="btn_delete" hidden>Delete</button>
                         </div>
                     </td>
