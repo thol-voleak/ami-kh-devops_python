@@ -15,6 +15,7 @@ IS_SUCCESS = {
     False: 'Failed',
 }
 
+
 class CashTransactionView(TemplateView):
     template_name = "cash_transaction.html"
 
@@ -72,3 +73,8 @@ class CashTransactionView(TemplateView):
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
             return []
+
+    def format_data(self, data):
+        for i in data:
+            i['is_stopped'] = IS_STOP.get(i.get('is_stopped'))
+        return data

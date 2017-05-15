@@ -15,6 +15,7 @@ IS_SUCCESS = {
     False: 'Failed',
 }
 
+
 class CashSOFView(TemplateView):
     template_name = "cash_sof.html"
 
@@ -36,7 +37,6 @@ class CashSOFView(TemplateView):
             body['user_type_id'] = int(user_type_id)
         if currency is not '':
             body['currency'] = currency
-
 
         data = self.get_cash_sof_list(body)
         if data is not None:
@@ -73,3 +73,8 @@ class CashSOFView(TemplateView):
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
             return []
+
+    def format_data(self, data):
+        for i in data:
+            i['is_stopped'] = IS_STOP.get(i.get('is_stopped'))
+        return data

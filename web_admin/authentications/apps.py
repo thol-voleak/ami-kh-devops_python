@@ -57,7 +57,7 @@ class CustomBackend:
 
             headers = {
                 'content-type': 'application/x-www-form-urlencoded',
-                'correlation-id': correlation_id,
+                'correlation-id': "{}-login".format(username),
                 'client_id': client_id,
                 'client_secret': client_secret,
             }

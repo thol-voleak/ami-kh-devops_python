@@ -132,6 +132,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin):
         status = response_json.get('status', {})
         # if not isinstance(status, dict):
         #     status = {}
+
         code = status.get('code', '')
         message = status.get('message', 'Something went wrong.')
         if code == "success":
