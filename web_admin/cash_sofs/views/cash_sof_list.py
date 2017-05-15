@@ -21,66 +21,55 @@ class CashSOFView(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start search history card ==========')
 
-        trans_id = request.POST.get('trans_id')
-        card_id = request.POST.get('card_id')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
+        currency = request.POST.get('currency')
 
-        logger.info('trans_id: {}'.format(trans_id))
-        logger.info('card_id: {}'.format(card_id))
         logger.info('user_id: {}'.format(user_id))
         logger.info('user_type_id: {}'.format(user_type_id))
+        logger.info('currency: {}'.format(currency))
 
         body = {}
-        if trans_id is not '':
-            body['trans_id'] = trans_id
-        if card_id is not '':
-            body['card_id'] = int(card_id)
         if user_id is not '':
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0':
             body['user_type_id'] = int(user_type_id)
+        if currency is not '':
+            body['currency'] = currency
 
 
-        data = self.get_card_history_list(body)
+        data = self.get_cash_sof_list(body)
         if data is not None:
             result_data = self.format_data(data)
         else:
             result_data = data
 
-        context = {'data': result_data,
-                   'trans_id': trans_id,
-                   'card_id': card_id,
+        context = {'sof_list': result_data,
                    'user_id': user_id,
-                   'user_type_id': user_type_id
+                   'user_type_id': user_type_id,
+                   'currency': currency
                    }
 
         logger.info('========== End search card history ==========')
-        return render(request, 'history.html', context)
+        return render(request, self.template_name, context)
 
-    def get_card_history_list(self, body):
-        url = settings.DOMAIN_NAMES + settings.CARD_HISTORY_PATH
+    def get_cash_sof_list(self, body):
+        url = settings.DOMAIN_NAMES + "api-gateway/report/v1/cash/sofs"
 
-        logger.info('Call search card history API to backend service')
-        logger.info('API-Path: {};'.format(settings.CARD_LIST_PATH))
+        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(url))
         start = time.time()
         logger.info("Request body: {};".format(body))
         auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
         end = time.time()
         logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} sec.".format(end - start))
+        logger.info("Response_time: {} seconds".format(end - start))
 
         json_data = auth_request.json()
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
-                logger.info('Card count: {};'.format(len(data)))
+                logger.info('Cash source of fund found {} records'.format(len(data)))
                 return data
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
             return []
-
-    def format_data(self, data):
-        for i in data:
-            i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
-        return data

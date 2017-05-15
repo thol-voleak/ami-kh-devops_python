@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^admin-portal/agents/', include('agents.urls')),
     url(r'^admin-portal/customers/', include('customers.urls')),
     url(r'^admin-portal/cards/', include('cards.urls')),
+    url(r'^admin-portal/cash/', include('cash_sofs.urls')),
     url(r'^admin-portal/api-management/', include('api_management.urls')),
     url(r'^admin-portal/centralize-configuration/', include('centralize_configuration.urls')),
 ]

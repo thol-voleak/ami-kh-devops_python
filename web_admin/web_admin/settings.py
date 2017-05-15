@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'agents',
     'customers',
     'cards',
+    'cash_sofs',
     'api_management',
     'centralize_configuration',
 ]
@@ -93,7 +94,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards')],
+                              'cards', 'cash_sofs')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -237,5 +238,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'cash_sofs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
     }
 }
