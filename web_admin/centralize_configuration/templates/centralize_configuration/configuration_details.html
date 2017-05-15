@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="panel-heading border">
+    <h3>Centralize Configuration List</h3>
+</div>
+
+<div class="panel-body">
+    <form class="form-horizontal" role="form" method="post"
+        action="{% url 'centralize_configuration:configuration_details' scope_name conf_key %}">
+        {% csrf_token %}
+        <div class="table-responsive mb15">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th class="col-sm-1" id="id">Key</th>
+                    <th class="col-sm-2" id="name">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="col-sm-1">key</td>
+                    <td class="col-sm-2">
+                        <code>{{ conf_key|safe }}</code>
+                    </td>
+                </tr>
+                {% for key, values in configurations.items %}
+                <tr>
+                    {% if key == 'value' %}
+                    <td class="col-sm-1">{{ key|default_if_none:'' }}</td>
+                    <td class="col-sm-2">
+                        <input type="text" class="form-control" name="conf_value" value="{{ values }}">
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pull-right">
+            <a href="{% url 'centralize_configuration:configuration_list' scope_name %}">
+                <input id="btn_back" class="btn btn-sm text-left" type="button"
+                value="Back"/>
+            </a>
+            <button id="btn_update_scope_key" role="button"
+                class="btn btn-success btn-sm"
+                type="submit">
+                <span>Update</span>
+            </button>    
+        </div>
+    </form>
+</div>
+
+{% endblock %}

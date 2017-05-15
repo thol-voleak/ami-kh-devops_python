@@ -88,6 +88,21 @@
                             <i class="fa fa-sort-numeric-asc"></i>
                             <span>Centralize configuration</span>
                         </a>
+                        </li>
+                    <li class="menu-accordion {% if 'api-management' in request.path %}open{% endif %}">
+                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Api management</span> </a>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'api_list' %}active{% endif %}">
+                                <a href="{% url 'api_management:api_list' %}">
+                                    <span>Apis</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'service_list' %}active{% endif %}">
+                                <a href="{% url 'api_management:service_list' %}"> <span>Services</span> </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="{% if 'customers' in request.path %} open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
