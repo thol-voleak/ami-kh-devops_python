@@ -87,7 +87,7 @@ class ListView(TemplateView):
 
 def _refine_data(data):
     value = data.get('value', '')
-    if value != '':
+    if value != '' and value is not None:
         currencies = value.split(',')
     else:
         return []
