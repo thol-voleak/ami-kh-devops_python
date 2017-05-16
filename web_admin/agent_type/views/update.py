@@ -6,6 +6,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.base import TemplateView
+from authentications.apps import InvalidAccessToken
 
 from authentications.utils import get_auth_header
 
@@ -42,6 +43,11 @@ class AgentTypeUpdateForm(TemplateView):
         logger.info("Received data with response status is {}".format(response.status_code))
 
         response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         if response_json['status']['code'] == "success":
             logger.info("Agent type detail was fetched.")
             data = response_json.get('data')
@@ -81,6 +87,10 @@ class AgentTypeUpdate(View):
 
             response_json = response.json()
             status = response_json['status']
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
 
             logger.info("Response Code is {}".format(status['code']))
 

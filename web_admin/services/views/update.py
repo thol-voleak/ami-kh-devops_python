@@ -4,6 +4,7 @@ from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
+from authentications.apps import InvalidAccessToken
 
 import requests
 import logging
@@ -102,6 +103,12 @@ class UpdateView(TemplateView):
         logger.info('Username {} sends request body: {}'.format(self.request.user.username, data))
         response = requests.put(url, headers=self._get_headers(),
                                 json=data, verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
         logger.info('========== Finished updating Service ==========')
@@ -118,6 +125,12 @@ class UpdateView(TemplateView):
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
@@ -149,6 +162,12 @@ class UpdateView(TemplateView):
 
         logger.info('Get services group list from backend')
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
@@ -167,6 +186,12 @@ class UpdateView(TemplateView):
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
         # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))

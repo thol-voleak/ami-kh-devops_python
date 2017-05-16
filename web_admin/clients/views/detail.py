@@ -5,6 +5,7 @@ from django.conf import settings
 from django.views.generic.base import TemplateView
 
 from web_admin.mixins import GetChoicesMixin
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,12 @@ class DetailView(TemplateView, GetChoicesMixin):
         logger.info("Getting client scopes by user: {}".format(self.request.user.username))
         url = settings.CLIENT_SCOPES.format(client_id=client_id)
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         logger.info("Get client scopes url: {}".format(url))
         logger.info("Received data with response status: {}".format(response.status_code))
 
@@ -49,6 +56,12 @@ class DetailView(TemplateView, GetChoicesMixin):
 
         url = settings.CLIENTS_LIST_URL + '/' + client_id
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         logger.info("Get client url: {}".format(url))
         logger.info("Received data with response status: {}".format(response.status_code))
 

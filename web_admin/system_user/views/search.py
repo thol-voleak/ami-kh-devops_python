@@ -2,6 +2,7 @@ import logging
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 import requests
 from django.shortcuts import render
 
@@ -30,6 +31,11 @@ class SearchView(TemplateView):
                                         verify=settings.CERT)
         logger.info('Got search result from backend with [{}] http status'.format(search_response.status_code))
         json_data = search_response.json()
+        status = json_data.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         if search_response.status_code == 200 and json_data.get('status').get('code') == 'success':
             logger.info('Found [{}] system users'.format(len(search_response.json()['data'])))

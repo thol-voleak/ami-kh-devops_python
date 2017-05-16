@@ -32,6 +32,7 @@ class ListView(TemplateView):
         logger.info('URL: {}'.format(url))
         auth_request = requests.get(url, headers=get_auth_header(self.request.user),
                                     verify=settings.CERT)
+        
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()

@@ -29,6 +29,11 @@ class ListView(TemplateView):
         logger.info("Get service list response status is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()
+        status = json_data.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         data = json_data.get('data')
 
         if auth_request.status_code == 200 and json_data["status"]["code"] == 'success':

@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class CashTransactionView(TemplateView):
     template_name = "cash_transaction.html"
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start search history card ==========')
+        logger.info('========== Start search cash transaction ==========')
 
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
@@ -50,7 +51,7 @@ class CashTransactionView(TemplateView):
                    'type': type
                    }
 
-        logger.info('========== End search card history ==========')
+        logger.info('========== End search cash transaction ==========')
         return render(request, self.template_name, context)
 
     def get_cash_transaction_list(self, body):
@@ -65,6 +66,11 @@ class CashTransactionView(TemplateView):
         logger.info("Response_time: {} seconds".format(end - start))
 
         json_data = auth_request.json()
+        status = json_data.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if data is not None and len(data) > 0:
