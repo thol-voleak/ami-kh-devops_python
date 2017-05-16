@@ -20,16 +20,16 @@ class RESTfulMethods(GetHeaderMixin):
         """
         logger.info('========== Start getting {func_description} =========='.format(func_description=func_description))
 
-        if 'https' not in api_path:
-            url = settings.DOMAIN_NAMES + api_path
-        else:
+        if 'https' in api_path or 'http' in api_path:
             url = api_path
-        logger.info('API-Path: {path}'.format(path=api_path))
+        else:
+            url = settings.DOMAIN_NAMES + api_path
+        logger.info('API-Path: {path}'.format(path=url))
 
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
-
+        logger.info("response === {}".format(response.content))
         response_json = response.json()
 
         status = response_json.get('status', {})
@@ -41,7 +41,7 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             default_data = {}
 
-        if code == "success":
+        if response.status_code == 200 and code == "success":
             data = response_json.get('data', default_data)
 
             if len(params) > 0:
@@ -59,6 +59,7 @@ class RESTfulMethods(GetHeaderMixin):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
             result = default_data, False
+            raise Exception(response.content)
         logger.info('========== Finished getting {func_description} =========='.format(func_description=func_description))
         return result
 
