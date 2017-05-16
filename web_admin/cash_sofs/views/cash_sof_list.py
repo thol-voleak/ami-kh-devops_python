@@ -20,7 +20,7 @@ class CashSOFView(TemplateView):
     template_name = "cash_sof.html"
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start search history card ==========')
+        logger.info('========== Start search cash source of fund ==========')
 
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
@@ -50,7 +50,7 @@ class CashSOFView(TemplateView):
                    'currency': currency
                    }
 
-        logger.info('========== End search card history ==========')
+        logger.info('========== End search cash source of fund ==========')
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):

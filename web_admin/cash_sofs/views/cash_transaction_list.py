@@ -20,7 +20,7 @@ class CashTransactionView(TemplateView):
     template_name = "cash_transaction.html"
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start search history card ==========')
+        logger.info('========== Start search cash transaction ==========')
 
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
@@ -50,7 +50,7 @@ class CashTransactionView(TemplateView):
                    'type': type
                    }
 
-        logger.info('========== End search card history ==========')
+        logger.info('========== End search cash transaction ==========')
         return render(request, self.template_name, context)
 
     def get_cash_transaction_list(self, body):
