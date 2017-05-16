@@ -16,7 +16,6 @@ IS_SUCCESS = {
 }
 
 
-
 class HistoryView(TemplateView):
     template_name = "history.html"
 
@@ -42,7 +41,6 @@ class HistoryView(TemplateView):
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0':
             body['user_type_id'] = int(user_type_id)
-
 
         data = self.get_card_history_list(body)
         if data is not None:

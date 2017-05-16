@@ -31,10 +31,9 @@ class SearchView(TemplateView):
         logger.info('Got search result from backend with [{}] http status'.format(search_response.status_code))
         json_data = search_response.json()
 
-        if json_data.get('status').get('code') == 'success':
+        if search_response.status_code == 200 and json_data.get('status').get('code') == 'success':
             logger.info('Found [{}] system users'.format(len(search_response.json()['data'])))
             return render(request, 'system_user/system_user_list.html', {'data': json_data.get('data')})
         else:
             logger.info("Got error when search system user")
-            logger.info("status code is [{}] and error description is [{}]"
-                        .format(json_data.get('status').get('code'), json_data.get('status').get('message')))
+            raise Exception(search_response.content)

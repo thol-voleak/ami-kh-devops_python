@@ -67,7 +67,7 @@ class CashTransactionView(TemplateView):
         json_data = auth_request.json()
         data = json_data.get('data')
         if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
+            if data is not None and len(data) > 0:
                 logger.info('Cash transaction found {} records'.format(len(data)))
                 return data
         else:
@@ -76,5 +76,5 @@ class CashTransactionView(TemplateView):
 
     def format_data(self, data):
         for i in data:
-            i['is_stopped'] = IS_STOP.get(i.get('is_stopped'))
+            i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
         return data

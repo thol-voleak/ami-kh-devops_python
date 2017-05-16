@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="panel-heading border">
-    <h3>Centralize Configuration List</h3>
+    <h3>Configuration Scope Management</h3>
 </div>
 
 <div class="panel-body">
@@ -12,7 +12,7 @@
         action="{% url 'centralize_configuration:configuration_details' scope_name conf_key %}">
         {% csrf_token %}
         <div class="table-responsive mb15">
-            <table class="table table-bordered table-striped mb0">
+            <table id="tbl_configuration_scope_management " class="table table-bordered table-striped mb0">
                 <thead>
                 <tr>
                     <th class="col-sm-1" id="id">Key</th>
