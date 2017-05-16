@@ -4,6 +4,7 @@ import requests
 
 
 from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -21,6 +22,13 @@ class GetCommandNameAndServiceNameMixin(GetHeaderMixin):
         logger.info('Response code: {}'.format(response.status_code))
         logger.info('Response content: {}'.format(response.content))
         logger.info('Response time: {} sec.'.format(done - start_date))
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
+        
 
         json_response = response.json()
         if response.status_code == 200 and json_response['status']['code'] == 'success':
@@ -42,6 +50,13 @@ class GetCommandNameAndServiceNameMixin(GetHeaderMixin):
         logger.info('Response code: {}'.format(response.status_code))
         logger.info('Response content: {}'.format(response.content))
         logger.info('Response time: {} sec.'.format(done - start_date))
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
+        
 
         json_response = response.json()
         if response.status_code == 200 and json_response['status']['code'] == 'success':

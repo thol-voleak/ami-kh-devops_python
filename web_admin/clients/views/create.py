@@ -9,6 +9,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,11 @@ class ClientCreate(View):
 
             response_json = response.json()
 
-            status = response_json['status']
+            status = response_json['status']            
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
             if status['code'] == "success":
                 logger.info("Client was created.")
                 logger.info('========== Finish create new client ==========')

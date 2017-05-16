@@ -32,9 +32,15 @@ class ListView(TemplateView):
         logger.info('URL: {}'.format(url))
         auth_request = requests.get(url, headers=get_auth_header(self.request.user),
                                     verify=settings.CERT)
+        
         logger.info("Received data with response is {}".format(auth_request.status_code))
 
         json_data = auth_request.json()
+        status = json_data.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):

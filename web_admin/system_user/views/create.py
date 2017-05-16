@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 from django.contrib import messages
 
 logger = logging.getLogger(__name__)
@@ -56,6 +57,13 @@ class SystemUserCreate(View):
             logger.info("Response time is {} sec.".format(done - start_date))
             logger.info("Response Code: {}".format(response.status_code))
             logger.info("Response Content: {}".format(response.content))
+            response_json = response.json()
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
+            
 
             if response.status_code == 200:
                 response_json = response.json()

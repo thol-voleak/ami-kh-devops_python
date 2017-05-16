@@ -7,6 +7,7 @@ from django.http import Http404
 from django.views.generic.base import TemplateView
 
 from .mixins import GetCommandNameAndServiceNameMixin
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,12 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin):
         logger.info("Getting fee tier list from backend with url: {}".format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         logger.info('Status code: {}'.format(response.status_code))
 
         if response.status_code == 200:

@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 
 from authentications.utils import get_auth_header
-
+from authentications.apps import InvalidAccessToken
 logger = logging.getLogger(__name__)
 
 
@@ -45,9 +45,14 @@ class AgentTypeCreate(View):
             logger.info("Response time is {} sec.".format(done - start_date))
 
             response_json = response.json()
+            status = response_json['status']
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
             logger.info("Response content: {}".format(response_json))
             logger.info("Response status: {}".format(response.status_code))
-            status = response_json['status']
+            
             if status['code'] == "success":
                 logger.info("Agent Type was created.")
                 logger.info('========== Finish create new agent type ==========')

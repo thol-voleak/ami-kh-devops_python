@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 import requests, time
 import logging
@@ -52,6 +53,10 @@ class SystemUserChangePassword(TemplateView):
 
         response_json = response.json()
         status = response_json['status']
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         logger.info("Response Code is {}".format(status['code']))
 

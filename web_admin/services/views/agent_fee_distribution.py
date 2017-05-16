@@ -9,6 +9,7 @@ from django.views.generic.base import TemplateView, View
 from django.http import HttpResponse
 
 from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,12 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         logger.info("Params: {}".format(post_data))
         start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         end_time = time.time()
 
         logger.info("Response code: {}".format(response.status_code))
@@ -97,10 +104,18 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
         start_date = time.time()
         response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
         done = time.time()
-
         logger.info('updating Agent Hierarchy Distribution - Fee Reponse_time: {}'.format(done - start_date))
         logger.info('updating Agent Hierarchy Distribution - Fee Response_code: {}'.format(response.status_code))
         logger.info('updating Agent Hierarchy Distribution - Fee Response_content: {}'.format(response.content))
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
+        
+
+        
 
         if response.status_code == 200:
             httpResponse = HttpResponse(status=200, content=response)
