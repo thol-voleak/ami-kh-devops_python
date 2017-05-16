@@ -87,7 +87,7 @@ class PaymentOrderView(TemplateView):
                 return data
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
-            return []
+            raise Exception(auth_request.content)
 
     def format_data(self, data):
         for i in data:
