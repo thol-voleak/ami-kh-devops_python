@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.views.generic.base import View
 
 from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +40,18 @@ class AgentBonusDistributions(View, GetHeaderMixin):
         start_date = time.time()
         response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
         done = time.time()
+
         logger.info("Response status for add agent hierarchy distribution bonus is {}".format(response.status_code))
         logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response.content))
+        logger.info('Response time for add agent hierarchy distribution bonus is {} sec.'.format(done - start_date))
+
 
         response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         if response.status_code == 200 and response_json['status']['code'] == "success":
             messages.add_message(
                 request,
@@ -56,7 +65,6 @@ class AgentBonusDistributions(View, GetHeaderMixin):
                 messages.INFO,
                 'Something wrong happened!'
             )
-        logger.info('Response time for add agent hierarchy distribution bonus is {} sec.'.format(done - start_date))
         logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
         return redirect('services:commission_and_payment',
                         service_id=service_id,
@@ -87,10 +95,18 @@ class AgentFeeHierarchyDistributionsDetail(View, GetHeaderMixin):
         start_date = time.time()
         response = requests.delete(url, headers=self._get_headers(),
                                    verify=settings.CERT)
+        response_json = response.json()
+        
         done = time.time()
         logger.info('Reponse_time: {} sec.'.format(done - start_date))
         logger.info('Response_code: {}'.format(response.status_code))
         logger.info('Response_content: {}'.format(response.content))
+
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         if response.status_code == 200:
             return True

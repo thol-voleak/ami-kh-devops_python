@@ -37,9 +37,15 @@ class DeleteView(TemplateView):
         logger.info("URL: {}".format(url))
         done = time.time()
         response_json = response.json()
+        
         logger.info("Response content for get agent type detail: {}".format(response_json))
         logger.info("Response time is {} sec.".format(done - start_date))
         logger.info("Response status: {}".format(response.status_code))
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         if response_json['status']['code'] == "success":
             logger.info("agent type detail was fetched.")
@@ -68,6 +74,12 @@ def delete_agent_type(request, agent_type_id):
         logger.info("Response time for delete {} agent type id is {} sec.".format(agent_type_id, done - start_date))
         logger.info("Response for delete {} agent type id is {}".format(agent_type_id, response.content))
         logger.info("Response Code is {}".format(response.status_code))
+        response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         if response.status_code == 200:
             response_json = response.json()

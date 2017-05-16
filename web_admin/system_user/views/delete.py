@@ -44,6 +44,13 @@ class DeleteView(TemplateView):
                 "Response time for delete {} system user id is {} sec.".format(system_user_id, done - start_date))
             logger.info("Response code for delete {} system user id is {}".format(system_user_id, response.status_code))
             logger.info("Response for delete {} system user id is {}".format(system_user_id, response.content))
+            response_json = response.json()
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
+            
 
             if response.status_code == 200:
                 response_json = response.json()

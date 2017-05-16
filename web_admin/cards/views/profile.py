@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +68,11 @@ class ProfileView(TemplateView):
         logger.info("Response_time: {} sec.".format(end - start))
 
         json_data = auth_request.json()
+        status = json_data.get('status', {})
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
         data = json_data.get('data')
         if auth_request.status_code == 200:
             if (data is not None) and (len(data) > 0):
