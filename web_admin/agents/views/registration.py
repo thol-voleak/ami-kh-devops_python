@@ -178,11 +178,9 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         status = 1  # request.POST.get('status') #TODO: hard fix
 
         body = {
-            'password': password,
             'agent_type_id': agent_type_id,
             'parent_id': parent_id,
             'grand_parent_id': grand_parent_id,
-            'password': password,
             'firstname': firstname,
             'lastname': lastname,
             'date_of_birth': date_of_birth,

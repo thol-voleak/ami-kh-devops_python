@@ -68,7 +68,6 @@ class CustomBackend:
             auth_response = requests.post(url, params=payload, headers=headers, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
-            logger.info("Authentication response is {}".format(auth_response.text))
 
             if auth_response.status_code == 200:
                 json_data = auth_response.json()
