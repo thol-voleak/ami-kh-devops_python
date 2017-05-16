@@ -76,5 +76,5 @@ class CashTransactionView(TemplateView):
 
     def format_data(self, data):
         for i in data:
-            i['is_stopped'] = IS_STOP.get(i.get('is_stopped'))
+            i['is_stopped'] = IS_SUCCESS.get(i.get('is_stopped'))
         return data
