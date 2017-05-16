@@ -221,7 +221,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
 
         agent_type_id = request.POST.get('agent_type_id')
         parent_id = request.POST.get('parent_id')
-        # grand_parent_id = 3  # request.POST.get('grand_parent_id')  # TODO: Hard code for waiting new API
+        grand_parent_id = request.POST.get('grand_parent_id')
         firstname = request.POST.get('firstname')
         lastname = request.POST.get('lastname')
         date_of_birth = request.POST.get('date_of_birth')
@@ -256,6 +256,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         data = {
             'agent_type_id': agent_type_id,
             'parent_id': parent_id,
+            'grand_parent_id': grand_parent_id,
             'firstname': firstname,
             'lastname': lastname,
             'date_of_birth': date_of_birth,
