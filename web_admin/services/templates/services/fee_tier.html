@@ -10,7 +10,7 @@
 {% csrf_token %}
 
 <div class="panel mb25">
-    <div class="panel-heading">
+    <div class="panel-heading border">
         <h3>Tiers</h3>
     </div>
 
@@ -105,7 +105,7 @@
                         id="btn_commission" class="text-info"
                         href="{% url 'services:commission_and_payment' service_id command_id service_command_id fee_tier.fee_tier_id %}" role="button"
                         class="text-info">
-                        <span class="small">Commission</span>
+                        <span class="small">Balance movement</span>
                         </a>
                     </td>
                 </tr>

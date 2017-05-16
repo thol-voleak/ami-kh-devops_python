@@ -14,24 +14,24 @@
 {% csrf_token %}
 
 <div class="panel mb25">
-    <div class="panel-heading border">
+    <div class="panel-heading border mb15">
         <h3>Clients</h3>
     </div>
     <div class="pull-right mr15 text-right">
         <a href="{% url 'clients:create-client' %}">
-            <input id="client-btn-create" class="btn btn-success btn-block text-left no-print mb15" type="button"
+            <input id="client-btn-create" class="btn btn-sm btn-success btn-block text-left no-print mb15" type="button"
                    value="Create"/>
         </a>
     </div>
     {% if msg is not None %}
-    <div class="col-xs-12">
+    <div class="col-xs-12 mb5">
         <div class="alert alert-success alert-dismissable" id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ msg }}</strong>
         </div>
     </div>
     {% endif %}
-    <div class="col-xs-12">
+    <div class="col-xs-12 mb5">
         <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
             <button type="button" class="close" onclick="$('.alert').hide()">×</button>
             <span id="alert-success-msg"></span>
@@ -124,7 +124,6 @@
                                 <span class="small">Activate</span>
                                 </button>
                                 {% endif %}
-
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary {{ client.is_deleted|yesno:"
                                    hidden,no-hidden" }}"

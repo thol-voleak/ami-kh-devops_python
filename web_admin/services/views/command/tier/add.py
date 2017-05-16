@@ -20,57 +20,12 @@ class AddView(TemplateView):
         context = super(AddView, self).get_context_data(**kwargs)
         service_id = context['service_id']
         command_id = context['command_id']
-        service_command_id = context['service_command_id']
-        header = self._get_headers()
-
-        manager = Manager()
-        return_dict = manager.dict()
-
-        process_get_tier_condition = Process(target=self._get_tier_condition, args=(1, return_dict))
-        process_get_tier_condition.start()
-        process_get_amount_types = Process(target=self._get_amount_types, args=(2, return_dict))
-        process_get_amount_types.start()
-        process_get_service_detail = Process(target=self._get_service_detail, args=(3, return_dict, service_id))
-        process_get_service_detail.start()
-        process_get_command_name = Process(target=self._get_command_name, args=(4, return_dict, command_id))
-        process_get_command_name.start()
-        process_get_fee_types = Process(target=self._get_fee_types, args=(5, return_dict))
-        process_get_fee_types.start()
-        process_get_bonus_types = Process(target=self._get_bonus_types, args=(6, return_dict))
-        process_get_bonus_types.start()
-
-
-        process_get_tier_condition.join()
-        process_get_amount_types.join()
-        process_get_service_detail.join()
-        process_get_command_name.join()
-        process_get_fee_types.join()
-        process_get_bonus_types.join()
-
-        tier_conditions, status1 = return_dict[1]
-        amount_types, status2 = return_dict[2]
-        service_detail, status3 = return_dict[3]
-        command_name, status4 = return_dict[4]
-        fee_types, status5 = return_dict[5]
-        bonus_types, status6 = return_dict[6]
-
-        if process_get_tier_condition.is_alive():
-            process_get_tier_condition.terminate()
-
-        if process_get_amount_types.is_alive():
-            process_get_amount_types.terminate()
-
-        if process_get_service_detail.is_alive():
-            process_get_service_detail.terminate()
-
-        if process_get_command_name.is_alive():
-            process_get_command_name.terminate()
-
-        if process_get_fee_types.is_alive():
-            process_get_fee_types.terminate()
-
-        if process_get_bonus_types.is_alive():
-            process_get_bonus_types.terminate()
+        tier_conditions, status1 = self._get_tier_condition()
+        amount_types, status2 = self._get_amount_types()
+        service_detail, status3 = self._get_service_detail(service_id)
+        command_name, status4 = self._get_command_name(command_id)
+        fee_types, status5 = self._get_fee_types()
+        bonus_types, status6 = self._get_bonus_types()
 
         if status1 and status2 and status3 and status4 and status5 and status6:
             context.update({
@@ -135,7 +90,7 @@ class AddView(TemplateView):
                 return True
         return False
 
-    def _get_tier_condition(self, procnum, dict):
+    def _get_tier_condition(self):
         logger.info('Start getting fee tier condition from backend')
         url = settings.FEE_TIER_CONDITION_URL
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
@@ -151,13 +106,13 @@ class AddView(TemplateView):
             status = json_data['status']
             if status['code'] == "success":
                 conditions = json_data.get('data', {})
-                dict[procnum] = conditions, True
+                return conditions, True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
 
-    def _get_amount_types(self, procnum, dict):
+    def _get_amount_types(self):
         logger.info('Start getting amount types from backend')
 
         url = settings.AMOUNT_TYPES_URL
@@ -174,13 +129,13 @@ class AddView(TemplateView):
             json_data = response.json()
             status = json_data['status']
             if status['code'] == "success":
-                dict[procnum] = json_data.get('data', {}), True
+                return json_data.get('data', {}), True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
 
-    def _get_service_detail(self, procnum, dict, service_id):
+    def _get_service_detail(self, service_id):
         logger.info('Start getting service detail {} from backend'.format(service_id))
 
         url = settings.SERVICE_DETAIL_URL.format(service_id)
@@ -200,13 +155,13 @@ class AddView(TemplateView):
             json_data = response.json()
             status = json_data['status']
             if status['code'] == "success":
-                dict[procnum] = json_data.get('data', {}), True
+                return json_data.get('data', {}), True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
 
-    def _get_command_name(self, procnum, dict, command_id):
+    def _get_command_name(self, command_id):
         logger.info('Start getting commands list from backend')
 
         url = settings.COMMAND_LIST_URL
@@ -232,16 +187,15 @@ class AddView(TemplateView):
                 for x in commands_list:
                     if x['command_id'] == my_id:
                         command_name = x['command_name']
-                        dict[procnum] = command_name, True
-                        return None
+                        return command_name, True
 
-                dict[procnum] = 'Unknown', True
+                return 'Unknown', True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
 
-    def _get_fee_types(self, procnum, dict):
+    def _get_fee_types(self):
         logger.info('Start getting fee types from backend')
         api_path = settings.GET_FEE_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
@@ -262,13 +216,13 @@ class AddView(TemplateView):
             status = json_data['status']
             if status['code'] == "success":
                 fee_types = json_data.get('data', {})
-                dict[procnum] = fee_types, True
+                return fee_types, True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
 
-    def _get_bonus_types(self, procnum, dict):
+    def _get_bonus_types(self):
         logger.info('Start getting bonus types from backend')
         api_path = settings.GET_BONUS_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
@@ -289,8 +243,8 @@ class AddView(TemplateView):
             status = json_data['status']
             if status['code'] == "success":
                 fee_types = json_data.get('data', {})
-                dict[procnum] = fee_types, True
+                return fee_types, True
             else:
-                dict[procnum] = None, False
+                return None, False
         else:
-            dict[procnum] = None, False
+            return None, False
