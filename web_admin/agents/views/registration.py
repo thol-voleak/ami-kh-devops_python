@@ -151,8 +151,9 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         lastname = request.POST.get('lastname')
 
         date_of_birth = request.POST.get('date_of_birth')
-        date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-        date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if date_of_birth != '':
+            date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
+            date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         gender = request.POST.get('gender')
         national = request.POST.get('national')
@@ -162,13 +163,15 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
 
         primary_issue_Date = request.POST.get('primary_issue_date')
-        primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
-        primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
+        if primary_issue_Date != '':
+            primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
+            primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
 
 
         primary_expire_Date = request.POST.get('primary_expire_date')
-        primary_expire_Date = datetime.strptime(primary_expire_Date, "%Y-%m-%d")
-        primary_expire_Date = primary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if primary_expire_Date != '':
+            primary_expire_Date = datetime.strptime(primary_expire_Date, "%Y-%m-%d")
+            primary_expire_Date = primary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
         # Secondary Section
         secondary_Identify_id = request.POST.get('secondary_Identify_id')
         secondary_Identify_type = request.POST.get('secondary_Identify_type')
@@ -176,12 +179,14 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
 
         secondary_issue_Date = request.POST.get('secondary_issue_date')
-        secondary_issue_Date = datetime.strptime(secondary_issue_Date, "%Y-%m-%d")
-        secondary_issue_Date = secondary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if secondary_issue_Date != '':
+            secondary_issue_Date = datetime.strptime(secondary_issue_Date, "%Y-%m-%d")
+            secondary_issue_Date = secondary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         secondary_expire_Date = request.POST.get('secondary_expire_date')
-        secondary_expire_Date = datetime.strptime(secondary_expire_Date, "%Y-%m-%d")
-        secondary_expire_Date = secondary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if secondary_expire_Date != '':
+            secondary_expire_Date = datetime.strptime(secondary_expire_Date, "%Y-%m-%d")
+            secondary_expire_Date = secondary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         # Contact Info Section
         nationality = request.POST.get('nationality')
