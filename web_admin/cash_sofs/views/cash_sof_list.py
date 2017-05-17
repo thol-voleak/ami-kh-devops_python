@@ -35,7 +35,7 @@ class CashSOFView(TemplateView):
         if user_id is not '':
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0':
-            body['user_type_id'] = int(user_type_id)
+            body['user_type'] = int(user_type_id)
         if currency is not '':
             body['currency'] = currency
 
@@ -68,17 +68,18 @@ class CashSOFView(TemplateView):
         json_data = auth_request.json()
         status = json_data.get('status', {})
         code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
+
         data = json_data.get('data')
-        if auth_request.status_code == 200:
+        if auth_request.status_code == 200 and status.get('code') == 'success':
             if (data is not None) and (len(data) > 0):
                 logger.info('Cash source of fund found {} records'.format(len(data)))
                 return data
         else:
             logger.info('Response_content: {}'.format(auth_request.content))
-            return []
+            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
+            raise Exception(auth_request.content)
 
     def format_data(self, data):
         for i in data:
