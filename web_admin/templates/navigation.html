@@ -21,13 +21,13 @@
                     <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                         <ul class="sub-menu">
-                            <li class="{% if url_name == 'currency-list' %}active{% endif %}">
-                                <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
+                            <li class="{% if url_name == 'country-code' %}active{% endif %}">
+                                <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
                             </li>
                         </ul>
                         <ul class="sub-menu">
-                            <li class="{% if url_name == 'country-code' %}active{% endif %}">
-                                <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
+                            <li class="{% if url_name == 'currency-list' %}active{% endif %}">
+                                <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                             </li>
                         </ul>
                         <ul class="sub-menu">
