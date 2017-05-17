@@ -55,7 +55,7 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = data, True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
             result = default_data, False
@@ -71,7 +71,7 @@ class RESTfulMethods(GetHeaderMixin):
         :param params: the data of put method
         :return: data and success (True or False)
         """
-        logger.info('========== Start updating {func_description} =========='.format(func_description=func_description))
+        logger.info('========== Start putting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
@@ -96,12 +96,12 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = response_json.get('data', {}), True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
             result = None, False
-        logger.info('========== Finished updating {} =========='.format(func_description))
+        logger.info('========== Finished putting {} =========='.format(func_description))
         return result
 
     def _post_method(self, api_path, func_description, logger, params={}):
@@ -136,9 +136,9 @@ class RESTfulMethods(GetHeaderMixin):
         if code == "success":
             result = response_json.get('data', {}), True
         else:
+            message = status.get('message', 'Something went wrong.')
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                message = status.get('message', 'Something went wrong.')
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
         logger.info('========== Finished creating {} =========='.format(func_description))
@@ -176,7 +176,7 @@ class RESTfulMethods(GetHeaderMixin):
             result = response_json.get('data', {}), True
         else:
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
         logger.info('========== Finished deleting {} =========='.format(func_description))

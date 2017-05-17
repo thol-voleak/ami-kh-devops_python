@@ -1,19 +1,15 @@
 import logging
-import time
 
-import requests
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views import View
+from web_admin.restful_methods import RESTfulMethods
 
-from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
 logger = logging.getLogger(__name__)
 
 
-class AgentTypeCreate(View):
-    @staticmethod
-    def get(request, *args, **kwargs):
+class AgentTypeCreate(View, RESTfulMethods):
+    def get(self, request, *args, **kwargs):
         agent_type_info = {
             "agent_type_input": None,
             "agent_type_description_input": None,
@@ -23,48 +19,23 @@ class AgentTypeCreate(View):
 
         return render(request, 'agent_type/create_agent_type.html', context)
 
-    @staticmethod
-    def post(request, *args, **kwargs):
-        logger.info('========== Start creating new agent type ==========')
-
+    def post(self, request, *args, **kwargs):
+        logger.info("aaaaauuu===")
         try:
-            url = settings.AGENT_TYPE_CREATE_URL
-
             params = {
                 "name": request.POST.get('agent_type_input'),
                 "description": request.POST.get('agent_type_description_input'),
             }
-
-            logger.info("URL: {}".format(url))
-            logger.info("Request: {}".format(params))
-
-            start_date = time.time()
-            response = requests.post(url, headers=get_auth_header(request.user),
-                                     json=params, verify=settings.CERT)
-            done = time.time()
-            logger.info("Response time is {} sec.".format(done - start_date))
-
-            response_json = response.json()
-            status = response_json['status']
-            code = status.get('code', '')
-            if (code == "access_token_expire") or (code== 'access_token_not_found'):
-                message = status.get('message', 'Something went wrong.')
-                raise InvalidAccessToken(message)
-            logger.info("Response content: {}".format(response_json))
-            logger.info("Response status: {}".format(response.status_code))
-            
-            if status['code'] == "success":
-                logger.info("Agent Type was created.")
-                logger.info('========== Finish create new agent type ==========')
+            data, success = self._post_method(api_path=settings.AGENT_TYPE_CREATE_URL,
+                                              func_description="Agent Type",
+                                              logger=logger, params=params)
+            if success:
                 request.session['agent_type_create_msg'] = 'Added data successfully'
                 return redirect('agent_type:agent-type-list')
             else:
-                logger.info("Error Creating Agent Type.")
                 context = {'client_info': params,
-                           'error_msg': response_json['status']['message']}
-                logger.info('========== Finish create new agent type ==========')
+                           'error_msg': 'Something went wrong.'}
                 return render(request, 'agent_type/agent_types_list.html', context)
-
         except Exception as e:
             logger.info(e)
             client_info = {
@@ -74,5 +45,4 @@ class AgentTypeCreate(View):
                 "agent_type_description_input": None,
             }
             context = {'client_info': client_info, 'error_msg': None}
-            logger.info('========== Finish create new agent type ==========')
             return render(request, 'agent_type/agent_types_list.html', context)

@@ -5,10 +5,11 @@ from .views.update import AgentTypeUpdateForm
 from .views.update import AgentTypeUpdate
 
 from .views.delete import DeleteView
+from .views.delete import DeleteCommand
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import url
 from .views.list import ListView
-from .views.delete import delete_agent_type
+# from .views.delete import delete_agent_type
 # from .api import ClientApi
 
 app_name = 'agent_type'
@@ -22,7 +23,7 @@ urlpatterns = [
         name="agent-type-detail"),
     url(r'^delete/(?P<agent_type_id>[0-9A-Za-z]+)/$', login_required(DeleteView.as_view(), login_url='login'),
         name="agent-type-delete"),
-    url(r'^(?P<agent_type_id>[0-9A-Za-z]+)/delete/$', login_required(delete_agent_type, login_url='login'),
+    url(r'^(?P<agent_type_id>[0-9A-Za-z]+)/delete/$', login_required(DeleteCommand.as_view(), login_url='login'),
         name="delete-agent-type"),
     url(r'^update/(?P<agentTypeId>[0-9A-Za-z]+)/$', login_required(AgentTypeUpdateForm.as_view(), login_url='login'),
         name="agent-type-info"),

@@ -1,11 +1,8 @@
-import requests
 import logging
-import time
 
 from django.conf import settings
 from django.views.generic.base import TemplateView
-from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
@@ -18,46 +15,22 @@ KYC = {
     False: 'NO',
 }
 
-class ListView(TemplateView):
+class ListView(TemplateView, RESTfulMethods):
     template_name = 'list.html'
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        logger.info('========== Start getting Agent List ==========')
         data = self.get_agent_list()
-        logger.info('========== Finished getting Agent List ==========')
         context.update({'data': self.format_data(data)})
         context.update({'agent_update_msg': self.request.session.pop(
             'agent_update_msg', None)})
         return context
 
     def get_agent_list(self):
-        url = settings.DOMAIN_NAMES + settings.AGENT_LIST_PATH
-
-        logger.info('API-Path: {};'.format(settings.AGENT_LIST_PATH))
-        start = time.time()
-        auth_request = requests.get(url, headers=get_auth_header(self.request.user),
-                                    verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} sec.".format(end - start))
-
-        response_json = auth_request.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data', [])
-            logger.info('Agent count: {};'.format(len(data)))
-        else:
-            data = []
-            logger.info('get_agent_list Response_content: {}'.format(auth_request.text))
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
+        data, success = self._get_method(api_path=settings.AGENT_LIST_PATH,
+                                         func_description="Agent List",
+                                         logger=logger,
+                                         is_getting_list=True)
         return data
 
 
