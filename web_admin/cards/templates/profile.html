@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='card-profile' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+    {% csrf_token %}
+
+    <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+        <div class="panel-heading border">
+            <h3>Card Profile</h3>
+        </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Card Identifier</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="card_identifier" value="{{ card_identifier }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">User ID</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}">
+                    </div>
+                    <label class="col-sm-1 control-label">User Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="user_type_ddl" name="user_type">
+                            <option value=1 {% if user_type == 1 %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if user_type == 2 %}selected="selected"{% endif %}>Agent</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                    <thead>
+                    <tr>
+                        <th id="user">User (ID)</th>
+                        <th id="card_id">Card ID</th>
+                        <th id="pan_number">PAN Number</th>
+                        <th id="card_type">Card Type</th>
+                        <th id="card_identifier">Card Identifier</th>
+                        <th id="firstname">First Name</th>
+                        <th id="lastname">Last Name</th>
+                        <th id="expiry_date">Expiry Date</th>
+                        <th id="is_stopped">Is Stopped</th>
+                        <th id="created_date">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for card in data %}
+                        <tr>
+                            <td class="col-sm-2">{{ card.user_type.name }} ({{ card.user_id|default_if_none:'' }})</td>
+                            <td class="col-sm-2">{{ card.id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.pan|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.card_type.name|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.external_identifier|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.firstname|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.expiry_date|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.is_stopped|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ card.created_timestamp|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

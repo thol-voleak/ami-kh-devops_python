@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="panel-heading border">
+    <h3>Configuration Scope Management</h3>
+</div>
+
+<div class="panel-body">
+    {% for message in messages %}
+    <div class="alert alert-danger alert-dismissable" id="msg-add-service">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>{{ message|capfirst }}</strong>
+    </div>
+    {% endfor %}
+
+    <div class="table-responsive mb15">
+        <table id="tbl_configuration_scope_management" class="table table-bordered table-striped mb0">
+            <thead>
+            <tr>
+                <th class="col-sm-1" id="id">Key</th>
+                <th class="col-sm-2" id="name">Value</th>
+                <th class="col-sm-2" id="action">Update</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, values in configurations.items %}
+            <tr>
+                <td class="col-sm-1">{{ key|default_if_none:'' }}</td>
+                <td class="col-sm-2"><code>{{ values|safe }}</code></td>
+                <td class="col-sm-2">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"
+                        {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                        role="button" id="btn_scopes" class="text-info" role="button"
+                        href="{% url 'centralize_configuration:configuration_details' scope_name key %}">
+                            <span class="small">edit</span>
+                        </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pull-right">
+        <a href="{% url 'centralize_configuration:scope_list' %}">
+        <input id="btn_back" class="btn btn-sm text-left mb15" type="button"
+               value="Back"/>
+        </a>
+    </div>
+        
+</div>
+
+{% endblock %}

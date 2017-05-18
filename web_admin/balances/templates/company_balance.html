@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<div class="panel mb25">
+    <div class="panel-body">
+        <form class="form-horizontal" role="form" method="post" action="{% url 'balances:company_balance' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency:</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_currency" name="currency" required>
+                        {% for currency in currency_list %}
+                            <option value="{{ currency.0 }}" {% if request.GET.currency == currency.0 %}selected{% endif %}>{{ currency.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-4"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Total Initial Balance:</label>
+                <div class="col-sm-4">
+                    <input value="{{ total_balance.balance|floatformat:decimal|intcomma|default:'0.00' }}" type="text" class="form-control" name="total_initital_balance" id="txt_total_initital_balance" disabled />
+                </div>
+                <label class="col-sm-2 control-label">Company Balance:</label>
+                <div class="col-sm-4">
+                    <input value="{{ objects.0.balance_after_change|floatformat:decimal|intcomma|default:'0.00' }}" type="text" class="form-control" name="company_balance" id="txt_company_balance" disabled />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Adding Balance:</label>
+                <div class="col-sm-4">
+                    <input type="text" step="0.01" class="form-control" name="adding_balance" id="txt_adding_balance"/>
+                </div>
+                <label class="col-sm-2 control-label">New Company Balance:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="new_company_balance" id="txt_new_company_balance" disabled/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="pull-right">
+                    <button id="btn_confirm" class="btn btn-warning text-left mb15" type="submit">Confirm</button>
+                    <button id="btn_cancel" class="btn btn-success text-left mb15" type="reset">Cancel</button>
+
+                    <!-- Mapping raw hidden value -->
+                    <input value="{{ objects.0.balance_after_change|default:0 }}" type="hidden" id="txt_company_balance_hidden" />
+                </div>
+            </div>
+        </form>
+        <div class="panel-heading">
+            <h3>Company Balance List</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th id="lbl_adding_balance">Adding Balance</th>
+                    <th id="lbl_company_balance">Company Balance</th>
+                    <th id="lbl_new_company_balance">New Company Balance</th>
+                    <th id="lbl_created_date">Created Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in objects %}
+                <tr>
+                    <td class="col-sm-2">{{ object.changed_amount|floatformat:decimal|intcomma }}</td>
+                    <td class="col-sm-2">{{ object.balance_before_change|floatformat:decimal|intcomma }}</td>
+                    <td class="col-sm-2">{{ object.balance_after_change|floatformat:decimal|intcomma }}</td>
+                    <td class="col-sm-1">{{ object.created_timestamp|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script>
+function toNumber(str) {
+    return str.replace(/[,\s_]+/g, "");
+}
+
+function changeValue() {
+    var $currency = $('#ddl_currency');
+    $currency.on('change', function() {
+        var url = window.location.origin + window.location.pathname + '?currency=' + $currency.val();
+        window.location.replace(url);
+    });
+    var $amount = $('#txt_adding_balance');
+    var $new_balance = $('#txt_new_company_balance');
+    var $company_balance = $('#txt_company_balance_hidden');
+    $amount.on('input', function() {
+        var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
+        value ? $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+        : $new_balance.val($company_balance.val());
+    });
+    $('#txt_adding_balance').keydown(function(event){
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
+        if (keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
+
+    var $input = $('#txt_adding_balance');
+    $input.on( "change", function( event ) {
+
+        var selection = window.getSelection().toString();
+        if ( selection !== '' ) {
+            return;
+        }
+
+        if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+            return;
+        }
+
+        var $this = $( this );
+        var input = $this.val();
+
+        var input = toNumber(input);
+
+        input = input ? parseFloat(input) : 0;
+        input = input ? input : 0;
+
+        $this.val( function() {
+            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }},
+             minimumFractionDigits: {{ decimal}} });
+        } );
+
+    });
+}
+
+$(changeValue);
+</script>
+
+{% endblock %}

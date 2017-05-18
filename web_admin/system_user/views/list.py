@@ -1,15 +1,13 @@
-from django.views.generic.base import TemplateView
-from django.conf import settings
+import datetime
+import logging
+import time
 
 import requests
-import random
-import string
-import time
-import logging
-import datetime
+from django.conf import settings
+from django.views.generic.base import TemplateView
 
-from authentications.models import *
 from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
@@ -20,38 +18,20 @@ class ListView(TemplateView):
     def get_context_data(self, **kwargs):
         logger.info('========== Start get system user List ==========')
         data = self.get_system_user_list()
-        refined_data = _refine_data(data)
         logger.info('========== Finished get system user List ==========')
-        result = {'data': refined_data,
+        result = {'data': data,
                 'created_msg': self.request.session.pop('system_user_create_msg', None),
-                'del_msg': self.request.session.pop('system_user_delete_msg', None)}
+                'del_msg': self.request.session.pop('system_user_delete_msg', None),
+                'pw_msg': self.request.session.pop('system_user_change_password_msg', None)}
         return result
 
     def get_system_user_list(self):
-        client_id = settings.CLIENTID
-        client_secret = settings.CLIENTSECRET
         url = settings.GET_ALL_SYSTEM_USER
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        
-        try:
-            auth = Authentications.objects.get(user=self.request.user)
-            access_token = auth.access_token
-            logger.info("Getting system user list by {} user id".format(auth.user))
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'Authorization': 'Bearer {}'.format(access_token),
-        }
 
         logger.info("Getting system user list from backend with {} url".format(url))
         start_date = time.time()
-        response = requests.get(url, headers=headers, verify=False)
+        response = requests.get(url, headers=get_auth_header(self.request.user),
+                                verify=settings.CERT)
         done = time.time()
         logger.info("Response Status {}".format(response))
         json_data = response.json()
@@ -67,13 +47,3 @@ class ListView(TemplateView):
             raise InvalidAccessToken(json_data["status"]["message"])
         else:
             raise Exception("{}".format(json_data["status"]["message"]))
-
-
-def _refine_data(system_user_list):
-    for system_user in system_user_list:
-        if (system_user['created_timestamp'] is not None) and (system_user['created_timestamp'] != "null"):
-            created_at = system_user['created_timestamp'] / 1000.0
-            system_user['created_timestamp'] = datetime.datetime.fromtimestamp(float(created_at)).strftime(
-                '%d-%m-%Y %H:%M %p')
-
-    return system_user_list

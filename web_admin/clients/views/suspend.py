@@ -1,13 +1,13 @@
-import requests, random, string, time
 import copy
+import logging
+import time
 
+import requests
 from django.conf import settings
 from django.http import HttpResponse
 
-from authentications.models import Authentications
+from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -22,34 +22,22 @@ def suspend(request, client_id):
 
     try:
         url = settings.SUSPEND_CLIENT_URL.format(client_id)
-        try:
-            auth = Authentications.objects.get(user=request.user)
-            access_token = auth.access_token
-        except Exception as e:
-            raise InvalidAccessToken("{}".format(e))
-
-        correlation_id = ''.join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-        headers = {
-            'content-type': 'application/json',
-            'correlation-id': correlation_id,
-            'client_id': settings.CLIENTID,
-            'client_secret': settings.CLIENTSECRET,
-            'Authorization': 'Bearer {}'.format(access_token),
-        }
-
         data_log = copy.deepcopy(params)
         data_log['client_secret'] = ''
         logger.info("Expected client status {}".format(data_log))
 
         start_date = time.time()
-        response = requests.put(url, headers=headers, json=params, verify=False)
+        response = requests.put(url, headers=get_auth_header(request.user),
+                                json=params, verify=settings.CERT)
         done = time.time()
         logger.info("Response time is {} sec.".format(done - start_date))
 
         response_json = response.json()
         status = response_json['status']
+        code = status.get('code', '')
+        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+            message = status.get('message', 'Something went wrong.')
+            raise InvalidAccessToken(message)
 
         logger.info("Response Code is {}".format(status['code']))
 

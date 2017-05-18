@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.conf import settings
-from authentications.apps import InvalidAccessToken
-
-import requests, random, string, time
-
-
-from authentications.models import *
-
 import logging
+import random
+import string
+import time
+
+import requests
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.views import View
+
+from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class ClientCreate(View):
             "authorized_grant_types": None,
             "access_token_validity": None,
             "refresh_token_validity": None,
+            "authorization_code_validity": None
         }
         context = {'client_info': client_info,
                    'error_msg': None}
@@ -39,23 +41,6 @@ class ClientCreate(View):
         try:
             url = settings.CREATE_CLIENT_URL
 
-            try:
-                auth = Authentications.objects.get(user=request.user)
-                access_token = auth.access_token
-            except Exception as e:
-                raise InvalidAccessToken("{}".format(e))
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer ' + access_token,
-            }
-
             params = {
                 "client_id": client_id,
                 "client_secret": client_secret,
@@ -66,20 +51,22 @@ class ClientCreate(View):
                 "authorities": "",
                 "access_token_validity": request.POST.get('access_token_validity'),
                 "refresh_token_validity": request.POST.get('refresh_token_validity'),
-                "additional_information": "",
-                "resource_ids": "",
-                "authorities": "",
-                "autoapprove": ""
+                "authorization_code_validity": request.POST.get('authorization_code_validity')
             }
 
             start_date = time.time()
-            response = requests.post(url, headers=headers, json=params, verify=False)
+            response = requests.post(url, headers=get_auth_header(request.user),
+                                     json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 
             response_json = response.json()
 
-            status = response_json['status']
+            status = response_json['status']            
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
             if status['code'] == "success":
                 logger.info("Client was created.")
                 logger.info('========== Finish create new client ==========')

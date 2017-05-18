@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+{% with active_tab='currencies_list' %}
+{{ block.super }}
+{% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+<div class="panel mb30">
+    <div class="panel-heading border">
+        <h3>Setup Company Balance</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin col-xs-10">
+            {% for message in messages %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message|capfirst }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+            <form class="form-horizontal" role="form" method="post" action="{% url 'balances:initial_company_balance' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">Company Balance</label>
+                    <div class="col-xs-3">
+                        <select class="form-control" id="currency_ddl" name="currency">
+                            <option value="">-</option>
+                            {% for currency in currencies %}
+                            <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="currency_btn_add" class="btn btn-success btn-block" type="submit"
+                               value="Add">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row no-margin col-xs-10">
+            <div class="table-responsive" id=currency_table>
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="currency">Currency</th>
+                        <th id="decimal">SOF Id</th>
+                        <th id="modify_date">Balance</th>
+                        <th id="create_by">Last Update</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
+                    {% for balance in agent_balance_list %}
+                    <tr>
+                        <td class="col-sm-1" id="currency_{{ currency.currency }}">
+                            {{ balance.currency|default_if_none:'' }}
+                        </td>
+                        <td class="col-sm-1">{{ balance.sof_id|default_if_none:'' }}</td>
+                        <td class="col-sm-1">{{ balance.balance|default_if_none:'' }}</td>
+                        <td class="col-sm-1">{{ balance.last_update|default_if_none:'' }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

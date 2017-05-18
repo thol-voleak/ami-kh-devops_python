@@ -1,16 +1,16 @@
-import requests
-import random
-import string
-import logging
-import time
-
 from django.apps import AppConfig
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
-from .models import Authentications
+import requests
+import random
+import string
+import logging
+import time
+
+from authentications.models import Authentications
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,8 @@ class CustomBackend:
             client_secret = settings.CLIENTSECRET
             url = settings.LOGIN_URL
 
+            logger.info('Auth URL: {}'.format(url))
+
             correlation_id = ''.join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
@@ -55,7 +57,7 @@ class CustomBackend:
 
             headers = {
                 'content-type': 'application/x-www-form-urlencoded',
-                'correlation-id': correlation_id,
+                'correlation-id': "{}-login".format(username),
                 'client_id': client_id,
                 'client_secret': client_secret,
             }
@@ -63,41 +65,39 @@ class CustomBackend:
             logger.info('Calling authentication backend')
 
             start_date = time.time()
-            auth_request = requests.post(url, params=payload, headers=headers, verify=False)
-
+            auth_response = requests.post(url, params=payload, headers=headers, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
-            logger.info("Authentication response is {}".format(auth_request.status_code))
 
-            json_data = auth_request.json()
-            access_token = json_data.get('access_token')
-            if (access_token is not None) and (len(access_token) > 0):
+            if auth_response.status_code == 200:
+                json_data = auth_response.json()
+                access_token = json_data.get('access_token')
+                correlation_id = json_data.get('correlation_id')
 
-                logger.info('Checking user is exit in system')
-                user, created = User.objects.get_or_create(username=username)
-                if created:
-                    user = User(username=username)
-                    user.is_staff = True
-                    user.save()
-                    logger.info('{} user was created', username)
+                if (access_token is not None) and (len(access_token) > 0):
+                    logger.info('Checking user is exit in system')
+                    user, created = User.objects.get_or_create(username=username)
+                    if created:
+                        logger.info('{} user was created', username)
+                        user.is_staff = True
+                        user.save()
 
-                logger.info("Adding access token for {} user name".format(username))
-                try:
-                    auth = Authentications.objects.get(user=user)
+                    logger.info("Adding access token for {} user name".format(username))
+                    auth, created_token = Authentications.objects.get_or_create(user=user)
                     auth.access_token = access_token
+                    auth.correlation_id = correlation_id
                     auth.save()
-                except:
-                    auth = Authentications(user=user, access_token=access_token)
-                    auth.save()
-                logger.info("Authentication success and geraneration session for {} user name".format(username))
-                logger.info('========== Finish authentication backend service ==========')
-                return user
-            else:
-                logger.error("Cannot get access token from response of {} user name".format(username))
-                logger.info('========== Finish authentication backend service ==========')
-                return None
 
-        except:
+                    logger.info("Authentication success and generate session for {} user name".format(username))
+                    logger.info('========== Finish authentication backend service ==========')
+                    return user
+                else:
+                    logger.error("Cannot get access token from response of {} user name".format(username))
+                    logger.info('========== Finish authentication backend service ==========')
+                    return None
+
+        except Exception as ex:
+            logger.error(ex)
             logger.error("{} user name authentication to backend was failed".format(username))
             logger.info('========== Finish authentication backend service ==========')
             return None

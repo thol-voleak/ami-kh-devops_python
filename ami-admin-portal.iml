@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="django" name="Django">
+      <configuration>
+        <option name="rootFolder" value="$MODULE_DIR$/web_admin/web" />
+        <option name="settingsModule" value="settings.py" />
+        <option name="manageScript" value="manage.py" />
+        <option name="environment" value="&lt;map/&gt;" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="TemplatesService">
+    <option name="TEMPLATE_CONFIGURATION" value="Django" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/web_admin/web/templates/web" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/ajax" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/image" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/canvas" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/resize" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/symbols" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/zooming" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/navigate" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/realtime" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/stacking" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/tracking" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/visitors" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/axes-time" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/selection" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/threshold" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/annotating" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/categories" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/series-pie" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/basic-usage" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/interacting" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/percentiles" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/series-types" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/axes-multiple" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/basic-options" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/series-toggle" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/axes-time-zones" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/axes-interacting" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot/examples/series-errorbars" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/noty/demo" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/gmaps/test" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/gmaps/test/template" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/gmaps/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/Chart.js/samples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/nestable" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/onScreen/demo" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/rickshaw/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/rickshaw/examples/socket.io" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/rickshaw/tutorial" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/sortable/docs/welcome" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/summernote" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/summernote/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/sweetalert/lib" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/sweetalert/example" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/chosen_v1.4.0" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/flot.orderbars/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/intl-tel-input" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/intl-tel-input/examples/gen" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/intl-tel-input/examples/partials" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/jquery-countTo" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/jquery-countTo/test" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/jquery.maskedinput/demo" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-touchspin/demo" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-datepicker/docs/_screenshots" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-datepicker/tests" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/spec/js/libs/bootstrap/js/tests" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/spec/js/libs/bootstrap/docs" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/spec/js/libs/bootstrap/docs/examples" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/spec/js/libs/bootstrap/less/tests" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/spec/js/fixtures" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-timepicker/_layouts" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-rating-input" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap-daterangepicker" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap3-wysihtml5-bower" />
+        <option value="$MODULE_DIR$/web_admin/static/vendor/bootstrap3-wysihtml5-bower/examples" />
+        <option value="$MODULE_DIR$/web_admin/clients/templates/clients" />
+        <option value="$MODULE_DIR$/web_admin/balances/templates/currencies" />
+        <option value="$MODULE_DIR$/web_admin/templates" />
+        <option value="$MODULE_DIR$/web_admin/agent_type/templates/agent_type" />
+        <option value="$MODULE_DIR$/web_admin/system_user/templates/system_user" />
+        <option value="$MODULE_DIR$/web_admin/configuration/templates/country" />
+        <option value="$MODULE_DIR$/web_admin/service_group/templates/service_group" />
+        <option value="$MODULE_DIR$/web_admin/authentications/templates/authentications" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/gis/templates/gis" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/gis/templates/gis/admin" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/gis/templates/gis/google" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admin/templates/admin" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admin/templates/admin/auth/user" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admin/templates/admin/includes" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admin/templates/admin/edit_inline" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admin/templates/registration" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/django/contrib/admindocs/templates/admin_doc" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/mod_wsgi/docs" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/mod_wsgi/docs/user-guides" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/mod_wsgi/docs/release-notes" />
+        <option value="$MODULE_DIR$/web_admin/ami-admin-portal/lib/python3.6/site-packages/mod_wsgi/docs/configuration-directives" />
+      </list>
+    </option>
+  </component>
+</module>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+        <div class="panel-heading border">
+            <h3>Cash Source of fund</h3>
+        </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_sof' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">User ID</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}">
+                    </div>
+                    <label class="col-sm-1 control-label">User Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="user_type_ddl" name="user_type_id">
+                            <option value=0 {% if user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                            <option value=1 {% if user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">Currency</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="currency" value="{{ currency }}"/>
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                    <thead>
+                    <tr>
+                        <th id="id">SOF ID</th>
+                        <th id="user">User (ID)</th>
+                        <th id="balance">Balance</th>
+                        <th id="currency">Currency</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="created_date">Last Modify Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sof in sof_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ sof.id }}</td>
+                            <td class="col-sm-2">{{ sof.user_type.name }} ({{ sof.user_id }})</td>
+                            <td class="col-sm-2">{{ sof.balance }}</td>
+                            <td class="col-sm-2">{{ sof.currency }}</td>
+                            <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

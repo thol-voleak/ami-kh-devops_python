@@ -26,7 +26,6 @@ SECRET_KEY = 'dvph%ti#3)^p^a)+pmi*mv)j%)_4rq)302()yx-_lpj4-!(9_x'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
@@ -36,17 +35,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'mod_wsgi.server',
+
+    # 'debug_toolbar',
+    # 'debug_panel',
+
     'authentications',
     'clients',
     'balances',
     'web',
     'agent_type',
-    'configuration',
     'system_user',
+    'service_group',
+    'services',
+    'agents',
+    'customers',
+    'cards',
+    'cash_sofs',
+    'payments',
+    'api_management',
+    'centralize_configuration',
 ]
 
 MIDDLEWARE_CLASSES = [
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_panel.middleware.DebugPanelMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,7 +94,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
-                              'configuration', 'system_user')],
+                              'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
+                              'cards', 'cash_sofs', 'payments')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'web-index'
+LOGIN_REDIRECT_URL = 'web:web-index'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -188,5 +204,50 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'service_group': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'services': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'agents': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'customers': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'cards': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'api_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'centralize_configuration': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'cash_sofs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'payments': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
     }
 }

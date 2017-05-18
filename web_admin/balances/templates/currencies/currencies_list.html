@@ -1,24 +1,29 @@
 {% extends "base.html" %}
 {% load static %}
 {% block sidebar_panel %}
-    {% with active_tab='currencies_list' %}
-        {{ block.super }}
-    {% endwith %}
+{% with active_tab='currencies_list' %}
+{{ block.super }}
+{% endwith %}
 {% endblock sidebar_panel %}
 {% block content %}
-    {% csrf_token %}
+{% csrf_token %}
 
-    <div class="panel mb30">
-        <div class="panel-heading">
-            <h3>Currencies</h3>
-        </div>
+<div class="panel mb30">
+    <div class="panel-heading border">
+        <h3>Currencies</h3>
+    </div>
+    <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
+        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+        <span id="alert_success_msg"></span>
+    </div>
+    <div class="panel-body">
         <div class="form-group">
             <label class="col-sm-1 mt5 ml5 control-label">Currency</label>
             <div class="col-sm-4 mb15">
                 <select class="form-control" id="currency_ddl" onchange="updateDecimal({{ preload_data }})">
                     <option value=""></option>
                     {% for preload in preload_data %}
-                        <option value="{{ preload.currency_code }}">{{ preload.currency_code }}</option>
+                    <option value="{{ preload.currency_code }}">{{ preload.currency_code }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -31,92 +36,84 @@
                        value="Add" onClick="add()">
             </div>
         </div>
-        <div class="panel-body">
-            <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
-                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-                <span id="alert_success_msg"></span>
-            </div>
-            <div class="table-responsive" id=currency_table>
-                <table class="table table-bordered table-striped mb0">
-                    <thead>
-                    <tr>
-                        <th id="currency">Currency</th>
-                        <th id="decimal">Decimal</th>
-                        <th id="modify_date">Modify Date</th>
-                        <th id="create_by">Create By</th>
-                    </tr>
-                    </thead>
-                    <tbody id="table_body">
-                    {% for currency in data %}
-                        <tr>
-                            <td class="col-sm-1" id="currency_{{ currency.currency }}">
-                                {{ currency.currency|default_if_none:'' }}</td>
-                            <td class="col-sm-1">{{ currency.decimal|default_if_none:'' }}</td>
-                            <td class="col-sm-1">{{ currency.last_update_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-1">{{ currency.last_update_by_user_id|default_if_none:'' }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive" id=currency_table>
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th id="currency">Currency</th>
+                    <th id="decimal">Decimal</th>
+                    <th id="modify_date">Modify Date</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                {% for currency in data %}
+                <tr>
+                    <td class="col-sm-1" id="currency_{{ currency.currency }}">
+                        {{ currency.currency|default_if_none:'' }}
+                    </td>
+                    <td class="col-sm-1">{{ currency.decimal|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ currency.last_update_timestamp|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <script>
-        function updateDecimal(preload) {
-            var index = $("#currency_ddl option:selected").index()
-            $("#decimal_text").val(preload[index - 1].decimal_digit)
-        }
+</div>
+<script>
+    function updateDecimal(preload) {
+        var index = $("#currency_ddl option:selected").index()
+        $("#decimal_text").val(preload[index - 1].decimal_digit)
+    }
 
-        function add() {
-            var currency = document.getElementById("currency_ddl").value;
-            var decimal = document.getElementById("decimal_text").value;
-            swal({
-                        title: 'Are you sure you want to add ' + currency + ' with ' + decimal + ' decimal?',
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#2ECC71",
-                        confirmButtonText: "OK",
-                        cancelButtonText: "Cancel",
-                        closeOnConfirm: true,
-                        closeOnCancel: true
-                    },
-                    function (isConfirmed) {
-                        if (isConfirmed) {
-                            var url = '/admin-portal/balances/currencies/' + currency + '/add/';
-                            $.ajax({
-                                url: url,
-                                type: "GET",
-                                data: {},
-                                success: function (response) {
-                                    $("#alert_success_msg").text('Added data successfully')
-                                    $("#currency_dialog_success").show();
-                                    addSuccessRow(response)
-                                },
-                                error: function (msg) {
-                                    console.log('Error add currency')
-                                }
-                            });
+    function add() {
+        var currency = document.getElementById("currency_ddl").value;
+        var decimal = document.getElementById("decimal_text").value;
+        swal({
+                title: 'Are you sure you want to add ' + currency + ' with ' + decimal + ' decimal?',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirmed) {
+                if (isConfirmed) {
+                    var url = '/admin-portal/balances/currencies/' + currency + '/add/';
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        data: {},
+                        success: function (response) {
+                            $("#alert_success_msg").text('Added data successfully')
+                            $("#currency_dialog_success").show();
+                            addSuccessRow(response)
+                        },
+                        error: function (msg) {
+                            console.log('Error add currency')
                         }
                     });
-        }
+                }
+            });
+    }
 
-        function addSuccessRow(data) {
-            var json = JSON.parse(data);
-            var tr, td;
-            var tbody = document.getElementById("table_body");
-            while(tbody.rows[0]) tbody.deleteRow(0);
-            for (var i = 0; i < json.length; i++) {
-                tr = tbody.insertRow(tbody.rows.length);
-                td = tr.insertCell(tr.cells.length);
-                td.innerHTML = json[i].currency;
-                td = tr.insertCell(tr.cells.length);
-                td.innerHTML = json[i].decimal;
-                td = tr.insertCell(tr.cells.length);
-                td.innerHTML = json[i].last_update_timestamp;
-                td = tr.insertCell(tr.cells.length);
-                td.innerHTML = json[i].last_update_by_user_id;
-            }
+    function addSuccessRow(data) {
+        var json = JSON.parse(data);
+        var tr, td;
+        var tbody = document.getElementById("table_body");
+        while (tbody.rows[0]) tbody.deleteRow(0);
+        for (var i = 0; i < json.length; i++) {
+            tr = tbody.insertRow(tbody.rows.length);
+            td = tr.insertCell(tr.cells.length);
+            td.innerHTML = json[i].currency;
+            td = tr.insertCell(tr.cells.length);
+            td.innerHTML = json[i].decimal;
+            td = tr.insertCell(tr.cells.length);
+            td.innerHTML = json[i].last_update_timestamp;
         }
+    }
 
-    </script>
+</script>
 {% endblock %}

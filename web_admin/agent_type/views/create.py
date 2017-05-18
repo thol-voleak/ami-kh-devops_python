@@ -1,14 +1,13 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.conf import settings
-import requests, random, string, time
-from authentications.models import Authentications
-from authentications.apps import InvalidAccessToken
-
-from authentications.models import *
-
 import logging
+import time
 
+import requests
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.views import View
+
+from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 logger = logging.getLogger(__name__)
 
 
@@ -30,23 +29,6 @@ class AgentTypeCreate(View):
 
         try:
             url = settings.AGENT_TYPE_CREATE_URL
-            try:
-                auth = Authentications.objects.get(user=request.user)
-                logger.info("Username: {}".format(auth.user))
-                access_token = auth.access_token
-            except Exception as e:
-                raise InvalidAccessToken("{}".format(e))
-
-            correlation_id = ''.join(
-                random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-
-            headers = {
-                'content-type': 'application/json',
-                'correlation-id': correlation_id,
-                'client_id': settings.CLIENTID,
-                'client_secret': settings.CLIENTSECRET,
-                'Authorization': 'Bearer ' + access_token,
-            }
 
             params = {
                 "name": request.POST.get('agent_type_input'),
@@ -57,14 +39,20 @@ class AgentTypeCreate(View):
             logger.info("Request: {}".format(params))
 
             start_date = time.time()
-            response = requests.post(url, headers=headers, json=params, verify=False)
+            response = requests.post(url, headers=get_auth_header(request.user),
+                                     json=params, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
 
             response_json = response.json()
+            status = response_json['status']
+            code = status.get('code', '')
+            if (code == "access_token_expire") or (code== 'access_token_not_found'):
+                message = status.get('message', 'Something went wrong.')
+                raise InvalidAccessToken(message)
             logger.info("Response content: {}".format(response_json))
             logger.info("Response status: {}".format(response.status_code))
-            status = response_json['status']
+            
             if status['code'] == "success":
                 logger.info("Agent Type was created.")
                 logger.info('========== Finish create new agent type ==========')

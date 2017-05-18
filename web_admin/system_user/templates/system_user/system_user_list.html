@@ -2,30 +2,44 @@
 {% load static %}
 {% block sidebar_panel %}
 {% with active_tab='system_users' %}
-{{ block.super }}
+    {{ block.super }}
 {% endwith %}
 {% endblock sidebar_panel %}
 {% block content %}
-    {% csrf_token %}
-
     <div class="panel mb30">
         <div class="panel-heading">
             <h3>System Users</h3>
         </div>
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:search' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">username</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">email</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search">
+                    </div>
+                </div>
+            </form>
         <div class="pull-right mr15 text-right">
             <a href="{% url 'system_user:create-system-user' %}">
                 <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
                        value="Add"/>
             </a>
         </div>
-        {% if created_msg is not None %}
-            <div class="col-xs-12">
-                <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ created_msg }}</strong>
-                </div>
+    {% for message in messages %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
             </div>
-        {% endif %}
+        </div>
+     {% endfor %}
 
         {% if del_msg is not None %}
             <div class="col-xs-12">
@@ -35,6 +49,17 @@
                 </div>
             </div>
         {% endif %}
+
+        {% if pw_msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="system_user_change_password_msg">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ pw_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+
         <div class="panel-body">
             <div class="table-responsive" id=system_user_table>
                 <table class="table table-bordered table-striped mb0">
@@ -44,7 +69,6 @@
                         <th id="username">Username</th>
                         <th id="firstname_lastname">Firstname Lastname</th>
                         <th id="created_date">Created Date</th>
-                        <th id="created_by">Created By</th>
                         <th id="action">Action</th>
                     </tr>
                     </thead>
@@ -54,7 +78,7 @@
                             <td class="col-sm-1" id="id_{{ systemuser.id }}">
                                 {{ systemuser.id|default_if_none:'' }}
                             </td>
-                            {% if systemuser.is_delete %}
+                            {% if systemuser.is_deleted %}
                                 <td class="col-sm-1">
                                     <del>{{ systemuser.username|default_if_none:'' }}</del>
                                 </td>
@@ -62,13 +86,12 @@
                                 <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
                             {% endif %}
 
-                            <td class="col-sm-3" style="text-indent: 1em: text-align: left;">{{ systemuser.firstname|default_if_none:'' }} {{ systemuser.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-3">{{systemuser.firstname|add:" "|add:systemuser.lastname }}</td>
                             <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-1">{{ systemuser.created_by_user_id|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <div id="client_btn_group_{{ system_user.id }}">
-                                    <div class="btn-group mb5">
-                                        {% if systemuser.is_delete %}
+                                    <div class="btn-group">
+                                        {% if systemuser.is_deleted %}
                                         {% else %}
                                             <a type="button"
                                                class="btn btn-outline btn-xs btn-info"
@@ -90,6 +113,13 @@
                                                id="system_user_btn_delete"
                                                href="{% url 'system_user:delete-system-user' systemuser.id %}">
                                                 <span class="small">Delete</span>
+                                            </a>
+                                            <a type="button"
+                                               class="btn btn-outline btn-xs btn-primary"
+                                               role="button"
+                                               id="btn_system_user_change_password"
+                                               href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                                                <span class="small">ChangePassword</span>
                                             </a>
                                         {% endif %}
                                     </div>

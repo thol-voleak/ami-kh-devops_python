@@ -46,22 +46,32 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Password *</label>
+                        <label class="col-sm-2 control-label">Initial Password *</label>
                         <div class="col-sm-8">
                             <input type="password" class="form-control input-rounded"
                                    name="password"
                                    id="password_input"
-                                   value="{{ system_user_info.password | default_if_none:'' }}" required>
+                                   value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Re-enter Initial Password *</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control input-rounded"
+                                   name="password"
+                                   id="txt_reenter_initial_password"
+                                   value="" required>
                         </div>
                     </div>
                     <div class="pull-right">
-                        <a href="{% url 'system_user:system-user-list' %}">
+                        <a href="{% url 'system_user:search' %}">
                             <input id="system_user_btn_back" class="btn btn-success text-left mb15" type="button"
                                    value="Back"/>
                         </a>
                         <a href="{% url 'agent_type:create-agent-type' %}">
                             <input id="system_user_btn_add" class="btn btn-success text-left mb15" type="submit"
-                                   value="Add"/>
+                                   value="Add"
+                                   onClick="validatePassword()"/>
                         </a>
                     </div>
                 </form>
@@ -69,4 +79,40 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block body_js %}
+<script>
+    // Password Validation Rule
+    // at least 1 lowercase letter
+    // at least 1 upper case letter
+    // at least 1 number
+    // at least 1 special character ( !@#$%^&*()_+ )
+    // at least 8 character length
+    // pattern = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}";
+
+    var password = document.getElementById("password_input");
+    var confirm_password = document.getElementById("txt_reenter_initial_password");
+
+    function validatePassword() {
+        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}$/;
+
+        if(password.value != confirm_password.value) {
+            password.setCustomValidity('');
+            confirm_password.setCustomValidity("Password and Re-enter Password don't match");
+
+        } else if (!re.test(password.value)) {
+            confirm_password.setCustomValidity('');
+            password.setCustomValidity("Password should contains at least lowercase, uppercase letter, number, special character and 8 characters in length");
+
+        } else {
+            confirm_password.setCustomValidity('');
+            password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+
+</script>
 {% endblock %}

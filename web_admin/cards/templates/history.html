@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='card-history' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Card History</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:history' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Trans ID</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="trans_id" value="{{ trans_id }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">Card ID</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="card_id" value="{{ card_id }}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">User ID</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}"/>
+                    </div>
+                    <label class="col-sm-1 control-label">User Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="user_type_ddl" name="user_type_id">
+                            <option value=0 {% if user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                            <option value=1 {% if user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <thead>
+                <tr>
+                    <th id="trans_id">Trans ID</th>
+                    <th id="card_id">Card ID</th>
+                    <th id="card_action">Action</th>
+                    <th id="card_id">Owner ID</th>
+                    <th id="actor">Actor (ID)</th>
+                    <th id="status">Status</th>
+                    <th id="created_date">Created Date</th>
+                    <th id="status_code">Code</th>
+                    <th id="status_message">Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for history in data %}
+                        <tr>
+                            <td class="col-sm-1">{{ history.trans_id }}</td>
+                            <td class="col-sm-1">{{ history.card.id }}</td>
+                            <td class="col-sm-1">{{ history.card_action.name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">
+                                {% if history.card is not None %}
+                                    {{ history.card.user_type.name }} ({{ history.card.user_id }})
+                                {% endif %}
+                            </td>
+                            <td class="col-sm-1">{{ history.actor_user_type.name|default_if_none:'' }} ({{ history.actor_user_id|default_if_none:'' }})</td>
+                            <td class="col-sm-1">{{ history.is_success|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ history.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ history.status_code|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ history.status_message|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
