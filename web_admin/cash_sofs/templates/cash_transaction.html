@@ -24,8 +24,8 @@
                         <select class="form-control" id="user_type_ddl" name="type">
                             <option value='' {% if type == '' %}selected="selected"{% endif %}>All</option>
                             <option value='initiate' {% if type == 'initiate' %}selected="selected"{% endif %}>Initiate</option>
-                            <option value='deduction' {% if type == 'deduction' %}selected="selected"{% endif %}>Deduction</option>
-                            <option value='addition' {% if type == 'addition' %}selected="selected"{% endif %}>Addition</option>
+                            <option value='debit' {% if type == 'debit' %}selected="selected"{% endif %}>Debit</option>
+                            <option value='credit' {% if type == 'credit' %}selected="selected"{% endif %}>Credit</option>
                         </select>
                     </div>
                     <div class="col-xs-1">
