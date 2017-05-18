@@ -118,12 +118,15 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = api_path
         logger.info('API-Path: {path}'.format(path=api_path))
-        logger.info("Params: {} ".format(params))
 
         start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
 
+        # Filter sensitive data
+        self._filter_sensitive_words(params=params)
+
+        logger.info("Params: {} ".format(params))
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {}".format(end_time - start_time))
@@ -189,3 +192,11 @@ class RESTfulMethods(GetHeaderMixin):
         # if response.status_code == 200:
         #     return True
         # return False
+
+    @staticmethod
+    def _filter_sensitive_words(params = {}):
+
+        if 'password' in params:
+            params['password'] = None
+
+        return params;
