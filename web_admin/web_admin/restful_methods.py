@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
-
 class RESTfulMethods(GetHeaderMixin):
     def _get_method(self, api_path, func_description, logger, is_getting_list = False, params = {}):
         """

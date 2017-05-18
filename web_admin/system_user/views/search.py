@@ -1,45 +1,48 @@
 import logging
-from django.views.generic.base import TemplateView
+
 from django.conf import settings
-from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
-import requests
 from django.shortcuts import render
+from django.views.generic.base import TemplateView
+
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
+'''
+Author: Unknown
+History:
+# 2017-05-18 (Steve Le)
+- Refactored code following RESTfulMethods standard.
+'''
+class SearchView(TemplateView, RESTfulMethods):
 
-class SearchView(TemplateView):
-    template_name = "system_user/system_user_list.html"
+    template_name = "list.html"
 
     def get(self, request):
-        return render(request, 'system_user/system_user_list.html')
+        return render(request, 'list.html')
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start search system user ==========')
+
+        # Get params
         username = request.POST.get('username')
         email = request.POST.get('email')
 
+        # Build body
         body = {}
         if username is not '':
             body['username'] = username
         if email is not '':
             body['email'] = email
 
-        search_url = settings.DOMAIN_NAMES + settings.SEARCH_SYSTEM_USER
-        logger.info("Search system user with [{}] username and [{}] email".format(username, email))
-        search_response = requests.post(search_url, headers=get_auth_header(self.request.user), json=body,
-                                        verify=settings.CERT)
-        logger.info('Got search result from backend with [{}] http status'.format(search_response.status_code))
-        json_data = search_response.json()
-        status = json_data.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
+        api_path = settings.DOMAIN_NAMES + settings.SEARCH_SYSTEM_USER
 
-        if search_response.status_code == 200 and json_data.get('status').get('code') == 'success':
-            logger.info('Found [{}] system users'.format(len(search_response.json()['data'])))
-            return render(request, 'system_user/system_user_list.html', {'data': json_data.get('data')})
-        else:
-            logger.info("Got error when search system user")
-            raise Exception(search_response.content)
+        data, status = self._post_method(
+            api_path=api_path,
+            func_description="Search System User",
+            logger=logger,
+            params=body
+        )
+
+        return render(request, 'list.html', {'data': data})
+
