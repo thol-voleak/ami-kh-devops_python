@@ -1,12 +1,7 @@
 import logging
-import time
 
-import requests
 from django.conf import settings
 from django.views.generic.base import TemplateView
-from multiprocessing import Process, Manager
-from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
