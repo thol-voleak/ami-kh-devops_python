@@ -89,7 +89,13 @@ class UpdateView(TemplateView, RESTfulMethods):
 
     def _get_currency_choices(self, procnum, dict):
         url = settings.GET_ALL_CURRENCY_URL
-        dict[procnum] = self._get_method(url, "currency choices", logger, True)
+        data, success = self._get_method(url, "currency choices", logger)
+        if success:
+            value = data.get('value', '')
+            currency_list = self._get_currency_list(value)
+            dict[procnum] = currency_list, True
+        else:
+            dict[procnum] = [], True
 
     def _get_currency_list(self, value):
         result = []
