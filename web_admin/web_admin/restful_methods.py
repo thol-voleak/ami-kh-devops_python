@@ -144,7 +144,7 @@ class RESTfulMethods(GetHeaderMixin):
         logger.info('========== Finished creating {} =========='.format(func_description))
         return result
 
-    def _delete_method(self, api_path, func_description, logger):
+    def _delete_method(self, api_path, func_description, logger, params=None):
         logger.info('========== Start deleting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
@@ -161,7 +161,7 @@ class RESTfulMethods(GetHeaderMixin):
         #     url,
         # ))
         start_time = time.time()
-        response = requests.delete(url, headers=self._get_headers(), verify=settings.CERT)
+        response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
 
         logger.info("Response_code: {}".format(response.status_code))
