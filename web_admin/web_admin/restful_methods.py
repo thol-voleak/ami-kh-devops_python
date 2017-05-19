@@ -124,7 +124,7 @@ class RESTfulMethods(GetHeaderMixin):
         end_time = time.time()
 
         # Filter sensitive data
-        self._filter_sensitive_words(params=params)
+        self._filter_sensitive_fields(params=params)
 
         logger.info("Params: {} ".format(params))
         logger.info("Response_code: {}".format(response.status_code))
@@ -193,10 +193,19 @@ class RESTfulMethods(GetHeaderMixin):
         #     return True
         # return False
 
+    '''
+    Author: Steve Le
+    History:
+    # 2017-05-18: Init
+    - For skip sensitive fields for logging data.
+    '''
     @staticmethod
-    def _filter_sensitive_words(params = {}):
+    def _filter_sensitive_fields(params = {}):
 
         if 'password' in params:
             params['password'] = None
+
+        if 're-password' in params:
+            params['re-password'] = None
 
         return params;
