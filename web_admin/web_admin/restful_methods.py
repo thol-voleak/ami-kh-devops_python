@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
-
 class RESTfulMethods(GetHeaderMixin):
     def _get_method(self, api_path, func_description, logger, is_getting_list = False, params = {}):
         """
@@ -119,12 +118,15 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = api_path
         logger.info('API-Path: {path}'.format(path=api_path))
-        logger.info("Params: {} ".format(params))
 
         start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
 
+        # Filter sensitive data
+        self._filter_sensitive_fields(params=params)
+
+        logger.info("Params: {} ".format(params))
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {}".format(end_time - start_time))
@@ -190,3 +192,20 @@ class RESTfulMethods(GetHeaderMixin):
         # if response.status_code == 200:
         #     return True
         # return False
+
+    '''
+    Author: Steve Le
+    History:
+    # 2017-05-18: Init
+    - For skip sensitive fields for logging data.
+    '''
+    @staticmethod
+    def _filter_sensitive_fields(params = {}):
+
+        if 'password' in params:
+            params['password'] = None
+
+        if 're-password' in params:
+            params['re-password'] = None
+
+        return params;
