@@ -7,7 +7,7 @@ from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class DetailView(TemplateView, RESTfulMethods):
-    template_name = "detail.html"
+    template_name = "agents/detail.html"
 
     def get_context_data(self, **kwargs):
         try:

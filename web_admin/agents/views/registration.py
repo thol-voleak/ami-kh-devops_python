@@ -57,7 +57,7 @@ History:
 
 
 class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
-    template_name = "registration.html"
+    template_name = "agents/registration.html"
 
     def get_context_data(self, *arg, **kwargs):
 

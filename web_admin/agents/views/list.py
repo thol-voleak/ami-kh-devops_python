@@ -16,7 +16,7 @@ KYC = {
 }
 
 class ListView(TemplateView, RESTfulMethods):
-    template_name = 'list.html'
+    template_name = 'agents/list.html'
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)

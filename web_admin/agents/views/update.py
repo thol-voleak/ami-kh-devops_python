@@ -23,7 +23,7 @@ History:
 '''
 class AgentUpdate(TemplateView, RESTfulMethods):
 
-    template_name = "update.html"
+    template_name = "agents/update.html"
 
     def get(self, request, *args, **kwargs):
 
