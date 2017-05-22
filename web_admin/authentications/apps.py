@@ -11,7 +11,6 @@ import logging
 import time
 
 from authentications.models import Authentications
-
 logger = logging.getLogger(__name__)
 
 
