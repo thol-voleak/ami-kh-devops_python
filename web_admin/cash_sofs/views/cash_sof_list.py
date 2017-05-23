@@ -1,13 +1,15 @@
-import logging
-import time
+from web_admin.api_settings import CASH_SOFS_URL
 
-import requests
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+
+import logging
+import requests
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -55,12 +57,10 @@ class CashSOFView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):
-        url = settings.DOMAIN_NAMES + "api-gateway/report/v1/cash/sofs"
-
-        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(url))
+        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(CASH_SOFS_URL))
         start = time.time()
         logger.info("Request body: {};".format(body))
-        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
+        auth_request = requests.post(CASH_SOFS_URL, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
         end = time.time()
         logger.info("Response_code: {};".format(auth_request.status_code))
         logger.info("Response_time: {} seconds".format(end - start))

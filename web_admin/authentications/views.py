@@ -1,16 +1,17 @@
+from .apps import InvalidAccessToken
+from web_admin import api_settings
+
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.conf import settings
 from .models import Authentications
-from .apps import InvalidAccessToken
-from web_admin import api_settings
+
 import time
-import random
-import string
 import requests
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def logout_user(request):
     logger.info('========== Start to logout ==========')
@@ -18,11 +19,10 @@ def logout_user(request):
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 
-    headers = None
     try:
         headers = get_auth_header(request.user)
     except Exception as e:
-        logger.info("Exception: {}".format(e))
+        logger.error(e)
         logout(request)
         logger.info('========== Finished to logout ==========')
         return redirect('login')
@@ -49,12 +49,11 @@ def logout_user(request):
 def get_auth_header(user):
     client_id = settings.CLIENTID
     client_secret = settings.CLIENTSECRET
-    correlation_id = ''.join(
-        random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
     try:
         auth = Authentications.objects.get(user=user)
         access_token = auth.access_token
+        correlation_id = auth.correlation_id
     except Exception as e:
         raise InvalidAccessToken("{}".format(e))
 
