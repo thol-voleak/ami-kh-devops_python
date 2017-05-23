@@ -8,6 +8,8 @@ from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+from web_admin.api_settings import CARD_LIST_PATH
+
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +62,7 @@ class HistoryView(TemplateView):
         return render(request, 'history.html', context)
 
     def get_card_history_list(self, body):
-        url = settings.DOMAIN_NAMES + settings.CARD_HISTORY_PATH
+        url = settings.DOMAIN_NAMES + CARD_HISTORY_PATH
 
         logger.info('Call search card history API to backend service')
         logger.info('API-Path: {};'.format(settings.CARD_LIST_PATH))
