@@ -1,6 +1,5 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 
@@ -27,7 +26,7 @@ class ListView(TemplateView, RESTfulMethods):
         return context
 
     def get_agent_list(self):
-        data, success = self._get_method(api_path=settings.AGENT_LIST_PATH,
+        data, success = self._get_method(api_path=api_settings.AGENT_LIST_PATH,
                                          func_description="Agent List",
                                          logger=logger,
                                          is_getting_list=True)
