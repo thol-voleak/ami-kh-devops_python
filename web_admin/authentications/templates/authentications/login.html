@@ -15,6 +15,12 @@
                                     <p>Your username and password didn't match. Please try again.</p>
                                 {% endif %}
 
+                                {% for message in messages %}
+                                    {% ifequal message|stringformat:"s" "session_is_expired" %}
+                                        <p>Your login credentials have expired. Please login again.</p>
+                                    {% endifequal %}
+                                {% endfor %}
+
                                 {% if next %}
                                     {% if user.is_authenticated %}
                                         <p>Your account doesn't have access to this page. To proceed,

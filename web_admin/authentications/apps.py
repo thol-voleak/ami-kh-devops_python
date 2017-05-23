@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
-
+from django.contrib import messages
 import requests
 import random
 import string
@@ -11,7 +11,6 @@ import logging
 import time
 
 from authentications.models import Authentications
-
 logger = logging.getLogger(__name__)
 
 
@@ -27,6 +26,8 @@ class InvalidAccessToken(Exception):
 class InvalidAccessTokenException(object):
     def process_exception(self, request, exception):
         if type(exception) == InvalidAccessToken:
+            # send this message to process in HTML, check file authentications/templates/authentications/login.html for more detail
+            messages.add_message(request, messages.INFO, str('session_is_expired'))
             logout(request)
             return HttpResponseRedirect(request.path)
         return None

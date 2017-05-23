@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
-
 class RESTfulMethods(GetHeaderMixin):
     def _get_method(self, api_path, func_description, logger, is_getting_list = False, params = {}):
         """
@@ -55,7 +54,7 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = data, True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
             result = default_data, False
@@ -71,7 +70,7 @@ class RESTfulMethods(GetHeaderMixin):
         :param params: the data of put method
         :return: data and success (True or False)
         """
-        logger.info('========== Start updating {func_description} =========='.format(func_description=func_description))
+        logger.info('========== Start putting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
@@ -96,12 +95,12 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = response_json.get('data', {}), True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
             result = None, False
-        logger.info('========== Finished updating {} =========='.format(func_description))
+        logger.info('========== Finished putting {} =========='.format(func_description))
         return result
 
     def _post_method(self, api_path, func_description, logger, params={}):
@@ -119,12 +118,15 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = api_path
         logger.info('API-Path: {path}'.format(path=api_path))
-        logger.info("Params: {} ".format(params))
 
         start_time = time.time()
         response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
 
+        # Filter sensitive data
+        self._filter_sensitive_fields(params=params)
+
+        logger.info("Params: {} ".format(params))
         logger.info("Response_code: {}".format(response.status_code))
         logger.info("Response_content: {}".format(response.content))
         logger.info("Response_time: {}".format(end_time - start_time))
@@ -136,15 +138,15 @@ class RESTfulMethods(GetHeaderMixin):
         if code == "success":
             result = response_json.get('data', {}), True
         else:
+            message = status.get('message', 'Something went wrong.')
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                message = status.get('message', 'Something went wrong.')
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
         logger.info('========== Finished creating {} =========='.format(func_description))
         return result
 
-    def _delete_method(self, api_path, func_description, logger):
+    def _delete_method(self, api_path, func_description, logger, params=None):
         logger.info('========== Start deleting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
@@ -161,7 +163,7 @@ class RESTfulMethods(GetHeaderMixin):
         #     url,
         # ))
         start_time = time.time()
-        response = requests.delete(url, headers=self._get_headers(), verify=settings.CERT)
+        response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
 
         logger.info("Response_code: {}".format(response.status_code))
@@ -176,7 +178,7 @@ class RESTfulMethods(GetHeaderMixin):
             result = response_json.get('data', {}), True
         else:
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
         logger.info('========== Finished deleting {} =========='.format(func_description))
@@ -190,3 +192,20 @@ class RESTfulMethods(GetHeaderMixin):
         # if response.status_code == 200:
         #     return True
         # return False
+
+    '''
+    Author: Steve Le
+    History:
+    # 2017-05-18: Init
+    - For skip sensitive fields for logging data.
+    '''
+    @staticmethod
+    def _filter_sensitive_fields(params = {}):
+
+        if 'password' in params:
+            params['password'] = None
+
+        if 're-password' in params:
+            params['re-password'] = None
+
+        return params;

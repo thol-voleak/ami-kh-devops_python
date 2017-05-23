@@ -4,23 +4,16 @@ from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
-from authentications.apps import InvalidAccessToken
-
-import requests
 import logging
-
+from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
-
-class UpdateView(TemplateView):
+class UpdateView(TemplateView, RESTfulMethods):
     template_name = "services/service_update.html"
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start getting currencies, service groups, service detail ==========')
-
         context = super(UpdateView, self).get_context_data(**kwargs)
         service_id = context['service_id']
-        header = self._get_headers()
 
         manager = Manager()
         return_dict = manager.dict()
@@ -55,14 +48,11 @@ class UpdateView(TemplateView):
                 'service_detail': service_detail,
                 'service_id': service_id
             }
-            logger.info('========== Finish getting currencies, service groups, service detail ==========')
             return render(request, self.template_name, context)
         else:
-            logger.info('========== Finish getting currencies, service groups, service detail ==========')
             return None
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start updating service ==========')
         service_id = kwargs['service_id']
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -78,7 +68,6 @@ class UpdateView(TemplateView):
         }
 
         data, success = self._update_service(service_id, data)
-        logger.info('========== Finish updating service ==========')
         if success:
             messages.add_message(
                 request,
@@ -94,55 +83,19 @@ class UpdateView(TemplateView):
         return self._headers
 
     def _update_service(self, service_id, data):
-        logger.info("Updating service by user {}".format(self.request.user.username))
-
         url = settings.SERVICE_UPDATE_URL.format(service_id)
+        return self._put_method(url, "Service", logger, data)
 
-        logger.info('========== Start update new Service ==========')
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-        logger.info('Username {} sends request body: {}'.format(self.request.user.username, data))
-        response = requests.put(url, headers=self._get_headers(),
-                                json=data, verify=settings.CERT)
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
-        logger.info('========== Finished updating Service ==========')
-
-        if response.status_code == 200:
-            json_data = response.json()
-            return json_data.get('data'), True
-        else:
-            return None, False
 
     def _get_currency_choices(self, procnum, dict):
-        logger.info('Start getting currency choice list from backend')
         url = settings.GET_ALL_CURRENCY_URL
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
-        logger.info('Finish getting currency choice list from backend')
-
-        if response.status_code == 200:
-            json_data = response.json()
-            value = json_data.get('data', {}).get('value', '')
+        data, success = self._get_method(url, "currency choices", logger)
+        if success:
+            value = data.get('value', '')
             currency_list = self._get_currency_list(value)
             dict[procnum] = currency_list, True
         else:
-            dict[procnum] = [], False
+            dict[procnum] = [], True
 
     def _get_currency_list(self, value):
         result = []
@@ -155,50 +108,9 @@ class UpdateView(TemplateView):
 
 
     def _get_service_group_choices(self, procnum, dict):
-        logger.info('Start getting service groups from backend')
-
         url = settings.SERVICE_GROUP_LIST_URL
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-
-        logger.info('Get services group list from backend')
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
-        logger.info('Finish getting service groups from backend')
-
-        if response.status_code == 200:
-            json_data = response.json()
-            dict[procnum] = json_data.get('data'), True
-        else:
-            dict[procnum] = None, False
+        dict[procnum] = self._get_method(url, "service group choices", logger, True)
 
     def _get_service_detail(self, procnum, dict, service_id):
-        logger.info('Start getting service detail from backend')
-
         url = settings.SERVICE_DETAIL_URL.format(service_id)
-        logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
-
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-
-        logger.info("Username {} received response code {}".format(self.request.user.username, response.status_code))
-        # logger.info("Username {} received response content {}".format(self.request.user.username, response.content))
-        logger.info('Finish getting service detail from backend')
-
-        if response.status_code == 200:
-            json_data = response.json()
-            dict[procnum] = json_data.get('data'), True
-        else:
-            dict[procnum] = None, False
+        dict[procnum] = self._get_method(url, "service detail", logger, True)
