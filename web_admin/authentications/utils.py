@@ -1,6 +1,7 @@
-from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
+
+from django.conf import settings
 
 import logging
 

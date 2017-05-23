@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
-
+from web_admin import api_settings
 import requests, time
 import logging
 from django.contrib import messages
@@ -33,7 +33,7 @@ class SystemUserChangePassword(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start changing system user password ==========')
         system_user_id = kwargs['systemUserId']
-        url = settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
+        url = settings.DOMAIN_NAMES + api_settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
         logger.info("URL: {}".format(url))
 
         password = request.POST.get('newpassword')

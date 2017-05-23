@@ -27,7 +27,7 @@ class ServiceGroupDetailForm(TemplateView):
 
     def _get_service_group_detail(self, service_group_id):
 
-        url = settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
 
         headers = get_auth_header(self.request.user)
 

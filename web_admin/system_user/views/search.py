@@ -1,6 +1,5 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
@@ -35,7 +34,7 @@ class SearchView(TemplateView, RESTfulMethods):
         if email is not '':
             body['email'] = email
 
-        api_path = settings.DOMAIN_NAMES + settings.SEARCH_SYSTEM_USER
+        api_path = api_settings.SEARCH_SYSTEM_USER
 
         data, status = self._post_method(
             api_path=api_path,

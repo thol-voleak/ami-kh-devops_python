@@ -1,11 +1,8 @@
 import logging
-
-from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
-
+from web_admin import api_settings
 from django.contrib import messages
-
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
@@ -42,7 +39,7 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
 
         # Build API Path
-        api_path = settings.SYSTEM_USER_CREATE_URL
+        api_path = api_settings.SYSTEM_USER_CREATE_URL
 
         # Build params
         params = {

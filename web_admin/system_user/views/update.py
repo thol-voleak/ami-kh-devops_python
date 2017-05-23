@@ -1,9 +1,7 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
-
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
@@ -37,7 +35,7 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
 
         # Build API Path
         system_user_id = kwargs['systemUserId']
-        api_path = settings.UPDATE_SYSTEM_USER_URL.format(system_user_id)
+        api_path = api_settings.UPDATE_SYSTEM_USER_URL.format(system_user_id)
 
         # Build params
         username = request.POST.get('username_input')
@@ -72,7 +70,7 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
 
     def _get_system_user_detail(self, system_user_id):
 
-        api_path = settings.SYSTEM_USER_DETAIL_URL.format(system_user_id)
+        api_path = api_settings.SYSTEM_USER_DETAIL_URL.format(system_user_id)
 
         data, status = self._get_method(
             api_path=api_path,

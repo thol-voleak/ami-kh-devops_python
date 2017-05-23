@@ -24,7 +24,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
 
         client_id = settings.CLIENTID
         client_secret = settings.CLIENTSECRET
-        url = settings.CLIENTS_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.CLIENTS_LIST_URL
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
@@ -50,7 +50,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
 
         client_id = settings.CLIENTID
         client_secret = settings.CLIENTSECRET
-        url = settings.CLIENTS_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.CLIENTS_LIST_URL
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
@@ -94,7 +94,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
 
         client_id = settings.CLIENTID
         client_secret = settings.CLIENTSECRET
-        url = settings.CLIENTS_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.CLIENTS_LIST_URL
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
@@ -127,7 +127,7 @@ class ClientCredentialsTests(TestCase):  # or unittest.TestCase
 
         client_id = settings.CLIENTID
         client_secret = settings.CLIENTSECRET
-        url = settings.CLIENTS_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.CLIENTS_LIST_URL
         correlation_id = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 

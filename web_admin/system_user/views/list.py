@@ -1,9 +1,7 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
@@ -33,7 +31,7 @@ class ListView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _get_system_user_list(self):
-        api_path = settings.GET_ALL_SYSTEM_USER
+        api_path = api_settings.GET_ALL_SYSTEM_USER
 
         data, status = self._get_method(
             api_path=api_path,
