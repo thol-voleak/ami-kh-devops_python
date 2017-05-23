@@ -24,12 +24,14 @@ GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currenci
 ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
+# System User
 GET_ALL_SYSTEM_USER = 'api-gateway/system-user/v1/users'
 SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}'
+
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/v1/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/v1/service-groups/{}'
@@ -75,6 +77,7 @@ AGENT_FEE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/v1/agent-fee-distributi
 AGENT_BONUS_DISTRIBUTION_UPDATE_URL = "api-gateway/payment/v1/agent-bonus-distributions/{agent_bonus_distribution_id}"
 FEE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/v1/bonus-distributions/{fee_distributions_id}'
 SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/v1/service-commands/{}'
+# Agent
 AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
@@ -84,6 +87,7 @@ CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_typ
 GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 GET_AGENT_TYPES_PATH = 'api-gateway/agent/v1/types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
+
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/v1/customers'
 CARD_LIST_PATH = 'api-gateway/report/v1/cards'
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
