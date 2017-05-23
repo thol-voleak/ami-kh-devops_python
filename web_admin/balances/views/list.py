@@ -1,7 +1,10 @@
 import datetime
 import logging
+
 from django.views.generic.base import TemplateView
-from web_admin.restful_methods import *
+from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import GET_ALL_CURRENCY_URL
+from web_admin.api_settings import GET_ALL_PRELOAD_CURRENCY_URL
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +21,7 @@ class ListView(TemplateView, RESTfulMethods):
         return result
 
     def get_currencies_list(self):
-        url = settings.GET_ALL_CURRENCY_URL
+        url = GET_ALL_CURRENCY_URL
         data, success = self._get_method(api_path=url,
                                          func_description="currency list",
                                          logger=logger,
@@ -26,7 +29,7 @@ class ListView(TemplateView, RESTfulMethods):
         return data
 
     def get_preload_currencies_dropdown(self):
-        url = settings.GET_ALL_PRELOAD_CURRENCY_URL
+        url = GET_ALL_PRELOAD_CURRENCY_URL
         data, success = self._get_method(api_path=url,
                                          func_description="preload currency list",
                                          logger=logger,

@@ -1,10 +1,14 @@
 import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.views.generic.base import TemplateView
 from web_admin.mixins import GetChoicesMixin
-from web_admin.restful_methods import *
+from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import GET_AGENT_BALANCE_BY_CURRENCY
+from web_admin.api_settings import COMPANY_BALANCE_HISTORY
+from web_admin.api_settings import COMPANY_BALANCE_ADD
+from web_admin.api_settings import GET_AGET_BALANCE
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +19,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         default_decimal = 1
-        logger.info('========== Start get Currency List ==========')
         currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
         currency_list, success_currency = self._get_currency_choices()
-        logger.info('========== Finished get Currency List ==========')
 
         currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
         if currency_list:
@@ -27,16 +29,12 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
         else:
             currency, decimal = '', default_decimal
 
-        logger.info('========== Start get Company Balance List ==========')
         data, success_balance = self._get_company_balance_history(currency)
-        logger.info('========== Finished get Company Balance List ==========')
 
         if success_balance:
             data = self._get_new_company_balance(data)
 
-        logger.info('========== Start get Total Initial Company Balance ==========')
         totalData, success_total_balance = self._get_total_initial_company_balance(currency)
-        logger.info('========== Finished get Total Initial Company Balance ==========')
 
         return render(request, self.template_name,
                       {'objects': list(data),
@@ -52,9 +50,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
         data = {'amount': amount}
 
-        logger.info('========== Start adding company balance ==========')
         success = self._add_company_balance(currency, data)
-        logger.info('========== Finished adding company balance ==========')
 
         if success:
             messages.add_message(
@@ -72,7 +68,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_total_initial_company_balance(self, currency):
-        url = settings.GET_AGENT_BALANCE_BY_CURRENCY.format(
+        url = GET_AGENT_BALANCE_BY_CURRENCY.format(
                                                agent_id=self.company_agent_id, 
                                                currency=currency)
         func_description = "Getting total initial balance by username: {} \
@@ -92,7 +88,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
         return map(calculate_balance_after_change, data)
 
     def _get_company_balance_history(self, currency):
-        url = settings.COMPANY_BALANCE_HISTORY + currency
+        url = COMPANY_BALANCE_HISTORY + currency
         return self._get_method(api_path=url,
                                          func_description="company balance list by user",
                                          logger=logger,
@@ -100,7 +96,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
 
     def _add_company_balance(self, currency, body):
-        url = settings.COMPANY_BALANCE_ADD + currency
+        url = COMPANY_BALANCE_ADD + currency
         data, success = self._post_method(api_path=url,
                                           func_description="company balance by user",
                                           logger= logger, 
@@ -108,7 +104,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
         return success
 
     def _get_currency_choices_by_agent(self,agent_id):
-        url = settings.GET_AGET_BALANCE.format(agent_id)
+        url = GET_AGET_BALANCE.format(agent_id)
         data, success = self._get_method(api_path=url,
                                         func_description="currency list by agent",
                                         logger=logger,

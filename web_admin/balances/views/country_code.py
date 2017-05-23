@@ -5,13 +5,15 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from web_admin.restful_methods import *
+from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import GLOBAL_CONFIGURATIONS_URL
+from web_admin.api_settings import ADD_COUNTRY_CODE_URL
 
 logger = logging.getLogger(__name__)
 
 class CountryCode(View, RESTfulMethods):
     def get(self, request, *args, **kwargs):
-        url = settings.GLOBAL_CONFIGURATIONS_URL
+        url = GLOBAL_CONFIGURATIONS_URL
         data, success = self._get_method(api_path=url,
                                          func_description="global configurations",
                                          logger=logger,
@@ -29,7 +31,7 @@ class CountryCode(View, RESTfulMethods):
         params = {
             'value': "" + country_code,
         }
-        url = settings.ADD_COUNTRY_CODE_URL
+        url = ADD_COUNTRY_CODE_URL
         data_log = copy.deepcopy(params)
         data_log['client_secret'] = ''
         logger.info("Expected country code {}".format(data_log))
