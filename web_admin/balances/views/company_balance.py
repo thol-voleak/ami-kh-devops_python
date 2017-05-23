@@ -1,113 +1,54 @@
-from django.views.generic.base import TemplateView
-from django.conf import settings
-from django.contrib import messages
-from django.shortcuts import redirect
-
-import requests
-import time
 import logging
-import datetime
-
-from authentications.apps import InvalidAccessToken
-from web_admin.get_header_mixins import GetHeaderMixin
+from django.views.generic.base import TemplateView
+from django.contrib import messages
+from web_admin.restful_methods import *
 
 logger = logging.getLogger(__name__)
 
-
-class CompanyBalanceView(TemplateView, GetHeaderMixin):
+class CompanyBalanceView(TemplateView, RESTfulMethods):
     template_name = "currencies/initial_company_balance.html"
     company_agent_id = 1
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start get Currency List ==========')
         currencies = self._get_currencies_list()
         agent_balance_list = self._get_agent_balances(self.company_agent_id)
-        logger.info('========== Finished get Currency List ==========')
         result = {'currencies': currencies, 'agent_balance_list': agent_balance_list}
         return result
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start create company balance ==========')
         currency = request.POST.get('currency')
-        headers = self._get_headers()
+
         url = settings.CREATE_COMPANY_BALANCE.format(currency)
-
-        start_date = time.time()
-        response = requests.post(url, headers=headers, verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time for add company balance is {} sec.".format(done - start_date))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Added company balance with {} currency successfully'.format(currency)
-            )
-            logger.info('========== Finished create company balance ==========')
-            return redirect('balances:initial_company_balance')
-        else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
+        data, success = self._post_method(api_path= url,
+                                          func_description="create company balance",
+                                          logger=logger,
+                                          params=currency)
+        return redirect('balances:initial_company_balance')
 
     def _get_currencies_list(self):
-        headers = self._get_headers()
         url = settings.GET_ALL_CURRENCY_URL
-        logger.info("Getting currency list from backend with {} url".format(url))
-
-        start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time for get currency list is {} sec.".format(done - start_date))
-
-        response_json = response.json()
-
-        logger.info("_get_currencies_list response is {}".format(response.text))
-
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            value = response_json.get('data', {}).get('value', '')
-            currency_list = map(lambda x: x.split('|'), value.split(','))
-
+        data, success = self._get_method(api_path=url,
+                                         func_description="currency list from backend",
+                                         logger=logger,
+                                         is_getting_list= True)
+        if success:
+            value = data.get('value', '')
+            currency_list = [i.split('|') for i in value.split(',')]
         else:
             currency_list = []
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
         return currency_list
 
     def _get_agent_balances(self, agent_id):
         url = settings.GET_AGET_BALANCE.format(agent_id)
-        headers = self._get_headers()
-        start_date = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time for get agent balances is {} sec.".format(done - start_date))
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data', [])
-        else:
-            data = []
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
+        data, success = self._get_method(api_path=url,
+                                         func_description="agent balances",
+                                         logger=logger,
+                                         is_getting_list=True)
         return data
+            
+        
+        
+        
+
+
+
