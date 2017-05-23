@@ -1,6 +1,5 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 
@@ -22,9 +21,9 @@ class DetailView(TemplateView, RESTfulMethods):
         return context
 
     def _get_client_scopes(self, client_id):
-        url = settings.CLIENT_SCOPES.format(client_id=client_id)
+        url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
         return self._get_method(url, 'client scopes', logger, True)
 
     def _get_client_detail(self, client_id):
-        url = settings.CLIENTS_LIST_URL + '/' + client_id
+        url = api_settings.CLIENTS_LIST_URL + '/' + client_id
         return self._get_method(url, 'client detail', logger)

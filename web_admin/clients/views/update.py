@@ -1,10 +1,7 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
-
-
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
@@ -20,7 +17,7 @@ class ClientUpdateForm(TemplateView, RESTfulMethods):
 
     def _get_client_detail(self, client_id):
 
-        url = settings.CLIENTS_LIST_URL + '/' + client_id
+        url = api_settings.CLIENTS_LIST_URL + '/' + client_id
         data, success = self._get_method(url, 'Client Detail', logger)
 
         context = {'client_info': data,
@@ -49,7 +46,7 @@ class ClientUpdate(TemplateView, RESTfulMethods):
             "autoapprove": ""
         }
 
-        url = settings.UPDATE_CLIENT_URL.format(client_id)
+        url = api_settings.UPDATE_CLIENT_URL.format(client_id)
 
         data, success = self._put_method(url, 'client', logger, params)
 
