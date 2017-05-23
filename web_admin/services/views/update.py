@@ -1,12 +1,17 @@
+from authentications.utils import get_auth_header
+from web_admin.api_settings import SERVICE_GROUP_LIST_URL
+from web_admin.restful_methods import RESTfulMethods
+
 from django.views.generic.base import TemplateView
 from django.conf import settings
-from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
+
 import logging
-from web_admin.restful_methods import RESTfulMethods
+
 logger = logging.getLogger(__name__)
+
 
 class UpdateView(TemplateView, RESTfulMethods):
     template_name = "services/service_update.html"
@@ -86,7 +91,6 @@ class UpdateView(TemplateView, RESTfulMethods):
         url = settings.SERVICE_UPDATE_URL.format(service_id)
         return self._put_method(url, "Service", logger, data)
 
-
     def _get_currency_choices(self, procnum, dict):
         url = settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choices", logger)
@@ -106,10 +110,8 @@ class UpdateView(TemplateView, RESTfulMethods):
 
         return result
 
-
     def _get_service_group_choices(self, procnum, dict):
-        url = settings.SERVICE_GROUP_LIST_URL
-        dict[procnum] = self._get_method(url, "service group choices", logger, True)
+        dict[procnum] = self._get_method(SERVICE_GROUP_LIST_URL, "service group choices", logger, True)
 
     def _get_service_detail(self, procnum, dict, service_id):
         url = settings.SERVICE_DETAIL_URL.format(service_id)
