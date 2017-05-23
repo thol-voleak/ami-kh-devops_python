@@ -2,6 +2,10 @@
 LOGIN_URL = 'api-gateway/system-user/v1/oauth/token'
 LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 
+# API Management
+APIS_URL="api-gateway/v1/apis/"
+SERVICES_LIST_URL="api-gateway/v1/services"
+
 CREATE_CLIENT_URL = 'api-gateway/v1/oauths/clients'
 CLIENTS_LIST_URL = 'api-gateway/v1/oauths/clients'
 UPDATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
@@ -84,9 +88,5 @@ MEMBER_CUSTOMER_PATH = 'api-gateway/report/v1/customers'
 CARD_LIST_PATH = 'api-gateway/report/v1/cards'
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
 CARD_HISTORY_PATH = 'api-gateway/report/v1/cards/histories'
-
-# API Management
-APIS_URL="api-gateway/v1/apis/"
-SERVICES_LIST_URL="api-gateway/v1/services"
 SCOPES_URL="api-gateway/centralize-configuration/v1/scopes"
 GET_CENTRALIZE_CONFIGURATION_URL="api-gateway/centralize-configuration/prepaid-card/default"

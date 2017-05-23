@@ -2,6 +2,7 @@ from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
 
 from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 
@@ -19,7 +20,7 @@ class APIListView(TemplateView):
         logger.info('========== Start getting api List ==========')
 
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + settings.APIS_URL
+        url = settings.DOMAIN_NAMES + api_settings.APIS_URL
         response = requests.get(url=url, headers=headers, verify=settings.CERT)
         logger.info('========== Finished getting api List ==========')
         json_data = response.json()
@@ -55,7 +56,7 @@ class AddAPIView(TemplateView):
         if getattr(self, '_services', None) is None:
             logger.info("Getting service list by {} user id".format(self.request.user.username))
             headers = get_auth_header(self.request.user)
-            url = settings.DOMAIN_NAMES + settings.SERVICES_LIST_URL
+            url = settings.DOMAIN_NAMES + api_settings.SERVICES_LIST_URL
 
             logger.info("Getting service list from backend with {} url".format(url))
             response = requests.get(url, headers=headers, verify=settings.CERT)
@@ -95,7 +96,7 @@ class AddAPIView(TemplateView):
         }
         
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + settings.APIS_URL
+        url = settings.DOMAIN_NAMES + api_settings.APIS_URL
 
         response = requests.post(url=url, json=data, headers=headers, verify=settings.CERT)
         json_data = response.json()
@@ -118,7 +119,7 @@ class ServiceListView(TemplateView):
         logger.info('========== Start getting api List ==========')
 
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + settings.APIS_URL
+        url = settings.DOMAIN_NAMES + api_settings.APIS_URL
         response = requests.get(url=url, headers=headers, verify=settings.CERT)
         logger.info('========== Finished getting api List ==========')
         json_data = response.json()
