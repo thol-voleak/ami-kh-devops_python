@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 
 from authentications.utils import get_auth_header
+from web_admin.api_settings import ADD_CURRENCY_URL
 
 logger = logging.getLogger(__name__)
 

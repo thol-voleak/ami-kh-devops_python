@@ -9,15 +9,19 @@ SUSPEND_CLIENT_URL = 'https://alp-service-gateway.service.consul:8443/api-gatewa
 ACTIVATE_CLIENT_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients/{}/statuses'
 AGENT_TYPES_LIST_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/types'
 GET_ALL_CURRENCY_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
-AGENT_TYPE_CREATE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/types'
-AGENT_TYPE_DETAIL_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/types/{}'
+
+AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/types'
+DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
+AGENT_TYPE_DETAIL_URL = 'api-gateway/agent/v1/types/{}'
+
+
 ADD_COUNTRY_CODE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/scopes/global/configurations/country'
 GLOBAL_CONFIGURATIONS_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/scopes/global/configurations'
 GET_ALL_CURRENCY_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 GET_ALL_PRELOAD_CURRENCY_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/currencies'
 ADD_CURRENCY_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_UPDATE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/types/{}'
-DELETE_AGENT_TYPE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/types/{}'
+
 GET_ALL_SYSTEM_USER = 'https://alp-service-gateway.service.consul:8443/api-gateway/system-user/v1/users'
 SYSTEM_USER_DETAIL_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CREATE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/system-user/v1/users'
