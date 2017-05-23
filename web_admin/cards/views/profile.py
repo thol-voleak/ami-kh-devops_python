@@ -1,6 +1,6 @@
 import logging
 import time
-
+import sys
 import requests
 from django.conf import settings
 from django.shortcuts import render
@@ -8,6 +8,8 @@ from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+from web_admin.api_settings import CARD_LIST_PATH
+
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +58,7 @@ class ProfileView(TemplateView):
         return render(request, 'profile.html', context)
 
     def get_card_list(self, body):
-        url = settings.DOMAIN_NAMES + settings.CARD_LIST_PATH
+        url = settings.DOMAIN_NAMES + CARD_LIST_PATH
 
         logger.info('Call search API to backend service')
         logger.info('API-Path: {};'.format(settings.CARD_LIST_PATH))
