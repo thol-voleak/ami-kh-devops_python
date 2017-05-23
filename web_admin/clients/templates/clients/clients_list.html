@@ -164,10 +164,12 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            console.log('success')
-                            location.reload(true)
+                            console.log('success');
                             $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
                             $("#alert-success-client").show();
+                            setTimeout(function(){
+                              location.reload(true);
+                            }, 10000);
                         },
                         error: function () {
                             console.log('error')

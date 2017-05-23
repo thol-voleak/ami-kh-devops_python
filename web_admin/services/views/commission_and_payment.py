@@ -77,7 +77,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
     def _get_choices_types(self, url):
         logger.info("Get choices for table from url: {}".format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
+        api_path = settings.DOMAIN_NAMES + url
+        response = requests.get(api_path, headers=self._get_headers(), verify=settings.CERT)
         json_data = response.json()
         logger.info("Reponse status code: {}".format(response.status_code))
         return json_data['data']
@@ -125,7 +126,7 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
         logger.info('========== Start create Setting Payment & Fee Structure ==========')
         logger.info('Create Payment and Fee Structure by user: {}, with url {}.'.format(
@@ -295,7 +296,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Setting Bonus ==========')
         logger.info('Username: {}, with url {}.'.format(self.request.user.username, url))
 

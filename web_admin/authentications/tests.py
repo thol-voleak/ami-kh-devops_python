@@ -1,6 +1,5 @@
 from django.test import TestCase, Client
 from . import apps
-from django.conf import settings
 # from django.contrib.auth.models import User
 # import unittest
 

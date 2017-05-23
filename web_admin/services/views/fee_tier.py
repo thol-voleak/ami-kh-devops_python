@@ -45,7 +45,7 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin):
     def _get_fee_tier_list(self, service_command_id):
         logger.info("Getting fee tier list by user: {}".format(self.request.user.username))
 
-        url = settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
+        url = settings.DOMAIN_NAMES + settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
         logger.info("Getting fee tier list from backend with url: {}".format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)

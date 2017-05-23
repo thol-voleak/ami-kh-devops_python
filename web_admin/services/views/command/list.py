@@ -41,7 +41,7 @@ class ListCommandView(TemplateView):
     def _add_service_command(self, data):
         logger.info("Adding service command by user {}".format(self.request.user.username))
 
-        url = settings.SERVICE_COMMAND_ADD_URL
+        url = settings.DOMAIN_NAMES + settings.SERVICE_COMMAND_ADD_URL
 
         logger.info('Adding service command request url: {}'.format(url))
         logger.info('Adding service command request body: {}'.format(data))
@@ -79,14 +79,14 @@ class ListCommandView(TemplateView):
         logger.info("Getting command list by user {}".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
 
-        url = settings.COMMAND_LIST_BY_SERVICE_URL.format(service_id)
+        url = settings.DOMAIN_NAMES + settings.COMMAND_LIST_BY_SERVICE_URL.format(service_id)
 
         logger.info("Getting command list from backend with {} url".format(url))
         auth_request = requests.get(url, headers=headers, verify=settings.CERT)
         logger.info("Response for get command list is {}".format(auth_request.content))
 
         json_data = auth_request.json()
-        detail_url = settings.SERVICE_DETAIL_URL.format(service_id)
+        detail_url = settings.DOMAIN_NAMES + settings.SERVICE_DETAIL_URL.format(service_id)
         service_detail = requests.get(detail_url, headers=headers, verify=settings.CERT)
         service_detail = service_detail.json().get("data")
         data = json_data.get('data')
@@ -108,7 +108,7 @@ class ListCommandView(TemplateView):
         logger.info("Getting command list by {} user id".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
 
-        url = settings.COMMAND_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.COMMAND_LIST_URL
 
         logger.info("Getting command list from backend with {} url".format(url))
         start_date = time.time()

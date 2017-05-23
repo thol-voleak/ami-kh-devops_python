@@ -26,7 +26,7 @@ class ServiceGroupCreate(View):
         name = request.POST.get('name')
         description = request.POST.get('description')
 
-        url = settings.ADD_SERVICE_GROUP_URL
+        url = settings.DOMAIN_NAMES + settings.ADD_SERVICE_GROUP_URL
         headers = get_auth_header(request.user)
 
         params = {

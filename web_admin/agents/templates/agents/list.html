@@ -2,9 +2,10 @@
 {% load static %}
 {% block content %}
 <div class="panel mb25">
-    <div class="panel-heading border">
+    <div class="panel-heading">
         <h3>Agent List</h3>
     </div>
+
     {% if agent_update_msg is not None %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="msg-update-client">
@@ -13,6 +14,62 @@
         </div>
     </div>
     {% endif %}
+    <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Unique Reference</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control input-rounded" name="unique_reference"
+                       id="txt_unique_reference"
+                       value="{{ unique_reference }}">
+            </div>
+            <div class="col-xs-1">
+                <input id="search_btn" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control input-rounded" name="email"
+                       id="txt_email"
+                       value="{{ email }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Primary Mobile Number</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control input-rounded" name="primary_mobile_number"
+                       id="txt_primary_mobile_number"
+                       value="{{ primary_mobile_number }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">KYC Status</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control input-rounded" name="kyc_status"
+                       id="txt_kyc_status"
+                       value="{{ kyc_status }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Created Date</label>
+            <label class="col-sm-2 control-label">From</label>
+            <div class="col-sm-2">
+                <input type="date" class="form-control input-rounded"
+                       name="from_created_timestamp"
+                       id="dtp_created_from"
+                       value="from_created_timestamp">
+            </div>
+            <label class="col-sm-1 control-label">To</label>
+            <div class="col-sm-2">
+                <input type="date" class="form-control input-rounded"
+                       name="to_created_timestamp"
+                       id="dtp_created_to"
+                       value="to_created_timestamp">
+            </div>
+        </div>
+    </form>
 
     <div class="panel-body">
         <div class="table-responsive">

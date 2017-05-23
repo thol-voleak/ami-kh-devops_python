@@ -14,7 +14,7 @@ def suspend(client_id):
         'status': 'suspend',
     }
 
-    url = settings.SUSPEND_CLIENT_URL.format(client_id)
+    url = settings.DOMAIN_NAMES + settings.SUSPEND_CLIENT_URL.format(client_id)
     data, success = RESTfulMethods._put_method(url, 'client', logger, params)
 
     if success:
