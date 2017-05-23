@@ -60,7 +60,7 @@ class ProfileView(TemplateView):
         url = settings.DOMAIN_NAMES + CARD_LIST_PATH
 
         logger.info('Call search API to backend service')
-        logger.info('API-Path: {};'.format(settings.CARD_LIST_PATH))
+        logger.info('API-Path: {};'.format(CARD_LIST_PATH))
         start = time.time()
         logger.info("Request body: {};".format(body))
         auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)

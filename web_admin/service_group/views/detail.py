@@ -1,6 +1,6 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
-
+from web_admin import api_settings
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
 import requests, time
@@ -27,7 +27,7 @@ class ServiceGroupDetailForm(TemplateView):
 
     def _get_service_group_detail(self, service_group_id):
 
-        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
 
         headers = get_auth_header(self.request.user)
 
