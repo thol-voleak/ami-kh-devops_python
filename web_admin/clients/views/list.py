@@ -1,13 +1,8 @@
 from django.views.generic.base import TemplateView
-from django.conf import settings
-
+from web_admin import api_settings
 import logging
-
 from web_admin.restful_methods import RESTfulMethods
-
-
 logger = logging.getLogger(__name__)
-
 
 class ListView(TemplateView, RESTfulMethods):
     template_name = "clients/clients_list.html"
@@ -19,6 +14,6 @@ class ListView(TemplateView, RESTfulMethods):
         return result
 
     def get_clients_list(self):
-        url = settings.CLIENTS_LIST_URL
+        url = api_settings.CLIENTS_LIST_URL
         data, success = self._get_method(url, 'Client List', logger, True)
         return data
