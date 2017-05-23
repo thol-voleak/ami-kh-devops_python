@@ -16,7 +16,7 @@ class ClientApi():
         logger.info("========== Start deleting agent type ==========")
         logger.info('Agent Type ID to be deleted: {}'.format(agent_type_id))
         if request.method == "POST":
-            url = settings.DELETE_AGENT_TYPE_URL.format(agent_type_id)
+            url = settings.DOMAIN_NAMES + settings.DELETE_AGENT_TYPE_URL.format(agent_type_id)
 
             start_date = time.time()
             response = requests.delete(url, headers=get_auth_header(request.user),

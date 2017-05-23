@@ -33,7 +33,7 @@ class SystemUserChangePassword(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start changing system user password ==========')
         system_user_id = kwargs['systemUserId']
-        url = settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
+        url = settings.DOMAIN_NAMES + settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
         logger.info("URL: {}".format(url))
 
         password = request.POST.get('newpassword')

@@ -28,7 +28,7 @@ class ServiceGroupUpdateForm(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start updating service group ==========')
         service_group_id = kwargs['ServiceGroupId']
-        url = settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
         logger.info("URL: {}".format(url))
 
         name = request.POST.get('service_group_name')
@@ -77,7 +77,7 @@ class ServiceGroupUpdateForm(TemplateView):
 
     def _get_service_group_detail(self, service_group_id):
 
-        url = settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
 
         headers = get_auth_header(self.request.user)
 
