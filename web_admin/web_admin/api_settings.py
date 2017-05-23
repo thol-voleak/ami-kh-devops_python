@@ -1,6 +1,8 @@
+# Authentication
+LOGIN_URL = 'api-gateway/system-user/v1/oauth/token'
+LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 
 CREATE_CLIENT_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients'
-LOGIN_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/system-user/v1/oauth/token'
 CLIENTS_LIST_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients'
 UPDATE_CLIENT_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients/{}'
 DELETE_CLIENT_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients/{}'
@@ -38,7 +40,6 @@ CREATE_COMPANY_BALANCE = "https://alp-service-gateway.service.consul:8443/api-ga
 CLIENT_SCOPES = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauths/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/apis'
 COMPANY_BALANCE_ADD = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/companies/balances/'
-LOGOUT_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/v1/oauth/token/revoke'
 GET_AGENT_BALANCE_BY_CURRENCY = 'https://alp-service-gateway.service.consul:8443/api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
 COMMAND_LIST_BY_SERVICE_URL = 'https://alp-service-gateway.service.consul:8443/api-gateway/payment/v1/services/{}/service-commands'
 FEE_TIER_LIST = 'https://alp-service-gateway.service.consul:8443/api-gateway/payment/v1/service-commands/{service_command_id}/fee-tiers'
