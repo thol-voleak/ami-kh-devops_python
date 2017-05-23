@@ -31,6 +31,7 @@ SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}'
+PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/v1/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
