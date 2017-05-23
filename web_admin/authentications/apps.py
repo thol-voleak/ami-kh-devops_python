@@ -42,7 +42,7 @@ class CustomBackend:
             logger.info('========== Start authentication backend service ==========')
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
-            url = settings.LOGIN_URL
+            url = settings.DOMAIN_NAMES + settings.LOGIN_URL
 
             logger.info('Auth URL: {}'.format(url))
 

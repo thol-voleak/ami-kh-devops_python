@@ -114,7 +114,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
 
     def _get_tier_condition(self, procnum, dict):
         logger.info('Start getting fee tier condition from backend')
-        url = settings.FEE_TIER_CONDITION_URL
+        url = settings.DOMAIN_NAMES + settings.FEE_TIER_CONDITION_URL
         logger.info('Request URL: {};'.format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -137,8 +137,8 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_amount_types(self, procnum, dict):
         logger.info('Start getting amount types from backend')
 
-        url = settings.AMOUNT_TYPES_URL
-        logger.info('Request url: {}'.format(url))
+        url = settings.DOMAIN_NAMES + settings.AMOUNT_TYPES_URL
+        logger.info('Request url: {}'.format(settings.AMOUNT_TYPES_URL))
 
         logger.info('Get amount types from backend')
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -160,9 +160,8 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_service_detail(self, procnum, dict, service_id):
         logger.info('Start getting service detail {} from backend'.format(service_id))
 
-        url = settings.SERVICE_DETAIL_URL.format(service_id)
+        url = settings.DOMAIN_NAMES + settings.SERVICE_DETAIL_URL.format(service_id)
         logger.info('Request url: {}'.format(url))
-
         headers = get_auth_header(self.request.user)
 
         start_date = time.time()
@@ -186,7 +185,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_command_name(self, procnum, dict, command_id):
         logger.info('Start getting commands list from backend')
 
-        url = settings.COMMAND_LIST_URL
+        url = settings.DOMAIN_NAMES + settings.COMMAND_LIST_URL
         logger.info('Request url: {}'.format(url))
 
         headers = get_auth_header(self.request.user)

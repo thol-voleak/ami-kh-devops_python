@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def logout_user(request):
     logger.info('========== Start to logout ==========')
-    url = settings.LOGOUT_URL
+    url = settings.DOMAIN_NAMES + settings.LOGOUT_URL
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 
