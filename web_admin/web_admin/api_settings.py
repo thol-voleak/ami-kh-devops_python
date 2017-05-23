@@ -72,6 +72,7 @@ AGENT_BONUS_DISTRIBUTION_UPDATE_URL = "api-gateway/payment/v1/agent-bonus-distri
 FEE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/v1/bonus-distributions/{fee_distributions_id}'
 SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/v1/service-commands/{}'
 AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
+SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents/profiles'
 CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'

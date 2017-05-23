@@ -20,7 +20,6 @@ class AgentTypeCreate(View, RESTfulMethods):
         return render(request, 'agent_type/create_agent_type.html', context)
 
     def post(self, request, *args, **kwargs):
-        logger.info("aaaaauuu===")
         try:
             params = {
                 "name": request.POST.get('agent_type_input'),
