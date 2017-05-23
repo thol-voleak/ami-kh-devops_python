@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from .models import Authentications
 from .apps import InvalidAccessToken
-from django.http import HttpResponseRedirect
+from web_admin import api_settings
 import time
 import random
 import string
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def logout_user(request):
     logger.info('========== Start to logout ==========')
-    url = settings.DOMAIN_NAMES + settings.LOGOUT_URL
+    url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 

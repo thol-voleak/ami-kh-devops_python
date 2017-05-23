@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 from django.contrib.auth.models import User
 from django.conf import settings
+from web_admin import api_settings
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -42,7 +43,7 @@ class CustomBackend:
             logger.info('========== Start authentication backend service ==========')
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
-            url = settings.DOMAIN_NAMES + settings.LOGIN_URL
+            url = settings.DOMAIN_NAMES + api_settings.LOGIN_URL
 
             logger.info('Auth URL: {}'.format(url))
 

@@ -1,6 +1,5 @@
 import logging
-
-from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 
@@ -32,7 +31,7 @@ class DetailView(TemplateView, RESTfulMethods):
             return context
 
     def _get_agent_detail(self, agent_id):
-        data, success = self._get_method(api_path=settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
                                          func_description="Agent detail",
                                          logger=logger)
         context = {
@@ -43,7 +42,7 @@ class DetailView(TemplateView, RESTfulMethods):
         return context, success
     
     def _get_agent_type_name(self, agent_type_id):
-        agent_types_list, success = self._get_method(api_path=settings.AGENT_TYPES_LIST_URL,
+        agent_types_list, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                                      func_description="Agent types list from backend",
                                                      logger=logger,
                                                      is_getting_list=True)

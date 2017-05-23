@@ -1,5 +1,5 @@
 import logging
-
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.utils import get_auth_header
@@ -75,7 +75,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     # 2017-05-05
     '''
     def _get_agent_profile(self, agent_id):
-        data, success = self._get_method(api_path=settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
                                                      func_description="Agent Profile",
                                                      logger=logger)
         return data
@@ -88,7 +88,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     - API 1: GET /api-gateway/agent/v1/types
     '''
     def _get_agent_types(self):
-        data, success = self._get_method(api_path=settings.GET_AGENT_TYPES_PATH,
+        data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
                                          func_description="Agent Type List",
                                          logger=logger,
                                          is_getting_list=True)
@@ -102,7 +102,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     - API 2: GET /api-gateway/centralize-configuration/v1/scopes/global/configurations/currency
     '''
     def _get_currencies(self):
-        data, success = self._get_method(api_path=settings.GET_CURRENCIES_PATH,
+        data, success = self._get_method(api_path=api_settings.GET_CURRENCIES_PATH,
                                          func_description="Agent Currencies",
                                          logger=logger,
                                          is_getting_list=True)
@@ -230,7 +230,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         return self._headers
 
     def _update_agent(self, agent_id, data):
-        data, success = self._put_method(api_path=settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
+        data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
                                          func_description="Agent",
                                          logger=logger, params=data)
         return data, success

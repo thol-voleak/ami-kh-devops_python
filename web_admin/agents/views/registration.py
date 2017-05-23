@@ -1,7 +1,6 @@
 import logging
-
+from web_admin import api_settings
 from datetime import datetime
-from django.conf import settings
 from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
@@ -20,14 +19,14 @@ History:
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
-        data, success = self._get_method(api_path=settings.AGENT_TYPES_LIST_URL,
+        data, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
                                          logger=logger,
                                          is_getting_list=True)
         return data
 
     def _get_currencies_dropdown(self):
-        data, success = self._get_method(api_path=settings.GET_ALL_CURRENCY_URL,
+        data, success = self._get_method(api_path=api_settings.GET_ALL_CURRENCY_URL,
                                          func_description="Agent All Currency List",
                                          logger=logger,
                                          is_getting_list=True)
@@ -189,7 +188,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         remove = [key for key, value in body.items() if not value]
         for key in remove: del body[key]
 
-        data, success = self._post_method(api_path=settings.AGENT_REGISTRATION_URL,
+        data, success = self._post_method(api_path=api_settings.AGENT_REGISTRATION_URL,
                                           func_description="Agent Profile",
                                           logger=logger, params=body)
         return data, success
@@ -204,7 +203,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'password': password,
         }
 
-        data, success = self._post_method(api_path=settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
+        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
                                           func_description="Agent Identity",
                                           logger=logger, params=body)
         if success:
@@ -220,7 +219,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         sof_type = "cash"  # TODO: Hard code for Sof_Type
         body = {}
 
-        data, success = self._post_method(api_path=settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
+        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
                                           func_description="Agent Balance",
                                           logger=logger, params=body)
 
