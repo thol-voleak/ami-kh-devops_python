@@ -78,9 +78,6 @@ MIDDLEWARE_CLASSES = [
 sys.path.append('/data/projects/admin-portal/config')
 from platform_settings import *
 
-sys.path.append('./web_admin')
-from api_settings import *
-
 AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend',)
 # Add this to tell Django where to redirect after
 # successful login

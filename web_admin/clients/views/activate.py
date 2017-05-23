@@ -1,6 +1,5 @@
-from django.conf import settings
 from django.http import HttpResponse
-
+from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 import logging
@@ -9,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def activate(request, client_id):
-    url = settings.ACTIVATE_CLIENT_URL.format(client_id)
+    url = api_settings.ACTIVATE_CLIENT_URL.format(client_id)
     params = {
         'status': 'active',
     }

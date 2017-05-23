@@ -1,16 +1,11 @@
 import logging
 import random
 import string
-
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
-
 from web_admin.restful_methods import RESTfulMethods
-
-
 logger = logging.getLogger(__name__)
-
 
 class ClientCreate(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
@@ -33,7 +28,7 @@ class ClientCreate(TemplateView, RESTfulMethods):
         client_id = request.POST.get('client_id')
         client_secret = request.POST.get('client_secret')
 
-        url = settings.CREATE_CLIENT_URL
+        url = api_settings.CREATE_CLIENT_URL
 
         params = {
             "client_id": client_id,

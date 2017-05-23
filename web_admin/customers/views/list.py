@@ -7,6 +7,7 @@ from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin import api_settings
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class ListView(TemplateView, GetHeaderMixin):
         return context
 
     def get_member_customer_list(self):
-        api_path = settings.MEMBER_CUSTOMER_PATH
+        api_path = api_settings.MEMBER_CUSTOMER_PATH
         url = settings.DOMAIN_NAMES + api_path
 
         logger.info('API-Path: {};'.format(api_path))
@@ -55,7 +56,7 @@ class ListView(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         logger.info('========== Start searching Customer ==========')
-        api_path = settings.MEMBER_CUSTOMER_PATH
+        api_path = api_settings.MEMBER_CUSTOMER_PATH
         url = settings.DOMAIN_NAMES + api_path
         logger.info('API-Path: {};'.format(api_path))
 

@@ -1,13 +1,11 @@
 import json
 import logging
 import time
-
 import requests
 from django.conf import settings
 from django.http import HttpResponse
-
 from authentications.utils import get_auth_header
-
+from web_admin import api_settings
 logger = logging.getLogger(__name__)
 
 
@@ -15,7 +13,7 @@ class ClientApi():
     def regenerate(request, client_id):
         logger.info('========== Start regenerating client secret ==========')
 
-        url = settings.DOMAIN_NAMES + settings.REGENERATE_CLIENT_SECRET_URL.format(client_id)
+        url = settings.DOMAIN_NAMES + api_settings.REGENERATE_CLIENT_SECRET_URL.format(client_id)
 
         start_date = time.time()
         response = requests.post(url, headers=get_auth_header(request.user),
@@ -38,7 +36,7 @@ class ClientApi():
     def delete_client_by_id(request, client_id):
         logger.info("========== Start delete client id ==========")
         if request.method == "POST":
-            url = settings.DOMAIN_NAMES + settings.DELETE_CLIENT_URL.format(client_id)
+            url = settings.DOMAIN_NAMES + api_settings.DELETE_CLIENT_URL.format(client_id)
             start_date = time.time()
             response = requests.delete(url, headers=get_auth_header(request.user),
                                        verify=settings.CERT)
