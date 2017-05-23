@@ -24,9 +24,12 @@ class AgentTypeUpdateForm(TemplateView, RESTfulMethods):
             return context
 
     def post(self, request, *args, **kwargs):
-        agent_type_id = kwargs['agentTypeId']
+        logger.info('========== Start update agent type detail ==========')
+
         name = request.POST.get('agent_type_input')
         description = request.POST.get('agent_type_description_input')
+        agent_type_id = kwargs['agentTypeId']
+
         params = {
             "name": name,
             "description": description,
@@ -35,6 +38,7 @@ class AgentTypeUpdateForm(TemplateView, RESTfulMethods):
                                          func_description="Agent Type",
                                          logger=logger, params=params)
         if success:
+            logger.info('========== End update agent type detail ==========')
             request.session['agent_type_update_msg'] = 'Updated agent type successfully'
             return redirect('agent_type:agent-type-detail', agentTypeId=(agent_type_id))
         else:

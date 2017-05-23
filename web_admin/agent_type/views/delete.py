@@ -22,7 +22,7 @@ class DeleteView(TemplateView, RESTfulMethods):
             return self._get_agent_type_detail(agent_type_id)
         except Exception as e:
             logger.error(e)
-            context = {'agent_type_info': {}}
+            context = {}
             return context
 
     def post(self, request, *args, **kwargs):
