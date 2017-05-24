@@ -3,6 +3,7 @@ import time
 
 import requests
 from django.conf import settings
+from web_admin import api_settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
@@ -22,7 +23,7 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.DOMAIN_NAMES + settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + api_settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Agent Hierarchy Fee ==========')
         logger.info('API-Path: {}.'.format(url))
 
@@ -84,7 +85,7 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
 
         agent_fee_distribution_id = kwargs.get('fee_distributions_id')
-        api_path = settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
+        api_path = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
         url = settings.DOMAIN_NAMES + api_path
         logger.info('updating Agent Hierarchy Distribution - Fee API-Path: {path}'.format(path=api_path))
 

@@ -3,6 +3,7 @@ from multiprocessing import Process, Manager
 
 from django.views.generic.base import TemplateView
 from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from authentications.utils import get_auth_header
 
@@ -94,7 +95,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def _get_tier_detail(self, tier_id):
-        url = (settings.DOMAIN_NAMES + settings.TIER_PATH).format(tier_id)
+        url = (settings.DOMAIN_NAMES + api_settings.TIER_PATH).format(tier_id)
         logger.info('Start getting tier detail')
         logger.info('API-Path: {};'.format(url))
         start = time.time()
@@ -114,7 +115,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
 
     def _get_tier_condition(self, procnum, dict):
         logger.info('Start getting fee tier condition from backend')
-        url = settings.DOMAIN_NAMES + settings.FEE_TIER_CONDITION_URL
+        url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_CONDITION_URL
         logger.info('Request URL: {};'.format(url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -137,7 +138,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_amount_types(self, procnum, dict):
         logger.info('Start getting amount types from backend')
 
-        url = settings.DOMAIN_NAMES + settings.AMOUNT_TYPES_URL
+        url = settings.DOMAIN_NAMES + api_settings.AMOUNT_TYPES_URL
         logger.info('Request url: {}'.format(settings.AMOUNT_TYPES_URL))
 
         logger.info('Get amount types from backend')
@@ -160,7 +161,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_service_detail(self, procnum, dict, service_id):
         logger.info('Start getting service detail {} from backend'.format(service_id))
 
-        url = settings.DOMAIN_NAMES + settings.SERVICE_DETAIL_URL.format(service_id)
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_DETAIL_URL.format(service_id)
         logger.info('Request url: {}'.format(url))
         headers = get_auth_header(self.request.user)
 
@@ -185,7 +186,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
     def _get_command_name(self, procnum, dict, command_id):
         logger.info('Start getting commands list from backend')
 
-        url = settings.DOMAIN_NAMES + settings.COMMAND_LIST_URL
+        url = settings.DOMAIN_NAMES + api_settings.COMMAND_LIST_URL
         logger.info('Request url: {}'.format(url))
 
         headers = get_auth_header(self.request.user)
@@ -219,7 +220,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
 
     def _get_fee_types(self, procnum, dict):
         logger.info('Start getting fee types from backend')
-        api_path = settings.GET_FEE_TYPES_PATH
+        api_path = api_settings.GET_FEE_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('API-Path: {path}'.format(path=api_path))
@@ -246,7 +247,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
 
     def _get_bonus_types(self, procnum, dict):
         logger.info('Start getting bonus types from backend')
-        api_path = settings.GET_BONUS_TYPES_PATH
+        api_path = api_settings.GET_BONUS_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('API-Path: {path}'.format(path=api_path))
@@ -308,7 +309,7 @@ class UpdateView(TemplateView, GetHeaderMixin):
                         service_command_id=service_command_id)
 
     def _edit_tier(self, fee_tier_id, data):
-        url = (settings.DOMAIN_NAMES + settings.TIER_PATH).format(fee_tier_id)
+        url = (settings.DOMAIN_NAMES + api_settings.TIER_PATH).format(fee_tier_id)
 
         logger.info('API-Path: {};'.format(url))
         logger.info('Params: {};'.format(data))
