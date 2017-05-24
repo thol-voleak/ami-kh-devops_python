@@ -5,6 +5,15 @@
 
 <div class="panel mb25">
     <div class="panel-body">
+        {% for message in messages %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endfor %}
+
         <form class="form-horizontal" role="form" method="post" action="{% url 'balances:company_balance' %}">
             {% csrf_token %}
             <div class="form-group">
