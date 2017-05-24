@@ -28,8 +28,9 @@
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">
                         <select class="form-control" id="user_type_ddl" name="user_type">
-                            <option value=1 {% if user_type == 1 %}selected="selected"{% endif %}>Customer</option>
-                            <option value=2 {% if user_type == 2 %}selected="selected"{% endif %}>Agent</option>
+                            <option value=0 {% if user_type == '0' %}selected="selected"{% endif %}>All</option>
+                            <option value=1 {% if user_type == '1' %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if user_type == '2' %}selected="selected"{% endif %}>Agent</option>
                         </select>
                     </div>
                     <div class="col-xs-1">
