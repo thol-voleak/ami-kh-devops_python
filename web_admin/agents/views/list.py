@@ -14,9 +14,9 @@ STATUS = {
 
 class ListView(TemplateView, RESTfulMethods):
     template_name = 'agents/list.html'
-
     def get(self, request):
-        return render(request, 'agents/list.html')
+        context = {'agent_update_msg': self.request.session.pop('agent_update_msg', None)}
+        return render(request, 'agents/list.html', context)
 
     def post(self, request, *args, **kwargs):
         # Get params
