@@ -7,8 +7,9 @@ from django.shortcuts import redirect
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
+
 class RESTfulMethods(GetHeaderMixin):
-    def _get_method(self, api_path, func_description, logger, is_getting_list = False, params = {}):
+    def _get_method(self, api_path, func_description, logger, is_getting_list=False, params={}):
         """
         :param api_path: 
         :param func_description: 
@@ -29,18 +30,20 @@ class RESTfulMethods(GetHeaderMixin):
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
         logger.info("response === {}".format(response.content))
-        response_json = response.json()
 
-        status = response_json.get('status', {})
-
-        code = status.get('code', '')
-
-        if is_getting_list:
-            default_data = []
-        else:
-            default_data = {}
+        try:
+            response_json = response.json()
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+        except Exception as e:
+            logger.error(e)
+            raise Exception(response.content)
 
         if response.status_code == 200 and code == "success":
+            if is_getting_list:
+                default_data = []
+            else:
+                default_data = {}
             data = response_json.get('data', default_data)
 
             if len(params) > 0:
@@ -57,7 +60,6 @@ class RESTfulMethods(GetHeaderMixin):
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
-            result = default_data, False
             raise Exception(response.content)
         logger.info('========== Finished getting {func_description} =========='.format(func_description=func_description))
         return result
@@ -80,14 +82,16 @@ class RESTfulMethods(GetHeaderMixin):
         logger.info("Params: {} ".format(params))
 
         start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(),
-                                json=params, verify=settings.CERT)
+        response = requests.put(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         done = time.time()
+        try:
+            response_json = response.json()
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+        except Exception as e:
+            logger.error(e)
 
-        response_json = response.json()
-        status = response_json.get('status', {})
 
-        code = status.get('code', '')
         if code == "success":
             logger.info('Response_code: {}'.format(response.status_code))
             logger.info('Response_content: {}'.format(response.text))
@@ -95,11 +99,12 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = response_json.get('data', {}), True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                        code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            result = None, False
+            raise Exception(response.content)
         logger.info('========== Finished putting {} =========='.format(func_description))
         return result
 
@@ -140,7 +145,8 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             message = status.get('message', 'Something went wrong.')
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                        code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
         logger.info('========== Finished creating {} =========='.format(func_description))
@@ -178,7 +184,8 @@ class RESTfulMethods(GetHeaderMixin):
             result = response_json.get('data', {}), True
         else:
             result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                        code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
         logger.info('========== Finished deleting {} =========='.format(func_description))
@@ -199,8 +206,9 @@ class RESTfulMethods(GetHeaderMixin):
     # 2017-05-18: Init
     - For skip sensitive fields for logging data.
     '''
+
     @staticmethod
-    def _filter_sensitive_fields(params = {}):
+    def _filter_sensitive_fields(params={}):
 
         if 'password' in params:
             params['password'] = None
