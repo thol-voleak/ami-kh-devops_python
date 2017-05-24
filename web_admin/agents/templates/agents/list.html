@@ -91,13 +91,11 @@
                 <tbody>
                 {% for agent in data %}
                 <tr>
-                    <td class="col-sm-3">
-                        {% if agent.is_deleted %}
-                            <s>{{ agent.id }}</s>
-                        {% else %}
-                            {{ agent.id }}
-                        {% endif %}
-                    </td>
+                    {% if agent.is_deleted %}
+                        <td class="col-sm-3"><s>{{ agent.id }}</s></td>
+                    {% else %}
+                        <td class="col-sm-3">{{ agent.id }}</td>
+                    {% endif %}
                     <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
                     <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
