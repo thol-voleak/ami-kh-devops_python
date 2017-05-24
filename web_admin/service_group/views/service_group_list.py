@@ -2,7 +2,7 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
-
+from web_admin import api_settings
 import requests
 import logging
 
@@ -22,7 +22,7 @@ class ListView(TemplateView):
     def get_service_group_list(self):
         logger.info("Getting service group list by {} user id".format(self.request.user.username))
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_LIST_URL
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_GROUP_LIST_URL
         logger.info("Getting service group list from backend with {} url".format(url))
         logger.info('Getting service group list from backend')
         response = requests.get(url, headers=headers, verify=settings.CERT)

@@ -1,6 +1,5 @@
 import logging
 import time
-
 import requests
 from django.conf import settings
 from django.shortcuts import render
@@ -8,6 +7,8 @@ from django.views.generic.base import TemplateView
 
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+from web_admin.api_settings import CARD_LIST_PATH
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +37,8 @@ class ProfileView(TemplateView):
         if card_identifier is not '':
             body['card_identifier'] = card_identifier
         if user_id is not '':
-            body['user_id'] = user_id
-        if user_type is not '':
+            body['user_id'] = int(user_id)
+        if user_type is not '' and user_type is not '0':
             body['user_type_id'] = int(user_type)
 
         data = self.get_card_list(body)
@@ -48,18 +49,18 @@ class ProfileView(TemplateView):
 
         context = {'data': result_data,
                    'card_identifier': card_identifier,
-                   'user_id' : user_id,
-                   'user_type': int(user_type)
+                   'user_id': user_id,
+                   'user_type': user_type
                    }
 
         logger.info('========== End search card ==========')
         return render(request, 'profile.html', context)
 
     def get_card_list(self, body):
-        url = settings.DOMAIN_NAMES + settings.CARD_LIST_PATH
+        url = settings.DOMAIN_NAMES + CARD_LIST_PATH
 
         logger.info('Call search API to backend service')
-        logger.info('API-Path: {};'.format(settings.CARD_LIST_PATH))
+        logger.info('API-Path: {};'.format(CARD_LIST_PATH))
         start = time.time()
         logger.info("Request body: {};".format(body))
         auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)

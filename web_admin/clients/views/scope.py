@@ -1,15 +1,12 @@
 from django.views.generic.base import TemplateView
-from django.conf import settings
+from web_admin import api_settings
 from django.contrib import messages
 from django.shortcuts import redirect
-
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
-
 import logging
 
 logger = logging.getLogger(__name__)
-
 
 class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
     template_name = "clients/client_scope.html"
@@ -32,7 +29,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
         scopes_to_delete = [scope for scope in granted_scope if scope not in update_scopes]
         scopes_to_insert = [scope for scope in update_scopes if scope not in granted_scope]
 
-        url = settings.CLIENT_SCOPES.format(client_id=client_id)
+        url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
 
         delete_success = self.delete_scopes(url, scopes_to_delete)
         insert_success = self.insert_scopes(url, scopes_to_insert)
@@ -73,7 +70,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
         return context
 
     def _get_all_scopes_list(self):
-        url = settings.ALL_SCOPES_LIST_URL
+        url = api_settings.ALL_SCOPES_LIST_URL
         data, success = self._get_method(url, 'Client Scopes', logger, True)
 
         if success:
@@ -81,7 +78,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
         return []
 
     def _get_client_scopes(self, client_id):
-        url = settings.CLIENT_SCOPES.format(client_id=client_id)
+        url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
         data, success = self._get_method(url, 'Client Scopes', logger, True)
 
         if success:

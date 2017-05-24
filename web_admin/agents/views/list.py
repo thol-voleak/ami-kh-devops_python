@@ -49,6 +49,7 @@ class ListView(TemplateView, RESTfulMethods):
             body['from_created_timestamp'] = from_created_timestamp
         if to_created_timestamp is not '':
             to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
+            to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
             to_created_timestamp = to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = to_created_timestamp
 

@@ -3,6 +3,7 @@ from multiprocessing.pool import ThreadPool
 from authentications.apps import InvalidAccessToken
 import requests
 from django.conf import settings
+from web_admin import api_settings
 
 from authentications.utils import get_auth_header
 
@@ -16,7 +17,7 @@ class GetChoicesMixin(object):
         return self._headers
 
     def _get_currency_choices(self):
-        url = settings.DOMAIN_NAMES + settings.GET_ALL_CURRENCY_URL
+        url = settings.DOMAIN_NAMES + api_settings.GET_ALL_CURRENCY_URL
         logger.info('Get currency choice list from backend')
         logger.info('Request url: {}'.format(url))
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -44,7 +45,7 @@ class GetChoicesMixin(object):
 
 
     def _get_service_group_choices(self):
-        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_LIST_URL
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_GROUP_LIST_URL
         logger.info('Get services group list from backend')
         logger.info('Request url: {}'.format(url))
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)

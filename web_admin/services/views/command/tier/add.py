@@ -3,6 +3,7 @@ from django.conf import settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
+from web_admin import api_settings
 
 import time
 import requests
@@ -74,7 +75,7 @@ class AddView(TemplateView):
     def _add_tier(self, service_command_id, data):
         logger.info("Adding tier for service command by user {}".format(self.request.user.username))
 
-        url = settings.ADD_TIER_URL.format(service_command_id=service_command_id)
+        url = api_settings.ADD_TIER_URL.format(service_command_id=service_command_id)
 
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('Username {} sends request body: {}'.format(self.request.user.username, data))
@@ -92,7 +93,7 @@ class AddView(TemplateView):
 
     def _get_tier_condition(self):
         logger.info('Start getting fee tier condition from backend')
-        url = settings.FEE_TIER_CONDITION_URL
+        url = api_settings.FEE_TIER_CONDITION_URL
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -115,7 +116,7 @@ class AddView(TemplateView):
     def _get_amount_types(self):
         logger.info('Start getting amount types from backend')
 
-        url = settings.AMOUNT_TYPES_URL
+        url = api_settings.AMOUNT_TYPES_URL
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         logger.info('Get amount types from backend')
@@ -138,7 +139,7 @@ class AddView(TemplateView):
     def _get_service_detail(self, service_id):
         logger.info('Start getting service detail {} from backend'.format(service_id))
 
-        url = settings.SERVICE_DETAIL_URL.format(service_id)
+        url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         headers = get_auth_header(self.request.user)
@@ -164,7 +165,7 @@ class AddView(TemplateView):
     def _get_command_name(self, command_id):
         logger.info('Start getting commands list from backend')
 
-        url = settings.COMMAND_LIST_URL
+        url = api_settings.COMMAND_LIST_URL
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
 
         headers = get_auth_header(self.request.user)
@@ -197,7 +198,7 @@ class AddView(TemplateView):
 
     def _get_fee_types(self):
         logger.info('Start getting fee types from backend')
-        api_path = settings.GET_FEE_TYPES_PATH
+        api_path = api_settings.GET_FEE_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('API-Path: {path}'.format(path=api_path))
@@ -224,7 +225,7 @@ class AddView(TemplateView):
 
     def _get_bonus_types(self):
         logger.info('Start getting bonus types from backend')
-        api_path = settings.GET_BONUS_TYPES_PATH
+        api_path = api_settings.GET_BONUS_TYPES_PATH
         url = settings.DOMAIN_NAMES + api_path
         logger.info('Username {} sends request url: {}'.format(self.request.user.username, url))
         logger.info('API-Path: {path}'.format(path=api_path))

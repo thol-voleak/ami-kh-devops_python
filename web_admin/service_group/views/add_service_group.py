@@ -3,7 +3,7 @@ from django.views import View
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
-
+from web_admin import api_settings
 import requests,time
 import logging
 
@@ -26,7 +26,7 @@ class ServiceGroupCreate(View):
         name = request.POST.get('name')
         description = request.POST.get('description')
 
-        url = settings.DOMAIN_NAMES + settings.ADD_SERVICE_GROUP_URL
+        url = settings.DOMAIN_NAMES + api_settings.ADD_SERVICE_GROUP_URL
         headers = get_auth_header(request.user)
 
         params = {

@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
-
+from web_admin import api_settings
 import requests, time
 import logging
 
@@ -28,7 +28,7 @@ class ServiceGroupUpdateForm(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start updating service group ==========')
         service_group_id = kwargs['ServiceGroupId']
-        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
         logger.info("URL: {}".format(url))
 
         name = request.POST.get('service_group_name')
@@ -77,7 +77,7 @@ class ServiceGroupUpdateForm(TemplateView):
 
     def _get_service_group_detail(self, service_group_id):
 
-        url = settings.DOMAIN_NAMES + settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        url = settings.DOMAIN_NAMES + api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
 
         headers = get_auth_header(self.request.user)
 

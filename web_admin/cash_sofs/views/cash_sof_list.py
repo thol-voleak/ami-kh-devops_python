@@ -57,10 +57,11 @@ class CashSOFView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):
-        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(CASH_SOFS_URL))
+        url = settings.DOMAIN_NAMES + CASH_SOFS_URL
+        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(url))
         start = time.time()
         logger.info("Request body: {};".format(body))
-        auth_request = requests.post(CASH_SOFS_URL, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
+        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
         end = time.time()
         logger.info("Response_code: {};".format(auth_request.status_code))
         logger.info("Response_time: {} seconds".format(end - start))

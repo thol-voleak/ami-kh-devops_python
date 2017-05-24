@@ -3,6 +3,7 @@ import time
 import requests
 
 from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
 
 from authentications.apps import InvalidAccessToken
@@ -24,7 +25,7 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
         return data
         
     def get_member_detail(self, customer_id):
-        api_path = settings.MEMBER_CUSTOMER_PATH
+        api_path = api_settings.MEMBER_CUSTOMER_PATH
         url = settings.DOMAIN_NAMES + api_path
 
         logger.info('API-Path: {}/{};'.format(api_path, customer_id))

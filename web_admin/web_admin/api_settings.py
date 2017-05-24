@@ -11,6 +11,7 @@ SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
 CONFIGURATION_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations"
 CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/"
 
+# Client
 CREATE_CLIENT_URL = 'api-gateway/v1/oauths/clients'
 CLIENTS_LIST_URL = 'api-gateway/v1/oauths/clients'
 UPDATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
@@ -18,13 +19,13 @@ DELETE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
 REGENERATE_CLIENT_SECRET_URL = 'api-gateway/v1/oauths/clients/{}/credentials'
 SUSPEND_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}/statuses'
 ACTIVATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}/statuses'
+
 AGENT_TYPES_LIST_URL = 'api-gateway/agent/v1/types'
 GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/types'
 AGENT_TYPE_DETAIL_URL = 'api-gateway/agent/v1/types/{}'
 ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/country'
 GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations'
-GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currencies'
 ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
@@ -36,6 +37,7 @@ SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}'
+PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/v1/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'

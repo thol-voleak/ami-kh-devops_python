@@ -56,11 +56,13 @@ class CashTransactionView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_cash_transaction_list(self, body):
+        url = settings.DOMAIN_NAMES + CASH_TRANSACTIONS_URL
+
         logger.info(
-            'Call search cash source of fund API to backend service. API-Path: {}'.format(CASH_TRANSACTIONS_URL))
+            'Call search cash source of fund API to backend service. API-Path: {}'.format(url))
         start = time.time()
         logger.info("Request body: {}".format(body))
-        responses = requests.post(CASH_TRANSACTIONS_URL,
+        responses = requests.post(url,
                                   headers=get_auth_header(self.request.user),
                                   json=body,
                                   verify=settings.CERT)

@@ -5,8 +5,9 @@ import requests
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
 from authentications.utils import get_auth_header
+from web_admin.api_settings import PAYMENT_URL
+
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class PaymentOrderView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_payment_order_list(self, body):
-        url = settings.DOMAIN_NAMES + "api-gateway/report/v1/payments/orders"
+        url = settings.DOMAIN_NAMES + PAYMENT_URL
 
         logger.info('Call search payment order API to backend service. API-Path: {}'.format(url))
         start = time.time()
