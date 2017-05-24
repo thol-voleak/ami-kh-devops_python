@@ -1,11 +1,9 @@
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
 
-from django.shortcuts import render
 from django.conf import settings
 from django.views.generic.base import TemplateView
-from django.shortcuts import redirect
-from django.contrib import messages
+from web_admin import api_settings
 
 import logging
 import requests
@@ -18,7 +16,7 @@ class ScopeListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start get all configuration scope ==========')
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes"
+        url = settings.DOMAIN_NAMES + api_settings.SCOPES_URL
         headers = get_auth_header(self.request.user)
 
         response = requests.get(url=url, headers=headers, verify=settings.CERT)

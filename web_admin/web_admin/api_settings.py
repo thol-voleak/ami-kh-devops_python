@@ -6,6 +6,11 @@ LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 APIS_URL="api-gateway/v1/apis/"
 SERVICES_LIST_URL="api-gateway/v1/services"
 
+# Centralize configuration
+SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
+CONFIGURATION_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations"
+CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/"
+
 CREATE_CLIENT_URL = 'api-gateway/v1/oauths/clients'
 CLIENTS_LIST_URL = 'api-gateway/v1/oauths/clients'
 UPDATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
@@ -92,7 +97,6 @@ MEMBER_CUSTOMER_PATH = 'api-gateway/report/v1/customers'
 CARD_LIST_PATH = 'api-gateway/report/v1/cards'
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
 CARD_HISTORY_PATH = 'api-gateway/report/v1/cards/histories'
-SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
 GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid-card/default"
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"
 CASH_SOFS_URL = "api-gateway/report/v1/cash/sofs"

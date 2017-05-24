@@ -1,11 +1,11 @@
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
 
-from django.shortcuts import render
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
+from web_admin import api_settings
 
 import logging
 import requests
@@ -21,7 +21,7 @@ class ConfigurationListView(TemplateView):
         headers = get_auth_header(self.request.user)
         context = super(ConfigurationListView, self).get_context_data(**kwargs)
         scope = context['scope']
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations".format(
+        url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_URL.format(
             scope=scope)
 
         logger.info("Request get configuration scope for {} is {}".format(scope, url))
@@ -55,7 +55,7 @@ class ConfigurationDetailsView(TemplateView):
         context = super(ConfigurationDetailsView, self).get_context_data(**kwargs)
         scope = context['scope']
         conf_key = context['conf_key']
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/".format(
+        url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_DETAIL_URL.format(
             scope=scope, key=conf_key)
 
         response = requests.get(url=url, headers=headers, verify=settings.CERT)
@@ -85,8 +85,8 @@ class ConfigurationDetailsView(TemplateView):
         conf_value = request.POST.get('conf_value')
 
         headers = get_auth_header(self.request.user)
-        url = settings.DOMAIN_NAMES + "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{conf_key}/".format(
-            scope=scope, conf_key=conf_key)
+        url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_DETAIL_URL.format(
+            scope=scope, key=conf_key)
         params = {
             'value': conf_value
         }
