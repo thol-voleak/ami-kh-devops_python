@@ -21,7 +21,7 @@
             <div class="col-sm-5">
                 <input type="text" class="form-control input-rounded" name="unique_reference"
                        id="txt_unique_reference"
-                       value="{{ unique_reference }}">
+                       value="{{ unique_reference|default_if_none:'' }}">
             </div>
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
@@ -33,7 +33,7 @@
             <div class="col-sm-5">
                 <input type="text" class="form-control input-rounded" name="email"
                        id="txt_email"
-                       value="{{ email }}">
+                       value="{{ email|default_if_none:'' }}">
             </div>
         </div>
         <div class="form-group">
@@ -41,7 +41,7 @@
             <div class="col-sm-5">
                 <input type="text" class="form-control input-rounded" name="primary_mobile_number"
                        id="txt_primary_mobile_number"
-                       value="{{ primary_mobile_number }}">
+                       value="{{ primary_mobile_number|default_if_none:'' }}">
             </div>
         </div>
         <div class="form-group">
@@ -49,7 +49,7 @@
             <div class="col-sm-5">
                 <input type="text" class="form-control input-rounded" name="kyc_status"
                        id="txt_kyc_status"
-                       value="{{ kyc_status }}">
+                       value="{{ kyc_status|default_if_none:'' }}">
             </div>
         </div>
         <div class="form-group">
@@ -58,12 +58,14 @@
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="from_created_timestamp"
+                       value="{{ from_created_timestamp|default_if_none:'' }}"
                        id="dtp_from">
             </div>
             <label class="col-sm-1 control-label">To</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="to_created_timestamp"
+                       value="{{ to_created_timestamp|default_if_none:'' }}"
                        id="dtp_to">
             </div>
         </div>
