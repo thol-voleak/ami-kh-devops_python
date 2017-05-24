@@ -6,6 +6,7 @@ from django.contrib import messages
 from multiprocessing.pool import ThreadPool
 import logging
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import SERVICE_CREATE_URL
 logger = logging.getLogger(__name__)
 
 class CreateView(TemplateView, RESTfulMethods):
@@ -52,7 +53,7 @@ class CreateView(TemplateView, RESTfulMethods):
             return redirect('services:service_create')
 
     def _create_service(self, data):
-        url = settings.SERVICE_CREATE_URL
+        url = SERVICE_CREATE_URL
         return self._post_method(url, "Service", logger, data)
 
 
