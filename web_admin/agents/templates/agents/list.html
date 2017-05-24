@@ -87,9 +87,14 @@
                 </thead>
                 <tbody>
                 {% for agent in data %}
-                {% if not agent.is_deleted %}
                 <tr>
-                    <td class="col-sm-3">{{ agent.id }}</td>
+                    <td class="col-sm-3">
+                        {% if agent.is_deleted %}
+                            <s>{{ agent.id }}</s>
+                        {% else %}
+                            {{ agent.id }}
+                        {% endif %}
+                    </td>
                     <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
                     <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
@@ -101,13 +106,13 @@
                         <div class="btn-group">
                             <button id="btn_detail" class="btn btn-outline btn-xs btn-primary"
                                     onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
-                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary"
+                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
                                     onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
-                            <button id="btn_delete" hidden>Delete</button>
+                            <button id="btn_delete" class="btn btn-outline btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                    onclick="location.href='{% url 'agents:agent_delete' agent.id 'list' %}'">Delete</button>
                         </div>
                     </td>
                 </tr>
-                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
