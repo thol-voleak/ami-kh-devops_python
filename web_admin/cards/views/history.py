@@ -39,7 +39,7 @@ class HistoryView(TemplateView):
         if card_id is not '':
             body['card_id'] = int(card_id)
         if user_id is not '':
-            body['user_id'] = user_id
+            body['user_id'] = int(user_id)
         if user_type_id is not '' and user_type_id is not '0':
             body['user_type_id'] = int(user_type_id)
 
@@ -74,7 +74,7 @@ class HistoryView(TemplateView):
         json_data = auth_request.json()
         status = json_data.get('status', {})
         code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
+        if (code == "access_token_expire") or (code == 'access_token_not_found'):
             message = status.get('message', 'Something went wrong.')
             raise InvalidAccessToken(message)
         data = json_data.get('data')
