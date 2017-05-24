@@ -18,7 +18,6 @@ class RESTfulMethods(GetHeaderMixin):
         :param params: 
         :return: 
         """
-        logger.info('========== Start getting {func_description} =========='.format(func_description=func_description))
 
         if 'https' in api_path or 'http' in api_path:
             url = api_path
@@ -61,7 +60,6 @@ class RESTfulMethods(GetHeaderMixin):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
             raise Exception(response.content)
-        logger.info('========== Finished getting {func_description} =========='.format(func_description=func_description))
         return result
 
     def _put_method(self, api_path, func_description, logger, params={}):
@@ -72,7 +70,6 @@ class RESTfulMethods(GetHeaderMixin):
         :param params: the data of put method
         :return: data and success (True or False)
         """
-        logger.info('========== Start putting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
@@ -105,7 +102,6 @@ class RESTfulMethods(GetHeaderMixin):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
             raise Exception(response.content)
-        logger.info('========== Finished putting {} =========='.format(func_description))
         return result
 
     def _post_method(self, api_path, func_description, logger, params={}):
@@ -116,7 +112,6 @@ class RESTfulMethods(GetHeaderMixin):
         :param params: 
         :return: 
         """
-        logger.info('========== Start creating {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
@@ -149,11 +144,9 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-        logger.info('========== Finished creating {} =========='.format(func_description))
         return result
 
     def _delete_method(self, api_path, func_description, logger, params=None):
-        logger.info('========== Start deleting {func_description} =========='.format(func_description=func_description))
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
@@ -188,7 +181,6 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
-        logger.info('========== Finished deleting {} =========='.format(func_description))
         return result
 
 
