@@ -36,8 +36,8 @@ class ProfileView(TemplateView):
         if card_identifier is not '':
             body['card_identifier'] = card_identifier
         if user_id is not '':
-            body['user_id'] = user_id
-        if user_type is not '':
+            body['user_id'] = int(user_id)
+        if user_type is not '' and user_type is not '0':
             body['user_type_id'] = int(user_type)
 
         data = self.get_card_list(body)
@@ -48,8 +48,8 @@ class ProfileView(TemplateView):
 
         context = {'data': result_data,
                    'card_identifier': card_identifier,
-                   'user_id' : user_id,
-                   'user_type': int(user_type)
+                   'user_id': user_id,
+                   'user_type': user_type
                    }
 
         logger.info('========== End search card ==========')
