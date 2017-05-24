@@ -3,6 +3,7 @@ import time
 
 import requests
 from django.conf import settings
+from web_admin import api_settings
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -21,7 +22,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
         tf_fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
-        url = settings.DOMAIN_NAMES + settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
+        url = settings.DOMAIN_NAMES + api_settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
 
         logger.info('API-Path for add agent hierarchy distribution bonus is {}'.format(url))
 
@@ -87,7 +88,7 @@ class AgentFeeHierarchyDistributionsDetail(View, GetHeaderMixin):
         return HttpResponseBadRequest()
 
     def _delete_agent_distribution(self, agent_fee_distribution_id):
-        api_path = settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(
+        api_path = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(
             agent_fee_distribution_id=agent_fee_distribution_id
         )
         url = settings.DOMAIN_NAMES + api_path

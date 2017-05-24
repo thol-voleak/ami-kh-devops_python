@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-from django.conf import settings
+from web_admin import api_settings
 import logging
 from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ class ServiceDetailForm(TemplateView, RESTfulMethods):
 
     def _get_service_detail(self, service_id):
 
-        url = settings.SERVICE_DETAIL_URL.format(service_id)
+        url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         data, success = self._get_method(url, "service detail", logger)
         context = {'service_info': data,
                    'add_service_msg': self.request.session.pop('add_service_msg', None),

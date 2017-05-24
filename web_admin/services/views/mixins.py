@@ -1,11 +1,11 @@
 import logging
-from django.conf import settings
+from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class GetCommandNameAndServiceNameMixin(RESTfulMethods):
     def _get_command_name_by_id(self, command_id):
-        url = settings.COMMAND_LIST_URL
+        url = api_settings.COMMAND_LIST_URL
         data, success = self._get_method(url, "command name by id", logger, True)
         if data != []:
             command_name = [d['command_name']
@@ -17,6 +17,6 @@ class GetCommandNameAndServiceNameMixin(RESTfulMethods):
             return command_id
 
     def _get_service_name_by_id(self, service_id):
-        url = settings.SERVICE_DETAIL_URL.format(service_id)
+        url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         data, success = self._get_method(url, "service name by id", logger)
         return data.get('service_name', service_id)

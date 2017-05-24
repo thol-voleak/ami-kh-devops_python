@@ -1,5 +1,6 @@
 from django.views.generic.base import TemplateView
 from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from multiprocessing.pool import ThreadPool
@@ -56,7 +57,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
 
     def _get_currency_choices(self):
-        url = settings.GET_ALL_CURRENCY_URL
+        url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choice", logger)
 
         if success:
@@ -72,7 +73,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
 
     def _get_service_group_choices(self):
-        url = settings.SERVICE_GROUP_LIST_URL
+        url = api_settings.SERVICE_GROUP_LIST_URL
         return self._get_method(url, "services group list", logger, True)
 
     def _get_service_group_and_currency_choices(self):

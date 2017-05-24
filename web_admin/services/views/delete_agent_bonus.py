@@ -1,5 +1,6 @@
 import logging
 from django.conf import settings
+from web_admin import api_settings
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.views.generic.base import View
 from web_admin.restful_methods import RESTfulMethods
@@ -14,7 +15,7 @@ class DeleteAgentBonus(View, RESTfulMethods):
         return HttpResponseBadRequest()
 
     def _delete_agent_bonus(self, agent_bonus_distribution_id):
-        api_path = settings.AGENT_BONUS_DELETE_PATH.format(
+        api_path = api_settings.AGENT_BONUS_DELETE_PATH.format(
             agent_bonus_distribution_id=agent_bonus_distribution_id
         )
         url = settings.DOMAIN_NAMES + api_path

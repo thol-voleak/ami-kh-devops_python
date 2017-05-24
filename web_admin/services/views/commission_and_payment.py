@@ -4,14 +4,13 @@ import requests
 
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
+from web_admin import api_settings
 from django.contrib import messages
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
-from authentications.utils import get_auth_header
 from web_admin.get_header_mixins import GetHeaderMixin
 from .mixins import GetCommandNameAndServiceNameMixin
-from authentications.apps import InvalidAccessToken
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
@@ -61,8 +60,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         return list(filter(lambda x: not x['is_deleted'], data))
 
     def _get_choices(self):
-        url_list = [settings.ACTION_TYPES_URL, settings.AMOUNT_TYPES_URL,
-                    settings.SOF_TYPES_URL, settings.ACTOR_TYPES_URL]
+        url_list = [api_settings.ACTION_TYPES_URL, api_settings.AMOUNT_TYPES_URL,
+                    api_settings.SOF_TYPES_URL, api_settings.ACTOR_TYPES_URL]
         pool = ThreadPool(processes=1)
 
         async_list = map(lambda url: pool.apply_async(lambda: self._get_choices_types(url)),
@@ -85,34 +84,34 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
     def _get_fee_tier_detail(self, fee_tier_id):
         # api_path, header, verify, func_description, logger, is_getting_list = False, params = {}
-        data, success = self._get_method(api_path=settings.TIER_PATH.format(fee_tier_id),
+        data, success = self._get_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),
                                          func_description="Fee Tier Detail",
                                          logger=logger)
         return data, success
 
     def _get_commission_and_payment_list(self, fee_tier_id):
-        data, success = self._get_method(api_path=settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+        data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
                                          func_description="Setting Payment & Fee Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
 
     def _get_setting_bonus_list(self, fee_tier_id):
-        data, success = self._get_method(api_path=settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+        data, success = self._get_method(api_path=api_settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
                                          func_description="Setting Bonus List",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
 
     def _get_agent_bonus_distribution_list(self, tf_fee_tier_id):
-        data, success = self._get_method(api_path=settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id),
+        data, success = self._get_method(api_path=api_settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id),
                                          func_description="Agent bonus distribution",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
 
     def _get_agent_fee_distribution_list(self, fee_tier_id):
-        data, success = self._get_method(api_path=settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
+        data, success = self._get_method(api_path=api_settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
                                          func_description="Agent Fee Distribution List",
                                          logger=logger,
                                          is_getting_list=True)
@@ -126,7 +125,7 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.DOMAIN_NAMES + settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + api_settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
         logger.info('========== Start create Setting Payment & Fee Structure ==========')
         logger.info('Create Payment and Fee Structure by user: {}, with url {}.'.format(
@@ -176,7 +175,7 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start updating setting payment & fee structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
-        api_path = settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
+        api_path = api_settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
         url = settings.DOMAIN_NAMES + api_path
         logger.info("API-Path: {}".format(api_path))
 
@@ -217,7 +216,7 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
 
-        api_path = settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
+        api_path = api_settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
         url = settings.DOMAIN_NAMES + api_path
         logger.info("API-Path: {}".format(api_path))
 
@@ -255,7 +254,7 @@ class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
         logger.info("========== Start updating agent bonus distribution ==========")
 
         agent_bonus_distribution_id = kwargs.get('agent_bonus_distribution_id')
-        api_path = settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
+        api_path = api_settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
         url = settings.DOMAIN_NAMES + api_path
         logger.info("API-Path: {}".format(api_path))
 
@@ -296,7 +295,7 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.DOMAIN_NAMES + settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        url = settings.DOMAIN_NAMES + api_settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Setting Bonus ==========')
         logger.info('Username: {}, with url {}.'.format(self.request.user.username, url))
 
@@ -349,7 +348,7 @@ class PaymentAndFeeStructureDetailView(View, RESTfulMethods):
         return HttpResponseBadRequest()
 
     def _delete_balance_distribution(self, balance_distribution_id):
-        data, success = self._delete_method(api_path=settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
+        data, success = self._delete_method(api_path=api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
                                          func_description="Balance Distribution",
                                          logger=logger)
         return success

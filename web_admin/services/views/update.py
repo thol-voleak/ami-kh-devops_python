@@ -3,7 +3,7 @@ from web_admin.api_settings import SERVICE_GROUP_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
 
 from django.views.generic.base import TemplateView
-from django.conf import settings
+from web_admin import api_settings
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
@@ -88,11 +88,11 @@ class UpdateView(TemplateView, RESTfulMethods):
         return self._headers
 
     def _update_service(self, service_id, data):
-        url = settings.SERVICE_UPDATE_URL.format(service_id)
+        url = api_settings.SERVICE_UPDATE_URL.format(service_id)
         return self._put_method(url, "Service", logger, data)
 
     def _get_currency_choices(self, procnum, dict):
-        url = settings.GET_ALL_CURRENCY_URL
+        url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choices", logger)
         if success:
             value = data.get('value', '')
@@ -114,5 +114,5 @@ class UpdateView(TemplateView, RESTfulMethods):
         dict[procnum] = self._get_method(SERVICE_GROUP_LIST_URL, "service group choices", logger, True)
 
     def _get_service_detail(self, procnum, dict, service_id):
-        url = settings.SERVICE_DETAIL_URL.format(service_id)
+        url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         dict[procnum] = self._get_method(url, "service detail", logger, True)

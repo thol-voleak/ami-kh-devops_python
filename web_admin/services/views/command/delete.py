@@ -2,7 +2,7 @@ import requests
 import logging
 import time
 
-from django.conf import settings
+from web_admin import api_settings
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.views.generic.base import View
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -24,7 +24,7 @@ class DeleteCommand(View, GetHeaderMixin):
 
 
     def _delete_service_command(self, service_command_id):
-        api_path = settings.SERVICE_COMMAND_DELETE_PATH.format(service_command_id)
+        api_path = api_settings.SERVICE_COMMAND_DELETE_PATH.format(service_command_id)
         url = settings.DOMAIN_NAMES + api_path
         logger.info('API-Path: {};'.format(api_path))
 
