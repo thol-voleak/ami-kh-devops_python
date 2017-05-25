@@ -1,6 +1,8 @@
 import logging
 
 from datetime import datetime
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
@@ -73,5 +75,6 @@ class ListView(TemplateView, RESTfulMethods):
             params=body
         )
         context.update({'data': data})
+        list_content = render_to_string("agents/list_content.html", context={"data": data})
         logger.info('========== Finished searching agent ==========')
-        return render(request, 'agents/list.html', context)
+        return JsonResponse({"agent_table": list_content})
