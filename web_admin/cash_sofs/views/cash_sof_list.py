@@ -1,15 +1,9 @@
-from web_admin.api_settings import CASH_SOFS_URL
+import logging
 
-from django.conf import settings
+from web_admin.api_settings import CASH_SOFS_URL
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
-from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
-
-import logging
-import requests
-import time
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +13,7 @@ IS_SUCCESS = {
 }
 
 
-class CashSOFView(TemplateView):
+class CashSOFView(TemplateView, RESTfulMethods):
     template_name = "cash_sof.html"
 
     def post(self, request, *args, **kwargs):
@@ -57,30 +51,8 @@ class CashSOFView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):
-        url = settings.DOMAIN_NAMES + CASH_SOFS_URL
-        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(url))
-        start = time.time()
-        logger.info("Request body: {};".format(body))
-        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} seconds".format(end - start))
-
-        json_data = auth_request.json()
-        status = json_data.get('status', {})
-        code = status.get('code', '')
-
-        data = json_data.get('data')
-        if auth_request.status_code == 200 and status.get('code') == 'success':
-            if (data is not None) and (len(data) > 0):
-                logger.info('Cash source of fund found {} records'.format(len(data)))
-                return data
-        else:
-            logger.info('Response_content: {}'.format(auth_request.content))
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                message = status.get('message', 'Something went wrong.')
-                raise InvalidAccessToken(message)
-            raise Exception(auth_request.content)
+        response, status = self._post_method(CASH_SOFS_URL, 'Cash Source of Fund List', logger, body)
+        return response
 
     def format_data(self, data):
         for i in data:
