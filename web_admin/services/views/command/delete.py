@@ -1,17 +1,12 @@
-import requests
 import logging
-import time
-
 from web_admin import api_settings
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.views.generic.base import View
-from web_admin.get_header_mixins import GetHeaderMixin
-
-
+from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 
-class DeleteCommand(View, GetHeaderMixin):
+class DeleteCommand(View, RESTfulMethods):
     def delete(self, request, *args, **kwargs):
         service_command_id = kwargs.get('service_command_id')
         logger.info('========== Start deleting Service Command ==========')
@@ -25,17 +20,5 @@ class DeleteCommand(View, GetHeaderMixin):
 
     def _delete_service_command(self, service_command_id):
         api_path = api_settings.SERVICE_COMMAND_DELETE_PATH.format(service_command_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info('API-Path: {};'.format(api_path))
-
-        start_date = time.time()
-        response = requests.delete(url, headers=self._get_headers(),
-                                   verify=settings.CERT)
-        done = time.time()
-        logger.info('Reponse_time: {} sec.'.format(done - start_date))
-        logger.info('Response_code: {};'.format(response.status_code))
-        logger.info('Response_content: {};'.format(response.content))
-
-        if response.status_code == 200:
-            return True
-        return False
+        data, success = self._delete_method(api_path, "service command", logger)
+        return success

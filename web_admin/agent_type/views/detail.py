@@ -12,8 +12,8 @@ class DetailView(TemplateView, RESTfulMethods):
     template_name = "agent_type/agent_type_detail.html"
 
     def get_context_data(self, **kwargs):
+        logger.info('========== Start showing Agent Type Detail page ==========')
         try:
-            logger.info('========== Start get agent type detail ==========')
             context = super(DetailView, self).get_context_data(**kwargs)
 
             agent_type_id = context['agentTypeId']
@@ -25,9 +25,10 @@ class DetailView(TemplateView, RESTfulMethods):
                 'msg': self.request.session.pop('agent_type_update_msg', None)
             }
 
-            logger.info('========== End get agent type detail ==========')
+            logger.info('========== Finished showing Agent Type Detail page ==========')
             return context
         except Exception as e:
             logger.error(e)
             context = {'agent_type_info': {}}
+            logger.info('========== Finished showing Agent Type Detail page ==========')
             return context

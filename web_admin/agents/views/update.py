@@ -26,7 +26,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     template_name = "agents/update.html"
 
     def get(self, request, *args, **kwargs):
-
+        logger.info('========== Start showing Update Agent page ==========')
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
@@ -67,7 +67,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             'currencies': currencies,
             'agent_profile': agent_profile
         }
-
+        logger.info('========== Finished showing Update Agent page ==========')
         return render(request, self.template_name, context)
 
     '''
@@ -114,6 +114,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         return currencies
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start updating agent ==========')
         agent_id = kwargs['agent_id']
 
         agent_type_id = request.POST.get('agent_type_id')
@@ -220,7 +221,9 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
+            logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
+        logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):

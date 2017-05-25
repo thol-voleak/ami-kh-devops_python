@@ -1,6 +1,5 @@
 import logging
-import time
-import requests
+import json
 
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
@@ -9,7 +8,6 @@ from django.contrib import messages
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
-from web_admin.get_header_mixins import GetHeaderMixin
 from .mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 
@@ -75,15 +73,12 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         }
 
     def _get_choices_types(self, url):
-        logger.info("Get choices for table from url: {}".format(url))
-        api_path = settings.DOMAIN_NAMES + url
-        response = requests.get(api_path, headers=self._get_headers(), verify=settings.CERT)
-        json_data = response.json()
-        logger.info("Reponse status code: {}".format(response.status_code))
-        return json_data['data']
+        data, success = self._get_method(api_path=url,
+                                     func_description="Choices Type",
+                                     logger=logger)
+        return data
 
     def _get_fee_tier_detail(self, fee_tier_id):
-        # api_path, header, verify, func_description, logger, is_getting_list = False, params = {}
         data, success = self._get_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),
                                          func_description="Fee Tier Detail",
                                          logger=logger)
@@ -117,7 +112,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
                                          is_getting_list=True)
         return data, success
 
-class PaymentAndFeeStructureView(View, GetHeaderMixin):
+class PaymentAndFeeStructureView(View, RESTfulMethods):
     def post(self, request, *args, **kwargs):
 
         service_id = kwargs.get('service_id')
@@ -128,10 +123,6 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + api_settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
         logger.info('========== Start create Setting Payment & Fee Structure ==========')
-        logger.info('Create Payment and Fee Structure by user: {}, with url {}.'.format(
-            self.request.user.username,
-            url,
-        ))
 
         data = request.POST.copy()
         post_data = {
@@ -144,12 +135,11 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        logger.info("Request body: {}".format(post_data))
-        response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
+        response, status = self._post_method(api_path=url,
+                                   func_description="create Setting Payment & Fee Structure",
+                                   logger=logger, params=post_data)
 
-        logger.info("Response status: {}".format(response.status_code))
-        logger.info("Response content: {}".format(response.content))
-        if response.status_code == 200:
+        if status:
             messages.add_message(
                 request,
                 messages.INFO,
@@ -170,14 +160,12 @@ class PaymentAndFeeStructureView(View, GetHeaderMixin):
                         fee_tier_id=fee_tier_id)
 
 
-class BalanceDistributionsUpdate(View, GetHeaderMixin):
+class BalanceDistributionsUpdate(View, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating setting payment & fee structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
-        api_path = api_settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info("API-Path: {}".format(api_path))
+        url = api_settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
 
         data = request.POST.copy()
         post_data = {
@@ -191,34 +179,27 @@ class BalanceDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
-        logger.info("Params: {}".format(post_data))
 
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        end_date = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_date - start_date))
-
-        if response.status_code == 200:
+        response, status = self._put_method(api_path=url,
+                                             func_description="updating setting payment & fee structure",
+                                             logger=logger, params=post_data)
+        response = json.dumps({"status":{"code":"success","message":"Success"},"data":response})
+        if status:
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            httpResponse = HttpResponse(status=response.status_code, content=response)
+            httpResponse = HttpResponse(status=400, content=response)
 
         logger.info("========== Finished updating setting payment & fee structure ==========")
         return httpResponse
 
 
-class BonusDistributionsUpdate(View, GetHeaderMixin):
+class BonusDistributionsUpdate(View, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update setting bonus ==========")
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
 
-        api_path = api_settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info("API-Path: {}".format(api_path))
+        url = api_settings.BONUS_DISTRIBUTION_UPDATE_URL.format(bonus_distributions_id=bonus_distributions_id)
 
         data = request.POST.copy()
 
@@ -231,32 +212,26 @@ class BonusDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
-        logger.info("Params: {}".format(post_data))
 
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        end_date = time.time()
+        response, status = self._put_method(api_path=url,
+                                             func_description="update setting bonus",
+                                             logger=logger, params=post_data)
+        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
 
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_date - start_date))
-
-        if response.status_code == 200:
+        if status:
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            httpResponse = HttpResponse(status=response.status_code, content=response)
+            httpResponse = HttpResponse(status=400, content=response)
 
         logger.info("========== Finish update setting bonus ==========")
         return httpResponse
 
-class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
+class AgentBonusDistributionsUpdate(View, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating agent bonus distribution ==========")
 
         agent_bonus_distribution_id = kwargs.get('agent_bonus_distribution_id')
-        api_path = api_settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info("API-Path: {}".format(api_path))
+        url = api_settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
 
         data = request.POST.copy()
         post_data = {
@@ -269,26 +244,21 @@ class AgentBonusDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
-        logger.info("Params: {}".format(post_data))
 
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        end_date = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_date - start_date))
-
-        if response.status_code == 200:
+        response, status = self._put_method(api_path=url,
+                                             func_description="updating agent bonus distribution",
+                                             logger=logger, params=post_data)
+        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
+        if status:
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            httpResponse = HttpResponse(status=response.status_code, content=response)
+            httpResponse = HttpResponse(status=400, content=response)
 
         logger.info("========== Finished updating agent bonus distribution ==========")
         
         return httpResponse
 
-class SettingBonusView(TemplateView, GetHeaderMixin):
+class SettingBonusView(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
@@ -297,7 +267,6 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
 
         url = settings.DOMAIN_NAMES + api_settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Setting Bonus ==========')
-        logger.info('Username: {}, with url {}.'.format(self.request.user.username, url))
 
         data = request.POST.copy()
         post_data = {
@@ -310,13 +279,11 @@ class SettingBonusView(TemplateView, GetHeaderMixin):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        logger.info("Request: {}".format(post_data))
-        response = requests.post(url, headers=self._get_headers(),
-                                 json=post_data, verify=settings.CERT)
+        response, status = self._post_method(api_path=url,
+                                             func_description="create Setting Bonus",
+                                             logger=logger, params=post_data)
 
-        logger.info("Response status: {}".format(response.status_code))
-        logger.info("Response content: {}".format(response.content))
-        if response.status_code == 200:
+        if status:
             messages.add_message(
                 request,
                 messages.INFO,

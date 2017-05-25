@@ -3,20 +3,37 @@
 
 {% block body_stylesheet %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Edit Agent</h3>
+        <h3>Agent Delete</h3>
     </div>
+
+    {% if msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if agent_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ agent_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="#">
+                      action="">
                     {% csrf_token %}
 
                     <!-- Begin section 1 -->
@@ -29,10 +46,10 @@
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Agent ID</label>
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Agent ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_agent_id"
-                                       value="{{ agent_profile.id|default_if_none:'' }}" disabled/>
+                                <input type="text" class="form-control input-rounded" name="username"
+                                       id="txt_agent_id" value="{{ agent_id | default_if_none:'' }}" disabled required/>
                             </div>
                         </div>
                     </div>
@@ -56,22 +73,14 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Agent Type *</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_agent_type" name="agent_type_id">
-                                    {% for item in agent_types %}
-                                        {% if item.id != agent_profile.agent_type_id %}
-                                            <option value="{{ item.id }}">{{ item.name }}</option>
-                                        {% else %}
-                                            <option value="{{ item.id }}" selected>{{ item.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
+                                <input type="text" id="txt_agent_type" value="{{ agent_type_name | default_if_none:'' }}" class="form-control input-rounded" disabled required/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">User Name *</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="user_name"
-                                       id="txt_user_name" disabled />
+                                <input type="text" class="form-control input-rounded" name="username"
+                                       id="txt_user_name" value="{{ agent.username | default_if_none:'' }}" disabled required/>
                             </div>
                         </div>
                     </div>
@@ -82,14 +91,14 @@
                             <label class="col-sm-4 control-label">Parent ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="parent_id"
-                                       id="txt_parent_id" value="{{ agent_profile.parent_id|default_if_none:'' }}"/>
+                                       id="txt_parent_id" value="{{ agent.parent_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="password"
-                                       id="txt_password" disabled/>
+                                       id="txt_password" value="******" disabled required/>
                             </div>
                         </div>
                     </div>
@@ -100,14 +109,14 @@
                             <label class="col-sm-4 control-label">Grand Parent ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="grand_parent_id"
-                                       id="txt_grand_parent_id" value="{{ agent_profile.grand_parent_id | default_if_none:'' }}" />
+                                       id="txt_grand_parent_id" value="{{ agent.grand_parent_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Re-password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="re_password"
-                                       id="txt_re_password" disabled/>
+                                       id="txt_re_password" value="******" disabled required/>
                             </div>
                         </div>
                     </div>
@@ -117,11 +126,8 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Currency</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="ddl_currency" name="currency" disabled>
-                                    {% for item in currencies %}
-                                        <option value="{{ item.1 }}">{{ item.0 }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_currency" value="{{ agent.currency | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6"></div>
@@ -147,14 +153,14 @@
                             <label class="col-sm-4 control-label">Last Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_last_name" value="{{ agent_profile.lastname|default_if_none:'' }}" />
+                                       id="txt_last_name" value="{{ agent.lastname | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">First Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_first_name" value="{{ agent_profile.firstname|default_if_none:'' }}"/>
+                                       id="txt_first_name" value="{{ agent.firstname | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -164,15 +170,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Date of Birth</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="date_of_birth"
-                                       id="dtp_birth_date" value="{{ agent_profile.date_of_birth|date:'Y-m-d'|default_if_none:'' }}" />
+                                <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                       id="dtp_birth_date" value="{{agent.date_of_birth | default_if_none:''}}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Gender</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="gender"
-                                       id="txt_gender" value="{{ agent_profile.gender|default_if_none:'' }}"/>
+                                       id="txt_gender" value="{{ agent.gender | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -183,7 +189,7 @@
                             <label class="col-sm-4 control-label">National</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="national"
-                                       id="txt_national" value="{{ agent_profile.national|default_if_none:'' }}" />
+                                       id="txt_national" value="{{ agent.national | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -211,8 +217,8 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify Type</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_identify_type"
-                                       id="txt_primary_identify_type" value="{{ agent_profile.primary_identify_type|default_if_none:'' }}" />
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                       id="txt_primary_identify_type" value="{{ agent.primary_identify_type | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -226,15 +232,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_identify_id"
-                                       id="txt_primary_identify_id" value="{{ agent_profile.primary_identify_id|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_id"
+                                       id="txt_primary_identify_id" value="{{ agent.primary_identify_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Place of Issue</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
-                                       id="txt_primary_place_issue" value="{{ agent_profile.primary_place_of_issue|default_if_none:'' }}"/>
+                                       id="txt_primary_place_issue" value="{{ agent.primary_place_of_issue | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -244,15 +250,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="primary_issue_date"
-                                       id="dtp_primary_issue_date" value="{{ agent_profile.primary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="primary_issue_date"
+                                       id="dtp_primary_issue_date" value="{{ agent.primary_issue_date | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="primary_expire_date"
-                                       id="dtp_primary_expire_date" value="{{ agent_profile.primary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="primary_expire_date"
+                                       id="dtp_primary_expire_date" value="{{ agent.primary_expire_date | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -276,8 +282,8 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify Type</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_identify_type"
-                                       id="txt_secondary_identify_type" value="{{ agent_profile.secondary_identify_type|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_type"
+                                       id="txt_secondary_identify_type" value="{{ agent.secondary_identify_type | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -291,15 +297,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Identify ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_identify_id"
-                                       id="txt_secondary_identify_id" value="{{ agent_profile.secondary_identify_id|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_id"
+                                       id="txt_secondary_identify_id" value="{{ agent.secondary_identify_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Place of Issue</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="secondary_place_of_issue"
-                                       id="txt_secondary_place_issue" value="{{ agent_profile.secondary_place_of_issue|default_if_none:'' }}"/>
+                                       id="txt_secondary_place_issue" value="{{ agent.secondary_place_of_issue | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -309,15 +315,15 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Issue Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="secondary_issue_date"
-                                       id="dtp_secondary_issue_date" value="{{ agent_profile.secondary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="secondary_issue_date"
+                                       id="dtp_secondary_issue_date" value="{{ agent.secondary_issue_date | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Expire Date</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="secondary_expire_date"
-                                       id="dtp_secondary_expire_date" value="{{ agent_profile.secondary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                <input type="text" class="form-control input-rounded" name="secondary_expire_date"
+                                       id="dtp_secondary_expire_date" value="{{ agent.secondary_expire_date | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -342,14 +348,14 @@
                             <label class="col-sm-4 control-label">Nationality</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="nationality"
-                                       id="txt_nationality" value="{{ agent_profile.nationality|default_if_none:'' }}"/>
+                                       id="txt_nationality" value="{{ agent.nationality | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Province</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="province"
-                                       id="txt_province" value="{{ agent_profile.province|default_if_none:'' }}"/>
+                                       id="txt_province" value="{{ agent.province | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -360,14 +366,14 @@
                             <label class="col-sm-4 control-label">District</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="district"
-                                       id="txt_district" value="{{ agent_profile.district|default_if_none:'' }}"/>
+                                       id="txt_district" value="{{ agent.district | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Commune</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="commune"
-                                       id="txt_commune" value="{{ agent_profile.commune|default_if_none:'' }}"/>
+                                       id="txt_commune" value="{{ agent.commune | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -378,7 +384,7 @@
                             <label class="col-sm-4 control-label">Address</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="address"
-                                       id="txt_address" value="{{ agent_profile.address|default_if_none:'' }}"/>
+                                       id="txt_address" value="{{ agent.address | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -390,17 +396,16 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Primary Mobile Number *</label>
+                            <label class="col-sm-4 control-label">Primary Phone *</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="primary_mobile_number"
-                                       id="txt_primary_mobile_number" value="{{ agent_profile.primary_mobile_number|default_if_none:'' }}"/>
+                                <input type="number" class="form-control input-rounded" name="primary_phone"
+                                       id="txt_primary_mobile_number" value="{{ agent.primary_mobile_number | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Email</label>
                             <div class="col-sm-8">
-                                <input type="email" class="form-control input-rounded" name="email"
-                                       id="txt_email" value="{{ agent_profile.email|default_if_none:'' }}"/>
+                                <input type="email" class="form-control input-rounded" name="email" id="txt_email" value="{{ agent.email | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -408,17 +413,17 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Secondary Mobile Number</label>
+                            <label class="col-sm-4 control-label">Secondary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="secondary_mobile_number"
-                                       id="txt_secondary_mobile_number" value="{{ agent_profile.secondary_mobile_number|default_if_none:'' }}"/>
+                                <input type="number" class="form-control input-rounded" name="secondary_phone"
+                                       id="txt_secondary_mobile_number" value="{{ agent.secondary_mobile_number | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Unique Reference *</label>
+                            <label class="col-sm-4 control-label">Unique Reference</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="unique_reference"
-                                       id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}" required/>
+                                <input type="text" class="form-control input-rounded" name="shop_name"
+                                       id="txt_unique_reference" value="{{ agent.unique_reference | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -426,10 +431,10 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Tertiary Mobile Number</label>
+                            <label class="col-sm-4 control-label">Tertiary Phone</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="tertiary_mobile_number"
-                                       id="txt_tertiary_mobile_number" value="{{ agent_profile.tertiary_mobile_number|default_if_none:'' }}" />
+                                <input type="number" class="form-control input-rounded" name="tertiary_phone"
+                                       id="txt_tertiary_mobile_number" value="{{ agent.tertiary_mobile_number | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -437,29 +442,23 @@
 
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">KYC</label>
-                            <div class="col-sm-8 control-label">
+                            <label class="col-sm-4 control-label">KYC STATUS</label>
+                            <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="kyc_status"
-                                       id="lbl_kyc_status" value="{{ agent_profile.kyc_status|default_if_none:'' }}" />
+                                       id="txt_kyc_status" value="NO" value="{{ agent.kyc_status | default_if_none:'' }}" disabled/>
                             </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
                         </div>
                     </div>
                     <!-- End section 8 - row 8 -->
                     <hr/>
-                    <input name="previous_page" value="{{request.META.HTTP_REFERER}}" hidden/>
+
                     <div class="pull-right">
-                        <a href="{% url 'agents:agent_delete' agent_profile.id 'update' %}">
-                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                        <a href="{% url 'agents:agent-list' %}">
+                            <input id="btn_back" class="btn btn-cancel text-left mb15" type="button" value="Back"/>
                         </a>
-                        <a>
-                            <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
-                        </a>
-                        <a href="{{request.META.HTTP_REFERER}}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
+
+                        <a href="{% url 'agents:agent_delete_yes' agent.id prev_page %}">
+                            <input id="btn_yes" class="btn btn-danger text-left mb15" type="button" value="Yes"/>
                         </a>
                     </div>
                 </form>
@@ -468,10 +467,4 @@
     </div>
 </div>
 
-
-{% endblock %}
-
-{% block body_js %}
-{{ block.super }}
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}

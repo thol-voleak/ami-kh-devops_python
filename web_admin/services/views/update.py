@@ -23,22 +23,18 @@ class UpdateView(TemplateView, RESTfulMethods):
         manager = Manager()
         return_dict = manager.dict()
 
-        p1 = Process(target=self._get_currency_choices, args=(1, return_dict))
-        p1.start()
+        currencies, status1 = self._get_currency_choices()
+
         p2 = Process(target=self._get_service_group_choices, args=(2, return_dict))
         p2.start()
         p3 = Process(target=self._get_service_detail, args=(3, return_dict, service_id))
         p3.start()
-        p1.join()
         p2.join()
         p3.join()
 
-        currencies, status1 = return_dict[1]
         service_groups, status2 = return_dict[2]
         service_detail, status3 = return_dict[3]
 
-        if p1.is_alive():
-            p1.terminate()
 
         if p2.is_alive():
             p2.terminate()
@@ -91,15 +87,15 @@ class UpdateView(TemplateView, RESTfulMethods):
         url = api_settings.SERVICE_UPDATE_URL.format(service_id)
         return self._put_method(url, "Service", logger, data)
 
-    def _get_currency_choices(self, procnum, dict):
+    def _get_currency_choices(self):
         url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choices", logger)
         if success:
             value = data.get('value', '')
             currency_list = self._get_currency_list(value)
-            dict[procnum] = currency_list, True
+            return currency_list, True
         else:
-            dict[procnum] = [], True
+            return [], True
 
     def _get_currency_list(self, value):
         result = []

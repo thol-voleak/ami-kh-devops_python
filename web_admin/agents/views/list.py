@@ -15,18 +15,27 @@ STATUS = {
 class ListView(TemplateView, RESTfulMethods):
     template_name = 'agents/list.html'
     def get(self, request):
+        logger.info('========== Start showing Agent List page ==========')
         context = {'agent_update_msg': self.request.session.pop('agent_update_msg', None)}
+        logger.info('========== Finished showing Agent List page ==========')
         return render(request, 'agents/list.html', context)
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start searching agent ==========')
         # Get params
-        unique_reference = request.POST.get('unique_reference')
-        email = request.POST.get('email')
-        primary_mobile_number = request.POST.get('primary_mobile_number')
-        kyc_status = request.POST.get('kyc_status')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
+        unique_reference = request.POST.get('unique_reference', '')
+        email = request.POST.get('email', '')
+        primary_mobile_number = request.POST.get('primary_mobile_number', '')
+        kyc_status = request.POST.get('kyc_status', '')
+        from_created_timestamp = request.POST.get('from_created_timestamp', '')
+        to_created_timestamp = request.POST.get('to_created_timestamp', '')
 
+        context = {'unique_reference': unique_reference,
+                   'email': email,
+                   'primary_mobile_number': primary_mobile_number,
+                   'kyc_status': kyc_status,
+                   'from_created_timestamp': from_created_timestamp,
+                   'to_created_timestamp': to_created_timestamp}
 
         # Build body
         body = {}
@@ -61,4 +70,6 @@ class ListView(TemplateView, RESTfulMethods):
             logger=logger,
             params=body
         )
-        return render(request, 'agents/list.html', {'data': data})
+        context.update({'data': data})
+        logger.info('========== Finished searching agent ==========')
+        return render(request, 'agents/list.html', context)
