@@ -2,7 +2,6 @@ import time
 import requests
 
 from django.conf import settings
-from django.shortcuts import redirect
 
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
@@ -28,7 +27,6 @@ class RESTfulMethods(GetHeaderMixin):
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
-        logger.info("response === {}".format(response.content))
 
         try:
             response_json = response.json()
