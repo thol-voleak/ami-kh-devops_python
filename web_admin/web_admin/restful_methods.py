@@ -28,7 +28,7 @@ class RESTfulMethods(GetHeaderMixin):
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
-        logger.info("response === {}".format(response.content))
+        logger.info("Response: {}".format(response.content))
 
         try:
             response_json = response.json()
