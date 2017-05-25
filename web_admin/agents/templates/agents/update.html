@@ -452,7 +452,7 @@
                     <hr/>
                     <input name="previous_page" value="{{request.META.HTTP_REFERER}}" hidden/>
                     <div class="pull-right">
-                        <a href="{% url 'agents:agent_delete' agent_profile.id 'update' %}">
+                        <a href="{% url 'agents:agent_delete' agent_profile.id %}">
                             <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
                         </a>
                         <a>
@@ -467,8 +467,6 @@
         </div>
     </div>
 </div>
-
-
 {% endblock %}
 
 {% block body_js %}

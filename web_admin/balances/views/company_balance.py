@@ -1,4 +1,5 @@
 import logging
+import copy
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from web_admin.restful_methods import RESTfulMethods
@@ -15,8 +16,20 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
     def get_context_data(self, **kwargs):
         currencies = self._get_currencies_list()
         agent_balance_list = self._get_agent_balances(self.company_agent_id)
-        result = {'currencies': currencies, 'agent_balance_list': agent_balance_list}
+
+        balance_list = []
+        for item in agent_balance_list:
+            balance_list.append(self.getUpdatedItem(item, currencies))
+
+        result = {'currencies': currencies, 'agent_balance_list': balance_list}
         return result
+
+    def getUpdatedItem(self, item, currencies):
+        newItem = copy.deepcopy(item)
+        for currency in currencies:
+            if currency[0] == item.get("currency", ""):
+                newItem["decimal"] = int(currency[1])
+                return newItem
 
     def post(self, request, *args, **kwargs):
         currency = request.POST.get('currency')

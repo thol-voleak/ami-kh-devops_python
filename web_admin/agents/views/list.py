@@ -13,12 +13,14 @@ STATUS = {
 }
 
 class ListView(TemplateView, RESTfulMethods):
+
     template_name = 'agents/list.html'
+
     def get(self, request):
         logger.info('========== Start showing Agent List page ==========')
         context = {'agent_update_msg': self.request.session.pop('agent_update_msg', None)}
         logger.info('========== Finished showing Agent List page ==========')
-        return render(request, 'agents/list.html', context)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start searching agent ==========')
