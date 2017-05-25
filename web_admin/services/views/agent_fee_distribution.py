@@ -1,21 +1,18 @@
 import logging
-import time
+import json
 
-import requests
-from django.conf import settings
 from web_admin import api_settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from django.http import HttpResponse
 
-from web_admin.get_header_mixins import GetHeaderMixin
-from authentications.apps import InvalidAccessToken
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
 
-class AgentFeeView(TemplateView, GetHeaderMixin):
+class AgentFeeView(TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         service_id = kwargs.get('service_id')
@@ -23,9 +20,8 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
 
-        url = settings.DOMAIN_NAMES + api_settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
+        url = api_settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
         logger.info('========== Start create Agent Hierarchy Fee ==========')
-        logger.info('API-Path: {}.'.format(url))
 
         data = request.POST.copy()
         post_data = {
@@ -42,21 +38,11 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
         if post_data['actor_type'] != 'Specific ID':
             post_data['specific_actor_id'] = ''
 
-        logger.info("Params: {}".format(post_data))
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        end_time = time.time()
+        response, status = self._post_method(api_path=url,
+                                       func_description="create Agent Hierarchy Fee",
+                                       logger=logger, params=post_data)
 
-        logger.info("Response code: {}".format(response.status_code))
-        logger.info("Response content: {}".format(response.content))
-        logger.info("Response time: {} sec.".format(end_time - start_time))
-        if response.status_code == 200:
+        if status:
             messages.add_message(
                 request,
                 messages.INFO,
@@ -78,16 +64,14 @@ class AgentFeeView(TemplateView, GetHeaderMixin):
                         fee_tier_id=fee_tier_id)
 
 
-class FeeDistributionsUpdate(View, GetHeaderMixin):
+class FeeDistributionsUpdate(View, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
 
         logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
 
         agent_fee_distribution_id = kwargs.get('fee_distributions_id')
-        api_path = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info('updating Agent Hierarchy Distribution - Fee API-Path: {path}'.format(path=api_path))
+        url = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
 
         data = request.POST.copy()
 
@@ -101,27 +85,17 @@ class FeeDistributionsUpdate(View, GetHeaderMixin):
             "rate": data.get("rate"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
-        logger.info("updating Agent Hierarchy Distribution - Fee request body: {}".format(post_data))
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        done = time.time()
-        logger.info('updating Agent Hierarchy Distribution - Fee Reponse_time: {}'.format(done - start_date))
-        logger.info('updating Agent Hierarchy Distribution - Fee Response_code: {}'.format(response.status_code))
-        logger.info('updating Agent Hierarchy Distribution - Fee Response_content: {}'.format(response.content))
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        
 
-        
+        response, status = self._put_method(api_path=url,
+                                  func_description="updating Agent Hierarchy Distribution - Fee",
+                                  logger=logger, params=post_data)
 
-        if response.status_code == 200:
+
+        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
+        if status:
             httpResponse = HttpResponse(status=200, content=response)
         else:
-            httpResponse = HttpResponse(status=response.status_code, content=response)
+            httpResponse = HttpResponse(status=400, content=response)
 
         logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
         return httpResponse

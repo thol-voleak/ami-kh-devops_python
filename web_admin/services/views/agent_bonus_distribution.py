@@ -1,30 +1,24 @@
 import logging
-import time
 
-import requests
-from django.conf import settings
 from web_admin import api_settings
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic.base import View
 
-from web_admin.get_header_mixins import GetHeaderMixin
-from authentications.apps import InvalidAccessToken
+from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
 
-class AgentBonusDistributions(View, GetHeaderMixin):
+class AgentBonusDistributions(View, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start add agent hierarchy distribution bonus ==========')
         service_id = kwargs.get('service_id')
         tf_fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
-        url = settings.DOMAIN_NAMES + api_settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
-
-        logger.info('API-Path for add agent hierarchy distribution bonus is {}'.format(url))
+        url = api_settings.AGENT_BONUS_DISTRIBUTION_URL.format(tf_fee_tier_id=tf_fee_tier_id)
 
         data = request.POST.copy()
         post_data = {
@@ -37,36 +31,25 @@ class AgentBonusDistributions(View, GetHeaderMixin):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        logger.info("Params for add agent hierarchy distribution bonus is {}".format(post_data))
-        start_date = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=post_data, verify=settings.CERT)
-        done = time.time()
+        response, status = self._post_method(api_path=url,
+                                   func_description="Add Agent Hierarchy Distribution Bonus",
+                                   logger=logger, params=post_data)
 
-        logger.info("Response status for add agent hierarchy distribution bonus is {}".format(response.status_code))
-        logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response.content))
-        logger.info('Response time for add agent hierarchy distribution bonus is {} sec.'.format(done - start_date))
-
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        if response.status_code == 200 and response_json['status']['code'] == "success":
+        if status:
             messages.add_message(
                 request,
                 messages.INFO,
                 'Added Agent Hierarchy Distribution - Bonus Successfully'
             )
         else:
-            logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response.content))
+            logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response))
             messages.add_message(
                 request,
                 messages.INFO,
                 'Something wrong happened!'
             )
         logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
+
         return redirect('services:commission_and_payment',
                         service_id=service_id,
                         command_id=command_id,
@@ -74,7 +57,7 @@ class AgentBonusDistributions(View, GetHeaderMixin):
                         fee_tier_id=tf_fee_tier_id)
 
 
-class AgentFeeHierarchyDistributionsDetail(View, GetHeaderMixin):
+class AgentFeeHierarchyDistributionsDetail(View, RESTfulMethods):
 
     def delete(self, request, *args, **kwargs):
         agent_fee_distribution_id = kwargs.get('agent_fee_distribution_id')
@@ -88,27 +71,9 @@ class AgentFeeHierarchyDistributionsDetail(View, GetHeaderMixin):
         return HttpResponseBadRequest()
 
     def _delete_agent_distribution(self, agent_fee_distribution_id):
-        api_path = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(
-            agent_fee_distribution_id=agent_fee_distribution_id
-        )
-        url = settings.DOMAIN_NAMES + api_path
-        logger.info('API-Path: {path}'.format(path=api_path))
-        start_date = time.time()
-        response = requests.delete(url, headers=self._get_headers(),
-                                   verify=settings.CERT)
-        response_json = response.json()
-        
-        done = time.time()
-        logger.info('Reponse_time: {} sec.'.format(done - start_date))
-        logger.info('Response_code: {}'.format(response.status_code))
-        logger.info('Response_content: {}'.format(response.content))
 
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-
-        if response.status_code == 200:
-            return True
-        return False
+        data, success = self._delete_method(
+            api_path=api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id),
+            func_description="Delete Agent Distribution",
+            logger=logger)
+        return success

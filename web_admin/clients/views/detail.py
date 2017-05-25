@@ -22,7 +22,7 @@ class DetailView(TemplateView, RESTfulMethods):
 
     def _get_client_scopes(self, client_id):
         url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
-        return self._get_method(url, 'client scopes', logger, True)
+        return self._get_method(url, 'client scopes', logger)
 
     def _get_client_detail(self, client_id):
         url = api_settings.CLIENTS_LIST_URL + '/' + client_id

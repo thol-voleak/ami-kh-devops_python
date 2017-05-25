@@ -59,7 +59,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "agents/registration.html"
 
     def get_context_data(self, *arg, **kwargs):
-
+        logger.info('========== Start showing Create Agent page ==========')
         # Get API that inherits from parent Class
         currencies = self._get_currencies_dropdown()
         agent_types_list = self._get_agent_types_list()
@@ -69,10 +69,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
-
+        logger.info('========== Finished showing Create Agent page ==========')
         return result
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start creating agent ==========')
         agent_profile_reponse, success = self._create_agent_profile(request)
 
         agent_id = ''
@@ -80,6 +81,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             agent_id = agent_profile_reponse['id']
         else:
             request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
+            logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_registration')
 
         self._create_agent_identity(request, agent_id)
@@ -87,7 +89,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         self._create_agent_balance(request, agent_id)
 
         request.session['agent_registration_msg'] = 'Added agent successfully'
-
+        logger.info('========== Finished creating agent ==========')
         return redirect('agents:agent_detail', agent_id=agent_id)
 
     def _create_agent_profile(self, request):
