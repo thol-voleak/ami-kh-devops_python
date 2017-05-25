@@ -454,7 +454,7 @@
                     <input name="previous_page" value="{{request.META.HTTP_REFERER}}" hidden/>
 
                     <div class="pull-right">
-                        <a href="{% url 'agents:agent-list' %}">
+                        <a href="{{request.META.HTTP_REFERER}}">
                             <input id="btn_back" class="btn btn-cancel text-left mb15" type="button" value="Back"/>
                         </a>
                         <a>
