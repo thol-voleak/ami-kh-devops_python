@@ -1,15 +1,8 @@
 import logging
-import time
-import requests
-from django.conf import settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
-from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
+from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CARD_LIST_PATH
-
-
 logger = logging.getLogger(__name__)
 
 IS_STOP = {
@@ -18,7 +11,7 @@ IS_STOP = {
 }
 
 
-class ProfileView(TemplateView):
+class ProfileView(TemplateView, RESTfulMethods):
     template_name = "profile.html"
 
     def post(self, request, *args, **kwargs):
@@ -57,30 +50,11 @@ class ProfileView(TemplateView):
         return render(request, 'profile.html', context)
 
     def get_card_list(self, body):
-        url = settings.DOMAIN_NAMES + CARD_LIST_PATH
-
-        logger.info('Call search API to backend service')
-        logger.info('API-Path: {};'.format(CARD_LIST_PATH))
-        start = time.time()
-        logger.info("Request body: {};".format(body))
-        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} sec.".format(end - start))
-
-        json_data = auth_request.json()
-        status = json_data.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Card count: {};'.format(len(data)))
-                return data
+        url = CARD_LIST_PATH
+        data, success = self._post_method(url, "card list", logger, body)
+        if isinstance(data, list):
+            return data
         else:
-            logger.info('Response_content: {}'.format(auth_request.content))
             return []
 
     def format_data(self, data):
