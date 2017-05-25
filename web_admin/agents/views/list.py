@@ -15,10 +15,13 @@ STATUS = {
 class ListView(TemplateView, RESTfulMethods):
     template_name = 'agents/list.html'
     def get(self, request):
+        logger.info('========== Start showing Agent List page ==========')
         context = {'agent_update_msg': self.request.session.pop('agent_update_msg', None)}
+        logger.info('========== Finished showing Agent List page ==========')
         return render(request, 'agents/list.html', context)
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start searching agent ==========')
         # Get params
         unique_reference = request.POST.get('unique_reference', '')
         email = request.POST.get('email', '')
@@ -68,4 +71,5 @@ class ListView(TemplateView, RESTfulMethods):
             params=body
         )
         context.update({'data': data})
+        logger.info('========== Finished searching agent ==========')
         return render(request, 'agents/list.html', context)

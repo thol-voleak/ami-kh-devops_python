@@ -9,6 +9,7 @@ class DetailView(TemplateView, RESTfulMethods):
     template_name = "agents/detail.html"
 
     def get_context_data(self, **kwargs):
+        logger.info('========== Start showing Agent Detail page ==========')
         try:
             context = super(DetailView, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
@@ -25,10 +26,11 @@ class DetailView(TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
-
+            logger.info('========== Finished showing Agent Detail page ==========')
             return context
         except:
             context = {'agent': {}}
+            logger.info('========== Finished showing Agent Detail page ==========')
             return context
 
     def _get_agent_detail(self, agent_id):

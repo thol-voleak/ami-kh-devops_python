@@ -8,12 +8,21 @@
     </div>
 
     {% if msg is not None %}
+    {% if "successfully" in msg %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="agent_type_update_msg">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ msg }}</strong>
         </div>
     </div>
+    {% else %}
+    <div class="col-xs-12">
+        <div class="alert alert-danger alert-dismissable" id="agent_type_update_msg">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
     {% endif %}
 
     <div class="panel-body">

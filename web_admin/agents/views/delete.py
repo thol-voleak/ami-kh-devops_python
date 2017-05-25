@@ -18,6 +18,7 @@ class AgentDelete(TemplateView, RESTfulMethods):
     template_name = "agents/delete.html"
 
     def get_context_data(self, **kwargs):
+        logger.info('========== Start showing Delete Agent page ==========')
         try:
             context = super(AgentDelete, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
@@ -37,10 +38,11 @@ class AgentDelete(TemplateView, RESTfulMethods):
                     })
 
             context['prev_page'] = prev_page
-
+            logger.info('========== Finished showing Delete Agent page ==========')
             return context
         except:
             context = {'agent': {}}
+            logger.info('========== Finished showing Delete Agent page ==========')
             return context
 
         return render(request, self.template_name, context)

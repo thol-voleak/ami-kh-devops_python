@@ -12,12 +12,13 @@ class ListView(TemplateView, RESTfulMethods):
     template_name = "agent_type/agent_types_list.html"
 
     def get_context_data(self, **kwargs):
+        logger.info('========== Start showing Agent Type List page ==========')
         data = self.get_agent_types_list()
         result = {
             'data': data,
             'del_msg': self.request.session.pop('agent_type_delete_msg', None)
         }
-
+        logger.info('========== Finished showing Agent Type List page ==========')
         return result
 
     def get_agent_types_list(self):

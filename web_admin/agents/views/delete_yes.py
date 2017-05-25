@@ -17,13 +17,14 @@ History:
 class AgentDeleteYes(TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
+        logger.info('========== Start deleting Agent ==========')
         context = super(AgentDeleteYes, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
         prev_page = context['prev_page']
 
         api_path = settings.AGENT_DELETE_URL.format(agent_id=agent_id)
         context, status = self._delete_method(api_path=api_path, func_description="Agent Delete", logger=logger)
-
+        logger.info('========== Finished deleting agent ==========')
         if status:
             if prev_page == 'detail' or prev_page == 'update':
                 return redirect('agents:agent_detail', agent_id=agent_id)
