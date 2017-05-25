@@ -25,12 +25,21 @@
     {% endfor %}
 
     {% if del_msg is not None %}
+    {% if "successfully" in msg %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ del_msg }}</strong>
         </div>
     </div>
+    {% else %}
+    <div class="col-xs-12">
+        <div class="alert alert-danger alert-dismissable" id="alert-success-agent-type">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ del_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
     {% endif %}
 
     <div class="panel-body">
