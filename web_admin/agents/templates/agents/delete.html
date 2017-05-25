@@ -451,14 +451,14 @@
                     </div>
                     <!-- End section 8 - row 8 -->
                     <hr/>
+                    <input name="previous_page" value="{{request.META.HTTP_REFERER}}" hidden/>
 
                     <div class="pull-right">
                         <a href="{% url 'agents:agent-list' %}">
                             <input id="btn_back" class="btn btn-cancel text-left mb15" type="button" value="Back"/>
                         </a>
-
-                        <a href="{% url 'agents:agent_delete_yes' agent.id prev_page %}">
-                            <input id="btn_yes" class="btn btn-danger text-left mb15" type="button" value="Yes"/>
+                        <a>
+                            <input id="btn_yes" class="btn btn-danger text-left mb15" type="submit" value="Yes"/>
                         </a>
                     </div>
                 </form>
