@@ -2,17 +2,16 @@ import logging
 import time
 import requests
 
-from django.conf import settings
 from web_admin import api_settings
 from django.views.generic.base import TemplateView
 
-from authentications.apps import InvalidAccessToken
-from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.restful_methods import RESTfulMethods
+
 
 logger = logging.getLogger(__name__)
 
 
-class CustomerDetailView(TemplateView, GetHeaderMixin):
+class CustomerDetailView(TemplateView, RESTfulMethods):
     template_name = 'customer_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -25,41 +24,14 @@ class CustomerDetailView(TemplateView, GetHeaderMixin):
         return data
         
     def get_member_detail(self, customer_id):
-        api_path = api_settings.MEMBER_CUSTOMER_PATH
-        url = settings.DOMAIN_NAMES + api_path
+        url = api_settings.MEMBER_CUSTOMER_PATH
+        logger.info('API-Path: {}/{};'.format(url, customer_id))
+        data, success = self._post_method(api_path= url,
+                                          func_description="member customer detail",
+                                          logger=logger,
+                                          params={})
+        for i in data:
+            if i['id'] == customer_id:
+                context = {'customer_info': i}
+                return context
 
-        logger.info('API-Path: {}/{};'.format(api_path, customer_id))
-        #logger.info('Param : {}'.format(customer_id))
-        
-        body = {}
-
-        start = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(response.status_code))
-        logger.info("Response_time: {} sec.".format(end - start))
-
-        response_json = response.json()
-
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-
-        
-
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data', [])
-            for i in data:
-                if i['id'] == customer_id:
-
-                    logger.info("Response_content: {}".format(i))
-                    context = {'customer_info': i}
-                    return context
-            return {}
-        else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-            return {}

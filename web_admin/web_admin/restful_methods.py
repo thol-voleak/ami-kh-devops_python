@@ -128,22 +128,29 @@ class RESTfulMethods(GetHeaderMixin):
 
         logger.info("Params: {} ".format(params))
         logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {}".format(end_time - start_time))
 
         response_json = response.json()
         status = response_json.get('status', {})
         code = status.get('code', '')
 
         if code == "success":
-            result = response_json.get('data', {}), True
+            data = response_json.get('data', {})
+            if isinstance(data, list):
+                logger.info("Response_content_count: {}".format(len(data)))
+            else:
+                logger.info("Response_content: {}".format(response.content))
+            logger.info("Response_time: {}".format(end_time - start_time))
+            result = data, True
         else:
+            logger.info("Response_content: {}".format(response.content))
+            logger.info("Response_time: {}".format(end_time - start_time))
             message = status.get('message', 'Something went wrong.')
-            result = {}, False
+
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
+            result = {}, False
         return result
 
     def _delete_method(self, api_path, func_description, logger, params=None):
