@@ -1,12 +1,9 @@
 import logging
-import time
 
-import requests
-from django.conf import settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from authentications.utils import get_auth_header
 from web_admin.api_settings import PAYMENT_URL
+from web_admin.restful_methods import RESTfulMethods
 
 
 logger = logging.getLogger(__name__)
@@ -17,7 +14,7 @@ IS_SUCCESS = {
 }
 
 
-class PaymentOrderView(TemplateView):
+class PaymentOrderView(TemplateView, RESTfulMethods):
     template_name = "payment_order.html"
 
     def post(self, request, *args, **kwargs):
@@ -70,25 +67,8 @@ class PaymentOrderView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_payment_order_list(self, body):
-        url = settings.DOMAIN_NAMES + PAYMENT_URL
-
-        logger.info('Call search payment order API to backend service. API-Path: {}'.format(url))
-        start = time.time()
-        logger.info("Request body: {};".format(body))
-        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} seconds".format(end - start))
-
-        json_data = auth_request.json()
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Payment order found [{}] records'.format(len(data)))
-                return data
-        else:
-            logger.info('Response_content: {}'.format(auth_request.content))
-            raise Exception(auth_request.content)
+        response, status = self._post_method(PAYMENT_URL, 'Payment Order List', logger, body)
+        return response
 
     def format_data(self, data):
         for i in data:
