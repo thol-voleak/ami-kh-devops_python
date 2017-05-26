@@ -8,7 +8,7 @@ from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class CreateView(TemplateView, RESTfulMethods):
-    template_name = "service_create.html"
+    template_name = "services/service_create.html"
 
     def get(self, request, *args, **kwargs):
         choices, success = self._get_service_group_and_currency_choices()

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateView(TemplateView, RESTfulMethods):
-    template_name = "tier/update.html"
+    template_name = "services/tier/tier_update.html"
 
     def get(self, request, *args, **kwargs):
         logger.info('========== Start Updating Tier ==========')

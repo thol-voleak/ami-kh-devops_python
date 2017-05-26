@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListCommandView(TemplateView, RESTfulMethods):
-    template_name = "command/list.html"
+    template_name = "services/command/command_list.html"
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start adding service command ==========')

@@ -5,7 +5,7 @@ from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class ServiceDetailForm(TemplateView, RESTfulMethods):
-    template_name = "services/detail.html"
+    template_name = "services/service_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super(ServiceDetailForm, self).get_context_data(**kwargs)

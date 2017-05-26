@@ -7,7 +7,7 @@ from web_admin import api_settings
 from django.http import Http404
 from django.views.generic.base import TemplateView
 
-from .mixins import GetCommandNameAndServiceNameMixin
+from services.views.mixins import GetCommandNameAndServiceNameMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.restful_methods import RESTfulMethods
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
 
-    template_name = "services/fee_tier.html"
+    template_name = "services/tier/tier_list.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super(FeeTierListView, self).get_context_data(*args, **kwargs)

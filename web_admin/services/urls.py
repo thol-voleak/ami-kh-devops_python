@@ -1,15 +1,16 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from .views.agent_fee_distribution import (AgentFeeView,
-                                           FeeDistributionsUpdate)
-from .views.agent_bonus_distribution import (AgentBonusDistributions,
+from services.views.commision.agent_fee_distribution import (AgentFeeView,
+                                                             FeeDistributionsUpdate)
+from services.views.tier.list import FeeTierListView
+from services.views.tier.update import UpdateView as TierUpdateView
+from .views.commision.agent_bonus_distribution import (AgentBonusDistributions,
                                              AgentFeeHierarchyDistributionsDetail)
-from .views.command.list import ListCommandView
 from .views.command.delete import DeleteCommand
-from .views.command.tier.add import AddView
-from .views.command.tier.update import UpdateView as TierUpdateView
-from .views.commission_and_payment import (BalanceDistributionsUpdate,
+from .views.command.list import ListCommandView
+from .views.tier.add import AddView
+from .views.commision.commission_and_payment import (BalanceDistributionsUpdate,
                                            BonusDistributionsUpdate,
                                            CommissionAndPaymentView,
                                            PaymentAndFeeStructureDetailView,
@@ -17,12 +18,11 @@ from .views.commission_and_payment import (BalanceDistributionsUpdate,
                                            SettingBonusView,
                                            AgentBonusDistributionsUpdate)
 from .views.create import CreateView
+from .views.commision.delete_agent_bonus import DeleteAgentBonus
+from .views.commision.delete_setting_bonus import DeleteSettingBonus
 from .views.detail import ServiceDetailForm
-from .views.fee_tier import FeeTierListView
 from .views.services_list import ListView
 from .views.update import UpdateView
-from .views.delete_setting_bonus import DeleteSettingBonus
-from .views.delete_agent_bonus import DeleteAgentBonus
 
 app_name = "services"
 

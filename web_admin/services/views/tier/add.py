@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class AddView(TemplateView,RESTfulMethods):
-    template_name = "tier/add_tier.html"
+    template_name = "services/tier/tier_add.html"
 
     def get(self, request, *args, **kwargs):
         logger.info('========== Start Adding Tier ==========')

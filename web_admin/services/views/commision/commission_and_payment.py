@@ -8,14 +8,14 @@ from django.contrib import messages
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
-from .mixins import GetCommandNameAndServiceNameMixin
+from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
 
 class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
-    template_name = "services/commission_and_payment.html"
+    template_name = "services/commission/commission_and_payment.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super(CommissionAndPaymentView, self).get_context_data(*args, **kwargs)
