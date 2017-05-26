@@ -70,4 +70,4 @@ class ListView(TemplateView, RESTfulMethods):
         context = {'data': data}
         list_content = render_to_string("agents/list_content.html", context)
         logger.info('========== Finished searching agent ==========')
-        return JsonResponse({"table_content": list_content})
+        return JsonResponse({"status": status, "table_content": list_content})

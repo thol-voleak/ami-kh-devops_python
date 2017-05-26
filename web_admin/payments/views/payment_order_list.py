@@ -49,7 +49,7 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
         if payee_user_type_id is not '' and payee_user_type_id is not '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
 
-        data = self.get_payment_order_list(body)
+        data, status = self.get_payment_order_list(body)
         if data is not None:
             result_data = self.format_data(data)
         else:
@@ -64,11 +64,11 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
                    'payee_user_type_id':payee_user_type_id}
         list_content = render_to_string("payments/payment_order_table_content.html", context)
         logger.info('========== Finished searching payment order ==========')
-        return JsonResponse({"table_content": list_content})
+        return JsonResponse({"status": status, "table_content": list_content})
 
     def get_payment_order_list(self, body):
         response, status = self._post_method(PAYMENT_URL, 'Payment Order List', logger, body)
-        return response
+        return response, status
 
     def format_data(self, data):
         for i in data:

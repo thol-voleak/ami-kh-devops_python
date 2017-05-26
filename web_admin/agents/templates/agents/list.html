@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_search_page.html" %}
 {% load static %}
 {% block content %}
 <div class="panel mb25">
@@ -94,63 +94,26 @@
         </div>
     </div>
     <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
+        </div>
+    </div>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
-<!--CSS for loading indicator-->
-<style>
-.loader {
-    position: absolute;
-    left: 50%;
-    border: 6px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 6px solid #888;
-    width: 48px;
-    height: 48px;
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
 
 <script>
     function search_agents() {
         var url = "{% url 'agents:agent-list' %}";
-        $("#agent_table_body").empty();
-        $("#loader-indicator").show();
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                'unique_reference': $("#txt_unique_reference").val(),
+
+        data = {'unique_reference': $("#txt_unique_reference").val(),
                 'email': $("#txt_email").val(),
                 'primary_mobile_number': $("#txt_primary_mobile_number").val(),
                 'kyc_status': $("#txt_kyc_status").val(),
                 'from_created_timestamp': $("#dtp_from").val(),
-                'to_created_timestampv': $("#dtp_to").val()
-            },
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function (response) {
-                $("#loader-indicator").hide();
-                $("#agent_table_body").append(response.table_content);
-            },
-            error: function (err) {
-                $("#loader-indicator").hide();
-            }
-        });
+                'to_created_timestamp': $("#dtp_to").val()}
+
+        do_search(url, "agent_table_body", "loader-indicator", "search-result-notification", data);
     }
 </script>
 {% endblock %}
