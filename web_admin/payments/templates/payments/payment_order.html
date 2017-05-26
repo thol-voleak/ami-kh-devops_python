@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_search_page.html" %}
 {% load static %}
 
 {% block content %}
@@ -80,60 +80,18 @@
     <div class="loader" style="display:none" id="loader-indicator"></div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<!--CSS for loading indicator-->
-<style>
-.loader {
-    position: absolute;
-    left: 50%;
-    border: 6px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 6px solid #888;
-    width: 48px;
-    height: 48px;
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
-
 <script>
     function search_payment_order() {
         var url = "{% url 'payments:payment_order' %}";
-        $("#table_body").empty();
-        $("#loader-indicator").show();
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                'order_id': $("#txt_order_id").val(),
+
+        data = {'order_id': $("#txt_order_id").val(),
                 'service_name': $("#txt_service_name").val(),
                 'payer_user_id': $("#txt_payer_user_id").val(),
                 'payer_user_type_id': $("#ddl_payer_user_type").val(),
                 'payee_user_id': $("#txt_payee_user_id").val(),
-                'payee_user_type_id': $("#ddl_payee_user_type").val()
-            },
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function (response) {
-                $("#loader-indicator").hide();
-                $("#table_body").append(response.table_content);
-            },
-            error: function (err) {
-                $("#loader-indicator").hide();
-            }
-        });
+                'payee_user_type_id': $("#ddl_payee_user_type").val()}
+
+        do_search(url, "table_body", "loader-indicator", data);
     }
 </script>
 {% endblock %}

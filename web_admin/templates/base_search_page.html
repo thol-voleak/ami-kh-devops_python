@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+{{ block.super }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<!--CSS for loading indicator-->
+<style>
+.loader {
+    position: absolute;
+    left: 50%;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #888;
+    width: 48px;
+    height: 48px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+    function do_search(url, table_body_id, loader_indicator_id, data) {
+        var table_body = $("#" + table_body_id);
+        var loader_indicator = $("#" + loader_indicator_id);
+        table_body.empty();
+        loader_indicator.show();
+        $.ajax({
+            url: url,
+            type: "POST",
+            data,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                loader_indicator.hide();
+                table_body.append(response.table_content);
+            },
+            error: function (err) {
+                loader_indicator.hide();
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
