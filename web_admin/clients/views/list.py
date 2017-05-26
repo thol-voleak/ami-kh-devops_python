@@ -8,9 +8,11 @@ class ListView(TemplateView, RESTfulMethods):
     template_name = "clients/clients_list.html"
 
     def get_context_data(self, **kwargs):
+        logger.info("========== Start Getting client list ==========")
         data = self.get_clients_list()
         result = {'data': data,
                   'msg': self.request.session.pop('client_update_msg', None)}
+        logger.info("========== Finish Getting client list ==========")
         return result
 
     def get_clients_list(self):

@@ -10,6 +10,7 @@ class DetailView(TemplateView, RESTfulMethods):
     template_name = "clients/client_detail.html"
 
     def get_context_data(self, **kwargs):
+        logger.info("========== Start Getting client detail ==========")
         context = super(DetailView, self).get_context_data(**kwargs)
         client_id = context['client_id']
 
@@ -18,6 +19,7 @@ class DetailView(TemplateView, RESTfulMethods):
         client_scopes, success_scope = self._get_client_scopes(client_id)
         context['client_info'] = client_info
         context['client_scopes'] = client_scopes
+        logger.info("========== Finish Getting client detail ==========")
         return context
 
     def _get_client_scopes(self, client_id):

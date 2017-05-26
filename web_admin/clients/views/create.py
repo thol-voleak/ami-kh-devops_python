@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 class ClientCreate(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
+        logger.info("========== Start Creating client ==========")
         client_id = _generate_client_id()
         client_secret = _generate_client_secret()
         client_info = {
@@ -45,7 +46,7 @@ class ClientCreate(TemplateView, RESTfulMethods):
 
         data, success = self._post_method(url, 'client', logger, params)
 
-
+        logger.info("========== Finish Creating client ==========")
         if success:
             return redirect('clients:client-list')
         else:

@@ -11,6 +11,7 @@ class ClientUpdateForm(TemplateView, RESTfulMethods):
     template_name = "clients/update_client_form.html"
 
     def get_context_data(self, **kwargs):
+        logger.info("========== Start Updating client detail ==========")
         context = super(ClientUpdateForm, self).get_context_data(**kwargs)
         client_id = context['client_id']
         return self._get_client_detail(client_id)
@@ -49,6 +50,7 @@ class ClientUpdate(TemplateView, RESTfulMethods):
         url = api_settings.UPDATE_CLIENT_URL.format(client_id)
 
         data, success = self._put_method(url, 'client', logger, params)
+        logger.info("========== Finish Updating client detail ==========")
 
         if success:
             request.session['client_update_msg'] = 'Updated data successfully'

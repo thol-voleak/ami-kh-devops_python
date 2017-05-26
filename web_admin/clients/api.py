@@ -5,7 +5,10 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,35 +17,38 @@ class ClientApi():
         logger.info('========== Start regenerating client secret ==========')
 
         url = settings.DOMAIN_NAMES + api_settings.REGENERATE_CLIENT_SECRET_URL.format(client_id)
-
-        start_date = time.time()
+        logger.info('API-Path: {}'.format(url))
+        start = time.time()
         response = requests.post(url, headers=get_auth_header(request.user),
                                  verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time for regenerate client secret for {} client id is {} sec.".format(client_id,
-                                                                                                    done - start_date))
-
+        finish = time.time()
+        logger.info("Response time: {} sec.".format(finish - start))
         response_json = response.json()
         status = response_json['status']
+
+        if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+            message = status.get('message', 'Something went wrong.')
+            logger.info("{} for {} username".format(message, request.user))
+            raise InvalidAccessToken(message)
+
         if status['code'] == "success":
-            logger.info("Client secret was regenerated.")
-            logger.info('========== Finish regenerate client secret ==========')
-            return HttpResponse(status=200, content=response)
+            status = 200
         else:
-            logger.info("Error regenerate client secret.")
-            logger.info('========== Finish regenerate client secret ==========')
-            return HttpResponse(status=500, content=response)
+            status = 500
+        logger.info('========== Finish regenerate client secret ==========')
+        return HttpResponse(status=status, content=response)
 
     def delete_client_by_id(request, client_id):
         logger.info("========== Start delete client id ==========")
         if request.method == "POST":
             url = settings.DOMAIN_NAMES + api_settings.DELETE_CLIENT_URL.format(client_id)
-            start_date = time.time()
+            logger.info('API-Path: {}'.format(url))
+            start = time.time()
             response = requests.delete(url, headers=get_auth_header(request.user),
                                        verify=settings.CERT)
             done = time.time()
-            logger.info("Response time for delete {} client id is {} sec.".format(client_id, done - start_date))
-            logger.info("Response for delete {} client id is {}".format(client_id, response.content))
+            logger.info("Response time: {} sec.".format(done - start))
+            logger.info("Response content: {}".format(response.content))
 
             json_response = response.json()
             logger.info("========== Finished deleted client id ==========")
