@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="panel-heading border">
+        <h3>Payment Order</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Order ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
+                </div>
+                <label class="col-sm-1 control-label">Service Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="service_name" id="txt_service_name" value="{{ service_name }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Payer User ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="payer_user_id" id="txt_payer_user_id" value="{{ payer_user_id }}">
+                </div>
+                <label class="col-sm-1 control-label">Payer User Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payer_user_type" name="payer_user_type_id">
+                        <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payer_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                        <option value=2 {% if payer_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Payee User ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="payee_user_id" id="txt_payee_user_id" value="{{ payee_user_id }}">
+                </div>
+                <label class="col-sm-1 control-label">Payee User Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payee_user_type" name="payee_user_type_id">
+                        <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payee_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                        <option value=2 {% if payee_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                    </select>
+                </div>
+                <div class="col-xs-1">
+                    <input id="search_btn" class="btn btn-success btn-block" type="button" onclick="search_payment_order()" value="Search">
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <thead>
+                <tr>
+                    <th id="id">Order ID</th>
+                    <th id="currency">Service Name</th>
+                    <th id="created_date">Command</th>
+                    <th id="created_date">Status</th>
+                    <th id="created_date">Amount</th>
+                    <th id="created_date">Currency</th>
+                    <th id="balance">Payment Method</th>
+                    <th id="created_date">Last Modify Date</th>
+                    <th id="created_date">Initator (ID)</th>
+                    <th id="created_date">Payer (ID)</th>
+                    <th id="created_date">Payee (ID)</th>
+                    <th id="created_date">Fee</th>
+                    <th id="created_date">Bonus</th>
+                    <th id="user">Ext Transaction ID</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="loader" style="display:none" id="loader-indicator"></div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<!--CSS for loading indicator-->
+<style>
+.loader {
+    position: absolute;
+    left: 50%;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #888;
+    width: 48px;
+    height: 48px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+    function search_payment_order() {
+        var url = "{% url 'payments:payment_order' %}";
+        $("#table_body").empty();
+        $("#loader-indicator").show();
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                'order_id': $("#txt_order_id").val(),
+                'service_name': $("#txt_service_name").val(),
+                'payer_user_id': $("#txt_payer_user_id").val(),
+                'payer_user_type_id': $("#ddl_payer_user_type").val(),
+                'payee_user_id': $("#txt_payee_user_id").val(),
+                'payee_user_type_id': $("#ddl_payee_user_type").val()
+            },
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                $("#loader-indicator").hide();
+                $("#table_body").append(response.table_content);
+            },
+            error: function (err) {
+                $("#loader-indicator").hide();
+            }
+        });
+    }
+</script>
+{% endblock %}

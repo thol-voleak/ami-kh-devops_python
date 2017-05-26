@@ -4,7 +4,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.api_settings import PAYMENT_URL
 from web_admin.restful_methods import RESTfulMethods
-
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +16,10 @@ IS_SUCCESS = {
 
 
 class PaymentOrderView(TemplateView, RESTfulMethods):
-    template_name = "payment_order.html"
+    template_name = "payments/payment_order.html"
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start search cash source of fund ==========')
+        logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
@@ -60,11 +61,10 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
                    'payer_user_id': payer_user_id,
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
-                   'payee_user_type_id':payee_user_type_id,
-                   }
-
-        logger.info('========== End search cash source of fund ==========')
-        return render(request, self.template_name, context)
+                   'payee_user_type_id':payee_user_type_id}
+        list_content = render_to_string("payments/payment_order_table_content.html", context)
+        logger.info('========== Finished searching payment order ==========')
+        return JsonResponse({"table_content": list_content})
 
     def get_payment_order_list(self, body):
         response, status = self._post_method(PAYMENT_URL, 'Payment Order List', logger, body)

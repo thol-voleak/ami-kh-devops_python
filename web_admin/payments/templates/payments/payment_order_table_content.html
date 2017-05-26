@@ -1,0 +1,18 @@
+{% for order in order_list %}
+    <tr>
+        <td class="col-sm-2">{{ order.order_id }}</td>
+        <td class="col-sm-2">{{ order.product_service.name }}</td>
+        <td class="col-sm-2">{{ order.product_command.name }}</td>
+        <td class="col-sm-2">{{ order.status }}</td>
+        <td class="col-sm-2">{{ order.amount }}</td>
+        <td class="col-sm-2">{{ order.currency }}</td>
+        <td class="col-sm-2">{{ order.payment_method.name }}</td>
+        <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
+        <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
+        <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.initiator.user_id }})</td>
+        <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.initiator.user_id }})</td>
+        <td class="col-sm-2">{{ order.fee }}</td>
+        <td class="col-sm-2">{{ order.bonus }}</td>
+        <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
+    </tr>
+{% endfor %}
