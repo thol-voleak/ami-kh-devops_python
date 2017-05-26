@@ -15,7 +15,7 @@ History:
 '''
 class SystemUserCreate(TemplateView, RESTfulMethods):
 
-    template_name = "create.html"
+    template_name = "system_user/create.html"
 
     def get(self, request, *args, **kwargs):
         logger.info('========== Fetch form for creating new system user ==========')

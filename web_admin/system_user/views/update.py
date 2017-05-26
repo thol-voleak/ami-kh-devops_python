@@ -14,7 +14,7 @@ History:
 '''
 class SystemUserUpdateForm(TemplateView, RESTfulMethods):
 
-    template_name = "update.html"
+    template_name = "system_user/update.html"
 
     def get(self, request, *args, **kwargs):
 

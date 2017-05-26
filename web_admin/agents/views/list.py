@@ -34,13 +34,6 @@ class ListView(TemplateView, RESTfulMethods):
         from_created_timestamp = request.POST.get('from_created_timestamp', '')
         to_created_timestamp = request.POST.get('to_created_timestamp', '')
 
-        context = {'unique_reference': unique_reference,
-                   'email': email,
-                   'primary_mobile_number': primary_mobile_number,
-                   'kyc_status': kyc_status,
-                   'from_created_timestamp': from_created_timestamp,
-                   'to_created_timestamp': to_created_timestamp}
-
         # Build body
         body = {}
         if unique_reference is not '':
@@ -74,7 +67,7 @@ class ListView(TemplateView, RESTfulMethods):
             logger=logger,
             params=body
         )
-        context.update({'data': data})
-        list_content = render_to_string("agents/list_content.html", context={"data": data})
+        context = {'data': data}
+        list_content = render_to_string("agents/list_content.html", context)
         logger.info('========== Finished searching agent ==========')
-        return JsonResponse({"agent_table": list_content})
+        return JsonResponse({"table_content": list_content})

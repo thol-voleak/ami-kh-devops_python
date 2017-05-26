@@ -1,0 +1,54 @@
+{% for systemuser in data %}
+    <tr>
+        <td class="col-sm-1" id="id_{{ systemuser.id }}">
+            {{ systemuser.id|default_if_none:'' }}
+        </td>
+        {% if systemuser.is_deleted %}
+            <td class="col-sm-1">
+                <del>{{ systemuser.username|default_if_none:'' }}</del>
+            </td>
+        {% else %}
+            <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
+        {% endif %}
+
+        <td class="col-sm-3">{{systemuser.firstname|add:" "|add:systemuser.lastname }}</td>
+        <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
+        <td class="col-sm-3">
+            <div id="client_btn_group_{{ system_user.id }}">
+                <div class="btn-group">
+                    {% if systemuser.is_deleted %}
+                    {% else %}
+                        <a type="button"
+                           class="btn btn-outline btn-xs btn-info"
+                           role="button"
+                           id="system_user_btn_detail"
+                           href="{% url 'system_user:system-user-detail' systemuser.id %}">
+                            <span class="small">Detail</span>
+                        </a>
+                        <a type="button"
+                           class="btn btn-outline btn-xs btn-primary"
+                           role="button"
+                           id="system_user_btn_edit"
+                           href="{% url 'system_user:system-user-edit' systemuser.id %}">
+                            <span class="small">Edit</span>
+                        </a>
+                        <a type="button"
+                           class="btn btn-outline btn-xs btn-danger"
+                           role="button"
+                           id="system_user_btn_delete"
+                           href="{% url 'system_user:delete-system-user' systemuser.id %}">
+                            <span class="small">Delete</span>
+                        </a>
+                        <a type="button"
+                           class="btn btn-outline btn-xs btn-primary"
+                           role="button"
+                           id="btn_system_user_change_password"
+                           href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                            <span class="small">ChangePassword</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endfor %}

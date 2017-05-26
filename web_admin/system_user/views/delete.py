@@ -15,7 +15,7 @@ History:
 '''
 class DeleteView(TemplateView, RESTfulMethods):
 
-    template_name = "delete.html"
+    template_name = "system_user/delete.html"
 
     def get(self, request, *args, **kwargs):
 

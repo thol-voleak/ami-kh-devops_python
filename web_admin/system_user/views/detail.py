@@ -14,7 +14,7 @@ History:
 '''
 class DetailView(TemplateView, RESTfulMethods):
 
-    template_name = "detail.html"
+    template_name = "system_user/detail.html"
 
     def get(self, request, *args, **kwargs):
 
