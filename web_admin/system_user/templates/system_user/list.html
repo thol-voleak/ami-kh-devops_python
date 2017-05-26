@@ -78,6 +78,12 @@
         </div>
     </div>
     <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
+        </div>
+    </div>
 </div>
 
 <script>
@@ -87,7 +93,7 @@
         data = {'username': $("#username_search").val(),
                 'email': $("#email_search").val()}
 
-        do_search(url, "table_body", "loader-indicator", data);
+        do_search(url, "table_body", "loader-indicator", "search-result-notification", data);
     }
 </script>
 {% endblock %}

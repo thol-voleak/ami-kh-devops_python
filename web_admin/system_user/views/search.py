@@ -48,5 +48,5 @@ class SearchView(TemplateView, RESTfulMethods):
         context = {'data': data}
         list_content = render_to_string("system_user/list_content.html", context)
         logger.info('========== Finished searching system user ==========')
-        return JsonResponse({"table_content": list_content})
+        return JsonResponse({"status": status, "table_content": list_content})
 

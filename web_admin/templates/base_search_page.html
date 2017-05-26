@@ -31,7 +31,7 @@
 </style>
 
 <script>
-    function do_search(url, table_body_id, loader_indicator_id, data) {
+    function do_search(url, table_body_id, loader_indicator_id, search_result_notification_id, data) {
         var table_body = $("#" + table_body_id);
         var loader_indicator = $("#" + loader_indicator_id);
         table_body.empty();
@@ -46,9 +46,15 @@
             },
             success: function (response) {
                 loader_indicator.hide();
-                table_body.append(response.table_content);
+                if (response.status == true) {
+                    table_body.append(response.table_content);
+                    $("#" + search_result_notification_id).hide();
+                } else {
+                    $("#" + search_result_notification_id).show();
+                }
             },
             error: function (err) {
+                $("#" + search_result_notification_id).hide();
                 loader_indicator.hide();
             }
         });
