@@ -47,7 +47,7 @@
                 <tbody>
                 {% for agent_type in data %}
                 <tr>
-                    {% if agent_type.is_delete %}
+                    {% if agent_type.is_deleted %}
                     <td class="col-sm-3" id="agent_type_{{agent_type.id}}">
                         <del>{{ agent_type.name }}</del>
                     </td>
@@ -61,7 +61,7 @@
                     <td class="col-sm-3">
                         <div id="client_btn_group_{{ agent_type.id }}">
                             <div class="btn-group">
-                                {% if agent_type.is_delete %}
+                                {% if agent_type.is_deleted %}
                                 {% else %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
