@@ -93,6 +93,12 @@ function toNumber(str) {
     return str.replace(/[,\s_]+/g, "");
 }
 
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
 function changeValue() {
     var $currency = $('#ddl_currency');
     $currency.on('change', function() {
@@ -104,7 +110,7 @@ function changeValue() {
     var $company_balance = $('#txt_company_balance_hidden');
     $amount.on('input', function() {
         var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
-        value ? $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+        value ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
         : $new_balance.val($company_balance.val());
     });
     $('#txt_adding_balance').keydown(function(event){
