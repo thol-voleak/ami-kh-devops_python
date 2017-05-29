@@ -16,7 +16,13 @@
 
     {% for message in messages %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-add-service">
+        <div class='alert
+                    {% if "successfully" in message %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-add-service">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ message|capfirst }}</strong>
         </div>
