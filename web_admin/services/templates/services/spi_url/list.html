@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='services' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>SPI URL List</h3>
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal" role="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">SPI Type:</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_spi_url_type" name="spi_url_type" required>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">SPI URL:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" />
+                </div>
+            </div>
+            <div class="form-group pull-right">
+                <a href="{% url 'services:command_list' service_id %}">
+                    <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
+                </a>
+
+                <a href="#">
+                    <input id="btn_add" class="btn btn-success" type="button" value="Add"/>
+                </a>
+            </div>
+        </form>
+
+        <div class="table-responsive row">
+            <table class="table table-bordered table-striped mb0" id="tbl_spi">
+                <thead>
+                <tr>
+                    <th id="lbl_spi_url_type">SPI URL Type</th>
+                    <th id="lbl_spi_url_value">SPI URL Value</th>
+                    <th id="lbl_action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for spi in data %}
+                <tr>
+                    <td class="col-sm-2">{{ spi.spi_url_type|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ spi.url|default_if_none:'' }}</td>
+                    <td class="col-sm-1">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary"  id="btn_edit" role="button" href="#">
+                            <span class="small">Edit</span>
+                        </a>
+                        <a type="button" class="btn btn-outline btn-xs btn-primary" role="button" id="btn_delete" href="#">
+                            <span class="small">Delete</span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

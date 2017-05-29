@@ -76,6 +76,10 @@
                                                 class="text-info">
                                                 <span class="small">Tier</span>
                                                 </a>
+                                                <a type="button" class="btn btn-outline btn-xs btn-primary" id="btn_spi" role="button"
+                                                href="{% url 'services:spi_list' service_id command.command_id command.service_command_id %}">
+                                                <span class="small">SPI</span>
+                                                </a>
                                                 <button type="button" class="btn btn-outline btn-xs btn-danger small" id="btn_delete"
                                                 onclick="deleteCommand('{{ command.service_command_id }}')">Delete</button>
                                             </td>
