@@ -11,10 +11,16 @@
     <div class="panel-heading border">
         <h3>Agent Detail</h3>
     </div>
-
+    <!--If success return green notification and return red notification if message is failed-->
     {% if msg is not None %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class='alert
+                    {% if "successfully" in msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ msg }}</strong>
         </div>
@@ -23,7 +29,13 @@
 
     {% if agent_update_msg is not None %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class='alert
+                    {% if "successfully" in agent_update_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ agent_update_msg }}</strong>
         </div>
