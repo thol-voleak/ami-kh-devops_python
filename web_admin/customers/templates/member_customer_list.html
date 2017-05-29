@@ -9,7 +9,7 @@
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post"
+        <form id="submit-form" class="form-horizontal" role="form" method="get"
               action="{% url 'customers:customer-list' %}">
             {% csrf_token %}
             <div class="row">

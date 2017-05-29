@@ -30,11 +30,11 @@ class ListView(TemplateView, RESTfulMethods):
                                           params={})
         return data
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         logger.info('========== Start searching Customer ==========')
         url = api_settings.MEMBER_CUSTOMER_PATH
-        search = request.POST.get('search')
+        search = request.GET.get('search')
         if search == '':
             params = {}
         else:

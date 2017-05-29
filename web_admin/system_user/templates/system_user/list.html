@@ -34,7 +34,7 @@
     </div>
 {% for message in messages %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-create-system-user">
+        <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ message|capfirst }}</strong>
         </div>
@@ -43,7 +43,13 @@
 
     {% if del_msg is not None %}
         <div class="col-xs-12">
-            <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
+            <div class='alert
+                        {%if "successfully" in del_msg %}
+                        alert-success
+                        {% else %}
+                        alert-danger
+                        {% endif %}
+                        alert-dismissable' id="alert-success-agent-type">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>{{ del_msg }}</strong>
             </div>
@@ -52,7 +58,13 @@
 
     {% if pw_msg is not None %}
         <div class="col-xs-12">
-            <div class="alert alert-success alert-dismissable" id="system_user_change_password_msg">
+            <div class='alert
+                        {%if "sucessfully" in pw_msg%}
+                        alert-success
+                        {% else %}
+                        alert-danger
+                        {% endif %}
+                        alert-dismissable' id="system_user_change_password_msg">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>{{ pw_msg }}</strong>
             </div>

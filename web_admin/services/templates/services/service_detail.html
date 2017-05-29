@@ -8,7 +8,13 @@
     </div>
     {% if add_service_group_msg is not None %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class='alert
+                    {% if "successfully" in add_service_group_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ add_service_msg }}</strong>
         </div>
@@ -16,7 +22,13 @@
     {% endif %}
     {% for msg in messages %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class='alert
+                    {% if "successfully" in msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ msg }}</strong>
         </div>

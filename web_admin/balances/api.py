@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 
 from authentications.utils import get_auth_header
-from web_admin.api_settings import ADD_CURRENCY_URL
+from web_admin import api_settings
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class BalanceApi():
     def add(request, currency):
         logger.info('========== Start add currency ==========')
 
-        url = settings.ADD_CURRENCY_URL.format(currency)
+        url = settings.DOMAIN_NAMES + api_settings.ADD_CURRENCY_URL.format(currency)
         logger.info("Add currency by {} user id".format(request.user.username))
         logger.info("Add currency from backend with {} url".format(url))
 

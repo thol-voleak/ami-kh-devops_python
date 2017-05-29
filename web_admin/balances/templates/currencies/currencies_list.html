@@ -12,7 +12,7 @@
     <div class="panel-heading border">
         <h3>Currencies</h3>
     </div>
-    <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
+    <div class="alert alert-danger alert-dismissable mt30" hidden id="currency_dialog_success">
         <button type="button" class="close" onclick="$('.alert').hide()">×</button>
         <span id="alert_success_msg"></span>
     </div>
@@ -87,7 +87,7 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            $("#alert_success_msg").text('Added data successfully')
+                            $("#alert_success_msg").text('Added data successfully. Please restart service to apply effect.')
                             $("#currency_dialog_success").show();
                             addSuccessRow(response)
                         },
