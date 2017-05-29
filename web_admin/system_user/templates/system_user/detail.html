@@ -10,13 +10,7 @@
 
         {% if msg is not None %}
             <div class="col-xs-12">
-                <div class='alert
-                            {% if "successfully" in msg %}
-                            alert-success
-                            {%else%}
-                            alert-danger
-                            {%endif%}
-                            alert-dismissable' id="system_user_update_msg">
+                <div class='alert alert-success alert-dismissable' id="system_user_update_msg">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                     <strong>{{ msg }}</strong>
                 </div>
