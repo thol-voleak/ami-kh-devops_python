@@ -34,7 +34,7 @@ class SPIView(TemplateView, RESTfulMethods):
         logger.info("========== Finish adding SPI URL by service command ==========")
 
         if success:
-            request.session['add_spi_url_msg'] = 'Added data successfully'
+            request.session['add_spi_url_msg'] = 'Added SPI URL successfully'
             return redirect(request.META['HTTP_REFERER'])
 
 
@@ -42,6 +42,8 @@ class SPIView(TemplateView, RESTfulMethods):
         logger.info('========== Start getting SPI url list ==========')
         context = super(SPIView, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
+        #context['service_id'] = kwargs.get('service_id')
+        #context['command_id'] = kwargs.get('command_id')
         if not service_command_id:
             raise Http404
         data, success = self.get_spi_list(service_command_id)
@@ -50,6 +52,7 @@ class SPIView(TemplateView, RESTfulMethods):
         context['data'] = data
         context['spi_types'] = spi_types
         context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
+        context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
         logger.info('========== Finish getting SPI url list ==========')
         return context
 
