@@ -14,13 +14,13 @@ IS_SUCCESS = {
 class HistoryView(TemplateView, RESTfulMethods):
     template_name = "history.html"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         logger.info('========== Start search history card ==========')
 
-        trans_id = request.POST.get('trans_id')
-        card_id = request.POST.get('card_id')
-        user_id = request.POST.get('user_id')
-        user_type_id = request.POST.get('user_type_id')
+        trans_id = request.GET.get('trans_id')
+        card_id = request.GET.get('card_id')
+        user_id = request.GET.get('user_id')
+        user_type_id = request.GET.get('user_type_id')
 
         logger.info('trans_id: {}'.format(trans_id))
         logger.info('card_id: {}'.format(card_id))
@@ -28,20 +28,23 @@ class HistoryView(TemplateView, RESTfulMethods):
         logger.info('user_type_id: {}'.format(user_type_id))
 
         body = {}
-        if trans_id is not '':
-            body['trans_id'] = trans_id
-        if card_id is not '':
-            body['card_id'] = int(card_id)
-        if user_id is not '':
-            body['user_id'] = int(user_id)
-        if user_type_id is not '' and user_type_id is not '0':
-            body['user_type_id'] = int(user_type_id)
-
-        data = self.get_card_history_list(body)
-        if data is not None:
-            result_data = self.format_data(data)
+        if trans_id is None and card_id is None and user_id is None and user_type_id is None:
+            result_data = {}
         else:
-            result_data = data
+            if trans_id is not '':
+                body['trans_id'] = trans_id
+            if card_id is not '':
+                body['card_id'] = int(0 if card_id is None else card_id)
+            if user_id is not '':
+                body['user_id'] = int(0 if user_id is None else user_id)
+            if user_type_id is not '' and user_type_id is not '0':
+                body['user_type_id'] = int(0 if user_type_id is None else user_type_id)
+
+            data = self.get_card_history_list(body)
+            if data is not None:
+                result_data = self.format_data(data)
+            else:
+                result_data = data
 
         context = {'data': result_data,
                    'trans_id': trans_id,

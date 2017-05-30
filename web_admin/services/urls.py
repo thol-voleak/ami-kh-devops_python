@@ -24,6 +24,7 @@ from .views.detail import ServiceDetailForm
 from .views.services_list import ListView
 from .views.update import UpdateView
 from .views.spi_url.list import SPIView
+from .views.spi_url.update import SPIUpdate
 
 app_name = "services"
 
@@ -103,4 +104,8 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/$',
         login_required(SPIView.as_view(), login_url='login'),
         name="spi_list"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spiUrlId>[0-9A-Za-z]+)$',
+        login_required(SPIUpdate.as_view(), login_url='login'),
+        name="spi_update"),
 ]
