@@ -16,12 +16,12 @@ IS_SUCCESS = {
 class CashSOFView(TemplateView, RESTfulMethods):
     template_name = "cash_sof.html"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         logger.info('========== Start search cash source of fund ==========')
 
-        user_id = request.POST.get('user_id')
-        user_type_id = request.POST.get('user_type_id')
-        currency = request.POST.get('currency')
+        user_id = request.GET.get('user_id')
+        user_type_id = request.GET.get('user_type_id')
+        currency = request.GET.get('currency')
 
         logger.info('user_id: {}'.format(user_id))
         logger.info('user_type_id: {}'.format(user_type_id))
@@ -31,7 +31,7 @@ class CashSOFView(TemplateView, RESTfulMethods):
         if user_id is not '':
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0':
-            body['user_type'] = int(user_type_id)
+            body['user_type'] = int(0 if user_type_id is None else user_type_id)
         if currency is not '':
             body['currency'] = currency
 
@@ -46,7 +46,6 @@ class CashSOFView(TemplateView, RESTfulMethods):
                    'user_type_id': user_type_id,
                    'currency': currency
                    }
-
         logger.info('========== End search cash source of fund ==========')
         return render(request, self.template_name, context)
 
