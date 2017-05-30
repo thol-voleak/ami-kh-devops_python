@@ -14,16 +14,16 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:profile' %}">
-                {% csrf_token %}
+            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cards:profile' %}">
+               
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Card Identifier</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="card_identifier" value="{{ card_identifier }}"/>
+                        <input type="text" class="form-control input-rounded" name="card_identifier" />
                     </div>
                     <label class="col-sm-1 control-label">User ID</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}">
+                        <input type="text" class="form-control input-rounded" name="user_id" >
                     </div>
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">

@@ -14,25 +14,25 @@ IS_STOP = {
 class ProfileView(TemplateView, RESTfulMethods):
     template_name = "profile.html"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         logger.info('========== Start search card ==========')
 
-        card_identifier = request.POST.get('card_identifier')
-        user_id = request.POST.get('user_id')
-        user_type = request.POST.get('user_type')
+        card_identifier = request.GET.get('card_identifier')
+        user_id = request.GET.get('user_id')
+        user_type = request.GET.get('user_type')
 
         logger.info('card_identifier: {}'.format(card_identifier))
         logger.info('user_id: {}'.format(user_id))
         logger.info('user_type: {}'.format(user_type))
 
         body = {}
-
+        
         if card_identifier is not '':
             body['card_identifier'] = card_identifier
         if user_id is not '':
-            body['user_id'] = int(user_id)
+            body['user_id'] = int(0 if user_id is None else user_id)
         if user_type is not '' and user_type is not '0':
-            body['user_type_id'] = int(user_type)
+            body['user_type_id'] = int(0 if user_type is None else user_type)
 
         data = self.get_card_list(body)
         if data is not None:
