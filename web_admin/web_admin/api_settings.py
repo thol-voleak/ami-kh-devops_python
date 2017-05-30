@@ -41,6 +41,8 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
+SPI_TYPES_PATH = 'api-gateway/payment/v1/spi-url-types'
+SPI_ADD_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
 
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/v1/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'

@@ -13,17 +13,24 @@
     <div class="panel-heading border">
         <h3>SPI URL List</h3>
     </div>
-
+    {% if add_spi_url_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ add_spi_url_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
     <div class="panel-body">
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" role="form" method="Post" action="#">
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">SPI Type:</label>
                 <div class="col-sm-4">
                     <select class="form-control" id="ddl_spi_url_type" name="spi_url_type" required>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
+                        {% for type in spi_types %}
+                        <option value="{{ type.spi_url_type }}">{{ type.spi_url_type }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -38,8 +45,8 @@
                     <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
                 </a>
 
-                <a href="#">
-                    <input id="btn_add" class="btn btn-success" type="button" value="Add"/>
+                <a>
+                    <input id="btn_add" class="btn btn-success" type="submit" value="Add"/>
                 </a>
             </div>
         </form>
