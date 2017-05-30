@@ -96,7 +96,7 @@ class AddView(TemplateView,RESTfulMethods):
                 if x['command_id'] == my_id:
                     command_name = x['command_name']
                     return command_name, True
-                return 'Unknown', True
+            return 'Unknown', True
         else:
             return None, False
 
