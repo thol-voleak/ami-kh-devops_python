@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SPIUpdate(TemplateView, RESTfulMethods):
-    template_name = 'services/spi_url/update.html'
+    template_name = 'services/spi/update.html'
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating SPI URL by service command ==========")
@@ -39,7 +39,7 @@ class SPIUpdate(TemplateView, RESTfulMethods):
         logger.info("========== Finish updating SPI URL by service command ==========")
 
         if success:
-            request.session['spi_update_msg'] = 'Updated SPI URL successfully'
+            request.session['spi_update_msg'] = 'Updated data successfully'
             return redirect('services:spi_list', service_id=(service_id), command_id=(command_id), service_command_id=(service_command_id) )
 
     def get_context_data(self, **kwargs):
