@@ -1,177 +1,177 @@
 {% block sidebar_panel %}
-    <div class="sidebar-panel offscreen-left">
-        <div class="brand">
-            <a href="javascript:;" class="toggle-sidebar hidden-xs hamburger-icon v3"
-               data-toggle="layout-small-menu">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </a>
-        </div>
-        {% with request.resolver_match.url_name as url_name %}
-            <nav role="navigation">
-                <ul class="nav">
-                    <li class="class={% if url_name == 'web-index' %} active{% endif %}">
-                        <a href="{% url 'web:web-index' %}">
-                        <i class="fa fa-home"></i>
-                        <span>Home</span>
-                        </a>
-                    </li>
-                    <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'country-code' %}active{% endif %}">
-                                <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'currency-list' %}active{% endif %}">
-                                <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
-                                <a href="{% url 'balances:initial_company_balance' %}">
-                                    <span>Setup Company Balance</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'company_balance' %}active{% endif %}">
-                                <a href="{% url 'balances:company_balance' %}"> <span>Company Balance</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
-                        <ul class="sub-menu">
-                            <li class="class={% if url_name == 'service_group_list' %} active{% endif %}">
-                                <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
-                            </li>
-                            <li class="class={% if url_name == 'services_list' %} active{% endif %}">
-                                <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion {% if 'agent' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
-                        <ul class="sub-menu">
-                            <li class="class={% if url_name == 'agent-type-list' %} active{% endif %}">
-                                <a href="{% url 'agent_type:agent-type-list' %}"> <span>Agent Types</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="class={% if url_name == 'agent_registration' %} active{% endif %}">
-                                <a href="{% url 'agents:agent_registration' %}"> <span>Agent Registration</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="class={% if url_name == 'agent-list' %} active{% endif %}">
-                                <a href="{% url 'agents:agent-list' %}"> <span>Agent List</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="class={% if url_name == 'client-list' %} active{% endif %}">
-                        <a href="{% url 'clients:client-list' %}">
-                            <i class="fa fa-tag"></i>
-                            <span>Clients</span>
-                        </a>
-                    </li>
-                    <!--<li class="class={% if url_name == 'api_list' %} active{% endif %}">-->
-                        <!--<a href="{% url 'api_management:api_list' %}">-->
-                            <!--<i class="fa fa-sort-numeric-asc"></i>-->
-                            <!--<span>Api management</span>-->
-                        <!--</a>-->
-                    <!--</li>-->
-                    <li class="class={% if url_name == 'scope_list' %} active{% endif %}">
-                        <a href="{% url 'centralize_configuration:scope_list' %}">
-                            <i class="fa fa-sort-numeric-asc"></i>
-                            <span>Centralize Configuration</span>
-                        </a>
-                    </li>
-                    <!-- <li class="menu-accordion {% if 'api-management' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Api management</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'api_list' %}active{% endif %}">
-                                <a href="{% url 'api_management:api_list' %}">
-                                    <span>Apis</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'service_list' %}active{% endif %}">
-                                <a href="{% url 'api_management:service_list' %}"> <span>Services</span> </a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <li class="{% if 'customers' in request.path %} open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
-                        <ul class="sub-menu">
-                            <li id="customers_menu" class="{% if url_name == 'customer-list' %}active{% endif %}">
-                                <a href="{% url 'customers:customer-list' %}"><span>Member Customers Profile</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="{% if 'system-user' in request.path %} open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
-                        <ul class="sub-menu">
-                            <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
-                                <a href="{% url 'system_user:search' %}"><span>System Users</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion {% if 'cards' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'profile' %}active{% endif %}">
-                                <a href="{% url 'cards:profile' %}"> <span>Profile</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'history' %}active{% endif %}">
-                                <a href="{% url 'cards:history' %}"> <span>History</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion {% if 'payment' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Payment</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'order' %}active{% endif %}">
-                                <a href="{% url 'payments:payment_order' %}"> <span>Order</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
-                                <a href="{% url 'cash_sofs:cash_sof' %}"> <span>Source of Fund</span> </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'cash_transaction' %}active{% endif %}">
-                                <a href="{% url 'cash_sofs:cash_transaction' %}"> <span>Transaction</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-accordion {% if 'source-of-fund' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
-                        <ul class="sub-menu">
-                            <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
-                                <a href="{% url 'bank_sofs:bank_sofs_list' %}"> <span>Manage Bank</span> </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        {% if user.is_authenticated %}
-                            <a href="/admin-portal/logout/">
-                                <i class="fa fa-power-off"></i>
-                                <span class="">Logout</span>
-                            </a>
-                        {% endif %}
+<div class="sidebar-panel offscreen-left">
+    <div class="brand">
+        <a href="javascript:;" class="toggle-sidebar hidden-xs hamburger-icon v3"
+           data-toggle="layout-small-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
+    </div>
+    {% with request.resolver_match.url_name as url_name %}
+    <nav role="navigation">
+        <ul class="nav">
+            <li class="class={% if url_name == 'web-index' %} active{% endif %}">
+                <a href="{% url 'web:web-index' %}">
+                    <i class="fa fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'country-code' %}active{% endif %}">
+                        <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
                     </li>
                 </ul>
-            </nav>
-        {% endwith %}
-    </div>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'currency-list' %}active{% endif %}">
+                        <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
+                        <a href="{% url 'balances:initial_company_balance' %}">
+                            <span>Setup Company Balance</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'company_balance' %}active{% endif %}">
+                        <a href="{% url 'balances:company_balance' %}"> <span>Company Balance</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
+                <ul class="sub-menu">
+                    <li class="class={% if url_name == 'service_group_list' %} active{% endif %}">
+                        <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
+                    </li>
+                    <li class="class={% if url_name == 'services_list' %} active{% endif %}">
+                        <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion {% if 'agent' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
+                <ul class="sub-menu">
+                    <li class="class={% if url_name == 'agent-type-list' %} active{% endif %}">
+                        <a href="{% url 'agent_type:agent-type-list' %}"> <span>Agent Types</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="class={% if url_name == 'agent_registration' %} active{% endif %}">
+                        <a href="{% url 'agents:agent_registration' %}"> <span>Agent Registration</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="class={% if url_name == 'agent-list' %} active{% endif %}">
+                        <a href="{% url 'agents:agent-list' %}"> <span>Agent List</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="class={% if url_name == 'client-list' %} active{% endif %}">
+                <a href="{% url 'clients:client-list' %}">
+                    <i class="fa fa-tag"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+            <!--<li class="class={% if url_name == 'api_list' %} active{% endif %}">-->
+            <!--<a href="{% url 'api_management:api_list' %}">-->
+            <!--<i class="fa fa-sort-numeric-asc"></i>-->
+            <!--<span>Api management</span>-->
+            <!--</a>-->
+            <!--</li>-->
+            <li class="class={% if url_name == 'scope_list' %} active{% endif %}">
+                <a href="{% url 'centralize_configuration:scope_list' %}">
+                    <i class="fa fa-sort-numeric-asc"></i>
+                    <span>Centralize Configuration</span>
+                </a>
+            </li>
+            <!-- <li class="menu-accordion {% if 'api-management' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Api management</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'api_list' %}active{% endif %}">
+                        <a href="{% url 'api_management:api_list' %}">
+                            <span>Apis</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'service_list' %}active{% endif %}">
+                        <a href="{% url 'api_management:service_list' %}"> <span>Services</span> </a>
+                    </li>
+                </ul>
+            </li> -->
+            <li class="{% if 'customers' in request.path %} open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
+                <ul class="sub-menu">
+                    <li id="customers_menu" class="{% if url_name == 'customer-list' %}active{% endif %}">
+                        <a href="{% url 'customers:customer-list' %}"><span>Member Customers Profile</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="{% if 'system-user' in request.path %} open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
+                <ul class="sub-menu">
+                    <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
+                        <a href="{% url 'system_user:search' %}"><span>System Users</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion {% if 'cards' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'profile' %}active{% endif %}">
+                        <a href="{% url 'cards:profile' %}"> <span>Profile</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'history' %}active{% endif %}">
+                        <a href="{% url 'cards:history' %}"> <span>History</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion {% if 'payment' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Payment</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'order' %}active{% endif %}">
+                        <a href="{% url 'payments:payment_order' %}"> <span>Order</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
+                        <a href="{% url 'cash_sofs:cash_sof' %}"> <span>Source of Fund</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'cash_transaction' %}active{% endif %}">
+                        <a href="{% url 'cash_sofs:cash_transaction' %}"> <span>Transaction</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-accordion {% if 'source-of-fund' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
+                        <a href="{% url 'bank_sofs:bank_sofs_list' %}"> <span>Manage Bank</span> </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                {% if user.is_authenticated %}
+                <a href="/admin-portal/logout/">
+                    <i class="fa fa-power-off"></i>
+                    <span class="">Logout</span>
+                </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+    {% endwith %}
+</div>
 {% endblock %}

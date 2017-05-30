@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-    {% with active_tab='services' %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock sidebar_panel %}
 
 {% block content %}
-{% csrf_token %}
 
 <div class="panel mb25">
     <div class="panel-heading border">

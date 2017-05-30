@@ -16,3 +16,7 @@ class BankSofsCreateView(TemplateView, RESTfulMethods):
         context = super(BankSofsCreateView, self).get_context_data(**kwargs)
         logger.info('========== Finished create bank sofs ==========')
         return context
+
+    def post(self, request, *args, **kwargs):
+        logger.info('========== Start creating agent type ==========')
+        pass
