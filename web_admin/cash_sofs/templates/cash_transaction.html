@@ -8,8 +8,8 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_transaction' %}">
-                {% csrf_token %}
+            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cash_sofs:cash_transaction' %}">
+                {# {% csrf_token %} #}
                 <div class="form-group">
                     <label class="col-sm-1 control-label">SOF ID</label>
                     <div class="col-sm-2">
