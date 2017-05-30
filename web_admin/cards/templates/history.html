@@ -7,22 +7,22 @@
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:history' %}">
-                {% csrf_token %}
+        <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cards:history' %}">
+
                 <div class="form-group">
                     <label class="col-sm-1 control-label">Trans ID</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="trans_id" value="{{ trans_id }}"/>
+                        <input type="text" class="form-control input-rounded" name="trans_id"/>
                     </div>
                     <label class="col-sm-1 control-label">Card ID</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="card_id" value="{{ card_id }}"/>
+                        <input type="text" class="form-control input-rounded" name="card_id"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-1 control-label">User ID</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}"/>
+                        <input type="text" class="form-control input-rounded" name="user_id"/>
                     </div>
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">
