@@ -154,11 +154,11 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
+                    <li class="menu-accordion {% if 'source-of-fund' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                         <ul class="sub-menu">
-                            <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
-                                <a href="{% url 'bank_sofs:bank_list' %}"> <span>Manage Bank</span> </a>
+                            <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
+                                <a href="{% url 'bank_sofs:bank_sofs_list' %}"> <span>Manage Bank</span> </a>
                             </li>
                         </ul>
                     </li>
