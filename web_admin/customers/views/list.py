@@ -18,14 +18,17 @@ class ListView(TemplateView, RESTfulMethods):
         logger.info('========== Start searching Customer ==========')
         url = api_settings.MEMBER_CUSTOMER_PATH
         search = request.GET.get('search')
-        if search == '':
-            params = {}
+        if search is None:
+            data = {}
         else:
-            params = {"mobile_number": search}
-        data, success = self._post_method(api_path= url,
-                                          func_description="search member customer",
-                                          logger=logger,
-                                          params=params)
+            if search == '':
+                params = {}
+            else:
+                params = {"mobile_number": search}
+            data, success = self._post_method(api_path= url,
+                                              func_description="search member customer",
+                                              logger=logger,
+                                              params=params)
         context['search_count'] = len(data)
         context['data'] = data
         logger.info('========== Finished searching Customer ==========')
