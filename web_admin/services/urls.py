@@ -23,9 +23,9 @@ from .views.commision.delete_setting_bonus import DeleteSettingBonus
 from .views.detail import ServiceDetailForm
 from .views.services_list import ListView
 from .views.update import UpdateView
-from .views.spi_url.list import SPIView
-from .views.spi_url.update import SPIUpdate
-from .views.spi_url.delete import SPIDeleteView
+from .views.spi.list import SPIView
+from .views.spi.update import SPIUpdate
+from .views.spi.delete import SPIDeleteView
 
 app_name = "services"
 
