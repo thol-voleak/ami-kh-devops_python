@@ -29,6 +29,14 @@
         </div>
     </div>
     {% endif %}
+    {% if spi_delete_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ spi_delete_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
     <div class="panel-body">
         <form class="form-horizontal" role="form" method="Post" action="#">
             {% csrf_token %}
@@ -77,8 +85,12 @@
                         <a type="button" class="btn btn-outline btn-xs btn-primary"  id="btn_edit" role="button" href="{% url 'services:spi_update' service_id command_id service_command_id spi.spi_url_id %}">
                             <span class="small">Edit</span>
                         </a>
-                        <a type="button" class="btn btn-outline btn-xs btn-primary" role="button" id="btn_delete" href="#">
-                            <span class="small">Delete</span>
+                        <a type="button"
+                           class="btn btn-outline btn-xs btn-danger"
+                           role="button"
+                           id="btn_delete{{ spi.spi_url_id }}"
+                           href="{% url 'services:spi-delete' service_id command_id service_command_id spi.spi_url_id %}">
+                           <span class="small">Delete</span>
                         </a>
                     </td>
                 </tr>
