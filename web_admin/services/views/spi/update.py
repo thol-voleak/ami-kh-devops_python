@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SPIUpdate(TemplateView, RESTfulMethods):
-    template_name = 'services/spi/update.html'
+    template_name = 'services/spi/edit.html'
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating SPI URL by service command ==========")

@@ -43,24 +43,27 @@
                     <td class="col-sm-1">{{ bank.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">
-                        <a type="button"
-                           class="btn btn-outline btn-xs btn-primary"
-                           role="button"
-                           id="agent_type_btn_detail_{{ agent_type.id }}">
-                            <span class="small">Detail</span>
-                        </a>
-                        <a type="button"
-                           class="btn btn-outline btn-xs btn-primary"
-                           role="button"
-                           id="agent_type_btn_edit_{{ agent_type.id }}">
-                            <span class="small">Edit</span>
-                        </a>
-                        <a type="button"
-                           class="btn btn-outline btn-xs btn-danger"
-                           role="button"
-                           id="agent_type_btn_delete_{{ agent_type.id }}">
-                            <span class="small">Delete</span>
-                        </a>
+                        <div class="btn-group">
+                            <a type="button"
+                               class="btn btn-outline btn-xs btn-info"
+                               role="button"
+                               id="bank_sof_btn_detail_{{ bank.id }}">
+                                <span class="small">Detail</span>
+                            </a>
+                            <a type="button"
+                               class="btn btn-outline btn-xs btn-primary"
+                               role="button"
+                               href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
+                               id="bank_sof_btn_edit_{{ bank.id }}">
+                                <span class="small">Edit</span>
+                            </a>
+                            <a type="button"
+                               class="btn btn-outline btn-xs btn-danger"
+                               role="button"
+                               id="bank_sof_btn_delete_{{ bank.id }}">
+                                <span class="small">Delete</span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

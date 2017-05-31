@@ -245,7 +245,7 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'bank_sof': {
+        'bank_sofs': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
