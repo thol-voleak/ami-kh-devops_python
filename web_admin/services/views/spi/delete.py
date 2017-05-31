@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SPIDeleteView(TemplateView, RESTfulMethods):
-    template_name = 'services/spi_url/delete.html'
+    template_name = 'services/spi/delete.html'
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start Show Delete SPI page ==========')

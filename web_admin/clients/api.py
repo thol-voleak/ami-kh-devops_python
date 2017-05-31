@@ -3,11 +3,10 @@ import logging
 import time
 import requests
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import JsonResponse
 from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
-
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -22,21 +21,26 @@ class ClientApi():
         response = requests.post(url, headers=get_auth_header(request.user),
                                  verify=settings.CERT)
         finish = time.time()
-        logger.info("Response time: {} sec.".format(finish - start))
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.text))
+        logger.info('Response_time: {}'.format(finish - start))
         response_json = response.json()
-        status = response_json['status']
+        status = response_json.get('status', {})
 
+        code = 0
+        message = status.get('message', 'Something went wrong.')
         if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
-            message = status.get('message', 'Something went wrong.')
             logger.info("{} for {} username".format(message, request.user))
-            raise InvalidAccessToken(message)
+            messages.add_message(request, messages.INFO, str('session_is_expired'))
+            code = 1
+            return JsonResponse({"status": code, "msg": message})
 
         if status['code'] == "success":
-            status = 200
+            code = 2
         else:
-            status = 500
+            code = 3
         logger.info('========== Finish regenerate client secret ==========')
-        return HttpResponse(status=status, content=response)
+        return JsonResponse({"status": code, "msg": message})
 
     def delete_client_by_id(request, client_id):
         logger.info("========== Start delete client id ==========")
@@ -47,12 +51,23 @@ class ClientApi():
             response = requests.delete(url, headers=get_auth_header(request.user),
                                        verify=settings.CERT)
             done = time.time()
-            logger.info("Response time: {} sec.".format(done - start))
-            logger.info("Response content: {}".format(response.content))
+            logger.info('Response_code: {}'.format(response.status_code))
+            logger.info('Response_content: {}'.format(response.text))
+            logger.info('Response_time: {}'.format(done - start))
+            response_json = response.json()
+            status = response_json.get('status', {})
 
-            json_response = response.json()
-            logger.info("========== Finished deleted client id ==========")
-            if response.status_code == 200:
-                return HttpResponse(json.dumps(json_response["status"]), content_type="application/json")
+            code = 0
+            message = status.get('message', 'Something went wrong.')
+            if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+                logger.info("{} for {} username".format(message, request.user))
+                messages.add_message(request, messages.INFO, str('session_is_expired'))
+                code = 1
+                return JsonResponse({"status": code, "msg": message})
 
-            raise Exception("{}".format(json_response["status"]["message"]))
+            if status['code'] == "success":
+                code = 2
+            else:
+                code = 3
+            logger.info('========== Finish delete client id ==========')
+            return JsonResponse({"status": code, "msg": message})
