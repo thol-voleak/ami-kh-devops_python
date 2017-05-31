@@ -14,9 +14,12 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Is Active</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_active"
-                                   id="bank_active"
-                                   value="{{ bank_info.bank_active | default_if_none:'' }}">
+                            <select class="form-control" id="bank_active" name="is_active">
+                                <option value=1 {% if user_type_id == True %}selected="selected" {% endif %}>True
+                                </option>
+                                <option value=2 {% if user_type_id == False %}selected="selected" {% endif %}>False
+                                </option>
+                            </select>
 
                         </div>
                     </div>
@@ -24,15 +27,15 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_name"
+                            <input type="text" class="form-control input-rounded" name="name"
                                    id="bank_name"
                                    value="{{ bank_info.bank_name | default_if_none:'' }}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">BIN.</label>
+                        <label class="col-sm-2 control-label">BIN</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_bin"
+                            <input type="text" class="form-control input-rounded" name="bin"
                                    id="bank_bin"
                                    value="{{ bank_info.bank_bin | default_if_none:'' }}">
 
@@ -42,7 +45,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_description"
+                            <input type="text" class="form-control input-rounded" name="description"
                                    id="bank_description"
                                    value="{{ bank_info.bank_description | default_if_none:'' }}">
 
@@ -52,7 +55,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Credit Url</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_credit_url"
+                            <input type="text" class="form-control input-rounded" name="credit_url"
                                    id="bank_credit_url"
                                    value="{{ bank_info.bank_credit_url | default_if_none:'' }}">
 
@@ -62,7 +65,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Debit Url</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_debit_url"
+                            <input type="text" class="form-control input-rounded" name="debit_url"
                                    id="bank_debit_url"
                                    value="{{ bank_info.bank_debit_url | default_if_none:'' }}">
 
@@ -72,7 +75,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Account Number</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_account_number"
+                            <input type="text" class="form-control input-rounded" name="account_number"
                                    id="bank_account_number"
                                    value="{{ bank_info.bank_account_number | default_if_none:'' }}">
 
@@ -82,26 +85,28 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Account Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_account_name"
+                            <input type="text" class="form-control input-rounded" name="account_name"
                                    id="bank_account_name"
                                    value="{{ bank_info.bank_account_name | default_if_none:'' }}">
-
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Currency</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="bank_currency"
-                                   id="bank_currency"
-                                   value="{{ bank_info.bank_currency | default_if_none:'' }}">
-
+                            <select class="form-control" id="bank_currency" name="currency" required>
+                                {% for currency in currencies %}
+                                <option value="{{ currency.0 }}"
+                                        {% if request.GET.currency == currency.0 %}selected{% endif %}>{{ currency.0 }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
                     <div class="pull-right">
                         <a href="{% url 'bank_sofs:bank_sofs_list' %}">
-                            <input id="bank_btn_back" class="btn btn-success text-left mb15" type="button"
+                            <input id="bank_btn_back" class="btn btn-primary text-left mb15" type="button"
                                    value="Back"/>
                         </a>
 
