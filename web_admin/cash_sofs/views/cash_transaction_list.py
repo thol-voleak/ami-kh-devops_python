@@ -17,12 +17,12 @@ IS_SUCCESS = {
 class CashTransactionView(TemplateView, RESTfulMethods):
     template_name = "cash_transaction.html"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         logger.info('========== Start search cash transaction ==========')
 
-        sof_id = request.POST.get('sof_id')
-        order_id = request.POST.get('order_id')
-        type = request.POST.get('type')
+        sof_id = request.GET.get('sof_id')
+        order_id = request.GET.get('order_id')
+        type = request.GET.get('type')
 
         logger.info('sof_id: {}'.format(sof_id))
         logger.info('order_id: {}'.format(order_id))

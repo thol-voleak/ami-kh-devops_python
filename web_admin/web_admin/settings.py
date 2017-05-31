@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'customers',
     'cards',
     'cash_sofs',
+    'bank_sofs',
+
     'payments',
     'api_management',
     'centralize_configuration',
@@ -94,7 +96,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments')],
+                              'cards', 'cash_sofs', 'payments', 'bank_sofs')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,12 +109,6 @@ TEMPLATES = [
         },
     },
 ]
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-   }
-}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -248,6 +244,12 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'bank_sofs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+
         },
         'payments': {
             'handlers': ['console'],

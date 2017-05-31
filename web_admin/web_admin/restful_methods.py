@@ -86,7 +86,6 @@ class RESTfulMethods(GetHeaderMixin):
         except Exception as e:
             logger.error(e)
 
-
         if code == "success":
             logger.info('Response_code: {}'.format(response.status_code))
             logger.info('Response_content: {}'.format(response.text))

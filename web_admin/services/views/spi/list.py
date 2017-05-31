@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SPIView(TemplateView, RESTfulMethods):
-    template_name = 'services/spi_url/list.html'
+    template_name = 'services/spi/list.html'
 
     def post(self, request, *args, **kwargs):
         logger.info("========== Start adding SPI URL by service command ==========")
@@ -34,7 +34,7 @@ class SPIView(TemplateView, RESTfulMethods):
         logger.info("========== Finish adding SPI URL by service command ==========")
 
         if success:
-            request.session['add_spi_url_msg'] = 'Added data successfully'
+            request.session['add_spi_url_msg'] = 'Added SPI URL successfully'
             return redirect(request.META['HTTP_REFERER'])
 
 
@@ -50,6 +50,8 @@ class SPIView(TemplateView, RESTfulMethods):
         context['data'] = data
         context['spi_types'] = spi_types
         context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
+        context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
+        context['spi_delete_msg'] = self.request.session.pop('spi_delete_msg', None)
         logger.info('========== Finish getting SPI url list ==========')
         return context
 
