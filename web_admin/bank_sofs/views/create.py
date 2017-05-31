@@ -1,6 +1,7 @@
 from web_admin.restful_methods import RESTfulMethods
 
 from django.views.generic.base import TemplateView
+from django.shortcuts import redirect, render
 
 import logging
 
@@ -46,4 +47,4 @@ class BankSofsCreateView(TemplateView, RESTfulMethods):
                                           logger=logger, params=params)
 
         logger.info('========== Finished creating bank profile ==========')
-        pass
+        return render(request, 'bank_sofs/list.html')

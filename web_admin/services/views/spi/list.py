@@ -42,8 +42,6 @@ class SPIView(TemplateView, RESTfulMethods):
         logger.info('========== Start getting SPI url list ==========')
         context = super(SPIView, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
-        #context['service_id'] = kwargs.get('service_id')
-        #context['command_id'] = kwargs.get('command_id')
         if not service_command_id:
             raise Http404
         data, success = self.get_spi_list(service_command_id)
@@ -53,6 +51,7 @@ class SPIView(TemplateView, RESTfulMethods):
         context['spi_types'] = spi_types
         context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
         context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
+        context['spi_delete_msg'] = self.request.session.pop('spi_delete_msg', None)
         logger.info('========== Finish getting SPI url list ==========')
         return context
 

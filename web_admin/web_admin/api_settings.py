@@ -45,6 +45,7 @@ SPI_TYPES_PATH = 'api-gateway/payment/v1/spi-url-types'
 SPI_ADD_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
 SPI_DETAIL_PATH = 'api-gateway/payment/v1/spi-urls/{spiUrlId}'
 SPI_UPDATE_PATH = 'api-gateway/payment/v1/spi-urls/{spiUrlId}'
+SPI_DELETE_PATH = 'api-gateway/payment/v1/spi-urls/{spi_url_id}'
 
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/v1/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
