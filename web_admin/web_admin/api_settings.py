@@ -30,7 +30,9 @@ GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currenci
 ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
+
 # System User
+SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
 GET_ALL_SYSTEM_USER = 'api-gateway/system-user/v1/users'
 SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
@@ -101,7 +103,6 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/v1/customers'
 CARD_LIST_PATH = 'api-gateway/report/v1/cards'
-SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
 CARD_HISTORY_PATH = 'api-gateway/report/v1/cards/histories'
 GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid-card/default"
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"

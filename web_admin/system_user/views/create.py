@@ -37,6 +37,7 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start creating new system user ==========')
 
         # Build API Path
         api_path = api_settings.SYSTEM_USER_CREATE_URL
@@ -62,9 +63,10 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
             'system_user_info': data
         }
 
+        logger.info('========== Finish creating new system user ==========')
         if status:
             messages.add_message(request, messages.SUCCESS, 'Added data successfully')
-            return redirect('system_user:search')
+            return redirect('system_user:system-user-list')
         else:
             context['error_msg'] = "Error occurred."
             return render(request, self.template_name, context)

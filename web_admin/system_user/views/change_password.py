@@ -65,7 +65,7 @@ class SystemUserChangePassword(TemplateView):
                 logger.info("System User password was changed.")
                 logger.info('========== Finished changing System User Password ==========')
                 messages.add_message(request, messages.SUCCESS, 'Password has been changed successfully')
-                return redirect('system_user:search')
+                return redirect('system_user:system-user-list')
             else:
                 logger.info("Error changing password of System User {}".format(system_user_id))
                 context = {'system_user_info': params}
@@ -77,6 +77,3 @@ class SystemUserChangePassword(TemplateView):
             context = {'system_user_info': params}
             logger.info('========== Finish changing system user password ==========')
             return render(request, 'system_user/system_user_change_password.html', context)
-
-
-

@@ -17,7 +17,7 @@ class DetailView(TemplateView, RESTfulMethods):
     template_name = "system_user/detail.html"
 
     def get(self, request, *args, **kwargs):
-
+        logger.info('========== Start getting user detail ==========')
         context = super(DetailView, self).get_context_data(**kwargs)
         system_user_id = context['systemUserId']
 
@@ -28,7 +28,7 @@ class DetailView(TemplateView, RESTfulMethods):
             'system_user_info': data,
             'msg': self.request.session.pop('system_user_update_msg', None)
         }
-
+        logger.info('========== Finish getting user detail ==========')
         return render(request, self.template_name, context)
 
     def _get_system_user_detail(self, system_user_id):
