@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class BankSofsCreateView(TemplateView, RESTfulMethods):
     template_name = "bank_sofs/create.html"
-    url = "report/v1/banks"
+    url = "api-gateway/sof-bank/v1/banks"
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start create bank sofs ==========')
@@ -18,5 +18,32 @@ class BankSofsCreateView(TemplateView, RESTfulMethods):
         return context
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start creating agent type ==========')
+        logger.info('========== Start creating bank profile ==========')
+        name = request.POST.get('name')
+        bank_bin = request.POST.get('bin')
+        is_active = request.POST.get('is_active')
+        description = request.POST.get('description')
+        credit_url = request.POST.get('credit_url')
+        debit_url = request.POST.get('debit_url')
+        account_number = request.POST.get('account_number')
+        account_name = request.POST.get('account_name')
+        currency = request.POST.get('currency')
+
+        params = {
+            "name": name,
+            "bin": bank_bin,
+            "description": description,
+            "is_active": is_active,
+            "debit_url": debit_url,
+            "credit_url": credit_url,
+            "account_number": account_number,
+            "account_name": account_name,
+            "currency": currency
+        }
+
+        data, success = self._post_method(api_path=self.url,
+                                          func_description="Bank Profile",
+                                          logger=logger, params=params)
+
+        logger.info('========== Finished creating bank profile ==========')
         pass

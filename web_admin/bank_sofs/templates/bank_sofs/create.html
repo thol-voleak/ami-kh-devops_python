@@ -12,19 +12,29 @@
                       action="{% url 'bank_sofs:bank_sofs_create' %}">
                     {% csrf_token %}
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Is Active</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_active"
+                                   id="bank_active"
+                                   value="{{ bank_info.bank_active | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="agent_type_input"
-                                   id="agent_type_input"
-                                   value="{{ agent_type_info.agent_type_input | default_if_none:'' }}" required>
+                            <input type="text" class="form-control input-rounded" name="bank_name"
+                                   id="bank_name"
+                                   value="{{ bank_info.bank_name | default_if_none:'' }}" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">BIN.</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="agent_type_description_input"
-                                   id="agent_type_description_input"
-                                   value="{{ agent_type_info.agent_type_description_input | default_if_none:'' }}">
+                            <input type="text" class="form-control input-rounded" name="bank_bin"
+                                   id="bank_bin"
+                                   value="{{ bank_info.bank_bin | default_if_none:'' }}">
 
                         </div>
                     </div>
@@ -32,21 +42,71 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="agent_type_description_input"
-                                   id="agent_type_description_input"
-                                   value="{{ agent_type_info.agent_type_description_input | default_if_none:'' }}">
+                            <input type="text" class="form-control input-rounded" name="bank_description"
+                                   id="bank_description"
+                                   value="{{ bank_info.bank_description | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Credit Url</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_credit_url"
+                                   id="bank_credit_url"
+                                   value="{{ bank_info.bank_credit_url | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Debit Url</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_debit_url"
+                                   id="bank_debit_url"
+                                   value="{{ bank_info.bank_debit_url | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bank Account Number</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_account_number"
+                                   id="bank_account_number"
+                                   value="{{ bank_info.bank_account_number | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bank Account Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_account_name"
+                                   id="bank_account_name"
+                                   value="{{ bank_info.bank_account_name | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Currency</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="bank_currency"
+                                   id="bank_currency"
+                                   value="{{ bank_info.bank_currency | default_if_none:'' }}">
 
                         </div>
                     </div>
 
                     <div class="pull-right">
                         <a href="{% url 'bank_sofs:bank_sofs_list' %}">
-                            <input id="agent_type_btn_back" class="btn btn-success text-left mb15" type="button"
+                            <input id="bank_btn_back" class="btn btn-success text-left mb15" type="button"
                                    value="Back"/>
                         </a>
 
                         <a href="{% url 'agent_type:create-agent-type' %}">
-                            <input id="agent_type_btn_add" class="btn btn-success text-left mb15" type="submit"
+                            <input id="bank_btn_add" class="btn btn-success text-left mb15" type="submit"
                                    value="Add"/>
                         </a>
                     </div>
