@@ -17,7 +17,8 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
     template_name = "system_user/update.html"
 
     def get(self, request, *args, **kwargs):
-
+        logger.info("========== Start Updating system user ==========")
+        logger.info("Start getting system user detail")
         context = super(SystemUserUpdateForm, self).get_context_data(**kwargs)
         system_user_id = context['systemUserId']
 
@@ -28,7 +29,7 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
             'system_user_info': data,
             'msg': self.request.session.pop('system_user_update_msg', None)
         }
-
+        logger.info("Finish getting system user detail")
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -61,7 +62,7 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
         context = {
             'system_user_info': data
         }
-
+        logger.info("========== Finish Updating system user ==========")
         if status:
             request.session['system_user_update_msg'] = 'Updated system user successfully'
             return redirect('system_user:system-user-detail', systemUserId=system_user_id)

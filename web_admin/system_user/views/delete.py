@@ -32,6 +32,7 @@ class DeleteView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start deleting system user ==========')
 
         # Build API Path
         system_user_id = kwargs['system_user_id']
@@ -43,10 +44,10 @@ class DeleteView(TemplateView, RESTfulMethods):
             func_description="System User Delete",
             logger=logger
         )
-
+        logger.info('========== Finish deleting system user ==========')
         if status:
             messages.add_message(request, messages.SUCCESS, 'Deleted data successfully')
-            return redirect('system_user:search')
+            return redirect('system_user:system-user-list')
         else:
             logger.info("Error deleting system user {}".format(system_user_id))
 
