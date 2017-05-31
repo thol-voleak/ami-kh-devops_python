@@ -140,6 +140,7 @@
 </div>
 <script>
     function regenerate(client_id) {
+
         swal({
                 title: "Are you sure you want to regenerate new client secret?",
                 type: "warning",
@@ -159,12 +160,22 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            console.log('success');
-                            $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
-                            $("#alert-success-client").show();
-                            setTimeout(function(){
-                              location.reload(true);
-                            }, 10000);
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
+                                $("#alert-success-client").show();
+                                setTimeout(function(){
+                                  location.reload(true);
+                                }, 10000);
+
+                            } else {
+                                // Failed
+
+                            }
                         },
                         error: function () {
                             console.log('error')
@@ -197,7 +208,12 @@
                     },
                     success: function (response) {
                         console.log(response);
-                        if (response["code"] == "success") {
+                        if(response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/logout/";
+                            window.location.replace(url);
+                        } else if(response.status == 2) {
+                            // success
                             $("#client-btn-delete-" + client_id).hide();
                             $("#alert-success-msg").text('Deleted data successfully')
                             $("#alert-success-client").show();
@@ -210,6 +226,10 @@
                             $("#client-btn-update-" + client_id).attr("disable", "true");
                             $("#client-btn-group-" + client_id).addClass("hidden");
                             $("#client-btn-status-" + client_id).attr("disable", "true");
+
+                        } else {
+                            // Failed
+
                         }
                     },
                     error: function (response) {
@@ -239,15 +259,17 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            var json = $.parseJSON(response);
-                            if (json.status.code == 'success') {
-                                console.log('Client status was suspended for ' + client_id + ' client ID')
-                                console.log(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
                                 location.reload(true)
                             } else {
-                                console.log('Error suspending the client id' + client_id + 'message: ' + json.status.message)
-                            }
+                                // Failed
 
+                            }
                         },
                         error: function (msg) {
                             console.log('Error suspending the client id' + client_id + msg)
@@ -278,15 +300,17 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            var json = $.parseJSON(response);
-                            if (json.status.code == 'success') {
-                                console.log('Client status was activated for ' + client_id + ' client ID')
-                                console.log(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
                                 location.reload(true)
                             } else {
-                                console.log('Error activating the client id' + client_id + 'message: ' + json.status.message)
-                            }
+                                // Failed
 
+                            }
                         },
                         error: function (msg) {
                             console.log('Error activating the client id' + client_id + msg)
@@ -295,6 +319,7 @@
                 }
             });
     }
+
 
 </script>
 {% endblock %}

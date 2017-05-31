@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CARD_HISTORY_PATH
+
 logger = logging.getLogger(__name__)
 
 IS_SUCCESS = {
