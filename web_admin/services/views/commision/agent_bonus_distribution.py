@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.views.generic.base import View
 
 from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
 
 logger = logging.getLogger(__name__)
 
@@ -57,23 +58,27 @@ class AgentBonusDistributions(View, RESTfulMethods):
                         fee_tier_id=tf_fee_tier_id)
 
 
-class AgentFeeHierarchyDistributionsDetail(View, RESTfulMethods):
+class AgentFeeHierarchyDistributionsDetail(View):
 
     def delete(self, request, *args, **kwargs):
         agent_fee_distribution_id = kwargs.get('agent_fee_distribution_id')
 
         logger.info('========== Start deleting Agent Hirarchy Distribution - Fee ==========')
-        success = self._delete_agent_distribution(agent_fee_distribution_id)
+    #     success = self._delete_agent_distribution(agent_fee_distribution_id)
+    #
+    #
+    #     if success:
+    #         return HttpResponse(status=204)
+    #     return HttpResponseBadRequest()
+    #
+    # def _delete_agent_distribution(self, agent_fee_distribution_id):
+    #
+    #     data, success = self._delete_method(
+        url=api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
+    #         func_description="Delete Agent Distribution",
+    #         logger=logger)
+    #     return success
+
+        response = ajax_functions._delete_method(request, url, "", logger)
         logger.info('========== Finish deleting Agent Hirarchy Distribution - Fee ==========')
-
-        if success:
-            return HttpResponse(status=204)
-        return HttpResponseBadRequest()
-
-    def _delete_agent_distribution(self, agent_fee_distribution_id):
-
-        data, success = self._delete_method(
-            api_path=api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id),
-            func_description="Delete Agent Distribution",
-            logger=logger)
-        return success
+        return response
