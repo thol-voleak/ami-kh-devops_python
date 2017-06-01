@@ -20,6 +20,8 @@ class SPIView(TemplateView, RESTfulMethods):
 
         spi_type = request.POST.get('spi_url_type')
         spi_url = request.POST.get('spi_url_value')
+        connection_timeout = request.POST.get('connection_timeout')
+        read_timeout = request.POST.get('read_timeout')
 
         params = {
             "spi_url_type": spi_type,
@@ -27,8 +29,18 @@ class SPIView(TemplateView, RESTfulMethods):
             "spi_url_call_method": "asynchronous",
             "expire_in_minute": 3,
             "max_retry": 2,
-            "retry_delay_millisecond": 289
+            "retry_delay_millisecond": 289,
         }
+
+        if connection_timeout.isdigit() and connection_timeout != '0':
+            params['connection_timeout'] = connection_timeout
+        else:
+            params['connection_timeout'] = 3600
+
+        if read_timeout.isdigit() and read_timeout != '0':
+            params['read_timeout'] = read_timeout
+        else:
+            params['read_timeout'] = 3600
 
         data, success = self.add_spi(service_command_id, params)
         logger.info("========== Finish adding SPI URL by service command ==========")
