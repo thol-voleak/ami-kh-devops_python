@@ -47,7 +47,8 @@
                             <a type="button"
                                class="btn btn-outline btn-xs btn-info"
                                role="button"
-                               id="bank_sof_btn_detail_{{ bank.id }}">
+                               id="bank_sof_btn_detail_{{ bank.id }}"
+                                href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
                                 <span class="small">Detail</span>
                             </a>
                             <a type="button"
