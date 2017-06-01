@@ -52,6 +52,18 @@
                     <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" value="{{ data.url }}" required/>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Connection Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_connection_timeout" name="connection_timeout" value="{{ data.connection_timeout }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Read Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ data.read_timeout }}"/>
+                </div>
+            </div>
             <div class="form-group pull-right">
                 <a href="{{request.META.HTTP_REFERER}}">
                     <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
