@@ -38,7 +38,7 @@ class SPIDeleteView(TemplateView, RESTfulMethods):
         logger.info("========== Finish delete SPI URL by service command ==========")
 
         if success:
-            request.session['spi_delete_msg'] = 'Delete SPI URL successfully'
+            request.session['spi_delete_msg'] = 'Deleted data successfully'
             return redirect('services:spi_list', service_id=(service_id), command_id=(command_id), service_command_id=(service_command_id) )
         else:
             raise Exception("Something wrong")
