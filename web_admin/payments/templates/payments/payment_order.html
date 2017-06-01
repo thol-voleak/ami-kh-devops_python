@@ -1,4 +1,4 @@
-{% extends "base_search_page.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
@@ -48,7 +48,7 @@
                     </select>
                 </div>
                 <div class="col-xs-1">
-                    <input id="search_btn" class="btn btn-success btn-block" type="button" onclick="search_payment_order()" value="Search">
+                    <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search">
                 </div>
             </div>
         </form>
@@ -73,6 +73,24 @@
                 </tr>
                 </thead>
                 <tbody id="table_body">
+                    {% for order in order_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ order.order_id }}</td>
+                            <td class="col-sm-2">{{ order.product_service.name }}</td>
+                            <td class="col-sm-2">{{ order.product_command.name }}</td>
+                            <td class="col-sm-2">{{ order.status }}</td>
+                            <td class="col-sm-2">{{ order.amount }}</td>
+                            <td class="col-sm-2">{{ order.currency }}</td>
+                            <td class="col-sm-2">{{ order.payment_method.name }}</td>
+                            <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
+                            <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{{ order.fee }}</td>
+                            <td class="col-sm-2">{{ order.bonus }}</td>
+                            <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -85,19 +103,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    function search_payment_order() {
-        var url = "{% url 'payments:payment_order' %}";
-
-        data = {'order_id': $("#txt_order_id").val(),
-                'service_name': $("#txt_service_name").val(),
-                'payer_user_id': $("#txt_payer_user_id").val(),
-                'payer_user_type_id': $("#ddl_payer_user_type").val(),
-                'payee_user_id': $("#txt_payee_user_id").val(),
-                'payee_user_type_id': $("#ddl_payee_user_type").val()}
-
-        do_search(url, "table_body", "loader-indicator", "search-result-notification", data);
-    }
-</script>
 {% endblock %}
