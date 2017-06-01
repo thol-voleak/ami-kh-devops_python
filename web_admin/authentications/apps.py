@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-
+from django.http import HttpRequest
 import requests
 import logging
 import time
@@ -37,11 +37,16 @@ class CustomBackend:
     def __init__(self):
         pass
 
-    def authenticate(self, username=None, password=None):
+    def get_client_ip(self, request):
+        client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+        return client_ip
+
+    def authenticate(self, request, username=None, password=None):
         try:
             logger.info('========== Start authentication backend service ==========')
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
+            client_ip = self.get_client_ip(request)
             url = settings.DOMAIN_NAMES + api_settings.LOGIN_URL
 
             logger.info('Auth URL: {}'.format(url))
@@ -52,11 +57,11 @@ class CustomBackend:
                 'grant_type': 'password',
                 'client_id': client_id
             }
-
             headers = {
                 'content-type': 'application/x-www-form-urlencoded',
                 'client_id': client_id,
                 'client_secret': client_secret,
+                'client_ip': client_ip,
             }
 
             logger.info('Calling authentication backend')
