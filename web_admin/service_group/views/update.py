@@ -6,7 +6,7 @@ from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class ServiceGroupUpdateForm(TemplateView, RESTfulMethods):
-    template_name = "service_group/edit.html"
+    template_name = "service_group/update.html"
 
     def get_context_data(self, **kwargs):
         try:
@@ -43,7 +43,7 @@ class ServiceGroupUpdateForm(TemplateView, RESTfulMethods):
             logger.info("Error Updating Service Group {}".format(service_group_id))
             context = {'service_group_info': params}
             logger.info('========== Finish updating service group ==========')
-            return render(request, 'service_group/edit.html', context)
+            return render(request, 'service_group/update.html', context)
 
 
     def _get_service_group_detail(self, service_group_id):

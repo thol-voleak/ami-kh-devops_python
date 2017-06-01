@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 Author: Steve Le
 History:
 # 2017-05-04
-- Init with basic template name "edit.html"
+- Init with basic template name "update.html"
 # 2017-05-05
 -- Load Data
 - API 3: GET /api-gateway/agent/v1/agents/{agent_id}
 '''
 class AgentUpdate(TemplateView, RESTfulMethods):
 
-    template_name = "agents/edit.html"
+    template_name = "agents/update.html"
 
     def get(self, request, *args, **kwargs):
         logger.info('========== Start showing Update Agent page ==========')
