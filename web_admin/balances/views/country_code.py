@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
 from web_admin.api_settings import GLOBAL_CONFIGURATIONS_URL
 from web_admin.api_settings import ADD_COUNTRY_CODE_URL
 
@@ -27,6 +28,7 @@ class CountryCode(View, RESTfulMethods):
         return render(request, 'country/country_code.html', context)
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start add country code ==========')
         country_code = request.POST.get('country_code')
         params = {
             'value': "" + country_code,
@@ -34,15 +36,7 @@ class CountryCode(View, RESTfulMethods):
         url = ADD_COUNTRY_CODE_URL
         data_log = copy.deepcopy(params)
         data_log['client_secret'] = ''
-        logger.info("Expected country code {}".format(data_log))
-        data, success = self._put_method(api_path=url,
-                                         func_description="country code",
-                                         logger=logger,
-                                         params=params)
-        response = {}
-        if success:
-            response['status'] = {"code": "success"}
-            response['data'] = data
-            return HttpResponse(status=200, content=json.dumps(response))
-        else:
-            return HttpResponse(content={})
+        result = ajax_functions._put_method(request, url, "", logger, params)
+        logger.info('========== Finish add country code ==========')
+        return result
+
