@@ -81,9 +81,19 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            $("#alert_success_msg").text('Added data successfully. Please restart service to apply effect.')
-                            $("#currency_dialog_success").show();
-                            addSuccessRow(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                $("#alert_success_msg").text('Added data successfully. Please restart service to apply effect.')
+                                $("#currency_dialog_success").show();
+                                addSuccessRow(response.data)
+                            } else {
+                                // Failed
+                            }
+
                         },
                         error: function (msg) {
                             console.log('Error add currency')
@@ -94,7 +104,7 @@
     }
 
     function addSuccessRow(data) {
-        var json = JSON.parse(data);
+        var json = data;
         var tr, td;
         var tbody = document.getElementById("table_body");
         while (tbody.rows[0]) tbody.deleteRow(0);
