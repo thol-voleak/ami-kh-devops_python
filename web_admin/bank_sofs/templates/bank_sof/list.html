@@ -28,10 +28,14 @@
             <table class="table table-bordered table-striped mb0" id="tbl_bank_sofs_list">
                 <thead>
                 <tr>
-                    <th class="col-sm-1" id="name">Name</th>
+                    <th class="col-sm-1" id="name">Bank Name</th>
+                    <th class="col-sm-1" id="account_name">Account Name</th>
+                    <th class="col-sm-1" id="account_nuber">Account Number</th>
                     <th class="col-sm-1" id="bin">BIN</th>
-                    <th class="col-sm-1" id="description">Created Date</th>
-                    <th class="col-sm-1" id="active">Modified Date</th>
+                    <th class="col-sm-1" id="currency">Currency</th>
+                    <th class="col-sm-1" id="is_active">Is Active</th>
+                    <th class="col-sm-1" id="created_date">Created Date</th>
+                    <th class="col-sm-1" id="modified_date">Modified Date</th>
                     <th class="col-sm-1" id="action">Action</th>
                 </tr>
                 </thead>
@@ -39,7 +43,11 @@
                 {% for bank in data %}
                 <tr>
                     <td class="col-sm-1">{{ bank.name|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ bank.account_name|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ bank.account_number|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ bank.bin|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ bank.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ bank.is_active|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ bank.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">
