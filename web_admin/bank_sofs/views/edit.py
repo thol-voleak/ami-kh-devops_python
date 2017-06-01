@@ -11,14 +11,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class BankSOFsUpdateView(TemplateView, RESTfulMethods):
+class UpdateView(TemplateView, RESTfulMethods):
     template_name = "bank_sof/edit.html"
     get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
     update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start create bank sofs ==========')
-        context = super(BankSOFsUpdateView, self).get_context_data(**kwargs)
+        context = super(UpdateView, self).get_context_data(**kwargs)
         bank_id = context['bank_id']
         bank = self._get_bank_details(bank_id)
         currencies = self._get_currencies_list()

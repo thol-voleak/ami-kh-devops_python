@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class BankSOFsCreateView(TemplateView, RESTfulMethods):
+class CreateView(TemplateView, RESTfulMethods):
     template_name = "bank_sof/create.html"
     url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks"
 

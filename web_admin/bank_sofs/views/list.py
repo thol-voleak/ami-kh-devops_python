@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class BankSofsListView(TemplateView, RESTfulMethods):
+class ListView(TemplateView, RESTfulMethods):
     template_name = "bank_sof/list.html"
     url = "report/v1/banks"
 

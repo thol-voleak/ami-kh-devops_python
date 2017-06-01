@@ -3,13 +3,14 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Bank Detail</h3>
+        <h3>Delete Bank Source Of Fund</h3>
     </div>
 
      <div class="panel-body">
         <div class="row no-margin">
-            <div class="col-lg-12">
-                <form id="submit-form" class="form-horizontal" role="form" method="post">
+            <div class="col-sm-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'bank_sofs:bank_sofs_delete' bank.id %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Is Active</label>
@@ -95,9 +96,9 @@
                             <input id="bank_btn_back" class="btn text-left mb15 btn-small" type="button"
                                    value="Cancel"/>
                         </a>
-                        <a href="{% url 'bank_sofs:bank_sofs_edit' bank.id%}">
-                            <input id="bank_btn_edit" class="btn btn-success text-left mb15 btn-small" type="button"
-                                   value="Edit"/>
+                        <a>
+                            <input id="bank_btn_delete" class="btn btn-danger text-left mb15 btn-small" type="submit"
+                                   value="Delete"/>
                         </a>
                     </div>
                 </form>
