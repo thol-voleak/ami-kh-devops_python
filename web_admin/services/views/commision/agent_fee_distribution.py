@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView, View
 from django.http import HttpResponse
 
 from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,7 @@ class AgentFeeView(TemplateView, RESTfulMethods):
                         fee_tier_id=fee_tier_id)
 
 
-class FeeDistributionsUpdate(View, RESTfulMethods):
+class FeeDistributionsUpdate(View):
 
     def post(self, request, *args, **kwargs):
 
@@ -86,16 +87,17 @@ class FeeDistributionsUpdate(View, RESTfulMethods):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response, status = self._put_method(api_path=url,
-                                  func_description="updating Agent Hierarchy Distribution - Fee",
-                                  logger=logger, params=post_data)
-
-
-        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
-        if status:
-            httpResponse = HttpResponse(status=200, content=response)
-        else:
-            httpResponse = HttpResponse(status=400, content=response)
-
+        # response, status = self._put_method(api_path=url,
+        #                           func_description="updating Agent Hierarchy Distribution - Fee",
+        #                           logger=logger, params=post_data)
+        #
+        #
+        # response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
+        # if status:
+        #     httpResponse = HttpResponse(status=200, content=response)
+        # else:
+        #     httpResponse = HttpResponse(status=400, content=response)
+        response = ajax_functions._put_method(request, url, "", logger, post_data)
         logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
-        return httpResponse
+        # return httpResponse
+        return response

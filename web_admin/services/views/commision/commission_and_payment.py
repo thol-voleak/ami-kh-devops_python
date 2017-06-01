@@ -10,6 +10,9 @@ from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +163,7 @@ class PaymentAndFeeStructureView(View, RESTfulMethods):
                         fee_tier_id=fee_tier_id)
 
 
-class BalanceDistributionsUpdate(View, RESTfulMethods):
+class BalanceDistributionsUpdate(View):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating setting payment & fee structure ==========")
 
@@ -180,20 +183,22 @@ class BalanceDistributionsUpdate(View, RESTfulMethods):
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response, status = self._put_method(api_path=url,
-                                             func_description="updating setting payment & fee structure",
-                                             logger=logger, params=post_data)
-        response = json.dumps({"status":{"code":"success","message":"Success"},"data":response})
-        if status:
-            httpResponse = HttpResponse(status=200, content=response)
-        else:
-            httpResponse = HttpResponse(status=400, content=response)
-
+        # response, status = self._put_method(api_path=url,
+        #                                      func_description="updating setting payment & fee structure",
+        #                                      logger=logger, params=post_data)
+        # response = json.dumps({"status":{"code":"success","message":"Success"},"data":response})
+        # if status:
+        #     httpResponse = HttpResponse(status=200, content=response)
+        # else:
+        #     httpResponse = HttpResponse(status=400, content=response)
+        #
+        # return httpResponse
+        response = ajax_functions._put_method(request, url, "", logger, post_data)
         logger.info("========== Finished updating setting payment & fee structure ==========")
-        return httpResponse
+        return response
 
 
-class BonusDistributionsUpdate(View, RESTfulMethods):
+class BonusDistributionsUpdate(View):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start update setting bonus ==========")
 
@@ -213,20 +218,22 @@ class BonusDistributionsUpdate(View, RESTfulMethods):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response, status = self._put_method(api_path=url,
-                                             func_description="update setting bonus",
-                                             logger=logger, params=post_data)
-        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
-
-        if status:
-            httpResponse = HttpResponse(status=200, content=response)
-        else:
-            httpResponse = HttpResponse(status=400, content=response)
-
+        # response, status = self._put_method(api_path=url,
+        #                                      func_description="update setting bonus",
+        #                                      logger=logger, params=post_data)
+        # response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
+        #
+        # if status:
+        #     httpResponse = HttpResponse(status=200, content=response)
+        # else:
+        #     httpResponse = HttpResponse(status=400, content=response)
+        #
+        # return httpResponse
+        response = ajax_functions._put_method(request, url, "", logger, post_data)
         logger.info("========== Finish update setting bonus ==========")
-        return httpResponse
+        return response
 
-class AgentBonusDistributionsUpdate(View, RESTfulMethods):
+class AgentBonusDistributionsUpdate(View):
     def post(self, request, *args, **kwargs):
         logger.info("========== Start updating agent bonus distribution ==========")
 
@@ -245,18 +252,19 @@ class AgentBonusDistributionsUpdate(View, RESTfulMethods):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response, status = self._put_method(api_path=url,
-                                             func_description="updating agent bonus distribution",
-                                             logger=logger, params=post_data)
-        response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
-        if status:
-            httpResponse = HttpResponse(status=200, content=response)
-        else:
-            httpResponse = HttpResponse(status=400, content=response)
-
+        # response, status = self._put_method(api_path=url,
+        #                                      func_description="updating agent bonus distribution",
+        #                                      logger=logger, params=post_data)
+        # response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
+        # if status:
+        #     httpResponse = HttpResponse(status=200, content=response)
+        # else:
+        #     httpResponse = HttpResponse(status=400, content=response)
+        response = ajax_functions._put_method(request, url, "", logger, post_data)
         logger.info("========== Finished updating agent bonus distribution ==========")
-        
-        return httpResponse
+        # return httpResponse
+
+        return response
 
 class SettingBonusView(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
@@ -304,18 +312,23 @@ class SettingBonusView(TemplateView, RESTfulMethods):
                         service_command_id=service_command_id,
                         fee_tier_id=fee_tier_id)
 
-class PaymentAndFeeStructureDetailView(View, RESTfulMethods):
+class PaymentAndFeeStructureDetailView(View):
     def delete(self, request, *args, **kwargs):
+        logger.info('========== Start deleting Balance Distribution ==========')
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
-        success = self._delete_balance_distribution(balance_distribution_id)
+        # success = self._delete_balance_distribution(balance_distribution_id)
+        #
+        # if success:
+        #     return HttpResponse(status=204)
+        # return HttpResponseBadRequest()
 
-        if success:
-            return HttpResponse(status=204)
-        return HttpResponseBadRequest()
-
-    def _delete_balance_distribution(self, balance_distribution_id):
-        data, success = self._delete_method(api_path=api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
-                                         func_description="Balance Distribution",
-                                         logger=logger)
-        return success
+    # def _delete_balance_distribution(self, balance_distribution_id):
+    #     data, success = self._delete_method(api_path=api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
+    #                                      func_description="Balance Distribution",
+    #                                      logger=logger)
+    #     return success
+        url = api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id)
+        response = ajax_functions._delete_method(request, url, "", logger)
+        logger.info('========== Finish deleting Balance Distribution ==========')
+        return response

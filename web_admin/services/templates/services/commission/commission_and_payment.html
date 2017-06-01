@@ -291,9 +291,17 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
-                success: function () {
-                    $('#balance-distribution-' + distributionId).remove();
-                    addMessage("Deleted data successfully");
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#balance-distribution-' + distributionId).remove();
+                        addMessage("Deleted data successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
                 },
                 error: function () {
                     addMessage("Delete failed!");
@@ -310,9 +318,17 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
-                success: function () {
-                    $('#bonus-distribution-' + bonus_distributions_id).remove();
-                    addMessage("Deleted Setting Bonus successfully");
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#bonus-distribution-' + bonus_distributions_id).remove();
+                        addMessage("Deleted Setting Bonus successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
                 },
                 error: function () {
                     addMessage("Failed to Delete Setting Bonus");
@@ -330,9 +346,17 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
-                success: function () {
-                    $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
-                    addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
+                        addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
                 },
                 error: function () {
                     addMessage("Failed to Delete Agent Hierarchy");
@@ -349,9 +373,17 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
-                success: function () {
-                    $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
-                    addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
+                        addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
                 },
                 error: function () {
                     addMessage("Failed to Delete Agent Bonus");

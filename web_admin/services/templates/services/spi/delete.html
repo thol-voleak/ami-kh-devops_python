@@ -11,7 +11,7 @@
 
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>SPI URL Detail</h3>
+        <h3>Delete SPI URL</h3>
     </div>
     <div class="panel-body">
         <form class="form-horizontal" role="form" method="Post" 
@@ -29,12 +29,24 @@
                     <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" value="{{ spi_detail.url }}" readonly/>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Connection Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_connection_timeout" name="connection_timeout" value="{{ spi_detail.connection_timeout }}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Read Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ spi_detail.read_timeout }}" readonly/>
+                </div>
+            </div>
             <div class="form-group pull-right">
                 <a href="{{request.META.HTTP_REFERER}}">
-                    <input id="btn_back" class="btn btn-success" type="button" value="Cancel"/>
+                    <input id="btn_back" class="btn btn-success" type="button" value="Back"/>
                 </a>
                 <a>
-                    <input id="btn_yes" class="btn btn-success" type="submit" value="Delete"/>
+                    <input id="btn_yes" class="btn btn-success" type="submit" value="Yes"/>
                 </a>
             </div>
         </form>
