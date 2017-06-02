@@ -36,7 +36,7 @@ class DeleteView(TemplateView, RESTfulMethods):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Deleted bank account id [{}] successfully'.format(bank_id)
+                'Deleted bank account successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
 
