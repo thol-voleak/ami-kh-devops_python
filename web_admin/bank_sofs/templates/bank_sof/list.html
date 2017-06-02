@@ -41,40 +41,42 @@
                     </thead>
                     <tbody>
                     {% for bank in data %}
-                    <tr>
-                        <td>{{ bank.name|default_if_none:'' }}</td>
-                        <td>{{ bank.account_name|default_if_none:'' }}</td>
-                        <td>{{ bank.account_number|default_if_none:'' }}</td>
-                        <td>{{ bank.currency|default_if_none:'' }}</td>
-                        <td>{{ bank.is_active|default_if_none:'' }}</td>
-                        <td>{{ bank.created_timestamp|default_if_none:'' }}</td>
-                        <td>{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">
-                            <div class="btn-group">
-                                <a type="button"
-                                   class="btn btn-outline btn-xs btn-info"
-                                   role="button"
-                                   id="bank_sof_btn_detail_{{ bank.id }}"
-                                   href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
-                                    <span class="small">Detail</span>
-                                </a>
-                                <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
-                                   role="button"
-                                   href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
-                                   id="bank_sof_btn_edit_{{ bank.id }}">
-                                    <span class="small">Edit</span>
-                                </a>
-                                <a type="button"
-                                   class="btn btn-outline btn-xs btn-danger"
-                                   role="button"
-                                   href="{% url 'bank_sofs:bank_sofs_delete' bank.id %}"
-                                   id="bank_sof_btn_delete_{{ bank.id }}">
-                                    <span class="small">Delete</span>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                    {% if bank.is_deleted == False %}
+                        <tr>
+                            <td>{{ bank.name|default_if_none:'' }}</td>
+                            <td>{{ bank.account_name|default_if_none:'' }}</td>
+                            <td>{{ bank.account_number|default_if_none:'' }}</td>
+                            <td>{{ bank.currency|default_if_none:'' }}</td>
+                            <td>{{ bank.is_active|default_if_none:'' }}</td>
+                            <td>{{ bank.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                <div class="btn-group">
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-info"
+                                       role="button"
+                                       id="bank_sof_btn_detail_{{ bank.id }}"
+                                       href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-primary"
+                                       role="button"
+                                       href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
+                                       id="bank_sof_btn_edit_{{ bank.id }}">
+                                        <span class="small">Edit</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-danger"
+                                       role="button"
+                                       href="{% url 'bank_sofs:bank_sofs_delete' bank.id %}"
+                                       id="bank_sof_btn_delete_{{ bank.id }}">
+                                        <span class="small">Delete</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
