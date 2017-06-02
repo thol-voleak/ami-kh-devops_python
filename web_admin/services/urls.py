@@ -1,12 +1,10 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from services.views.commision.agent_fee_distribution import (AgentFeeView,
-                                                             FeeDistributionsUpdate)
+from services.views.commision.agent_fee_distribution import (FeeDistributionsUpdate)
 from services.views.tier.list import FeeTierListView
 from services.views.tier.update import UpdateView as TierUpdateView
-from .views.commision.agent_bonus_distribution import (AgentBonusDistributions,
-                                             AgentFeeHierarchyDistributionsDetail)
+from .views.commision.agent_bonus_distribution import (AgentFeeHierarchyDistributionsDetail)
 from .views.command.delete import DeleteCommand
 from .views.command.list import ListCommandView
 from .views.tier.add import AddView
@@ -16,7 +14,9 @@ from .views.commision.commission_and_payment import (BalanceDistributionsUpdate,
                                            PaymentAndFeeStructureDetailView,
                                            PaymentAndFeeStructureView,
                                            SettingBonusView,
-                                           AgentBonusDistributionsUpdate)
+                                           AgentBonusDistributionsUpdate,
+                                           AgentFeeView,
+                                           AgentBonusDistributions)
 from .views.create import CreateView
 from .views.commision.delete_agent_bonus import DeleteAgentBonus
 from .views.commision.delete_setting_bonus import DeleteSettingBonus
@@ -92,7 +92,7 @@ urlpatterns = [
         login_required(AgentFeeHierarchyDistributionsDetail.as_view(), login_url='login'),
         name="agent_fee_distribution_detail"),
     url(
-        '^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/agent-bonus-distributions/(?P<agent_bonus_distribution_id>[0-9A-Za-z]+)/$',
         login_required(DeleteAgentBonus.as_view(), login_url='login'),
         name="delete_agent_bonus_distribution"),
     url(r'^fee-distribution/(?P<fee_distributions_id>[0-9A-Za-z]+)/$',
