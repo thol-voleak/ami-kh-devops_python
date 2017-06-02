@@ -147,7 +147,8 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            result = {}, False
+            # result = {}, False
+            raise Exception(response.content)
         return result
 
     def _delete_method(self, api_path, func_description, logger, params=None):
