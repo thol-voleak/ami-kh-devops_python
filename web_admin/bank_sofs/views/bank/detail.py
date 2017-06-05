@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class DetailsView(TemplateView, RESTfulMethods):
-    template_name = "bank_sof/detail.html"
+    template_name = "bank/detail.html"
     get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
 
     def get_context_data(self, **kwargs):

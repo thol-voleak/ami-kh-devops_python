@@ -44,8 +44,8 @@
                     {% if bank.is_deleted == False %}
                         <tr>
                             <td>{{ bank.name|default_if_none:'' }}</td>
-                            <td>{{ bank.account_name|default_if_none:'' }}</td>
-                            <td>{{ bank.account_number|default_if_none:'' }}</td>
+                            <td>{{ bank.bank_account_name|default_if_none:'' }}</td>
+                            <td>{{ bank.bank_account_number|default_if_none:'' }}</td>
                             <td>{{ bank.currency|default_if_none:'' }}</td>
                             <td>{{ bank.is_active|default_if_none:'' }}</td>
                             <td>{{ bank.created_timestamp|default_if_none:'' }}</td>

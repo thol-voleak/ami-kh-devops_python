@@ -4,26 +4,32 @@ from web_admin.api_settings import GET_ALL_CURRENCY_URL
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
-    template_name = "bank_sof/create.html"
-    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks"
+class EditView(TemplateView, RESTfulMethods):
+    template_name = "bank/edit.html"
+    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
+    update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start create bank sofs ==========')
+        context = super(EditView, self).get_context_data(**kwargs)
+        bank_id = context['bank_id']
+        bank = self._get_bank_details(bank_id)
         currencies = self._get_currencies_list()
-        context = {'currencies': currencies}
+        logger.info(bank)
+        context = {'bank': bank, 'currencies': currencies}
         logger.info('========== Finished create bank sofs ==========')
         return context
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start creating bank profile ==========')
+        bank_id = kwargs['bank_id']
 
         name = request.POST.get('name')
         bank_bin = request.POST.get('bin')
@@ -47,15 +53,15 @@ class CreateView(TemplateView, RESTfulMethods):
             "currency": currency
         }
 
-        data, success = self._post_method(api_path=self.url,
-                                          func_description="Bank Profile",
-                                          logger=logger, params=params)
+        data, success = self._put_method(api_path=self.update_bank_sof_detail_url.format(id=bank_id),
+                                         func_description="Bank Profile",
+                                         logger=logger, params=params)
         if success:
             logger.info('========== Finished creating bank profile ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Add bank successfully'
+                'Update bank successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
 
@@ -71,3 +77,11 @@ class CreateView(TemplateView, RESTfulMethods):
         else:
             currencies = []
         return currencies
+
+    def _get_bank_details(self, bank_id):
+        data, success = self._get_method(api_path=self.get_bank_sof_detail_url.format(id=bank_id),
+                                         func_description="bank detail from backend",
+                                         logger=logger,
+                                         is_getting_list=True)
+        if success:
+            return data

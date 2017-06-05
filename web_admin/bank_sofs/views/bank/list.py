@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListView(TemplateView, RESTfulMethods):
-    template_name = "bank_sof/list.html"
+    template_name = "bank/list.html"
     url = "report/v1/banks"
 
     def get_context_data(self, **kwargs):

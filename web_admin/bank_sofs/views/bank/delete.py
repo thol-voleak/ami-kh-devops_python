@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class DeleteView(TemplateView, RESTfulMethods):
-    template_name = "bank_sof/delete.html"
+    template_name = "bank/delete.html"
     get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
     delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
 

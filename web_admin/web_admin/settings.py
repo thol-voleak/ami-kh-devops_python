@@ -96,7 +96,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments', 'bank_sof')],
+                              'cards', 'cash_sofs', 'payments', 'bank', 'sof')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
