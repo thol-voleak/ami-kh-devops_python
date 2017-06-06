@@ -6,7 +6,7 @@
         <h3>Bank Detail</h3>
     </div>
 
-     <div class="panel-body">
+    <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post">
@@ -19,7 +19,7 @@
                                    value="{{ bank.is_active | default_if_none:'' }}" readonly>
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Name </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
@@ -55,12 +55,12 @@
                         </div>
                     </div>
 
-                     <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Bank Account Name </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_account_name"
-                                   value="{{ bank.account_name| default_if_none:'' }}" readonly>
+                                   value="{{ bank.bank_account_name| default_if_none:'' }}" readonly>
                         </div>
                     </div>
 
@@ -69,11 +69,11 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_account_number"
-                                   value="{{ bank.account_number| default_if_none:'' }}" readonly>
+                                   value="{{ bank.bank_account_number| default_if_none:'' }}" readonly>
                         </div>
                     </div>
 
-                     <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Currency </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
@@ -82,15 +82,15 @@
                         </div>
                     </div>
 
-                     <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Description </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_description"
                                    value="{{ bank.description| default_if_none:'' }}" readonly>
                         </div>
-                     </div>
-                   <div class="pull-right">
+                    </div>
+                    <div class="pull-right">
                         <a href="{% url 'bank_sofs:bank_sofs_list' %}">
                             <input id="bank_btn_back" class="btn text-left mb15 btn-small" type="button"
                                    value="Cancel"/>

@@ -42,8 +42,8 @@ class CreateView(TemplateView, RESTfulMethods):
             "is_active": is_active,
             "debit_url": debit_url,
             "credit_url": credit_url,
-            "account_number": account_number,
-            "account_name": account_name,
+            "bank_account_number": account_number,
+            "bank_account_name": account_name,
             "currency": currency
         }
 
