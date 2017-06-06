@@ -24,9 +24,9 @@
                 <td class="col-sm-2">{{ scope.name|default_if_none:'' }}</td>
                 <td class="col-sm-2">
                     <a href="{% url 'centralize_configuration:configuration_list' scope.name %}">
-                        <input id="btn_configuration" class="btn btn-outline btn-success btn-xs text-left"
+                        <input id="btn_configuration" class="btn btn-outline btn-primary btn-xs text-left"
                                type="button"
-                               value="configuration"/>
+                               value="Configuration"/>
                     </a>
                 </td>
             </tr>

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(TemplateView, RESTfulMethods):
     template_name = "bank/delete.html"
-    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
+    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks"
     delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
 
     def get_context_data(self, **kwargs):
@@ -41,9 +41,12 @@ class DeleteView(TemplateView, RESTfulMethods):
             return redirect('bank_sofs:bank_sofs_list')
 
     def _get_bank_details(self, bank_id):
-        data, success = self._get_method(api_path=self.get_bank_sof_detail_url.format(id=bank_id),
-                                         func_description="bank detail from backend",
-                                         logger=logger,
-                                         is_getting_list=True)
+        params = {
+            'id': bank_id
+        }
+        data, success = self._post_method(self.get_bank_sof_detail_url,
+                                          "bank detail from backend",
+                                          logger,
+                                          params=params)
         if success:
-            return data
+            return data[0]

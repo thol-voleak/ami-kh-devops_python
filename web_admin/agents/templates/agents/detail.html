@@ -466,14 +466,16 @@
                     <hr/>
 
                     <div class="pull-right">
-                        <a href="{% url 'agents:agent_delete' agent.id %}">
-                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                        <a href="{% url 'agents:agent-list' %}">
+                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
+
                         <a href="{% url 'agents:agent_update' agent.id %}">
                             <input id="btn_edit" class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Edit"/>
                         </a>
-                        <a href="{% url 'agents:agent-list' %}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
+
+                        <a href="{% url 'agents:agent_delete' agent.id %}">
+                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
                         </a>
                     </div>
                 </form>

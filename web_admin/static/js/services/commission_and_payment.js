@@ -416,9 +416,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         $('#' + tableId).on('click', 'button.delete', function (e) {
             e.preventDefault();
-
-            var nRow = $(this).parents('tr')[0];
-            oTable.fnDeleteRow(nRow);
         });
     }
 

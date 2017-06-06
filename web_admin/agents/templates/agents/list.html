@@ -112,7 +112,7 @@
                         <td class="col-sm-2">{{ agent.status|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             <div class="btn-group">
-                                <button id="btn_detail" class="btn btn-outline btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                <button id="btn_detail" class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
                                         onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                                 <button id="btn_edit" class="btn btn-outline btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
                                         onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>

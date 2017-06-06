@@ -452,15 +452,16 @@
                     <hr/>
                     <input name="previous_page" value="{{request.META.HTTP_REFERER}}" hidden/>
                     <div class="pull-right">
-                        <a href="{% url 'agents:agent_delete' agent_profile.id %}">
-                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                        <a href="{{request.META.HTTP_REFERER}}">
+                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
                         <a>
                             <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
                         </a>
-                        <a href="{{request.META.HTTP_REFERER}}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
-                        </a>
+
+                        <a href="{% url 'agents:agent_delete' agent_profile.id %}">
+                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                        </a>      
                     </div>
                 </form>
             </div>
