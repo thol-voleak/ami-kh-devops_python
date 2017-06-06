@@ -12,7 +12,7 @@ class ListView(TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start get bank list ==========')
-        data, success = self._get_method(self.url, "get bank list", logger, True)
+        data, success = self._post_method(self.url, "get bank list", logger)
         
         if success:
             logger.info('========== Finished get get bank list ==========')
