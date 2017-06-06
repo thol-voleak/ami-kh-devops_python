@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class EditView(TemplateView, RESTfulMethods):
     template_name = "bank/edit.html"
-    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/{id}"
+    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks"
     update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
 
     def get_context_data(self, **kwargs):
@@ -48,8 +48,8 @@ class EditView(TemplateView, RESTfulMethods):
             "is_active": is_active,
             "debit_url": debit_url,
             "credit_url": credit_url,
-            "account_number": account_number,
-            "account_name": account_name,
+            "bank_account_number": account_number,
+            "bank_account_name": account_name,
             "currency": currency
         }
 
@@ -79,9 +79,12 @@ class EditView(TemplateView, RESTfulMethods):
         return currencies
 
     def _get_bank_details(self, bank_id):
-        data, success = self._get_method(api_path=self.get_bank_sof_detail_url.format(id=bank_id),
-                                         func_description="bank detail from backend",
-                                         logger=logger,
-                                         is_getting_list=True)
+        params = {
+            'id': bank_id
+        }
+        data, success = self._post_method(self.get_bank_sof_detail_url,
+                                          "bank detail from backend",
+                                          logger,
+                                          params=params)
         if success:
-            return data
+            return data[0]
