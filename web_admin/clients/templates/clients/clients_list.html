@@ -71,7 +71,7 @@
                         <div id="client-btn-group-{{ client.client_id }}">
                             <div class="btn-group mb5">
                                 <button type="button"
-                                        class="btn btn-outline btn-xs btn-success {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                        class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 id="client-btn-regenerate-{{ client.client_id }}"
                                 data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
                                 onClick="regenerate('{{ client.client_id }}')">
@@ -97,7 +97,7 @@
                                 </button>
                                 {% if client.status == 'active' %}
                                 <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                class="btn btn-outline btn-warning btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 id="client-btn-status-{{ client.client_id }}"
                                 data-url="{% url 'clients:suspend-client' client.client_id %}"
                                 onClick="suspend('{{ client.client_id }}')">
