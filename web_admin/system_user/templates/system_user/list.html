@@ -8,11 +8,11 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-2 control-label">username</label>
+                <label class="col-sm-2 control-label">Username</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
                 </div>
-                <label class="col-sm-1 control-label">email</label>
+                <label class="col-sm-1 control-label">Email</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
                 </div>

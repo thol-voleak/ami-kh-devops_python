@@ -5,7 +5,10 @@ from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-
+from django.conf import settings
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5
+import base64
 logger = logging.getLogger(__name__)
 
 '''
@@ -95,7 +98,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     def _create_agent_profile(self, request):
 
         # Prepare for agent registration.
-        password = request.POST.get('password')
         agent_type_id = request.POST.get('agent_type_id')
         parent_id = request.POST.get('parent_id')
         grand_parent_id = request.POST.get('grand_parent_id')
@@ -199,6 +201,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
 
         username = request.POST.get('username')
         password = request.POST.get('password')
+        # message = password.encode('utf-8')
+        # pub_key = RSA.importKey(open(settings.RSA).read())
+        # cipher = PKCS1_v1_5.new(pub_key)
+        # ciphertext = base64.encodebytes(cipher.encrypt(message))
+        # password = ciphertext.decode('utf-8')
 
         body = {
             'username': username,
