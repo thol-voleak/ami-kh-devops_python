@@ -32,7 +32,7 @@
                 <td class="col-sm-2">
                         <a type="button" class="btn btn-outline btn-xs btn-primary"
                         {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                        role="button" id="btn_scopes" class="text-info" role="button"
+                        role="button" id="btn_edit" class="text-info" role="button"
                         href="{% url 'centralize_configuration:configuration_details' scope_name key %}">
                             <span class="small">Edit</span>
                         </a>
