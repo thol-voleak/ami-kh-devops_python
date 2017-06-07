@@ -149,7 +149,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
-        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-outline btn-xs cancel btn-primary text-info small\'>Cancel</button>';
+        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
         jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 

@@ -63,7 +63,7 @@ class ConfigurationDetailsView(TemplateView, RESTfulMethods):
                 'value': conf_value
             }
 
-            data, success = self._post_method(url, 'configuration scope', logger, params)
+            data, success = self._put_method(url, 'configuration scope', logger, params)
             if success:
                 messages.add_message(
                     request,
