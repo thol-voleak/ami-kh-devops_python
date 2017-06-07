@@ -52,11 +52,18 @@ class ListView(TemplateView, RESTfulMethods):
             body['kyc_status'] = new_kyc_status
             context['kyc_status'] = kyc_status
 
-        if from_created_timestamp:
+        if from_created_timestamp is not '':
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['from_created_timestamp'] = new_from_created_timestamp
             context['from_created_timestamp'] = from_created_timestamp
+        else:
+            new_from_created_timestamp = datetime.now()
+            new_from_created_timestamp = new_from_created_timestamp.replace(hour=0, minute=0, second=0)
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_from_created_timestamp
+            context['from_created_timestamp'] = from_created_timestamp
+            logger.info(new_from_created_timestamp)
 
         if to_created_timestamp is not '':
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
@@ -64,6 +71,13 @@ class ListView(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
             context['to_created_timestamp'] = to_created_timestamp
+        else:
+            new_to_created_timestamp = datetime.now()
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_to_created_timestamp
+            context['from_created_timestamp'] = new_to_created_timestamp
+            logger.info(new_to_created_timestamp)
 
         api_path = SEARCH_AGENT
 
