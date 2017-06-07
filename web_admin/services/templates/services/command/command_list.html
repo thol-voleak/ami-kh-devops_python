@@ -43,6 +43,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="pull-right">
+                            <a href="{% url 'services:services_list' %}">
+                                <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                            </a>
+                            <a href="#">
+                                <input id="btn_add" class="btn btn-success" type="submit" value="Add">
+                            </a>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="table-responsive">
@@ -82,17 +92,6 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="pull-right">
-                            <a href="{% url 'services:services_list' %}">
-                                <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
-                            </a>
-                            <a href="#">
-                                <input id="btn_add" class="btn btn-success" type="submit" value="Add">
-                            </a>
                         </div>
                     </div>
                 </form>
