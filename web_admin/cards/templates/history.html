@@ -20,22 +20,25 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">User ID</label>
+                    <div class="col-sm-1 text-right">
+                        <label class="control-label">User ID</label>
+                    </div>
                     <div class="col-sm-3">
                         <input type="text" class="form-control input-rounded" name="user_id"/>
                     </div>
-                    <label class="col-sm-1 control-label">User Type</label>
-                    <div class="col-xs-2">
+                    <div class="col-sm-1 text-right">
+                        <label class="control-label">User Type</label>
+                    </div>
+                    <div class="col-sm-3">
                         <select class="form-control" id="user_type_ddl" name="user_type_id">
                             <option value=0 {% if user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                             <option value=1 {% if user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                             <option value=2 {% if user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
                         </select>
+
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                    <div class="col-xs-4">
+                        <input id="search_btn" class="btn btn-success btn-large" type="submit"
                                value="Search">
                     </div>
                 </div>

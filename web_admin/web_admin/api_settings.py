@@ -38,7 +38,7 @@ SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
 SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}'
+SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}/passwords'
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # SPI URL
