@@ -52,21 +52,21 @@
                         <div id="service_btn_group">
                             <div class="btn-group">
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
+                                   class="btn btn-outline btn-xs btn-info"
                                    role="button"
                                    id="btn_service_detail"
                                    href="{% url 'services:service_detail' services.service_id %}">
                                     <span class="small">Detail</span>
                                 </a>
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-info"
+                                   class="btn btn-outline btn-xs btn-primary"
                                    role="button"
                                    id="btn_service_edit"
                                    href="{% url 'services:update_service' services.service_id %}">
                                     <span class="small">Edit</span>
                                 </a>
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-info"
+                                   class="btn btn-outline btn-xs btn-primary"
                                    role="button"
                                    id="btn_service_command"
                                    href="{% url 'services:command_list' services.service_id %}">
