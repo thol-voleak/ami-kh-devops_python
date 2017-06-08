@@ -14,7 +14,6 @@ class ScopeListView(TemplateView, RESTfulMethods):
         logger.info('========== Start getting all configuration scope ==========')
         url =  api_settings.SCOPES_URL
         data, success = self._get_method(url, 'configuration scope', logger)
-        print("data is :{} ................................".format(data)) 
         if success:
             data = {'scopes': data}
             logger.info('========== Finish getting all configuration scope ==========')
