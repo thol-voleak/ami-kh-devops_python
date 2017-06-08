@@ -11,6 +11,8 @@ import requests
 import logging
 import time
 
+from web_admin.utils import encryptText
+
 logger = logging.getLogger(__name__)
 
 
@@ -47,7 +49,7 @@ class CustomBackend:
 
             payload = {
                 'username': username,
-                'password': password,
+                'password': encryptText(password),
                 'grant_type': 'password',
                 'client_id': client_id
             }
