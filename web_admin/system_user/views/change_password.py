@@ -44,8 +44,8 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
             messages.add_message(request, messages.SUCCESS, 'Password has been changed successfully')
             return redirect('system_user:system-user-list')
         else:
-            context = {'system_user_info': params}
-            return render(request, 'system_user/system_user_change_password.html', context)
+            messages.add_message(request, messages.ERROR, 'Invalid request')
+            return redirect('system_user:system-user-change-password', systemUserId=system_user_id)
 
 
 

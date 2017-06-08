@@ -98,7 +98,10 @@ class RESTfulMethods(GetHeaderMixin):
                 message = status.get('message', 'Something went wrong.')
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            raise Exception(response.content)
+            if (code == 'invalid_request'):
+                result = response.content, False
+            else:
+                raise Exception(response.content)
         return result
 
     def _post_method(self, api_path, func_description, logger, params={}):
