@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.utils import encryptText
 logger = logging.getLogger(__name__)
 
 '''
@@ -48,7 +48,7 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
             "firstname": request.POST.get('firstname'),
             "lastname": request.POST.get('lastname'),
             "email": request.POST.get('email'),
-            "password": request.POST.get('password'),
+            "password": encryptText(request.POST.get('password')),
         }
 
         # Do Request

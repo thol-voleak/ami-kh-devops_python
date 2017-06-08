@@ -1,5 +1,8 @@
 import datetime
-
+from django.conf import settings
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5
+import base64
 
 def format_date_time(data):
     for item in data:
@@ -15,3 +18,9 @@ def format_date_time(data):
                 '%d-%m-%Y %H:%M %p')
     return data
 
+def encryptText(input):
+    utf8_text = input.encode('utf-8')
+    pub_key = RSA.importKey(open('rsa_public.pem').read())
+    cipher = PKCS1_v1_5.new(pub_key)
+    ciphertext = base64.encodebytes(cipher.encrypt(utf8_text))
+    return ciphertext.decode('utf-8')

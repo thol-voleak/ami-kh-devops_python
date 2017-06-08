@@ -86,10 +86,11 @@
     </div>
 
     <div class="form-group">
-        <a href="{% url 'services:fee_tier_list' service_id=service_id command_id=command_id service_command_id=service_command_id %}">
-            <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
-        </a>
         <div class= "pull-right">
+            <a href="{% url 'services:fee_tier_list' service_id=service_id command_id=command_id service_command_id=service_command_id %}">
+                <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+            </a>
+
             <button class="btn btn-success" type="submit" role="button"
                 id="btn_agent_hierarchy_distribution_bonus_add">
                 Add

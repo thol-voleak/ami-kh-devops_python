@@ -5,9 +5,7 @@ from web_admin import api_settings
 import logging
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5
-import base64
+from web_admin.utils import encryptText
 
 logger = logging.getLogger(__name__)
 
@@ -36,15 +34,7 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
         system_user_id = kwargs['systemUserId']
         url = api_settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
         password = request.POST.get('newpassword')
-
-        message = password.encode('utf-8')
-        # pub_key = RSA.importKey(open('/data/projects/admin-portal/config/rsa_public.pem').read())
-        pub_key = RSA.importKey(open(settings.RSA).read())
-        cipher = PKCS1_v1_5.new(pub_key)
-        ciphertext = base64.encodestring(cipher.encrypt(message))
-        password = ciphertext.decode('utf-8')
-
-        params = {"password": password}
+        params = {"password": encryptText(password)}
         data, success = self._put_method(api_path=url,
                                          func_description="password",
                                          logger=logger,
@@ -54,8 +44,8 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
             messages.add_message(request, messages.SUCCESS, 'Password has been changed successfully')
             return redirect('system_user:system-user-list')
         else:
-            context = {'system_user_info': params}
-            return render(request, 'system_user/system_user_change_password.html', context)
+            messages.add_message(request, messages.ERROR, 'Invalid request')
+            return redirect('system_user:system-user-change-password', systemUserId=system_user_id)
 
 
 
