@@ -8,7 +8,7 @@
 </div>
 
 <div class="panel-body">
-    <form class="form-horizontal" role="form" method="post"
+    <form class="form-horizontal" role="form" method="post" id="edit_conf_form"
         action="{% url 'centralize_configuration:configuration_details' scope_name conf_key %}">
         {% csrf_token %}
         <div class="table-responsive mb15">
@@ -36,6 +36,16 @@
                     {% endif %}
                 </tr>
                 {% endfor %}
+                <script type="text/javascript">
+                function loadData() {
+                    var lastUrl = document.referrer;
+                    var loginUrl = 'admin-portal/login';
+                    if ((lastUrl.indexOf(loginUrl) !== -1) && (localStorage.getItem("edit_key") == "{{ conf_key|safe }}")){
+                        document.getElementById("txt_key_value").value = localStorage.getItem("edit_value");
+                    };
+                };
+                window.onload = loadData;
+                </script>
                 </tbody>
             </table>
         </div>
@@ -45,13 +55,19 @@
                 <input id="btn_cancel" class="btn btn-sm text-left" type="button"
                 value="Cancel"/>
             </a>
-            <button id="btn_save" role="button"
-                class="btn btn-success btn-sm"
-                type="submit">
+            <button id="btn_save" role="button" class="btn btn-success btn-sm" type="button" onclick="saveData();">
                 <span>Save</span>
             </button>    
         </div>
     </form>
 </div>
+
+<script type="text/javascript">
+function saveData() {
+    localStorage.setItem("edit_key", "{{ conf_key|safe }}");
+    localStorage.setItem("edit_value", document.getElementById("txt_key_value").value);
+    document.getElementById("edit_conf_form").submit();
+};
+</script>
 
 {% endblock %}
