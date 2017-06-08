@@ -74,11 +74,18 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = api_path
         logger.info('API-Path: {path}'.format(path=api_path))
-        logger.info("Params: {} ".format(params))
 
         start_date = time.time()
         response = requests.put(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         done = time.time()
+
+        # Filter sensitive data
+        self._filter_sensitive_fields(params=params)
+        logger.info("Params: {} ".format(params))
+
+        logger.info('Response_content: {}'.format(response.text))
+        logger.info('Response_time: {}'.format(done - start_date))
+
         try:
             response_json = response.json()
             status = response_json.get('status', {})
@@ -88,9 +95,6 @@ class RESTfulMethods(GetHeaderMixin):
 
         if code == "success":
             logger.info('Response_code: {}'.format(response.status_code))
-            logger.info('Response_content: {}'.format(response.text))
-            logger.info('Response_time: {}'.format(done - start_date))
-
             result = response_json.get('data', {}), True
         else:
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
@@ -211,9 +215,9 @@ class RESTfulMethods(GetHeaderMixin):
     def _filter_sensitive_fields(params={}):
 
         if 'password' in params:
-            params['password'] = None
+            params['password'] = '******'
 
         if 're-password' in params:
-            params['re-password'] = None
+            params['re-password'] = '******'
 
         return params;
