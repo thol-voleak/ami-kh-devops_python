@@ -13,17 +13,17 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">SOF ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="sof_id" value="{{ search_by.sof_id }}">
+                        <input id="sof_id_txt" type="number" class="form-control input-rounded" name="sof_id" value="{{ search_by.sof_id }}">
                     </div>
                     <label class="col-sm-2 control-label">ORDER ID</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="order_id" value="{{ search_by.order_id }}"/>
+                        <input id="order_id_txt" type="text" class="form-control input-rounded" name="order_id" value="{{ search_by.order_id }}"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-1 control-label">Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="type">
+                        <select class="form-control" id="action_dropdown" name="type">
                             <option value='' {% if search_by.action_id == 0 %}selected="selected"{% endif %}>All</option>
                             <option value='1' {% if search_by.action_id == 1 %}selected="selected"{% endif %}>Debit</option>
                             <option value='2' {% if search_by.action_id == 2 %}selected="selected"{% endif %}>Credit</option>
@@ -31,7 +31,7 @@
                     </div>
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
-                         <select class="form-control" id="user_type_ddl" name="status">
+                         <select class="form-control" id="status_dropdown" name="status">
                             <option value='' {% if search_by.status_id == 0 %}selected="selected"{% endif %}>All</option>
                             <option value='1' {% if search_by.status_id == 1 %}selected="selected"{% endif %}>processing</option>
                             <option value='2' {% if search_by.status_id == 2 %}selected="selected"{% endif %}>success</option>
@@ -62,7 +62,7 @@
 
             </form>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <table class="table table-bordered table-striped mb0" id="tbl_bank_transaction_list">
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>

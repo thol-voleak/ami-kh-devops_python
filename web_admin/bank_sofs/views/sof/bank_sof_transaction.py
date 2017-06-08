@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 
 class BankSOFTransaction(TemplateView, RESTfulMethods):
     template_name = "sof/bank_transaction.html"
-    search_banks_sof = settings.DOMAIN_NAMES + "report/v1/banks/transactions"
+    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/transactions"
 
     def get(self, request, *args, **kwargs):
         logger.info('========== Start search bank transaction history ==========')
+        logger.info(self.search_bank_transaction)
         search = request.GET.get('search')
         if search is None:
             logger.info("Search is none")
@@ -73,4 +74,4 @@ class BankSOFTransaction(TemplateView, RESTfulMethods):
             logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
         return body
     def _get_sof_bank_transaction(self, body):
-        return self._post_method(self.search_banks_sof, 'Cash Source of Fund List', logger, body)
+        return self._post_method(self.search_bank_transaction, 'Cash Source of Fund List', logger, body)
