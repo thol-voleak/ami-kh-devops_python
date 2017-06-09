@@ -54,10 +54,15 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = data, True
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (code == 'invalid_access_token'):
-                message = status.get('message', 'Something went wrong.')
+            message = status.get('message','')
+            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                        code == 'invalid_access_token'):
+                logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            raise Exception(response.content)
+            if message:
+                result = message, False
+            else:
+                raise Exception(response.content)
         return result
 
     def _put_method(self, api_path, func_description, logger, params={}):
@@ -97,13 +102,13 @@ class RESTfulMethods(GetHeaderMixin):
             logger.info('Response_code: {}'.format(response.status_code))
             result = response_json.get('data', {}), True
         else:
+            message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
-                message = status.get('message', 'Something went wrong.')
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            if (code == 'invalid_request'):
-                result = response.content, False
+            if message:
+                result = message, False
             else:
                 raise Exception(response.content)
         return result
@@ -146,16 +151,15 @@ class RESTfulMethods(GetHeaderMixin):
             logger.info("Response_time: {}".format(end_time - start_time))
             result = data, True
         else:
-            logger.info("Response_content: {}".format(response.content))
-            logger.info("Response_time: {}".format(end_time - start_time))
-            message = status.get('message', 'Something went wrong.')
-
+            message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            # result = {}, False
-            raise Exception(response.content)
+            if message:
+                result = message, False
+            else:
+                raise Exception(response.content)
         return result
 
     def _delete_method(self, api_path, func_description, logger, params=None):
@@ -166,13 +170,6 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         logger.info('API-Path: {path}'.format(path=api_path))
 
-        # url = settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(
-        #     balance_distribution_id=balance_distribution_id
-        # )
-        # logger.info("Delete balance distribution by user: {} with url: {}".format(
-        #     self.request.user.username,
-        #     url,
-        # ))
         start_time = time.time()
         response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT)
         end_time = time.time()
@@ -189,20 +186,16 @@ class RESTfulMethods(GetHeaderMixin):
             result = response_json.get('data', {}), True
         else:
             result = {}, False
+            message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
-                message = status.get('message', 'Something went wrong.')
                 raise InvalidAccessToken(message)
+            if message:
+                result = message, False
+            else:
+                raise Exception(response.content)
         return result
 
-
-        # logger.info("Response status: {}, reponse content: {}".format(
-        #     response.status_code,
-        #     response.content,
-        # ))
-        # if response.status_code == 200:
-        #     return True
-        # return False
 
     '''
     Author: Steve Le
