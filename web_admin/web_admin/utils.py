@@ -20,7 +20,7 @@ def format_date_time(data):
 
 def encryptText(input):
     utf8_text = input.encode('utf-8')
-    pub_key = RSA.importKey(open('rsa_public.pem').read())
+    pub_key = RSA.importKey(open(settings.RSA).read())
     cipher = PKCS1_v1_5.new(pub_key)
     ciphertext = base64.encodebytes(cipher.encrypt(utf8_text))
     return ciphertext.decode('utf-8')
