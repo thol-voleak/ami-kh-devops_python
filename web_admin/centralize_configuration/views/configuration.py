@@ -43,6 +43,7 @@ class ConfigurationDetailsView(TemplateView, RESTfulMethods):
                 '========== Finish getting configuration scope details ==========')
             context["configurations"] = data
             context["scope_name"] = scope
+            context["user"] = self.request.user
             return context
 
     def post(self, request, *args, **kwargs):

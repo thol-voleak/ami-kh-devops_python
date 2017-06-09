@@ -40,7 +40,8 @@
                 function loadData() {
                     var lastUrl = document.referrer;
                     var loginUrl = 'admin-portal/login';
-                    if ((lastUrl.indexOf(loginUrl) !== -1) && (localStorage.getItem("edit_key") == "{{ conf_key|safe }}")){
+                    if ((lastUrl.indexOf(loginUrl) !== -1) && (localStorage.getItem("edit_key") == "{{ conf_key|safe }}"
+                        && (localStorage.getItem("user_name") == "{{ user }}"))){
                         document.getElementById("txt_key_value").value = localStorage.getItem("edit_value");
                     };
                 };
@@ -51,10 +52,9 @@
         </div>
 
         <div class="pull-right">
-            <a href="{% url 'centralize_configuration:configuration_list' scope_name %}">
-                <input id="btn_cancel" class="btn btn-sm text-left" type="button"
-                value="Cancel"/>
-            </a>
+            <button id="btn_cancel" role="button" class="btn btn-sm" type="button" onclick="clearData();">
+                <span>Cancel</span>
+            </button>
             <button id="btn_save" role="button" class="btn btn-success btn-sm" type="button" onclick="saveData();">
                 <span>Save</span>
             </button>    
@@ -66,7 +66,13 @@
 function saveData() {
     localStorage.setItem("edit_key", "{{ conf_key|safe }}");
     localStorage.setItem("edit_value", document.getElementById("txt_key_value").value);
+    localStorage.setItem("user_name", "{{ user }}");
     document.getElementById("edit_conf_form").submit();
+};
+
+function clearData() {
+    localStorage.clear();
+    window.location.href = "{% url 'centralize_configuration:configuration_list' scope_name %}";
 };
 </script>
 
