@@ -10,7 +10,7 @@
 
     <div class="pull-right mr15 text-right">
         <a href="{% url 'services:service_create' %}">
-            <input id="btn_service_add" class="btn btn-success btn-block mb15" type="button" value="Add"/>
+            <input id="btn_add" class="btn btn-success btn-block mb15" type="button" value="Add"/>
         </a>
     </div>
 
@@ -54,21 +54,21 @@
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"
                                    role="button"
-                                   id="btn_service_detail"
+                                   id="btn_detail"
                                    href="{% url 'services:service_detail' services.service_id %}">
                                     <span class="small">Detail</span>
                                 </a>
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
-                                   id="btn_service_edit"
+                                   id="btn_edit"
                                    href="{% url 'services:update_service' services.service_id %}">
                                     <span class="small">Edit</span>
                                 </a>
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
-                                   id="btn_service_command"
+                                   id="btn_command"
                                    href="{% url 'services:command_list' services.service_id %}">
                                     <span class="small">Command</span>
                                 </a>
