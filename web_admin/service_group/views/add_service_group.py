@@ -37,7 +37,8 @@ class ServiceGroupCreate(View, RESTfulMethods):
         else:
             service_group_info = {
                 "service_group_name": name,
-                "description": description
+                "description": description,
+                "failed_message": data
             }
             context = {'service_group_info': service_group_info}
             return render(request, 'service_group/add_service_group.html', context)
