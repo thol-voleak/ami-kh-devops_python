@@ -76,6 +76,13 @@ class UpdateView(TemplateView, RESTfulMethods):
                 'Updated data successfully'
             )
             return redirect('services:service_detail', ServiceId=(service_id))
+        else:
+            messages.add_message(
+                request,
+                messages.INFO,
+                data,
+            )
+            return redirect('services:update_service', service_id=(service_id))
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
