@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import encryptText_agent
+from web_admin.utils import encrypt_text_agent
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +199,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
 
         username = request.POST.get('username')
         password = request.POST.get('password')
-        password = encryptText_agent(password)
+        password = encrypt_text_agent(password)
 
         body = {
             'username': username,
