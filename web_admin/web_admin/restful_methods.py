@@ -87,7 +87,7 @@ class RESTfulMethods(GetHeaderMixin):
         # Filter sensitive data
         self._filter_sensitive_fields(params=params)
         logger.info("Params: {} ".format(params))
-
+        logger.info('Response_code: {}'.format(response.status_code))
         logger.info('Response_content: {}'.format(response.text))
         logger.info('Response_time: {}'.format(done - start_date))
 
@@ -99,7 +99,6 @@ class RESTfulMethods(GetHeaderMixin):
             logger.error(e)
 
         if code == "success":
-            logger.info('Response_code: {}'.format(response.status_code))
             result = response_json.get('data', {}), True
         else:
             message = status.get('message', '')
