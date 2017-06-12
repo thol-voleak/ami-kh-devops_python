@@ -37,17 +37,16 @@
                     <tbody>
                     {% for service_group in data %}
                         <tr>
-                            <td class="col-sm-1">
-                                {% if service_group.is_deleted %}
-                                    <del>{{ service_group.service_group_name|default_if_none:'' }}</del>
-                                {% else %}
-                                    {{ service_group.service_group_name|default_if_none:'' }}
-                                {% endif %}
-                            </td>
+                            {% if service_group.is_deleted %}
+                                <td class="col-sm-3"><del>{{ service_group.service_group_name|default_if_none:'' }}</del></td>
+                            {% else %}
+                                <td class="col-sm-3">{{ service_group.service_group_name|default_if_none:'' }}</td>
+                            {% endif %}
                             <td class="col-sm-3">{{ service_group.description|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ service_group.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ service_group.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
+                                {% if not service_group.is_deleted %}
                                 <div id="service_group_btn_group">
                                     <div class="btn-group">
                                         <a type="button"
@@ -65,16 +64,16 @@
                                            href="{% url 'service_group:service_group_update' service_group.service_group_id %}">
                                             <span class="small">Edit</span>
                                         </a>
-                                    </div>
-                                    <div class="btn-group">
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger"
                                            role="button"
-                                           id="btn_service_group_delete"
+                                           id="btn_delete"
                                            href="{% url 'service_group:service_group_delete' service_group.service_group_id %}">
                                             <span class="small">Delete</span>
                                         </a>
                                     </div>
+                                {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

@@ -58,6 +58,7 @@ class ServiceGroupDeleteForm(TemplateView, RESTfulMethods):
             messages.add_message(request, messages.SUCCESS, 'Deleted data successfully')
             return redirect('service_group:service_group_list')
         else:
+            messages.add_message(request, messages.ERROR, data)
             logger.info("Error deleting service group {}".format(service_group_id))
             return redirect('service_group:service_group_delete', ServiceGroupId=(service_group_id))
 
