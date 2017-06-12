@@ -5,10 +5,8 @@ from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from django.conf import settings
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5
-import base64
+from web_admin.utils import encryptText_agent
+
 logger = logging.getLogger(__name__)
 
 '''
@@ -201,15 +199,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
 
         username = request.POST.get('username')
         password = request.POST.get('password')
-        # message = password.encode('utf-8')
-        # pub_key = RSA.importKey(open(settings.RSA).read())
-        # cipher = PKCS1_v1_5.new(pub_key)
-        # ciphertext = base64.encodebytes(cipher.encrypt(message))
-        # password = ciphertext.decode('utf-8')
+        password = encryptText_agent(password)
 
         body = {
             'username': username,
-            'password': password,
+            'password': password
         }
 
         data, success = self._post_method(api_path=api_settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),

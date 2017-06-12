@@ -1,9 +1,8 @@
-import datetime
 from django.conf import settings
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
-import base64
 
+import datetime
 import logging
 
 
@@ -34,3 +33,5 @@ def setup_logger(request, logger):
     correlation_id = request.session.get('correlation_id', '')
     client_ip = request.META['REMOTE_ADDR']
     return logging.LoggerAdapter(logger, extra={'correlationId': correlation_id, 'IPAddress': client_ip})
+    ciphertext = base64.encodebytes(cipher.encrypt(utf8_text))
+    return ciphertext.decode('utf-8')
