@@ -46,7 +46,7 @@ class CreateView(TemplateView, RESTfulMethods):
             messages.add_message(
                 request,
                 messages.INFO,
-                'Something wrong happened!',
+                data,
             )
             return redirect('services:service_create')
 
