@@ -150,6 +150,7 @@ class RESTfulMethods(GetHeaderMixin):
                 logger.info("Response_content: {}".format(response.content))
             result = data, True
         else:
+            logger.info("Response_content: {}".format(response.text))
             message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
@@ -157,7 +158,6 @@ class RESTfulMethods(GetHeaderMixin):
                 raise InvalidAccessToken(message)
             if message:
                 result = message, False
-                logger.info("Response_content: {}".format(response.content))
             else:
                 raise Exception(response.content)
         return result
