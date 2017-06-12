@@ -141,14 +141,13 @@ class RESTfulMethods(GetHeaderMixin):
         response_json = response.json()
         status = response_json.get('status', {})
         code = status.get('code', '')
-
+        logger.info("Response_time: {}".format(end_time - start_time))
         if code == "success":
             data = response_json.get('data', {})
             if isinstance(data, list):
                 logger.info("Response_content_count: {}".format(len(data)))
             else:
                 logger.info("Response_content: {}".format(response.content))
-            logger.info("Response_time: {}".format(end_time - start_time))
             result = data, True
         else:
             message = status.get('message', '')
@@ -158,6 +157,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise InvalidAccessToken(message)
             if message:
                 result = message, False
+                logger.info("Response_content: {}".format(response.content))
             else:
                 raise Exception(response.content)
         return result

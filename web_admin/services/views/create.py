@@ -22,6 +22,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start creating Service ==========')
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
         currency = request.POST.get('currency')
@@ -35,6 +36,7 @@ class CreateView(TemplateView, RESTfulMethods):
         }
 
         data, success = self._create_service(body)
+        logger.info('========== Finish creating Service ==========')
         if success:
             messages.add_message(
                 request,
@@ -56,6 +58,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
 
     def _get_currency_choices(self):
+        logger.info('========== Start Getting Currency Choices ==========')
         url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choice", logger)
 
@@ -68,6 +71,7 @@ class CreateView(TemplateView, RESTfulMethods):
             result = currency_list, True
         else:
             result = [], False
+        logger.info('========== Finish Getting Currency Choices ==========')
         return result
 
 
@@ -78,7 +82,9 @@ class CreateView(TemplateView, RESTfulMethods):
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)
         async_result = pool.apply_async(self._get_currency_choices)
+        logger.info('========== Start Getting Service Group Choices ==========')
         service_groups, success_service = self._get_service_group_choices()
+        logger.info('========== Finish Getting Service Group Choices ==========')
         currencies, success_currency = async_result.get()
         if success_currency and success_service:
             return {

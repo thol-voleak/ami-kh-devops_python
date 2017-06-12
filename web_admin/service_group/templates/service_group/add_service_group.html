@@ -23,7 +23,7 @@
                         <label class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="name" id="txt_name"
-                                   value="{{ service_group_info.name | default_if_none:'' }}">
+                                   value="{{ service_group_info.service_group_name | default_if_none:'' }}">
                         </div>
                     </div>
                     <div class="form-group">
