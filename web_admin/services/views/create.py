@@ -12,6 +12,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         choices, success = self._get_service_group_and_currency_choices()
+        self.dropdown_data = choices
         if not success:
             messages.add_message(
                 request,
@@ -22,6 +23,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
         currency = request.POST.get('currency')
@@ -48,7 +50,14 @@ class CreateView(TemplateView, RESTfulMethods):
                 messages.INFO,
                 data,
             )
-            return redirect('services:service_create')
+            context["service_name"] = service_name
+            context["description"] = description
+            choices, success = self._get_service_group_and_currency_choices()
+            if success:
+                context["choices"] = choices
+                return render(request, self.template_name, context)
+            else:
+                return redirect('services:service_create')
 
     def _create_service(self, data):
         url = api_settings.SERVICE_CREATE_URL
