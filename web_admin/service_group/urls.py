@@ -10,15 +10,15 @@ from .views.delete import ServiceGroupDeleteForm
 app_name = 'service_group'
 
 urlpatterns = [
-    url(r'^list/$', login_required(ListView.as_view(), login_url='login'), name="service_group_list"),
-    url(r'^add/$', login_required(ServiceGroupCreate.as_view(), login_url='login'), name="add_service_group"),
+    url(r'^list/$', login_required(ListView.as_view(), login_url='authentications:login'), name="service_group_list"),
+    url(r'^add/$', login_required(ServiceGroupCreate.as_view(), login_url='authentications:login'), name="add_service_group"),
     url(r'^(?P<ServiceGroupId>[0-9A-Za-z]+)/update/$',
-        login_required(ServiceGroupUpdateForm.as_view(), login_url='login'),
+        login_required(ServiceGroupUpdateForm.as_view(), login_url='authentications:login'),
         name="service_group_update"),
     url(r'^(?P<ServiceGroupId>[0-9A-Za-z]+)/details/$',
-        login_required(ServiceGroupDetailForm.as_view(), login_url='login'),
+        login_required(ServiceGroupDetailForm.as_view(), login_url='authentications:login'),
         name="service_group_detail"),
     url(r'^(?P<ServiceGroupId>[0-9A-Za-z]+)/delete/$',
-        login_required(ServiceGroupDeleteForm.as_view(), login_url='login'),
+        login_required(ServiceGroupDeleteForm.as_view(), login_url='authentications:login'),
         name="service_group_delete"),
 ]

@@ -175,7 +175,7 @@
             </li>
             <li>
                 {% if user.is_authenticated %}
-                <a href="/admin-portal/logout/">
+                <a href="{% url 'authentications:logout' %}">
                     <i class="fa fa-power-off"></i>
                     <span class="">Logout</span>
                 </a>

@@ -38,9 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'mod_wsgi.server',
 
-    # 'debug_toolbar',
-    # 'debug_panel',
-
     'authentications',
     'clients',
     'balances',

@@ -115,4 +115,4 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             return [], True
 
 
-company_balance = login_required(CompanyBalanceView.as_view(), login_url='login')
+company_balance = login_required(CompanyBalanceView.as_view(), login_url='authentications:login')

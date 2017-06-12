@@ -5,7 +5,7 @@ from web_admin import api_settings
 import logging
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import encryptText
+from web_admin.utils import encrypt_text
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
         system_user_id = kwargs['systemUserId']
         url = api_settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
         password = request.POST.get('newpassword')
-        params = {"password": encryptText(password)}
+        params = {"password": encrypt_text(password)}
         data, success = self._put_method(api_path=url,
                                          func_description="password",
                                          logger=logger,

@@ -1,8 +1,9 @@
 from .apps import InvalidAccessToken
 from web_admin import api_settings
+from web_admin.utils import setup_logger
 
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
 from django.conf import settings
 from .models import Authentications
 
@@ -10,10 +11,27 @@ import time
 import requests
 import logging
 
-logger = logging.getLogger(__name__)
+
+def login_user(request):
+    logger = logging.getLogger(__name__)
+    logger = setup_logger(request, logger)
+    if request.POST:
+        logger.info("========== Start login from web page ==========")
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request=request, username=username, password=password)
+
+        if user is not None:
+            # TODO: set authentication user is unique from db
+            request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
+            login(request, user)
+            return redirect('web:web-index')
+
+    return render(request, "authentications/login.html")
 
 
 def logout_user(request):
+    logger = logging.getLogger(__name__)
     logger.info('========== Start to logout ==========')
     url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username
@@ -25,7 +43,7 @@ def logout_user(request):
         logger.error(e)
         logout(request)
         logger.info('========== Finished to logout ==========')
-        return redirect('login')
+        return redirect('authentications:login')
 
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)
@@ -43,7 +61,7 @@ def logout_user(request):
     logout(request)
     logger.info("username {} was logged out".format(username, request.user))
     logger.info('========== Finished to logout ==========')
-    return redirect('/admin-portal/')
+    return render(request, "authentications/login.html")
 
 
 def get_auth_header(user):

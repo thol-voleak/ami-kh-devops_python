@@ -11,7 +11,7 @@ import requests
 import logging
 import time
 
-from web_admin.utils import encryptText
+from web_admin.utils import encrypt_text
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class CustomBackend:
     def __init__(self):
         pass
 
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, request=None, username=None, password=None):
         try:
             logger.info('========== Start authentication backend service ==========')
             client_id = settings.CLIENTID
@@ -49,7 +49,7 @@ class CustomBackend:
 
             payload = {
                 'username': username,
-                'password': encryptText(password),
+                'password': encrypt_text(password),
                 'grant_type': 'password',
                 'client_id': client_id
             }
