@@ -54,6 +54,7 @@ class UpdateView(TemplateView, RESTfulMethods):
             return None
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start updating Service ==========')
         service_id = kwargs['service_id']
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -69,6 +70,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         }
 
         data, success = self._update_service(service_id, data)
+        logger.info('========== Finish updating Service ==========')
         if success:
             messages.add_message(
                 request,
