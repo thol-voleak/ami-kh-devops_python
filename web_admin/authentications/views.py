@@ -13,12 +13,14 @@ import logging
 
 
 def login_user(request):
+    next_request = None
     logger = logging.getLogger(__name__)
     logger = setup_logger(request, logger)
     if request.POST:
         logger.info("========== Start login from web page ==========")
         username = request.POST['username']
         password = request.POST['password']
+
         user = authenticate(request=request, username=username, password=password)
 
         if user is not None:
@@ -27,7 +29,10 @@ def login_user(request):
             login(request, user)
             return redirect('web:web-index')
 
-    return render(request, "authentications/login.html")
+    elif request.GET:
+        next_request = request.GET['next']
+
+    return render(request, "authentications/login.html", {'next': next_request})
 
 
 def logout_user(request):
@@ -61,7 +66,12 @@ def logout_user(request):
     logout(request)
     logger.info("username {} was logged out".format(username, request.user))
     logger.info('========== Finished to logout ==========')
-    return render(request, "authentications/login.html")
+
+    if request.GET:
+        next_request = request.GET['next']
+        return render(request, "authentications/login.html", {'next': next_request})
+
+    return redirect('authentications:login')
 
 
 def get_auth_header(user):
