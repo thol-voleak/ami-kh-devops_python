@@ -77,7 +77,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description:</label>
                         <div class="col-sm-8">
-                            <textarea type="text" class="form-control" name="description" rows="3" id="txt_description">{{ description|default_if_none:'' }}</textarea>
+                            <textarea type="text" class="form-control" name="description"
+                                      rows="3" id="txt_description">{{ body.description|default_if_none:'' }}</textarea>
                         </div>
                     </div>
 
