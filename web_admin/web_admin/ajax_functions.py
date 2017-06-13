@@ -64,7 +64,7 @@ def _post_method(request, api_path, func_description, logger, params={}):
     else:
         code = 3
 
-    return JsonResponse({"status": code, "msg": message})
+    return JsonResponse({"status": code, "msg": message, "data":  response_json.get('data', {})})
 
 def _put_method(request, api_path, func_description, logger, params={}):
     if 'https' not in api_path:

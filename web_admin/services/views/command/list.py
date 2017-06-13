@@ -27,7 +27,7 @@ class ListCommandView(TemplateView, RESTfulMethods):
         if success:
             request.session['add_command_msg'] = 'Added command successfully'
         else:
-            request.session['add_failed_msg'] = 'Added command successfully'
+            request.session['add_failed_msg'] = data
 
         return redirect(request.META['HTTP_REFERER'])
 

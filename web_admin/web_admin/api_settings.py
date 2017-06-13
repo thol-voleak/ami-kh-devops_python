@@ -9,7 +9,7 @@ SERVICES_LIST_URL="api-gateway/v1/services"
 # Centralize configuration
 SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
 CONFIGURATION_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations"
-CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}/"
+CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}"
 
 # Client
 CREATE_CLIENT_URL = 'api-gateway/v1/oauths/clients'

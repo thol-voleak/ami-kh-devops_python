@@ -2,9 +2,11 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from multiprocessing.pool import ThreadPool
-import logging
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
+import logging
+import json
 logger = logging.getLogger(__name__)
 
 class CreateView(TemplateView, RESTfulMethods):
@@ -37,29 +39,19 @@ class CreateView(TemplateView, RESTfulMethods):
             'description': description,
         }
 
-        data, success = self._create_service(body)
+        url = api_settings.SERVICE_CREATE_URL
+        result = ajax_functions._post_method(request, url, "", logger, body)
         logger.info('========== Finish creating Service ==========')
-        if success:
+
+        response = json.loads(result.content)
+
+        if response["status"] == 2:
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 'Added service successfully'
             )
-            return redirect('services:service_detail', ServiceId=data['service_id'])
-        else:
-            messages.add_message(
-                request,
-                messages.INFO,
-                data,
-            )
-            context["service_name"] = service_name
-            context["description"] = description
-            choices, success = self._get_service_group_and_currency_choices()
-            if success:
-                context["choices"] = choices
-                return render(request, self.template_name, context)
-            else:
-                return redirect('services:service_create')
+        return result
 
     def _create_service(self, data):
         url = api_settings.SERVICE_CREATE_URL

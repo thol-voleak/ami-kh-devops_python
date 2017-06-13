@@ -1,14 +1,14 @@
 from authentications.utils import get_auth_header
 from web_admin.api_settings import SERVICE_GROUP_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
-
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
-
+from web_admin import ajax_functions
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -69,32 +69,26 @@ class UpdateView(TemplateView, RESTfulMethods):
             'status': '1'
         }
 
-        data, success = self._update_service(service_id, data)
+        url = api_settings.SERVICE_UPDATE_URL.format(service_id)
+        result = ajax_functions._put_method(request, url, "Service", logger, data)
         logger.info('========== Finish updating Service ==========')
-        if success:
+
+        response = json.loads(result.content)
+
+        if response["status"] == 2:
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 'Updated data successfully'
             )
-            return redirect('services:service_detail', ServiceId=(service_id))
-        else:
-            messages.add_message(
-                request,
-                messages.INFO,
-                data,
-            )
-            return redirect('services:update_service', service_id=(service_id))
+        return result
+
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
 
         return self._headers
-
-    def _update_service(self, service_id, data):
-        url = api_settings.SERVICE_UPDATE_URL.format(service_id)
-        return self._put_method(url, "Service", logger, data)
 
     def _get_currency_choices(self):
         url = api_settings.GET_ALL_CURRENCY_URL
