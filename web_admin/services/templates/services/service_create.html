@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="panel mb25">
-    <div class="panel-heading border">
+    <div class="panel-heading border mb15">
         <h3>Add New Service</h3>
     </div>
 
@@ -37,16 +37,22 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Name:</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="service_name" id="txt_name" required value="{{ service_name|default_if_none:'' }}"/>
+                            <input type="text" class="form-control" name="service_name" id="txt_name" required
+                                   value="{{ body.service_name|default_if_none:'' }}"/>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Group:</label>
+                        <label class="col-sm-2 control-label">Group: {{body.service_group_id}} -</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_group" name="service_group_id" required>
                                 {% for group in choices.service_groups %}
-                                    <option value="{{ group.service_group_id }}">{{ group.service_group_name }}</option>
+                                    {% if group.service_group_id|slugify == body.service_group_id|slugify %}
+                                        <option value="{{ body.service_group_id }}" selected>{{ group.service_group_name }}
+                                    </option>
+                                    {% else %}
+                                        <option value="{{ group.service_group_id }}">{{ group.service_group_name }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -57,7 +63,12 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_currency" name="currency" required>
                                 {% for currency in choices.currencies %}
-                                    <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                                {% if currency.0|slugify == body.currency|slugify %}
+                                        <option value="{{ currency.0 }}" selected>{{ currency.0 }}
+                                    </option>
+                                    {% else %}
+                                        <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -71,80 +82,17 @@
                     </div>
 
                     <div class="pull-right">
-                            <a href="{% url 'services:services_list' %}">
-                                <input id="btn_cancel" class="btn text-left mb15" type="button"
-                                    value="Cancel"/>
-                            </a>
-                            <a href="#">
-                                <input id="btn_add" class="btn btn-success text-left mb15" type="button"
-                                   value="Add" data-url="{% url 'services:service_create' %}" onClick="createService()" data-redirect="{% url 'services:service_detail' 'aa00ww11' %}"/>
-                            </a>
+                        <a href="{% url 'services:services_list' %}">
+                            <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <a href="#">
+                            <input id="btn_add" role="button" class="btn btn-success text-left mb15" type="submit" value="Add"/>
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<script>
-function showErrorMessage(msg) {
-
-    console.log('showErrorMessage: ' + msg);
-
-    $("#alert-msg").text(msg)
-    $("#msg-update-failed").prop("hidden", false);
-    $("#msg-update-failed").fadeIn(1000);
-
-}
-
-function createService() {
-
-    var url = $("#btn_add").data("url");
-    var redirectURL = $("#btn_add").data("redirect");
-    console.log(url)
-
-    var params = {
-        'service_group_id': $('#ddl_group').val(),
-        'service_name': $("#txt_name").val(),
-        'currency': $('#ddl_currency').val(),
-        'description': $("#txt_description").val()
-    };
-
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: params,
-        dataType: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-        },
-        success: function (response) {
-            if(response.status == 1) {
-                // Logout
-                var url = window.location.origin + "/admin-portal/logout/";
-                window.location.replace(url);
-            } else if(response.status == 2) {
-                // success
-                service_id = response.data.service_id;
-                var find = 'aa00ww11';
-                var re = new RegExp(find, 'g');
-                redirectURL = redirectURL.replace(re, service_id);
-                window.location.replace(redirectURL);
-            } else {
-                // Failed
-                showErrorMessage(response.msg);
-            }
-        },
-        error: function (err) {
-            var json = JSON.stringify(err); 
-            console.log('JSON: ' + json);
-
-            var msg = err.responseJSON.status.message;
-            console.log('Error message: ' + msg);
-            showErrorMessage(msg);
-        }
-    });
-}
-
-</script>
-
 {% endblock %}

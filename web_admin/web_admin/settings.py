@@ -159,7 +159,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | | %(name)s | ami-admin-portal | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-merchant-portal | %(thread)d | %(name)s | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },
