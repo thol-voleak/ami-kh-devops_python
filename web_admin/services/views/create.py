@@ -55,14 +55,11 @@ class CreateView(TemplateView, RESTfulMethods):
             )
             return redirect('services:service_detail', ServiceId=data.get('service_id', ''))
         else:
-            status = data.get('status', {})
-            code = status.get('code', '')
-            if code == "service_already_existed":
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    message=status.get('message', '')
-                )
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=data
+            )
             choices, success = self._get_service_group_and_currency_choices()
             context = {'choices': choices, 'body': body}
             return render(request, self.template_name, context)
