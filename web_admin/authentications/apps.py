@@ -28,7 +28,8 @@ class InvalidAccessToken(Exception):
 class InvalidAccessTokenException(object):
     def process_exception(self, request, exception):
         if type(exception) == InvalidAccessToken:
-            messages.add_message(request, messages.INFO, str('session_is_expired'))
+            messages.add_message(request, messages.INFO,
+                                 'Your login credentials have expired. Please login again.')
             logout(request)
             return HttpResponseRedirect(request.path)
         return None
@@ -64,9 +65,8 @@ class CustomBackend:
             auth_response = requests.post(url, params=payload, headers=headers, verify=settings.CERT)
             done = time.time()
             logger.info("Response time is {} sec.".format(done - start_date))
-
+            json_data = auth_response.json()
             if auth_response.status_code == 200:
-                json_data = auth_response.json()
                 access_token = json_data.get('access_token')
                 correlation_id = json_data.get('correlation_id')
 
@@ -91,6 +91,13 @@ class CustomBackend:
                     logger.error("Cannot get access token from response of {} user name".format(username))
                     logger.info('========== Finish authentication backend service ==========')
                     return None
+            else:
+                if json_data.get('error_description') == 'Invalid credential':
+                    messages.add_message(
+                        request,
+                        messages.INFO,
+                        "Your username and password didn't match. Please try again."
+                    )
 
         except Exception as ex:
             logger.error(ex)
