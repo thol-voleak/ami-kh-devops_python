@@ -74,6 +74,7 @@ SERVICE_LIST_URL = 'api-gateway/payment/v1/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/v1/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/v1/services/{}'
 SERVICE_UPDATE_URL = 'api-gateway/payment/v1/services/{}'
+SERVICE_DELETE_URL = 'api-gateway/payment/v1/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'

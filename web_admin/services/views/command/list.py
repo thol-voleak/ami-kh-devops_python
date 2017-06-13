@@ -58,7 +58,7 @@ class ListCommandView(TemplateView, RESTfulMethods):
         context['command_id'] = commands_dd_list[0]["command_id"]
         context['commands_dd_list'] = commands_dd_list
         context['msg'] = self.request.session.pop('add_command_msg', None)
-        context['msg'] = self.request.session.pop('add_failed_msg', None)        
+        context['msg_failed'] = self.request.session.pop('add_failed_msg', None)        
 
         return context
 

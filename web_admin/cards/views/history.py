@@ -48,9 +48,9 @@ class HistoryView(TemplateView, RESTfulMethods):
                 result_data = data
 
         context = {'data': result_data,
-                   'trans_id': trans_id,
-                   'card_id': card_id,
-                   'user_id': user_id,
+                   'trans_id': "" if trans_id is None else trans_id,
+                   'card_id': str("" if card_id is None else card_id),
+                   'user_id': str("" if user_id is None else user_id),
                    'user_type_id': user_type_id
                    }
 
