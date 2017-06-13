@@ -42,13 +42,18 @@
                 <tbody>
                 {% for services in data %}
                 <tr>
-                    <td class="col-sm-1">{{ services.service_name|default_if_none:'' }}</td>
+                    {% if services.is_deleted %}
+                        <td class="col-sm-3"><del>{{ services.service_name|default_if_none:'' }}</del></td>
+                    {% else %}
+                        <td class="col-sm-1">{{ services.service_name|default_if_none:'' }}</td>
+                    {% endif %}
                     <td class="col-sm-1">{{ services.service_group_id|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ services.currency|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.description|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-3">
+                        {% if not services.is_deleted %}
                         <div id="service_btn_group">
                             <div class="btn-group">
                                 <a type="button"
@@ -72,8 +77,16 @@
                                    href="{% url 'services:command_list' services.service_id %}">
                                     <span class="small">Command</span>
                                 </a>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-danger"
+                                   role="button"
+                                   id="btn_delete"
+                                   href="{% url 'services:delete_service' services.service_id %}">
+                                    <span class="small">Delete</span>
+                                </a>
                             </div>
                         </div>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
