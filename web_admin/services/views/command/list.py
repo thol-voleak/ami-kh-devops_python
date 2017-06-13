@@ -26,6 +26,8 @@ class ListCommandView(TemplateView, RESTfulMethods):
         logger.info('========== Finish adding service command ==========')
         if success:
             request.session['add_command_msg'] = 'Added command successfully'
+        else:
+            request.session['add_failed_msg'] = 'Added command successfully'
 
         return redirect(request.META['HTTP_REFERER'])
 
@@ -56,6 +58,7 @@ class ListCommandView(TemplateView, RESTfulMethods):
         context['command_id'] = commands_dd_list[0]["command_id"]
         context['commands_dd_list'] = commands_dd_list
         context['msg'] = self.request.session.pop('add_command_msg', None)
+        context['msg'] = self.request.session.pop('add_failed_msg', None)        
 
         return context
 
