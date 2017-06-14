@@ -106,6 +106,7 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
+
             if message:
                 result = message, False
             else:
