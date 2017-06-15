@@ -37,8 +37,7 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
         url = CREATE_COMPANY_BALANCE.format(currency)
         data, success = self._post_method(api_path= url,
                                           func_description="create company balance",
-                                          logger=logger,
-                                          params=currency)
+                                          logger=logger)
         return redirect('balances:initial_company_balance')
 
     def _get_currencies_list(self):

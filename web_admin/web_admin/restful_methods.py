@@ -106,6 +106,7 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
+
             if message:
                 result = message, False
             else:
@@ -155,8 +156,6 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
-            elif code == "service_already_existed":
-                return response_json, False
 
             if message:
                 result = message, False
