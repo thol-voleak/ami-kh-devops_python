@@ -57,6 +57,7 @@
                         <th id="user">User (ID)</th>
                         <th id="bank_name">Bank Name</th>
                         <th id="bank_account_name">Bank Account Name</th>
+                        <th id="bank_account_number">Bank Account Number</th>
                         <th id="currency">Currency</th>
                         <th id="status">Status</th>
                         <th id="created_date">Created Date</th>
@@ -68,6 +69,7 @@
                         <tr>
                             <td class="col-sm-2">{{ sof.id }}</td>
                             <td class="col-sm-2">{{ sof.user_type.name }} ({{ sof.user_id }})</td>
+                            <td class="col-sm-2">{{ sof.bank.name }}</td>
                             <td class="col-sm-2">{{ sof.bank_account_name }}</td>
                             <td class="col-sm-2">{{ sof.bank_account_number }}</td>
                             <td class="col-sm-2">{{ sof.currency }}</td>
