@@ -3,32 +3,29 @@ from multiprocessing.pool import ThreadPool
 from authentications.apps import InvalidAccessToken
 import requests
 from django.conf import settings
+from web_admin import api_settings
+from web_admin.restful_methods import RESTfulMethods
 
 from authentications.utils import get_auth_header
 
 logger = logging.getLogger(__name__)
 
 
-class GetChoicesMixin(object):
+class GetChoicesMixin(RESTfulMethods):
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
         return self._headers
 
     def _get_currency_choices(self):
-        url = settings.GET_ALL_CURRENCY_URL
+        url = api_settings.GET_ALL_CURRENCY_URL
         logger.info('Get currency choice list from backend')
-        logger.info('Request url: {}'.format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            value = response_json.get('data', {}).get('value', '')
+        data, success = self._get_method(api_path=url,
+                                         func_description="currency choice list",
+                                         logger=logger,
+                                         is_getting_list=False)
+        if success: 
+            value = data.get('value','')
             if isinstance(value, str):
                 currency_list = map(lambda x: x.split('|'), value.split(','))
             else:
@@ -36,35 +33,16 @@ class GetChoicesMixin(object):
             result = currency_list, True
         else:
             result = [], False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
         return result
 
 
     def _get_service_group_choices(self):
-        url = settings.SERVICE_GROUP_LIST_URL
+        url = api_settings.SERVICE_GROUP_LIST_URL
         logger.info('Get services group list from backend')
-        logger.info('Request url: {}'.format(url))
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            json_data = response.json()
-            return json_data.get('data'), True
-        else:
-            result = [], False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-        return result
+        return  self._get_method(api_path=url,
+                                         func_description="currency choice list",
+                                         logger=logger,
+                                         is_getting_list=False)
 
 
     def _get_service_group_and_currency_choices(self):

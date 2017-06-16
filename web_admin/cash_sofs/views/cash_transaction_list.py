@@ -1,13 +1,10 @@
 import logging
-import time
 
-import requests
-from django.conf import settings
+from web_admin.api_settings import CASH_TRANSACTIONS_URL
+from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
-from authentications.utils import get_auth_header
-from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -17,15 +14,15 @@ IS_SUCCESS = {
 }
 
 
-class CashTransactionView(TemplateView):
+class CashTransactionView(TemplateView, RESTfulMethods):
     template_name = "cash_transaction.html"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         logger.info('========== Start search cash transaction ==========')
 
-        sof_id = request.POST.get('sof_id')
-        order_id = request.POST.get('order_id')
-        type = request.POST.get('type')
+        sof_id = request.GET.get('sof_id')
+        order_id = request.GET.get('order_id')
+        type = request.GET.get('type')
 
         logger.info('sof_id: {}'.format(sof_id))
         logger.info('order_id: {}'.format(order_id))
@@ -55,30 +52,8 @@ class CashTransactionView(TemplateView):
         return render(request, self.template_name, context)
 
     def get_cash_transaction_list(self, body):
-        url = settings.DOMAIN_NAMES + "api-gateway/report/v1/cash/transactions"
-
-        logger.info('Call search cash source of fund API to backend service. API-Path: {}'.format(url))
-        start = time.time()
-        logger.info("Request body: {};".format(body))
-        auth_request = requests.post(url, headers=get_auth_header(self.request.user), json=body, verify=settings.CERT)
-        end = time.time()
-        logger.info("Response_code: {};".format(auth_request.status_code))
-        logger.info("Response_time: {} seconds".format(end - start))
-
-        json_data = auth_request.json()
-        status = json_data.get('status', {})
-        code = status.get('code', '')
-        if (code == "access_token_expire") or (code== 'access_token_not_found'):
-            message = status.get('message', 'Something went wrong.')
-            raise InvalidAccessToken(message)
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if data is not None and len(data) > 0:
-                logger.info('Cash transaction found {} records'.format(len(data)))
-                return data
-        else:
-            logger.info('Response_content: {}'.format(auth_request.content))
-            return []
+        response, status = self._post_method(CASH_TRANSACTIONS_URL, 'Cash Transaction List', logger, body)
+        return response
 
     def format_data(self, data):
         for i in data:

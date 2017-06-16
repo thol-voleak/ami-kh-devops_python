@@ -132,10 +132,11 @@ function saveAgentHierarchyDistribution(nRow) {
         },
         success: function (response) {
 
-            var data = JSON.stringify(response);
-            var json = $.parseJSON(data);
-
-            if (json.status.code == 'success') {
+            if(response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/logout/";
+                    window.location.replace(url);
+                } else if(response.status == 2) {
                 console.log('Saved row data');
                 updateSpanTableRow(nRow);
                 endEdittingTableRow(nRow);

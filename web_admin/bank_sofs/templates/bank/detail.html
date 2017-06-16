@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Bank Detail</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Is Active</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_is_active"
+                                   value="{{ bank.is_active | default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bank Name </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_name"
+                                   value="{{ bank.name| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">BIN </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_bin"
+                                   value="{{ bank.bin| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Credit URL </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_credit_url"
+                                   value="{{ bank.credit_url| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Debit URL </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_debit_url"
+                                   value="{{ bank.debit_url| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bank Account Name </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_account_name"
+                                   value="{{ bank.bank_account_name| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bank Account Number </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_account_number"
+                                   value="{{ bank.bank_account_number| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Currency </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_currency"
+                                   value="{{ bank.currency| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="bank_description"
+                                   value="{{ bank.description| default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <a href="{% url 'bank_sofs:bank_sofs_list' %}">
+                            <input id="bank_btn_cancel" class="btn text-left mb15 btn-small" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <a href="{% url 'bank_sofs:bank_sofs_edit' bank.id%}">
+                            <input id="bank_btn_edit" class="btn btn-success text-left mb15 btn-small" type="button"
+                                   value="Edit"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

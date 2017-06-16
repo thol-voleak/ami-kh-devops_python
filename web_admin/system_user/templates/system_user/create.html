@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% csrf_token %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Create New System User</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'system_user:create-system-user' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Username *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="username"
+                                   id="username_input"
+                                   value="{{ system_user_info.username | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Firstname *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="firstname"
+                                   id="firstname_input"
+                                   value="{{ system_user_info.firstname | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Lastname</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="lastname"
+                                   id="lastname_input"
+                                   value="{{ system_user_info.lastname | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Email *</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control input-rounded" name="email"
+                                   id="email_input"
+                                   value="{{ system_user_info.email | default_if_none:'' }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Initial Password *</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control input-rounded"
+                                   name="password"
+                                   id="password_input"
+                                   value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Re-enter Initial Password *</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control input-rounded"
+                                   name="password"
+                                   id="txt_reenter_initial_password"
+                                   value="" required>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <a href="{% url 'system_user:system-user-list' %}">
+                            <input id="system_user_btn_cancel" class="btn text-left mb15" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <a href="{% url 'agent_type:create-agent-type' %}">
+                            <input id="system_user_btn_add" class="btn btn-success text-left mb15" type="submit"
+                                   value="Add"
+                                   onClick="validatePassword()"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body_js %}
+<script>
+    // Password Validation Rule
+    // at least 1 lowercase letter
+    // at least 1 upper case letter
+    // at least 1 number
+    // at least 1 special character ( !@#$%^&*()_+ )
+    // at least 8 character length
+    // pattern = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}";
+
+    var password = document.getElementById("password_input");
+    var confirm_password = document.getElementById("txt_reenter_initial_password");
+
+    function validatePassword() {
+        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}$/;
+
+        if(password.value != confirm_password.value) {
+            password.setCustomValidity('');
+            confirm_password.setCustomValidity("Password and Re-enter Password don't match");
+
+        } else if (!re.test(password.value)) {
+            confirm_password.setCustomValidity('');
+            password.setCustomValidity("Password should contains at least lowercase, uppercase letter, number, special character and 8 characters in length");
+
+        } else {
+            confirm_password.setCustomValidity('');
+            password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+
+</script>
+{% endblock %}

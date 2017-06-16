@@ -1,14 +1,11 @@
-from django.conf import settings
-from django.shortcuts import redirect, render
+import logging
+from web_admin import api_settings
+from datetime import datetime
+from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
-from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
-
-import requests
-import logging
-import time
-from datetime import datetime
+from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import encrypt_text_agent
 
 logger = logging.getLogger(__name__)
 
@@ -21,63 +18,29 @@ History:
 '''
 
 
-class AgentTypeAndCurrenciesDropDownList(TemplateView):
+class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
-        url = settings.AGENT_TYPES_LIST_URL
-
-        logger.info('Getting agent types list from backend')
-        logger.info('URL: {}'.format(url))
-        auth_request = requests.get(url, headers=get_auth_header(self.request.user),
-                                    verify=settings.CERT)
-        logger.info("Received data with response is {}".format(auth_request.status_code))
-
-        response_json = auth_request.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = response_json.get('data', [])
-            logger.info('Total count of Agent Types is {}'.format(len(result)))
-        else:
-            result = []
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-        return result
+        data, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+                                         func_description="Agent Type List",
+                                         logger=logger,
+                                         is_getting_list=True)
+        newdata = [i for i in data if not i['is_deleted']]
+        return newdata
 
     def _get_currencies_dropdown(self):
-        url = settings.GET_ALL_CURRENCY_URL
-
-        logger.info("Getting preload currency list from backend with {} url".format(url))
-        start_date = time.time()
-        response = requests.get(url, headers=get_auth_header(self.request.user),
-                                verify=settings.CERT)
-        done = time.time()
-        logger.info("Response time for get preload currency list is {} sec.".format(done - start_date))
-
-        response_json = response.json()
-        print('-----------------{}--------------------'.format(response_json))
-
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
+        data, success = self._get_method(api_path=api_settings.GET_ALL_CURRENCY_URL,
+                                         func_description="Agent All Currency List",
+                                         logger=logger,
+                                         is_getting_list=True)
+        if success:
             try:
-                value = response_json['data']['value']
+                value = data['value']
+                currencies = value.split(',')
+                result = [currency.split("|")[0] for currency in currencies]
             except:
-                return {}
-            currencies = value.split(',')
-            result = [currency.split("|")[0] for currency in currencies]
-            logger.info("Received {} preload currencies".format(len(result)))
+                result = []
         else:
             result = []
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
         return result
 
 
@@ -95,55 +58,45 @@ History:
 
 
 class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
-    template_name = "registration.html"
+    template_name = "agents/registration.html"
 
     def get_context_data(self, *arg, **kwargs):
-
+        logger.info('========== Start showing Create Agent page ==========')
         # Get API that inherits from parent Class
-        logger.info('========== Start get Currency List ==========')
         currencies = self._get_currencies_dropdown()
-        logger.info('========== Finished get Currency List ==========')
-
-        logger.info('========== Start get Agent Types List =========')
         agent_types_list = self._get_agent_types_list()
-        logging.info('========= Finish get Agent Types List =========')
 
         result = {
             'currencies': currencies,
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
-
+        logger.info('========== Finished showing Create Agent page ==========')
         return result
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start Registering Agent Profile ==========')
+        logger.info('========== Start creating agent ==========')
         agent_profile_reponse, success = self._create_agent_profile(request)
-        logger.info('========== Finished Registering Agent Profile ==========')
 
         agent_id = ''
         if success:
             agent_id = agent_profile_reponse['id']
         else:
             request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
+            logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_registration')
 
-        logger.info('========== Start create agent identity ==========')
         self._create_agent_identity(request, agent_id)
-        logger.info('========== Finished create agent identity ==========')
 
-        logger.info('========== Start create agent balance ==========')
         self._create_agent_balance(request, agent_id)
-        logger.info('========== Finished create agent balance ==========')
 
         request.session['agent_registration_msg'] = 'Added agent successfully'
-
+        logger.info('========== Finished creating agent ==========')
         return redirect('agents:agent_detail', agent_id=agent_id)
 
     def _create_agent_profile(self, request):
 
         # Prepare for agent registration.
-        password = request.POST.get('password')
         agent_type_id = request.POST.get('agent_type_id')
         parent_id = request.POST.get('parent_id')
         grand_parent_id = request.POST.get('grand_parent_id')
@@ -238,72 +191,28 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         remove = [key for key, value in body.items() if not value]
         for key in remove: del body[key]
 
-        api_path = settings.AGENT_REGISTRATION_URL
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('API-Path: {}'.format(api_path))
-        logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = response_json.get('data', {}), True
-        else:
-            result = {}, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-        return result
+        data, success = self._post_method(api_path=api_settings.AGENT_REGISTRATION_URL,
+                                          func_description="Agent Profile",
+                                          logger=logger, params=body)
+        return data, success
 
     def _create_agent_identity(self, request, agent_id):
 
         username = request.POST.get('username')
         password = request.POST.get('password')
+        password = encrypt_text_agent(password)
 
         body = {
             'username': username,
-            'password': password,
+            'password': password
         }
 
-        api_path = settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id)
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info('API-Path: {}'.format(api_path))
-        # logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
+        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
+                                          func_description="Agent Identity",
+                                          logger=logger, params=body)
+        if success:
             result = True
         else:
-            result = False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
             request.session['agent_registration_msg'] = 'Agent registration - identity: Something wrong happened!'
             return redirect('agents:agent_registration')
         return result
@@ -314,33 +223,13 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         sof_type = "cash"  # TODO: Hard code for Sof_Type
         body = {}
 
-        api_path = settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency)
-        url = settings.DOMAIN_NAMES + api_path
+        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
+                                          func_description="Agent Balance",
+                                          logger=logger, params=body)
 
-        logger.info('API-Path: {}'.format(api_path))
-        logger.info('Params: {}'.format(body))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=body, verify=settings.CERT)
-        end_time = time.time()
-
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        if not isinstance(status, dict):
-            status = {}
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
+        if success:
             result = True
         else:
-            result = False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
             request.session['agent_registration_msg'] = 'Agent registration - balance: Something wrong happened!'
             return redirect('agents:agent_registration')
         return result

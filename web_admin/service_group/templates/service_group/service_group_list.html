@@ -1,71 +1,86 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-{% with active_tab='payment_services' %}
-{{ block.super }}
-{% endwith %}
-{% endblock sidebar_panel %}
 
 {% block content %}
-{% csrf_token %}
 
-<div class="panel mb25">
-    <div class="panel-heading">
-        <h3>Service Groups</h3>
-    </div>
-    <div class="pull-right mr15 text-right">
-        <a href="{% url 'service_group:add_service_group' %}">
-            <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                   value="Add"/>
-        </a>
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
-                <thead>
-                <tr>
-                    <th id="lbl_name">Name</th>
-                    <th id="lbl_description">Description</th>
-                    <th id="lbl_created_date">Created Date</th>
-                    <th id="lbl_modified_date">Modified Date</th>
-                    <th id="action">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for service_group in data %}
-                <tr>
-                    <td class="col-sm-2">{{ service_group.service_group_name|default_if_none:'' }}</td>
-                    <td class="col-sm-3">{{ service_group.description|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ service_group.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ service_group.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">
-                        <div id="service_group_btn_group">
-                            <div class="btn-group">
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-primary"
-                                       role="button"
-                                       id="btn_service_group_detail"
-                                       href="{% url 'service_group:service_group_detail' service_group.service_group_id%}">
-                                        <span class="small">Detail</span>
-                                    </a>
-                            </div>
-                            <div class="btn-group">
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-primary"
-                                       role="button"
-                                       id="btn_service_group_edit"
-                                       href="{% url 'service_group:service_group_update' service_group.service_group_id %}">
-                                        <span class="small">Edit</span>
-                                    </a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <div class="panel mb25">
+        <div class="panel-heading">
+            <h3>Service Groups</h3>
+        </div>
+        {% for message in messages %}
+            <div class="col-xs-12">
+                <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message|capfirst }}</strong>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'service_group:add_service_group' %}">
+                <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15"
+                       type="button"
+                       value="Add"/>
+            </a>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="lbl_name">Name</th>
+                        <th id="lbl_description">Description</th>
+                        <th id="lbl_created_date">Created Date</th>
+                        <th id="lbl_modified_date">Modified Date</th>
+                        <th id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for service_group in data %}
+                        <tr>
+                            {% if service_group.is_deleted %}
+                                <td class="col-sm-3"><del>{{ service_group.service_group_name|default_if_none:'' }}</del></td>
+                            {% else %}
+                                <td class="col-sm-3">{{ service_group.service_group_name|default_if_none:'' }}</td>
+                            {% endif %}
+                            <td class="col-sm-3">{{ service_group.description|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ service_group.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ service_group.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                {% if not service_group.is_deleted %}
+                                <div id="service_group_btn_group">
+                                    <div class="btn-group">
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-info"
+                                           role="button"
+                                           id="btn_service_group_detail"
+                                           href="{% url 'service_group:service_group_detail' service_group.service_group_id %}">
+                                            <span class="small">Detail</span>
+                                        </a>
+
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary"
+                                           role="button"
+                                           id="btn_service_group_edit"
+                                           href="{% url 'service_group:service_group_update' service_group.service_group_id %}">
+                                            <span class="small">Edit</span>
+                                        </a>
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger"
+                                           role="button"
+                                           id="btn_delete"
+                                           href="{% url 'service_group:service_group_delete' service_group.service_group_id %}">
+                                            <span class="small">Delete</span>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}

@@ -2,12 +2,13 @@ import logging
 import requests
 import time
 import datetime
-
+from django.http import JsonResponse
+from django.contrib import messages
 from django.conf import settings
 from django.http import HttpResponse
-from django.http import JsonResponse
 
 from authentications.utils import get_auth_header
+from web_admin import api_settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class BalanceApi():
     def add(request, currency):
         logger.info('========== Start add currency ==========')
 
-        url = settings.ADD_CURRENCY_URL.format(currency)
+        url = settings.DOMAIN_NAMES + api_settings.ADD_CURRENCY_URL.format(currency)
         logger.info("Add currency by {} user id".format(request.user.username))
         logger.info("Add currency from backend with {} url".format(url))
 
@@ -25,26 +26,38 @@ class BalanceApi():
             "value": currency
         }
         logger.info("Add currency from backend with {} request body".format(params))
-        start_date = time.time()
+        start = time.time()
         response = requests.put(url, headers=get_auth_header(request.user),
                                 json=params, verify=settings.CERT)
-        logger.info(response)
-        done = time.time()
+        finish = time.time()
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.text))
+        logger.info('Response_time: {}'.format(finish - start))
+
         response_json = response.json()
+        status = response_json.get('status', {})
+        code = status.get('code', '')
 
-        logger.info("Response time for add currency is {} sec.".format(done - start_date))
-        logger.info("Received data with response is {}".format(response_json))
+        ajax_code = 0
+        message = status.get('message', 'Something went wrong.')
+        if code in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+            logger.info("{} for {} username".format(message, request.user))
+            messages.add_message(request, messages.INFO, str('session_is_expired'))
+            ajax_code = 1
+            logger.info('========== Finish add currency ==========')
+            return JsonResponse({"status": ajax_code, "msg": message})
 
-        status = response_json['status']
+        currencyList = []
         if status['code'] == "success":
+            ajax_code = 2
             logger.info("Currency was added")
             logger.info('========== Finish add currency ==========')
-            data = refine_data(response_json['data'])
-            return HttpResponse(status=200, content=data)
+            currencyList = refine_data(response_json['data'])
         else:
-            logger.info("Error add currency")
+            ajax_code = 3
             logger.info('========== Finish add currency ==========')
-            return HttpResponse(status=500, content=response)
+
+        return JsonResponse({"status": ajax_code, "msg": message, "data": currencyList})
 
 
 def refine_data(data):
@@ -58,4 +71,4 @@ def refine_data(data):
                              'decimal': name[1],
                              'last_update_timestamp': data['last_update_timestamp'],
                              'last_update_by_user_id': data['last_update_by_user_id']})
-    return JsonResponse(currencyList, safe=False)
+    return currencyList

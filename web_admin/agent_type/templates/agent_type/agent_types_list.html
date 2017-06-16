@@ -1,32 +1,29 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-    {% with active_tab='agent' %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock sidebar_panel %}
 {% block content %}
-{% csrf_token %}
 
 <div class="panel mb25">
-    <div class="panel-heading">
+    <div class="panel-heading border mb15">
         <h3>Agent Type List</h3>
     </div>
     <div class="pull-right mr15 text-right">
         <a href="{% url 'agent_type:create-agent-type' %}">
-            <input id="agent_type_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+            <input id="agent_type_btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                    value="Add"/>
         </a>
     </div>
 
-    {% if msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ msg }}</strong>
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
+    {% endfor %}
+
     {% if del_msg is not None %}
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
@@ -35,12 +32,6 @@
         </div>
     </div>
     {% endif %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <span id="alert-success-msg"></span>
-        </div>
-    </div>
 
     <div class="panel-body">
         <div class="table-responsive">
@@ -56,7 +47,7 @@
                 <tbody>
                 {% for agent_type in data %}
                 <tr>
-                    {% if agent_type.is_delete %}
+                    {% if agent_type.is_deleted %}
                     <td class="col-sm-3" id="agent_type_{{agent_type.id}}">
                         <del>{{ agent_type.name }}</del>
                     </td>
@@ -70,10 +61,10 @@
                     <td class="col-sm-3">
                         <div id="client_btn_group_{{ agent_type.id }}">
                             <div class="btn-group">
-                                {% if agent_type.is_delete %}
+                                {% if agent_type.is_deleted %}
                                 {% else %}
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
+                                   class="btn btn-outline btn-xs btn-info"
                                    role="button"
                                    id="agent_type_btn_detail_{{ agent_type.id }}"
                                    href="{% url 'agent_type:agent-type-detail' agent_type.id %}">

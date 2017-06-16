@@ -149,7 +149,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
-        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-outline btn-xs cancel btn-primary text-info small\'>Cancel</button>';
+        var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
         jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
@@ -238,18 +238,20 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             success: function (response) {
 
-                var data = JSON.stringify(response);
-                var json = $.parseJSON(data);
-
-                if (json.status.code == 'success') {
-                    console.log('Saved row data');
+                if(response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/logout/";
+                    window.location.replace(url);
+                } else if(response.status == 2) {
+                    // success
+                    console.log('Updated Setting Payment & Fee Structure Successfully');
                     saveRow(oTable, nRow);
                     addMessage("Updated Setting Payment & Fee Structure Successfully");
                 } else {
-                    console.log('Error adding row data');
+                    // Failed
+                    console.log('Updated Setting Payment & Fee Structure got error!');
                     addMessage("Updated Setting Payment & Fee Structure got error!");
                 }
-
             },
             error: function (err) {
                 var json = JSON.stringify(err);
@@ -284,10 +286,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             success: function (response) {
 
-                var data = JSON.stringify(response);
-                var json = $.parseJSON(data);
-
-                if (json.status.code == 'success') {
+                if(response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/logout/";
+                    window.location.replace(url);
+                } else if(response.status == 2) {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
                     addMessage("Updated Setting Bonus Successfully");
@@ -331,10 +334,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             success: function (response) {
 
-                var data = JSON.stringify(response);
-                var json = $.parseJSON(data);
-
-                if (json.status.code == 'success') {
+                if(response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/logout/";
+                    window.location.replace(url);
+                } else if(response.status == 2) {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
                     addMessage("Updated Agent Hierrachy Distribution - Bonus Successfully");
@@ -376,10 +380,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             },
             success: function (response) {
 
-                var data = JSON.stringify(response);
-                var json = $.parseJSON(data);
-
-                if (json.status.code == 'success') {
+                if(response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/logout/";
+                    window.location.replace(url);
+                } else if(response.status == 2) {
                     console.log('Saved row data');
                     saveRow(oTable, nRow);
                     addMessage("Updated Agent Hirarchy Distribution - Fee successfully");
@@ -411,9 +416,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         $('#' + tableId).on('click', 'button.delete', function (e) {
             e.preventDefault();
-
-            var nRow = $(this).parents('tr')[0];
-            oTable.fnDeleteRow(nRow);
         });
     }
 

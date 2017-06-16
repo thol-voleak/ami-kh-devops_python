@@ -1,10 +1,7 @@
 from django.test import TestCase, Client
 from . import apps
-from django.conf import settings
-# from django.contrib.auth.models import User
-# import unittest
 
-# Create your tests here.
+
 class AuthenticationTests(TestCase): # or unittest.TestCase
 
     def test_authentication_form_request_status_code(self):

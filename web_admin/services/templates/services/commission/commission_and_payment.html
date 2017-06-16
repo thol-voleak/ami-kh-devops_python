@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Commission And Payment Method</h3>
+        </div>
+
+        <div id="ajax-messages">
+            {% for message in messages %}
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Service Name:</label>
+                    <div class="col-sm-4">
+                        <input value="{{ service_name }}" type="text" class="form-control" name="service_name"
+                               id="txt_service_name" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Command:</label>
+                    <div class="col-sm-4">
+                        <input type="text" value="{{ command_name }}" class="form-control" name="command" id="txt_command"
+                               disabled/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-heading">
+                <h4>I. Fee & Bonus</h4>
+            </div>
+
+            <div class="form-inline">
+                <label class="col-sm-2 control-label">Fee:</label>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input value="{{ fee_tier_detail.fee_type }}" type="text" class="form-control" name="service_name" id="txt_fee" disabled />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="text" value="{{ fee_tier_detail.fee_amount }}" class="form-control" name="command" id="txt_fee_value" disabled/>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-inline">
+                <label class="col-sm-2 control-label">Bonus:</label>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input value="{{ fee_tier_detail.bonus_type }}" type="text" class="form-control" name="service_name" id="txt_bonus" disabled />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="text" value="{{ fee_tier_detail.bonus_amount }}" class="form-control" name="command" id="txt_bonus_value" disabled/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-heading">
+                <h4>II. Setting Payment & Fee Structure</h4>
+            </div>
+
+            <form method="POST" class="form-horizontal" role="form"
+                  action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}"
+                  id="payment_and_fee_stucture_form">
+
+                {% csrf_token %}
+                <div class="form-group table-responsive row">
+                    <table class="table table-bordered table-striped datatable editable-datatable  mb0"
+                           id="tbl_setting_payment_fee_structure">
+                        <thead>
+                        <tr>
+                            <th id="lbl_db">Debit/Credit</th>
+                            <th id="lbl_actor">Actor</th>
+                            <th id="lbl_specific_id">Specific ID</th>
+                            <th id="lbl_source_of_fund">Source of Fund</th>
+                            <th id="lbl_specific_source">Specific Source of Fund</th>
+                            <th id="lbl_from_amount">From Amount</th>
+                            <th id="lbl_rate">Rate %</th>
+                            <th id="lbl_actions">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for d in data %}
+                            <tr id="balance-distribution-{{ d.balance_distribution_id }}"
+                                data-url="{% url "services:payment_and_fee_stucture_update" d.balance_distribution_id %}"
+                                data-id="{{ d.balance_distribution_id }}">
+                                <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
+                                <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
+                                <td class="col-sm-2">
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_payment_fee_structure_edit">Edit
+                                    </button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_payment_fee_structure_delete"
+                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>
+                                <select class="form-control" name="action_type"
+                                        id="ddl_setting_payment_fee_structure_dc">
+                                    {% for action_type in choices.action_types %}
+                                        <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" name="actor_type"
+                                        id="ddl_setting_payment_fee_structure_actor"
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#txt_setting_payment_fee_structure_specific_id')">
+                                    {% for actor_type in choices.actor_types %}
+                                        <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            <td>
+                                <input name="specific_actor_id"
+                                       id="txt_setting_payment_fee_structure_specific_id" class="form-control" disabled>
+                                <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
+                            </td>
+                            <td>
+                                <select class="form-control" name="sof_type_id"
+                                        id="ddl_setting_payment_fee_structure_source_of_fund">
+                                    {% for sof_type in choices.sof_types %}
+                                        <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="specific_sof"
+                                       id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
+                            </td>
+                            <td>
+                                <select class="form-control" name="amount_type"
+                                        id="ddl_setting_payment_fee_structure_from_amount">
+                                    {% for amount_type in choices.amount_types %}
+                                        <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate"
+                                       required/></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                <div class="form-group pull-right">
+                    <a href="#">
+                        <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
+                               value="Add"/>
+                    </a>
+                </div>
+            </form>
+
+            <div class="panel-heading">
+                <h4>III. Setting Bonus</h4>
+            </div>
+
+            <form method="POST" class="form-horizontal" role="form"
+                  action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}"
+                  id="Setting_Bonus_Form">
+
+                {% csrf_token %}
+                <div class="form-group table-responsive row">
+                    <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
+                        <thead>
+                        <tr>
+                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                            <th class="col-sm-2" id="lbl_actor">Actor</th>
+                            <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
+                            <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
+                            <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
+                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                            <th class="col-sm-2" id="lbl_actions">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for d in bonus %}
+                            <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"
+                                data-id="{{d.bonus_distribution_id}}"
+                                id="bonus-distribution-{{ d.bonus_distribution_id }}">
+                                <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
+                                <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
+                                <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
+                                <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
+                                <td class="col-sm-2">
+                                    <button type="button"
+                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
+                                            id="btn_setting_bonus_edit">Edit
+                                    </button>
+                                    <button type="button"
+                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
+                                            id="btn_setting_bonus_delete"
+                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>
+                                <select class="form-control" name="action_type" id="ddl_setting_bonus_dc">
+                                    {% for action_type in choices.action_types %}
+                                        <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
+                                        onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_specific_id')">
+                                    {% for actor_type in choices.actor_types %}
+                                        <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            <td>
+                                <input name="specific_actor_id"
+                                       id="txt_setting_bonus_specific_id" class="form-control" disabled>
+                            </td>
+                            <td>
+                                <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
+                                    {% for sof_type in choices.sof_types %}
+                                        <option value="{{sof_type.sof_type_id}}">{{sof_type.sof_type}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" id="txt_setting_bonus_spec_src_fund"
+                                       name="specific_sof">
+                            </td>
+                            <td>
+                                <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount">
+                                    {% for amount_type in choices.amount_types %}
+                                        <option value="{{amount_type.amount_type}}">{{amount_type.amount_type}}</option>
+                                    {% endfor %}
+                                </select>
+                            <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required/></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="form-group pull-right">
+                    <a href="#">
+                        <input id="btn_setting_bonus_add" class="btn btn-success" type="submit" value="Add"/>
+                    </a>
+                </div>
+            </form>
+
+            {% include "services/commission/agent_hierrachy_distribution_fee.html" %}
+            {% include "services/commission/agent_hierarchy_distribution_bonus.html" %}
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
+    <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>
+    <script>
+        var csrf_token = "{{ csrf_token }}";
+        function deleteDistribution(distributionId) {
+            var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#balance-distribution-' + distributionId).remove();
+                        addMessage("Deleted data successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
+                },
+                error: function () {
+                    addMessage("Delete failed!");
+                }
+            });
+        }
+
+        function deleteSettingBonus(bonus_distributions_id) {
+            var url = $('#Setting_Bonus_Form').attr('action') + bonus_distributions_id;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#bonus-distribution-' + bonus_distributions_id).remove();
+                        addMessage("Deleted Setting Bonus successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
+                },
+                error: function () {
+                    addMessage("Failed to Delete Setting Bonus");
+                }
+            });
+        }
+
+
+        function deleteAgentFee(agent_fee_id) {
+            var url = $('#agent-hierarchy-distribution-form').attr('action') + agent_fee_id;
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
+                        addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
+                },
+                error: function () {
+                    addMessage("Failed to Delete Agent Hierarchy");
+                }
+            });
+        }
+
+        function deleteAgentBonus(agent_bonus_distribution_id) {
+            var url = $('#agent_bonus_distribution_form').attr('action') + agent_bonus_distribution_id + '/';
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
+                        addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
+                    } else {
+                        addMessage("Delete failed!");
+                    }
+                },
+                error: function () {
+                    addMessage("Failed to Delete Agent Bonus");
+                }
+            });
+        }
+
+        function addMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+
+        function changeSpecificActorType(actorType, specificActorId) {
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+            } else {
+                $(specificActorId).prop('disabled', true);
+                $(specificActorId).val("");
+            }
+        }
+
+        function changeSpecificActorTypeRelative(actorType) {
+            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_edit");
+
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+            } else {
+                $(specificActorId).prop('disabled', true);
+                $(specificActorId).val("");
+            }
+        }
+
+        function changeSpecificActorTypeRelativeAdd(actorType) {
+            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id");
+
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+            } else {
+                $(specificActorId).prop('disabled', true);
+                $(specificActorId).val("");
+            }
+        }
+
+        // Edit row feature
+        $(document).ready(function () {
+            // Build up master data from Server
+            var m_action_types = {{ choices.action_types|safe }};
+            var m_actor_types = {{ choices.actor_types|safe }};
+            var m_sof_types = {{ choices.sof_types|safe }};
+            var m_amount_type = {{ choices.amount_types|safe }};
+            var current_fee_tier_id = {{ fee_tier_id  }};
+            //var csrf_token = "{{ csrf_token }}";
+
+            // 1. Balance and Payment Fee Table
+            onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+            // 2. Setting Bonus Table
+            onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+            // 3. Agent Fee Table
+            // onInlineSetupDataTable('tbl_agent_hier_fee', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+            // 4. Bonus Table
+            onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+        });
+    </script>
+{% endblock %}

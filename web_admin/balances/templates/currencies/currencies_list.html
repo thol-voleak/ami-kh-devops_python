@@ -1,18 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-{% with active_tab='currencies_list' %}
-{{ block.super }}
-{% endwith %}
-{% endblock sidebar_panel %}
 {% block content %}
-{% csrf_token %}
 
 <div class="panel mb30">
     <div class="panel-heading border">
         <h3>Currencies</h3>
     </div>
-    <div class="alert alert-success alert-dismissable mt30" hidden id="currency_dialog_success">
+    <div class="alert alert-danger alert-dismissable mt30" hidden id="currency_dialog_success">
         <button type="button" class="close" onclick="$('.alert').hide()">×</button>
         <span id="alert_success_msg"></span>
     </div>
@@ -32,7 +26,7 @@
                 <input type="text" class="form-control" id="decimal_text" readonly>
             </div>
             <div class="col-sm-1 pull-right mr5">
-                <input id="currency_btn_add" class="btn btn-success btn-block no-print mb15" type="button"
+                <input id="currency_btn_add" class="btn btn-success no-print mb15" type="button"
                        value="Add" onClick="add()">
             </div>
         </div>
@@ -87,9 +81,19 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            $("#alert_success_msg").text('Added data successfully')
-                            $("#currency_dialog_success").show();
-                            addSuccessRow(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                $("#alert_success_msg").text('Added data successfully. Please restart service to apply effect.')
+                                $("#currency_dialog_success").show();
+                                addSuccessRow(response.data)
+                            } else {
+                                // Failed
+                            }
+
                         },
                         error: function (msg) {
                             console.log('Error add currency')
@@ -100,7 +104,7 @@
     }
 
     function addSuccessRow(data) {
-        var json = JSON.parse(data);
+        var json = data;
         var tr, td;
         var tbody = document.getElementById("table_body");
         while (tbody.rows[0]) tbody.deleteRow(0);

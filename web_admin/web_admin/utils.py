@@ -1,4 +1,10 @@
+from django.conf import settings
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5
+
+import base64
 import datetime
+import logging
 
 
 def format_date_time(data):
@@ -15,3 +21,24 @@ def format_date_time(data):
                 '%d-%m-%Y %H:%M %p')
     return data
 
+
+def encrypt_text(input_text):
+    utf8_text = input_text.encode('utf-8')
+    pub_key = RSA.importKey(open(settings.RSA).read())
+    cipher = PKCS1_v1_5.new(pub_key)
+    cipher_text = base64.encodebytes(cipher.encrypt(utf8_text))
+    return cipher_text.decode('utf-8')
+
+
+def encrypt_text_agent(input_text):
+    utf8_text = input_text.encode('utf-8')
+    pub_key = RSA.importKey(open(settings.RSA_AGENT).read())
+    cipher = PKCS1_v1_5.new(pub_key)
+    cipher_text = base64.encodebytes(cipher.encrypt(utf8_text))
+    return cipher_text.decode('utf-8')
+
+
+def setup_logger(request, logger):
+    correlation_id = request.session.get('correlation_id', '')
+    client_ip = request.META['REMOTE_ADDR']
+    return logging.LoggerAdapter(logger, extra={'correlationId': correlation_id, 'IPAddress': client_ip})

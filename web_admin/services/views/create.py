@@ -1,20 +1,22 @@
 from django.views.generic.base import TemplateView
-from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from web_admin.mixins import GetChoicesMixin
-from authentications.apps import InvalidAccessToken
-import requests
+from multiprocessing.pool import ThreadPool
+from web_admin import api_settings
+from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, GetChoicesMixin):
-    template_name = "service_create.html"
+class CreateView(TemplateView, RESTfulMethods):
+    template_name = "services/service_create.html"
 
     def get(self, request, *args, **kwargs):
         choices, success = self._get_service_group_and_currency_choices()
+        self.dropdown_data = choices
         if not success:
             messages.add_message(
                 request,
@@ -25,6 +27,8 @@ class CreateView(TemplateView, GetChoicesMixin):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start creating service ==========')
+        context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
         currency = request.POST.get('currency')
@@ -37,52 +41,64 @@ class CreateView(TemplateView, GetChoicesMixin):
             'description': description,
         }
 
-        logger.info('========== Start create new Service ==========')
-        data, success = self._create_service(body)
-        logger.info('========== Finished create new Service ==========')
+        url = api_settings.SERVICE_CREATE_URL
+        data, success = self._post_method(api_path=url,
+                                          func_description="creating service",
+                                          logger=logger, params=body)
+
         if success:
+            logger.info('========== Finish creating Service ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 'Added service successfully'
             )
-            return redirect('services:service_detail', ServiceId=data['service_id'])
+            return redirect('services:service_detail', ServiceId=data.get('service_id', ''))
         else:
             messages.add_message(
                 request,
-                messages.INFO,
-                'Something wrong happened!',
+                messages.ERROR,
+                message=data
             )
-            return redirect('services:service_create')
+            choices, success = self._get_service_group_and_currency_choices()
+            context = {'choices': choices, 'body': body}
+            return render(request, self.template_name, context)
 
     def _create_service(self, data):
-        logger.info("Creating service by user {}".format(self.request.user.username))
+        url = api_settings.SERVICE_CREATE_URL
+        return self._post_method(url, "Service", logger, data)
 
-        url = settings.SERVICE_CREATE_URL
+    def _get_currency_choices(self):
+        logger.info('========== Start Getting Currency Choices ==========')
+        url = api_settings.GET_ALL_CURRENCY_URL
+        data, success = self._get_method(url, "currency choice", logger)
 
-        logger.info('Request url: {}'.format(url))
-        logger.info('Request body: {}'.format(data))
-        response = requests.post(url, headers=self._get_headers(),
-                                 json=data, verify=settings.CERT)
-
-        logger.info("Received response with status {}".format(response.status_code))
-        logger.info("Response content is {}".format(response.content))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            result = response_json.get('data', {}), True
+        if success:
+            value = data.get('value', '')
+            if isinstance(value, str):
+                currency_list = map(lambda x: x.split('|'), value.split(','))
+            else:
+                currency_list = []
+            result = currency_list, True
         else:
-            result = None, False
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-            logger.info("Received response with status {}".format(response.status_code))
-            logger.info("Response content is {}".format(response.content))
+            result = [], False
+        logger.info('========== Finish Getting Currency Choices ==========')
         return result
 
+    def _get_service_group_choices(self):
+        url = api_settings.SERVICE_GROUP_LIST_URL
+        return self._get_method(url, "services group list", logger, True)
+
+    def _get_service_group_and_currency_choices(self):
+        pool = ThreadPool(processes=1)
+        async_result = pool.apply_async(self._get_currency_choices)
+        logger.info('========== Start Getting Service Group Choices ==========')
+        service_groups, success_service = self._get_service_group_choices()
+        logger.info('========== Finish Getting Service Group Choices ==========')
+        currencies, success_currency = async_result.get()
+        if success_currency and success_service:
+            return {
+                       'currencies': currencies,
+                       'service_groups': service_groups,
+                   }, True
+        return None, False

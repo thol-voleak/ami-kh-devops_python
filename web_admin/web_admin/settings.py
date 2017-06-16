@@ -38,9 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'mod_wsgi.server',
 
-    # 'debug_toolbar',
-    # 'debug_panel',
-
     'authentications',
     'clients',
     'balances',
@@ -53,6 +50,8 @@ INSTALLED_APPS = [
     'customers',
     'cards',
     'cash_sofs',
+    'bank_sofs',
+
     'payments',
     'api_management',
     'centralize_configuration',
@@ -76,7 +75,6 @@ MIDDLEWARE_CLASSES = [
 
 # Load configuration from configuration file
 sys.path.append('/data/projects/admin-portal/config')
-
 from platform_settings import *
 
 AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend',)
@@ -95,7 +93,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments')],
+                              'cards', 'cash_sofs', 'payments', 'bank', 'sof')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -161,7 +159,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | | %(name)s | ami-admin-portal | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-admin-portal | %(thread)d | %(name)s | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },
@@ -243,6 +241,12 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'bank_sofs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+
         },
         'payments': {
             'handlers': ['console'],

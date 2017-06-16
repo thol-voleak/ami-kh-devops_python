@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-    {% with active_tab='card-profile' %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock sidebar_panel %}
+
 {% block content %}
-    {% csrf_token %}
 
     <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
         <div class="panel-heading border">
@@ -14,16 +9,16 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:profile' %}">
-                {% csrf_token %}
+            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cards:profile' %}">
+               
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Card Identifier</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="card_identifier" value="{{ card_identifier }}"/>
+                        <input type="text" class="form-control input-rounded" name="card_identifier" />
                     </div>
                     <label class="col-sm-1 control-label">User ID</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id }}">
+                        <input type="text" class="form-control input-rounded" name="user_id" >
                     </div>
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">
@@ -40,7 +35,7 @@
                 </div>
             </form>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <table class="table table-bordered table-striped mb0" id="tbl_card_profile">
                     <thead>
                     <tr>
                         <th id="user">User (ID)</th>

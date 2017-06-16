@@ -21,9 +21,9 @@ from web.views import health
 from web.views import backlog
 
 urlpatterns = [
-    url(r'^admin-portal/admin/', admin.site.urls),
-    url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
+    # url(r'^admin-portal/login/$', auth_views.login, {'template_name': 'authentications/login.html'}, name='login'),
     url(r'^admin-portal/', include('web.urls')),
+    url(r'^admin-portal/authentications/', include('authentications.urls')),
     url(r'^admin-portal/clients/', include('clients.urls')),
     url(r'^admin-portal/balances/', include('balances.urls')),
     url(r'^admin-portal/health$', health, name="health"),
@@ -40,4 +40,5 @@ urlpatterns = [
     url(r'^admin-portal/payments/', include('payments.urls')),
     url(r'^admin-portal/api-management/', include('api_management.urls')),
     url(r'^admin-portal/centralize-configuration/', include('centralize_configuration.urls')),
+    url(r'^admin-portal/bank/', include('bank_sofs.urls')),
 ]

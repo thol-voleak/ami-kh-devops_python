@@ -1,31 +1,54 @@
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from .apps import InvalidAccessToken
+from web_admin import api_settings
+from web_admin.utils import setup_logger
+
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
 from django.conf import settings
 from .models import Authentications
-from .apps import InvalidAccessToken
-from django.http import HttpResponseRedirect
+
 import time
-import random
-import string
 import requests
 import logging
 
-logger = logging.getLogger(__name__)
+
+def login_user(request):
+    next_request = None
+    logger = logging.getLogger(__name__)
+    logger = setup_logger(request, logger)
+    if request.POST:
+        logger.info("========== Start login from web page ==========")
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request=request, username=username, password=password)
+
+        if user is not None:
+            # TODO: set authentication user is unique from db
+            request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
+            login(request, user)
+            return redirect('web:web-index')
+
+    elif request.GET:
+        next_request = request.GET['next']
+
+    return render(request, "authentications/login.html", {'next': next_request})
+
 
 def logout_user(request):
+    logger = logging.getLogger(__name__)
     logger.info('========== Start to logout ==========')
-    url = settings.LOGOUT_URL
+    url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username
     logger.info("username {} sends logout request URL: {}".format(username, url))
 
-    headers = None
     try:
         headers = get_auth_header(request.user)
     except Exception as e:
-        logger.info("Exception: {}".format(e))
+        logger.error(e)
         logout(request)
         logger.info('========== Finished to logout ==========')
-        return redirect('login')
+        return redirect('authentications:login')
 
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)
@@ -43,18 +66,22 @@ def logout_user(request):
     logout(request)
     logger.info("username {} was logged out".format(username, request.user))
     logger.info('========== Finished to logout ==========')
-    return redirect('/admin-portal/')
+
+    if request.GET:
+        next_request = request.GET['next']
+        return render(request, "authentications/login.html", {'next': next_request})
+
+    return redirect('authentications:login')
 
 
 def get_auth_header(user):
     client_id = settings.CLIENTID
     client_secret = settings.CLIENTSECRET
-    correlation_id = ''.join(
-        random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
     try:
         auth = Authentications.objects.get(user=user)
         access_token = auth.access_token
+        correlation_id = auth.correlation_id
     except Exception as e:
         raise InvalidAccessToken("{}".format(e))
 

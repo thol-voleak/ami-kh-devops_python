@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Agent Register</h3>
+    </div>
+    <!--If success return green notification and return red notification if message is failed-->
+    {% if msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'agents:agent_registration' %}">
+                    {% csrf_token %}
+
+                    <!-- Begin section 1 -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Status *</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_status"
+                                       value="Active" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 1 - row 1 -->
+                    <hr/>
+
+                    <!-- Begin section 2 [Agent Type] -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Agent Type</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 2 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Agent Type *</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="ddl_agent_type" name="agent_type_id" required>
+                                    {% for agent_type in agent_types_list %}
+                                        <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User Name *</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="username"
+                                       id="txt_user_name" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 2 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Parent ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="parent_id"
+                                       id="txt_parent_id"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Password *</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control input-rounded" name="password"
+                                       id="txt_password" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 2 - row 3 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Grand Parent ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="grand_parent_id"
+                                       id="txt_grand_parent_id"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Re-password *</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control input-rounded" name="re_password"
+                                       id="txt_re_password" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 2 - row 4 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Currency *</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="ddl_currency" name="currency" required>
+                                    {% for currency in currencies %}
+                                        <option value="{{ currency }}">{{ currency }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6"></div>
+                    </div>
+                    <!-- End section 2 - row 5 -->
+                    <hr/>
+
+                    <!-- Begin section 5 [Agent Info] -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Agent Info</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Last Name *</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="lastname"
+                                       id="txt_last_name" required />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">First Name *</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="firstname"
+                                       id="txt_first_name" required />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Date of Birth</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control input-rounded" name="date_of_birth"
+                                       id="dtp_birth_date"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Gender</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="gender"
+                                       id="txt_gender"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 3 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">National</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="national"
+                                       id="txt_national"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 4 -->
+                    <hr/>
+
+                    <!-- Begin section 6 [Primary Identify] -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Identify Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                       id="txt_primary_identify_type"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Identify ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_id"
+                                       id="txt_primary_identify_id"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Place of Issue</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
+                                       id="txt_primary_place_issue"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 3 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Issue Date</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control input-rounded" name="primary_issue_date"
+                                       id="dtp_primary_issue_date"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Expire Date</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control input-rounded" name="primary_expire_date"
+                                       id="dtp_primary_expire_date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 4 -->
+                    <hr/>
+
+                    <!-- Begin section 7 [Secondary Identify] -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 7 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Identify Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_type"
+                                       id="txt_secondary_identify_type"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 7 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Identify ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="secondary_Identify_id"
+                                       id="txt_secondary_identify_id"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Place of Issue</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="secondary_place_of_issue"
+                                       id="txt_secondary_place_issue"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 7 - row 3 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Issue Date</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control input-rounded" name="secondary_issue_date"
+                                       id="dtp_secondary_issue_date"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Expire Date</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control input-rounded" name="secondary_expire_date"
+                                       id="dtp_secondary_expire_date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 7 - row 4 -->
+                    <hr/>
+
+                    <!-- Begin section 8 [Contact Info] -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Contact Info</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Nationality</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="nationality"
+                                       id="txt_nationality"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Province</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="province"
+                                       id="txt_province"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">District</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="district"
+                                       id="txt_district"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Commune</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="commune"
+                                       id="txt_commune"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 3 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Address</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="address"
+                                       id="txt_address"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 4 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Primary Mobile Number *</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control input-rounded" name="primary_mobile_number"
+                                       id="txt_primary_mobile_number" required/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control input-rounded" name="email" id="txt_email"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 5 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Secondary Mobile Number</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control input-rounded" name="secondary_mobile_number"
+                                       id="txt_secondary_mobile_number"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Unique Reference *</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="unique_reference"
+                                       id="txt_unique_reference" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 6 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Tertiary Mobile Number</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control input-rounded" name="tertiary_mobile_number"
+                                       id="txt_tertiary_mobile_number"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End section 8 - row 7 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">KYC Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="kyc_status"
+                                       id="txt_kyc_status" value="NO" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 8 - row 8 -->
+                    <hr/>
+
+                    
+                    <div class="pull-right">
+                        <a onclick="location.reload();">
+                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
+                        </a>
+                        
+                        <a href="{% url 'agents:agent_registration' %}">
+                            <input id="btn_create" class="btn btn-success text-left mb15" type="submit" value="Create"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block body_js %}
+{{ block.super }}
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+{% endblock %}

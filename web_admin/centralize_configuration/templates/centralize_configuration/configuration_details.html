@@ -8,11 +8,11 @@
 </div>
 
 <div class="panel-body">
-    <form class="form-horizontal" role="form" method="post"
+    <form class="form-horizontal" role="form" method="post" id="edit_conf_form"
         action="{% url 'centralize_configuration:configuration_details' scope_name conf_key %}">
         {% csrf_token %}
         <div class="table-responsive mb15">
-            <table id="tbl_configuration_scope_management " class="table table-bordered table-striped mb0">
+            <table id="tbl_configuration_scope_management" class="table table-bordered table-striped mb0">
                 <thead>
                 <tr>
                     <th class="col-sm-1" id="id">Key</th>
@@ -29,29 +29,51 @@
                 {% for key, values in configurations.items %}
                 <tr>
                     {% if key == 'value' %}
-                    <td class="col-sm-1">{{ key|default_if_none:'' }}</td>
+                    <td class="col-sm-1" id="txt_key_name">{{ key|default_if_none:'' }}</td>
                     <td class="col-sm-2">
-                        <input type="text" class="form-control" name="conf_value" value="{{ values }}">
+                        <input type="text" class="form-control" id="txt_key_value" name="conf_value" value="{{ values }}">
                     </td>
                     {% endif %}
                 </tr>
                 {% endfor %}
+                <script type="text/javascript">
+                function loadData() {
+                    var lastUrl = document.referrer;
+                    var loginUrl = 'admin-portal/login';
+                    if ((lastUrl.indexOf(loginUrl) !== -1) && (localStorage.getItem("edit_key") == "{{ conf_key|safe }}"
+                        && (localStorage.getItem("user_name") == "{{ user }}"))){
+                        document.getElementById("txt_key_value").value = localStorage.getItem("edit_value");
+                    };
+                };
+                window.onload = loadData;
+                </script>
                 </tbody>
             </table>
         </div>
 
         <div class="pull-right">
-            <a href="{% url 'centralize_configuration:configuration_list' scope_name %}">
-                <input id="btn_back" class="btn btn-sm text-left" type="button"
-                value="Back"/>
-            </a>
-            <button id="btn_update_scope_key" role="button"
-                class="btn btn-success btn-sm"
-                type="submit">
-                <span>save</span>
+            <button id="btn_cancel" role="button" class="btn btn-sm" type="button" onclick="clearData();">
+                <span>Cancel</span>
+            </button>
+            <button id="btn_save" role="button" class="btn btn-success btn-sm" type="button" onclick="saveData();">
+                <span>Save</span>
             </button>    
         </div>
     </form>
 </div>
+
+<script type="text/javascript">
+function saveData() {
+    localStorage.setItem("edit_key", "{{ conf_key|safe }}");
+    localStorage.setItem("edit_value", document.getElementById("txt_key_value").value);
+    localStorage.setItem("user_name", "{{ user }}");
+    document.getElementById("edit_conf_form").submit();
+};
+
+function clearData() {
+    localStorage.clear();
+    window.location.href = "{% url 'centralize_configuration:configuration_list' scope_name %}";
+};
+</script>
 
 {% endblock %}

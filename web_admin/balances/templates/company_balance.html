@@ -7,7 +7,9 @@
     <div class="panel-body">
         {% for message in messages %}
         <div class="col-xs-12">
-            <div class="alert alert-success alert-dismissable" id="msg-add-service">
+            <div class='alert
+                        alert-success
+                        alert-dismissable' id="msg-add-service">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>{{ message|capfirst }}</strong>
             </div>
@@ -35,7 +37,7 @@
                 </div>
                 <label class="col-sm-2 control-label">Company Balance:</label>
                 <div class="col-sm-4">
-                    <input value="{{ objects.0.balance_after_change|floatformat:decimal|intcomma|default:'0.00' }}" type="text" class="form-control" name="company_balance" id="txt_company_balance" disabled />
+                    <input value="{{ objects.0.balance_after_change|floatformat:decimal|intcomma|default:'0' }}" type="text" class="form-control" name="company_balance" id="txt_company_balance" disabled />
                 </div>
             </div>
             <div class="form-group">
@@ -50,9 +52,8 @@
             </div>
             <div class="form-group">
                 <div class="pull-right">
-                    <button id="btn_confirm" class="btn btn-warning text-left mb15" type="submit">Confirm</button>
-                    <button id="btn_cancel" class="btn btn-success text-left mb15" type="reset">Cancel</button>
-
+                    <button id="btn_cancel" class="btn text-left mb15" type="reset">Cancel</button>
+                    <button id="btn_confirm" class="btn btn-success text-left mb15" type="submit">Confirm</button>
                     <!-- Mapping raw hidden value -->
                     <input value="{{ objects.0.balance_after_change|default:0 }}" type="hidden" id="txt_company_balance_hidden" />
                 </div>
@@ -93,6 +94,12 @@ function toNumber(str) {
     return str.replace(/[,\s_]+/g, "");
 }
 
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
 function changeValue() {
     var $currency = $('#ddl_currency');
     $currency.on('change', function() {
@@ -104,7 +111,7 @@ function changeValue() {
     var $company_balance = $('#txt_company_balance_hidden');
     $amount.on('input', function() {
         var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
-        value ? $new_balance.val(value.toFixed({{ decimal }}).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+        value ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
         : $new_balance.val($company_balance.val());
     });
     $('#txt_adding_balance').keydown(function(event){

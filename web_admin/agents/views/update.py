@@ -1,5 +1,6 @@
+import logging
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
-from authentications.apps import InvalidAccessToken
 from django.conf import settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
@@ -7,11 +8,7 @@ from datetime import datetime
 from django.utils import dateparse
 from django.http import HttpResponseRedirect
 
-from django.utils import formats
-from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-
-import requests, time, logging
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +23,10 @@ History:
 '''
 class AgentUpdate(TemplateView, RESTfulMethods):
 
-    template_name = "update.html"
+    template_name = "agents/update.html"
 
     def get(self, request, *args, **kwargs):
-
+        logger.info('========== Start showing Update Agent page ==========')
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
@@ -70,7 +67,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             'currencies': currencies,
             'agent_profile': agent_profile
         }
-
+        logger.info('========== Finished showing Update Agent page ==========')
         return render(request, self.template_name, context)
 
     '''
@@ -78,44 +75,9 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     # 2017-05-05
     '''
     def _get_agent_profile(self, agent_id):
-        logger.info('========== Start getting agent detail ========== ')
-
-        api_path = settings.AGENT_DETAIL_PATH.format(agent_id=agent_id)
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info("API-Path: {}".format(api_path))
-        logger.info("Params: agent_id = {} ".format(agent_id))
-
-        headers = get_auth_header(self.request.user)
-
-        # Do request
-        start_time = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        end_time = time.time()
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        # Get data
-        response_json = response.json()
-        status = response_json.get('status', {})
-
-        # Validate data response
-        if not isinstance(status, dict):
-            status = {}
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data', {})
-        else:
-            data = {}
-            logger.info("Getting agent detail got error.")
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-        logger.info('========== Finish getting agent detail ========== ')
+        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+                                                     func_description="Agent Profile",
+                                                     logger=logger)
         return data
 
     '''
@@ -126,43 +88,10 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     - API 1: GET /api-gateway/agent/v1/types
     '''
     def _get_agent_types(self):
-        logger.info('========== Start getting agent types list ========== ')
-
-        api_path = settings.GET_AGENT_TYPES_PATH
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info("API-Path: {}".format(api_path))
-        logger.info("Params: {} ")
-
-        headers = get_auth_header(self.request.user)
-
-        # Do request
-        start_time = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        end_time = time.time()
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-
-        # Get data
-        response_json = response.json()
-        status = response_json.get('status', {})
-
-        # Validate data response
-        if not isinstance(status, dict):
-            status = {}
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data', [])
-        else:
-            data = []
-            logger.info("Getting agent types list got error.")
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-        logger.info('========== Finish getting agent types list ========== ')
+        data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
+                                         func_description="Agent Type List",
+                                         logger=logger,
+                                         is_getting_list=True)
         return data
 
     '''
@@ -173,50 +102,19 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     - API 2: GET /api-gateway/centralize-configuration/v1/scopes/global/configurations/currency
     '''
     def _get_currencies(self):
-        logger.info('========== Start getting currencies list ========== ')
-
-        api_path = settings.GET_CURRENCIES_PATH
-        url = settings.DOMAIN_NAMES + api_path
-
-        logger.info("API-Path: {}".format(api_path))
-        logger.info("Params: {} ")
-
-        headers = get_auth_header(self.request.user)
-
-        # Do request
-        start_time = time.time()
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-        end_time = time.time()
-        logger.info("Response_time: {} sec.".format(end_time - start_time))
-        logger.info("Response_code: {}".format(response.status_code))
-        logger.info("Response_content: {}".format(response.content))
-
-        # Get data
-        response_json = response.json()
-        status = response_json.get('status', {})
-
-        # Validate data response
-        if not isinstance(status, dict):
-            status = {}
-
-        code = status.get('code', '')
-        message = status.get('message', 'Something went wrong.')
-
-        if code == "success":
-            data = response_json.get('data', [])
+        data, success = self._get_method(api_path=api_settings.GET_CURRENCIES_PATH,
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        if success:
             values = data.get('value', '')
             currencies = map(lambda x: x.split('|'), values.split(','))
         else:
             currencies = []
-            logger.info("Getting currencies got error.")
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-        logger.info('========== Finish getting currencies list ========== ')
         return currencies
 
     def post(self, request, *args, **kwargs):
+        logger.info('========== Start updating agent ==========')
         agent_id = kwargs['agent_id']
 
         agent_type_id = request.POST.get('agent_type_id')
@@ -323,7 +221,9 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
+            logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
+        logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):
@@ -333,7 +233,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         return self._headers
 
     def _update_agent(self, agent_id, data):
-        data, success = self._put_method(api_path=settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
+        data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
                                          func_description="Agent",
                                          logger=logger, params=data)
         return data, success

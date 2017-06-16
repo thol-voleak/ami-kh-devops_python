@@ -1,0 +1,170 @@
+
+
+<div class="panel-heading">
+    <h4>IV. Agent Hierrachy Distribution</h4>
+    <h5>Fee</h5>
+</div>
+
+<form method="POST" class="form-horizontal" role="form"
+      action="{% url 'services:agent_fee' service_id command_id service_command_id fee_tier_id %}"
+      id="agent-hierarchy-distribution-form">
+
+    {% csrf_token %}
+    <div class="form-group table-responsive row">
+        <table class="table table-bordered table-striped mb0" id="tbl_agent_hier_fee">
+            <thead>
+            <tr>
+                <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                <th class="col-sm-2" id="lbl_actor">Actor</th>
+                <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
+                <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
+                <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
+                <th class="col-sm-2" id="lbl_from_amount">Amount</th>
+                <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                <th class="col-sm-2" id="lbl_actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for d in fee %}
+                <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}"
+                    data-url="{% url "services:agent_fee_update" d.agent_fee_distribution_id %}"
+                    data-id="{{ d.agent_fee_distribution_id }}"
+                    data-fee_tier_id="{{ d.fee_tier_id }}">
+                    <td class="col-sm-1">
+                        <span>{{ d.action_type|default_if_none:'' }}</span>
+                        <select class="form-control" name="action_type" id="ddl_agent_hier_fee_dc_edit" style="display: none;">
+                                {% for action_type in choices.action_types %}
+                                    {% if action_type.action_type == d.action_type %}
+                                        <option value="{{ action_type.action_type }}" selected>{{ action_type.action_type }}</option>
+                                    {% else %}
+                                        <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                                    {% endif %}
+
+                                {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-sm-2">
+                        <span>{{ d.actor_type|default_if_none:'' }}</span>
+                        <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor_edit" style="display: none;" onchange="changeSpecificActorTypeRelative(this)">
+                        {% for actor_type in choices.actor_types %}
+                            {% if actor_type.actor_type == d.actor_type %}
+                                <option value="{{ actor_type.actor_type }}" selected>{{ actor_type.actor_type }}</option>
+                            {% else %}
+                                <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                            {% endif %}
+
+                        {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-sm-1">
+                        <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
+                        <input class="form-control" id="txt_agent_hier_fee_specific_id_edit"
+                               name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <span>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</span>
+                        <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit" style="display: none;">
+                        {% for sof_type in choices.sof_types %}
+                            {% if sof_type.sof_type_id == d.sof_type_id %}
+                                <option value="{{ sof_type.sof_type }}" selected data-sof_type_id="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                            {% else %}
+                                <option value="{{ sof_type.sof_type }}" data-sof_type_id="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                            {% endif %}
+
+                        {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-sm-1">
+                        <span>{{ d.specific_sof|default_if_none:'' }}</span>
+                        <input class="form-control" id="txt_agent_hier_fee_spec_src_fund_edit"
+                           name="specific_sof" value="{{ d.specific_sof|default_if_none:'' }}" style="display: none;"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <span>{{ d.amount_type|default_if_none:'' }}</span>
+                        <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount_edit" style="display: none;">
+                        {% for amount_type in choices.amount_types %}
+                            {% if amount_type.amount_type == d.amount_type %}
+                                <option value="{{ amount_type.amount_type }}" selected>{{ amount_type.amount_type }}</option>
+                            {% else %}
+                                <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    </td>
+                    <td class="col-sm-1">
+                        <span>{{ d.rate|default_if_none:'' }}</span>
+                        <input id="txt_agent_hier_fee_rate_edit" class="form-control" name="rate" required value="{{ d.rate }}" style="display: none;"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <div style="display: block;" class = "Normal">
+                            <button type="button"
+                               class="edit btn btn-outline btn-xs btn-primary text-info small"
+                               id="btn_agent_hier_fee_edit" onclick = "tapOnEdit(this)" >Edit
+                            </button>
+                            <button type="button" class="btn btn-outline btn-xs btn-danger delete"
+                               id="btn_agent_hier_fee_delete"
+                               onclick="deleteAgentFee('{{ d.agent_fee_distribution_id }}')">
+                            Delete
+                            </button>
+                        </div>
+                        <div style="display: none;" class = "Editting">
+                            <button type="button"
+                               class="edit btn btn-outline btn-xs btn-primary text-info small"
+                               id="btn_agent_hier_fee_save" onclick = "tapOnSave(this)" >Save
+                            </button>
+                            <button type="button" class="btn btn-default btn-outline btn-xs delete"
+                               id="btn_agent_hier_fee_cancel"
+                               onclick="tapOnCancel(this)">
+                            Cancel
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <select class="form-control" name="action_type" id="ddl_agent_hier_fee_dc">
+                        {% for action_type in choices.action_types %}
+                            <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor" onchange="changeSpecificActorTypeRelativeAdd(this)">
+                        {% for actor_type in choices.actor_types %}
+                            <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
+                        {% endfor %}
+                    </select>
+                <td>
+                    <input class="form-control" id="txt_agent_hier_fee_specific_id"
+                           name="specific_actor_id" disabled/>
+                    </td>
+                <td>
+                    <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund">
+                        {% for sof_type in choices.sof_types %}
+                            <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input class="form-control" id="txt_agent_hier_fee_spec_src_fund"
+                           name="specific_sof"/>
+                </td>
+                <td>
+                    <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount">
+                        {% for amount_type in choices.amount_types %}
+                            <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
+                        {% endfor %}
+                    </select>
+                <td>
+                    <input id="txt_agent_hier_fee_rate" class="form-control" name="rate" required/></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="form-group pull-right">
+        <a href="#">
+            <input id="btn_agent_hier_fee_add" class="btn btn-success" type="submit" value="Add"/>
+        </a>
+    </div>
+</form>

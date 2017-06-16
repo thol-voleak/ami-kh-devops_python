@@ -1,15 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
-from django.conf import settings
-from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
-
-import requests, time
+from web_admin import api_settings
 import logging
-
+from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
-class ServiceGroupUpdateForm(TemplateView):
+class ServiceGroupUpdateForm(TemplateView, RESTfulMethods):
     template_name = "service_group/update.html"
 
     def get_context_data(self, **kwargs):
@@ -28,8 +24,7 @@ class ServiceGroupUpdateForm(TemplateView):
     def post(self, request, *args, **kwargs):
         logger.info('========== Start updating service group ==========')
         service_group_id = kwargs['ServiceGroupId']
-        url = settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
-        logger.info("URL: {}".format(url))
+        url = api_settings.SERVICE_GROUP_UPDATE_URL.format(service_group_id)
 
         name = request.POST.get('service_group_name')
         description = request.POST.get('description')
@@ -38,37 +33,13 @@ class ServiceGroupUpdateForm(TemplateView):
             "service_group_name": name,
             "description": description,
         }
-        logger.info('PUT Request: {}'.format(params))
+        data, success = self._put_method(url, "service group", logger, params)
 
-
-        headers = get_auth_header(self.request.user)
-
-        start_time = time.time()
-
-        response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
-
-        logger.info("Response: {}".format(response.content))
-        end_time = time.time()
-        logger.info("Response time is {} sec.".format(end_time - start_time))
-        logger.info("Response Code is {}".format(response.status_code))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            logger.info("Service Group was updated.")
+        if success:
             logger.info('========== Finished updating Service Group ==========')
             request.session['service_group_update_msg'] = 'Updated service group successfully'
             return redirect('service_group:service_group_detail', ServiceGroupId=(service_group_id))
         else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
             logger.info("Error Updating Service Group {}".format(service_group_id))
             context = {'service_group_info': params}
             logger.info('========== Finish updating service group ==========')
@@ -77,41 +48,11 @@ class ServiceGroupUpdateForm(TemplateView):
 
     def _get_service_group_detail(self, service_group_id):
 
-        url = settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        url = api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
 
-        headers = get_auth_header(self.request.user)
+        data, success = self._get_method(url, "service group detail", logger, is_getting_list=False, params={})
 
-        logger.info("Username: {}".format(self.request.user))
-        logger.info('Getting service group detail from backend')
-        logger.info("URL: {}".format(url))
-        start_date = time.time()
-
-        response = requests.get(url, headers=headers, verify=settings.CERT)
-
-        logger.info("Response Content: {}".format(response.content))
-        done = time.time()
-        logger.info("Response time is {} sec.".format(done - start_date))
-        logger.info("Received data with response status is {}".format(response.status_code))
-
-        response_json = response.json()
-        status = response_json.get('status', {})
-        # if not isinstance(status, dict):
-        #     status = {}
-        code = status.get('code', '')
-
-        message = status.get('message', 'Something went wrong.')
-        if code == "success":
-            data = response_json.get('data')
-            context = {'service_group_info': data}
-            logger.info('========== Finished getting service group detail ==========')
-            return context
-        else:
-            if (code == "access_token_expire") or (code == 'access_token_not_found'):
-                logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-
-            logger.info("Error Getting System User Detail.")
-            context = {'service_group_info': response_json.get('data')}
-            logger.info('========== Finished getting service group detail ==========')
-            return context
+        context = {'service_group_info': data}
+        logger.info('========== Finished getting service group detail ==========')
+        return context
 

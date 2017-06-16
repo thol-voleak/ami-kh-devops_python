@@ -1,18 +1,15 @@
-import requests
 import logging
-import time
-
+from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
-from django.conf import settings
-from authentications.apps import InvalidAccessToken
+from web_admin import api_settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect
 
 logger = logging.getLogger(__name__)
 
 
-class ListCommandView(TemplateView):
-    template_name = "command/list.html"
+class ListCommandView(TemplateView, RESTfulMethods):
+    template_name = "services/command/command_list.html"
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start adding service command ==========')
@@ -29,6 +26,8 @@ class ListCommandView(TemplateView):
         logger.info('========== Finish adding service command ==========')
         if success:
             request.session['add_command_msg'] = 'Added command successfully'
+        else:
+            request.session['add_failed_msg'] = data
 
         return redirect(request.META['HTTP_REFERER'])
 
@@ -39,21 +38,8 @@ class ListCommandView(TemplateView):
         return self._headers
 
     def _add_service_command(self, data):
-        logger.info("Adding service command by user {}".format(self.request.user.username))
-
-        url = settings.SERVICE_COMMAND_ADD_URL
-
-        logger.info('Adding service command request url: {}'.format(url))
-        logger.info('Adding service command request body: {}'.format(data))
-        response = requests.post(url, headers=self._get_headers(), json=data, verify=settings.CERT)
-        logger.info("Adding service command response code {}".format(response.status_code))
-        logger.info("Adding service command response content {}".format(response.content))
-
-        if response.status_code == 200:
-            json_data = response.json()
-            return json_data.get('data'), True
-        else:
-            return None, False
+        url = api_settings.SERVICE_COMMAND_ADD_URL
+        return self._post_method(url, "service command", logger, data)
 
     def get_context_data(self, **kwargs):
         context = super(ListCommandView, self).get_context_data(**kwargs)
@@ -72,59 +58,20 @@ class ListCommandView(TemplateView):
         context['command_id'] = commands_dd_list[0]["command_id"]
         context['commands_dd_list'] = commands_dd_list
         context['msg'] = self.request.session.pop('add_command_msg', None)
+        context['msg_failed'] = self.request.session.pop('add_failed_msg', None)        
 
         return context
 
     def get_commands_list(self, service_id):
-        logger.info("Getting command list by user {}".format(self.request.user.username))
-        headers = get_auth_header(self.request.user)
+        url = api_settings.COMMAND_LIST_BY_SERVICE_URL.format(service_id)
+        data, success = self._get_method(url, "command list", logger, True)
+        detail_url = api_settings.SERVICE_DETAIL_URL.format(service_id)
+        service_detail, success = self._get_method(detail_url, "SERVICE DETAIL", logger)
+        service_name = service_detail.get("service_name", '')
 
-        url = settings.COMMAND_LIST_BY_SERVICE_URL.format(service_id)
-
-        logger.info("Getting command list from backend with {} url".format(url))
-        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
-        logger.info("Response for get command list is {}".format(auth_request.content))
-
-        json_data = auth_request.json()
-        detail_url = settings.SERVICE_DETAIL_URL.format(service_id)
-        service_detail = requests.get(detail_url, headers=headers, verify=settings.CERT)
-        service_detail = service_detail.json().get("data")
-        data = json_data.get('data')
-        service_name = service_detail["service_name"]
-
-        if auth_request.status_code == 200:
-            if data is not None:
-                logger.info('Service command count: {}'.format(len(data)))
-                return data, service_name
-
-        if json_data["status"]["code"] == "access_token_expire":
-            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
-            raise InvalidAccessToken(json_data["status"]["message"])
-        else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+        return data, service_name
 
     def _get_commands_dd_list(self):
-
-        logger.info("Getting command list by {} user id".format(self.request.user.username))
-        headers = get_auth_header(self.request.user)
-
-        url = settings.COMMAND_LIST_URL
-
-        logger.info("Getting command list from backend with {} url".format(url))
-        start_date = time.time()
-        auth_request = requests.get(url, headers=headers, verify=settings.CERT)
-        end_date = time.time()
-        logger.info("Getting command list response time is {} sec.".format(end_date - start_date))
-
-        json_data = auth_request.json()
-        data = json_data.get('data')
-        if auth_request.status_code == 200:
-            if (data is not None) and (len(data) > 0):
-                logger.info('Command count: {}'.format(len(data)))
-                return data
-
-        if json_data["status"]["code"] == "access_token_expire":
-            logger.info("{} for {} username".format(json_data["status"]["message"], self.request.user))
-            raise InvalidAccessToken(json_data["status"]["message"])
-        else:
-            raise Exception("{}".format(json_data["status"]["message"]))
+        url = api_settings.COMMAND_LIST_URL
+        data, success = self._get_method(url, "command list", logger, True)
+        return data

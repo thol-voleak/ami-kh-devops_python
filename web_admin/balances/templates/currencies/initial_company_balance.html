@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-{% with active_tab='currencies_list' %}
-{{ block.super }}
-{% endwith %}
-{% endblock sidebar_panel %}
 
 {% block content %}
 <div class="panel mb30">
@@ -15,7 +10,13 @@
         <div class="row no-margin col-xs-10">
             {% for message in messages %}
             <div class="col-xs-12">
-                <div class="alert alert-success alert-dismissable" id="msg-add-service">
+                <div class='alert
+                            {% if "sucessfully " in message %}
+                            alert-success
+                            {% else %}
+                            alert-danger
+                            {%endif%}
+                            alert-dismissable' id="msg-add-service">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                     <strong>{{ message|capfirst }}</strong>
                 </div>
@@ -34,7 +35,7 @@
                         </select>
                     </div>
                     <div class="col-xs-1">
-                        <input id="currency_btn_add" class="btn btn-success btn-block" type="submit"
+                        <input id="currency_btn_add" class="btn btn-success" type="submit"
                                value="Add">
                     </div>
                 </div>
@@ -59,8 +60,8 @@
                             {{ balance.currency|default_if_none:'' }}
                         </td>
                         <td class="col-sm-1">{{ balance.sof_id|default_if_none:'' }}</td>
-                        <td class="col-sm-1">{{ balance.balance|default_if_none:'' }}</td>
-                        <td class="col-sm-1">{{ balance.last_update|default_if_none:'' }}</td>
+                        <td class="col-sm-1">{{ balance.balance|floatformat:balance.decimal }}</td>
+                        <td class="col-sm-1">{{ balance.last_updated_timestamp|default_if_none:'' }}</td>
                     </tr>
                     {% endfor %}
                     </tbody>

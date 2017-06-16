@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block sidebar_panel %}
+    {% with active_tab='services' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock sidebar_panel %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Edit SPI URL</h3>
+    </div>
+    {% if add_spi_url_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ add_spi_url_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if spi_update_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ spi_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="panel-body">
+        <form class="form-horizontal" role="form" method="Post" action="#">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">SPI URL Type</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_spi_url_type" name="spi_url_type" required>
+                        {% for type in spi_types %}
+                            {% if type.spi_url_type == data.spi_url_type %}
+                            <option value="{{ type.spi_url_type }}" selected>{{ type.spi_url_type }}</option>
+                            {% else %}
+                            <option value="{{ type.spi_url_type }}">{{ type.spi_url_type }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">SPI URL Value *</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" value="{{ data.url }}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Connection Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_connection_timeout" name="connection_timeout" value="{{ data.connection_timeout }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Read Timeout</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ data.read_timeout }}"/>
+                </div>
+            </div>
+            <div class="form-group pull-right">
+                <a href="{{request.META.HTTP_REFERER}}">
+                    <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                </a>
+
+                <a>
+                    <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

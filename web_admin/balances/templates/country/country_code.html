@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block sidebar_panel %}
-    {% with active_tab='currencies_list' %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock sidebar_panel %}
-
 {% block body_stylesheet %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
@@ -162,21 +156,19 @@ function addCountryCode() {
                                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                             },
                             success: function (response) {
-
-                                var data = JSON.stringify(response); 
-                                var json = $.parseJSON(data);
-                                console.log('JSON: ' + json);
-
-                                if (json.status.code == 'success') {
-                                    console.log('Added country code ' + code);
+                                if(response.status == 1) {
+                                    // Logout
+                                    var url = window.location.origin + "/admin-portal/logout/";
+                                    window.location.replace(url);
+                                } else if(response.status == 2) {
+                                    // success
                                     makeFormReadOnly()
                                     showSuccessMessage('Added country code ' +  "'" + code + "'" + ' successfully');
-
                                 } else {
+                                    // Failed
                                     console.log('Error adding country code ' + code);
                                     showErrorMessage(json.status.message);
                                 }
-
                             },
                             error: function (err) {
                                 var json = JSON.stringify(err); 

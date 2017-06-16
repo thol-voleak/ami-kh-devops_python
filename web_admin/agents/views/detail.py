@@ -1,20 +1,15 @@
 import logging
-import time
-
-import requests
-from django.conf import settings
+from web_admin import api_settings
 from django.views.generic.base import TemplateView
-from multiprocessing import Process, Manager
-from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
 from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
 class DetailView(TemplateView, RESTfulMethods):
-    template_name = "detail.html"
+    template_name = "agents/detail.html"
 
     def get_context_data(self, **kwargs):
+        logger.info('========== Start showing Agent Detail page ==========')
         try:
             context = super(DetailView, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
@@ -31,13 +26,15 @@ class DetailView(TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
+            logger.info('========== Finished showing Agent Detail page ==========')
             return context
         except:
             context = {'agent': {}}
+            logger.info('========== Finished showing Agent Detail page ==========')
             return context
 
     def _get_agent_detail(self, agent_id):
-        data, success = self._get_method(api_path=settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
                                          func_description="Agent detail",
                                          logger=logger)
         context = {
@@ -48,7 +45,7 @@ class DetailView(TemplateView, RESTfulMethods):
         return context, success
     
     def _get_agent_type_name(self, agent_type_id):
-        agent_types_list, success = self._get_method(api_path=settings.AGENT_TYPES_LIST_URL,
+        agent_types_list, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                                      func_description="Agent types list from backend",
                                                      logger=logger,
                                                      is_getting_list=True)

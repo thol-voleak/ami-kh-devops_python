@@ -1,17 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
-{% block sidebar_panel %}
-{% with active_tab='client_list' %}
-{{ block.super }}
-{% endwith %}
-{% endblock sidebar_panel %}
+
 {% block body_stylesheet %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
 {% block content %}
-{% csrf_token %}
 
 <div class="panel mb25">
     <div class="panel-heading border mb15">
@@ -19,7 +14,7 @@
     </div>
     <div class="pull-right mr15 text-right">
         <a href="{% url 'clients:create-client' %}">
-            <input id="client-btn-create" class="btn btn-sm btn-success btn-block text-left no-print mb15" type="button"
+            <input id="client-btn-create" class="btn btn-success btn-block btn-sm text-left no-print mb15" type="button"
                    value="Create"/>
         </a>
     </div>
@@ -72,20 +67,18 @@
                     <td class="col-sm-2">{{ client.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-3">
+                        {% if not client.is_deleted %}
                         <div id="client-btn-group-{{ client.client_id }}">
                             <div class="btn-group mb5">
                                 <button type="button"
-                                        class="btn btn-outline btn-xs btn-success {{ client.is_deleted|yesno:"
-                                        hidden,no-hidden
-                                " }}"
+                                        class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 id="client-btn-regenerate-{{ client.client_id }}"
                                 data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
                                 onClick="regenerate('{{ client.client_id }}')">
                                 <span class="small">Regenerate</span>
                                 </button>
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary {{ client.is_deleted|yesno:"
-                                   hidden,no-hidden" }}"
+                                   class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                                 role="button"
                                 id="client-btn-update-{{ client.client_id }}" class="text-info"
@@ -95,19 +88,16 @@
                                 </a>
                             </div>
                             <div class="btn-group mb5">
-                                <button type="button" {{ client.is_deleted|yesno:
-                                "disable=true, disable=false" }}
-                                class="btn btn-outline btn-xs btn-danger {{ client.is_deleted|yesno:"hidden,no-hidden"
-                                }}"
+                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                class="btn btn-danger btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden"}}"
                                 id="client-btn-delete-{{ client.client_id }}"
                                 data-url="{% url 'clients:delete-client' client.client_id %}"
                                 onclick="delete_client('{{ client.client_id }}')">
                                 <span class="small">Delete</span>
                                 </button>
                                 {% if client.status == 'active' %}
-                                <button type="button" {{ client.is_deleted|yesno:
-                                "disable=true, disable=false" }}
-                                class="btn btn-outline btn-info btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 id="client-btn-status-{{ client.client_id }}"
                                 data-url="{% url 'clients:suspend-client' client.client_id %}"
                                 onClick="suspend('{{ client.client_id }}')">
@@ -115,9 +105,8 @@
                                 </button>
 
                                 {% else %}
-                                <button type="button" {{ client.is_deleted|yesno:
-                                "disable=true, disable=false" }}
-                                class="btn btn-outline btn-info btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                                class="btn btn-info btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                                 id="client-btn-status-{{ client.client_id }}"
                                 data-url="{% url 'clients:activate-client' client.client_id %}"
                                 onClick="activate('{{ client.client_id }}')">
@@ -125,7 +114,7 @@
                                 </button>
                                 {% endif %}
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary {{ client.is_deleted|yesno:"
+                                   class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"
                                    hidden,no-hidden" }}"
                                 {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                                 role="button"
@@ -135,6 +124,7 @@
                                 </a>
                             </div>
                         </div>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -145,6 +135,7 @@
 </div>
 <script>
     function regenerate(client_id) {
+
         swal({
                 title: "Are you sure you want to regenerate new client secret?",
                 type: "warning",
@@ -164,10 +155,22 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            console.log('success')
-                            location.reload(true)
-                            $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
-                            $("#alert-success-client").show();
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
+                                $("#alert-success-client").show();
+                                setTimeout(function(){
+                                  location.reload(true);
+                                }, 10000);
+
+                            } else {
+                                // Failed
+
+                            }
                         },
                         error: function () {
                             console.log('error')
@@ -200,7 +203,12 @@
                     },
                     success: function (response) {
                         console.log(response);
-                        if (response["code"] == "success") {
+                        if(response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/logout/";
+                            window.location.replace(url);
+                        } else if(response.status == 2) {
+                            // success
                             $("#client-btn-delete-" + client_id).hide();
                             $("#alert-success-msg").text('Deleted data successfully')
                             $("#alert-success-client").show();
@@ -213,6 +221,10 @@
                             $("#client-btn-update-" + client_id).attr("disable", "true");
                             $("#client-btn-group-" + client_id).addClass("hidden");
                             $("#client-btn-status-" + client_id).attr("disable", "true");
+
+                        } else {
+                            // Failed
+
                         }
                     },
                     error: function (response) {
@@ -242,15 +254,17 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            var json = $.parseJSON(response);
-                            if (json.status.code == 'success') {
-                                console.log('Client status was suspended for ' + client_id + ' client ID')
-                                console.log(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
                                 location.reload(true)
                             } else {
-                                console.log('Error suspending the client id' + client_id + 'message: ' + json.status.message)
-                            }
+                                // Failed
 
+                            }
                         },
                         error: function (msg) {
                             console.log('Error suspending the client id' + client_id + msg)
@@ -281,15 +295,17 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            var json = $.parseJSON(response);
-                            if (json.status.code == 'success') {
-                                console.log('Client status was activated for ' + client_id + ' client ID')
-                                console.log(response)
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/logout/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
                                 location.reload(true)
                             } else {
-                                console.log('Error activating the client id' + client_id + 'message: ' + json.status.message)
-                            }
+                                // Failed
 
+                            }
                         },
                         error: function (msg) {
                             console.log('Error activating the client id' + client_id + msg)
@@ -298,6 +314,7 @@
                 }
             });
     }
+
 
 </script>
 {% endblock %}

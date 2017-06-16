@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb30">
+    <div class="panel-heading">
+        <h3>System Users</h3>
+    </div>
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
+                </div>
+                <label class="col-sm-1 control-label">Email</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
+                </div>
+                <div class="col-xs-1">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search">
+                    </a>
+                </div>
+            </div>
+        </form>
+    <div class="pull-right mr15 text-right">
+        <a href="{% url 'system_user:create-system-user' %}">
+            <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                   value="Add"/>
+        </a>
+    </div>
+{% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+ {% endfor %}
+
+    {% if del_msg is not None %}
+        <div class="col-xs-12">
+            <div class='alert
+                        {%if "successfully" in del_msg %}
+                        alert-success
+                        {% else %}
+                        alert-danger
+                        {% endif %}
+                        alert-dismissable' id="alert-success-agent-type">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ del_msg }}</strong>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if pw_msg is not None %}
+        <div class="col-xs-12">
+            <div class='alert
+                        {%if "sucessfully" in pw_msg%}
+                        alert-success
+                        {% else %}
+                        alert-danger
+                        {% endif %}
+                        alert-dismissable' id="system_user_change_password_msg">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ pw_msg }}</strong>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <div class="panel-body">
+        <div class="table-responsive" id=system_user_table>
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th id="id">ID</th>
+                    <th id="username">Username</th>
+                    <th id="firstname_lastname">Firstname Lastname</th>
+                    <th id="created_date">Created Date</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                {% for systemuser in data %}
+                    <tr>
+                        <td class="col-sm-1" id="id_{{ systemuser.id }}">
+                            {{ systemuser.id|default_if_none:'' }}
+                        </td>
+                        {% if systemuser.is_deleted %}
+                            <td class="col-sm-1">
+                                <del>{{ systemuser.username|default_if_none:'' }}</del>
+                            </td>
+                        {% else %}
+                            <td class="col-sm-1">{{ systemuser.username|default_if_none:'' }}</td>
+                        {% endif %}
+
+                        <td class="col-sm-3">{{systemuser.firstname|add:" "|add:systemuser.lastname }}</td>
+                        <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
+                        <td class="col-sm-3">
+                            <div id="client_btn_group_{{ system_user.id }}">
+                                <div class="btn-group">
+                                    {% if systemuser.is_deleted %}
+                                    {% else %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-info"
+                                           role="button"
+                                           id="system_user_btn_detail"
+                                           href="{% url 'system_user:system-user-detail' systemuser.id %}">
+                                            <span class="small">Detail</span>
+                                        </a>
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary"
+                                           role="button"
+                                           id="system_user_btn_edit"
+                                           href="{% url 'system_user:system-user-edit' systemuser.id %}">
+                                            <span class="small">Edit</span>
+                                        </a>
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger"
+                                           role="button"
+                                           id="system_user_btn_delete"
+                                           href="{% url 'system_user:delete-system-user' systemuser.id %}">
+                                            <span class="small">Delete</span>
+                                        </a>
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary"
+                                           role="button"
+                                           id="btn_system_user_change_password"
+                                           href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                                            <span class="small">ChangePassword</span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
+        </div>
+    </div>
+</div>
+{% endblock %}

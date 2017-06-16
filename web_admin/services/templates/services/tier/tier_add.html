@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Add Service Tier</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post"
+                      action="">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Service Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="service_name" id="txt_service_name"
+                                   value="{{ service_name }}" required readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Command</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="command" id="txt_command"
+                                   value="{{ command_name }}" required readonly/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Condition</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_condition" name="condition" required>
+                                {% for item in conditions %}
+                                <option value="{{ item.fee_tier_condition }}">{{item.fee_tier_condition}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="condition_amount" id="txt_amount"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Fee Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_fee_type" name="fee_type">
+                                <option value="">-</option>
+                                {% for item in fee_types %}
+                                <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="fee_amount" id="txt_fee_amount"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bonus Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_bonus_type" name="bonus_type">
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="from">
+                        <label class="col-sm-2 control-label" id="txt_from">From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_from" name="amount_type">
+                                <option value="">-</option>
+                                {% for type in amount_types %}
+                                <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount"/>
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <a href="{% url 'services:fee_tier_list' service_id command_id service_command_id %}">
+                            <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <input id="btn_add" class="btn btn-success text-left mb15" type="submit"
+                                   value="Add"/>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script>
+function changeValue() {
+    var $bonus_type = $('#ddl_bonus_type');
+
+    function toggleFromDropdownList() {
+        if($bonus_type.val() === 'Flat value') {
+            $("#from").fadeOut(500);
+        } else {
+            $("#from").fadeIn(1000);
+        }
+    }
+
+    $bonus_type.on('change', function() {
+        toggleFromDropdownList();
+    });
+
+    toggleFromDropdownList();
+
+    <!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
+    var $condition = $('#ddl_condition');
+    function updateByConditionType() {
+        var $condition_amount = $('#txt_amount');
+        var $fee_amount = $('#txt_fee_amount');
+        var $bonus_amount = $('#txt_bonus_amount');
+        if ($condition.val() == 'unlimit') {
+            $("#label_amount").text("Amount");
+            $("#label_fee_amount").text("Fee Amount");
+            $("#label_bonus_amount").text("Bonus Amount");
+            $condition_amount.removeAttr('required');
+            $fee_amount.removeAttr('required');
+            $bonus_amount.removeAttr('required');
+        } else {
+            $("#label_amount").text("Amount *");
+            $("#label_fee_amount").text("Fee Amount *");
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $condition_amount.attr('required', true);
+            $fee_amount.attr('required', true);
+            $bonus_amount.attr('required', true);
+        }
+    }
+    updateByConditionType();
+    $condition.on('change', function() {
+        updateByConditionType();
+    });
+}
+
+$(changeValue);
+
+</script>
+
+{% endblock %}

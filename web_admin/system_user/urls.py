@@ -6,18 +6,18 @@ from .views.delete import DeleteView
 from .views.detail import DetailView
 from .views.update import SystemUserUpdateForm
 from .views.change_password import SystemUserChangePassword
-from .views.search import SearchView
+
+
 app_name = 'system_user'
 
 urlpatterns = [
-    url(r'^list/$', login_required(ListView.as_view(), login_url='login'), name="system-user-list"),
-    url(r'^search/$', login_required(SearchView.as_view(), login_url='login'), name="search"),
-    url(r'^create/$', login_required(SystemUserCreate.as_view(), login_url='login'), name="create-system-user"),
-    url(r'^(?P<system_user_id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='login'),
+    url(r'^list/$', login_required(ListView.as_view(), login_url='authentications:login'), name="system-user-list"),
+    url(r'^create/$', login_required(SystemUserCreate.as_view(), login_url='authentications:login'), name="create-system-user"),
+    url(r'^(?P<system_user_id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='authentications:login'),
         name="delete-system-user"),
-    url(r'^detail/(?P<systemUserId>[0-9]+)/$', login_required(DetailView.as_view(), login_url='login'), name="system-user-detail"),
-    url(r'^update/(?P<systemUserId>[0-9A-Za-z]+)/$', login_required(SystemUserUpdateForm.as_view(), login_url='login'),
+    url(r'^detail/(?P<systemUserId>[0-9]+)/$', login_required(DetailView.as_view(), login_url='authentications:login'), name="system-user-detail"),
+    url(r'^update/(?P<systemUserId>[0-9A-Za-z]+)/$', login_required(SystemUserUpdateForm.as_view(), login_url='authentications:login'),
         name="system-user-edit"),
-    url(r'^(?P<systemUserId>[0-9A-Za-z]+)/change-password/$', login_required(SystemUserChangePassword.as_view(), login_url='login'),
+    url(r'^(?P<systemUserId>[0-9A-Za-z]+)/change-password/$', login_required(SystemUserChangePassword.as_view(), login_url='authentications:login'),
         name="system-user-change-password")
 ]

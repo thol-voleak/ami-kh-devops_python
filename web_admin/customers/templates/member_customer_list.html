@@ -9,9 +9,8 @@
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post"
+        <form id="submit-form" class="form-horizontal" role="form" method="get"
               action="{% url 'customers:customer-list' %}">
-            {% csrf_token %}
             <div class="row">
                 <div class="col-md-2">
                     <h4>Search</h4>
@@ -61,6 +60,7 @@
                         <div class="btn-group">
                             <!-- <button id="btn_detail" class="btn btn-outline btn-xs btn-primary">Detail</button> -->
                             <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
+                            <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
 
                         </div>
                     </td>
