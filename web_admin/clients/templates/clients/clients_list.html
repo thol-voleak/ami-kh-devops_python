@@ -32,6 +32,12 @@
             <span id="alert-success-msg"></span>
         </div>
     </div>
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" hidden id="alert-error">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <span id="alert-error-msg"></span>
+        </div>
+    </div>
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0">
@@ -46,15 +52,8 @@
                 </thead>
                 <tbody>
                 {% for client in data %}
-                <tr>
-                    {% if client.is_deleted %}
-                    <td class="col-sm-2">
-                        <a class="client-deleted" id="{{ client.client_id }}"
-                           href="{% url 'clients:client-detail' client.client_id %}">
-                            {{ client.client_id }}
-                        </a>
-                    </td>
-                    {% else %}
+                <tr id="row-{{ client.client_id }}">
+                    {% if not client.is_deleted %}
                     <td class="col-sm-2">
                         <a class="client-details-link {{ client.is_deleted|yesno:" text,no-hidden" }}"
                         id="{{ client.client_id }}" class="text-info"
@@ -62,12 +61,10 @@
                         {{ client.client_id }}
                         </a>
                     </td>
-                    {% endif %}
                     <td class="col-sm-2">{{ client.client_name|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ client.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-3">
-                        {% if not client.is_deleted %}
                         <div id="client-btn-group-{{ client.client_id }}">
                             <div class="btn-group mb5">
                                 <button type="button"
@@ -124,8 +121,8 @@
                                 </a>
                             </div>
                         </div>
-                        {% endif %}
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -134,6 +131,13 @@
     </div>
 </div>
 <script>
+    function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+        $("#alert-error-msg").text(msg);
+        $("#alert-error").prop("hidden", false);
+        $("#alert-error").fadeIn(1000);
+
+    }
     function regenerate(client_id) {
 
         swal({
@@ -212,16 +216,7 @@
                             $("#client-btn-delete-" + client_id).hide();
                             $("#alert-success-msg").text('Deleted data successfully')
                             $("#alert-success-client").show();
-                            $("#" + client_id).removeClass("client-details-link");
-                            $("#" + client_id).addClass("client-deleted");
-                            $("#client-btn-success-update-" + client_id).addClass("hidden");
-                            $("#client-btn-regenerate-" + client_id).addClass("hidden");
-                            $("#client-btn-delete-" + client_id).attr("disable", "true");
-                            $("#client-btn-success-update-" + client_id).attr("disable", "true");
-                            $("#client-btn-update-" + client_id).attr("disable", "true");
-                            $("#client-btn-group-" + client_id).addClass("hidden");
-                            $("#client-btn-status-" + client_id).attr("disable", "true");
-
+                            $("#" + "row-" + client_id).remove();
                         } else {
                             // Failed
 
@@ -263,6 +258,7 @@
                                 location.reload(true)
                             } else {
                                 // Failed
+                                showErrorMessage(response.msg)
 
                             }
                         },
