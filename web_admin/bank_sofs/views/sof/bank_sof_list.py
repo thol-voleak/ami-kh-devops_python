@@ -60,7 +60,6 @@ class BankSOFView(TemplateView, RESTfulMethods):
             'bank_sof_list': responses,
             'search_by': body
         }
-
         logger.info('========== End search history card ==========')
         return render(request, self.template_name, context)
 

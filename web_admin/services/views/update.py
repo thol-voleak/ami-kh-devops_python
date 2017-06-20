@@ -6,9 +6,7 @@ from web_admin import api_settings
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
-from web_admin import ajax_functions
 import logging
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -19,28 +17,9 @@ class UpdateView(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
         service_id = context['service_id']
-
-        manager = Manager()
-        return_dict = manager.dict()
-
         currencies, status1 = self._get_currency_choices()
-
-        p2 = Process(target=self._get_service_group_choices, args=(2, return_dict))
-        p2.start()
-        p3 = Process(target=self._get_service_detail, args=(3, return_dict, service_id))
-        p3.start()
-        p2.join()
-        p3.join()
-
-        service_groups, status2 = return_dict[2]
-        service_detail, status3 = return_dict[3]
-
-
-        if p2.is_alive():
-            p2.terminate()
-
-        if p3.is_alive():
-            p3.terminate()
+        service_groups, status2 = self._get_service_group_choices()
+        service_detail, status3 = self._get_service_detail(service_id)
 
         if status1 and status2 and status3:
             context = {
@@ -49,6 +28,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                 'service_detail': service_detail,
                 'service_id': service_id
             }
+
             return render(request, self.template_name, context)
         else:
             return None
@@ -61,7 +41,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         currency = request.POST.get('currency')
         description = request.POST.get('description')
 
-        data = {
+        body = {
             'service_group_id': service_group_id,
             'service_name': service_name,
             'currency': currency,
@@ -70,18 +50,35 @@ class UpdateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_UPDATE_URL.format(service_id)
-        result = ajax_functions._put_method(request, url, "Service", logger, data)
-        logger.info('========== Finish updating Service ==========')
+        data, success = self._put_method(url, "", logger, body)
 
-        response = json.loads(result.content)
-
-        if response["status"] == 2:
+        if success:
+            logger.info('========== Finish updating Service ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 'Updated data successfully'
             )
-        return result
+            return redirect('services:service_detail', ServiceId=service_id)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=data
+            )
+
+            currencies, status1 = self._get_currency_choices()
+            service_groups, status2 = self._get_service_group_choices()
+
+            if status1 and status2:
+                body['service_group_id'] = int(body['service_group_id'])
+                context = {
+                    'currencies': currencies,
+                    'service_groups': service_groups,
+                    'service_detail': body, 
+                    'service_id': service_id
+                }
+                return render(request, self.template_name, context)
 
 
     def _get_headers(self):
@@ -109,9 +106,9 @@ class UpdateView(TemplateView, RESTfulMethods):
 
         return result
 
-    def _get_service_group_choices(self, procnum, dict):
-        dict[procnum] = self._get_method(SERVICE_GROUP_LIST_URL, "service group choices", logger, True)
+    def _get_service_group_choices(self):
+        return self._get_method(SERVICE_GROUP_LIST_URL, "service group choices", logger, True)
 
-    def _get_service_detail(self, procnum, dict, service_id):
+    def _get_service_detail(self, service_id):
         url = api_settings.SERVICE_DETAIL_URL.format(service_id)
-        dict[procnum] = self._get_method(url, "service detail", logger, True)
+        return self._get_method(url, "service detail", logger, True)
