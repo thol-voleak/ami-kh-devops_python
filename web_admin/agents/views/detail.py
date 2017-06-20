@@ -5,8 +5,10 @@ from web_admin.restful_methods import RESTfulMethods
 
 logger = logging.getLogger(__name__)
 
+
 class DetailView(TemplateView, RESTfulMethods):
     template_name = "agents/detail.html"
+    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
 
     def get_context_data(self, **kwargs):
         logger.info('========== Start showing Agent Detail page ==========')
@@ -15,12 +17,16 @@ class DetailView(TemplateView, RESTfulMethods):
             agent_id = context['agent_id']
 
             context, status = self._get_agent_detail(agent_id)
+            agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
+            currencies, status_get_currency = self._get_currencies(agent_id)
             context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
             if status:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])
-                if status:
+                if status and status_get_agent_identity and status_get_currency:
                     context.update({
-                        'agent_type_name': agent_type_name
+                        'agent_type_name': agent_type_name,
+                        'status_get_agent_identity': agent_identity['agent_identities'][0],
+                        'currencies': currencies
                     })
                 else:
                     context.update({
@@ -28,10 +34,22 @@ class DetailView(TemplateView, RESTfulMethods):
                     })
             logger.info('========== Finished showing Agent Detail page ==========')
             return context
-        except:
+        except Exception as ex:
+            logging.info(ex)
             context = {'agent': {}}
             logger.info('========== Finished showing Agent Detail page ==========')
             return context
+
+    def _get_currencies(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        currencies_str = ''
+        if success:
+            currencies_str = ', '.join([elem["currency"] for elem in data])
+
+        return currencies_str, success
 
     def _get_agent_detail(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
@@ -43,7 +61,17 @@ class DetailView(TemplateView, RESTfulMethods):
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
         return context, success
-    
+
+    def _get_agent_identity(self, agent_id):
+
+        data, success = self._get_method(api_path=self.get_agent_identity_url.format(agent_id=agent_id),
+                                         func_description="Get agent identity",
+                                         logger=logger)
+        context = {
+            'agent_identities': data
+        }
+        return context, success
+
     def _get_agent_type_name(self, agent_type_id):
         agent_types_list, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                                      func_description="Agent types list from backend",
