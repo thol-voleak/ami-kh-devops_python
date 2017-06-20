@@ -34,11 +34,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
-<<<<<<< HEAD
         self.logger.info('========== Start creating Service ==========')
-=======
-        logger.info('========== Start creating service ==========')
->>>>>>> 3e578adc1c5b5a0489b56ab639de304d2abb0b18
         context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -53,19 +49,15 @@ class CreateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_CREATE_URL
-<<<<<<< HEAD
         result = ajax_functions._post_method(request, url, "", logger, body)
-        self.logger.info('========== Finish creating Service ==========')
 
         response = json.loads(result.content)
-=======
         data, success = self._post_method(api_path=url,
                                           func_description="creating service",
                                           logger=logger, params=body)
->>>>>>> 3e578adc1c5b5a0489b56ab639de304d2abb0b18
 
         if success:
-            logger.info('========== Finish creating Service ==========')
+            self.logger.info('========== Finish creating Service ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,

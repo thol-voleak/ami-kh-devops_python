@@ -57,17 +57,13 @@ class UpdateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_UPDATE_URL.format(service_id)
-<<<<<<< HEAD
         result = ajax_functions._put_method(request, url, "Service", logger, data)
-        self.logger.info('========== Finish updating Service ==========')
 
         response = json.loads(result.content)
-=======
         data, success = self._put_method(url, "", logger, body)
->>>>>>> 3e578adc1c5b5a0489b56ab639de304d2abb0b18
 
         if success:
-            logger.info('========== Finish updating Service ==========')
+            self.logger.info('========== Finish updating Service ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,

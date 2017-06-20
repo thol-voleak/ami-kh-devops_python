@@ -84,7 +84,7 @@ AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend',)
 
 ROOT_URLCONF = 'web_admin.urls'
 
-PROJECT_PATH = os.path.realpath(os.path.dirname(__name__))
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
