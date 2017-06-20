@@ -102,9 +102,9 @@ class CreateView(TemplateView, RESTfulMethods):
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)
         async_result = pool.apply_async(self._get_currency_choices)
-        logger.info('========== Start Getting Service Group Choices ==========')
+        self.logger.info('========== Start Getting Service Group Choices ==========')
         service_groups, success_service = self._get_service_group_choices()
-        logger.info('========== Finish Getting Service Group Choices ==========')
+        self.logger.info('========== Finish Getting Service Group Choices ==========')
         currencies, success_currency = async_result.get()
         if success_currency and success_service:
             return {
