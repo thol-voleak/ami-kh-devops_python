@@ -36,7 +36,7 @@
                                             value="login">
                                         <span>Sign in</span>
                                     </button>
-                                    <input type="hidden" name="next" value="{{ next }}"/>
+                                    <input type="hidden" name="next" value="{{ next|default_if_none:'' }}"/>
                                 </form>
                             </div>
                         </div>

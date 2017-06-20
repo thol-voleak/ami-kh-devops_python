@@ -27,7 +27,8 @@ def login_user(request):
             # TODO: set authentication user is unique from db
             request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
             login(request, user)
-            return redirect('web:web-index')
+            next_request = request.POST.get('next') or 'web:web-index'
+            return redirect(next_request)
 
     elif request.GET:
         next_request = request.GET['next']

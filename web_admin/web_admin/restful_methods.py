@@ -54,7 +54,7 @@ class RESTfulMethods(GetHeaderMixin):
 
             result = data, True
         else:
-            message = status.get('message','')
+            message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
@@ -107,6 +107,7 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
+
             if message:
                 result = message, False
             else:
@@ -157,6 +158,7 @@ class RESTfulMethods(GetHeaderMixin):
                         code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
+
             if message:
                 result = message, False
             else:
@@ -197,7 +199,6 @@ class RESTfulMethods(GetHeaderMixin):
             else:
                 raise Exception(response.content)
         return result
-
 
     '''
     Author: Steve Le

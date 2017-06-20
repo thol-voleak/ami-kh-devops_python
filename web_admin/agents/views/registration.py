@@ -24,7 +24,8 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
                                          func_description="Agent Type List",
                                          logger=logger,
                                          is_getting_list=True)
-        return data
+        newdata = [i for i in data if not i['is_deleted']]
+        return newdata
 
     def _get_currencies_dropdown(self):
         data, success = self._get_method(api_path=api_settings.GET_ALL_CURRENCY_URL,
