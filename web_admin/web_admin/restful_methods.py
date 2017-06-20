@@ -2,7 +2,7 @@ import time
 import requests
 
 from django.conf import settings
-
+from web_admin.utils import setup_logger
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
@@ -22,8 +22,8 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+        logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=url))
-
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
@@ -78,6 +78,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = settings.DOMAIN_NAMES + api_path
         else:
             url = api_path
+        logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
         start_date = time.time()
@@ -126,6 +127,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = settings.DOMAIN_NAMES + api_path
         else:
             url = api_path
+        logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
         start_time = time.time()
@@ -169,6 +171,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = settings.DOMAIN_NAMES + api_path
         else:
             url = api_path
+        logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
         start_time = time.time()

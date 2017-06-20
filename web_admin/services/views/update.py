@@ -6,6 +6,8 @@ from web_admin import api_settings
 from django.shortcuts import redirect, render
 from multiprocessing import Process, Manager
 from django.contrib import messages
+from web_admin import ajax_functions
+from web_admin.utils import setup_logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,6 +15,11 @@ logger = logging.getLogger(__name__)
 
 class UpdateView(TemplateView, RESTfulMethods):
     template_name = "services/service_update.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
@@ -34,7 +41,7 @@ class UpdateView(TemplateView, RESTfulMethods):
             return None
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start updating Service ==========')
+        self.logger.info('========== Start updating Service ==========')
         service_id = kwargs['service_id']
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -50,10 +57,13 @@ class UpdateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_UPDATE_URL.format(service_id)
+        result = ajax_functions._put_method(request, url, "Service", logger, data)
+
+        response = json.loads(result.content)
         data, success = self._put_method(url, "", logger, body)
 
         if success:
-            logger.info('========== Finish updating Service ==========')
+            self.logger.info('========== Finish updating Service ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -75,7 +85,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                 context = {
                     'currencies': currencies,
                     'service_groups': service_groups,
-                    'service_detail': body, 
+                    'service_detail': body,
                     'service_id': service_id
                 }
                 return render(request, self.template_name, context)

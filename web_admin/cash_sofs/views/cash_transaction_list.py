@@ -4,6 +4,7 @@ from web_admin.api_settings import CASH_TRANSACTIONS_URL
 from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
+from web_admin.utils import setup_logger
 
 
 logger = logging.getLogger(__name__)
@@ -16,17 +17,22 @@ IS_SUCCESS = {
 
 class CashTransactionView(TemplateView, RESTfulMethods):
     template_name = "cash_transaction.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CashTransactionView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search cash transaction ==========')
+        self.logger.info('========== Start search cash transaction ==========')
 
         sof_id = request.GET.get('sof_id')
         order_id = request.GET.get('order_id')
         type = request.GET.get('type')
 
-        logger.info('sof_id: {}'.format(sof_id))
-        logger.info('order_id: {}'.format(order_id))
-        logger.info('type: {}'.format(type))
+        self.logger.info('sof_id: {}'.format(sof_id))
+        self.logger.info('order_id: {}'.format(order_id))
+        self.logger.info('type: {}'.format(type))
 
         body = {}
         if sof_id is not '':
@@ -48,7 +54,7 @@ class CashTransactionView(TemplateView, RESTfulMethods):
                    'type': type
                    }
 
-        logger.info('========== End search cash transaction ==========')
+        self.logger.info('========== End search cash transaction ==========')
         return render(request, self.template_name, context)
 
     def get_cash_transaction_list(self, body):

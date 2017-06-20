@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView, View
 from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
+from web_admin.utils import setup_logger
 
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,11 @@ logger = logging.getLogger(__name__)
 
 class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CommissionAndPaymentView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(CommissionAndPaymentView, self).get_context_data(*args, **kwargs)
@@ -26,7 +32,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         if not tier_id:
             raise Http404
 
-        logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
@@ -46,13 +52,13 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
@@ -124,7 +130,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         if not tier_id:
             raise Http404
 
-        logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
@@ -144,13 +150,13 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
@@ -222,7 +228,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
         url = settings.DOMAIN_NAMES + api_settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
-        logger.info('========== Start create Setting Payment & Fee Structure ==========')
+        self.logger.info('========== Start create Setting Payment & Fee Structure ==========')
 
         data = request.POST.copy()
         post_data = {
@@ -251,7 +257,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
                 messages.INFO,
                 'Something wrong happened!'
             )
-        logger.info('========== Finish create Setting Payment & Fee Structure ==========')
+        self.logger.info('========== Finish create Setting Payment & Fee Structure ==========')
 
         return redirect('services:commission_and_payment',
                         service_id=service_id,
@@ -261,8 +267,14 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
 
 class BalanceDistributionsUpdate(View):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(BalanceDistributionsUpdate, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start updating setting payment & fee structure ==========")
+        self.logger.info("========== Start updating setting payment & fee structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
         url = api_settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
@@ -291,13 +303,19 @@ class BalanceDistributionsUpdate(View):
         #
         # return httpResponse
         response = ajax_functions._put_method(request, url, "", logger, post_data)
-        logger.info("========== Finished updating setting payment & fee structure ==========")
+        self.logger.info("========== Finished updating setting payment & fee structure ==========")
         return response
 
 
 class BonusDistributionsUpdate(View):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(BonusDistributionsUpdate, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start update setting bonus ==========")
+        self.logger.info("========== Start update setting bonus ==========")
 
         bonus_distributions_id = kwargs.get('bonus_distributions_id')
 
@@ -327,12 +345,18 @@ class BonusDistributionsUpdate(View):
         #
         # return httpResponse
         response = ajax_functions._put_method(request, url, "", logger, post_data)
-        logger.info("========== Finish update setting bonus ==========")
+        self.logger.info("========== Finish update setting bonus ==========")
         return response
 
 class AgentBonusDistributionsUpdate(View):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentBonusDistributionsUpdate, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start updating agent bonus distribution ==========")
+        self.logger.info("========== Start updating agent bonus distribution ==========")
 
         agent_bonus_distribution_id = kwargs.get('agent_bonus_distribution_id')
         url = api_settings.AGENT_BONUS_DISTRIBUTION_UPDATE_URL.format(agent_bonus_distribution_id=agent_bonus_distribution_id)
@@ -358,13 +382,18 @@ class AgentBonusDistributionsUpdate(View):
         # else:
         #     httpResponse = HttpResponse(status=400, content=response)
         response = ajax_functions._put_method(request, url, "", logger, post_data)
-        logger.info("========== Finished updating agent bonus distribution ==========")
+        self.logger.info("========== Finished updating agent bonus distribution ==========")
         # return httpResponse
 
         return response
 
 class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SettingBonusView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(SettingBonusView, self).get_context_data(*args, **kwargs)
@@ -374,7 +403,7 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
         if not tier_id:
             raise Http404
 
-        logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
@@ -394,13 +423,13 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
@@ -470,7 +499,7 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
         service_command_id = kwargs.get('service_command_id')
 
         url = settings.DOMAIN_NAMES + api_settings.BONUS_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        logger.info('========== Start create Setting Bonus ==========')
+        self.logger.info('========== Start create Setting Bonus ==========')
 
         data = request.POST.copy()
         post_data = {
@@ -500,7 +529,7 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
                 'Something wrong happened!'
             )
 
-        logger.info('========== Finish create Setting Bonus ==========')
+        self.logger.info('========== Finish create Setting Bonus ==========')
 
         return redirect('services:commission_and_payment',
                         service_id=service_id,
@@ -510,7 +539,7 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
 
 class PaymentAndFeeStructureDetailView(View):
     def delete(self, request, *args, **kwargs):
-        logger.info('========== Start deleting Balance Distribution ==========')
+        self.logger.info('========== Start deleting Balance Distribution ==========')
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
         # success = self._delete_balance_distribution(balance_distribution_id)
@@ -526,11 +555,16 @@ class PaymentAndFeeStructureDetailView(View):
     #     return success
         url = api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id)
         response = ajax_functions._delete_method(request, url, "", logger)
-        logger.info('========== Finish deleting Balance Distribution ==========')
+        self.logger.info('========== Finish deleting Balance Distribution ==========')
         return response
 
 class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentFeeView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(AgentFeeView, self).get_context_data(*args, **kwargs)
@@ -540,7 +574,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
         if not tier_id:
             raise Http404
 
-        logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
@@ -560,13 +594,13 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
@@ -636,7 +670,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
         service_command_id = kwargs.get('service_command_id')
 
         url = api_settings.AGENT_FEE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id)
-        logger.info('========== Start create Agent Hierarchy Fee ==========')
+        self.logger.info('========== Start create Agent Hierarchy Fee ==========')
 
         data = request.POST.copy()
         post_data = {
@@ -670,7 +704,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
                 'Something wrong happened!'
             )
 
-        logger.info('========== Finish create Agent Hierarchy Fee list ==========')
+        self.logger.info('========== Finish create Agent Hierarchy Fee list ==========')
 
         return redirect('services:commission_and_payment',
                         service_id=service_id,
@@ -681,6 +715,11 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
 
 class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentBonusDistributions, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(AgentBonusDistributions, self).get_context_data(*args, **kwargs)
@@ -690,7 +729,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
         if not tier_id:
             raise Http404
 
-        logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
 
         fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
 
@@ -710,13 +749,13 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
         return context
 
     def _filter_deleted_items(self, data):
@@ -781,7 +820,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
 
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start add agent hierarchy distribution bonus ==========')
+        self.logger.info('========== Start add agent hierarchy distribution bonus ==========')
         service_id = kwargs.get('service_id')
         tf_fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
@@ -816,7 +855,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
                 messages.INFO,
                 'Something wrong happened!'
             )
-        logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
+        self.logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
 
         return redirect('services:commission_and_payment',
                         service_id=service_id,

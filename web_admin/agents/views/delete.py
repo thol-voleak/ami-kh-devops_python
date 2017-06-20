@@ -3,7 +3,7 @@ import logging
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
-
+from web_admin.utils import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import api_settings
 
@@ -12,6 +12,11 @@ logger = logging.getLogger(__name__)
 class AgentDelete(TemplateView, RESTfulMethods):
 
     template_name = "agents/delete.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentDelete, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         context = super(AgentDelete, self).get_context_data(**kwargs)
@@ -38,7 +43,7 @@ class AgentDelete(TemplateView, RESTfulMethods):
             return redirect('agents:agent_delete', agent_id=agent_id)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start showing Delete Agent page ==========')
+        self.logger.info('========== Start showing Delete Agent page ==========')
         context = super(AgentDelete, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
@@ -54,11 +59,11 @@ class AgentDelete(TemplateView, RESTfulMethods):
                 context.update({
                     'agent_type_name': context.agent.agent_type_id
                 })
-            logger.info('========== Finished showing Delete Agent page ==========')
+            self.logger.info('========== Finished showing Delete Agent page ==========')
             return context
         else:
             context = {'agent': {}}
-            logger.info('========== Finished showing Delete Agent page ==========')
+            self.logger.info('========== Finished showing Delete Agent page ==========')
             return context
 
     def _get_agent_detail(self, agent_id):

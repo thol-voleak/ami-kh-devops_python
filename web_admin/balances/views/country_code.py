@@ -2,6 +2,7 @@ import copy
 import logging
 import json
 
+from web_admin.utils import setup_logger
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class CountryCode(View, RESTfulMethods):
     def get(self, request, *args, **kwargs):
+        self.logger = setup_logger(request, logger)
         url = GLOBAL_CONFIGURATIONS_URL
         data, success = self._get_method(api_path=url,
                                          func_description="global configurations",
@@ -28,7 +30,8 @@ class CountryCode(View, RESTfulMethods):
         return render(request, 'country/country_code.html', context)
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start add country code ==========')
+        self.logger = setup_logger(request, logger)
+        self.logger.info('========== Start add country code ==========')
         country_code = request.POST.get('country_code')
         params = {
             'value': "" + country_code,
@@ -37,6 +40,6 @@ class CountryCode(View, RESTfulMethods):
         data_log = copy.deepcopy(params)
         data_log['client_secret'] = ''
         result = ajax_functions._put_method(request, url, "", logger, params)
-        logger.info('========== Finish add country code ==========')
+        self.logger.info('========== Finish add country code ==========')
         return result
 

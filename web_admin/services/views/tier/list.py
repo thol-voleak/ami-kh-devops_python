@@ -6,7 +6,7 @@ from django.conf import settings
 from web_admin import api_settings
 from django.http import Http404
 from django.views.generic.base import TemplateView
-
+from web_admin.utils import setup_logger
 from services.views.mixins import GetCommandNameAndServiceNameMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.restful_methods import RESTfulMethods
@@ -17,6 +17,11 @@ logger = logging.getLogger(__name__)
 class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
 
     template_name = "services/tier/tier_list.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(FeeTierListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(FeeTierListView, self).get_context_data(*args, **kwargs)
@@ -26,21 +31,21 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
         if not service_id or not service_command_id:
             raise Http404
 
-        logger.info('========== Start get Fee Tier List ==========')
+        self.logger.info('========== Start get Fee Tier List ==========')
         data, success = self._get_fee_tier_list(service_command_id)
-        logger.info('========== Finished get Fee Tier List ==========')
+        self.logger.info('========== Finished get Fee Tier List ==========')
 
         context['data'] = data
         context['msg'] = self.request.session.pop('add_tier_msg', None)
         context['edit_msg'] = self.request.session.pop('edit_tier_msg', None)
 
-        logger.info('========== Start get service name ==========')
+        self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
-        logger.info('========== Finish get service name ==========')
+        self.logger.info('========== Finish get service name ==========')
 
-        logger.info('========== Start get command name ==========')
+        self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
-        logger.info('========== Finish get command name ==========')
+        self.logger.info('========== Finish get command name ==========')
 
         return context
 

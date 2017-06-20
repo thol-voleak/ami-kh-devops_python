@@ -4,8 +4,12 @@ from django.http import JsonResponse
 from authentications.utils import get_auth_header
 from django.conf import settings
 from django.contrib import messages
+from web_admin.utils import setup_logger
+
 
 def put_client(request, url, title, logger, client_id):
+    logger = logging.getLogger(__name__)
+    logger = setup_logger(request, logger)
     logger.info('========== Start {} client =========='.format(title))
     params = {
         'status': title,

@@ -5,6 +5,8 @@ from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from web_admin.api_settings import SEARCH_AGENT
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +17,14 @@ STATUS = {
 class ListView(TemplateView, RESTfulMethods):
 
     template_name = 'agents/list.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start showing Agent List page ==========')
+        self.logger.info('========== Start showing Agent List page ==========')
         context = {
             'agent_update_msg': self.request.session.pop('agent_update_msg', None)
         }
@@ -47,7 +54,7 @@ class ListView(TemplateView, RESTfulMethods):
         data = self._get_agents(params=body)
         context['data'] = data
 
-        logger.info('========== Finished showing Agent List page ==========')
+        self.logger.info('========== Finished showing Agent List page ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -100,7 +107,7 @@ class ListView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _get_agents(self, params):
-        logger.info('========== Start searching agent ==========')
+        self.logger.info('========== Start searching agent ==========')
 
         api_path = SEARCH_AGENT
         data, status = self._post_method(
@@ -110,5 +117,5 @@ class ListView(TemplateView, RESTfulMethods):
             params=params
         )
 
-        logger.info('========== Finished searching agent ==========')
+        self.logger.info('========== Finished searching agent ==========')
         return data

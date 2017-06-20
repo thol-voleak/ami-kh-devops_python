@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CARD_LIST_PATH
+from web_admin.utils import setup_logger
+
+
 logger = logging.getLogger(__name__)
 
 IS_STOP = {
@@ -13,17 +16,22 @@ IS_STOP = {
 
 class ProfileView(TemplateView, RESTfulMethods):
     template_name = "profile.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ProfileView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search card ==========')
+        self.logger.info('========== Start search card ==========')
 
         card_identifier = request.GET.get('card_identifier')
         user_id = request.GET.get('user_id')
         user_type = request.GET.get('user_type')
 
-        logger.info('card_identifier: {}'.format(card_identifier))
-        logger.info('user_id: {}'.format(user_id))
-        logger.info('user_type: {}'.format(user_type))
+        self.logger.info('card_identifier: {}'.format(card_identifier))
+        self.logger.info('user_id: {}'.format(user_id))
+        self.logger.info('user_type: {}'.format(user_type))
 
         body = {}
         
@@ -46,7 +54,7 @@ class ProfileView(TemplateView, RESTfulMethods):
                    'user_type': user_type
                    }
 
-        logger.info('========== End search card ==========')
+        self.logger.info('========== End search card ==========')
         return render(request, 'profile.html', context)
 
     def get_card_list(self, body):

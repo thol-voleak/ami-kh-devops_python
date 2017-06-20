@@ -4,26 +4,32 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from web_admin.api_settings import SPI_DETAIL_PATH, SPI_DELETE_PATH
 import logging
+from web_admin.utils import setup_logger
 
 logger = logging.getLogger(__name__)
 
 
 class SPIDeleteView(TemplateView, RESTfulMethods):
     template_name = 'services/spi/delete.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SPIDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start Show Delete SPI page ==========')
+        self.logger.info('========== Start Show Delete SPI page ==========')
         try:
             context = super(SPIDeleteView, self).get_context_data(**kwargs)
             spi_url_id = context['spi_url_id']
-            logger.info('========== Finished show Delete SPI page ==========')
+            self.logger.info('========== Finished show Delete SPI page ==========')
             context['spi_detail'] = self.get_spi_detail(spi_url_id)
             return context
         except Exception as e:
             return {}
 
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start delete SPI URL by service command ==========")
+        self.logger.info("========== Start delete SPI URL by service command ==========")
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
         command_id = kwargs.get('command_id')
@@ -35,7 +41,7 @@ class SPIDeleteView(TemplateView, RESTfulMethods):
         data, success = self._delete_method(api_path=SPI_DELETE_PATH.format(spi_url_id=spi_url_id),
                                             func_description="",
                                             logger=logger)
-        logger.info("========== Finish delete SPI URL by service command ==========")
+        self.logger.info("========== Finish delete SPI URL by service command ==========")
 
         if success:
             request.session['spi_delete_msg'] = 'Deleted data successfully'
