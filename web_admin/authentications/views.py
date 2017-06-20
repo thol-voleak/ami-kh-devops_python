@@ -37,6 +37,7 @@ def login_user(request):
 
 def logout_user(request):
     logger = logging.getLogger(__name__)
+    logger = setup_logger(request, logger)
     logger.info('========== Start to logout ==========')
     url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username

@@ -7,15 +7,20 @@ from django.shortcuts import render
 
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 class ListView(TemplateView, RESTfulMethods):
     template_name = 'member_customer_list.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        logger.info('========== Start searching Customer ==========')
+        self.logger.info('========== Start searching Customer ==========')
         url = api_settings.MEMBER_CUSTOMER_PATH
         search = request.GET.get('search')
         if search is None:
@@ -31,6 +36,6 @@ class ListView(TemplateView, RESTfulMethods):
                                               params=params)
         context['search_count'] = len(data)
         context['data'] = data
-        logger.info('========== Finished searching Customer ==========')
+        self.logger.info('========== Finished searching Customer ==========')
         return render(request, 'member_customer_list.html', context)
 

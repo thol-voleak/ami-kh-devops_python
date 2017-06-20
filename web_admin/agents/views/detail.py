@@ -2,14 +2,21 @@ import logging
 from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
 class DetailView(TemplateView, RESTfulMethods):
     template_name = "agents/detail.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start showing Agent Detail page ==========')
+        self.logger.info('========== Start showing Agent Detail page ==========')
         try:
             context = super(DetailView, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
@@ -26,11 +33,11 @@ class DetailView(TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
-            logger.info('========== Finished showing Agent Detail page ==========')
+            self.logger.info('========== Finished showing Agent Detail page ==========')
             return context
         except:
             context = {'agent': {}}
-            logger.info('========== Finished showing Agent Detail page ==========')
+            self.logger.info('========== Finished showing Agent Detail page ==========')
             return context
 
     def _get_agent_detail(self, agent_id):

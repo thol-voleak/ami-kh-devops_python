@@ -4,15 +4,21 @@ from django.http import Http404
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 import logging
+from web_admin.utils import setup_logger
 
 logger = logging.getLogger(__name__)
 
 
 class SPIView(TemplateView, RESTfulMethods):
     template_name = 'services/spi/list.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SPIView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start adding SPI URL by service command ==========")
+        self.logger.info("========== Start adding SPI URL by service command ==========")
 
         service_command_id = kwargs.get('service_command_id')
         if not service_command_id:
@@ -43,7 +49,7 @@ class SPIView(TemplateView, RESTfulMethods):
             params['read_timeout'] = 3600
 
         data, success = self.add_spi(service_command_id, params)
-        logger.info("========== Finish adding SPI URL by service command ==========")
+        self.logger.info("========== Finish adding SPI URL by service command ==========")
 
         if success:
             request.session['add_spi_url_msg'] = 'Added SPI URL successfully'
@@ -51,7 +57,7 @@ class SPIView(TemplateView, RESTfulMethods):
 
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start getting SPI url list ==========')
+        self.logger.info('========== Start getting SPI url list ==========')
         context = super(SPIView, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
         if not service_command_id:
@@ -64,7 +70,7 @@ class SPIView(TemplateView, RESTfulMethods):
         context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
         context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
         context['spi_delete_msg'] = self.request.session.pop('spi_delete_msg', None)
-        logger.info('========== Finish getting SPI url list ==========')
+        self.logger.info('========== Finish getting SPI url list ==========')
         return context
 
     def get_spi_list(self, service_command_id):

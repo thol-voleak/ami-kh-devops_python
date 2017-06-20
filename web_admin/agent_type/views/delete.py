@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.urls import reverse
-
+from web_admin.utils import setup_logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,22 +13,27 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(TemplateView, RESTfulMethods):
     template_name = "agent_type/agent_type_delete.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start showing Delete Agent Type page ==========')
+        self.logger.info('========== Start showing Delete Agent Type page ==========')
         try:
             context = super(DeleteView, self).get_context_data(**kwargs)
             agent_type_id = context['agent_type_id']
-            logger.info('========== Finished showing Delete Agent Type page ==========')
+            self.logger.info('========== Finished showing Delete Agent Type page ==========')
             return self._get_agent_type_detail(agent_type_id)
         except Exception as e:
-            logger.error(e)
+            self.logger.error(e)
             context = {}
-            logger.info('========== Finished showing Delete Agent Type page ==========')
+            self.logger.info('========== Finished showing Delete Agent Type page ==========')
             return context
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start deleting agent type ==========')
+        self.logger.info('========== Start deleting agent type ==========')
         agent_type_id = kwargs['agent_type_id']
 
         data, success = self._delete_method(api_path=DELETE_AGENT_TYPE_URL.format(agent_type_id),
@@ -36,10 +41,10 @@ class DeleteView(TemplateView, RESTfulMethods):
                                             logger=logger)
         if success:
             request.session['agent_type_delete_msg'] = 'Deleted data successfully'
-            logger.info('========== Finished deleting agent type ==========')
+            self.logger.info('========== Finished deleting agent type ==========')
             return HttpResponseRedirect(reverse('agent_type:agent-type-list'))
         else:
-            logger.info('========== Finished deleting agent type ==========')
+            self.logger.info('========== Finished deleting agent type ==========')
             raise Exception("Something went wrong.")
         return success
 

@@ -9,7 +9,7 @@ from django.utils import dateparse
 from django.http import HttpResponseRedirect
 
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 '''
@@ -24,9 +24,14 @@ History:
 class AgentUpdate(TemplateView, RESTfulMethods):
 
     template_name = "agents/update.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentUpdate, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start showing Update Agent page ==========')
+        self.logger.info('========== Start showing Update Agent page ==========')
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
@@ -67,7 +72,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             'currencies': currencies,
             'agent_profile': agent_profile
         }
-        logger.info('========== Finished showing Update Agent page ==========')
+        self.logger.info('========== Finished showing Update Agent page ==========')
         return render(request, self.template_name, context)
 
     '''
@@ -114,7 +119,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         return currencies
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start updating agent ==========')
+        self.logger.info('========== Start updating agent ==========')
         agent_id = kwargs['agent_id']
 
         agent_type_id = request.POST.get('agent_type_id')
@@ -223,7 +228,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             previous_page = request.POST.get('previous_page')
             logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
-        logger.info('========== Finished updating agent ==========')
+        self.logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):

@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CARD_HISTORY_PATH
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -14,19 +16,24 @@ IS_SUCCESS = {
 
 class HistoryView(TemplateView, RESTfulMethods):
     template_name = "history.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(HistoryView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search history card ==========')
+        self.logger.info('========== Start search history card ==========')
 
         trans_id = request.GET.get('trans_id')
         card_id = request.GET.get('card_id')
         user_id = request.GET.get('user_id')
         user_type_id = request.GET.get('user_type_id')
 
-        logger.info('trans_id: {}'.format(trans_id))
-        logger.info('card_id: {}'.format(card_id))
-        logger.info('user_id: {}'.format(user_id))
-        logger.info('user_type_id: {}'.format(user_type_id))
+        self.logger.info('trans_id: {}'.format(trans_id))
+        self.logger.info('card_id: {}'.format(card_id))
+        self.logger.info('user_id: {}'.format(user_id))
+        self.logger.info('user_type_id: {}'.format(user_type_id))
 
         body = {}
         if trans_id is None and card_id is None and user_id is None and user_type_id is None:
@@ -54,7 +61,7 @@ class HistoryView(TemplateView, RESTfulMethods):
                    'user_type_id': user_type_id
                    }
 
-        logger.info('========== End search card history ==========')
+        self.logger.info('========== End search card history ==========')
         return render(request, 'history.html', context)
 
     def get_card_history_list(self, body):

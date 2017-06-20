@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import encrypt_text
+from web_admin.utils import encrypt_text, setup_logger
 logger = logging.getLogger(__name__)
 
 '''
@@ -16,9 +16,14 @@ History:
 class SystemUserCreate(TemplateView, RESTfulMethods):
 
     template_name = "system_user/create.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SystemUserCreate, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Fetch form for creating new system user ==========')
+        self.logger.info('========== Fetch form for creating new system user ==========')
 
         system_user_info = {
             "username": None,
@@ -33,11 +38,11 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
             'error_msg': None
         }
 
-        logger.info('========== Finish fetching form for creating new system user ==========')
+        self.logger.info('========== Finish fetching form for creating new system user ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start creating new system user ==========')
+        self.logger.info('========== Start creating new system user ==========')
 
         # Build API Path
         api_path = api_settings.SYSTEM_USER_CREATE_URL
@@ -63,7 +68,7 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
             'system_user_info': data
         }
 
-        logger.info('========== Finish creating new system user ==========')
+        self.logger.info('========== Finish creating new system user ==========')
         if status:
             messages.add_message(request, messages.SUCCESS, 'Added data successfully')
             return redirect('system_user:system-user-list')

@@ -4,15 +4,20 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect, render
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 
 class AddView(TemplateView,RESTfulMethods):
     template_name = "services/tier/tier_add.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AddView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start Adding Tier ==========')
+        self.logger.info('========== Start Adding Tier ==========')
         context = super(AddView, self).get_context_data(**kwargs)
         service_id = context['service_id']
         command_id = context['command_id']
@@ -54,7 +59,7 @@ class AddView(TemplateView,RESTfulMethods):
             data['amount_type'] = request.POST.get('amount_type')
 
         success = self._add_tier(service_command_id, data)
-        logger.info('========== Finish Adding Tier ==========')
+        self.logger.info('========== Finish Adding Tier ==========')
         if success:
             request.session['add_tier_msg'] = 'Added data successfully'
         return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,

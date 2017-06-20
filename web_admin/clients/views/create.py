@@ -5,11 +5,21 @@ from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
+
 logger = logging.getLogger(__name__)
 
+
 class ClientCreate(TemplateView, RESTfulMethods):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ClientCreate, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        logger.info("========== Start Creating client ==========")
+        self.logger.info("========== Start Creating client ==========")
         client_id = _generate_client_id()
         client_secret = _generate_client_secret()
         client_info = {
@@ -46,7 +56,7 @@ class ClientCreate(TemplateView, RESTfulMethods):
 
         data, success = self._post_method(url, 'client', logger, params)
 
-        logger.info("========== Finish Creating client ==========")
+        self.logger.info("========== Finish Creating client ==========")
         if success:
             return redirect('clients:client-list')
         else:

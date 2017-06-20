@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
-
+from web_admin.utils import setup_logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,9 +13,14 @@ logger = logging.getLogger(__name__)
 class BankSOFView(TemplateView, RESTfulMethods):
     template_name = "sof/bank_sof.html"
     search_banks_sof = settings.DOMAIN_NAMES + "report/v1/banks/sofs"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(BankSOFView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search history card ==========')
+        self.logger.info('========== Start search history card ==========')
 
         search = request.GET.get('search')
         if search is None:
@@ -27,11 +32,11 @@ class BankSOFView(TemplateView, RESTfulMethods):
         from_created_timestamp = request.GET.get('from_created_timestamp')
         to_created_timestamp = request.GET.get('to_created_timestamp')
 
-        logger.info('Search key "user_id is" is [{}]'.format(user_id))
-        logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
-        logger.info('Search key "currency" is [{}]'.format(currency))
-        logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
+        self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
+        self.logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
+        self.logger.info('Search key "currency" is [{}]'.format(currency))
+        self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
+        self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
 
         body = {}
         if user_id is not '' and user_id is not None:
@@ -61,7 +66,7 @@ class BankSOFView(TemplateView, RESTfulMethods):
             'search_by': body
         }
 
-        logger.info('========== End search history card ==========')
+        self.logger.info('========== End search history card ==========')
         return render(request, self.template_name, context)
 
     def _get_bank_sof_list(self, body):

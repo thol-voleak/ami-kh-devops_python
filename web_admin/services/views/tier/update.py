@@ -6,15 +6,21 @@ from django.conf import settings
 from web_admin import api_settings
 from django.shortcuts import redirect, render
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
 
 logger = logging.getLogger(__name__)
 
 
 class UpdateView(TemplateView, RESTfulMethods):
     template_name = "services/tier/tier_update.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start Updating Tier ==========')
+        self.logger.info('========== Start Updating Tier ==========')
         context = super(UpdateView, self).get_context_data(**kwargs)
         tier_id = context['fee_tier_id']
         tier_to_update = self._get_tier_detail(tier_id)
@@ -164,7 +170,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         fee_tier_id = context['fee_tier_id']
 
         success = self._edit_tier(fee_tier_id, data)
-        logger.info('========== Finish Updating Tier ==========')
+        self.logger.info('========== Finish Updating Tier ==========')
         if success:
             request.session['edit_tier_msg'] = 'Updated data successfully'
         return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,

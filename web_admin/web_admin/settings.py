@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -83,7 +84,7 @@ AUTHENTICATION_BACKENDS = ('authentications.apps.CustomBackend',)
 
 ROOT_URLCONF = 'web_admin.urls'
 
-PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+PROJECT_PATH = os.path.realpath(os.path.dirname(__name__))
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
@@ -159,7 +160,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | | %(name)s | ami-admin-portal | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | %(IPAddress)s | %(name)s | ami-admin-portal | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },

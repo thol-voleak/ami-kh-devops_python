@@ -7,10 +7,18 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 import logging
 import json
+from web_admin.utils import setup_logger
+
+
 logger = logging.getLogger(__name__)
 
 class CreateView(TemplateView, RESTfulMethods):
     template_name = "services/service_create.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         choices, success = self._get_service_group_and_currency_choices()
@@ -25,7 +33,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start creating Service ==========')
+        self.logger.info('========== Start creating Service ==========')
         context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -41,7 +49,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
         url = api_settings.SERVICE_CREATE_URL
         result = ajax_functions._post_method(request, url, "", logger, body)
-        logger.info('========== Finish creating Service ==========')
+        self.logger.info('========== Finish creating Service ==========')
 
         response = json.loads(result.content)
 
@@ -59,7 +67,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
 
     def _get_currency_choices(self):
-        logger.info('========== Start Getting Currency Choices ==========')
+        self.logger.info('========== Start Getting Currency Choices ==========')
         url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(url, "currency choice", logger)
 
@@ -72,7 +80,7 @@ class CreateView(TemplateView, RESTfulMethods):
             result = currency_list, True
         else:
             result = [], False
-        logger.info('========== Finish Getting Currency Choices ==========')
+        self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
 
 
