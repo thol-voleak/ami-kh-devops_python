@@ -209,7 +209,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
-            logger.info('========== Finished updating agent ==========')
+            self.logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
         self.logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])

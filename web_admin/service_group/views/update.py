@@ -59,6 +59,6 @@ class ServiceGroupUpdateForm(TemplateView, RESTfulMethods):
         data, success = self._get_method(url, "service group detail", logger, is_getting_list=False, params={})
 
         context = {'service_group_info': data}
-        logger.info('========== Finished getting service group detail ==========')
+        self.logger.info('========== Finished getting service group detail ==========')
         return context
 

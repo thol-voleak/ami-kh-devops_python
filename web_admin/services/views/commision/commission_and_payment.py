@@ -121,6 +121,11 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
 class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(PaymentAndFeeStructureView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(PaymentAndFeeStructureView, self).get_context_data(*args, **kwargs)
@@ -538,6 +543,12 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
                         fee_tier_id=fee_tier_id)
 
 class PaymentAndFeeStructureDetailView(View):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(PaymentAndFeeStructureDetailView, self).dispatch(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         self.logger.info('========== Start deleting Balance Distribution ==========')
         balance_distribution_id = kwargs.get('balance_distribution_id')
@@ -849,7 +860,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
                 'Added Agent Hierarchy Distribution - Bonus Successfully'
             )
         else:
-            logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response))
+            self.logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response))
             messages.add_message(
                 request,
                 messages.INFO,

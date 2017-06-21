@@ -9,7 +9,6 @@ import logging
 import json
 from web_admin.utils import setup_logger
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +33,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start creating Service ==========')
+        self.logger.info('========== Start creating service ==========')
         context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -49,9 +48,6 @@ class CreateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_CREATE_URL
-        result = ajax_functions._post_method(request, url, "", logger, body)
-
-        response = json.loads(result.content)
         data, success = self._post_method(api_path=url,
                                           func_description="creating service",
                                           logger=logger, params=body)
@@ -102,9 +98,9 @@ class CreateView(TemplateView, RESTfulMethods):
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)
         async_result = pool.apply_async(self._get_currency_choices)
-        logger.info('========== Start Getting Service Group Choices ==========')
+        self.logger.info('========== Start Getting Service Group Choices ==========')
         service_groups, success_service = self._get_service_group_choices()
-        logger.info('========== Finish Getting Service Group Choices ==========')
+        self.logger.info('========== Finish Getting Service Group Choices ==========')
         currencies, success_currency = async_result.get()
         if success_currency and success_service:
             return {

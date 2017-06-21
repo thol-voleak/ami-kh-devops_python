@@ -165,7 +165,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _delete_method(self, api_path, func_description, logger, params=None):
+    def _delete_method(self, api_path, func_description, logger, params={}):
 
         if 'https' not in api_path:
             url = settings.DOMAIN_NAMES + api_path
