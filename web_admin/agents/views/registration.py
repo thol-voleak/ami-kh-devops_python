@@ -9,14 +9,6 @@ from web_admin.utils import encrypt_text_agent
 
 logger = logging.getLogger(__name__)
 
-'''
-Author: Leo
-History:
-- 2017-05-04: ... (Leo)
--- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
--- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
-'''
-
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
