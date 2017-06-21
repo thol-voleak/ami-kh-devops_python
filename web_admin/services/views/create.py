@@ -9,7 +9,6 @@ import logging
 import json
 from web_admin.utils import setup_logger
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +33,7 @@ class CreateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, {'choices': choices})
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start creating Service ==========')
+        self.logger.info('========== Start creating service ==========')
         context = super(CreateView, self).get_context_data(**kwargs)
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -49,9 +48,6 @@ class CreateView(TemplateView, RESTfulMethods):
         }
 
         url = api_settings.SERVICE_CREATE_URL
-        result = ajax_functions._post_method(request, url, "", logger, body)
-
-        response = json.loads(result.content)
         data, success = self._post_method(api_path=url,
                                           func_description="creating service",
                                           logger=logger, params=body)
