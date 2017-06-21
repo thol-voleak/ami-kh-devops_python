@@ -55,6 +55,7 @@
                         <label class="col-sm-2 control-label">Fee Type</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_fee_type" name="fee_type" required>
+                                <option value="">-</option>
                                 {% for item in fee_types %}
                                     {% if item.fee_type == update_tier.fee_type %}
                                         <option value="{{ item.fee_type }}" selected="selected">{{ item.fee_type }}</option>
@@ -69,7 +70,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.fee_amount }}" type="number" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" required/>
+                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="number" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" required/>
                         </div>
                     </div>
 
@@ -77,6 +78,7 @@
                         <label class="col-sm-2 control-label">Bonus Type</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_bonus_type" name="bonus_type" required>
+                                <option value="">-</option>
                                 {% for item in bonus_types %}
                                     {% if item.bonus_type == update_tier.bonus_type %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
@@ -106,7 +108,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.bonus_amount }}" type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" required/>
+                            <input value="{{ update_tier.bonus_amount|default_if_none:'0' }}" type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" required/>
                         </div>
                     </div>
                     <div class="pull-right">
@@ -145,6 +147,7 @@ function changeValue() {
 
     $bonus_type.on('change', function() {
         toggleFromDropdownList();
+        validate_bonus_type();
     });
 
     toggleFromDropdownList();
@@ -185,9 +188,30 @@ function changeValue() {
         }
     }
 
+    function validate_fee_type() {
+        if ($ddl_fee_type.val() == '') {
+            $('#txt_fee_amount').attr('disabled', true);
+        } else {
+            $('#txt_fee_amount').removeAttr('disabled');
+        }
+    }
+
+    var $ddl_bonus_type = $('#ddl_bonus_type');
+    function validate_bonus_type() {
+        if ($ddl_bonus_type.val() == '') {
+            $('#txt_bonus_amount').attr('disabled', true);
+        } else {
+            $('#txt_bonus_amount').removeAttr('disabled');
+        }
+    }
+
     $ddl_fee_type.on('change', function() {
+        validate_fee_type();
         validate_fee_amount();
     });
+
+    validate_fee_type();
+    validate_bonus_type();
     validate_fee_amount();
 }
 
@@ -233,7 +257,35 @@ function changeAmount() {
 
 $(changeValue);
 $(changeAmount);
+var txt_bonus_amount = document.getElementById("txt_bonus_amount");
+var txt_fee_amount = document.getElementById('txt_fee_amount');
 
+function validateBonusValue() {
+    if(txt_bonus_amount.value == '') {
+        txt_bonus_amount.value = '0';
+    } else {
+        txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_bonus_amount.value == '') {
+        txt_bonus_amount.value = '0';
+    }
+}
+
+function validateFeeValue() {
+    if(txt_fee_amount.value == '') {
+        txt_fee_amount.value = '0';
+    } else {
+        txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_fee_amount.value == '') {
+        txt_fee_amount.value = '0';
+    }
+}
+
+txt_bonus_amount.onkeyup = validateBonusValue;
+txt_fee_amount.onkeyup = validateFeeValue;
 </script>
 
 {% endblock %}
