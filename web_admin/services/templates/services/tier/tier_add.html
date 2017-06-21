@@ -168,6 +168,30 @@ function changeValue() {
     $condition.on('change', function() {
         updateByConditionType();
     });
+
+    var $ddl_fee_type = $('#ddl_fee_type');
+    function validate_fee_amount() {
+        if ($ddl_fee_type.val() == '% rate') {
+            $('#txt_fee_amount').attr('max', 100);
+        } else {
+            $('#txt_fee_amount').removeAttr('max');
+        }
+    }
+
+    function validate_fee_type() {
+        if ($ddl_fee_type.val() == '') {
+            $('#txt_fee_amount').attr('disabled', true);
+        } else {
+            $('#txt_fee_amount').removeAttr('disabled');
+        }
+    }
+
+    $ddl_fee_type.on('change', function() {
+        validate_fee_type();
+        validate_fee_amount();
+    });
+    validate_fee_type();
+    validate_fee_amount();
 }
 function changeAmount() {
     var $amount = $('#txt_amount');
