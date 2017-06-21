@@ -26,6 +26,7 @@ class DetailView(TemplateView, RESTfulMethods):
             context, status = self._get_agent_detail(agent_id)
             agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
             currencies, status_get_currency = self._get_currencies(agent_id)
+
             context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
             if status and status_get_agent_identity and status_get_currency:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])

@@ -37,7 +37,6 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
 
 
 '''
-Author: Steve Le
 History:
 - 2017-05-03: Initialize empty Class with template HTML name (Steve Le)
 - 2017-05-04: Add logic for Agent registration (Gate Nguyen)

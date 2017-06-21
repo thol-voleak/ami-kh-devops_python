@@ -1,4 +1,7 @@
+from agents.views import AgentAPIService
+
 import logging
+
 from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from django.conf import settings
@@ -10,10 +13,11 @@ from django.http import HttpResponseRedirect
 
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+
 logger = logging.getLogger(__name__)
 
 
-class AgentUpdate(TemplateView, RESTfulMethods):
+class AgentUpdate(TemplateView, AgentAPIService):
     template_name = "agents/update.html"
     get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
     logger = logger
@@ -27,17 +31,10 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
-        # MASTER DATA
-        # API 1: Get Agent Types List
-        agent_types_list = self._get_agent_types()
+        agent_types_list, agent_type_status = self.get_agent_types()
+        currencies, get_currency_status = self.get_currencies(agent_id)
+        agent_profile = self.get_agent_profile(agent_id)
 
-        # API 2: Get Currencies List
-        currencies, get_currency_status = self._get_currencies(agent_id)
-        # LOAD DATA
-        # API 3: Get Agent Profile
-        agent_profile = self._get_agent_profile(agent_id)
-
-        # Format dates
         if agent_profile['date_of_birth'] is not None:
             date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
             agent_profile['date_of_birth'] = date_of_birth
@@ -58,48 +55,19 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
             agent_profile['secondary_expire_date'] = secondary_expire_date
 
-        agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
+        agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
+
         context = {
             'agent_types': agent_types_list,
             'currencies': currencies,
-            'agent_profile': agent_profile,
-            'status_get_agent_identity': agent_identity['agent_identities'][0]
+            'agent_profile': agent_profile
         }
+
+        if len(agent_identity['agent_identities']) > 0:
+            context.update({'status_get_agent_identity': agent_identity['agent_identities'][0]})
+
         self.logger.info('========== Finished showing Update Agent page ==========')
         return render(request, self.template_name, context)
-
-    def _get_agent_identity(self, agent_id):
-        data, success = self._get_method(api_path=self.get_agent_identity_url.format(agent_id=agent_id),
-                                         func_description="Get agent identity",
-                                         logger=logger)
-        context = {
-            'agent_identities': data
-        }
-        return context, success
-
-    def _get_currencies(self, agent_id):
-        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
-                                         func_description="Agent Currencies",
-                                         logger=logger,
-                                         is_getting_list=True)
-        currencies_str = ''
-        if success:
-            currencies_str = ', '.join([elem["currency"] for elem in data])
-
-        return currencies_str, success
-
-    def _get_agent_profile(self, agent_id):
-        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
-                                         func_description="Agent Profile",
-                                         logger=logger)
-        return data
-
-    def _get_agent_types(self):
-        data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
-                                         func_description="Agent Type List",
-                                         logger=logger,
-                                         is_getting_list=True)
-        return data
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start updating agent ==========')
@@ -205,7 +173,9 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             if not value:
                 data[key] = ''
 
-        data, success = self._update_agent(agent_id, data)
+        data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
+                                         func_description="Agent",
+                                         logger=logger, params=data)
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
@@ -213,15 +183,3 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             return HttpResponseRedirect(previous_page)
         self.logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])
-
-    def _get_headers(self):
-        if getattr(self, '_headers', None) is None:
-            self._headers = get_auth_header(self.request.user)
-
-        return self._headers
-
-    def _update_agent(self, agent_id, data):
-        data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
-                                         func_description="Agent",
-                                         logger=logger, params=data)
-        return data, success

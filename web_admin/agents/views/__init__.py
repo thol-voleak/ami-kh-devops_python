@@ -7,6 +7,19 @@ logger = logging.getLogger(__name__)
 
 
 class AgentAPIService(RESTfulMethods):
+    def get_agent_profile(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+                                         func_description="Agent Profile",
+                                         logger=logger)
+        return data
+
+    def get_agent_types(self):
+        data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
+                                         func_description="Agent Type List",
+                                         logger=logger,
+                                         is_getting_list=True)
+        return data, success
+
     def get_agent_detail(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
                                          func_description="Agent detail",
