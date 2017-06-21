@@ -18,12 +18,20 @@ class AddView(TemplateView,RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start Adding Tier ==========')
+        decimal = 0
         context = super(AddView, self).get_context_data(**kwargs)
         service_id = context['service_id']
         command_id = context['command_id']
         tier_conditions, status1 = self._get_tier_condition()
         amount_types, status2 = self._get_amount_types()
         service_detail, status3 = self._get_service_detail(service_id)
+        currencies = self._get_currencies_list()
+        if service_detail and currencies:
+            currency_name = service_detail['currency']
+            if currency_name in currencies.keys():
+                decimal = currencies[currency_name] 
+        
+        print("service detail is : {}+++++++++++++++++++++".format(service_detail))
         command_name, status4 = self._get_command_name(command_id)
         fee_types, status5 = self._get_fee_types()
         bonus_types, status6 = self._get_bonus_types()
@@ -36,7 +44,9 @@ class AddView(TemplateView,RESTfulMethods):
                 'amount_types': amount_types,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
+                'decimal':int(decimal),
             })
+            print("context is : {}????????????????????".format(context))
 
         return render(request, self.template_name, context)
 
@@ -45,10 +55,12 @@ class AddView(TemplateView,RESTfulMethods):
         command_id = kwargs['command_id']
         service_id = kwargs['service_id']
         service_command_id = kwargs['service_command_id']
+        condition_amount = request.POST.get('condition_amount')
+        condition_amount = condition_amount.replace(',', '')
 
         data = {
             "fee_tier_condition": request.POST.get('condition'),
-            "condition_amount": request.POST.get('condition_amount'),
+            "condition_amount": condition_amount,
             "fee_type": request.POST.get('fee_type'),
             "fee_amount": request.POST.get('fee_amount'),
             "bonus_type": request.POST.get('bonus_type'),
@@ -57,6 +69,10 @@ class AddView(TemplateView,RESTfulMethods):
 
         if(request.POST.get('bonus_type') != 'Flat value'):
             data['amount_type'] = request.POST.get('amount_type')
+        
+        
+        print("data on tier is : {}!!!!!!!!!!!!!!!!!!!!!!".format(data))
+
 
         success = self._add_tier(service_command_id, data)
         self.logger.info('========== Finish Adding Tier ==========')
@@ -116,4 +132,20 @@ class AddView(TemplateView,RESTfulMethods):
                                              func_description="Bonus Types",
                                              logger=logger)
         return bonus_types, status
+
+    def _get_currencies_list(self):
+        url = api_settings.GET_ALL_CURRENCY_URL
+        data, success = self._get_method(api_path=url,
+                                         func_description="currency list",
+                                         logger=logger,
+                                         is_getting_list=True)
+        if data:
+            value = data.get('value', '')
+            currencies = value.split(',')
+            curr_dict = {i.split('|')[0]:i.split('|')[1] for i in currencies}
+            return curr_dict
+        else:
+            return {}
+
+        
 

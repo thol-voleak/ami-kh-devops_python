@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="condition_amount" id="txt_amount"/>
+                            <input type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount"/>
                         </div>
                     </div>
 
@@ -114,6 +114,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 <script>
+/*
+function changeStep(c){
+
+  var new_decimal = {{ decimal }} * -1;
+  c.step = Math.pow(10, new_decimal);
+}
+*/
+function toNumber(str) {
+    return str.replace(/[,\s_]+/g, "");
+}
+
 function changeValue() {
     var $bonus_type = $('#ddl_bonus_type');
 
@@ -158,8 +169,47 @@ function changeValue() {
         updateByConditionType();
     });
 }
+function changeAmount() {
+    var $amount = $('#txt_amount');
+    $('#txt_amount').keydown(function(event){
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
+        if (keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
+
+    var $input = $('#txt_amount');
+    $input.on( "change", function( event ) {
+
+        var selection = window.getSelection().toString();
+        if ( selection !== '' ) {
+            return;
+        }
+
+        if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+            return;
+        }
+
+        var $this = $( this );
+        var input = $this.val();
+
+        var input = toNumber(input);
+
+        input = input ? parseFloat(input) : 0;
+        input = input ? input : 0;
+
+        $this.val( function() {
+            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }},
+             minimumFractionDigits: {{ decimal}} });
+        } );
+
+    });
+}
 
 $(changeValue);
+$(changeAmount);
+// $(changeStep(txt_amount));
 
 </script>
 
