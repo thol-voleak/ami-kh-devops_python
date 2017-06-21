@@ -4,15 +4,22 @@ from django.http import Http404
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 import logging
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
 
 class SPIUpdate(TemplateView, RESTfulMethods):
     template_name = 'services/spi/update.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SPIUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start updating SPI URL by service command ==========")
+        self.logger.info("========== Start updating SPI URL by service command ==========")
 
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
@@ -48,14 +55,14 @@ class SPIUpdate(TemplateView, RESTfulMethods):
             params['read_timeout'] = 3600
 
         data, success = self.update_spi(spiUrlId, params)
-        logger.info("========== Finish updating SPI URL by service command ==========")
+        self.logger.info("========== Finish updating SPI URL by service command ==========")
 
         if success:
             request.session['spi_update_msg'] = 'Updated data successfully'
             return redirect('services:spi_list', service_id=(service_id), command_id=(command_id), service_command_id=(service_command_id) )
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start getting SPI url list ==========')
+        self.logger.info('========== Start getting SPI url list ==========')
         context = super(SPIUpdate, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
         spiUrlId = kwargs.get('spiUrlId')
@@ -68,7 +75,7 @@ class SPIUpdate(TemplateView, RESTfulMethods):
         context['data'] = data
         context['spi_types'] = spi_types
         context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
-        logger.info('========== Finish getting SPI url list ==========')
+        self.logger.info('========== Finish getting SPI url list ==========')
         return context
 
     def get_spi_detail(self, spiUrlId):

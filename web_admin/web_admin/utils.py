@@ -39,6 +39,5 @@ def encrypt_text_agent(input_text):
 
 
 def setup_logger(request, logger):
-    correlation_id = request.session.get('correlation_id', '')
     client_ip = request.META['REMOTE_ADDR']
-    return logging.LoggerAdapter(logger, extra={'correlationId': correlation_id, 'IPAddress': client_ip})
+    return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip})

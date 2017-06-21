@@ -4,6 +4,8 @@ from web_admin.api_settings import CASH_SOFS_URL
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,17 +17,22 @@ IS_SUCCESS = {
 
 class CashSOFView(TemplateView, RESTfulMethods):
     template_name = "cash_sof.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CashSOFView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search cash source of fund ==========')
+        self.logger.info('========== Start search cash source of fund ==========')
 
         user_id = request.GET.get('user_id')
         user_type_id = request.GET.get('user_type_id')
         currency = request.GET.get('currency')
 
-        logger.info('user_id: {}'.format(user_id))
-        logger.info('user_type_id: {}'.format(user_type_id))
-        logger.info('currency: {}'.format(currency))
+        self.logger.info('user_id: {}'.format(user_id))
+        self.logger.info('user_type_id: {}'.format(user_type_id))
+        self.logger.info('currency: {}'.format(currency))
 
         body = {}
         if user_id is not '':
@@ -46,7 +53,7 @@ class CashSOFView(TemplateView, RESTfulMethods):
                    'user_type_id': user_type_id,
                    'currency': currency
                    }
-        logger.info('========== End search cash source of fund ==========')
+        self.logger.info('========== End search cash source of fund ==========')
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):

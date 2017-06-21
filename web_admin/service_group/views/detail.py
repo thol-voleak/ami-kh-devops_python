@@ -1,15 +1,21 @@
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 import logging
+from web_admin.utils import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 class ServiceGroupDetailForm(TemplateView, RESTfulMethods):
     template_name = "service_group/detail.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ServiceGroupDetailForm, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Start getting service group detail ==========')
+            self.logger.info('========== Start getting service group detail ==========')
 
             context = super(ServiceGroupDetailForm, self).get_context_data(**kwargs)
             service_group_id = context['ServiceGroupId']
@@ -29,12 +35,12 @@ class ServiceGroupDetailForm(TemplateView, RESTfulMethods):
             context = {'service_group_info': data,
                        'add_service_group_msg': self.request.session.pop('add_service_group_msg', None),
                        'service_group_update_msg': self.request.session.pop('service_group_update_msg', None)}
-            logger.info('========== Finished getting service group detail ==========')
+            self.logger.info('========== Finished getting service group detail ==========')
             return context
         else:
-            logger.info("Error Getting System User Detail.")
+            self.logger.info("Error Getting System User Detail.")
             context = {'service_group_info': data}
-            logger.info('========== Finished getting service group detail ==========')
+            self.logger.info('========== Finished getting service group detail ==========')
             return context
 
 

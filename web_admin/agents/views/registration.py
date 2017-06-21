@@ -5,17 +5,9 @@ from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import encrypt_text_agent
+from web_admin.utils import encrypt_text_agent, setup_logger
 
 logger = logging.getLogger(__name__)
-
-'''
-Author: Leo
-History:
-- 2017-05-04: ... (Leo)
--- API 1: Load Agent Type       - GET api-gateway/agent/v1/types
--- API 2: Load Currency List    - GET api-gateway/centralize-configuration/v1/scopes/global/currencies
-'''
 
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
@@ -59,9 +51,14 @@ History:
 
 class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "agents/registration.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentRegistration, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *arg, **kwargs):
-        logger.info('========== Start showing Create Agent page ==========')
+        self.logger.info('========== Start showing Create Agent page ==========')
         # Get API that inherits from parent Class
         currencies = self._get_currencies_dropdown()
         agent_types_list = self._get_agent_types_list()
@@ -71,11 +68,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
-        logger.info('========== Finished showing Create Agent page ==========')
+        self.logger.info('========== Finished showing Create Agent page ==========')
         return result
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start creating agent ==========')
+        self.logger.info('========== Start creating agent ==========')
         agent_profile_reponse, success = self._create_agent_profile(request)
 
         agent_id = ''
@@ -83,7 +80,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             agent_id = agent_profile_reponse['id']
         else:
             request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
-            logger.info('========== Finished creating agent ==========')
+            self.logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_registration')
 
         self._create_agent_identity(request, agent_id)
@@ -91,7 +88,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         self._create_agent_balance(request, agent_id)
 
         request.session['agent_registration_msg'] = 'Added agent successfully'
-        logger.info('========== Finished creating agent ==========')
+        self.logger.info('========== Finished creating agent ==========')
         return redirect('agents:agent_detail', agent_id=agent_id)
 
     def _create_agent_profile(self, request):

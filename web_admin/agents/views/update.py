@@ -9,24 +9,21 @@ from django.utils import dateparse
 from django.http import HttpResponseRedirect
 
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
-'''
-Author: Steve Le
-History:
-# 2017-05-04
-- Init with basic template name "update.html"
-# 2017-05-05
--- Load Data
-- API 3: GET /api-gateway/agent/v1/agents/{agent_id}
-'''
-class AgentUpdate(TemplateView, RESTfulMethods):
 
+class AgentUpdate(TemplateView, RESTfulMethods):
     template_name = "agents/update.html"
+    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AgentUpdate, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start showing Update Agent page ==========')
+        self.logger.info('========== Start showing Update Agent page ==========')
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
@@ -62,22 +59,34 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
             agent_profile['secondary_expire_date'] = secondary_expire_date
 
+        agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
         context = {
             'agent_types': agent_types_list,
             'currencies': currencies,
-            'agent_profile': agent_profile
+            'agent_profile': agent_profile,
+            'status_get_agent_identity': agent_identity['agent_identities'][0]
         }
-        logger.info('========== Finished showing Update Agent page ==========')
+        self.logger.info('========== Finished showing Update Agent page ==========')
         return render(request, self.template_name, context)
+
+    def _get_agent_identity(self, agent_id):
+        data, success = self._get_method(api_path=self.get_agent_identity_url.format(agent_id=agent_id),
+                                         func_description="Get agent identity",
+                                         logger=logger)
+        context = {
+            'agent_identities': data
+        }
+        return context, success
 
     '''
     Author: Steve Le
     # 2017-05-05
     '''
+
     def _get_agent_profile(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
-                                                     func_description="Agent Profile",
-                                                     logger=logger)
+                                         func_description="Agent Profile",
+                                         logger=logger)
         return data
 
     '''
@@ -87,6 +96,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     -- Load Master Data
     - API 1: GET /api-gateway/agent/v1/types
     '''
+
     def _get_agent_types(self):
         data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
                                          func_description="Agent Type List",
@@ -101,6 +111,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     -- Load Master Data
     - API 2: GET /api-gateway/centralize-configuration/v1/scopes/global/configurations/currency
     '''
+
     def _get_currencies(self):
         data, success = self._get_method(api_path=api_settings.GET_CURRENCIES_PATH,
                                          func_description="Agent Currencies",
@@ -114,7 +125,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         return currencies
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start updating agent ==========')
+        self.logger.info('========== Start updating agent ==========')
         agent_id = kwargs['agent_id']
 
         agent_type_id = request.POST.get('agent_type_id')
@@ -172,7 +183,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         email = request.POST.get('email')
         unique_reference = request.POST.get('unique_reference')
         kyc_status = request.POST.get('kyc_status')
-        status = 1 # request.POST.get('status') TODO hard fix
+        status = 1  # request.POST.get('status') TODO hard fix
 
         data = {
             'agent_type_id': agent_type_id,
@@ -208,7 +219,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         }
 
         date_fields = ["date_of_birth", "primary_issue_date", "primary_expire_date", "secondary_issue_date",
-                  "secondary_expire_date"]
+                       "secondary_expire_date"]
         for key in date_fields:
             if not data.get(key, ''):
                 del data[key]
@@ -221,9 +232,9 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
-            logger.info('========== Finished updating agent ==========')
+            self.logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
-        logger.info('========== Finished updating agent ==========')
+        self.logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_headers(self):

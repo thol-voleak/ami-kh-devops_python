@@ -1,6 +1,5 @@
 from web_admin.api_settings import SERVICE_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
-
 from django.views.generic.base import TemplateView
 
 import logging
