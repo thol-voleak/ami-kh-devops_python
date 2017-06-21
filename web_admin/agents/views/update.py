@@ -107,17 +107,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
     - API 2: GET /api-gateway/centralize-configuration/v1/scopes/global/configurations/currency
     '''
 
-    def _get_currencies(self):
-        data, success = self._get_method(api_path=api_settings.GET_CURRENCIES_PATH,
-                                         func_description="Agent Currencies",
-                                         logger=logger,
-                                         is_getting_list=True)
-        if success:
-            values = data.get('value', '')
-            currencies = map(lambda x: x.split('|'), values.split(','))
-        else:
-            currencies = []
-        return currencies
+
 
     def post(self, request, *args, **kwargs):
         logger.info('========== Start updating agent ==========')

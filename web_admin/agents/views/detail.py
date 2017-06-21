@@ -20,7 +20,7 @@ class DetailView(TemplateView, RESTfulMethods):
             agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
             currencies, status_get_currency = self._get_currencies(agent_id)
             context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
-            if status:
+            if status and status_get_agent_identity and status_get_currency:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])
                 if status and status_get_agent_identity and status_get_currency:
                     context.update({
@@ -39,17 +39,6 @@ class DetailView(TemplateView, RESTfulMethods):
             context = {'agent': {}}
             logger.info('========== Finished showing Agent Detail page ==========')
             return context
-
-    def _get_currencies(self, agent_id):
-        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
-                                         func_description="Agent Currencies",
-                                         logger=logger,
-                                         is_getting_list=True)
-        currencies_str = ''
-        if success:
-            currencies_str = ', '.join([elem["currency"] for elem in data])
-
-        return currencies_str, success
 
     def _get_agent_detail(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
@@ -71,6 +60,17 @@ class DetailView(TemplateView, RESTfulMethods):
             'agent_identities': data
         }
         return context, success
+
+    def _get_currencies(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        currencies_str = ''
+        if success:
+            currencies_str = ', '.join([elem["currency"] for elem in data])
+
+        return currencies_str, success
 
     def _get_agent_type_name(self, agent_type_id):
         agent_types_list, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
