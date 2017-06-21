@@ -138,6 +138,7 @@ function changeValue() {
 
     $bonus_type.on('change', function() {
         toggleFromDropdownList();
+        validate_bonus_type();
     });
 
     toggleFromDropdownList();
@@ -186,11 +187,22 @@ function changeValue() {
         }
     }
 
+    var $ddl_bonus_type = $('#ddl_bonus_type');
+    function validate_bonus_type() {
+        if ($ddl_bonus_type.val() == '') {
+            $('#txt_bonus_amount').attr('disabled', true);
+        } else {
+            $('#txt_bonus_amount').removeAttr('disabled');
+        }
+    }
+
     $ddl_fee_type.on('change', function() {
         validate_fee_type();
         validate_fee_amount();
     });
+
     validate_fee_type();
+    validate_bonus_type();
     validate_fee_amount();
 }
 function changeAmount() {
