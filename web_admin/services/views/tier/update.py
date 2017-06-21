@@ -28,12 +28,9 @@ class UpdateView(TemplateView, RESTfulMethods):
         for i in tier_to_update:
             if tier_to_update[i] is None:
                 tier_to_update[i] = ''
-        print("tier to update is : {}>>>>>>>>>>>>>>>>>>>>>>".format(tier_to_update))
-        
         context['update_tier'] = tier_to_update
         service_id = context['service_id']
         command_id = context['command_id']
-
         tier_conditions , status1 = self._get_tier_condition()
         fee_types, status2 = self._get_fee_types()
         bonus_types, status3 = self._get_bonus_types()
@@ -45,7 +42,6 @@ class UpdateView(TemplateView, RESTfulMethods):
             if currency_name in currencies.keys():
                 decimal = currencies[currency_name] 
         
-        print("service detail is : {}+++++++++++++++++++++".format(service_detail))
         command_name, status6 = self._get_command_name(command_id)
         if status1 and status2 and status3 and status4 and status5 and status6:
             context.update({

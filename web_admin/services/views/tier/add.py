@@ -29,13 +29,10 @@ class AddView(TemplateView,RESTfulMethods):
         if service_detail and currencies:
             currency_name = service_detail['currency']
             if currency_name in currencies.keys():
-                decimal = currencies[currency_name] 
-        
-        print("service detail is : {}+++++++++++++++++++++".format(service_detail))
+                decimal = currencies[currency_name]
         command_name, status4 = self._get_command_name(command_id)
         fee_types, status5 = self._get_fee_types()
         bonus_types, status6 = self._get_bonus_types()
-
         if status1 and status2 and status3 and status4 and status5 and status6:
             context.update({
                 'conditions': tier_conditions,
@@ -46,8 +43,6 @@ class AddView(TemplateView,RESTfulMethods):
                 'command_name': command_name,
                 'decimal':int(decimal),
             })
-            print("context is : {}????????????????????".format(context))
-
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -69,11 +64,6 @@ class AddView(TemplateView,RESTfulMethods):
 
         if(request.POST.get('bonus_type') != 'Flat value'):
             data['amount_type'] = request.POST.get('amount_type')
-        
-        
-        print("data on tier is : {}!!!!!!!!!!!!!!!!!!!!!!".format(data))
-
-
         success = self._add_tier(service_command_id, data)
         self.logger.info('========== Finish Adding Tier ==========')
         if success:
