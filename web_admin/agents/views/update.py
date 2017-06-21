@@ -32,8 +32,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         agent_types_list = self._get_agent_types()
 
         # API 2: Get Currencies List
-        currencies = self._get_currencies()
-
+        currencies, get_currency_status = self._get_currencies(agent_id)
         # LOAD DATA
         # API 3: Get Agent Profile
         agent_profile = self._get_agent_profile(agent_id)
@@ -78,10 +77,16 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         }
         return context, success
 
-    '''
-    Author: Steve Le
-    # 2017-05-05
-    '''
+    def _get_currencies(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        currencies_str = ''
+        if success:
+            currencies_str = ', '.join([elem["currency"] for elem in data])
+
+        return currencies_str, success
 
     def _get_agent_profile(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
@@ -89,40 +94,12 @@ class AgentUpdate(TemplateView, RESTfulMethods):
                                          logger=logger)
         return data
 
-    '''
-    Author: Steve Le
-    History:
-    # 2017-05-08
-    -- Load Master Data
-    - API 1: GET /api-gateway/agent/v1/types
-    '''
-
     def _get_agent_types(self):
         data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
                                          func_description="Agent Type List",
                                          logger=logger,
                                          is_getting_list=True)
         return data
-
-    '''
-    Author: Steve Le
-    History:
-    # 2017-05-09
-    -- Load Master Data
-    - API 2: GET /api-gateway/centralize-configuration/v1/scopes/global/configurations/currency
-    '''
-
-    def _get_currencies(self):
-        data, success = self._get_method(api_path=api_settings.GET_CURRENCIES_PATH,
-                                         func_description="Agent Currencies",
-                                         logger=logger,
-                                         is_getting_list=True)
-        if success:
-            values = data.get('value', '')
-            currencies = map(lambda x: x.split('|'), values.split(','))
-        else:
-            currencies = []
-        return currencies
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start updating agent ==========')
