@@ -23,9 +23,13 @@ class DetailView(TemplateView, RESTfulMethods):
             if status and status_get_agent_identity and status_get_currency:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])
                 if status and status_get_agent_identity and status_get_currency:
+                    if len(agent_identity['agent_identities']) > 0:
+                        context.update({
+                            'status_get_agent_identity': agent_identity['agent_identities'][0],
+                        })
+
                     context.update({
                         'agent_type_name': agent_type_name,
-                        'status_get_agent_identity': agent_identity['agent_identities'][0],
                         'currencies': currencies
                     })
                 else:
@@ -67,7 +71,7 @@ class DetailView(TemplateView, RESTfulMethods):
                                          logger=logger,
                                          is_getting_list=True)
         currencies_str = ''
-        if success:
+        if success and len(data) > 0:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 
         return currencies_str, success

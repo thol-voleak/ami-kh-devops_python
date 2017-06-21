@@ -27,8 +27,7 @@ class AgentUpdate(TemplateView, RESTfulMethods):
         agent_types_list = self._get_agent_types()
 
         # API 2: Get Currencies List
-        currencies = self._get_currencies()
-
+        currencies, get_currency_status = self._get_currencies(agent_id)
         # LOAD DATA
         # API 3: Get Agent Profile
         agent_profile = self._get_agent_profile(agent_id)
@@ -72,6 +71,17 @@ class AgentUpdate(TemplateView, RESTfulMethods):
             'agent_identities': data
         }
         return context, success
+
+    def _get_currencies(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        currencies_str = ''
+        if success:
+            currencies_str = ', '.join([elem["currency"] for elem in data])
+
+        return currencies_str, success
 
     '''
     Author: Steve Le
