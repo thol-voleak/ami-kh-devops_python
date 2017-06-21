@@ -168,6 +168,20 @@ function changeValue() {
     $condition.on('change', function() {
         updateByConditionType();
     });
+
+    var $ddl_fee_type = $('#ddl_fee_type');
+    function validate_fee_amount() {
+        if ($ddl_fee_type.val() == '% rate') {
+            $('#txt_fee_amount').attr('max', 100);
+        } else {
+            $('#txt_fee_amount').removeAttr('max');
+        }
+    }
+
+    $ddl_fee_type.on('change', function() {
+        validate_fee_amount();
+    });
+    validate_fee_amount();
 }
 function changeAmount() {
     var $amount = $('#txt_amount');
