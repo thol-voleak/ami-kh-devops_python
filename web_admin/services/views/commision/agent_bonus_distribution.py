@@ -27,6 +27,6 @@ class AgentFeeHierarchyDistributionsDetail(View, RESTfulMethods):
 
 		url=api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
 
-		response = ajax_functions._delete_method(request, url, "", logger)
+		response = ajax_functions._delete_method(request, url, "", self.logger)
 		self.logger.info('========== Finish deleting Agent Hirarchy Distribution - Fee ==========')
 		return response

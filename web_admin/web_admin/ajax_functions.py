@@ -13,8 +13,8 @@ def _delete_method(request, api_path, func_description, logger, params=None):
         url = settings.DOMAIN_NAMES + api_path
     else:
         url = api_path
-    logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
     start = time.time()
     response = requests.delete(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
@@ -46,8 +46,8 @@ def _post_method(request, api_path, func_description, logger, params={}):
         url = settings.DOMAIN_NAMES + api_path
     else:
         url = api_path
-    logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
 
     start = time.time()
@@ -80,8 +80,8 @@ def _put_method(request, api_path, func_description, logger, params={}):
         url = settings.DOMAIN_NAMES + api_path
     else:
         url = api_path
-    logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
     logger.info("Params: {} ".format(params))
 
