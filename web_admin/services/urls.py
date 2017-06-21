@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from services.views.commision.agent_fee_distribution import (FeeDistributionsUpdate)
 from services.views.tier.list import FeeTierListView
 from services.views.tier.update import UpdateView as TierUpdateView
+from services.views.tier.delete import TierDeleteView
 from .views.commision.agent_bonus_distribution import (AgentFeeHierarchyDistributionsDetail)
 from .views.command.delete import DeleteCommand
 from .views.command.list import ListCommandView
@@ -83,6 +84,10 @@ urlpatterns = [
         login_required(TierUpdateView.as_view(), login_url='authentications:login'),
         name="update_tier"),
     url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/delete/$',
+        login_required(TierDeleteView.as_view(), login_url='authentications:login'),
+        name="delete_tier"),
+    url(
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<bonus_distribution_id>[0-9A-Za-z]+)/$',
         login_required(DeleteSettingBonus.as_view(), login_url='authentications:login'),
         name="delete_setting_bonus"),
@@ -116,5 +121,4 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/delete/$',
         login_required(SPIDeleteView.as_view(), login_url='authentications:login'),
         name="spi-delete"),
-
 ]

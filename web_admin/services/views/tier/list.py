@@ -33,6 +33,7 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
         context['data'] = data
         context['msg'] = self.request.session.pop('add_tier_msg', None)
         context['edit_msg'] = self.request.session.pop('edit_tier_msg', None)
+        context['delete_msg'] = self.request.session.pop('delete_tier_msg', None)
 
         logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
