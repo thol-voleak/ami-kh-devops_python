@@ -182,8 +182,12 @@ function changeValue() {
     function validate_fee_type() {
         if ($ddl_fee_type.val() == '') {
             $('#txt_fee_amount').attr('disabled', true);
+            $('#txt_fee_amount').val('');
         } else {
             $('#txt_fee_amount').removeAttr('disabled');
+            if($('#txt_fee_amount').val() == '') {
+                $('#txt_fee_amount').val('0');
+            }
         }
     }
 
@@ -191,8 +195,12 @@ function changeValue() {
     function validate_bonus_type() {
         if ($ddl_bonus_type.val() == '') {
             $('#txt_bonus_amount').attr('disabled', true);
+            $('#txt_bonus_amount').val('');
         } else {
             $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
         }
     }
 
