@@ -10,7 +10,7 @@
         <div class="row no-margin">
             <div class="col-lg-12">
                 <form class="form-horizontal" role="form" method="post"
-                      action="{% url 'services:update_tier' service_id command_id service_command_id update_tier.fee_tier_id%}">
+                      action="" onsubmit="return validateAmountFields()" id="form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Service Name</label>
@@ -47,7 +47,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.condition_amount }}" type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount" required/>
+                            <input value="{{ update_tier.condition_amount }}" type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount" min="0" required/>
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="number" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" required/>
+                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="text" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" required/>
                         </div>
                     </div>
 
@@ -108,7 +108,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.bonus_amount|default_if_none:'0' }}" type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" required/>
+                            <input value="{{ update_tier.bonus_amount|default_if_none:'0' }}" type="text" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" required/>
                         </div>
                     </div>
                     <div class="pull-right">
@@ -116,6 +116,7 @@
                             <input id="btn_cancel" class="btn text-left mb15" type="button"
                                    value="Cancel"/>
                         </a>
+
                         <input id="btn_save" class="btn btn-success text-left mb15" type="submit"
                                    value="Save"/>
 
@@ -259,6 +260,7 @@ $(changeValue);
 $(changeAmount);
 var txt_bonus_amount = document.getElementById("txt_bonus_amount");
 var txt_fee_amount = document.getElementById('txt_fee_amount');
+var condition_amount = document.getElementById('txt_amount');
 
 function validateBonusValue() {
     if(txt_bonus_amount.value == '') {
@@ -270,6 +272,9 @@ function validateBonusValue() {
     if(txt_bonus_amount.value == '') {
         txt_bonus_amount.value = '0';
     }
+
+    // Validate min value
+    return validateMinValue(txt_bonus_amount);
 }
 
 function validateFeeValue() {
@@ -282,10 +287,55 @@ function validateFeeValue() {
     if(txt_fee_amount.value == '') {
         txt_fee_amount.value = '0';
     }
+
+    // Validate min value
+    if(validateMinValue(txt_fee_amount)) {
+        var $ddl_fee_type = $('#ddl_fee_type');
+        if ($ddl_fee_type.val() == '% rate') {
+            return validateMaxValue(txt_fee_amount);
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function validateConditionAmount() {
+    return validateMinValue(condition_amount);
+}
+
+function validateMinValue(element) {
+    var value = parseFloat(element.value) || 0.0;
+    if(value < 0) {
+        element.setCustomValidity('Amount cannot be lower than 0');
+        return false;
+    } else {
+        element.setCustomValidity("");
+        //element.value = value;
+        return true;
+    }
+}
+
+function validateMaxValue(element) {
+    var max = parseInt(element.getAttribute("max")) || 100;
+    var value = parseFloat(element.value) || 0.0;
+    if(value > max) {
+        element.setCustomValidity('Amount cannot be greater than ' + max);
+        return false;
+    } else {
+        element.setCustomValidity("");
+        //element.value = value;
+        return true;
+    }
+}
+
+function validateAmountFields() {
+    return validateConditionAmount() && validateFeeValue() && validateBonusValue();
 }
 
 txt_bonus_amount.onkeyup = validateBonusValue;
 txt_fee_amount.onkeyup = validateFeeValue;
+condition_amount.onkeyup = validateConditionAmount;
 </script>
 
 {% endblock %}
