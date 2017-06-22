@@ -51,13 +51,17 @@ class AddView(TemplateView,RESTfulMethods):
         service_id = kwargs['service_id']
         service_command_id = kwargs['service_command_id']
         condition_amount = request.POST.get('condition_amount')
-        condition_amount = condition_amount.replace(',', '')
+        if condition_amount:
+            condition_amount = condition_amount.replace(',', '')
+        fee_amount = request.POST.get('fee_amount')
+        if fee_amount:
+            fee_amount = fee_amount.replace(',', '')
 
         data = {
             "fee_tier_condition": request.POST.get('condition'),
             "condition_amount": condition_amount,
             "fee_type": request.POST.get('fee_type'),
-            "fee_amount": request.POST.get('fee_amount'),
+            "fee_amount": fee_amount,
             "bonus_type": request.POST.get('bonus_type'),
             "bonus_amount": request.POST.get('bonus_amount'),
         }
