@@ -3,19 +3,25 @@ import logging
 from web_admin import api_settings
 from django.shortcuts import redirect, render
 from .update import UpdateView
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 
 class TierDeleteView(UpdateView):
     template_name = 'services/tier/tier_delete.html'
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(TierDeleteView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start Deleting Tier ==========')
+        self.logger.info('========== Start Deleting Tier ==========')
         context = super(TierDeleteView, self).get_context_data(**kwargs)
         tier_id = context['fee_tier_id']
-        logger.info('Start Getting Tier detail')
+        self.logger.info('Start Getting Tier detail')
         tier_to_delete = self._get_tier_detail(tier_id)
-        logger.info('Finish Getting Tier detail')
+        self.logger.info('Finish Getting Tier detail')
         for i in tier_to_delete:
             if tier_to_delete[i] is None:
                 tier_to_delete[i] = 'Non'
@@ -38,7 +44,7 @@ class TierDeleteView(UpdateView):
         service_id = context['service_id']
         service_command_id = context['service_command_id']
         data, success = self._delete_tier(tier_id)
-        logger.info('========== Finish Deleting Tier ==========')
+        self.logger.info('========== Finish Deleting Tier ==========')
         if success:
             request.session['delete_tier_msg'] = 'Deleted data successfully'
         else:

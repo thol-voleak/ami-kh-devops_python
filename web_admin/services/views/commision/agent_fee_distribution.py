@@ -43,6 +43,6 @@ class FeeDistributionsUpdate(View):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response = ajax_functions._put_method(request, url, "", logger, post_data)
+        response = ajax_functions._put_method(request, url, "", self.logger, post_data)
         self.logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
         return response

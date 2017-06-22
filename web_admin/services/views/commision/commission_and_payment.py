@@ -298,17 +298,7 @@ class BalanceDistributionsUpdate(View):
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        # response, status = self._put_method(api_path=url,
-        #                                      func_description="updating setting payment & fee structure",
-        #                                      logger=logger, params=post_data)
-        # response = json.dumps({"status":{"code":"success","message":"Success"},"data":response})
-        # if status:
-        #     httpResponse = HttpResponse(status=200, content=response)
-        # else:
-        #     httpResponse = HttpResponse(status=400, content=response)
-        #
-        # return httpResponse
-        response = ajax_functions._put_method(request, url, "", logger, post_data)
+        response = ajax_functions._put_method(request, url, "", self.logger, post_data)
         self.logger.info("========== Finished updating setting payment & fee structure ==========")
         return response
 
@@ -339,18 +329,7 @@ class BonusDistributionsUpdate(View):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        # response, status = self._put_method(api_path=url,
-        #                                      func_description="update setting bonus",
-        #                                      logger=logger, params=post_data)
-        # response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
-        #
-        # if status:
-        #     httpResponse = HttpResponse(status=200, content=response)
-        # else:
-        #     httpResponse = HttpResponse(status=400, content=response)
-        #
-        # return httpResponse
-        response = ajax_functions._put_method(request, url, "", logger, post_data)
+        response = ajax_functions._put_method(request, url, "", self.logger, post_data)
         self.logger.info("========== Finish update setting bonus ==========")
         return response
 
@@ -379,17 +358,8 @@ class AgentBonusDistributionsUpdate(View):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        # response, status = self._put_method(api_path=url,
-        #                                      func_description="updating agent bonus distribution",
-        #                                      logger=logger, params=post_data)
-        # response = json.dumps({"status": {"code": "success", "message": "Success"}, "data": response})
-        # if status:
-        #     httpResponse = HttpResponse(status=200, content=response)
-        # else:
-        #     httpResponse = HttpResponse(status=400, content=response)
-        response = ajax_functions._put_method(request, url, "", logger, post_data)
+        response = ajax_functions._put_method(request, url, "", self.logger, post_data)
         self.logger.info("========== Finished updating agent bonus distribution ==========")
-        # return httpResponse
 
         return response
 
@@ -554,19 +524,8 @@ class PaymentAndFeeStructureDetailView(View):
         self.logger.info('========== Start deleting Balance Distribution ==========')
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
-        # success = self._delete_balance_distribution(balance_distribution_id)
-        #
-        # if success:
-        #     return HttpResponse(status=204)
-        # return HttpResponseBadRequest()
-
-    # def _delete_balance_distribution(self, balance_distribution_id):
-    #     data, success = self._delete_method(api_path=api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id),
-    #                                      func_description="Balance Distribution",
-    #                                      logger=logger)
-    #     return success
         url = api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id)
-        response = ajax_functions._delete_method(request, url, "", logger)
+        response = ajax_functions._delete_method(request, url, "", self.logger)
         self.logger.info('========== Finish deleting Balance Distribution ==========')
         return response
 

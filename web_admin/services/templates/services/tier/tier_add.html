@@ -61,7 +61,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" />
+                            <input type="number" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" value="0"/>
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0"/>
+                            <input type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" value="0"/>
                         </div>
                     </div>
 
@@ -245,7 +245,36 @@ function changeAmount() {
 
 $(changeValue);
 $(changeAmount);
-// $(changeStep(txt_amount));
+
+var txt_bonus_amount = document.getElementById("txt_bonus_amount");
+var txt_fee_amount = document.getElementById('txt_fee_amount');
+
+function validateBonusValue() {
+    if(txt_bonus_amount.value == '') {
+        txt_bonus_amount.value = '0';
+    } else {
+        txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_bonus_amount.value == '') {
+        txt_bonus_amount.value = '0';
+    }
+}
+
+function validateFeeValue() {
+    if(txt_fee_amount.value == '') {
+        txt_fee_amount.value = '0';
+    } else {
+        txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_fee_amount.value == '') {
+        txt_fee_amount.value = '0';
+    }
+}
+
+txt_bonus_amount.onkeyup = validateBonusValue;
+txt_fee_amount.onkeyup = validateFeeValue;
 
 </script>
 

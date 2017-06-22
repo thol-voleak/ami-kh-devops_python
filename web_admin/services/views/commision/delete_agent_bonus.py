@@ -21,7 +21,7 @@ class DeleteAgentBonus(View):
         )
         url = settings.DOMAIN_NAMES + api_path
 
-        response = ajax_functions._delete_method(request, url, "", logger)
+        response = ajax_functions._delete_method(request, url, "", self.logger)
         self.logger.info('========== Finish deleting Agent Bonus ==========')
         return response
 
