@@ -104,5 +104,4 @@ class SPIUpdate(TemplateView, SpiApi):
 
     def update_spi(self, spi_url_id, params):
         path = api_settings.SPI_UPDATE_PATH.format(spiUrlId=spi_url_id)
-        import ipdb;ipdb.set_trace()
         return self._put_method(path, 'SPI update', logger, params)
