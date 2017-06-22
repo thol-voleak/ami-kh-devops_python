@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
                         <div class="col-sm-8">
-                            <input type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount" min="0"/>
+                            <input type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount"  onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="fee_amount" id="txt_fee_amount" min="0" value="0"/>
+                            <input type="text" class="form-control" name="fee_amount" id="txt_fee_amount"  onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="bonus_amount" id="txt_bonus_amount" min="0" value="0"/>
+                            <input type="text" class="form-control" name="bonus_amount" id="txt_bonus_amount" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
