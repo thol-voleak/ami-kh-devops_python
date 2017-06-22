@@ -129,7 +129,7 @@
                             <td>
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#txt_setting_payment_fee_structure_specific_id')">
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#txt_setting_payment_fee_structure_specific_id', '#txt_setting_payment_fee_structure_specific_source_of_fund')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -149,7 +149,7 @@
                             </td>
                             <td>
                                 <input class="form-control" name="specific_sof"
-                                       id="txt_setting_payment_fee_structure_specific_source_of_fund"/>
+                                       id="txt_setting_payment_fee_structure_specific_source_of_fund" disabled/>
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type"
@@ -232,7 +232,7 @@
                             </td>
                             <td>
                                 <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_specific_id')">
+                                        onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#txt_setting_bonus_specific_id', '#txt_setting_bonus_spec_src_fund')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -250,7 +250,7 @@
                             </td>
                             <td>
                                 <input class="form-control" id="txt_setting_bonus_spec_src_fund"
-                                       name="specific_sof">
+                                       name="specific_sof" disabled>
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount">
@@ -401,34 +401,61 @@
                 '</div>')
         }
 
-        function changeSpecificActorType(actorType, specificActorId) {
+        function addErrorMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+
+        function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
+                $(specificActorId).prop('required',true);
+                $(specificSoFId).prop('disabled',false);
+                $(specificSoFId).prop('required',true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
+                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).val("");
             }
         }
 
         function changeSpecificActorTypeRelative(actorType) {
             specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_edit");
+            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_edit");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
+                $(specificActorId).prop('required',true);
+                $(specificSoFId).prop('disabled',false);
+                $(specificSoFId).prop('required',true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
+                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).val("");
             }
         }
 
         function changeSpecificActorTypeRelativeAdd(actorType) {
             specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id");
+            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
+                $(specificActorId).prop('required',true);
+                $(specificSoFId).prop('disabled',false);
+                $(specificSoFId).prop('required',true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
+                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).val("");
             }
         }
 
@@ -455,5 +482,7 @@
             onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
         });
+
+
     </script>
 {% endblock %}

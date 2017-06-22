@@ -107,7 +107,6 @@ function saveAgentHierarchyDistribution(nRow) {
     var jqSelects = $('select', nRow);
     var url = $(nRow).data('url');
     var fee_tier_id = $(nRow).data('fee_tier_id');
-
     var params = {
         "fee_tier_id": fee_tier_id,
         "action_type": $(jqSelects[0]).find(":selected").html(),
@@ -121,34 +120,58 @@ function saveAgentHierarchyDistribution(nRow) {
 
     var token = csrf_token;
 
-    // Request to server
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: params,
-        dataType: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", token);
-        },
-        success: function (response) {
+    var ActorType = $(jqSelects[1]).find(":selected").html();
+    var specificId = document.getElementById("txt_agent_hier_fee_specific_id_edit");
 
-            if(response.status == 1) {
+    //Validate Input Value specific_actor_id
+    if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
+        startEdittingTableRow(nRow);
+        // $(tr).find("input").each(function () {
+        //     $(this).prop("style", "border-color: red;");
+        // });
+        $(jqInputs[0]).prop("style", "border-color: red;");
+        addErrorMessage("Please input Specific ID");
+
+    }
+    //Validate Input Value specific_sof
+    else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
+        startEdittingTableRow(nRow);
+        // $(tr).find("input").each(function () {
+        //     $(this).prop("style", "border-color: red;");
+        // });
+        $(jqInputs[1]).prop("style", "border-color: red;");
+        addErrorMessage("Please input Specific Source of Fund");
+    }
+    else {
+        // Request to server
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: params,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", token);
+            },
+            success: function (response) {
+
+                if (response.status == 1) {
                     // Logout
                     var url = window.location.origin + "/admin-portal/logout/";
                     window.location.replace(url);
-                } else if(response.status == 2) {
-                console.log('Saved row data');
-                updateSpanTableRow(nRow);
-                endEdittingTableRow(nRow);
-                addMessage("Updated Agent Hierarchy Distribution - Fee successfully");
-            } else {
-                console.log('Error adding row data');
-                addMessage("Updated Agent Hierarchy Distribution - Fee got error!");
+                } else if (response.status == 2) {
+                    console.log('Saved row data');
+                    updateSpanTableRow(nRow);
+                    endEdittingTableRow(nRow);
+                    addMessage("Updated Agent Hierarchy Distribution - Fee successfully");
+                } else {
+                    console.log('Error adding row data');
+                    addMessage("Updated Agent Hierarchy Distribution - Fee got error!");
+                }
+            },
+            error: function (err) {
+                var json = JSON.stringify(err);
+                addMessage("Edit error!");
             }
-        },
-        error: function (err) {
-            var json = JSON.stringify(err);
-            addMessage("Edit error!");
-        }
-    });
+        });
+    }
 }
