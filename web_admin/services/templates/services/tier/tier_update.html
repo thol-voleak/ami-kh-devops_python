@@ -155,7 +155,7 @@ function changeValue() {
 
     toggleFromDropdownList();
 
-    <!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
+    //<!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
     var $condition = $('#ddl_condition');
     function updateByConditionType() {
         var $condition_amount = $('#txt_amount');
@@ -255,11 +255,47 @@ function changeAmount() {
 
     });
 }
+function changeFeeAmount() {
+    $('#txt_fee_amount').keydown(function(event){
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
+        if (keyCode == 13) {
+            event.preventDefault();
+        }
+    });
 
+
+    var $input = $('#txt_fee_amount');
+    $input.on( "change", function( event ) {
+
+        var selection = window.getSelection().toString();
+        if ( selection !== '' ) {
+            return;
+        }
+
+        if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+            return;
+        }
+
+        var $this = $( this );
+        var input = $this.val();
+
+        var input = toNumber(input);
+
+        input = input ? parseFloat(input) : 0;
+        input = input ? input : 0;
+
+        $this.val( function() {
+            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }},
+             minimumFractionDigits: {{ decimal}} });
+        } );
+
+    });
+}
 
 
 $(changeValue);
 $(changeAmount);
+$(changeFeeAmount);
 var txt_bonus_amount = document.getElementById("txt_bonus_amount");
 var txt_fee_amount = document.getElementById('txt_fee_amount');
 var condition_amount = document.getElementById('txt_amount');

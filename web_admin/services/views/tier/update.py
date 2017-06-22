@@ -27,7 +27,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         tier_to_update = self._get_tier_detail(tier_id)
         for i in tier_to_update:
             if tier_to_update[i] is None:
-                tier_to_update[i] = ''
+                tier_to_update[i] = ''        
         context['update_tier'] = tier_to_update
         service_id = context['service_id']
         command_id = context['command_id']
@@ -54,6 +54,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                'update_tier': tier_to_update,
                'decimal':int(decimal),
             })
+        
         return render(request, self.template_name, context)
 
     def _get_tier_detail(self, tier_id):
@@ -107,17 +108,22 @@ class UpdateView(TemplateView, RESTfulMethods):
         service_id = context['service_id']
         service_command_id = context['service_command_id']
         condition_amount = request.POST.get('condition_amount')
-        condition_amount = condition_amount.replace(',', '')
+        if condition_amount:
+            condition_amount = condition_amount.replace(',', '')
+        fee_amount = request.POST.get('fee_amount')
+        if fee_amount:
+            fee_amount = fee_amount.replace(',', '')
 
         data = {
             "fee_tier_condition": request.POST.get('condition'),
             "condition_amount": condition_amount,
             "fee_type": request.POST.get('fee_type'),
-            "fee_amount": request.POST.get('fee_amount'),
+            "fee_amount": fee_amount,
             "bonus_type": request.POST.get('bonus_type'),
             "bonus_amount": request.POST.get('bonus_amount'),
             "amount_type": request.POST.get('amount_type'),
         }
+
 
         if data['bonus_type'] == "Flat value":
             data['amount_type'] = ''
