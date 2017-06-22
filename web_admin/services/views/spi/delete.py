@@ -1,10 +1,13 @@
-from web_admin.restful_methods import RESTfulMethods
-from django.http import Http404
-from django.views.generic.base import TemplateView
-from django.shortcuts import redirect
 from web_admin.api_settings import SPI_DETAIL_PATH, SPI_DELETE_PATH
-import logging
 from web_admin.utils import setup_logger
+from web_admin.restful_methods import RESTfulMethods
+
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import redirect
+from django.views.generic.base import TemplateView
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +29,7 @@ class SPIDeleteView(TemplateView, RESTfulMethods):
             context['spi_detail'] = self.get_spi_detail(spi_url_id)
             return context
         except Exception as e:
+            self.logger.error(e)
             return {}
 
     def post(self, request, *args, **kwargs):
@@ -45,13 +49,23 @@ class SPIDeleteView(TemplateView, RESTfulMethods):
 
         if success:
             request.session['spi_delete_msg'] = 'Deleted data successfully'
-            return redirect('services:spi_list', service_id=(service_id), command_id=(command_id), service_command_id=(service_command_id) )
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                'Deleted data successfully'
+            )
+            return redirect('services:spi_list', service_id=service_id, command_id=command_id,
+                            service_command_id=service_command_id)
         else:
-            raise Exception("Something wrong")
-        
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                data
+            )
+            return redirect('services:spi_list', service_id=service_id, command_id=command_id,
+                            service_command_id=service_command_id)
+
     def get_spi_detail(self, spi_url_id):
         path = SPI_DETAIL_PATH.format(spiUrlId=spi_url_id)
         data, success = self._get_method(path, '', logger)
         return data
-
-

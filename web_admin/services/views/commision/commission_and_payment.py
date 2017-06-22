@@ -119,6 +119,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
                                          is_getting_list=True)
         return data, success
 
+
 class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
     logger = logger
