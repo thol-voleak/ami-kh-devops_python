@@ -56,6 +56,9 @@ class AddView(TemplateView,RESTfulMethods):
         fee_amount = request.POST.get('fee_amount')
         if fee_amount:
             fee_amount = fee_amount.replace(',', '')
+        bonus_amount = request.POST.get('bonus_amount')
+        if bonus_amount:
+            bonus_amount = bonus_amount.replace(',', '')
 
         data = {
             "fee_tier_condition": request.POST.get('condition'),
@@ -63,7 +66,7 @@ class AddView(TemplateView,RESTfulMethods):
             "fee_type": request.POST.get('fee_type'),
             "fee_amount": fee_amount,
             "bonus_type": request.POST.get('bonus_type'),
-            "bonus_amount": request.POST.get('bonus_amount'),
+            "bonus_amount": bonus_amount,
         }
 
         if(request.POST.get('bonus_type') != 'Flat value'):
