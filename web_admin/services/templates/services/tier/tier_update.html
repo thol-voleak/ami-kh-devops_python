@@ -168,6 +168,7 @@ function changeValue() {
             $condition_amount.removeAttr('required');
             $fee_amount.removeAttr('required');
             $bonus_amount.removeAttr('required');
+            $condition_amount.attr('disabled', true);
         } else {
             $("#label_amount").text("Amount *");
             $("#label_fee_amount").text("Fee Amount *");
@@ -175,6 +176,7 @@ function changeValue() {
             $condition_amount.attr('required', true);
             $fee_amount.attr('required', true);
             $bonus_amount.attr('required', true);
+            $condition_amount.removeAttr('disabled');
         }
     }
     updateByConditionType();
