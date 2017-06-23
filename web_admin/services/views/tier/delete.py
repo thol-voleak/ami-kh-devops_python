@@ -21,7 +21,6 @@ class TierDeleteView(UpdateView):
         tier_id = context['fee_tier_id']
         self.logger.info('Start Getting Tier detail')
         tier_to_delete = self._get_tier_detail(tier_id)
-        self.logger.info('Finish Getting Tier detail')
         for i in tier_to_delete:
             if tier_to_delete[i] is None:
                 tier_to_delete[i] = 'Non'
@@ -34,7 +33,7 @@ class TierDeleteView(UpdateView):
             'service_name': service_detail.get('service_name', 'unknown'),
             'command_name': command_name,
         })
-
+        self.logger.info('Finish Getting Tier detail')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
