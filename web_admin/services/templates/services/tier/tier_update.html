@@ -169,6 +169,7 @@ function changeValue() {
             $fee_amount.removeAttr('required');
             $bonus_amount.removeAttr('required');
             $condition_amount.attr('disabled', true);
+            $condition_amount.val('');
         } else {
             $("#label_amount").text("Amount *");
             $("#label_fee_amount").text("Fee Amount *");
