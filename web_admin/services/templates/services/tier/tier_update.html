@@ -5,6 +5,20 @@
     <div class="panel-heading border">
         <h3>Edit Service Tier</h3>
     </div>
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {%if "successfully" in message%}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-edit-tier">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
 
     <div class="panel-body">
         <div class="row no-margin">

@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +47,7 @@ class AddView(TemplateView,RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
+        context = super(AddView, self).get_context_data(**kwargs)
         command_id = kwargs['command_id']
         service_id = kwargs['service_id']
         service_command_id = kwargs['service_command_id']
@@ -60,7 +61,7 @@ class AddView(TemplateView,RESTfulMethods):
         if bonus_amount:
             bonus_amount = bonus_amount.replace(',', '')
 
-        data = {
+        params = {
             "fee_tier_condition": request.POST.get('condition'),
             "condition_amount": condition_amount,
             "fee_type": request.POST.get('fee_type'),
@@ -70,20 +71,50 @@ class AddView(TemplateView,RESTfulMethods):
         }
 
         if(request.POST.get('bonus_type') != 'Flat value'):
-            data['amount_type'] = request.POST.get('amount_type')
-        success = self._add_tier(service_command_id, data)
+            params['amount_type'] = request.POST.get('amount_type')
+        data, success = self._add_tier(service_command_id, params)
         self.logger.info('========== Finish Adding Tier ==========')
         if success:
             request.session['add_tier_msg'] = 'Added data successfully'
-        return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
-                        service_command_id=service_command_id)
+            return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
+                            service_command_id=service_command_id)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=data
+            )
+            decimal = 0
+            tier_conditions, status1 = self._get_tier_condition()
+            amount_types, status2 = self._get_amount_types()
+            service_detail, status3 = self._get_service_detail(service_id)
+            currencies = self._get_currencies_list()
+            if service_detail and currencies:
+                currency_name = service_detail['currency']
+                if currency_name in currencies.keys():
+                    decimal = currencies[currency_name]
+            command_name, status4 = self._get_command_name(command_id)
+            fee_types, status5 = self._get_fee_types()
+            bonus_types, status6 = self._get_bonus_types()
+            if status1 and status2 and status3 and status4 and status5 and status6:
+                context.update({
+                    'conditions': tier_conditions,
+                    'fee_types': fee_types,
+                    'bonus_types': bonus_types,
+                    'amount_types': amount_types,
+                    'service_name': service_detail.get('service_name', 'unknown'),
+                    'command_name': command_name,
+                    'decimal': int(decimal),
+                    'body':params
+                })
+            return render(request, self.template_name, context)
+
 
 
     def _add_tier(self, service_command_id, data):
-        response, status = self._post_method(api_path=api_settings.ADD_TIER_URL.format(service_command_id=service_command_id),
+        return self._post_method(api_path=api_settings.ADD_TIER_URL.format(service_command_id=service_command_id),
                                                    func_description="Adding Tier",
                                                    logger=logger, params=data)
-        return status
 
     def _get_tier_condition(self):
         tier_conditions, status = self._get_method(api_path=api_settings.FEE_TIER_CONDITION_URL,
