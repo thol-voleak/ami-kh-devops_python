@@ -41,7 +41,7 @@ def encrypt_text_agent(input_text):
 def setup_logger(request, logger):
     if 'HTTP_X_FORWARDED_FOR' in request.META:
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        logger.info("Found HTTP_X_FORWARDED_FOR header with value [{}]".format(x_forwarded_for))
+        # logger.info("Found HTTP_X_FORWARDED_FOR header with value [{}]".format(x_forwarded_for))
         client_ip = x_forwarded_for.split(',')[0].strip()
     else:
         client_ip = request.META.get('REMOTE_ADDR')
