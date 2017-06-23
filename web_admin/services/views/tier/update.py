@@ -1,5 +1,5 @@
 import logging
-
+from django.contrib import messages
 from multiprocessing import Process, Manager
 from django.views.generic.base import TemplateView
 from django.conf import settings
@@ -117,7 +117,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         if bonus_amount:
             bonus_amount = bonus_amount.replace(',', '')
 
-        data = {
+        params = {
             "fee_tier_condition": request.POST.get('condition'),
             "condition_amount": condition_amount,
             "fee_type": request.POST.get('fee_type'),
@@ -127,25 +127,58 @@ class UpdateView(TemplateView, RESTfulMethods):
             "amount_type": request.POST.get('amount_type'),
         }
 
-
-        if data['bonus_type'] == "Flat value":
-            data['amount_type'] = ''
+        if params['bonus_type'] == "Flat value":
+            params['amount_type'] = ''
 
         fee_tier_id = context['fee_tier_id']
 
-        success = self._edit_tier(fee_tier_id, data)
+        data, success = self._edit_tier(fee_tier_id, params)
         self.logger.info('========== Finish Updating Tier ==========')
         if success:
             request.session['edit_tier_msg'] = 'Updated data successfully'
-        return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
-                        service_command_id=service_command_id)
+            return redirect('services:fee_tier_list', service_id=service_id, command_id=command_id,
+                            service_command_id=service_command_id)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=data
+            )
+            decimal = 0
+            context = super(UpdateView, self).get_context_data(**kwargs)
+            service_id = context['service_id']
+            command_id = context['command_id']
+            tier_conditions, status1 = self._get_tier_condition()
+            fee_types, status2 = self._get_fee_types()
+            bonus_types, status3 = self._get_bonus_types()
+            amount_types, status4 = self._get_amount_types()
+            service_detail, status5 = self._get_service_detail(service_id)
+            currencies = self._get_currencies_list()
+            if service_detail and currencies:
+                currency_name = service_detail['currency']
+                if currency_name in currencies.keys():
+                    decimal = currencies[currency_name]
+
+            command_name, status6 = self._get_command_name(command_id)
+            if status1 and status2 and status3 and status4 and status5 and status6:
+                context.update({
+                    'conditions': tier_conditions,
+                    'fee_types': fee_types,
+                    'bonus_types': bonus_types,
+                    'amount_types': amount_types,
+                    'service_name': service_detail.get('service_name', 'unknown'),
+                    'command_name': command_name,
+                    'decimal': int(decimal),
+                    'update_tier': params
+                })
+
+            return render(request, self.template_name, context)
 
     def _edit_tier(self, fee_tier_id, data):
-        result, status = self._put_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),
+        return self._put_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),
                                    func_description="Edit Tier",
                                    logger=logger, params=data)
-        return status
-    
+
     def _get_currencies_list(self):
         url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(api_path=url,

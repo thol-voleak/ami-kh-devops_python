@@ -74,4 +74,4 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
         #     logger.info('Response content: {}'.format(response.content))
         #     return [], False
 
-        return self._get_method(url, "fee tier list", logger)
+        return self._get_precision_method(url, "fee tier list", logger)

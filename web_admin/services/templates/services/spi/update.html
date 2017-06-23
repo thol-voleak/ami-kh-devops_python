@@ -42,7 +42,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">SPI URL call method</label>
                 <div class="col-sm-4">
-                    <select class="form-control" id="txt_spi_url_call_method" name="spi_url_call_method" required>
+                    <select class="form-control" id="ddl_spi_url_call_method" name="spi_url_call_method" required>
                         {% for method in data_spi_call_method %}
                         {% if method.spi_url_call_method == data.spi_url_call_method %}
                             <option value="{{ method.spi_url_call_method }}" selected>{{ method.spi_url_call_method }}</option>
