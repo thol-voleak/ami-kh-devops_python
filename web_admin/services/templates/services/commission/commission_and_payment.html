@@ -198,6 +198,17 @@
                 <h4>III. Setting Bonus</h4>
             </div>
 
+            <div id="table-III-messages">
+                {% if payment_tbl_msg is not None %}
+                    <div class="col-xs-12">
+                        <div class="alert alert-success alert-dismissable" id="table_III_msg">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ payment_tbl_msg }}</strong>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
             <form method="POST" class="form-horizontal" role="form"
                   action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}"
                   id="Setting_Bonus_Form">
@@ -441,9 +452,21 @@
                 '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
                 '<strong>' + message + '</strong>' +
                 '</div>' +
-                '</div>')
+                '</div>');
 
             setTimeout(function(){$("#table-II-message").fadeOut(1000);}, 5000);
+        }
+
+        function TableIIIErrorMessage(message) {
+            $("#table-III-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="table-III-message">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>');
+
+            setTimeout(function(){$("#table-III-message").fadeOut(1000);}, 5000);
         }
 
         function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
