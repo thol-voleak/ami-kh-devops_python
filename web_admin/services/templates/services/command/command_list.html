@@ -19,6 +19,16 @@
                 </div>
             </div>
         {% endif %}
+        {% if delete_msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert 
+                            alert-success
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ delete_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
         {% if msg_failed is not None %}
             <div class="col-xs-12">
                 <div class='alert
@@ -96,8 +106,9 @@
                                                 href="{% url 'services:spi_list' service_id command.command_id command.service_command_id %}">
                                                 <span class="small">SPI</span>
                                                 </a>
-                                                <button type="button" class="btn btn-outline btn-xs btn-danger small" id="btn_delete"
-                                                onclick="deleteCommand('{{ command.service_command_id }}')">Delete</button>
+                                                <a type="button" class="btn btn-outline btn-xs btn-danger" id="btn_spi" role="button"
+                                                href="{% url 'services:command_delete' service_id command.command_id command.service_command_id %}">
+                                                <span class="small">Delete</span>
                                             </td>
                                         </tr>
                                     {% endif %}
@@ -114,34 +125,4 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
-    <script>
-        function deleteCommand(svCommandId) {
-            var url = $('#service_command_form').attr('action') + svCommandId;
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function () {
-                    $('#service_command_' + svCommandId).remove();
-                    addMessage("Deleted data successfully");
-                },
-                error: function () {
-                    addMessage("Delete failed!");
-                }
-            });
-        }
-
-        function addMessage(message) {
-            $("#ajax-messages").empty().append(
-                '<div class="col-xs-12">' +
-                '<div class="alert alert-success alert-dismissable" id="msg-add-service">' +
-                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
-                '<strong>' + message + '</strong>' +
-                '</div>' +
-                '</div>')
-        }
-    </script>
 {% endblock %}

@@ -42,7 +42,7 @@ urlpatterns = [
         name="delete_service"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/$', login_required(ListCommandView.as_view(), login_url='authentications:login'),
         name="command_list"),
-    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<service_command_id>[0-9A-Za-z]+)$',
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/delete/(?P<service_command_id>[0-9A-Za-z]+)$',
         login_required(DeleteCommand.as_view(), login_url='authentications:login'),
         name="command_delete"),
     url(
