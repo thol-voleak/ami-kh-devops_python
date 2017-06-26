@@ -153,7 +153,8 @@
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type"
-                                        id="ddl_setting_payment_fee_structure_from_amount">
+                                        id="ddl_setting_payment_fee_structure_from_amount"
+                                        onchange="changeAmountType('#ddl_setting_payment_fee_structure_from_amount', '#txt_setting_payment_fee_structure_rate')">
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
@@ -456,6 +457,17 @@
                 $(specificActorId).val("");
                 $(specificSoFId).prop('disabled',true);
                 $(specificSoFId).val("");
+            }
+        }
+
+        function changeAmountType(AmountType, Rate) {
+
+            if ($(AmountType).find(":selected").html().indexOf("Rate") >= 0) {
+                $(Rate).prop('disabled', false);
+                $(Rate).prop('required',true);
+            } else {
+                $(Rate).prop('disabled', true);
+                $(Rate).val("");
             }
         }
 

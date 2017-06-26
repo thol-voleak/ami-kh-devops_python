@@ -82,6 +82,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var htmlActorEventJS = "";
         var setRequired = '';
 
+        // For Amount Types.
+        var htmlAmountTypeEventJS = "";
+        var setRateDisabled = '';
+        var setRateRequired = '';
+
         // Buttons
         var htmlIDBtnSave = 'id=\'';
         var htmlIDBtnCancel = 'id=\'';
@@ -98,6 +103,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#txt_setting_payment_fee_structure_specific_id_edit', '#txt_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit')\"";
 
         } else if (tableId == 'tbl_setting_bonus') {
             htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
@@ -135,6 +141,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlIDBtnSave += '\'';
         htmlIDBtnCancel += '\'';
 
+        // set disabled, required for specific ID & specific SOF according to Actor Types
         if (aData[1] === 'Specific ID') {
             setDisabled = '';
             setRequired = 'required';
@@ -142,13 +149,21 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             setDisabled = 'disabled';
         }
 
+        // set disabled, required for Rate according to AmountType
+        if (aData[5].indexOf("Rate") >= 0) {
+            setRateDisabled = '';
+            setRateRequired = 'required';
+        } else {
+            setRateDisabled = 'disabled';
+        }
+
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '<input ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'text\' class=\'form-control\' name=\'specific_id\' value=\'' + aData[2] + '\'>';
         jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<input ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
-        jqTds[5].innerHTML = '<select ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
+        jqTds[6].innerHTML = '<input ' + ' ' + setRateRequired + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
@@ -221,6 +236,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
         var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[3]).find(":selected").html();
 
         //Validate Input Value specific_actor_id
         if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
@@ -236,6 +252,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund_edit").style.borderColor = "red";
             // $(jqInputs[1]).prop("style", "border-color: red;");
             addErrorMessage("Please input Specific Source of Fund");
+        }
+        //Validate Input Value Rate
+        else if(AmountType.indexOf("Rate") >= 0 && jqInputs[2].value == "" ) {
+            document.getElementById("txt_setting_payment_fee_structure_rate_edit").style.borderColor = "red";
+            addErrorMessage("Please input Rate %");
+
+            // isRepeat = true;
+            $("#btn_setting_payment_fee_structure_save").click();
+
         }
         else {
             // Request to server
@@ -276,7 +301,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 error: function (err) {
                     var json = JSON.stringify(err);
 
-                    addMessage("Edit error!");
+                    addErrorMessage("Edit error!");
                 }
             });
         }
@@ -342,7 +367,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 error: function (err) {
                     var json = JSON.stringify(err);
 
-                    addMessage("Edit error!");
+                    addErrorMessage("Edit error!");
                 }
             });
         }
@@ -408,7 +433,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
-                    addMessage("Edit error!");
+                    addErrorMessage("Edit error!");
                 }
             });
         }
@@ -472,7 +497,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
-                    addMessage("Edit error!");
+                    addErrorMessage("Edit error!");
                 }
             });
         }
