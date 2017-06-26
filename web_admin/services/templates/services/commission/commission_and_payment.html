@@ -30,7 +30,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Command:</label>
                     <div class="col-sm-4">
-                        <input type="text" value="{{ command_name }}" class="form-control" name="command" id="txt_command"
+                        <input type="text" value="{{ command_name }}" class="form-control" name="command"
+                               id="txt_command"
                                disabled/>
                     </div>
                 </div>
@@ -44,26 +45,30 @@
                 <label class="col-sm-2 control-label">Fee:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <input value="{{ fee_tier_detail.fee_type }}" type="text" class="form-control" name="service_name" id="txt_fee" disabled />
+                        <input value="{{ fee_tier_detail.fee_type }}" type="text" class="form-control"
+                               name="service_name" id="txt_fee" disabled/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <input type="text" value="{{ fee_tier_detail.fee_amount }}" class="form-control" name="command" id="txt_fee_value" disabled/>
+                        <input type="text" value="{{ fee_tier_detail.fee_amount }}" class="form-control" name="command"
+                               id="txt_fee_value" disabled/>
                     </div>
                 </div>
             </div>
-            <br />
+            <br/>
             <div class="form-inline">
                 <label class="col-sm-2 control-label">Bonus:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <input value="{{ fee_tier_detail.bonus_type }}" type="text" class="form-control" name="service_name" id="txt_bonus" disabled />
+                        <input value="{{ fee_tier_detail.bonus_type }}" type="text" class="form-control"
+                               name="service_name" id="txt_bonus" disabled/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <input type="text" value="{{ fee_tier_detail.bonus_amount }}" class="form-control" name="command" id="txt_bonus_value" disabled/>
+                        <input type="text" value="{{ fee_tier_detail.bonus_amount }}" class="form-control"
+                               name="command" id="txt_bonus_value" disabled/>
                     </div>
                 </div>
             </div>
@@ -71,6 +76,18 @@
             <div class="panel-heading">
                 <h4>II. Setting Payment & Fee Structure</h4>
             </div>
+
+            <div id="table-II-messages">
+                {% if payment_tbl_msg is not None %}
+                    <div class="col-xs-12">
+                        <div class="alert alert-success alert-dismissable" id="table_II_msg">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ payment_tbl_msg }}</strong>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
 
             <form method="POST" class="form-horizontal" role="form"
                   action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}"
@@ -100,7 +117,9 @@
                                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}
+                                    {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}
+                                    {% endif %}{% endfor %}</td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
@@ -201,12 +220,14 @@
                         <tbody>
                         {% for d in bonus %}
                             <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"
-                                data-id="{{d.bonus_distribution_id}}"
+                                data-id="{{ d.bonus_distribution_id }}"
                                 id="bonus-distribution-{{ d.bonus_distribution_id }}">
                                 <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{sof_type.sof_type}}{% endif %}{% endfor %}</td>
+                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}
+                                    {% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}
+                                    {% endif %}{% endfor %}</td>
                                 <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
@@ -245,7 +266,7 @@
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
                                     {% for sof_type in choices.sof_types %}
-                                        <option value="{{sof_type.sof_type_id}}">{{sof_type.sof_type}}</option>
+                                        <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
@@ -255,9 +276,9 @@
                             </td>
                             <td>
                                 <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount"
-                                onchange="changeAmountType('#ddl_setting_bonus_amount', '#txt_setting_bonus_rate')">
+                                        onchange="changeAmountType('#ddl_setting_bonus_amount', '#txt_setting_bonus_rate')">
                                     {% for amount_type in choices.amount_types %}
-                                        <option value="{{amount_type.amount_type}}">{{amount_type.amount_type}}</option>
+                                        <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
                             <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required/></td>
@@ -294,11 +315,11 @@
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function (response) {
-                    if(response.status == 1) {
+                    if (response.status == 1) {
                         // Logout
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
-                    } else if(response.status == 2) {
+                    } else if (response.status == 2) {
                         $('#balance-distribution-' + distributionId).remove();
                         addMessage("Deleted data successfully");
                     } else {
@@ -321,11 +342,11 @@
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function (response) {
-                    if(response.status == 1) {
+                    if (response.status == 1) {
                         // Logout
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
-                    } else if(response.status == 2) {
+                    } else if (response.status == 2) {
                         $('#bonus-distribution-' + bonus_distributions_id).remove();
                         addMessage("Deleted Setting Bonus successfully");
                     } else {
@@ -349,11 +370,11 @@
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function (response) {
-                    if(response.status == 1) {
+                    if (response.status == 1) {
                         // Logout
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
-                    } else if(response.status == 2) {
+                    } else if (response.status == 2) {
                         $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
                     } else {
@@ -376,11 +397,11 @@
                     xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
                 },
                 success: function (response) {
-                    if(response.status == 1) {
+                    if (response.status == 1) {
                         // Logout
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
-                    } else if(response.status == 2) {
+                    } else if (response.status == 2) {
                         $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
                     } else {
@@ -413,16 +434,28 @@
                 '</div>')
         }
 
+        function TableIIErrorMessage(message) {
+            $("#table-II-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="table-II-message">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+
+            setTimeout(function(){$("#table-II-message").fadeOut(1000);}, 5000);
+        }
+
         function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
-                $(specificActorId).prop('required',true);
-                $(specificSoFId).prop('disabled',false);
-                $(specificSoFId).prop('required',true);
+                $(specificActorId).prop('required', true);
+                $(specificSoFId).prop('disabled', false);
+                $(specificSoFId).prop('required', true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
-                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).prop('disabled', true);
                 $(specificSoFId).val("");
             }
         }
@@ -433,13 +466,13 @@
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
-                $(specificActorId).prop('required',true);
-                $(specificSoFId).prop('disabled',false);
-                $(specificSoFId).prop('required',true);
+                $(specificActorId).prop('required', true);
+                $(specificSoFId).prop('disabled', false);
+                $(specificSoFId).prop('required', true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
-                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).prop('disabled', true);
                 $(specificSoFId).val("");
             }
         }
@@ -450,13 +483,13 @@
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
-                $(specificActorId).prop('required',true);
-                $(specificSoFId).prop('disabled',false);
-                $(specificSoFId).prop('required',true);
+                $(specificActorId).prop('required', true);
+                $(specificSoFId).prop('disabled', false);
+                $(specificSoFId).prop('required', true);
             } else {
                 $(specificActorId).prop('disabled', true);
                 $(specificActorId).val("");
-                $(specificSoFId).prop('disabled',true);
+                $(specificSoFId).prop('disabled', true);
                 $(specificSoFId).val("");
             }
         }
@@ -465,7 +498,7 @@
 
             if ($(AmountType).find(":selected").html().indexOf("Rate") >= 0) {
                 $(Rate).prop('disabled', false);
-                $(Rate).prop('required',true);
+                $(Rate).prop('required', true);
             } else {
                 $(Rate).prop('disabled', true);
                 $(Rate).val("");

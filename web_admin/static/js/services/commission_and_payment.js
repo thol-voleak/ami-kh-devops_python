@@ -242,22 +242,20 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         //Validate Input Value specific_actor_id
         if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
             document.getElementById("txt_setting_payment_fee_structure_specific_id_edit").style.borderColor = "red";
-            // $(jqInputs[0]).prop("style", "border-color: red;");
-            addErrorMessage("Please input Specific ID");
+            TableIIErrorMessage("Please input Specific ID");
             nEditing = nRow;
 
         }
         //Validate Input Value specific_sof
         else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
             document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund_edit").style.borderColor = "red";
-            // $(jqInputs[1]).prop("style", "border-color: red;");
-            addErrorMessage("Please input Specific Source of Fund");
+            TableIIErrorMessage("Please input Specific Source of Fund");
             nEditing = nRow;
         }
         //Validate Input Value Rate
         else if(AmountType.indexOf("Rate") >= 0 && jqInputs[2].value == "" ) {
             document.getElementById("txt_setting_payment_fee_structure_rate_edit").style.borderColor = "red";
-            addErrorMessage("Please input Rate %");
+            TableIIErrorMessage("Please input Rate %");
             nEditing = nRow;
 
         }
