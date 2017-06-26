@@ -330,7 +330,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             nEditing = nRow;
         }
         //Validate Input Value Rate
-        else if(AmountType.indexOf("Rate") !== 0 && jqInputs[2].value === "" ) {
+        else if(AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "" ) {
             document.getElementById("txt_setting_bonus_rate_edit").style.borderColor = "red";
             addErrorMessage("Please input Rate %");
             nEditing = nRow;
