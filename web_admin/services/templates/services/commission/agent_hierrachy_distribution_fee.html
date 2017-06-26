@@ -81,7 +81,7 @@
                     </td>
                     <td class="col-sm-2">
                         <span>{{ d.amount_type|default_if_none:'' }}</span>
-                        <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount_edit" style="display: none;">
+                        <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount_edit" style="display: none;" onChange="ddl_agent_hier_fee_amount_edit_changed(this)">
                         {% for amount_type in choices.amount_types %}
                             {% if amount_type.amount_type == d.amount_type %}
                                 <option value="{{ amount_type.amount_type }}" selected>{{ amount_type.amount_type }}</option>
@@ -150,7 +150,7 @@
                            name="specific_sof" disabled/>
                 </td>
                 <td>
-                    <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount">
+                    <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount" onChange="ddl_agent_hier_fee_amount_changed()">
                         {% for amount_type in choices.amount_types %}
                             <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}

@@ -343,6 +343,39 @@
             });
         }
 
+        function ddl_agent_hier_fee_amount_changed() {
+            var element = document.getElementById('ddl_agent_hier_fee_amount');
+            var text_element = document.getElementById('txt_agent_hier_fee_rate');
+            var value = element.value;
+            if((value.indexOf("Rate") !== -1) || (value.indexOf("rate") !== -1)) {
+                // exist
+                text_element.disabled = false;
+                text_element.required = true;
+            } else {
+                // not found
+                text_element.disabled = true;
+                text_element.required = false;
+            }
+        }
+
+        function ddl_agent_hier_fee_amount_edit_changed(element) {
+            var value = element.value;
+            var children = $(element).parent().next().children();
+            var text_element = children[1];
+
+            if((value.indexOf("Rate") !== -1) || (value.indexOf("rate") !== -1)) {
+                // exist
+                text_element.disabled = false;
+                text_element.required = true;
+            } else {
+                // not found
+                text_element.disabled = true;
+                text_element.required = false;
+                text_element.style.borderColor = "#e4e4e4";//transparent
+            }
+        }
+
+
         function deleteSettingBonus(bonus_distributions_id) {
             var url = $('#Setting_Bonus_Form').attr('action') + bonus_distributions_id;
             $.ajax({

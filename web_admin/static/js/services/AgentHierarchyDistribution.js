@@ -98,8 +98,35 @@ function tapOnCancel(e) {
 
 function tapOnSave(e) {
     tr = $(e).parent().parent().parent();
-    // Post data to server:
-    saveAgentHierarchyDistribution(tr)
+
+    if(validateForm(tr)) {
+        // Post data to server:
+        saveAgentHierarchyDistribution(tr);
+    }
+}
+
+function validateForm(nRow) {
+    var jqInputs = $('input', nRow);
+    var rate_value = jqInputs[2].value;
+    var text_element = jqInputs[2];
+
+    var jqSelects = $('select', nRow);
+    var select_value = $(jqSelects[3]).find(":selected").html();
+
+    if((select_value.indexOf("Rate") !== -1) || (select_value.indexOf("rate") !== -1)) {
+        // exist
+        text_element.required = true;
+
+        if(!rate_value) {
+            text_element.style.borderColor = "red";
+            return false;
+        }
+    }
+    text_element.style.borderColor = "transparent";
+
+    return true;
+
+
 }
 
 function saveAgentHierarchyDistribution(nRow) {
