@@ -117,6 +117,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
 
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#txt_setting_bonus_specific_id_edit', '#txt_setting_bonus_spec_src_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
 
         } else if (tableId == 'tbl_bonus') {
             htmlIDActionTypes += 'ddl_bonus_dc_edit';
@@ -240,26 +241,24 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
         //Validate Input Value specific_actor_id
         if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
-            editRow(oTable, nRow);
             document.getElementById("txt_setting_payment_fee_structure_specific_id_edit").style.borderColor = "red";
             // $(jqInputs[0]).prop("style", "border-color: red;");
             addErrorMessage("Please input Specific ID");
+            nEditing = nRow;
 
         }
         //Validate Input Value specific_sof
         else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
-            editRow(oTable, nRow);
             document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund_edit").style.borderColor = "red";
             // $(jqInputs[1]).prop("style", "border-color: red;");
             addErrorMessage("Please input Specific Source of Fund");
+            nEditing = nRow;
         }
         //Validate Input Value Rate
         else if(AmountType.indexOf("Rate") >= 0 && jqInputs[2].value == "" ) {
             document.getElementById("txt_setting_payment_fee_structure_rate_edit").style.borderColor = "red";
             addErrorMessage("Please input Rate %");
-
-            // isRepeat = true;
-            $("#btn_setting_payment_fee_structure_save").click();
+            nEditing = nRow;
 
         }
         else {
@@ -313,21 +312,28 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
         var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[3]).find(":selected").html();
 
         //Validate Input Value specific_actor_id
-        if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
-            editRow(oTable, nRow);
+        if(ActorType === 'Specific ID' && jqInputs[0].value === "") {
             document.getElementById("txt_setting_bonus_specific_id_edit").style.borderColor = "red";
             // $(jqInputs[0]).prop("style", "border-color: red;");
             addErrorMessage("Please input Specific ID");
+            nEditing = nRow;
 
         }
         //Validate Input Value specific_sof
-        else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
-            editRow(oTable, nRow);
-            document.getElementById("txt_setting_bonus_specific_source_of_fund_edit").style.borderColor = "red";
+        else if(ActorType === 'Specific ID' && jqInputs[1].value === "") {
+            document.getElementById("txt_setting_bonus_spec_src_fund_edit").style.borderColor = "red";
             // $(jqInputs[1]).prop("style", "border-color: red;");
             addErrorMessage("Please input Specific Source of Fund");
+            nEditing = nRow;
+        }
+        //Validate Input Value Rate
+        else if(AmountType.indexOf("Rate") !== 0 && jqInputs[2].value === "" ) {
+            document.getElementById("txt_setting_bonus_rate_edit").style.borderColor = "red";
+            addErrorMessage("Please input Rate %");
+            nEditing = nRow;
         }
         else {
 
@@ -547,7 +553,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 else if (tableId == "tbl_bonus")
                     saveAgentBonusToServer(oTable, nEditing);
 
-                nEditing = null;
             } else {
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
