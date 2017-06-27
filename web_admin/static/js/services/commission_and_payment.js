@@ -131,6 +131,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
             htmlIDBtnCancel += 'btn_bonus_cancel';
 
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#txt_bonus_specific_id_edit', '#txt_bonus_specific_source_of_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_bonus_amount_edit', '#txt_bonus_rate_edit')\"";
         }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
@@ -381,24 +382,13 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
         var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[3]).find(":selected").html();
 
-        //Validate Input Value specific_actor_id
-        if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
-            editRow(oTable, nRow);
-            document.getElementById("txt_bonus_specific_id_edit").style.borderColor = "red";
-            // $(jqInputs[0]).prop("style", "border-color: red;");
-            addErrorMessage("Please input Specific ID");
-
-        }
-        //Validate Input Value specific_sof
-        else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
-            editRow(oTable, nRow);
-            document.getElementById("txt_bonus_specific_source_of_fund_edit").style.borderColor = "red";
-            // $(jqInputs[1]).prop("style", "border-color: red;");
-            addErrorMessage("Please input Specific Source of Fund");
+        if ((ActorType === 'Specific ID' && jqInputs[0].value === "") || (ActorType === 'Specific ID' && jqInputs[1].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "")) {
+            document.getElementById("btn_agent_hierarchy_distribution_bonus_add").click();
+            nEditing = nRow;
         }
         else {
-
             // Request to server
             $.ajax({
                 url: url,
@@ -431,7 +421,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                         console.log('Error adding row data');
                         addMessage("Updated Agent Hierrachy Distribution - Bonus got error!");
                     }
-
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);

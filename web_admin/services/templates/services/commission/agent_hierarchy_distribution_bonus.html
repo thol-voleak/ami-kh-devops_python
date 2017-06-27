@@ -74,7 +74,8 @@
                 <td><input class="form-control" name="specific_sof" id="txt_bonus_specific_source_of_fund" disabled/>
                 </td>
                 <td>
-                    <select class="form-control" name="amount_type" id="ddl_amount">
+                    <select class="form-control" name="amount_type" id="ddl_amount"
+                    onchange="changeAmountType('#ddl_amount', '#txt_bonus_rate')">
                         {% for amount_type in choices.amount_types %}
                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
