@@ -240,25 +240,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var ActorType = $(jqSelects[1]).find(":selected").html();
         var AmountType = $(jqSelects[3]).find(":selected").html();
 
-        //Validate Input Value specific_actor_id
-        if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
-            document.getElementById("txt_setting_payment_fee_structure_specific_id_edit").style.borderColor = "red";
-            TableIIErrorMessage("Please input Specific ID");
+        if ((ActorType === 'Specific ID' && jqInputs[0].value === "") || (ActorType === 'Specific ID' && jqInputs[1].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "")) {
+            document.getElementById("btn_setting_payment_fee_structure_add").click();
             nEditing = nRow;
-
-        }
-        //Validate Input Value specific_sof
-        else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
-            document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund_edit").style.borderColor = "red";
-            TableIIErrorMessage("Please input Specific Source of Fund");
-            nEditing = nRow;
-        }
-        //Validate Input Value Rate
-        else if(AmountType.indexOf("Rate") >= 0 && jqInputs[2].value == "" ) {
-            document.getElementById("txt_setting_payment_fee_structure_rate_edit").style.borderColor = "red";
-            TableIIErrorMessage("Please input Rate %");
-            nEditing = nRow;
-
         }
         else {
             // Request to server
@@ -313,23 +297,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var ActorType = $(jqSelects[1]).find(":selected").html();
         var AmountType = $(jqSelects[3]).find(":selected").html();
 
-        //Validate Input Value specific_actor_id
-        if(ActorType === 'Specific ID' && jqInputs[0].value === "") {
-            document.getElementById("txt_setting_bonus_specific_id_edit").style.borderColor = "red";
-            TableIIIErrorMessage("Please input Specific ID");
-            nEditing = nRow;
-
-        }
-        //Validate Input Value specific_sof
-        else if(ActorType === 'Specific ID' && jqInputs[1].value === "") {
-            document.getElementById("txt_setting_bonus_spec_src_fund_edit").style.borderColor = "red";
-            TableIIIErrorMessage("Please input Specific Source of Fund");
-            nEditing = nRow;
-        }
-        //Validate Input Value Rate
-        else if(AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "" ) {
-            document.getElementById("txt_setting_bonus_rate_edit").style.borderColor = "red";
-            TableIIIErrorMessage("Please input Rate %");
+        if ((ActorType === 'Specific ID' && jqInputs[0].value === "") || (ActorType === 'Specific ID' && jqInputs[1].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "")) {
+            document.getElementById("btn_setting_bonus_add").click();
             nEditing = nRow;
         }
         else {
