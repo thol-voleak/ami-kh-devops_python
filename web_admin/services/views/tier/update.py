@@ -125,6 +125,7 @@ class UpdateView(TemplateView, RESTfulMethods):
             "bonus_type": request.POST.get('bonus_type'),
             "bonus_amount": bonus_amount,
             "amount_type": request.POST.get('amount_type'),
+            "settlement_type" : "Amount" # TODO: Hardcode for sprint 13
         }
 
         if params['bonus_type'] == "Flat value":
