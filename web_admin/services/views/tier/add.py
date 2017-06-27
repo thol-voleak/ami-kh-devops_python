@@ -68,6 +68,7 @@ class AddView(TemplateView,RESTfulMethods):
             "fee_amount": fee_amount,
             "bonus_type": request.POST.get('bonus_type'),
             "bonus_amount": bonus_amount,
+            "settlement_type": "Amount"  # TODO: Hardcode for sprint 13
         }
 
         if(request.POST.get('bonus_type') != 'Flat value'):
