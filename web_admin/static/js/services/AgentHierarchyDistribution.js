@@ -106,6 +106,7 @@ function tapOnSave(e) {
 }
 
 function validateForm(nRow) {
+    var text_input = document.getElementById('txt_agent_hier_fee_rate_edit');
     var jqInputs = $('input', nRow);
     var rate_value = jqInputs[2].value;
     var text_element = jqInputs[2];
@@ -119,6 +120,9 @@ function validateForm(nRow) {
 
         if(!rate_value) {
             text_element.style.borderColor = "red";
+            text_input.setCustomValidity('Pleased fill in this field');
+            var btn = document.getElementById("btn_agent_hier_fee_add");
+            btn.click();
             return false;
         }
     }
