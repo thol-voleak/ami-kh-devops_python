@@ -307,11 +307,11 @@
                         $('#balance-distribution-' + distributionId).remove();
                         addMessage("Deleted data successfully");
                     } else {
-                        addMessage("Delete failed!");
+                        addErrorMessage("Delete failed!");
                     }
                 },
                 error: function () {
-                    addMessage("Delete failed!");
+                    addErrorMessage("Delete failed!");
                 }
             });
         }
@@ -373,7 +373,7 @@
                     }
                 },
                 error: function () {
-                    addMessage("Failed to Delete Setting Bonus");
+                    addErrorMessage("Failed to Delete Setting Bonus");
                 }
             });
         }
@@ -397,11 +397,11 @@
                         $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
                     } else {
-                        addMessage("Delete failed!");
+                        addErrorMessage("Delete failed!");
                     }
                 },
                 error: function () {
-                    addMessage("Failed to Delete Agent Hierarchy");
+                    addErrorMessage("Failed to Delete Agent Hierarchy");
                 }
             });
         }
@@ -424,11 +424,11 @@
                         $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
                     } else {
-                        addMessage("Delete failed!");
+                        addErrorMessage("Delete failed!");
                     }
                 },
                 error: function () {
-                    addMessage("Failed to Delete Agent Bonus");
+                    addErrorMessage("Failed to Delete Agent Bonus");
                 }
             });
         }

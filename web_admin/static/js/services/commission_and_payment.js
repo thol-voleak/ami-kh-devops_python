@@ -277,7 +277,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                     } else {
                         // Failed
                         console.log('Updated Setting Payment & Fee Structure got error!');
-                        addMessage("Updated Setting Payment & Fee Structure got error!");
+                        addErrorMessage("Updated Setting Payment & Fee Structure got error!");
                     }
                 },
                 error: function (err) {
@@ -332,7 +332,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                         addMessage("Updated Setting Bonus Successfully");
                     } else {
                         console.log('Error adding row data');
-                        addMessage("Updated Setting Bonus got error!");
+                        addErrorMessage("Updated Setting Bonus got error!");
                     }
 
                 },
@@ -388,7 +388,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                         addMessage("Updated Agent Hierrachy Distribution - Bonus Successfully");
                     } else {
                         console.log('Error adding row data');
-                        addMessage("Updated Agent Hierrachy Distribution - Bonus got error!");
+                        addErrorMessage("Updated Agent Hierrachy Distribution - Bonus got error!");
                     }
                 },
                 error: function (err) {
@@ -452,7 +452,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                         addMessage("Updated Agent Hirarchy Distribution - Fee successfully");
                     } else {
                         console.log('Error adding row data');
-                        addMessage("Updated Agent Hirarchy Distribution - Fee got error!");
+                        addErrorMessage("Updated Agent Hirarchy Distribution - Fee got error!");
                     }
                 },
                 error: function (err) {
