@@ -127,3 +127,7 @@ CARD_HISTORY_PATH = 'api-gateway/report/v1/cards/histories'
 GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid-card/default"
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"
 CASH_SOFS_URL = "api-gateway/report/v1/cash/sofs"
+
+# Reconcile
+SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
+SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'

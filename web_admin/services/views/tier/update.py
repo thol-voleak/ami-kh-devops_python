@@ -58,7 +58,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _get_tier_detail(self, tier_id):
-        tier_detail, status = self._get_method(api_settings.TIER_PATH.format(tier_id),
+        tier_detail, status = self._get_precision_method(api_settings.TIER_PATH.format(tier_id),
                                               func_description="Tier Detail",
                                               logger=logger)
         return tier_detail

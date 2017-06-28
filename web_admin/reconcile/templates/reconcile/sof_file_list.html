@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Source Of Fun File List</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_sof_file_list' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On us/Off us</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_on_off_us" name="on_off_us_id">
+                        <option value=-1>All</option>
+                        <option value=1>On</option>
+                        <option value=0>Off</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_source_of_fund" name="source_of_fund_id">
+                        <option value="bank">Bank</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund partner name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="sof_partner_name_id" id="sof_partner_name_id" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id">
+                        <option value="" >All</option>
+                        {% for currency in currencies %}
+                        {% if currency.0|slugify == body.currency|slugify %}
+                                <option value="{{ currency.0 }}" selected>{{ currency.0 }}
+                            </option>
+                            {% else %}
+                                <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Reconcile status</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
+                        <option value="" >All</option>
+                        <option value="reconciled">Reconciled</option>
+                        <option value="unreconciled">Unreconciled</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ from_created_timestamp|default_if_none:'' }}"
+                           id="dtp_from">
+                </div>
+                <label class="col-sm-1 control-label">End date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ to_created_timestamp|default_if_none:'' }}"
+                           id="dtp_to">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="pull-right col-sm-1">
+                    <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ file_list|length }})</b></label>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <thead>
+                <tr>
+                    <th id="id_clm">ID</th>
+                    <th id="file_name_clm">File Name</th>
+                    <th id="is_us_on_clm">ON US/OFF US</th>
+                    <th id="sof_clm">Source of fund</th>
+                    <th id="sof_partner_name_clm">Source of fund partner name</th>
+                    <th id="currency_clm">Currency</th>
+                    <th id="processing_status_clm">Status</th>
+                    <th id="reconcile_date_clm">Reconcile Date</th>
+                    <th id="action_clm">Action</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                    {% for file in file_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ file.id }}</td>
+                            <td class="col-sm-2">{{ file.file_name }}</td>
+                            <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{{ file.source_of_fund }}</td>
+                            <td class="col-sm-2">{{ file.sof_code }}</td>
+                            <td class="col-sm-2">{{ file.currency }}</td>
+                            <td class="col-sm-2">{{ file.status.name }}</td>
+                            <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
+                            <td class="col-sm-3">
+                                <div class="btn-group">
+                                    <!--<button id="btn_detail" class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"-->
+                                            <!--onclick="location.href=''"><u>Result</u></button>-->
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

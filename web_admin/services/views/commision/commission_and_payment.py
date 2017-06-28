@@ -650,7 +650,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
             "sof_type_id": data.get("sof_type_id"),
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
-            "rate": data.get("rate"),
+            "rate": data.get("add_rate"),
             "specific_actor_id": data.get("specific_actor_id"),
             "is_deleted": 0
         }

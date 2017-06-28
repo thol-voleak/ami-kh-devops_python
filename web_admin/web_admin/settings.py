@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'payments',
     'api_management',
     'centralize_configuration',
+    'reconcile',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -94,7 +95,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments', 'bank', 'sof')],
+                              'cards', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -250,6 +251,11 @@ LOGGING = {
 
         },
         'payments': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'reconcile': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
