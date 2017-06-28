@@ -20,3 +20,9 @@ class GetCommandNameAndServiceNameMixin(RESTfulMethods):
         url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         data, success = self._get_method(url, "service name by id", logger)
         return data.get('service_name', service_id)
+
+    def _get_specific_ids(self):
+        data, success = self._get_method(api_settings.AGENT_LIST_PATH, 'Specific IDs', logger, True)
+        if success:
+            return [i.get('id') for i in data]
+        return data

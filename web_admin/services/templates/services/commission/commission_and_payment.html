@@ -244,8 +244,12 @@
                                     {% endfor %}
                                 </select>
                             <td>
-                                <input name="specific_actor_id"
-                                       id="txt_setting_bonus_specific_id" class="form-control" disabled>
+                                <input class="form-control" id="txt_setting_bonus_specific_id" list="dl_setting_bonus_specific_id" disabled/>
+                                <datalist id="dl_setting_bonus_specific_id">
+                                    {% for id in specific_ids %}
+                                        <option value="{{ id }}">
+                                    {% endfor %}
+                                </datalist>
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund">
@@ -369,7 +373,7 @@
                         $('#bonus-distribution-' + bonus_distributions_id).remove();
                         addMessage("Deleted Setting Bonus successfully");
                     } else {
-                        addMessage("Delete failed!");
+                        addErrorMessage("Delete failed!");
                     }
                 },
                 error: function () {

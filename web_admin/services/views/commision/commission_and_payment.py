@@ -16,7 +16,7 @@ from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 
-class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
+class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
     template_name = "services/commission/commission_and_payment.html"
     logger = logger
 
@@ -45,6 +45,10 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
+
+        specific_ids = self._get_specific_ids()
+        if specific_ids and isinstance(specific_ids, list):
+            context['specific_ids'] = specific_ids
 
         context['fee_tier_detail'] = fee_tier_detail
         context['data'] = self._filter_deleted_items(data)
