@@ -119,7 +119,7 @@ function validateForm(nRow) {
         text_element.required = true;
 
         if(!rate_value) {
-            text_element.style.borderColor = "red";
+            text_element.style.borderColor = '#0ac2ff';//"#e4e4e4";
             text_input.setCustomValidity('Pleased fill in this field');
             var btn = document.getElementById("btn_agent_hier_fee_add");
             btn.click();
