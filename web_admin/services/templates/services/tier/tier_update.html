@@ -5,6 +5,20 @@
     <div class="panel-heading border">
         <h3>Edit Service Tier</h3>
     </div>
+    {% for message in messages %}
+   <div class="col-xs-12">
+        <div class='alert
+                    {%if "successfully" in message%}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-edit-tier">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
 
     <div class="panel-body">
         <div class="row no-margin">
@@ -186,13 +200,6 @@ function changeValue() {
     });
 
     var $ddl_fee_type = $('#ddl_fee_type');
-    function validate_fee_amount() {
-        if ($ddl_fee_type.val() == '% rate') {
-            $('#txt_fee_amount').attr('max', 100);
-        } else {
-            $('#txt_fee_amount').removeAttr('max');
-        }
-    }
 
     function validate_fee_type() {
         if ($ddl_fee_type.val() == '') {
@@ -221,12 +228,12 @@ function changeValue() {
 
     $ddl_fee_type.on('change', function() {
         validate_fee_type();
-        validate_fee_amount();
+        var element = document.getElementById('txt_fee_amount');
+        element.setCustomValidity("");
     });
 
     validate_fee_type();
     validate_bonus_type();
-    validate_fee_amount();
 }
 
 
@@ -280,7 +287,7 @@ function forceAmountNumber(any_amount) {
     }
 
 function forceNumber(any_amount, any_type) {
-    var deci = 0
+    var deci = 0;
     var ddl = document.getElementById(any_type);
     if (ddl.value == '% rate'){ deci = 3; }
     else if (ddl.value = 'Flat value'){ deci = {{ decimal }}; }
