@@ -4,11 +4,11 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Partner File List</h3>
+        <h3>Source Of Fun File List</h3>
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_partner_file_list' %}">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_sof_file_list' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">On us/Off us</label>
@@ -22,35 +22,18 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">Service Group</label>
+                <label class="col-sm-2 control-label">Source of fund</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_service_group" name="service_group_id">
-                        <option value="" >All</option>
-                        {% for group in choices.service_groups %}
-                            {% if group.service_group_id|slugify == body.service_group_id|slugify %}
-                                <option value="{{ body.service_group_id }}" selected>{{ group.service_group_name }}
-                            </option>
-                            {% else %}
-                                <option value="{{ group.service_group_id }}">{{ group.service_group_name }}</option>
-                            {% endif %}
-                        {% endfor %}
+                    <select class="form-control" id="ddl_source_of_fund" name="source_of_fund_id">
+                        <option value="bank">Bank</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">Service</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_service" name="service_id">
-                        <option value="" >All</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Partner ID (Agent ID)</label>
+                <label class="col-sm-2 control-label">Source of fund partner name</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="partner_id" id="partner_id" style="text-align:right;"/>
+                    <input type="text" class="form-control input-rounded" name="sof_partner_name_id" id="sof_partner_name_id" />
                 </div>
             </div>
 
@@ -59,7 +42,7 @@
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_currency" name="currency_id">
                         <option value="" >All</option>
-                        {% for currency in choices.currencies %}
+                        {% for currency in currencies %}
                         {% if currency.0|slugify == body.currency|slugify %}
                                 <option value="{{ currency.0 }}" selected>{{ currency.0 }}
                             </option>
@@ -112,8 +95,8 @@
                     <th id="id_clm">ID</th>
                     <th id="file_name_clm">File Name</th>
                     <th id="is_us_on_clm">ON US/OFF US</th>
-                    <th id="service_clm">Service</th>
-                    <th id="partner_id_clm">Partner ID</th>
+                    <th id="sof_clm">Source of fund</th>
+                    <th id="sof_partner_name_clm">Source of fund partner name</th>
                     <th id="currency_clm">Currency</th>
                     <th id="processing_status_clm">Status</th>
                     <th id="reconcile_date_clm">Reconcile Date</th>
@@ -126,8 +109,8 @@
                             <td class="col-sm-2">{{ file.id }}</td>
                             <td class="col-sm-2">{{ file.file_name }}</td>
                             <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
-                            <td class="col-sm-2">{{ file.service_name }}</td>
-                            <td class="col-sm-2">{{ file.agent_id }}</td>
+                            <td class="col-sm-2">{{ file.source_of_fund }}</td>
+                            <td class="col-sm-2">{{ file.sof_code }}</td>
                             <td class="col-sm-2">{{ file.currency }}</td>
                             <td class="col-sm-2">{{ file.status.name }}</td>
                             <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
