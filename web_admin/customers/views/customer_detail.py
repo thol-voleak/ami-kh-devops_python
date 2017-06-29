@@ -31,12 +31,15 @@ class CustomerDetailView(TemplateView, RESTfulMethods):
     def get_member_detail(self, customer_id):
         url = api_settings.MEMBER_CUSTOMER_PATH
         self.logger.info('API-Path: {}/{};'.format(url, customer_id))
+        body = {
+            'id': customer_id
+        }
         data, success = self._post_method(api_path= url,
                                           func_description="member customer detail",
                                           logger=logger,
-                                          params={})
-        for i in data:
-            if i['id'] == customer_id:
-                context = {'customer_info': i}
-                return context
+                                          params=body)
+        context = {'customer_info': data[0]}
+        return context
+
+                
 
