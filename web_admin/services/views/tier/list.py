@@ -1,21 +1,17 @@
-import logging
-import time
-
-import requests
 from django.conf import settings
 from web_admin import api_settings
 from django.http import Http404
 from django.views.generic.base import TemplateView
 from web_admin.utils import setup_logger
 from services.views.mixins import GetCommandNameAndServiceNameMixin
-from authentications.apps import InvalidAccessToken
 from web_admin.restful_methods import RESTfulMethods
+
+import logging
 
 logger = logging.getLogger(__name__)
 
 
 class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
-
     template_name = "services/tier/tier_list.html"
     logger = logger
 
@@ -51,27 +47,5 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
         return context
 
     def _get_fee_tier_list(self, service_command_id):
-        # logger.info("Getting fee tier list by user: {}".format(self.request.user.username))
-
         url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
-        # logger.info("Getting fee tier list from backend with url: {}".format(url))
-        #
-        # response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        # response_json = response.json()
-        # status = response_json.get('status', {})
-        # code = status.get('code', '')
-        # if (code == "access_token_expire") or (code== 'access_token_not_found'):
-        #     message = status.get('message', 'Something went wrong.')
-        #     raise InvalidAccessToken(message)
-        # logger.info('Status code: {}'.format(response.status_code))
-        #
-        # if response.status_code == 200:
-        #     json_data = response.json()
-        #     data = json_data.get('data', [])
-        #     logger.info('Fee tier count: {}'.format(len(data)))
-        #     return data, True
-        # else:
-        #     logger.info('Response content: {}'.format(response.content))
-        #     return [], False
-
         return self._get_precision_method(url, "fee tier list", logger)

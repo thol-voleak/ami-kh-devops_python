@@ -42,7 +42,7 @@ class AddView(TemplateView,RESTfulMethods):
                 'amount_types': amount_types,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
-                'decimal':int(decimal),
+                'decimal': int(decimal),
             })
         return render(request, self.template_name, context)
 
