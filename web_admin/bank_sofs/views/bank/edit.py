@@ -46,6 +46,10 @@ class EditView(TemplateView, RESTfulMethods):
         account_number = request.POST.get('account_number')
         account_name = request.POST.get('account_name')
         currency = request.POST.get('currency')
+        check_status_url = request.POST.get('check_status_url')
+        cancel_url = request.POST.get('cancel_url')
+        connection_timeout = request.POST.get('connection_timeout')
+        read_timeout = request.POST.get('read_timeout')
 
         params = {
             "name": name,
@@ -56,7 +60,11 @@ class EditView(TemplateView, RESTfulMethods):
             "credit_url": credit_url,
             "bank_account_number": account_number,
             "bank_account_name": account_name,
-            "currency": currency
+            "currency": currency,
+            "check_status_url": check_status_url,
+            "cancel_url": cancel_url,
+            "connection_timeout": connection_timeout,
+            "read_timeout": read_timeout
         }
 
         data, success = self._put_method(api_path=self.update_bank_sof_detail_url.format(id=bank_id),
