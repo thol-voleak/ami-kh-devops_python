@@ -20,7 +20,7 @@ class RESTfulMethods(GetHeaderMixin):
         :return: 
         """
 
-        if 'https' in api_path or 'http' in api_path:
+        if 'http' in api_path:
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
@@ -76,10 +76,10 @@ class RESTfulMethods(GetHeaderMixin):
         :return: data and success (True or False)
         """
 
-        if 'https' not in api_path:
-            url = settings.DOMAIN_NAMES + api_path
-        else:
+        if 'http' in api_path:
             url = api_path
+        else:
+            url = settings.DOMAIN_NAMES + api_path
         logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
@@ -125,10 +125,10 @@ class RESTfulMethods(GetHeaderMixin):
         :return: 
         """
 
-        if 'https' not in api_path:
-            url = settings.DOMAIN_NAMES + api_path
-        else:
+        if 'http' in api_path:
             url = api_path
+        else:
+            url = settings.DOMAIN_NAMES + api_path
         logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
@@ -169,10 +169,10 @@ class RESTfulMethods(GetHeaderMixin):
 
     def _delete_method(self, api_path, func_description, logger, params={}):
 
-        if 'https' not in api_path:
-            url = settings.DOMAIN_NAMES + api_path
-        else:
+        if 'http' in api_path:
             url = api_path
+        else:
+            url = settings.DOMAIN_NAMES + api_path
         logger = setup_logger(self.request, logger)
         logger.info('API-Path: {path}'.format(path=api_path))
 
@@ -212,7 +212,7 @@ class RESTfulMethods(GetHeaderMixin):
         :return: 
         """
 
-        if 'https' in api_path or 'http' in api_path:
+        if 'http' in api_path:
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
