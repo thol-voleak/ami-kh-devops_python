@@ -17,5 +17,5 @@ class ListView(TemplateView, RESTfulMethods):
 
     def get_services_list(self):
         url = SERVICE_LIST_URL
-        data, sucess = self._get_method(url, "service list", logger, True)
+        data, success = self._get_method(url, "service list", logger, True)
         return data
