@@ -150,9 +150,14 @@
                                     {% endfor %}
                                 </select>
                             <td>
-                                <input name="specific_actor_id"
-                                       id="txt_setting_payment_fee_structure_specific_id" class="form-control" disabled>
                                 <!-- Specific ID, skip id naming here: id = txt_setting_payment_fee_structure_specific_id -->
+                            <input class="form-control" name="specific_actor_id" id="txt_setting_payment_fee_structure_specific_id"
+                                   list="dl_setting_payment_fee_structure_specific_id" disabled/>
+                                <datalist id="dl_setting_payment_fee_structure_specific_id">
+                                    {% for id in specific_ids %}
+                                        <option value="{{ id }}">
+                                    {% endfor %}
+                                </datalist>
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id"
