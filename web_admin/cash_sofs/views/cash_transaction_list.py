@@ -1,11 +1,11 @@
-import logging
-
 from web_admin.api_settings import CASH_TRANSACTIONS_URL
 from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.utils import setup_logger
 
+from datetime import datetime
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -26,21 +26,45 @@ class CashTransactionView(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start search cash transaction ==========')
 
+        search = request.GET.get('search')
+        if search is None:
+            self.logger.info("Search is none")
+            return render(request, self.template_name)
+
         sof_id = request.GET.get('sof_id')
         order_id = request.GET.get('order_id')
-        type = request.GET.get('type')
+        action_id = request.GET.get('action_id')
+        status_id = request.GET.get('status_id')
 
         self.logger.info('sof_id: {}'.format(sof_id))
         self.logger.info('order_id: {}'.format(order_id))
-        self.logger.info('type: {}'.format(type))
+        self.logger.info('action_id: {}'.format(action_id))
+        self.logger.info('status_id: {}'.format(status_id))
+        from_created_timestamp = request.GET.get('from_created_timestamp')
+        to_created_timestamp = request.GET.get('to_created_timestamp')
 
         body = {}
         if sof_id is not '':
             body['sof_id'] = sof_id
         if order_id is not '':
             body['order_id'] = order_id
-        if type is not '':
-            body['type'] = type
+        if action_id is not '':
+            body['action_id'] = int(action_id)
+        if status_id is not '':
+            body['status_id'] = int(status_id)
+        if from_created_timestamp is not '' and to_created_timestamp is not None:
+            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_from_created_timestamp
+            logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
+        if to_created_timestamp is not '' and to_created_timestamp is not None:
+            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_created_timestamp'] = new_to_created_timestamp
+            logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
+
+        self.logger.info("keyword for search is [{}]".format(body))
 
         data = self.get_cash_transaction_list(body)
         if data is not None:
@@ -51,7 +75,10 @@ class CashTransactionView(TemplateView, RESTfulMethods):
         context = {'transaction_list': result_data,
                    'sof_id': sof_id,
                    'order_id': order_id,
-                   'type': type
+                   'action_id': action_id,
+                   'status_id': status_id,
+                   'from_created_timestamp': from_created_timestamp,
+                   'to_created_timestamp': to_created_timestamp
                    }
 
         self.logger.info('========== End search cash transaction ==========')

@@ -19,18 +19,43 @@
                     <div class="col-sm-2">
                         <input type="number" class="form-control input-rounded" name="order_id" value="{{ order_id }}"/>
                     </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-1 control-label">Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="type">
-                            <option value='' {% if type == '' %}selected="selected"{% endif %}>All</option>
-                            <option value='initiate' {% if type == 'initiate' %}selected="selected"{% endif %}>Initiate</option>
-                            <option value='debit' {% if type == 'debit' %}selected="selected"{% endif %}>Debit</option>
-                            <option value='credit' {% if type == 'credit' %}selected="selected"{% endif %}>Credit</option>
+                        <select class="form-control" id="user_type_ddl" name="action_id">
+                            <option value='' {% if action_id == "" %}selected="selected"{% endif %}>All</option>
+                            <option value='0' {% if action_id == '0' %}selected="selected"{% endif %}>Initiate</option>
+                            <option value='1' {% if action_id == '1' %}selected="selected"{% endif %}>Debit</option>
+                            <option value='2' {% if action_id == '2' %}selected="selected"{% endif %}>Credit</option>
                         </select>
                     </div>
+                    <label class="col-sm-2 control-label">Status</label>
+                    <div class="col-sm-2">
+                         <select class="form-control" id="status_dropdown" name="status_id">
+                            <option value='' {% if status_id == '' %}selected="selected"{% endif %}>All</option>
+                            <option value='1' {% if status_id == '1' %}selected="selected"{% endif %}>processing</option>
+                            <option value='2' {% if status_id == '2' %}selected="selected"{% endif %}>success</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="from_created_timestamp"
+                               value="{{ from_created_timestamp|default_if_none:'' }}"
+                               id="dtp_from">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="to_created_timestamp"
+                               value="{{ to_created_timestamp|default_if_none:'' }}"
+                               id="dtp_to">
+                    </div>
                     <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
-                               value="Search">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search" value="search">
                     </div>
                 </div>
             </form>
@@ -38,8 +63,8 @@
                 <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
                     <thead>
                     <tr>
-                        <th id="id">ID</th>
                         <th id="sof_id">SOF ID</th>
+                        <th id="order_detail_id">Oreder Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="balance">Type</th>
                         <th id="currency">Amount</th>
@@ -49,10 +74,10 @@
                     <tbody>
                     {% for transaction in transaction_list %}
                         <tr>
-                            <td class="col-sm-2">{{ transaction.id }}</td>
                             <td class="col-sm-2">{{ transaction.sof_id }}</td>
+                            <td class="col-sm-2">{{ transaction.order_detail_id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
-                            <td class="col-sm-2">{{ transaction.type }}</td>
+                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.amount }}</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
                         </tr>
