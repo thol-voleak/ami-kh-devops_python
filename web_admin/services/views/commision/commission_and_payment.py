@@ -820,14 +820,14 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
         if status:
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.SUCCESS,
                 'Added Agent Hierarchy Distribution - Bonus Successfully'
             )
         else:
             self.logger.info("Response body for add agent hierarchy distribution bonus is {}".format(response))
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.ERROR,
                 response
             )
         self.logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
