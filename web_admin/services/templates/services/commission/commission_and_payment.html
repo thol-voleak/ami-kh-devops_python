@@ -9,12 +9,22 @@
 
         <div id="ajax-messages">
             {% for message in messages %}
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissable" id="msg-add-service">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message|capfirst }}</strong>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="col-xs-12">
+                        <div class='alert alert-success alert-dismissable' id="msg-commission">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ message|capfirst }}</strong>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="col-xs-12">
+                        <div class='alert alert-danger alert-dismissable' id="msg-commission">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ message|capfirst }}</strong>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
 
@@ -311,7 +321,7 @@
                         $('#balance-distribution-' + distributionId).remove();
                         addMessage("Deleted data successfully");
                     } else {
-                        addErrorMessage("Delete failed!");
+                        addErrorMessage(response.msg);
                     }
                 },
                 error: function () {
@@ -373,7 +383,7 @@
                         $('#bonus-distribution-' + bonus_distributions_id).remove();
                         addMessage("Deleted Setting Bonus successfully");
                     } else {
-                        addErrorMessage("Delete failed!");
+                        addErrorMessage(response.msg);
                     }
                 },
                 error: function () {
@@ -401,7 +411,7 @@
                         $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Fee successfully");
                     } else {
-                        addErrorMessage("Delete failed!");
+                        addErrorMessage(response.msg);
                     }
                 },
                 error: function () {
@@ -428,7 +438,7 @@
                         $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
                         addMessage("Deleted Agent Hierarchy Distribution - Bonus successfully");
                     } else {
-                        addErrorMessage("Delete failed!");
+                        addErrorMessage(response.msg);
                     }
                 },
                 error: function () {

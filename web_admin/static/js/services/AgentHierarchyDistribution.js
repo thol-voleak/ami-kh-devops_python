@@ -196,7 +196,7 @@ function saveAgentHierarchyDistribution(nRow) {
                     addMessage("Updated Agent Hierarchy Distribution - Fee successfully");
                 } else {
                     console.log('Error adding row data');
-                    addMessage("Updated Agent Hierarchy Distribution - Fee got error!");
+                    addErrorMessage(response.msg);
                 }
             },
             error: function (err) {

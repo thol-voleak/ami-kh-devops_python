@@ -9,10 +9,10 @@ import logging
 
 
 def _delete_method(request, api_path, func_description, logger, params=None):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
     # logger = logging.getLogger(__name__)
     # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
@@ -42,10 +42,10 @@ def _delete_method(request, api_path, func_description, logger, params=None):
 
 
 def _post_method(request, api_path, func_description, logger, params={}):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
     # logger = logging.getLogger(__name__)
     # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
@@ -76,10 +76,10 @@ def _post_method(request, api_path, func_description, logger, params={}):
 
 
 def _put_method(request, api_path, func_description, logger, params={}):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
     # logger = logging.getLogger(__name__)
     # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))

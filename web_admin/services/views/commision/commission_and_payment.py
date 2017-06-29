@@ -258,14 +258,14 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         if status:
             messages.add_message(
                 request,
-                messages.INFO,
-                'Added data successfully'
+                messages.SUCCESS,
+                'Added Setting Payment & Fee Structure successfully'
             )
         else:
             messages.add_message(
                 request,
-                messages.INFO,
-                'Something wrong happened!'
+                messages.ERROR,
+                response
             )
         self.logger.info('========== Finish create Setting Payment & Fee Structure ==========')
 
@@ -499,14 +499,14 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
         if status:
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.SUCCESS,
                 'Added setting bonus successfully'
             )
         else:
             messages.add_message(
                 request,
-                messages.INFO,
-                'Something wrong happened!'
+                messages.ERROR,
+                response
             )
 
         self.logger.info('========== Finish create Setting Bonus ==========')
@@ -676,7 +676,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
             messages.add_message(
                 request,
                 messages.INFO,
-                'Something wrong happened!'
+                response
             )
 
         self.logger.info('========== Finish create Agent Hierarchy Fee list ==========')
@@ -828,7 +828,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
             messages.add_message(
                 request,
                 messages.INFO,
-                'Something wrong happened!'
+                response
             )
         self.logger.info('========== Finish add agent hierarchy distribution bonus  ==========')
 
