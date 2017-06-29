@@ -28,6 +28,8 @@ from .views.delete import ServiceDeleteForm
 from .views.spi.list import SPIView
 from .views.spi.update import SPIUpdate
 from .views.spi.delete import SPIDeleteView
+from .views.commision.bank_sofs import bank_sofs
+from .views.commision.cash_sofs import cash_sofs
 
 app_name = "services"
 
@@ -121,4 +123,7 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/delete/$',
         login_required(SPIDeleteView.as_view(), login_url='authentications:login'),
         name="spi-delete"),
+    url(r'^bank_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(bank_sofs, login_url='authentications:login'), name="bank_sofs"),
+    url(r'^cash_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(cash_sofs, login_url='authentications:login'), name="cash_sofs"),
 ]
+

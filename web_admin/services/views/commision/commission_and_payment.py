@@ -1,5 +1,5 @@
 import logging
-
+from web_admin.api_settings import SEARCH_AGENT
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
 from web_admin import api_settings
@@ -45,6 +45,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
 
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
+        #agents = self._get_agents()
 
         specific_ids = self._get_specific_ids()
         if specific_ids and isinstance(specific_ids, list):
@@ -56,6 +57,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         context['agent_bonus_distribution'] = total_bonus_distribution
         context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
+        #context['agents'] = agents
+
         self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
         self.logger.info('========== Finish get command name ==========')
@@ -122,6 +125,20 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
+
+    def _get_agents(self):
+        self.logger.info('========== Start searching agent ==========')
+
+        api_path = SEARCH_AGENT
+        data, status = self._post_method(
+            api_path=api_path,
+            func_description="Search Agent",
+            logger=logger,
+            params={}
+        )
+
+        self.logger.info('========== Finished searching agent ==========')
+        return data
 
 
 class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
@@ -652,12 +669,15 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
             "action_type": data.get("action_type"),
             "actor_type": data.get("actor_type"),
             "sof_type_id": data.get("sof_type_id"),
-            "specific_sof": data.get('specific_sof'),
+            "specific_sof": data.get('specific_sof_add'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("add_rate"),
             "specific_actor_id": data.get("specific_actor_id"),
             "is_deleted": 0
         }
+
+        # import pdb;
+        # pdb.set_trace()
 
         if post_data['actor_type'] != 'Specific ID':
             post_data['specific_actor_id'] = ''

@@ -503,9 +503,11 @@
             }
         }
 
+        //txt_agent_hier_fee_spec_src_fund_add
+
         function changeSpecificActorTypeRelativeAdd(actorType) {
-            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id");
-            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund");
+            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_add");//ddl_agent_hier_fee_specific_id
+            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_add");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
@@ -531,8 +533,120 @@
             }
         }
 
+        function changeSOFTypeRelativeAdd(e) {
+            var value = e.value;
+            var url = '';
+            var specific_id = e.parentNode.parentNode.childNodes[4].getElementsByTagName('input')[0];
+
+            if (!shouldGetSofList(specific_id))
+                return;
+
+            if (value == '1') {// bank
+                url = $("#btn_agent_hier_fee_add").data("bank_sofs");
+                url = url.replace("00000", specific_id.value);
+            } else if (value == '2') {// cash
+                url = $("#btn_agent_hier_fee_add").data("cash_sofs");
+                url = url.replace("00000", specific_id.value);
+            }
+
+            getSofList(url, specific_id);
+        }
+
+        function changeSpecificIdTypeRelativeAdd(e) {
+            if (!shouldGetSofList(e))
+                return;
+
+            var value = e.parentNode.nextElementSibling.getElementsByTagName('select')[0].value;
+            var url = '';//$("#btn_agent_hier_fee_add").data("bank_sofs");
+            if (value == 'bank') {// bank
+                url = $("#btn_agent_hier_fee_add").data("bank_sofs");
+            } else if (value == 'cash') {// cash
+                url = $("#btn_agent_hier_fee_add").data("cash_sofs");
+            }
+            url = url.replace("00000", e.value);
+            getSofList(url, e);
+        }
+
+        function shouldGetSofList(specific_id) {
+            var value = specific_id.value;
+            if(!value) {
+                resetSofsList(specific_id);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function resetSofsList(specific_id) {
+                var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('datalist')[0];
+                var selectParentNode = selectList.parentNode;
+                var newSelectObj = selectList.cloneNode(false);
+                selectParentNode.replaceChild(newSelectObj, selectList);
+                selectList = newSelectObj;
+
+                selectList.parentNode.getElementsByTagName('input')[0].value = '';
+        }
+
+        function getSofList(url, specific_id) {
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: {},
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if(response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if(response.status == 2) {
+                        // success
+                        var data = response.data;
+                        //Create and append select list
+                        //var selectList = document.getElementById("dl_agent_hier_fee_spec_src_fund");
+                        //selectList.options.length = 0;
+                        resetSofsList(specific_id);
+                        var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('datalist')[0];
+                        //var selectList = specific_id.parentNode.parentNode.childNodes[8].getElementsByTagName('datalist')[0];
+
+                        for (var i = 0; i < data.length; i++) {
+                            var option = document.createElement("option");
+                            var sof = data[i];
+                            option.setAttribute("value", sof['id']);
+                            selectList.appendChild(option);
+                        }
+
+                    } else {
+                        // Failed
+                        var msg = response.msg;
+                        var text_input = document.getElementById('ddl_agent_hier_fee_spec_src_fund');
+                        text_input.setCustomValidity(msg);
+                        var btn = document.getElementById("btn_agent_hier_fee_add");
+                        btn.click();
+                    }
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err); 
+                    console.log('JSON: ' + json);
+
+                    var msg = err.responseJSON.status.message;
+                    var text_input = document.getElementById('ddl_agent_hier_fee_spec_src_fund');
+                    text_input.setCustomValidity(msg);
+                    var btn = document.getElementById("btn_agent_hier_fee_add");
+                    btn.click();
+                }
+            });
+        }
+
         // Edit row feature
         $(document).ready(function () {
+            var txt_agent_hier_fee_specific_id_add = document.getElementById('txt_agent_hier_fee_specific_id_add');
+            txt_agent_hier_fee_specific_id_add.onblur = function(){
+                changeSpecificIdTypeRelativeAdd(txt_agent_hier_fee_specific_id_add);
+            };
+
             // Build up master data from Server
             var m_action_types = {{ choices.action_types|safe }};
             var m_actor_types = {{ choices.actor_types|safe }};
