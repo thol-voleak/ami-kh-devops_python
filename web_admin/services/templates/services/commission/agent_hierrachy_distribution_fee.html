@@ -60,7 +60,7 @@
                         <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
                         <select class="form-control" id="ddl_agent_hier_fee_specific_id_edit-{{ d.agent_fee_distribution_id }}"
                                    name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onchange="changeSpecificIdTypeRelativeAdd(this)">
-                            <option value=""> - </option>
+                            <option value="">  </option>
                             {% for item in specific_ids %}
                             <option value="{{ item }}">{{ item }}</option>
                             {% endfor %}
@@ -144,8 +144,8 @@
                         {% endfor %}
                     </select>
                 <td>
-                    <select class="form-control"  name="specific_actor_id" disabled id="ddl_agent_hier_fee_specific_id_add" onchange="changeSpecificIdTypeRelativeAdd(this)">
-                        <option value=""> - </option>
+                    <select class="form-control"  name="specific_actor_id" disabled id="ddl_agent_hier_fee_specific_id" onchange="changeSpecificIdTypeRelativeAdd(this)">
+                        <option value="">  </option>
                         {% for item in specific_ids %}
                         <option value="{{ item }}">{{ item }}</option>
                         {% endfor %}
@@ -159,7 +159,7 @@
                     </select>
                 </td>
                 <td>
-                    <select disabled class="form-control" list="ddl_agent_hier_fee_spec_src_fund" name="specific_sof_add" id="txt_agent_hier_fee_spec_src_fund_add">
+                    <select disabled class="form-control"  name="specific_sof_add" id="ddl_agent_hier_fee_spec_src_fund_add">
                     </select>
                 </td>
                 <td>

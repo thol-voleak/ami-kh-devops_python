@@ -630,11 +630,10 @@
             }
         }
 
-        //txt_agent_hier_fee_spec_src_fund_add
 
         function changeSpecificActorTypeRelativeAdd(actorType) {
-            specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id_add");//ddl_agent_hier_fee_specific_id
-            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_add");
+            specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id");//ddl_agent_hier_fee_specific_id
+            specificSoFId = $(actorType).parent().next().next().next().find("#ddl_agent_hier_fee_spec_src_fund_add");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
