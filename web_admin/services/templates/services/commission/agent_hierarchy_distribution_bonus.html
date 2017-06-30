@@ -64,8 +64,8 @@
                         {% endfor %}
                     </select>
                 <td>
-                    <select name="specific_actor_id" id="ddl_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 
-                                                             'ddl_bonus_source_of_fund')" disabled>
+                    <select name="specific_actor_id" id="ddl_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" 
+                    onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 'ddl_bonus_source_of_fund')" disabled>
                     <datalist id="dl_bonus_specific_id">
                         <option value=""></option>
                         {% for id in specific_ids %}
@@ -75,15 +75,15 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund" onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 
-                                       'ddl_bonus_source_of_fund')">
+                    <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund" 
+                    onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 'ddl_bonus_source_of_fund')">
                         {% for sof_type in choices.sof_types %}
                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund" disabled autcomplete="off">
+                    <select class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund" disabled>
                     </select>
                 </td>
                 <td>
@@ -124,11 +124,6 @@
             if (user.value === '') {
                 return
             }
-            specific_ids = {{ specific_ids }};
-            if (!(user.value in specific_ids)) {
-                setting_payment_fee_structure_SpecificID("Invalid Specific ID");
-                return
-            }
             sof = document.getElementById(sof);
             url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
             $.ajax({
@@ -145,12 +140,14 @@
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         var sof = document.getElementById("ddl_bonus_specific_source_of_fund");
+
+                        //clear list
                         var len = sof.options.length;
                         for (i=0; i<len; i++){
                             sof.remove(0);
                         }
+                        // add item
                         var jsonOptions = response.data;
-
                         jsonOptions.forEach(function (item) {
                             var option = document.createElement('option');
                             option.value = item.id;
@@ -166,9 +163,6 @@
                 }
             });
 
-        }
-        function clearField() {
-            $("ddl_bonus_specific_source_of_fund").value = "";
         }
 
         function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
