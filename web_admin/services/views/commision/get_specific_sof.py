@@ -27,7 +27,7 @@ class GetSpecificSOF(View):
             params['user_type'] = int(sof_type)
         else:
             path = api_settings.BANK_SOFS_URL
-            params['user_type_id'] = int(sof_type)
+            params['user_type_id'] = 2
         url = settings.DOMAIN_NAMES + path
         response = ajax_functions._post_method(request, url, "", self.logger, params)
         self.logger.info('========== Finish getting Specific SOF ==========')
