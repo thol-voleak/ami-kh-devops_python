@@ -155,7 +155,7 @@
 
                                 <select name="specific_actor_id" id="txt_setting_payment_fee_structure_specific_id" class="form-control"
                                        list="dl_setting_payment_fee_structure_specific_id" disabled
-                                       onblur="setting_payment_fee_structure_getSOF('txt_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')" type="number" autocomplete="off" >
+                                       onchange="setting_payment_fee_structure_getSOF('txt_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')" type="number" autocomplete="off" >
                                     <datalist id="dl_setting_payment_fee_structure_specific_id">
                                         <option value=""></option>
                                         {% for id in specific_ids %}
@@ -270,7 +270,7 @@
                                 </select>
                             <td>
                                 <select class="form-control" name="specific_actor_id" id="ddl_setting_bonus_specific_id" list="dl_setting_bonus_specific_id" disabled
-                                onblur="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
+                                onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
                                 <datalist id="dl_setting_bonus_specific_id">
                                     <option value=""></option>
                                     {% for id in specific_ids %}
@@ -755,7 +755,7 @@
             });
         }
 
-        // Edit row feature
+        // Edit row features
         $(document).ready(function () {
             var txt_agent_hier_fee_specific_id_add = document.getElementById('txt_agent_hier_fee_specific_id_add');
             txt_agent_hier_fee_specific_id_add.onblur = function(){
