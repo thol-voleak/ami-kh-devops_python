@@ -689,13 +689,13 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
         if status:
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.SUCCESS,
                 'Added Agent Hierarchy Distribution - Fee successfully'
             )
         else:
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.ERROR,
                 response
             )
 
