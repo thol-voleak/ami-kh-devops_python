@@ -30,6 +30,8 @@ from .views.spi.update import SPIUpdate
 from .views.spi.delete import SPIDeleteView
 from .views.commision.bank_sofs import bank_sofs
 from .views.commision.cash_sofs import cash_sofs
+from .views.commision.get_specific_sof import GetSpecificSOF
+
 
 app_name = "services"
 
@@ -125,5 +127,7 @@ urlpatterns = [
         name="spi-delete"),
     url(r'^bank_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(bank_sofs, login_url='authentications:login'), name="bank_sofs"),
     url(r'^cash_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(cash_sofs, login_url='authentications:login'), name="cash_sofs"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<user_id>[0-9A-Za-z]+)/(?P<sof_type>[0-9A-Za-z]+)$',
+        login_required(GetSpecificSOF.as_view(),login_url='authentications:login'),name="get_specific_sof")
 ]
 
