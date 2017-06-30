@@ -26,12 +26,12 @@
             <tr id="agent-bonus-distribution-{{ d.agent_bonus_distribution_id }}"
                 data-id="{{ d.agent_bonus_distribution_id }}"
                 data-url="{% url "services:agent_bonus_distributions_update" d.agent_bonus_distribution_id %}">
-                <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
-                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
-                <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
-                <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
-                <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
+                <td>{{ d.action_type|default_if_none:'' }}</td>
+                <td>{{ d.actor_type|default_if_none:'' }}</td>
+                <td>{{ d.specific_actor_id|default_if_none:'' }}</td>
+                <td>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
+                <td>{{ d.specific_sof|default_if_none:'' }}</td>
+                <td>{{ d.amount_type|default_if_none:'' }}</td>
                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                 <td class="col-sm-2">
                     <button type="button"
@@ -56,22 +56,35 @@
                 </td>
                 <td>
                     <select class="form-control" name="actor_type" id="ddl_bonus_actor"
-                            onchange="changeSpecificActorType('#ddl_bonus_actor', '#txt_bonus_specific_id', '#txt_bonus_specific_source_of_fund')">
+                            onchange="changeSpecificActorType('#ddl_bonus_actor', 
+                                                              '#txt_bonus_specific_id', 
+                                                              '#txt_bonus_specific_source_of_fund')">
                         {% for actor_type in choices.actor_types %}
                         <option value="{{actor_type.actor_type}}">{{actor_type.actor_type}}</option>
                         {% endfor %}
                     </select>
                 <td>
-                    <input name="specific_actor_id" id="txt_bonus_specific_id" class="form-control" disabled>
+                    <select name="specific_actor_id" id="txt_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" onblur="agent_bonus_getSOF('txt_bonus_specific_id', 
+                                                             'ddl_bonus_source_of_fund')" onchange="clearField()" disabled>
+                    <datalist id="dl_bonus_specific_id">
+                        <option value=""></option>
+                        {% for id in specific_ids %}
+                            <option value="{{ id }}">{{ id }}</option>
+                        {% endfor %}
+                    </datalist>
+                    </select>
                 </td>
                 <td>
-                    <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund">
+                    <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund" onchange="agent_bonus_getSOF('txt_bonus_specific_id', 
+                                       'ddl_bonus_source_of_fund')">
                         {% for sof_type in choices.sof_types %}
                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td><input class="form-control" name="specific_sof" id="txt_bonus_specific_source_of_fund" disabled/>
+                <td>
+                    <select class="form-control" name="specific_sof" id="txt_bonus_specific_source_of_fund" disabled autcomplete="off">
+                    </select>
                 </td>
                 <td>
                     <select class="form-control" name="amount_type" id="ddl_amount"
@@ -99,3 +112,95 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+        var csrf_token = "{{ csrf_token }}";
+        function agent_bonus_getSOF(user, sof) {
+            actor = document.getElementById('ddl_bonus_actor');
+            if (actor.value !== 'Specific ID') {
+                return
+            }
+            user = document.getElementById(user);
+            if (user.value === '') {
+                return
+            }
+            specific_ids = {{ specific_ids }};
+            if (!(user.value in specific_ids)) {
+                setting_payment_fee_structure_SpecificID("Invalid Specific ID");
+                return
+            }
+            sof = document.getElementById(sof);
+            url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        var sof = document.getElementById("txt_bonus_specific_source_of_fund");
+                        var len = sof.options.length;
+                        for (i=0; i<len; i++){
+                            sof.remove(0);
+                        }
+                        var jsonOptions = response.data;
+
+                        jsonOptions.forEach(function (item) {
+                            var option = document.createElement('option');
+                            option.value = item.id;
+                            option.text = item.id;
+                            sof.add(option,0);
+                        });
+                    } else {
+                        addErrorMessage("Cannot Get Specific Source of Fund");
+                    }
+                },
+                error: function () {
+                    addErrorMessage("Something went wrong");
+                }
+            });
+
+        }
+        function clearField() {
+            $("txt_bonus_specific_source_of_fund").value = "";
+        }
+
+        function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
+            if ($(actorType).find(":selected").html() == "Specific ID") {
+                $(specificActorId).prop('disabled', false);
+                $(specificActorId).prop('required', true);
+                $(specificSoFId).prop('disabled', false);
+                $(specificSoFId).prop('required', true);
+            } else {
+                $(specificActorId).prop('disabled', true);
+                $(specificActorId).val("");
+                $(specificSoFId).prop('disabled', true);
+                $(specificSoFId).val("");
+            }
+        }
+        function changeAmountType(AmountType, Rate) {
+
+            if ($(AmountType).find(":selected").html().indexOf("Rate") >= 0) {
+                $(Rate).prop('disabled', false);
+                $(Rate).prop('required', true);
+            } else {
+                $(Rate).prop('disabled', true);
+                $(Rate).val("");
+            }
+        }
+        function addErrorMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+</script>
