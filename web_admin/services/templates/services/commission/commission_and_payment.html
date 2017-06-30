@@ -347,22 +347,15 @@
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
                     } else if (response.status == 2) {
+                        $("txt_setting_payment_fee_structure_specific_source_of_fund").empty();
                         var sof = document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund");
-                        sof.value = '';
                         var jsonOptions = response.data;
-
-                        if (jsonOptions.length > 0) {
-                            jsonOptions.forEach(function (item) {
-                                var option = document.createElement('option');
-                                option.value = item.id;
-                                option.text = item.id;
-                                sof.appendChild(option);
-                            });
-                        } else {
-                            sof.value = '';
-                            sof.disabled = true;
-                        }
-
+                        jsonOptions.forEach(function (item) {
+                            var option = document.createElement('option');
+                            option.value = item.id;
+                            option.text = item.id;
+                            sof.add(option,0);
+                        });
                     } else {
                         addErrorMessage("Cannot Get Specific Source of Fund");
                     }
