@@ -733,8 +733,11 @@
                         //Create and append select list
                         resetSofsList(specific_id);
                         var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('select')[0];
-                        var existing_value = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('span')[0].innerHTML;
-
+                        var existing_value = '';
+                        var elm = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('span')[0];
+                        if(elm) {
+                            existing_value = elm.innerHTML;
+                        }
 
                         for (var i = 0; i < data.length; i++) {
                             var sof = data[i];
