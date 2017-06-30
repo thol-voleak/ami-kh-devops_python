@@ -733,13 +733,17 @@
                         //Create and append select list
                         resetSofsList(specific_id);
                         var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('select')[0];
-                        //var selectList = specific_id.parentNode.parentNode.childNodes[8].getElementsByTagName('datalist')[0];
+                        var existing_value = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('span')[0].innerHTML;
+
 
                         for (var i = 0; i < data.length; i++) {
                             var sof = data[i];
                             var option = document.createElement("option");
                             option.value = sof['id'];
                             option.text = sof['id'];
+                            if(option.value == existing_value) {
+                                option.selected = true;
+                            }
                             selectList.appendChild(option);
                         }
 
