@@ -54,7 +54,7 @@ class SofFileList(TemplateView, RESTfulMethods):
             logger=logger,
             params=params
         )
-        logger.info("data={}".format(data))
+        self.logger.info("data={}".format(data))
         return data
 
     def _get_currency_choices(self):
