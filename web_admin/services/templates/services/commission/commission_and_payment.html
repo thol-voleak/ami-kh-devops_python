@@ -144,7 +144,7 @@
                             <td>
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#txt_setting_payment_fee_structure_specific_id', '#txt_setting_payment_fee_structure_specific_source_of_fund')">
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund')">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -153,9 +153,10 @@
 
                             <td>
 
-                                <select name="specific_actor_id" id="txt_setting_payment_fee_structure_specific_id" class="form-control"
+                                <select name="specific_actor_id" id="ddl_setting_payment_fee_structure_specific_id" class="form-control"
                                        list="dl_setting_payment_fee_structure_specific_id" disabled
-                                       onchange="setting_payment_fee_structure_getSOF('txt_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')" type="number" autocomplete="off" >
+                                       onchange="setting_payment_fee_structure_getSOF('ddl_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')" type="number" autocomplete="off" >
+
                                     <datalist id="dl_setting_payment_fee_structure_specific_id">
                                         <option value=""></option>
                                         {% for id in specific_ids %}
@@ -169,7 +170,7 @@
 
                             <td>
                                 <select class="form-control" name="sof_type_id"
-                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="setting_payment_fee_structure_getSOF('txt_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')">
+                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="setting_payment_fee_structure_getSOF('ddl_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -178,7 +179,7 @@
                             <td>
                                 <select class="form-control" name="specific_sof"
                                        autocomplete="off"
-                                       id="txt_setting_payment_fee_structure_specific_source_of_fund" disabled>
+                                       id="ddl_setting_payment_fee_structure_specific_source_of_fund" disabled>
                                 </select>
                             </td>
                             <td>
@@ -396,8 +397,8 @@
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
                     } else if (response.status == 2) {
-                        //$("txt_setting_payment_fee_structure_specific_source_of_fund").empty();
-                        var sof = document.getElementById("txt_setting_payment_fee_structure_specific_source_of_fund");
+                        //$("ddl_setting_payment_fee_structure_specific_source_of_fund").empty();
+                        var sof = document.getElementById("ddl_setting_payment_fee_structure_specific_source_of_fund");
 
                         //clear list
                         var len = sof.options.length;
