@@ -602,26 +602,37 @@
         }
 
         function changeSpecificActorTypeRelative(actorType) {
-            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_edit");
-            specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_edit");
+            //specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id_edit");
+           // specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_edit");
+            var specific_id = actorType.parentNode.nextElementSibling.getElementsByTagName('select')[0];
+            var sof = actorType.parentNode.nextElementSibling.nextElementSibling.nextElementSibling.getElementsByTagName('select')[0];
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
-                $(specificActorId).prop('disabled', false);
-                $(specificActorId).prop('required', true);
-                $(specificSoFId).prop('disabled', false);
-                $(specificSoFId).prop('required', true);
+
+                specific_id.disabled = false;
+                specific_id.required = true;
+                var xxx = specific_id.value = '';
+                var ss = '';
+
+                sof.disabled = false;
+                sof.required = true;
+
             } else {
-                $(specificActorId).prop('disabled', true);
-                $(specificActorId).val("");
-                $(specificSoFId).prop('disabled', true);
-                $(specificSoFId).val("");
+
+                specific_id.disabled = true;
+                specific_id.required = false;
+                specific_id.value = '';
+
+                sof.disabled = true;
+                sof.required = false;
+                sof.value = '';
             }
         }
 
         //txt_agent_hier_fee_spec_src_fund_add
 
         function changeSpecificActorTypeRelativeAdd(actorType) {
-            specificActorId = $(actorType).parent().next().find("#txt_agent_hier_fee_specific_id_add");//ddl_agent_hier_fee_specific_id
+            specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id_add");//ddl_agent_hier_fee_specific_id
             specificSoFId = $(actorType).parent().next().next().next().find("#txt_agent_hier_fee_spec_src_fund_add");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
@@ -651,15 +662,16 @@
         function changeSOFTypeRelativeAdd(e) {
             var value = e.value;
             var url = '';
-            var specific_id = e.parentNode.parentNode.childNodes[4].getElementsByTagName('input')[0];
+            var specific_id = e.parentNode.previousElementSibling.getElementsByTagName('select')[0];
+            //var specific_id2 = e.parentNode.parentNode.childNodes[4].getElementsByTagName('input')[0];
 
             if (!shouldGetSofList(specific_id))
                 return;
 
-            if (value == '1') {// bank
+            if ((value == '1') || (value == 'bank')) {// bank
                 url = $("#btn_agent_hier_fee_add").data("bank_sofs");
                 url = url.replace("00000", specific_id.value);
-            } else if (value == '2') {// cash
+            } else if ((value == '2') || (value == 'cash')) {// cash
                 url = $("#btn_agent_hier_fee_add").data("cash_sofs");
                 url = url.replace("00000", specific_id.value);
             }
@@ -673,11 +685,12 @@
 
             var value = e.parentNode.nextElementSibling.getElementsByTagName('select')[0].value;
             var url = '';//$("#btn_agent_hier_fee_add").data("bank_sofs");
-            if (value == 'bank') {// bank
+            if ((value == '1') || (value == 'bank')) {// bank
                 url = $("#btn_agent_hier_fee_add").data("bank_sofs");
-            } else if (value == 'cash') {// cash
+            } else if ((value == '2') || (value == 'cash')) {// cash
                 url = $("#btn_agent_hier_fee_add").data("cash_sofs");
             }
+
             url = url.replace("00000", e.value);
             getSofList(url, e);
         }
@@ -693,13 +706,11 @@
         }
 
         function resetSofsList(specific_id) {
-                var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('datalist')[0];
+                var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('select')[0];
                 var selectParentNode = selectList.parentNode;
                 var newSelectObj = selectList.cloneNode(false);
                 selectParentNode.replaceChild(newSelectObj, selectList);
                 selectList = newSelectObj;
-
-                selectList.parentNode.getElementsByTagName('input')[0].value = '';
         }
 
         function getSofList(url, specific_id) {
@@ -720,16 +731,15 @@
                         // success
                         var data = response.data;
                         //Create and append select list
-                        //var selectList = document.getElementById("dl_agent_hier_fee_spec_src_fund");
-                        //selectList.options.length = 0;
                         resetSofsList(specific_id);
-                        var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('datalist')[0];
+                        var selectList = specific_id.parentNode.nextElementSibling.nextElementSibling.getElementsByTagName('select')[0];
                         //var selectList = specific_id.parentNode.parentNode.childNodes[8].getElementsByTagName('datalist')[0];
 
                         for (var i = 0; i < data.length; i++) {
-                            var option = document.createElement("option");
                             var sof = data[i];
-                            option.setAttribute("value", sof['id']);
+                            var option = document.createElement("option");
+                            option.value = sof['id'];
+                            option.text = sof['id'];
                             selectList.appendChild(option);
                         }
 
@@ -757,11 +767,6 @@
 
         // Edit row features
         $(document).ready(function () {
-            var txt_agent_hier_fee_specific_id_add = document.getElementById('txt_agent_hier_fee_specific_id_add');
-            txt_agent_hier_fee_specific_id_add.onblur = function(){
-                changeSpecificIdTypeRelativeAdd(txt_agent_hier_fee_specific_id_add);
-            };
-
             // Build up master data from Server
             var m_action_types = {{ choices.action_types|safe }};
             var m_actor_types = {{ choices.actor_types|safe }};

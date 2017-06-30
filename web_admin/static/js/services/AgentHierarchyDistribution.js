@@ -108,11 +108,11 @@ function tapOnSave(e) {
 function validateForm(nRow) {
     var text_input = document.getElementById('txt_agent_hier_fee_rate_edit');
     var jqInputs = $('input', nRow);
-    var rate_value = jqInputs[2].value;
-    var text_element = jqInputs[2];
+    var rate_value = jqInputs[0].value;//2
+    var text_element = jqInputs[0];//2
 
     var jqSelects = $('select', nRow);
-    var select_value = $(jqSelects[3]).find(":selected").html();
+    var select_value = $(jqSelects[5]).find(":selected").html();
 
     if((select_value.indexOf("Rate") !== -1) || (select_value.indexOf("rate") !== -1)) {
         // exist
@@ -128,6 +128,19 @@ function validateForm(nRow) {
     }
     text_element.style.borderColor = "transparent";
 
+    var actor = $(jqSelects[1]).find(":selected").html();
+    if(actor == 'Specific ID') {
+        var specific_id = $(jqSelects[2]);
+        var sof = $(jqSelects[4]);
+        if(!specific_id.val() || !sof.val()) {
+            var btn = document.getElementById("btn_agent_hier_fee_add");
+            btn.click();
+            return false;
+        }
+
+    }
+
+
     return true;
 
 
@@ -142,11 +155,11 @@ function saveAgentHierarchyDistribution(nRow) {
         "fee_tier_id": fee_tier_id,
         "action_type": $(jqSelects[0]).find(":selected").html(),
         "actor_type": $(jqSelects[1]).find(":selected").html(),
-        "sof_type_id": $(jqSelects[2]).find(":selected").data('sof_type_id'), //.val(),
-        "amount_type": $(jqSelects[3]).find(":selected").html(),
-        "specific_actor_id": jqInputs[0].value,
-        "specific_sof": jqInputs[1].value,
-        "rate": jqInputs[2].value
+        "sof_type_id": $(jqSelects[3]).find(":selected").data('sof_type_id'), //.val(),
+        "amount_type": $(jqSelects[5]).find(":selected").html(),//3
+        "specific_actor_id": jqSelects[2].value,
+        "specific_sof": jqSelects[4].value,//1
+        "rate": jqInputs[0].value // 2
     };
 
     var token = csrf_token;
@@ -155,22 +168,22 @@ function saveAgentHierarchyDistribution(nRow) {
     var specificId = document.getElementById("txt_agent_hier_fee_specific_id_edit");
 
     //Validate Input Value specific_actor_id
-    if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
+    if(ActorType == 'Specific ID' && jqSelects[2].value == "") {
         startEdittingTableRow(nRow);
         // $(tr).find("input").each(function () {
         //     $(this).prop("style", "border-color: red;");
         // });
-        $(jqInputs[0]).prop("style", "border-color: red;");
+        $(jqSelects[2]).prop("style", "border-color: red;");
         addErrorMessage("Please input Specific ID");
 
     }
     //Validate Input Value specific_sof
-    else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
+    else if(ActorType == 'Specific ID' && jqSelects[4].value == "") {
         startEdittingTableRow(nRow);
         // $(tr).find("input").each(function () {
         //     $(this).prop("style", "border-color: red;");
         // });
-        $(jqInputs[1]).prop("style", "border-color: red;");
+        $(jqSelects[4]).prop("style", "border-color: red;");
         addErrorMessage("Please input Specific Source of Fund");
     }
     else {

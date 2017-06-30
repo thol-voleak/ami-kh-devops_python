@@ -58,19 +58,18 @@
                     </td>
                     <td class="col-sm-1">
                         <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
-                        <input class="form-control" list="dl_agent_hier_fee_specific_id_edit" id="txt_agent_hier_fee_specific_id_edit"
-                               name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onblur="changeSpecificIdTypeRelativeAdd(this)"/>
-
-                        <datalist id="dl_agent_hier_fee_specific_id_edit">
-                        {% for item in specific_ids %}
-                            <option value="{{ item }}">
-                        {% endfor %}
-                    </datalist>
+                        <select class="form-control" id="ddl_agent_hier_fee_specific_id_edit-{{ d.agent_fee_distribution_id }}"
+                                   name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onchange="changeSpecificIdTypeRelativeAdd(this)">
+                            <option value=""> - </option>
+                            {% for item in specific_ids %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
 
                     </td>
                     <td class="col-sm-2">
                         <span>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</span>
-                        <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit" style="display: none;">
+                        <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit-{{ d.agent_fee_distribution_id }}" style="display: none;" onchange="changeSOFTypeRelativeAdd(this)">
                         {% for sof_type in choices.sof_types %}
                             {% if sof_type.sof_type_id == d.sof_type_id %}
                                 <option value="{{ sof_type.sof_type }}" selected data-sof_type_id="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
@@ -83,11 +82,10 @@
                     </td>
                     <td class="col-sm-1">
                         <span>{{ d.specific_sof|default_if_none:'' }}</span>
-                        <input class="form-control" list="dl_agent_hier_fee_spec_src_fund_edit-{{ d.agent_fee_distribution_id }}" id="txt_agent_hier_fee_spec_src_fund_edit"
-                           name="specific_sof" value="{{ d.specific_sof|default_if_none:'' }}" style="display: none;"/>
+                        <select class="form-control" id="ddl_agent_hier_fee_spec_src_fund_edit-{{ d.agent_fee_distribution_id }}"
+                                name="specific_sof" value="{{ d.specific_sof|default_if_none:'' }}" style="display: none;"></select>
 
-                        <datalist required id="dl_agent_hier_fee_spec_src_fund_edit-{{ d.agent_fee_distribution_id }}">
-                        </datalist>
+
                     </td>
                     <td class="col-sm-2">
                         <span>{{ d.amount_type|default_if_none:'' }}</span>
@@ -146,12 +144,12 @@
                         {% endfor %}
                     </select>
                 <td>
-                    <input class="form-control" list="dl_agent_hier_fee_specific_id" name="specific_actor_id" disabled id="txt_agent_hier_fee_specific_id_add">
-                    <datalist id="dl_agent_hier_fee_specific_id">
+                    <select class="form-control"  name="specific_actor_id" disabled id="ddl_agent_hier_fee_specific_id_add" onchange="changeSpecificIdTypeRelativeAdd(this)">
+                        <option value=""> - </option>
                         {% for item in specific_ids %}
-                            <option value="{{ item }}">
+                        <option value="{{ item }}">{{ item }}</option>
                         {% endfor %}
-                    </datalist>
+                    </select>
                     </td>
                 <td>
                     <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund" onchange="changeSOFTypeRelativeAdd(this)">
@@ -161,9 +159,8 @@
                     </select>
                 </td>
                 <td>
-                    <input disabled class="form-control" list="dl_agent_hier_fee_spec_src_fund" name="specific_sof_add" id="txt_agent_hier_fee_spec_src_fund_add">
-                    <datalist required disabled  id="dl_agent_hier_fee_spec_src_fund">
-                    </datalist>
+                    <select disabled class="form-control" list="ddl_agent_hier_fee_spec_src_fund" name="specific_sof_add" id="txt_agent_hier_fee_spec_src_fund_add">
+                    </select>
                 </td>
                 <td>
                     <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount" onChange="ddl_agent_hier_fee_amount_changed()">
