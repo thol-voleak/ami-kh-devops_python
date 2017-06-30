@@ -57,14 +57,14 @@
                 <td>
                     <select class="form-control" name="actor_type" id="ddl_bonus_actor"
                             onchange="changeSpecificActorType('#ddl_bonus_actor', 
-                                                              '#txt_bonus_specific_id', 
-                                                              '#txt_bonus_specific_source_of_fund')">
+                                                              '#ddl_bonus_specific_id', 
+                                                              '#ddl_bonus_specific_source_of_fund')">
                         {% for actor_type in choices.actor_types %}
                         <option value="{{actor_type.actor_type}}">{{actor_type.actor_type}}</option>
                         {% endfor %}
                     </select>
                 <td>
-                    <select name="specific_actor_id" id="txt_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" onblur="agent_bonus_getSOF('txt_bonus_specific_id', 
+                    <select name="specific_actor_id" id="ddl_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" onblur="agent_bonus_getSOF('ddl_bonus_specific_id', 
                                                              'ddl_bonus_source_of_fund')" onchange="clearField()" disabled>
                     <datalist id="dl_bonus_specific_id">
                         <option value=""></option>
@@ -83,7 +83,7 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="specific_sof" id="txt_bonus_specific_source_of_fund" disabled autcomplete="off">
+                    <select class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund" disabled autcomplete="off">
                     </select>
                 </td>
                 <td>
@@ -144,7 +144,7 @@
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
                     } else if (response.status == 2) {
-                        var sof = document.getElementById("txt_bonus_specific_source_of_fund");
+                        var sof = document.getElementById("ddl_bonus_specific_source_of_fund");
                         var len = sof.options.length;
                         for (i=0; i<len; i++){
                             sof.remove(0);
@@ -168,7 +168,7 @@
 
         }
         function clearField() {
-            $("txt_bonus_specific_source_of_fund").value = "";
+            $("ddl_bonus_specific_source_of_fund").value = "";
         }
 
         function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
