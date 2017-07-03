@@ -31,6 +31,9 @@ from .views.spi.delete import SPIDeleteView
 from .views.commision.bank_sofs import bank_sofs
 from .views.commision.cash_sofs import cash_sofs
 from .views.commision.get_specific_sof import GetSpecificSOF
+from .views.spi_url_configuration.list import SPIUrlConfigurationView
+from .views.spi_url_configuration.update import SPIUrlConfigurationUpdate
+from .views.spi_url_configuration.delete import SPIUrlConfigurationDelete
 
 
 app_name = "services"
@@ -121,6 +124,18 @@ urlpatterns = [
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spiUrlId>[0-9A-Za-z]+)$',
         login_required(SPIUpdate.as_view(), login_url='authentications:login'),
         name="spi_update"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spiUrlId>[0-9A-Za-z]+)/list$',
+        login_required(SPIUrlConfigurationView.as_view(), login_url='authentications:login'),
+        name="spi_configuration_list"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/spi-url-configurations/(?P<spi_url_config_id>[0-9A-Za-z]+)/edit',
+        login_required(SPIUrlConfigurationUpdate.as_view(), login_url='authentications:login'),
+        name="spi_configuration_edit"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/spi-url-configurations/(?P<spi_url_config_id>[0-9A-Za-z]+)/delete',
+        login_required(SPIUrlConfigurationDelete.as_view(), login_url='authentications:login'),
+        name="spi_configuration_delete"),
     url(
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/delete/$',
         login_required(SPIDeleteView.as_view(), login_url='authentications:login'),
