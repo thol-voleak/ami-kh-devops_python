@@ -36,22 +36,22 @@ class SPIUpdate(TemplateView, SpiApi):
         spi_type = request.POST.get('spi_url_type')
         spi_url = request.POST.get('spi_url_value')
         spi_url_call_method = request.POST.get('spi_url_call_method')
-        connection_timeout = request.POST.get('connection_timeout', 0)
-        read_timeout = request.POST.get('read_timeout', 0)
-        max_retry = request.POST.get('max_retry', 0)
-        retry_delay = request.POST.get('retry_delay', 0)
-        expire_in_minute = request.POST.get('expire_in_minute', 0)
+        connection_timeout = request.POST.get('connection_timeout', '')
+        read_timeout = request.POST.get('read_timeout', '')
+        max_retry = request.POST.get('max_retry', '')
+        retry_delay = request.POST.get('retry_delay', '')
+        expire_in_minute = request.POST.get('expire_in_minute', '')
 
         params = {
             "service_command_id": service_command_id,
             "spi_url_type": spi_type,
             "url": spi_url,
             "spi_url_call_method": spi_url_call_method,
-            "expire_in_minute": 0 if expire_in_minute == "" else int(expire_in_minute),
-            "max_retry": 0 if max_retry == "" else int(max_retry),
-            "retry_delay_millisecond": 0 if retry_delay == "" else int(retry_delay),
-            "read_timeout": 0 if read_timeout == "" else int(read_timeout),
-            "connection_timeout": 0 if connection_timeout == "" else int(connection_timeout)
+            "expire_in_minute": '' if expire_in_minute == "" else int(expire_in_minute),
+            "max_retry": '' if max_retry == "" else int(max_retry),
+            "retry_delay_millisecond": '' if retry_delay == "" else int(retry_delay),
+            "read_timeout": '' if read_timeout == "" else int(read_timeout),
+            "connection_timeout": '' if connection_timeout == "" else int(connection_timeout)
         }
 
         data, success = self.update_spi(spi_url_id, params)

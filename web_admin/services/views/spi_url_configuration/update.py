@@ -61,6 +61,7 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
         read_timeout = request.POST.get('read_timeout', '')
         max_retry = request.POST.get('max_retry', '')
         retry_delay_millisecond = request.POST.get('retry_delay_millisecond', '')
+        expire_in_minute = request.POST.get('expire_in_minute', '')
 
         params = {
             'spi_url_configuration_type': spi_url_configuration_type,
@@ -68,6 +69,7 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
             'connection_timeout': int(connection_timeout) if connection_timeout else '',
             'read_timeout': int(read_timeout) if read_timeout else '',
             'max_retry': int(max_retry) if max_retry else '',
+            'expire_in_minute': int(expire_in_minute),
             'retry_delay_millisecond': int(retry_delay_millisecond) if retry_delay_millisecond else ''
         }
 
