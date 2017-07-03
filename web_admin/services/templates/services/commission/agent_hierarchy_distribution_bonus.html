@@ -25,7 +25,7 @@
             {% for d in agent_bonus_distribution %}
             <tr id="agent-bonus-distribution-{{ d.agent_bonus_distribution_id }}"
                 data-id="{{ d.agent_bonus_distribution_id }}"
-                data-url="{% url "services:agent_bonus_distributions_update" d.agent_bonus_distribution_id %}">
+                data-url="{% url 'services:agent_bonus_distributions_update' d.agent_bonus_distribution_id %}">
                 <td>{{ d.action_type|default_if_none:'' }}</td>
                 <td>{{ d.actor_type|default_if_none:'' }}</td>
                 <td>{{ d.specific_actor_id|default_if_none:'' }}</td>

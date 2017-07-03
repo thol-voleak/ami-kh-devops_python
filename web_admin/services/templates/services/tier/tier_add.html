@@ -41,6 +41,22 @@
                         </div>
                     </div>
 
+                     <div class="form-group" id="from_settlement_type">
+                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Amount</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_settlement_type" name="settlement_type">
+                                <option value="">-</option>
+                                {% for type in amount_types %}
+                                    {% if type.amount_type == body.settlement_type %}
+                                     <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
+                                    {% else %}
+                                     <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Condition</label>
                         <div class="col-sm-2">
@@ -72,7 +88,7 @@
                                     {% if item.fee_type == body.fee_type %}
                                      <option value="{{ item.fee_type }}" selected>{{ item.fee_type }}</option>
                                     {% else %}
-                                     <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
+                                     <option value="{{ item.fee_type|default_if_none:'0' }}">{{ item.fee_type }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -82,7 +98,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ body.fee_amount }}" type="text" class="form-control" name="fee_amount" id="txt_fee_amount"  onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
+                            <input value="{{ body.fee_amount }}" type="text" class="form-control"
+                                   name="fee_amount" id="txt_fee_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -113,7 +131,6 @@
                                     {% else %}
                                      <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
                                     {% endif %}
-
                                 {% endfor %}
                             </select>
                         </div>
@@ -214,7 +231,7 @@ function changeValue() {
         } else {
             $('#txt_fee_amount').removeAttr('disabled');
             if($('#txt_fee_amount').val() == '') {
-                $('#txt_fee_amount').val('0');
+                <!--$('#txt_fee_amount').val('0');-->
             }
         }
     }
@@ -285,9 +302,11 @@ function forceAmountNumber(any_amount) {
         
     amount.onblur = function(){
         num = amount.value;
-        num = parseFloat(num);
-        num = num.toFixed(deci);
-        amount.value = num;
+        if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
         }
     }
 
@@ -350,9 +369,11 @@ function forceNumber(any_amount, any_type) {
         
     amount.onblur = function(){
         num = amount.value;
-        num = parseFloat(num);
-        num = num.toFixed(deci);
-        amount.value = num;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
         }
     }
 
@@ -370,13 +391,13 @@ var condition_amount = document.getElementById('txt_amount');
 
 function validateBonusValue() {
     if(txt_bonus_amount.value == '') {
-        txt_bonus_amount.value = '0';
+        <!--txt_bonus_amount.value = '0';-->
     } else {
         txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
     }
 
     if(txt_bonus_amount.value == '') {
-        txt_bonus_amount.value = '0';
+        <!--txt_bonus_amount.value = '0';-->
     }
 
     // Validate min value
@@ -385,13 +406,13 @@ function validateBonusValue() {
 
 function validateFeeValue() {
     if(txt_fee_amount.value == '') {
-        txt_fee_amount.value = '0';
+        <!--txt_fee_amount.value = '0';-->
     } else {
         txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
     }
 
     if(txt_fee_amount.value == '') {
-        txt_fee_amount.value = '0';
+        <!--txt_fee_amount.value = '0';-->
     }
 
     // Validate min value

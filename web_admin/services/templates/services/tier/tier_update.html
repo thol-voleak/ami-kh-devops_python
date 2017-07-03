@@ -42,15 +42,34 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Amount</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_settlement_type" name="settlement_type">
+                                <option value="">-</option>
+                                {% for type in amount_types %}
+                                    {% if type.amount_type == update_tier.settlement_type %}
+                                        <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Condition</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_condition" name="condition" required>
+                                <option value="">-</option>
                                 {% for item in conditions %}
                                     {% if item.fee_tier_condition == update_tier.fee_tier_condition %}
-                                        <option value="{{ item.fee_tier_condition }}" selected="selected">{{ item.fee_tier_condition }}
+                                        <option value="{{ item.fee_tier_condition }}" selected="selected">
+                                            {{ item.fee_tier_condition }}
                                         </option>
                                     {% else %}
-                                        <option value="{{ item.fee_tier_condition }}">{{ item.fee_tier_condition }}
+                                        <option value="{{ item.fee_tier_condition }}">
+                                            {{ item.fee_tier_condition }}
                                         </option>
                                     {% endif %}
                                 {% endfor %}
@@ -61,17 +80,19 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.condition_amount }}" type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                            <input value="{{ update_tier.condition_amount }}" type="text" step="0.01" class="form-control"
+                                   onchange="onChangesAmount('txt_amount');" name="condition_amount" id="txt_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Fee Type</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_fee_type" name="fee_type" required>
-                                <option value="">-</option>
+                            <select class="form-control" id="ddl_fee_type" name="fee_type">
+                                <option value="" selected="selected">-</option>
                                 {% for item in fee_types %}
-                                    {% if item.fee_type == update_tier.fee_type %}
+                                    {% if item.fee_type|stringformat:"s" == update_tier.fee_type|stringformat:"s" %}
                                         <option value="{{ item.fee_type }}" selected="selected">{{ item.fee_type }}</option>
                                     {% else %}
                                         <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
@@ -84,7 +105,10 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="text" class="form-control" name="fee_amount" id="txt_fee_amount" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="text"
+                                   class="form-control" name="fee_amount" id="txt_fee_amount"
+                                   onchange="onChangesAmount('txt_fee_amount');"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
                     </div>
 
@@ -107,7 +131,8 @@
                     <div class="form-group" id="from">
                         <label class="col-sm-2 control-label" id="txt_from">From</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_from" name="amount_type" required>
+                            <select class="form-control" id="ddl_from" name="amount_type">
+                                <option value="">-</option>
                                 {% for type in amount_types %}
                                     {% if type.amount_type == update_tier.amount_type %}
                                         <option value="{{ type.amount_type }}" selected="selected">{{ type.amount_type }}</option>
@@ -122,7 +147,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.bonus_amount|default_if_none:'0' }}" type="text" class="form-control" name="bonus_amount" id="txt_bonus_amount" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                            <input value="{{ update_tier.bonus_amount|default_if_none:'0' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_bonus_amount');" name="bonus_amount" id="txt_bonus_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
                     </div>
 
@@ -143,9 +170,7 @@
         </div>
     </div>
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
 <script>
 function toNumber(str) {
     return str.replace(/[,\s_]+/g, "");
@@ -208,7 +233,7 @@ function changeValue() {
         } else {
             $('#txt_fee_amount').removeAttr('disabled');
             if($('#txt_fee_amount').val() == '') {
-                $('#txt_fee_amount').val('0');
+                <!--$('#txt_fee_amount').val('0');-->
             }
         }
     }
@@ -236,7 +261,6 @@ function changeValue() {
     validate_bonus_type();
 }
 
-
 function forceAmountNumber(any_amount) {
     var deci = {{ decimal }};
     var amount = document.getElementById(any_amount);
@@ -247,8 +271,8 @@ function forceAmountNumber(any_amount) {
         ((event.which < 48 || event.which > 57) &&
         (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            } 
-        
+            }
+
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
             setTimeout(function() {
@@ -264,7 +288,7 @@ function forceAmountNumber(any_amount) {
             event.preventDefault();
             }
         });
-        
+
         any_amt.bind("paste", function(e) {
             var text = e.originalEvent.clipboardData.getData('Text');
             if ($.isNumeric(text)) {
@@ -277,12 +301,15 @@ function forceAmountNumber(any_amount) {
                 e.preventDefault();
                 }
         });
-        
+
     amount.onblur = function(){
+
         num = amount.value;
-        num = parseFloat(num);
-        num = num.toFixed(deci);
-        amount.value = num;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
         }
     }
 
@@ -290,16 +317,18 @@ function forceNumber(any_amount, any_type) {
     var deci = 0;
     var ddl = document.getElementById(any_type);
     if (ddl.value == '% rate'){ deci = 3; }
-    else if (ddl.value = 'Flat value'){ deci = {{ decimal }}; }
+    else if (ddl.value == 'Flat value'){ deci = {{ decimal }}; }
     else { deci = 0; }
     var amount = document.getElementById(any_amount);
     ddl.onchange = function() {
+        console.log("1"+amount);
         amount.value = '';
     }
+    console.log("2"+amount);
     any_amt = $('#'+any_amount);
 
     $('#' + any_type).change(function() {
-        var e = document.getElementById(any_type);   
+        var e = document.getElementById(any_type);
         if (e.value == '% rate'){
             deci = 3;
             }
@@ -307,7 +336,7 @@ function forceNumber(any_amount, any_type) {
             deci = {{ decimal }};
             }
         else {deci = 0;}
-        });    
+        });
 
     any_amt.keypress(function(event) {
         var $this = $(this);
@@ -315,8 +344,8 @@ function forceNumber(any_amount, any_type) {
         ((event.which < 48 || event.which > 57) &&
         (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            } 
-        
+            }
+
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
             setTimeout(function() {
@@ -332,7 +361,7 @@ function forceNumber(any_amount, any_type) {
             event.preventDefault();
             }
         });
-        
+
     any_amt.bind("paste", function(e) {
         var text = e.originalEvent.clipboardData.getData('Text');
         if ($.isNumeric(text)) {
@@ -345,12 +374,14 @@ function forceNumber(any_amount, any_type) {
                 e.preventDefault();
                 }
         });
-        
+
     amount.onblur = function(){
         num = amount.value;
-        num = parseFloat(num);
-        num = num.toFixed(deci);
-        amount.value = num;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
         }
     }
 
@@ -366,15 +397,22 @@ var txt_bonus_amount = document.getElementById("txt_bonus_amount");
 var txt_fee_amount = document.getElementById('txt_fee_amount');
 var condition_amount = document.getElementById('txt_amount');
 
+function onChangesAmount(s) {
+    var x = document.getElementById(s);
+    if (x.value == '') {
+        x.value = 0
+    }
+};
+
 function validateBonusValue() {
     if(txt_bonus_amount.value == '') {
-        txt_bonus_amount.value = '0';
+        <!--txt_bonus_amount.value = '0';-->
     } else {
         txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
     }
 
     if(txt_bonus_amount.value == '') {
-        txt_bonus_amount.value = '0';
+        <!--txt_bonus_amount.value = '0';-->
     }
 
     // Validate min value
@@ -383,13 +421,13 @@ function validateBonusValue() {
 
 function validateFeeValue() {
     if(txt_fee_amount.value == '') {
-        txt_fee_amount.value = '0';
+        <!--txt_fee_amount.value = '0';-->
     } else {
         txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
     }
 
     if(txt_fee_amount.value == '') {
-        txt_fee_amount.value = '0';
+        <!--txt_fee_amount.value = '0';-->
     }
 
     // Validate min value
@@ -423,6 +461,7 @@ function validateMinValue(element) {
 function validateMaxValue(element) {
     var max = parseInt(element.getAttribute("max")) || 100;
     var value = parseFloat(element.value) || 0.0;
+    var value = parseFloat(element.value) || 0.0;
     if(value > max) {
         element.setCustomValidity('Amount cannot be greater than ' + max);
         return false;
@@ -441,5 +480,4 @@ txt_bonus_amount.onkeyup = validateBonusValue;
 txt_fee_amount.onkeyup = validateFeeValue;
 condition_amount.onkeyup = validateConditionAmount;
 </script>
-
 {% endblock %}
