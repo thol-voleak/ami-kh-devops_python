@@ -58,16 +58,22 @@ class ClientCreate(TemplateView, RESTfulMethods):
 
         self.logger.info("========== Finish Creating client ==========")
         if success:
+            self.request.session['add_client_msg'] = "Added data successfully"
             return redirect('clients:client-list')
         else:
             client_info = {
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "authorized_grant_types": None,
-                "access_token_validity": None,
-                "refresh_token_validity": None,
-            }
-            context = {'client_info': client_info, 'error_msg': None}
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "client_name": request.POST.get('client_name'),
+            "scope": "",
+            "authorized_grant_types": request.POST.get('authorized_grant_types'),
+            "web_server_redirect_uri": request.POST.get('web_server_redirect_uri'),
+            "authorities": "",
+            "access_token_validity": request.POST.get('access_token_validity'),
+            "refresh_token_validity": request.POST.get('refresh_token_validity'),
+            "authorization_code_validity": request.POST.get('authorization_code_validity')
+        }
+            context = {'client_info': client_info, 'error_msg': data}
             return render(request, 'clients/create_client_form.html', context)
 
 
