@@ -27,36 +27,26 @@ class AgentTypeCreate(TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start creating agent type ==========')
-        try:
-            params = {
-                "name": request.POST.get('agent_type_input'),
-                "description": request.POST.get('agent_type_description_input'),
-            }
+        params = {
+            "name": request.POST.get('agent_type_input'),
+            "description": request.POST.get('agent_type_description_input'),
+        }
 
-            data, success = self._post_method(api_path=AGENT_TYPE_CREATE_URL,
-                                              func_description="Agent Type",
-                                              logger=logger, params=params)
-            if success:
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    'Added data successfully'
-                )
-                self.logger.info('========== Finished creating agent type ==========')
-                return redirect('agent_type:agent-type-list')
-            else:
-                context = {
-                    'client_info': params,
-                    'error_msg': 'Something went wrong.'
-                }
-                self.logger.info('========== Finished creating agent type ==========')
-                return render(request, 'agent_type/agent_types_list.html', context)
-        except Exception as e:
-            self.logger.info(e)
-            client_info = {
-                "client_id": settings.CLIENTID,
-                "client_secret": settings.CLIENTSECRET
-            }
-            context = {'client_info': client_info}
+        data, success = self._post_method(api_path=AGENT_TYPE_CREATE_URL,
+                                          func_description="Agent Type",
+                                          logger=logger, params=params)
+        if success:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Added data successfully'
+            )
             self.logger.info('========== Finished creating agent type ==========')
-            return render(request, 'agent_type/agent_types_list.html', context)
+            return redirect('agent_type:agent-type-list')
+        else:
+            context = {
+                'agent_type_info': params,
+                'error_msg': data
+            }
+            self.logger.info('========== Finished creating agent type ==========')
+            return render(request, 'agent_type/create_agent_type.html', context)

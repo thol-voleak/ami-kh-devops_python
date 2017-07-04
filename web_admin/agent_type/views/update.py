@@ -43,12 +43,17 @@ class AgentTypeUpdateForm(TemplateView, RESTfulMethods):
         data, success = self._put_method(api_path=AGENT_TYPE_UPDATE_URL.format(agent_type_id),
                                          func_description="Agent Type",
                                          logger=logger, params=params)
+
         if success:
             request.session['agent_type_update_msg'] = 'Updated agent type successfully'
             self.logger.info('========== Finished updating agent type ==========')
             return redirect('agent_type:agent-type-detail', agentTypeId=(agent_type_id))
         else:
-            context = {'agent_type_info': params}
+            params['id'] = agent_type_id
+            context = {'agent_type_info': params,
+                       'error_msg': data
+                      }
+
             self.logger.info('========== Finished updating agent type ==========')
             return render(request, 'agent_type/agent_type_update.html', context)
 
