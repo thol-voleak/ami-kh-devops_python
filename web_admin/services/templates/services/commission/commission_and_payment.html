@@ -785,6 +785,10 @@
 
         // Edit row features
         $(document).ready(function () {
+            var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
+            changeSpecificActorTypeRelativeAdd(ddl_agent_hier_fee_actor);
+            ddl_agent_hier_fee_amount_changed();
+
             // Build up master data from Server
             var m_action_types = {{ choices.action_types|safe }};
             var m_actor_types = {{ choices.actor_types|safe }};
