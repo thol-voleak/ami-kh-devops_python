@@ -1,5 +1,5 @@
 # Authentication
-LOGIN_URL = 'api-gateway/system-user/v1/oauth/token'
+LOGIN_URL = 'api-gateway/v1/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 
 # API Management
