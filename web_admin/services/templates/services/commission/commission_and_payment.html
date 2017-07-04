@@ -270,7 +270,10 @@
                                     {% endfor %}
                                 </select>
                             <td>
-                                <select class="form-control" name="specific_actor_id" id="ddl_setting_bonus_specific_id" list="dl_setting_bonus_specific_id" disabled
+                                <select class="form-control" name="specific_actor_id" id="ddl_setting_bonus_specific_id" list="dl_setting_bonus_specific_id"
+                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                        disabled
+                                    {% endif %}
                                 onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
                                 <datalist id="dl_setting_bonus_specific_id">
                                     <option value=""></option>
@@ -289,8 +292,11 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control" id="ddl_setting_bonus_spec_src_fund"
-                                       name="specific_sof" disabled>
+                                <select class="form-control" id="ddl_setting_bonus_spec_src_fund" name="specific_sof"
+                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                        disabled
+                                    {% endif %}
+                                >
                                 </select>
                             </td>
                             <td>
@@ -300,7 +306,12 @@
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required/></td>
+                            <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required
+                                    {% if 'Rate' not in choices.amount_types.0.amount_type %}
+                                        disabled
+                                    {% endif %}
+                                />
+                            </td>
                             <td></td>
                         </tr>
                     </table>

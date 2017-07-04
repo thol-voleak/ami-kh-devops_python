@@ -42,10 +42,9 @@
                     </div>
 
                      <div class="form-group" id="from_settlement_type">
-                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Amount</label>
+                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Type</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_settlement_type" name="settlement_type">
-                                <option value="">-</option>
                                 {% for type in amount_types %}
                                     {% if type.amount_type == body.settlement_type %}
                                      <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
