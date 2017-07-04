@@ -20,7 +20,8 @@ class ListView(TemplateView, RESTfulMethods):
         self.logger.info("========== Start Getting client list ==========")
         data = self.get_clients_list()
         result = {'data': data,
-                  'msg': self.request.session.pop('client_update_msg', None)}
+                  'msg': self.request.session.pop('client_update_msg', None),
+                  'add_client_msg': self.request.session.pop('add_client_msg', None)}
         self.logger.info("========== Finish Getting client list ==========")
         return result
 
