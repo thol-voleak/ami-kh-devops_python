@@ -167,16 +167,12 @@ function addCountryCode() {
                                 } else {
                                     // Failed
                                     console.log('Error adding country code ' + code);
-                                    showErrorMessage(json.status.message);
+                                    showErrorMessage(response.msg);
                                 }
                             },
                             error: function (err) {
                                 var json = JSON.stringify(err); 
-                                console.log('JSON: ' + json);
-
-                                var msg = err.responseJSON.status.message;
-                                console.log('Error message: ' + msg);
-                                showErrorMessage(msg);
+                                showErrorMessage(json);
                             }
                         });
                     }
