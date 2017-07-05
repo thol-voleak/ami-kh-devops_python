@@ -30,7 +30,11 @@
                         <select class="form-control" id="currency_ddl" name="currency">
                             <option value="">-</option>
                             {% for currency in currencies %}
+                            {% if currency.0 == selected_currency %}
+                            <option value="{{ currency.0 }}" selected>{{ currency.0 }}</option>
+                            {% else %}
                             <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
