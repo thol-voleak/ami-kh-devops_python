@@ -1,4 +1,4 @@
-function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
+function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
 
     var nEditing = null;
     var oTable;
@@ -40,19 +40,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 htmlSelected = ' ';
             }
 
-            htmlDDActors += '<option value="' + this.actor_type + '"' + htmlSelected + '>' + this.actor_type + '</option>';
-        });
-
-        // Master: Specific ID Dropdown
-        var htmlDDSpecificIDs = '<option value=""></option>';
-        jQuery.each(m_specific_ids, function() {
-            if (aData[2] == this) {
-                htmlSelected = ' selected=\"selected\" ';
-            } else {
-                htmlSelected = ' ';
-            }
-
-            htmlDDSpecificIDs += '<option value="' + this + '"' + htmlSelected + '>' + this + '</option>';
+            htmlDDActors += '<option value="' + this.actor_type_id + '"' + htmlSelected + '>' + this.actor_type + '</option>';
         });
 
         // Master: SOFTypes Dropdown
@@ -94,10 +82,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlActorEventJS = "";
         var setRequired = '';
 
-        // For Specific SOF changing according to SpecificID.
-        var htmlSpecificIdEventJS = "";
-        var htmlSofTypeEventJS = "";
-
         // For Amount Types.
         var htmlAmountTypeEventJS = "";
         var setRateDisabled = '';
@@ -110,17 +94,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         if (tableId == 'tbl_setting_payment_fee_structure') {
             htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
             htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
-            htmlIDSpecificID += 'ddl_setting_payment_fee_structure_specific_id_edit';
+            htmlIDSpecificID += 'txt_setting_payment_fee_structure_specific_id_edit';
             htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
-            htmlIDSpecificSOF += 'ddl_setting_payment_fee_structure_specific_source_of_fund_edit';
+            htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
-            htmlSofTypeEventJS = "onchange=\"setting_payment_fee_structure_getSOF_edit('ddl_setting_payment_fee_structure_specific_id_edit', 'ddl_setting_payment_fee_structure_source_of_fund_edit')\"";
-            htmlSpecificIdEventJS = "onchange=\"setting_payment_fee_structure_getSOF_edit('ddl_setting_payment_fee_structure_specific_id_edit', 'ddl_setting_payment_fee_structure_source_of_fund_edit')\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#txt_setting_payment_fee_structure_specific_id_edit', '#txt_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit')\"";
 
         } else if (tableId == 'tbl_setting_bonus') {
@@ -178,10 +160,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         }
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '<select ' + htmlSpecificIdEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
-        jqTds[3].innerHTML = '<select ' + htmlSofTypeEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
+        jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[2].innerHTML = '<input ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'text\' class=\'form-control\' name=\'specific_id\' value=\'' + aData[2] + '\'>';
+        jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[4].innerHTML = '<input ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateRequired + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
@@ -203,20 +185,18 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         // DD Type
         oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
         oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
-        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 2, false);      // Specific ID
-        oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
-        oTable.fnUpdate($(jqSelects[4]).find(":selected").html(), nRow, 4, false);      // Specific SOF
-        oTable.fnUpdate($(jqSelects[5]).find(":selected").html(), nRow, 5, false);      // Amount Type
+        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
+        oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
 
         // Input Text Type
-        //if (jqInputs.length > 2) { // In case we got "Specific ID"
-            //oTable.fnUpdate(jqInputs[0].value, nRow, 2, false);                             // Specific ID
-            //oTable.fnUpdate(jqInputs[1].value, nRow, 4, false);                             // Specific SOF
-        //    oTable.fnUpdate(jqInputs[2].value, nRow, 6, false);                             // Rate
-        //} else {
-            //oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
-            oTable.fnUpdate(jqInputs[0].value, nRow, 6, false);                             // Rate
-        //}
+        if (jqInputs.length > 2) { // In case we got "Specific ID"
+            oTable.fnUpdate(jqInputs[0].value, nRow, 2, false);                             // Specific ID
+            oTable.fnUpdate(jqInputs[1].value, nRow, 4, false);                             // Specific SOF
+            oTable.fnUpdate(jqInputs[2].value, nRow, 6, false);                             // Rate
+        } else {
+            oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
+            oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
+        }
 
         // Build up HTML ID Element
         var htmlIDBtnEdit = 'id=\'';
@@ -258,9 +238,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
         var ActorType = $(jqSelects[1]).find(":selected").html();
-        var AmountType = $(jqSelects[5]).find(":selected").html();
+        var AmountType = $(jqSelects[3]).find(":selected").html();
 
-        if ((ActorType === 'Specific ID' && jqSelects[2].value === "") || (ActorType === 'Specific ID' && jqSelects[4].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[0].value === "")) {
+        if ((ActorType === 'Specific ID' && jqInputs[0].value === "") || (ActorType === 'Specific ID' && jqInputs[1].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[2].value === "")) {
             document.getElementById("btn_setting_payment_fee_structure_add").click();
             nEditing = nRow;
         }
@@ -273,11 +253,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                     "fee_tier_id": fee_tier_id,
                     "action_type": $(jqSelects[0]).find(":selected").html(),
                     "actor_type": $(jqSelects[1]).find(":selected").html(),
-                    "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
-                    "sof_type_id": $(jqSelects[3]).find(":selected").val(),
-                    "specific_sof": $(jqSelects[4]).find(":selected").html(),
+                    "sof_type_id": $(jqSelects[2]).find(":selected").val(),
                     "amount_type": $(jqSelects[3]).find(":selected").html(),
-                    "rate": jqInputs[0].value
+                    "specific_actor_id": jqInputs[0].value,
+                    "specific_sof": jqInputs[1].value,
+                    "rate": jqInputs[2].value
                 },
                 dataType: "json",
                 beforeSend: function (xhr) {
