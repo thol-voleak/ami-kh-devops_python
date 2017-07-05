@@ -35,7 +35,6 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
 
         context = {
             'system_user_info': system_user_info,
-            'error_msg': None
         }
 
         self.logger.info('========== Finish fetching form for creating new system user ==========')
