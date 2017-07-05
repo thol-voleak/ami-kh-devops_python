@@ -67,6 +67,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlDDSOFTypes += '<option value="' + this.sof_type_id + '"' + htmlSelected + '>' + this.sof_type + '</option>';
         });
 
+
         // Master: AmountTypes Dropdown
         var htmlDDAmountTypes = '';
         jQuery.each(m_amount_type, function() {
@@ -118,8 +119,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
-            htmlSofTypeEventJS = "onchange=\"setting_payment_fee_structure_getSOF_edit('ddl_setting_payment_fee_structure_specific_id_edit', 'ddl_setting_payment_fee_structure_source_of_fund_edit')\"";
-            htmlSpecificIdEventJS = "onchange=\"setting_payment_fee_structure_getSOF_edit('ddl_setting_payment_fee_structure_specific_id_edit', 'ddl_setting_payment_fee_structure_source_of_fund_edit')\"";
+            htmlSofTypeEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
+            htmlSpecificIdEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit')\"";
 
@@ -181,9 +182,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '<select ' + htmlSpecificIdEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
         jqTds[3].innerHTML = '<select ' + htmlSofTypeEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
+        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateRequired + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+
+        // Master: Specific SOF Dropdown
+        var htmlDDSpecificSOFs = '';
+        if (tableId == "tbl_setting_payment_fee_structure")
+            {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit');}
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
