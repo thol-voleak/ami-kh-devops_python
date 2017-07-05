@@ -102,7 +102,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         // For Amount Types.
         var htmlAmountTypeEventJS = "";
         var setRateDisabled = '';
-        var setRateRequired = '';
 
         // Buttons
         var htmlIDBtnSave = 'id=\'';
@@ -173,7 +172,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         // set disabled, required for Rate according to AmountType
         if (aData[5].indexOf("Rate") >= 0) {
             setRateDisabled = '';
-            setRateRequired = 'required';
         } else {
             setRateDisabled = 'disabled';
         }
@@ -184,7 +182,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[3].innerHTML = '<select ' + htmlSofTypeEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + ' ' + setRateRequired + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
 
         // Master: Specific SOF Dropdown
         var htmlDDSpecificSOFs = '';
