@@ -73,5 +73,9 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
             messages.add_message(request, messages.SUCCESS, 'Added data successfully')
             return redirect('system_user:system-user-list')
         else:
-            context['user_error_msg'] = data
+            context = {
+                'system_user_info': params,
+                'user_error_msg': data
+            }
+            # context['user_error_msg'] = data
             return render(request, self.template_name, context)

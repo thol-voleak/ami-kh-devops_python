@@ -72,6 +72,11 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
             request.session['system_user_update_msg'] = 'Updated system user successfully'
             return redirect('system_user:system-user-detail', systemUserId=system_user_id)
         else:
+            params['id'] = system_user_id
+            context = {
+                'system_user_info': params,
+                'msg': data
+            }
             return render(request, self.template_name, context)
 
     def _get_system_user_detail(self, system_user_id):
