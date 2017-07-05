@@ -167,97 +167,6 @@ function changeStep(c){
   c.step = Math.pow(10, new_decimal);
 }
 
-
-
-// function toNumber(str) {
-//     return str.replace(/[,\s_]+/g, "");
-// }
-
-function changeValue() {
-    var $bonus_type = $('#ddl_bonus_type');
-
-    function toggleFromDropdownList() {
-        if($bonus_type.val() === 'Flat value') {
-            $("#from").fadeOut(500);
-        } else {
-            $("#from").fadeIn(1000);
-        }
-    }
-
-    $bonus_type.on('change', function() {
-        toggleFromDropdownList();
-        validate_bonus_type();
-    });
-
-    toggleFromDropdownList();
-
-    //<!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
-    var $condition = $('#ddl_condition');
-    function updateByConditionType() {
-        var $condition_amount = $('#txt_amount');
-        var $fee_amount = $('#txt_fee_amount');
-        var $bonus_amount = $('#txt_bonus_amount');
-        if ($condition.val() == 'unlimit') {
-            $("#label_amount").text("Amount");
-            $("#label_fee_amount").text("Fee Amount");
-            $("#label_bonus_amount").text("Bonus Amount");
-            $condition_amount.removeAttr('required');
-            $fee_amount.removeAttr('required');
-            $bonus_amount.removeAttr('required');
-            $condition_amount.attr('disabled', true);
-            $condition_amount.val('');
-        } else {
-            $("#label_amount").text("Amount *");
-            $("#label_fee_amount").text("Fee Amount *");
-            $("#label_bonus_amount").text("Bonus Amount *");
-            $condition_amount.attr('required', true);
-            $fee_amount.attr('required', true);
-            $bonus_amount.attr('required', true);
-            $condition_amount.removeAttr('disabled');
-        }
-    }
-    updateByConditionType();
-    $condition.on('change', function() {
-        updateByConditionType();
-    });
-
-    var $ddl_fee_type = $('#ddl_fee_type');
-
-    function validate_fee_type() {
-        if ($ddl_fee_type.val() == '') {
-            $('#txt_fee_amount').attr('disabled', true);
-            $('#txt_fee_amount').val('');
-        } else {
-            $('#txt_fee_amount').removeAttr('disabled');
-            if($('#txt_fee_amount').val() == '') {
-                $('#txt_fee_amount').val('0');
-            }
-        }
-    }
-
-    var $ddl_bonus_type = $('#ddl_bonus_type');
-    function validate_bonus_type() {
-        if ($ddl_bonus_type.val() == '') {
-            $('#txt_bonus_amount').attr('disabled', true);
-            $('#txt_bonus_amount').val('');
-        } else {
-            $('#txt_bonus_amount').removeAttr('disabled');
-            if($('#txt_bonus_amount').val() == '') {
-                $('#txt_bonus_amount').val('0');
-            }
-        }
-    }
-
-    $ddl_fee_type.on('change', function() {
-        validate_fee_type();
-        var element = document.getElementById('txt_fee_amount');
-        element.setCustomValidity("");
-    });
-
-    validate_fee_type();
-    validate_bonus_type();
-}
-
 function forceAmountNumber(any_amount) {
     var deci = {{ decimal }};
     var amount = document.getElementById(any_amount);
@@ -381,7 +290,88 @@ forceNumber("txt_fee_amount", "ddl_fee_type");
 forceNumber("txt_bonus_amount","ddl_bonus_type");
 
 
-$(changeValue);
+// start Amount constraint
+var $condition = $('#ddl_condition');
+    function updateByConditionType() {
+        var $condition_amount = $('#txt_amount');
+        if ($condition.val() == 'unlimit') {
+            $("#label_amount").text("Amount");
+            $condition_amount.removeAttr('required');
+            $condition_amount.attr('disabled', true);
+            $condition_amount.val('');
+        } else {
+            $("#label_amount").text("Amount *");
+            $condition_amount.attr('required', true);
+            $condition_amount.removeAttr('disabled');
+        }
+    }
+    updateByConditionType();
+    $condition.change(function() {
+        updateByConditionType();
+    });
+// end amount constraint
+
+
+// start Fee Amount constraint
+var $ddl_fee_type = $('#ddl_fee_type');
+
+    function validate_fee_type() {
+        if ($ddl_fee_type.val() == '') {
+            $('#txt_fee_amount').attr('disabled', true);
+            $('#txt_fee_amount').val('');
+            $("#label_fee_amount").text("Fee Amount");
+        } else {
+            $("#label_fee_amount").text("Fee Amount *")
+            $('#txt_fee_amount').removeAttr('disabled');
+            if($('#txt_fee_amount').val() == '') {
+                $('#txt_fee_amount').val('0');
+            }
+        }
+    }
+
+    $ddl_fee_type.change(function() {
+        validate_fee_type();
+        var element = document.getElementById('txt_fee_amount');
+        element.setCustomValidity("");
+    });
+    validate_fee_type();
+// end Fee Amount constraint
+
+
+
+// start Bonus Amount constraint
+var $bonus_type = $('#ddl_bonus_type');
+if($bonus_type.val() == ''){  
+    $('#txt_bonus_amount').attr('disabled', true);
+    $("#label_bonus_amount").text("Bonus Amount");
+    $("#from").hide();
+}
+    $bonus_type.change(function(){
+        if($bonus_type.val() == ''){
+            $('#txt_bonus_amount').attr('disabled', true);
+            $('#txt_bonus_amount').val('');
+            $("#label_bonus_amount").text("Bonus Amount");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == 'Flat value'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == '% rate'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeIn(1000);
+        }
+    })
+// end Bonus Amount constraint
+
 
 
 var txt_bonus_amount = document.getElementById("txt_bonus_amount");
