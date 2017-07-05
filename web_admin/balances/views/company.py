@@ -54,6 +54,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                 messages.ERROR,
                 message=totalData
             )
+            totalData = {}
 
         data, success_balance = self._get_company_balance_history(currency)
         if success_balance:
@@ -81,7 +82,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
         data = {'amount': amount}
 
-        success = self._add_company_balance(currency, data)
+        response, success = self._add_company_balance(currency, data)
 
         if success:
             messages.add_message(
@@ -93,7 +94,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             messages.add_message(
                 request,
                 messages.error,
-                'Something wrong happened'
+                response
             )
 
         return redirect(request.META['HTTP_REFERER'])
@@ -127,11 +128,11 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _add_company_balance(self, currency, body):
         url = COMPANY_BALANCE_ADD + currency
-        data, success = self._post_method(api_path=url,
+        return self._post_method(api_path=url,
                                           func_description="company balance by user",
                                           logger=logger,
                                           params=body)
-        return success
+
 
     def _get_currency_choices_by_agent(self, agent_id):
         url = GET_AGET_BALANCE.format(agent_id)
