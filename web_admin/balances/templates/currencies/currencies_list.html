@@ -8,8 +8,9 @@
     </div>
     <div class="alert alert-danger alert-dismissable mt30" hidden id="currency_dialog_success">
         <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-        <span id="alert_success_msg"></span>
+        <strong id="alert_success_msg"></strong>
     </div>
+
     <div class="panel-body">
         <div class="form-group">
             <label class="col-sm-1 mt5 ml5 control-label">Currency</label>
@@ -55,6 +56,7 @@
     </div>
 </div>
 <script>
+
     function updateDecimal(preload) {
         var index = $("#currency_ddl option:selected").index()
         $("#decimal_text").val(preload[index - 1].decimal_digit)
@@ -92,11 +94,15 @@
                                 addSuccessRow(response.data)
                             } else {
                                 // Failed
+                                $("#alert_success_msg").text(response.msg);
+                                $("#currency_dialog_success").show();
                             }
 
                         },
                         error: function (msg) {
                             console.log('Error add currency')
+                            $("#alert_success_msg").text(JSON.stringify(msg));
+                            $("#currency_dialog_success").show();
                         }
                     });
                 }
