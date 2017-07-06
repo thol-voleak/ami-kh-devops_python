@@ -81,17 +81,27 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
         if status:
             type_msg = messages.SUCCESS
             text_msg = 'Add data successfully'
+            messages.add_message(
+                request,
+                type_msg,
+                text_msg
+            )
+            return redirect('services:spi_configuration_list',
+                            service_command_id=service_command_id,
+                            service_id=service_id,
+                            command_id=command_id,
+                            spiUrlId=spi_url_id)
         else:
             type_msg = messages.ERROR
             text_msg = data
-
-        messages.add_message(
-            request,
-            type_msg,
-            text_msg
-        )
-        return redirect('services:spi_configuration_list',
-                        service_command_id=service_command_id,
-                        service_id=service_id,
-                        command_id=command_id,
-                        spiUrlId=spi_url_id)
+            messages.add_message(
+                request,
+                type_msg,
+                text_msg
+            )
+            service_command_id = kwargs.get('service_command_id')
+            service_id = kwargs.get('service_id')
+            command_id = kwargs.get('command_id')
+            spi_url_id = kwargs.get('spi_url_id')
+            spi_url_config_id = kwargs.get('spi_url_config_id')
+            return redirect('services:spi_configuration_edit', service_id, command_id, service_command_id, spi_url_id, spi_url_config_id)
