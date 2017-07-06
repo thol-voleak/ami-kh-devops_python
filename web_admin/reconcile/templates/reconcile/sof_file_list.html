@@ -81,13 +81,14 @@
                            id="dtp_to">
                 </div>
             </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
             <div class="form-group">
                 <div class="pull-right col-sm-1">
                     <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
                 </div>
             </div>
         </form>
-        <label class="col-sm-12" style="text-align:right"><b>(Total {{ file_list|length }})</b></label>
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_file_list">
                 <thead>
@@ -127,6 +128,31 @@
                 </tbody>
             </table>
         </div>
+        {% if paginator.total_pages > 1 %}
+            <ul class="list-inline">
+                <li><span>Page </span></li>
+                {% if page_range.start > 1 %}
+                    <li><a class="page_idx">1</a></li>
+                    <li><span>...</span></li>
+                {% endif %}
+
+                {% for i in page_range %}
+                <li>{% if i == paginator.current_page %}<b><u>{% endif %}<a class="page_idx">{{i}}</a>{% if i == paginator.current_page %}</u></b>{% endif %}</li>
+                {% endfor %}
+
+                {% if page_range.stop < paginator.total_pages|add:1 %}
+                    <li><span>...</span></li>
+                    <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+    $(".page_idx").click(function() {
+        $("#current_page_index").val($(this).text());
+        $("#btn_search").click();
+    });
+</script>
 {% endblock %}
