@@ -1,6 +1,6 @@
 from web_admin.utils import setup_logger
 from services.views.spi import SpiApi
-
+from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.http import Http404
 from django.views.generic.base import TemplateView
@@ -81,19 +81,36 @@ class SPIUrlConfigurationView(TemplateView, SpiApi):
         self.logger.info("spi url configuration types {}".format(data))
         self.logger.info("========== End adding SPI configuration url ==========")
         if status:
-            type_msg = messages.SUCCESS
-            text_msg = 'Add data successfully'
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Add data successfully'
+            )
+            return redirect('services:spi_configuration_list',
+                            service_command_id=service_command_id,
+                            service_id=service_id,
+                            command_id=command_id,
+                            spiUrlId=spi_url_id)
         else:
-            type_msg = messages.ERROR
-            text_msg = data
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            configuration_data, configuration_status = self._get_method(
+                self.spi_url_configuration.format(spiUrlId=spi_url_id),
+                "Get all spi url configuration",
+                logger)
 
-        messages.add_message(
-            request,
-            type_msg,
-            text_msg
-        )
-        return redirect('services:spi_configuration_list',
-                        service_command_id=service_command_id,
-                        service_id=service_id,
-                        command_id=command_id,
-                        spiUrlId=spi_url_id)
+            data, success = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger)
+            self.logger.info("spi url configuration types {}".format(data))
+            context = {}
+            context['configuration_data'] = configuration_data
+            context['configuration_type_list'] = data
+            context['service_command_id'] = service_command_id
+            context['service_id'] = service_id
+            context['command_id'] = command_id
+            context['spiUrlId'] = spi_url_id
+            context['params'] = params
+            return render(request, self.template_name, context)
+

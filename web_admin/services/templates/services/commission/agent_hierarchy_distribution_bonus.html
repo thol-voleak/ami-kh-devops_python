@@ -56,6 +56,7 @@
                 </td>
                 <td>
                     <select class="form-control" name="actor_type" id="ddl_bonus_actor"
+
                             onchange="changeSpecificActorType('#ddl_bonus_actor', 
                                                               '#ddl_bonus_specific_id', 
                                                               '#ddl_bonus_specific_source_of_fund')">
@@ -64,26 +65,30 @@
                         {% endfor %}
                     </select>
                 <td>
-                    <select name="specific_actor_id" id="ddl_bonus_specific_id" list="dl_bonus_specific_id" class="form-control" 
-                    onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 'ddl_bonus_source_of_fund')" disabled>
-                    <datalist id="dl_bonus_specific_id">
+                    <select name="specific_actor_id" id="ddl_bonus_specific_id" class="form-control"
+                            {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                disabled
+                            {% endif %}
+                            onchange="getSOF('ddl_bonus_actor','ddl_bonus_specific_id', 'ddl_bonus_source_of_fund','ddl_bonus_specific_source_of_fund')">
                         <option value=""></option>
                         {% for id in specific_ids %}
                             <option value="{{ id }}">{{ id }}</option>
                         {% endfor %}
-                    </datalist>
                     </select>
                 </td>
                 <td>
                     <select class="form-control" name="sof_type_id" id="ddl_bonus_source_of_fund" 
-                    onchange="agent_bonus_getSOF('ddl_bonus_specific_id', 'ddl_bonus_source_of_fund')">
+                    onchange="getSOF('ddl_bonus_actor','ddl_bonus_specific_id', 'ddl_bonus_source_of_fund','ddl_bonus_specific_source_of_fund')">
                         {% for sof_type in choices.sof_types %}
                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund" disabled>
+                    <select class="form-control" name="specific_sof" id="ddl_bonus_specific_source_of_fund"
+                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                        disabled
+                    {% endif %}>
                     </select>
                 </td>
                 <td>
@@ -93,7 +98,11 @@
                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                         {% endfor %}
                     </select>
-                <td><input class="form-control" name="rate" id="txt_bonus_rate" required/></td>
+                <td><input class="form-control" name="rate" id="txt_bonus_rate" required
+                {% if 'Rate' not in choices.amount_types.0.amount_type %}
+                    disabled 
+                {% endif %}/>
+                </td>
                 <td></td>
             </tr>
         </table>
@@ -115,56 +124,6 @@
 
 <script type="text/javascript">
         var csrf_token = "{{ csrf_token }}";
-        function agent_bonus_getSOF(user, sof) {
-            actor = document.getElementById('ddl_bonus_actor');
-            if (actor.value !== 'Specific ID') {
-                return
-            }
-            user = document.getElementById(user);
-            if (user.value === '') {
-                return
-            }
-            sof = document.getElementById(sof);
-            url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
-                },
-                success: function (response) {
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        var sof = document.getElementById("ddl_bonus_specific_source_of_fund");
-
-                        //clear list
-                        var len = sof.options.length;
-                        for (i=0; i<len; i++){
-                            sof.remove(0);
-                        }
-                        // add item
-                        var jsonOptions = response.data;
-                        jsonOptions.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.id;
-                            option.text = item.id;
-                            sof.add(option,0);
-                        });
-                    } else {
-                        addErrorMessage("Cannot Get Specific Source of Fund");
-                    }
-                },
-                error: function () {
-                    addErrorMessage("Something went wrong");
-                }
-            });
-
-        }
-
         function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);

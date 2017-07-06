@@ -69,5 +69,5 @@ class ClientUpdate(TemplateView, RESTfulMethods):
             return redirect('clients:client-list')
         else:
             context = {'client_info': params,
-                       'error_msg': None}
+                       'error_msg': data}
             return render(request, 'clients/update_client_form.html', context)

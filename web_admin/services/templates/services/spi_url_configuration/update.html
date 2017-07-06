@@ -7,6 +7,17 @@
         <h3>Edit SPI Configuration Url</h3>
     </div>
 
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
     <div class="panel-body">
         <form class="form-horizontal" role="form" method="post" action="{% url 'services:spi_configuration_edit' service_id command_id service_command_id spi_url_id spi_url_config_id %}">
             {% csrf_token %}
@@ -87,7 +98,7 @@
                 <label class="col-sm-2 control-label">Last Updated Timestamp</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_last_updated_timestamp"
-                           value="{{configuration_detail.created_timestamp|default_if_none:''}}" readonly/>
+                           value="{{configuration_detail.last_updated_timestamp|default_if_none:''}}" readonly/>
                 </div>
             </div>
             <div class="form-group pull-right">

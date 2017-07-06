@@ -9,6 +9,8 @@ from web_admin.api_settings import GET_AGENT_BALANCE_BY_CURRENCY
 from web_admin.api_settings import COMPANY_BALANCE_HISTORY
 from web_admin.api_settings import COMPANY_BALANCE_ADD
 from web_admin.api_settings import GET_AGET_BALANCE
+from web_admin import api_settings
+from web_admin.utils import setup_logger
 
 logger = logging.getLogger(__name__)
 
@@ -16,41 +18,30 @@ logger = logging.getLogger(__name__)
 class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
     template_name = "company_balance.html"
     company_agent_id = 1
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CompanyBalanceView, self).dispatch(request, *args, **kwargs)
+
 
     def get(self, request, *args, **kwargs):
-        default_decimal = 1
-        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
-        currency_list, success_currency = self._get_currency_choices()
-
-        currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
-        if currency_list:
-            currency = request.GET.get('currency', currency_list[0][0])
-            decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
-        else:
-            currency, decimal = '', default_decimal
-
-        data, success_balance = self._get_company_balance_history(currency)
-
-        if success_balance:
-            data = self._get_new_company_balance(data)
-
-        totalData, success_total_balance = self._get_total_initial_company_balance(currency)
-
         return render(request, self.template_name,
-                      {'objects': list(data),
-                       'currency_list': currency_list,
-                       'decimal': decimal,
-                       'total_balance': totalData})
+                      self._build_context(request)
+                       )
 
     def post(self, request, *args, **kwargs):
+        new_company_balance = request.POST.get('new_company_balance')
         amount = request.POST.get('adding_balance')
+        string_amount = amount
+
         if isinstance(amount, str):
             amount = amount.replace(',', '')
         currency = request.POST.get('currency')
 
         data = {'amount': amount}
 
-        success = self._add_company_balance(currency, data)
+        response, success = self._add_company_balance(currency, data)
 
         if success:
             messages.add_message(
@@ -58,14 +49,19 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                 messages.SUCCESS,
                 'Added balance successfully'
             )
+            return redirect(request.META['HTTP_REFERER'])
         else:
             messages.add_message(
                 request,
-                messages.error,
-                'Something wrong happened'
+                messages.ERROR,
+                response
             )
+            context = self._build_context(request)
+            context['new_company_balance'] = new_company_balance
+            context['string_amount'] = string_amount
+            context['selected_currency'] = currency
+            return render(request, self.template_name, context)
 
-        return redirect(request.META['HTTP_REFERER'])
 
     def _get_total_initial_company_balance(self, currency):
         url = GET_AGENT_BALANCE_BY_CURRENCY.format(
@@ -96,11 +92,11 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _add_company_balance(self, currency, body):
         url = COMPANY_BALANCE_ADD + currency
-        data, success = self._post_method(api_path=url,
+        return self._post_method(api_path=url,
                                           func_description="company balance by user",
                                           logger=logger,
                                           params=body)
-        return success
+
 
     def _get_currency_choices_by_agent(self, agent_id):
         url = GET_AGET_BALANCE.format(agent_id)
@@ -112,7 +108,77 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             currency_list = [i['currency'] for i in data]
             return currency_list, True
         else:
-            return [], True
+            return data, True
 
+    def _get_currency_choices_list(self):
+        url = api_settings.GET_ALL_CURRENCY_URL
+        self.logger.info('Get currency choice list from backend')
+        data, success = self._get_method(api_path=url,
+                                         func_description="currency choice list",
+                                         logger=logger,
+                                         is_getting_list=False)
+        if success:
+            value = data.get('value','')
+            if isinstance(value, str):
+                currency_list = map(lambda x: x.split('|'), value.split(','))
+            else:
+                currency_list = []
+            result = currency_list, True
+        else:
+            result = data, False
+        return result
+
+    def _build_context(self, request):
+        default_decimal = 1
+        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
+        if not success_currency:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=currency_choices
+            )
+            currency_choices = []
+
+        currency_list, success_currency = self._get_currency_choices_list()
+        if not success_currency:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=currency_list
+            )
+            currency_list = []
+
+        currency_list = list(filter(lambda x: x[0] in currency_choices, currency_list))
+        if currency_list:
+            currency = request.GET.get('currency', currency_list[0][0])
+            decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
+        else:
+            currency, decimal = '', default_decimal
+
+        totalData, success_total_balance = self._get_total_initial_company_balance(currency)
+
+        if not success_total_balance:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=totalData
+            )
+            totalData = {}
+
+        data, success_balance = self._get_company_balance_history(currency)
+        if success_balance:
+            data = self._get_new_company_balance(data)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message=data
+            )
+            data = []
+
+        return {'objects': list(data),
+                       'currency_list': currency_list,
+                       'decimal': decimal,
+                       'total_balance': totalData}
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='authentications:login')
