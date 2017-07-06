@@ -6,19 +6,20 @@
 <div class="panel mb25">
     <div class="panel-body">
         {% for message in messages %}
-        <div class="col-xs-12">
-            <div class='alert
-                        {%if "successfully" in message%}
-                        alert-success
-                        {% else %}
-                        alert-danger
-                        {% endif %}
-                        alert-dismissable' id="msg-add-service">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message|capfirst }}</strong>
-            </div>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" id="msg-update-success">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg-success">{{ message|capfirst }}</strong>
         </div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger" id="msg-update-failed">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg-error">{{ message|capfirst }}</strong>
+        </div>
+        {% endif %}
         {% endfor %}
+
 
         <form class="form-horizontal" id="form_data" role="form" method="post" action="{% url 'balances:company_balance' %}" onsubmit="return validateFormData(event);">
             {% csrf_token %}
@@ -27,7 +28,11 @@
                 <div class="col-sm-4">
                     <select class="form-control" id="ddl_currency" name="currency" required>
                         {% for currency in currency_list %}
+                            {% if currency.0 == selected_currency %}
+                            <option value="{{ currency.0 }}" {% if request.GET.currency == currency.0 %}selected{% endif %} selected>{{ currency.0 }}</option>
+                            {% else %}
                             <option value="{{ currency.0 }}" {% if request.GET.currency == currency.0 %}selected{% endif %}>{{ currency.0 }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -47,11 +52,11 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Adding Balance:</label>
                 <div class="col-sm-4">
-                    <input type="text" step="0.01" class="form-control" name="adding_balance" id="txt_adding_balance" />
+                    <input type="text" step="0.01" class="form-control" name="adding_balance" id="txt_adding_balance" value="{{string_amount|default_if_none:''}}"/>
                 </div>
                 <label class="col-sm-2 control-label">New Company Balance:</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="new_company_balance" id="txt_new_company_balance" disabled/>
+                    <input type="text" class="form-control" name="new_company_balance" id="txt_new_company_balance" value="{{new_company_balance|default_if_none:''}}" readonly="true"/>
                 </div>
             </div>
             <div class="form-group">
@@ -92,7 +97,6 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
 <script>
 var txt_adding_balance = document.getElementById("txt_adding_balance");
 function validateFormData(e) {
@@ -104,6 +108,16 @@ function validateFormData(e) {
         txt_adding_balance.setCustomValidity('');
         document.getElementById('form_data').submit();
         return true;
+    }
+
+}
+
+function prepareValidateFormData(e) {
+    txt_adding_balance.setCustomValidity('');
+    if(!txt_adding_balance.value) {
+        txt_adding_balance.setCustomValidity('Adding balance must not be empty. You may input positive or negative value');
+    } else {
+        txt_adding_balance.setCustomValidity('');
     }
 
 }
@@ -171,7 +185,7 @@ function changeValue() {
 }
 
 $(changeValue);
-validateFormData();
+prepareValidateFormData();
 </script>
 
 {% endblock %}
