@@ -3,7 +3,7 @@ from web_admin.utils import setup_logger
 
 from django.contrib import messages
 from django.views.generic.base import TemplateView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 import logging
 
@@ -99,9 +99,28 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
                 type_msg,
                 text_msg
             )
-            service_command_id = kwargs.get('service_command_id')
-            service_id = kwargs.get('service_id')
-            command_id = kwargs.get('command_id')
-            spi_url_id = kwargs.get('spi_url_id')
-            spi_url_config_id = kwargs.get('spi_url_config_id')
-            return redirect('services:spi_configuration_edit', service_id, command_id, service_command_id, spi_url_id, spi_url_config_id)
+
+            context = super(SPIUrlConfigurationUpdate, self).get_context_data(**kwargs)
+
+            context['service_command_id'] =  kwargs.get('service_command_id')
+            context['service_id'] = kwargs.get('service_id')
+            context['command_id'] = kwargs.get('command_id')
+            context['spi_url_id'] = kwargs.get('spi_url_id')
+            context['spi_url_config_id'] = spi_url_config_id = kwargs.get('spi_url_config_id')
+
+            context['configuration_type_list'], none = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger)
+
+            context['configuration_detail'] = {
+                "spi_url_configuration_id":spi_url_config_id,
+                "spi_url_configuration_type" : request.POST.get('spi_url_configuration_type'),
+                "url" : request.POST.get('spi_url_configuration_value'),
+                "connection_timeout" : request.POST.get('connection_timeout', ''),
+                "read_timeout" : request.POST.get('read_timeout', ''),
+                "max_retry" : request.POST.get('max_retry', ''),
+                "retry_delay_millisecond" : request.POST.get('retry_delay_millisecond', ''),
+                "expire_in_minute" : request.POST.get('expire_in_minute', ''),
+                "created_timestamp" : request.POST.get('created_timestamp', ''),
+                "last_updated_timestamp": request.POST.get('last_updated_timestamp', ''),
+            }
+
+            return render(request, self.template_name, context)
