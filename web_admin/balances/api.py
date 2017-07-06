@@ -9,13 +9,16 @@ from django.http import HttpResponse
 
 from authentications.utils import get_auth_header
 from web_admin import api_settings
+from web_admin.utils import setup_logger
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 class BalanceApi():
 
     def add(request, currency):
+        logger = logging.getLogger(__name__)
+        logger = setup_logger(request, logger)
         logger.info('========== Start add currency ==========')
 
         url = settings.DOMAIN_NAMES + api_settings.ADD_CURRENCY_URL.format(currency)
