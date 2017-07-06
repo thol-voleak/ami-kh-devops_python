@@ -67,7 +67,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlDDSOFTypes += '<option value="' + this.sof_type_id + '"' + htmlSelected + '>' + this.sof_type + '</option>';
         });
 
-
         // Master: AmountTypes Dropdown
         var htmlDDAmountTypes = '';
         jQuery.each(m_amount_type, function() {
@@ -124,15 +123,16 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         } else if (tableId == 'tbl_setting_bonus') {
             htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
-            htmlIDSpecificID += 'txt_setting_bonus_specific_id_edit';
+            htmlIDSpecificID += 'ddl_setting_bonus_specific_id_edit';
             htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
-            htmlIDSpecificSOF += 'txt_setting_bonus_spec_src_fund_edit';
+            htmlIDSpecificSOF += 'ddl_setting_bonus_spec_src_fund_edit';
             htmlIDAmount += 'ddl_setting_bonus_amount_edit';
             htmlIDRate += 'txt_setting_bonus_rate_edit';
             htmlIDBtnSave += 'btn_setting_bonus_save';
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
 
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#txt_setting_bonus_specific_id_edit', '#txt_setting_bonus_spec_src_fund_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit')\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#ddl_setting_bonus_specific_id_edit', '#ddl_setting_bonus_spec_src_fund_edit')\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
 
         } else if (tableId == 'tbl_bonus') {
@@ -189,6 +189,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit',aData[4]);}
         else if (tableId == "tbl_bonus")
             {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit',aData[4]);}
+        else if (tableId == 'tbl_setting_bonus')
+            {getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit',aData[4]);}
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
@@ -311,7 +313,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
         var ActorType = $(jqSelects[1]).find(":selected").html();
-        var AmountType = $(jqSelects[3]).find(":selected").html();
+        var AmountType = $(jqSelects[5]).find(":selected").html();
 
         if ((ActorType === 'Specific ID' && jqSelects[2].value === "") || (ActorType === 'Specific ID' && jqSelects[4].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[0].value === "")) {
             document.getElementById("btn_setting_bonus_add").click();
@@ -330,7 +332,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                     "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
                     "sof_type_id": $(jqSelects[3]).find(":selected").val(),
                     "specific_sof": $(jqSelects[4]).find(":selected").html(),
-                    "amount_type": $(jqSelects[3]).find(":selected").html(),
+                    "amount_type": $(jqSelects[5]).find(":selected").html(),
                     "rate": jqInputs[0].value
                 },
                 dataType: "json",

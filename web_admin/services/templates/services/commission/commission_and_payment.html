@@ -281,7 +281,7 @@
                                     {% if choices.actor_types.0.actor_type != 'Specific ID' %}
                                         disabled
                                     {% endif %}
-                                onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
+                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
                                 <datalist id="dl_setting_bonus_specific_id">
                                     <option value=""></option>
                                     {% for id in specific_ids %}
@@ -292,7 +292,7 @@
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund"
-                                onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
+                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -342,56 +342,6 @@
     <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>
     <script>
         var csrf_token = "{{ csrf_token }}";
-        function settingBonusGetSOF(user, sof) {
-            actor = document.getElementById('ddl_setting_bonus_actor');
-            if (actor.value !== 'Specific ID') {
-                return
-            }
-            user = document.getElementById(user);
-            if (user.value === '') {
-                return
-            }
-            sof = document.getElementById(sof);
-            url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
-                },
-                success: function (response) {
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        var sof = document.getElementById("ddl_setting_bonus_spec_src_fund");
-
-                        //clear list
-                        var len = sof.options.length;
-                        for (i=0; i<len; i++){
-                            sof.remove(0);
-                        }
-                        // add item
-                        var jsonOptions = response.data;
-                        jsonOptions.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.id;
-                            option.text = item.id;
-                            sof.add(option,0);
-                        });
-                    } else {
-                        addErrorMessage("Cannot Get Specific Source of Fund");
-                    }
-                },
-                error: function () {
-                    addErrorMessage("Something went wrong");
-                }
-            });
-
-        }
-
         function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
             var actor = document.getElementById(actor);
             var specific_id = document.getElementById(specific_id);
@@ -444,7 +394,6 @@
                     addErrorMessage("Can not get specific SOF list ");
                 }
             });
-
         }
 
         function deleteDistribution(distributionId) {
