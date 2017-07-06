@@ -123,7 +123,6 @@
                         <label class="col-sm-2 control-label" id="txt_from">From</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_from" name="amount_type">
-                                <option value="">-</option>
                                 {% for type in amount_types %}
                                     {% if type.amount_type == body.amount_type %}
                                      <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
