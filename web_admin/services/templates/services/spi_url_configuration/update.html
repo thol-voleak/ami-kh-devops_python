@@ -7,6 +7,17 @@
         <h3>Edit SPI Configuration Url</h3>
     </div>
 
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
     <div class="panel-body">
         <form class="form-horizontal" role="form" method="post" action="{% url 'services:spi_configuration_edit' service_id command_id service_command_id spi_url_id spi_url_config_id %}">
             {% csrf_token %}

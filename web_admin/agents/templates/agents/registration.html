@@ -80,7 +80,8 @@
                             <label class="col-sm-4 control-label">User Name *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="username"
-                                       id="txt_user_name" required/>
+                                       id="txt_user_name" 
+                                       value="{{ identity.username | default_if_none:'' }}" required/>
                             </div>
                         </div>
                     </div>
@@ -98,7 +99,8 @@
                             <label class="col-sm-4 control-label">Password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="password"
-                                       id="txt_password" required/>
+                                       id="txt_password"
+                                       value="{{ identity.password | default_if_none:'' }}" required/>
                             </div>
                         </div>
                     </div>
@@ -116,7 +118,8 @@
                             <label class="col-sm-4 control-label">Re-password *</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control input-rounded" name="re_password"
-                                       id="txt_re_password" required/>
+                                       id="txt_re_password"
+                                       value="{{ identity.password | default_if_none:'' }}" required/>
                             </div>
                         </div>
                     </div>
@@ -426,7 +429,8 @@
                             <label class="col-sm-4 control-label">Unique Reference *</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="unique_reference"
-                                       id="txt_unique_reference" required/>
+                                       id="txt_unique_reference" 
+                                       value="{{ profile.unique_reference | default_if_none:'' }}"required/>
                             </div>
                         </div>
                     </div>
