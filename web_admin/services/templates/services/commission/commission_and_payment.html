@@ -152,17 +152,15 @@
 
 
                             <td>
-
                                 <select name="specific_actor_id" id="ddl_setting_payment_fee_structure_specific_id" class="form-control"
-                                       list="dl_setting_payment_fee_structure_specific_id" disabled
-                                       onchange="setting_payment_fee_structure_getSOF('ddl_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')" type="number" autocomplete="off" >
-
-                                    <datalist id="dl_setting_payment_fee_structure_specific_id">
+                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                        disabled
+                                    {% endif %}
+                                    onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund')" type="number" autocomplete="off" >
                                         <option value=""></option>
                                         {% for id in specific_ids %}
                                             <option value="{{ id }}">{{ id }}</option>
                                         {% endfor %}
-                                    </datalist>
                                 </select>
                             </td>
 
@@ -170,7 +168,7 @@
 
                             <td>
                                 <select class="form-control" name="sof_type_id"
-                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="setting_payment_fee_structure_getSOF('ddl_setting_payment_fee_structure_specific_id', 'ddl_setting_payment_fee_structure_source_of_fund')">
+                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund')">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -179,7 +177,11 @@
                             <td>
                                 <select class="form-control" name="specific_sof"
                                        autocomplete="off"
-                                       id="ddl_setting_payment_fee_structure_specific_source_of_fund" disabled>
+                                       id="ddl_setting_payment_fee_structure_specific_source_of_fund"
+                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                        disabled
+                                    {% endif %}
+                                >
                                 </select>
                             </td>
                             <td>
@@ -191,7 +193,12 @@
                                     {% endfor %}
                                 </select>
                             <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate"
-                                       required/></td>
+                                       required
+                                    {% if 'Rate' not in choices.amount_types.0.amount_type %}
+                                        disabled
+                                    {% endif %}
+                                />
+                            </td>
                             <td></td>
                         </tr>
                     </table>
@@ -274,7 +281,7 @@
                                     {% if choices.actor_types.0.actor_type != 'Specific ID' %}
                                         disabled
                                     {% endif %}
-                                onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
+                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
                                 <datalist id="dl_setting_bonus_specific_id">
                                     <option value=""></option>
                                     {% for id in specific_ids %}
@@ -285,7 +292,7 @@
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund"
-                                onchange="settingBonusGetSOF('ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund')">
+                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -335,17 +342,21 @@
     <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>
     <script>
         var csrf_token = "{{ csrf_token }}";
-        function settingBonusGetSOF(user, sof) {
-            actor = document.getElementById('ddl_setting_bonus_actor');
+        function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
+            var actor = document.getElementById(actor);
+            var specific_id = document.getElementById(specific_id);
+            var sof = document.getElementById(sof);
+            var specific_sof = document.getElementById(specific_sof);
+
             if (actor.value !== 'Specific ID') {
                 return
             }
-            user = document.getElementById(user);
-            if (user.value === '') {
+
+            if (specific_id.value === '') {
                 return
             }
-            sof = document.getElementById(sof);
-            url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
+
+            url = $('#Setting_Bonus_Form').attr('action') + specific_id.value + '/' + sof.value;
             $.ajax({
                 url: url,
                 type: "GET",
@@ -359,12 +370,10 @@
                         var url = window.location.origin + "/admin-portal/logout/";
                         window.location.replace(url);
                     } else if (response.status == 2) {
-                        var sof = document.getElementById("ddl_setting_bonus_spec_src_fund");
-
                         //clear list
-                        var len = sof.options.length;
+                        var len = specific_sof.options.length;
                         for (i=0; i<len; i++){
-                            sof.remove(0);
+                            specific_sof.remove(0);
                         }
                         // add item
                         var jsonOptions = response.data;
@@ -372,67 +381,19 @@
                             var option = document.createElement('option');
                             option.value = item.id;
                             option.text = item.id;
-                            sof.add(option,0);
+                            if(typeof selected_value !== 'undefined')
+                                if (option.value == selected_value)
+                                    {option.setAttribute("selected", "selected");}
+                            specific_sof.add(option,0);
                         });
                     } else {
-                        addErrorMessage("Cannot Get Specific Source of Fund");
+                        addErrorMessage(response.msg);
                     }
                 },
                 error: function () {
-                    addErrorMessage("Something went wrong");
+                    addErrorMessage("Can not get specific SOF list ");
                 }
             });
-
-        }
-        function setting_payment_fee_structure_getSOF(user, sof) {
-            actor = document.getElementById('ddl_setting_payment_fee_structure_actor');
-            if (actor.value !== 'Specific ID') {
-                return
-            }
-            user = document.getElementById(user);
-            if (user.value === '') {
-                return
-            }
-            sof = document.getElementById(sof);
-            url = $('#Setting_Bonus_Form').attr('action') + user.value + '/' + sof.value;
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
-                },
-                success: function (response) {
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        //$("ddl_setting_payment_fee_structure_specific_source_of_fund").empty();
-                        var sof = document.getElementById("ddl_setting_payment_fee_structure_specific_source_of_fund");
-
-                        //clear list
-                        var len = sof.options.length;
-                        for (i=0; i<len; i++){
-                            sof.remove(0);
-                        }
-                        // add item
-                        var jsonOptions = response.data;
-                        jsonOptions.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.id;
-                            option.text = item.id;
-                            sof.add(option,0);
-                        });
-                    } else {
-                        addErrorMessage("Cannot Get Specific Source of Fund");
-                    }
-                },
-                error: function () {
-                    addErrorMessage("Something went wrong");
-                }
-            });
-
         }
 
         function deleteDistribution(distributionId) {
@@ -792,22 +753,23 @@
             // Build up master data from Server
             var m_action_types = {{ choices.action_types|safe }};
             var m_actor_types = {{ choices.actor_types|safe }};
+            var m_specific_ids = {{ specific_ids|safe }};
             var m_sof_types = {{ choices.sof_types|safe }};
             var m_amount_type = {{ choices.amount_types|safe }};
             var current_fee_tier_id = {{ fee_tier_id  }};
             //var csrf_token = "{{ csrf_token }}";
 
             // 1. Balance and Payment Fee Table
-            onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 2. Setting Bonus Table
-            onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 3. Agent Fee Table
             // onInlineSetupDataTable('tbl_agent_hier_fee', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 4. Bonus Table
-            onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
         });
 
