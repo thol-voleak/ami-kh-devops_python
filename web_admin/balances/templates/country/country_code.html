@@ -90,6 +90,7 @@ function isValidCode(code) {
 
     var code_input = document.getElementById("code_input");
     var btn_submit = document.getElementById("country_btn_save2");
+
     if (!code || (code == '')) {
         code_input.setCustomValidity('Country code cannot be empty');
         btn_submit.click();
@@ -134,7 +135,12 @@ $(function(){
 function addCountryCode() {
 
             var code = $("#code_input").val();
+            if(!code) {
+                code = '';
+            }
+            code = code.replace(/\s+/g, '');
             code = code.toUpperCase();
+            $("#code_input").val(code);
 
             if (!isValidCode(code)) return;
             console.log('Show alert');
