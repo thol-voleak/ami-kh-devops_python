@@ -186,9 +186,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         // Master: Specific SOF Dropdown
         var htmlDDSpecificSOFs = '';
         if (tableId == "tbl_setting_payment_fee_structure")
-            {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit');}
+            {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit',aData[4]);}
         else if (tableId == "tbl_bonus")
-            {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit');}
+            {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit',aData[4]);}
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';

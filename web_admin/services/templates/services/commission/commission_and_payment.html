@@ -392,7 +392,7 @@
 
         }
 
-        function getSOF(actor, specific_id, sof, specific_sof) {
+        function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
             var actor = document.getElementById(actor);
             var specific_id = document.getElementById(specific_id);
             var sof = document.getElementById(sof);
@@ -431,6 +431,9 @@
                             var option = document.createElement('option');
                             option.value = item.id;
                             option.text = item.id;
+                            if(typeof selected_value !== 'undefined')
+                                if (option.value == selected_value)
+                                    {option.setAttribute("selected", "selected");}
                             specific_sof.add(option,0);
                         });
                     } else {
