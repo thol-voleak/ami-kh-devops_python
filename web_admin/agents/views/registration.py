@@ -1,3 +1,14 @@
+'''
+History:
+- 2017-05-03: Initialize empty Class with template HTML name (Steve Le)
+- 2017-05-04: Add logic for Agent registration (Gate Nguyen)
+-- API 1: POST api-gateway/agent/v1/agents/{agent_id}/profiles                      [METHOD = _create_agent_profile]
+-- API 2: POST api-gateway/agent/v1/agents/{agent_id}/identities                    [METHOD = _create_agent_identity]
+-- API 3: POST api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}    [METHOD = _create_agent_balance]
+- 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
+-- Added logging format and more.
+'''
+
 import logging
 from web_admin import api_settings
 from datetime import datetime
@@ -36,18 +47,6 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
         return result
 
 
-'''
-History:
-- 2017-05-03: Initialize empty Class with template HTML name (Steve Le)
-- 2017-05-04: Add logic for Agent registration (Gate Nguyen)
--- API 1: POST api-gateway/agent/v1/agents/{agent_id}/profiles                      [METHOD = _create_agent_profile]
--- API 2: POST api-gateway/agent/v1/agents/{agent_id}/identities                    [METHOD = _create_agent_identity]
--- API 3: POST api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}    [METHOD = _create_agent_balance]
-- 2017-05-05: Corrected API Logic make Agent registration work well (Steve Le)
--- Added logging format and more.
-'''
-
-
 class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     template_name = "agents/registration.html"
     logger = logger
@@ -72,6 +71,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start creating agent ==========')
+        ### Get data from dropdown list and user input ####
         agent_types_list = self._get_agent_types_list()
         currencies = self._get_currencies_dropdown()
         profile = {
@@ -81,16 +81,26 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             "username": request.POST.get('username'),
             "password": request.POST.get('password'),
         }
+        ##########################################
+
+        ######## Fail case create agent profile ###############
         agent_profile_reponse, success = self._create_agent_profile(request)
 
         agent_id = ''
         if success:
             agent_id = agent_profile_reponse['id']
         else:
-            request.session['agent_registration_msg'] = 'Agent registration - profile: something wrong happened!'
+            context = {
+                'agent_types_list': agent_types_list,
+                'currencies': currencies,
+                'profile': profile,
+                'identity': identity,
+                'msg': agent_profile_reponse
+            }
             self.logger.info('========== Finished creating agent ==========')
-            return redirect('agents:agent_registration')
+            return render(request, self.template_name, context)
 
+        ####### Fail case agent identity ############
         agent_indentity, success = self._create_agent_identity(request, agent_id)
         self._create_agent_balance(request, agent_id)
         if success:
@@ -98,7 +108,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             self.logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_detail', agent_id=agent_id)
         else:
-            # request.session['agent_registration_msg'] = agent_indentity
             context = {
                 'agent_types_list': agent_types_list,
                 'currencies': currencies,
@@ -106,6 +115,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
                 'identity': identity,
                 'msg': agent_indentity
             }
+            self.logger.info('========== Finished creating agent ==========')
             return render(request, self.template_name, context)
 
     def _create_agent_profile(self, request):
@@ -224,11 +234,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         data, success = self._post_method(api_path=api_settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
                                           func_description="Agent Identity",
                                           logger=logger, params=body)
-        # if success:
-        #     result = True
-        # else:
-        #     request.session['agent_registration_msg'] = 'Agent registration - identity: Something wrong happened!'
-        #     return redirect('agents:agent_registration')
         return data, success
 
     def _create_agent_balance(self, request, agent_id):
