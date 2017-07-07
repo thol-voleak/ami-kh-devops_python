@@ -2,13 +2,14 @@ import logging
 from web_admin import api_settings
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin.utils import setup_logger
-from web_admin.restful_methods import RESTfulMethods
+from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView, RESTfulMethods):
+class ListView(TemplateView):
 
     template_name = "system_user/list.html"
     logger = logger
@@ -38,20 +39,35 @@ class ListView(TemplateView, RESTfulMethods):
         if email:
             params['email'] = email
 
-        data = self._search_system_user(params)
+        status_code, status_message, data = self.search_system_user(username, email, None)
+
+        if (status_code == "access_token_expire") or \
+                (status_code == 'access_token_not_found') or \
+                (status_code == 'invalid_access_token'):
+            logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
+
         context['data'] = data
         context['username'] = username
         context['email'] = email
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)
 
-    def _search_system_user(self, params):
-        api_path = api_settings.SEARCH_SYSTEM_USER
+    def search_system_user(self, username, email, user_id):
+        params = {}
 
-        data, success = self._post_method(
-            api_path=api_path,
-            func_description="System User",
-            logger=logger,
-            params=params
-        )
-        return data
+        if username is not '' and username is not None:
+            params['username'] = username
+        if email is not '' and email is not None:
+            params['email'] = email
+        if user_id is not '' and user_id is not None:
+            params['user_id'] = user_id
+
+        is_success, status_code, status_message, data = RestFulClient.post(self.request, api_settings.SEARCH_SYSTEM_USER, self._get_headers(), logger, params)
+
+        return status_code, status_message, data
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+        return self._headers

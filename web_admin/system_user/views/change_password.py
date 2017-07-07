@@ -37,7 +37,7 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start changing system user password ==========')
         system_user_id = kwargs['systemUserId']
-        url = api_settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
+        url = api_settings.CHANGE_PASSWORD_SYSTEM_USER_URL.format(system_user_id)
         password = request.POST.get('newpassword')
         params = {"password": encrypt_text(password)}
         data, success = self._put_method(api_path=url,

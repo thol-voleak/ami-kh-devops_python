@@ -46,12 +46,11 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
-GET_ALL_SYSTEM_USER = 'api-gateway/system-user/v1/users'
-SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
-SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
+GET_SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
+CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}/passwords'
+CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords'
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # SPI URL

@@ -81,7 +81,7 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
 
     def _get_system_user_detail(self, system_user_id):
 
-        api_path = api_settings.SYSTEM_USER_DETAIL_URL.format(system_user_id)
+        api_path = api_settings.GET_SYSTEM_USER_DETAIL_URL.format(system_user_id)
 
         data, status = self._get_method(
             api_path=api_path,

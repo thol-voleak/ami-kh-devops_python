@@ -44,7 +44,7 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
         self.logger.info('========== Start creating new system user ==========')
 
         # Build API Path
-        api_path = api_settings.SYSTEM_USER_CREATE_URL
+        api_path = api_settings.CREATE_SYSTEM_USER_URL
 
         # Build params
         params = {
