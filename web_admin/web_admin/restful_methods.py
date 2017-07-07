@@ -116,7 +116,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _post_method(self, api_path, func_description, logger, params={}):
+    def _post_method(self, api_path, func_description, logger, params={}, only_return_data=True):
         """
         :param api_path: 
         :param func_description: 
@@ -152,7 +152,10 @@ class RESTfulMethods(GetHeaderMixin):
                 logger.info("Response_content_count: {}".format(len(data)))
             else:
                 logger.info("Response_content: {}".format(response.content))
-            result = data, True
+            if only_return_data:
+                result = data, True
+            else:
+                result = response_json, True
         else:
             logger.info("Response_content: {}".format(response.text))
             message = status.get('message', '')

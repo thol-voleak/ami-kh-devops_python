@@ -34,6 +34,7 @@ class SofFileList(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search sof file list ==========')
 
+        opening_page_index = request.POST.get('current_page_index')
         is_on_us = int(request.POST.get('on_off_us_id'))
         source_of_fund = request.POST.get('source_of_fund_id')
         sof_partner_name = request.POST.get('sof_partner_name_id')
@@ -43,6 +44,7 @@ class SofFileList(TemplateView, RESTfulMethods):
         end_date = request.POST.get('to_created_timestamp')
 
         params = {}
+        params['opening_page_index'] = opening_page_index
 
         if is_on_us >= 0:
             params['is_on_us'] = is_on_us
@@ -64,13 +66,15 @@ class SofFileList(TemplateView, RESTfulMethods):
             converted_end_date = converted_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = converted_end_date
 
-        data = self._search_file_list(params)
+        data, page = self._search_file_list(params)
 
         currencies, success = self._get_currency_choices()
         context = {'currencies': currencies,
                    'file_list': data,
                    'start_date': start_date,
-                   'end_date': end_date}
+                   'end_date': end_date,
+                   'paginator': page,
+                   'page_range': self._calculate_page_range(page)}
         context.update(params)
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)
@@ -78,14 +82,15 @@ class SofFileList(TemplateView, RESTfulMethods):
     def _search_file_list(self, params):
         api_path = api_settings.SEARCH_RECONCILE_SOF_FILE_LIST
 
-        data, success = self._post_method(
+        response_json, success = self._post_method(
             api_path=api_path,
             func_description="Search sof File List",
             logger=logger,
-            params=params
+            params=params,
+            only_return_data=False
         )
-        self.logger.info("data={}".format(data))
-        return data
+        self.logger.info("data={}".format(response_json.get('data')))
+        return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')
@@ -103,3 +108,27 @@ class SofFileList(TemplateView, RESTfulMethods):
             result = [], False
         self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
+
+    def _calculate_page_range(self, pageInfo):
+        totalPages = pageInfo.get('total_pages')
+        currentPage = pageInfo.get('current_page')
+        pageRangeStart = 1
+        pageRangeStop = totalPages + 1
+
+        if totalPages > 6:
+            if currentPage > 1:
+                if currentPage == 3:
+                    pageRangeStart = 1
+                elif currentPage < totalPages:
+                    pageRangeStart = currentPage - 1
+                else:
+                    pageRangeStart = currentPage - 2
+            if currentPage < totalPages:
+                if currentPage == totalPages - 2:
+                    pageRangeStop = totalPages + 1
+                elif currentPage > 1:
+                    pageRangeStop = currentPage + 2
+                else:
+                    pageRangeStop = currentPage + 3
+        pageRange = range(pageRangeStart, pageRangeStop)
+        return pageRange
