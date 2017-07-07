@@ -10,12 +10,20 @@ from web_admin.api_settings import COMPANY_BALANCE_HISTORY
 from web_admin.api_settings import COMPANY_BALANCE_ADD
 from web_admin.api_settings import GET_AGET_BALANCE
 from web_admin import api_settings
+from web_admin.utils import setup_logger
+
 logger = logging.getLogger(__name__)
 
 
 class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
     template_name = "company_balance.html"
     company_agent_id = 1
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(CompanyBalanceView, self).dispatch(request, *args, **kwargs)
+
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name,
@@ -104,7 +112,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _get_currency_choices_list(self):
         url = api_settings.GET_ALL_CURRENCY_URL
-        logger.info('Get currency choice list from backend')
+        self.logger.info('Get currency choice list from backend')
         data, success = self._get_method(api_path=url,
                                          func_description="currency choice list",
                                          logger=logger,
