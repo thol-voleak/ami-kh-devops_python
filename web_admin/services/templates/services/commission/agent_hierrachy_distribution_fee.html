@@ -17,7 +17,7 @@
                 <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
                 <th class="col-sm-2" id="lbl_actor">Actor</th>
                 <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
-                <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
+                <th class="col-sm-1" id="lbl_source_of_fund">Source of Fund</th>
                 <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
                 <th class="col-sm-2" id="lbl_from_amount">Amount</th>
                 <th class="col-sm-1" id="lbl_rate">Rate %</th>
@@ -30,7 +30,7 @@
                     data-url="{% url "services:agent_fee_update" d.agent_fee_distribution_id %}"
                     data-id="{{ d.agent_fee_distribution_id }}"
                     data-fee_tier_id="{{ d.fee_tier_id }}">
-                    <td class="col-sm-1">
+                    <td>
                         <span>{{ d.action_type|default_if_none:'' }}</span>
                         <select class="form-control" name="action_type" id="ddl_agent_hier_fee_dc_edit" style="display: none;">
                                 {% for action_type in choices.action_types %}
@@ -43,7 +43,7 @@
                                 {% endfor %}
                         </select>
                     </td>
-                    <td class="col-sm-2">
+                    <td>
                         <span>{{ d.actor_type|default_if_none:'' }}</span>
                         <select class="form-control" name="actor_type" id="ddl_agent_hier_fee_actor_edit" style="display: none;" onchange="changeSpecificActorTypeRelative(this)">
                         {% for actor_type in choices.actor_types %}
@@ -56,7 +56,7 @@
                         {% endfor %}
                         </select>
                     </td>
-                    <td class="col-sm-1">
+                    <td>
                         <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
                         <select class="form-control" id="ddl_agent_hier_fee_specific_id_edit-{{ d.agent_fee_distribution_id }}"
                                    name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onchange="changeSpecificIdTypeRelativeAdd(this)">
@@ -67,7 +67,7 @@
                         </select>
 
                     </td>
-                    <td class="col-sm-2">
+                    <td>
                         <span>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</span>
                         <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit-{{ d.agent_fee_distribution_id }}" style="display: none;" onchange="changeSOFTypeRelativeAdd(this)">
                         {% for sof_type in choices.sof_types %}
@@ -80,14 +80,14 @@
                         {% endfor %}
                         </select>
                     </td>
-                    <td class="col-sm-1">
+                    <td>
                         <span>{{ d.specific_sof|default_if_none:'' }}</span>
                         <select class="form-control" id="ddl_agent_hier_fee_spec_src_fund_edit-{{ d.agent_fee_distribution_id }}"
                                 name="specific_sof" value="{{ d.specific_sof|default_if_none:'' }}" style="display: none;"></select>
 
 
                     </td>
-                    <td class="col-sm-2">
+                    <td>
                         <span>{{ d.amount_type|default_if_none:'' }}</span>
                         <select class="form-control" name="amount_type" id="ddl_agent_hier_fee_amount_edit" style="display: none;" onChange="ddl_agent_hier_fee_amount_edit_changed(this)">
                         {% for amount_type in choices.amount_types %}
@@ -99,11 +99,11 @@
                         {% endfor %}
                     </select>
                     </td>
-                    <td class="col-sm-1">
+                    <td>
                         <span>{{ d.rate|default_if_none:'' }}</span>
                         <input id="txt_agent_hier_fee_rate_edit" class="form-control" name="rate" required value="{{ d.rate }}" style="display: none;"/>
                     </td>
-                    <td class="col-sm-2">
+                    <td>
                         <div style="display: block;" class = "Normal">
                             <button type="button"
                                class="edit btn btn-outline btn-xs btn-primary text-info small"

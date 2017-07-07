@@ -21,7 +21,7 @@
         {% endfor %}
 
 
-        <form class="form-horizontal" id="form_data" role="form" method="post" action="{% url 'balances:company_balance' %}" onsubmit="return validateFormData(event);">
+        <form class="form-horizontal" id="form_data" role="form" method="post" action="{% url 'balances:company_balance' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">Currency:</label>
@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Adding Balance:</label>
                 <div class="col-sm-4">
-                    <input type="text" step="0.01" class="form-control" name="adding_balance" id="txt_adding_balance" value="{{string_amount|default_if_none:''}}"/>
+                    <input type="text" step="0.01" class="form-control" name="adding_balance" id="txt_adding_balance" value="{{string_amount|default_if_none:''}}" required/>
                 </div>
                 <label class="col-sm-2 control-label">New Company Balance:</label>
                 <div class="col-sm-4">
@@ -61,8 +61,9 @@
             </div>
             <div class="form-group">
                 <div class="pull-right">
+                    <button id='btn_submit' type="submit" class="btn btn-success" style="display: none;"></button>
                     <button id="btn_cancel" class="btn text-left mb15" type="reset">Cancel</button>
-                    <button id="btn_confirm" class="btn btn-success text-left mb15" type="submit">Confirm</button>
+                    <button id="btn_confirm" class="btn btn-success text-left mb15" type="button" onclick="validateFormData(this)">Confirm</button>
                     <!-- Mapping raw hidden value -->
                     <input value="{{ objects.0.balance_after_change|default:0 }}" type="hidden" id="txt_company_balance_hidden" />
                 </div>
@@ -98,18 +99,15 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>
-var txt_adding_balance = document.getElementById("txt_adding_balance");
-function validateFormData(e) {
-    txt_adding_balance.setCustomValidity('');
-    if(!txt_adding_balance.value) {
-        txt_adding_balance.setCustomValidity('Adding balance must not be empty. You may input positive or negative value');
-        return false;
-    } else {
-        txt_adding_balance.setCustomValidity('');
-        document.getElementById('form_data').submit();
-        return true;
-    }
 
+function validateFormData(e) {
+    var txt_adding_balance = document.getElementById("txt_adding_balance");
+    var btn_submit = document.getElementById("btn_submit");
+    txt_adding_balance.setCustomValidity('');
+    if(txt_adding_balance.value == '') {
+        txt_adding_balance.setCustomValidity('Adding balance must not be empty. You may input positive or negative value');
+    }
+    btn_submit.click();
 }
 
 function prepareValidateFormData(e) {
@@ -134,13 +132,15 @@ function numberWithCommas(x) {
 }
 
 function changeValue() {
-
+    var deci = {{ decimal }};
     var $currency = $('#ddl_currency');
     $currency.on('change', function() {
         var url = window.location.origin + window.location.pathname + '?currency=' + $currency.val();
         window.location.replace(url);
     });
-    var $amount = $('#txt_adding_balance');
+    var balance_amount = 'txt_adding_balance';
+    var $amount = $('#' + balance_amount);
+    var amount = document.getElementById(balance_amount);
     var $new_balance = $('#txt_new_company_balance');
     var $company_balance = $('#txt_company_balance_hidden');
     $amount.on('input', function() {
@@ -148,44 +148,64 @@ function changeValue() {
         value ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
         : $new_balance.val($company_balance.val());
     });
-    $('#txt_adding_balance').keydown(function(event){
-        var keyCode = (event.keyCode ? event.keyCode : event.which);
-        if (keyCode == 13) {
+
+    
+    $amount.keypress(function(event) {
+        var $this = $(this);
+        if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+        ((event.which < 48 || event.which > 57) &&
+        (event.which != 0 && event.which != 8 && event.which != 45))) {
+            console.log(event.which);
             event.preventDefault();
+            }
+
+        var text = $(this).val();
+        if ((event.which == 46) && (text.indexOf('.') == -1)) {
+            setTimeout(function() {
+                if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
+                    $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
+                    }
+                }, 1);
+            }
+        if ((text.indexOf('.') != -1) &&
+        (text.substring(text.indexOf('.')).length > deci) &&
+        (event.which != 0 && event.which != 8) &&
+        ($(this)[0].selectionStart >= text.length - deci)) {
+            event.preventDefault();
+            }
+        });
+
+        $amount.bind("paste", function(e) {
+            var text = e.originalEvent.clipboardData.getData('Text');
+            if ($.isNumeric(text)) {
+                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
+                    e.preventDefault();
+                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
+                    }
+                }
+            else {
+                e.preventDefault();
+                }
+        });
+
+    amount.onblur = function(){
+
+        num = amount.value;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                if(num.indexOf(".") >=1){
+                num1 = num.substring(0, num.indexOf("."));
+                num2 = num.substring(num.indexOf(".")+1 );
+                num1 = num1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                num = num1 + '.' + num2; }
+                else {num = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");}
+                amount.value = num;
+            }
         }
-    });
-
-
-    var $input = $('#txt_adding_balance');
-    $input.on( "change", function( event ) {
-        txt_adding_balance.setCustomValidity('');
-        var selection = window.getSelection().toString();
-        if ( selection !== '' ) {
-            return;
-        }
-
-        if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
-            return;
-        }
-
-        var $this = $( this );
-        var input = $this.val();
-
-        var input = toNumber(input);
-
-        input = input ? parseFloat(input) : 0;
-        input = input ? input : 0;
-
-        $this.val( function() {
-            return ( input === 0 ) ? "" : input.toLocaleString("en-US", { maximumFractionDigits: {{ decimal }},
-             minimumFractionDigits: {{ decimal}} });
-        } );
-
-    });
 }
 
 $(changeValue);
-prepareValidateFormData();
 </script>
 
 {% endblock %}
