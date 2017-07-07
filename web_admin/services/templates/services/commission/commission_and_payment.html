@@ -224,16 +224,16 @@
                 {% csrf_token %}
                 <div class="form-group table-responsive row">
                     <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
-                        <thead>
+                        <thead>i
                         <tr>
-                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
-                            <th class="col-sm-2" id="lbl_actor">Actor</th>
-                            <th class="col-sm-1" id="lbl_specific_id">Specific ID</th>
-                            <th class="col-sm-2" id="lbl_source_of_fund">Source of Fund</th>
-                            <th class="col-sm-1" id="lbl_specific_source">Specific Source of Fund</th>
-                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
-                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
-                            <th class="col-sm-2" id="lbl_actions">Actions</th>
+                            <th id="lbl_db">Debit/Credit</th>
+                            <th id="lbl_actor">Actor</th>
+                            <th id="lbl_specific_id">Specific ID</th>
+                            <th id="lbl_source_of_fund">Source of Fund</th>
+                            <th id="lbl_specific_source">Specific Source of Fund</th>
+                            <th id="lbl_from_amount">Amount</th>
+                            <th id="lbl_rate">Rate %</th>
+                            <th id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -241,12 +241,12 @@
                             <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"
                                 data-id="{{ d.bonus_distribution_id }}"
                                 id="bonus-distribution-{{ d.bonus_distribution_id }}">
-                                <td class="col-sm-1">{{ d.action_type|default_if_none:'' }}</td>
+                                <td>{{ d.action_type|default_if_none:'' }}</td>
                                 <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
-                                <td class="col-sm-1">{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
-                                <td class="col-sm-1">{{ d.specific_sof|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{{ d.amount_type|default_if_none:'' }}</td>
+                                <td>{{ d.specific_actor_id|default_if_none:'' }}</td>
+                                <td>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
+                                <td>{{ d.specific_sof|default_if_none:'' }}</td>
+                                <td>{{ d.amount_type|default_if_none:'' }}</td>
                                 <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
                                 <td class="col-sm-2">
                                     <button type="button"
