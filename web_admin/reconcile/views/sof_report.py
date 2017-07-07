@@ -40,6 +40,7 @@ class SofReport(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search sof report ==========')
 
+        opening_page_index = request.POST.get('current_page_index')
         on_off_us_id = int(request.POST.get('on_off_us_id'))
         source_of_fund_id = request.POST.get('source_of_fund_id')
         sof_code = request.POST.get('sof_partner_name_id')
@@ -59,6 +60,7 @@ class SofReport(TemplateView, RESTfulMethods):
         self.logger.info('End date: {}'.format(to_created_timestamp))
 
         params = {}
+        params['opening_page_index'] = opening_page_index
 
         if on_off_us_id >= 0:
             params['is_on_us'] = (on_off_us_id == 1)
@@ -84,7 +86,7 @@ class SofReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data = self._search_sof_report(params)
+        data, page = self._search_sof_report(params)
 
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
@@ -98,7 +100,9 @@ class SofReport(TemplateView, RESTfulMethods):
                     'reconcile_payment_type_id': reconcile_payment_type_id,
                     'from_created_timestamp': from_created_timestamp,
                     'to_created_timestamp': to_created_timestamp,
-                    'sof_report': data}
+                    'sof_report': data,
+                    'paginator': page,
+                    'page_range': self._calculate_page_range(page)}
 
         self.logger.info("========== Finish search sof report ==========")
         return render(request, self.template_name, context)
@@ -107,15 +111,16 @@ class SofReport(TemplateView, RESTfulMethods):
         self.logger.info('========== Start Searching Sof Report ==========')
         api_path = api_settings.SEARCH_RECONCILE_SOF_REPORT
 
-        data, success = self._post_method(
+        response_json, success = self._post_method(
             api_path=api_path,
             func_description="Search sof Reconcile Report",
             logger=logger,
-            params=params
+            params=params,
+            only_return_data=False
         )
-        self.logger.info("data={}".format(data))
+        self.logger.info("data={}".format(response_json.get('data')))
         self.logger.info('========== Finish Searching Sof Report ==========')
-        return data
+        return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')
@@ -133,3 +138,27 @@ class SofReport(TemplateView, RESTfulMethods):
             result = [], False
         self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
+
+    def _calculate_page_range(self, pageInfo):
+        totalPages = pageInfo.get('total_pages')
+        currentPage = pageInfo.get('current_page')
+        pageRangeStart = 1
+        pageRangeStop = totalPages + 1
+
+        if totalPages > 6:
+            if currentPage > 1:
+                if currentPage == 3:
+                    pageRangeStart = 1
+                elif currentPage < totalPages:
+                    pageRangeStart = currentPage - 1
+                else:
+                    pageRangeStart = currentPage - 2
+            if currentPage < totalPages:
+                if currentPage == totalPages - 2:
+                    pageRangeStop = totalPages + 1
+                elif currentPage > 1:
+                    pageRangeStop = currentPage + 2
+                else:
+                    pageRangeStop = currentPage + 3
+        pageRange = range(pageRangeStart, pageRangeStop)
+        return pageRange
