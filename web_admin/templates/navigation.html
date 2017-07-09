@@ -23,6 +23,9 @@
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'permissions_list' %}active{% endif %}">
                         <a href="{% url 'authentications:permissions_list' %}"> <span>Permissions</span> </a>
+                        <li class="{% if url_name == 'create_permission' %}active{% endif %}">
+                            <a href="{% url 'authentications:create_permission' %}"> <span>Create Permission</span> </a>
+                        </li>
                     </li>
                 </ul>
             </li>

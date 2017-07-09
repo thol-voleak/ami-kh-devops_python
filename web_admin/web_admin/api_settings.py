@@ -54,7 +54,8 @@ CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # Permission
-PERMISSION_LIST = 'api-gateway/system-user/v1/roles-permissions'
+PERMISSION_LIST = 'api-gateway/system-user/v1/permissions'
+CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'

@@ -23,10 +23,9 @@ class PermissionList(TemplateView):
                                                           url=api_settings.PERMISSION_LIST,
                                                           headers=self._get_headers(),
                                                           logger=logger)
-
         if is_success:
-            self.logger.info("Permissions have [{}] permissions in database".format(len(data['permissions'])))
-            context['permissions'] = data['permissions']
+            self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
+            context['permissions'] = data
         return context
 
     def _get_headers(self):
