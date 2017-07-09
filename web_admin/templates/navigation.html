@@ -18,6 +18,14 @@
                     <span>Home</span>
                 </a>
             </li>
+            <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'permissions_list' %}active{% endif %}">
+                        <a href="{% url 'authentications:permissions_list' %}"> <span>Permissions</span> </a>
+                    </li>
+                </ul>
+            </li>
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                 <ul class="sub-menu">

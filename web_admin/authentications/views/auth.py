@@ -1,11 +1,11 @@
-from .apps import InvalidAccessToken
+from authentications.apps import InvalidAccessToken
+from authentications.models import Authentications
 from web_admin import api_settings
 from web_admin.utils import setup_logger
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.conf import settings
-from .models import Authentications
 
 import time
 import requests

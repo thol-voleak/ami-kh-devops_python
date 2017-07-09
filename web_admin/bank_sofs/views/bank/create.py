@@ -33,7 +33,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
         name = request.POST.get('name')
         bank_bin = request.POST.get('bin')
-        is_active = bool(request.POST.get('is_active'))
+        is_active = request.POST.get('is_active', 1)
         description = request.POST.get('description')
         credit_url = request.POST.get('credit_url')
         debit_url = request.POST.get('debit_url')
@@ -44,6 +44,11 @@ class CreateView(TemplateView, RESTfulMethods):
         cancel_url = request.POST.get('cancel_url')
         connection_timeout = request.POST.get('connection_timeout')
         read_timeout = request.POST.get('read_timeout')
+
+        if is_active == 0:
+            is_active = True
+        else:
+            is_active = False
 
         params = {
             "name": name,
@@ -60,6 +65,8 @@ class CreateView(TemplateView, RESTfulMethods):
             "connection_timeout": connection_timeout,
             "read_timeout": read_timeout
         }
+
+        import ipdb;ipdb.set_trace()
 
         data, success = self._post_method(api_path=self.url,
                                           func_description="Bank Profile",

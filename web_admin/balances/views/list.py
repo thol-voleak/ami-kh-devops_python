@@ -1,10 +1,11 @@
-import datetime
-import logging
 from web_admin.utils import setup_logger
-from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 from web_admin.api_settings import GET_ALL_PRELOAD_CURRENCY_URL
+
+from django.views.generic.base import TemplateView
+
+import logging
 
 logger = logging.getLogger(__name__)
 

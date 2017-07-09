@@ -15,9 +15,9 @@
                         <label class="col-sm-2 control-label">Is Active</label>
                         <div class="col-sm-8">
                             <select class="form-control" id="bank_active" name="is_active">
-                                <option value=1 {% if bank.is_active == True %}selected="selected" {% endif %}>True
+                                <option value=1 {% if bank.is_active == 1 %}selected="selected" {% endif %}>True
                                 </option>
-                                <option value=2 {% if bank.is_active == False %}selected="selected" {% endif %}>False
+                                <option value=0 {% if bank.is_active == 0 %}selected="selected" {% endif %}>False
                                 </option>
                             </select>
 

@@ -1,16 +1,17 @@
-import logging
 from web_admin import api_settings
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
 from web_admin import setup_logger, RestFulClient
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
+
+import logging
 
 logger = logging.getLogger(__name__)
 
 
 class ListView(TemplateView):
-
     template_name = "system_user/list.html"
     logger = logger
 
@@ -19,7 +20,6 @@ class ListView(TemplateView):
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-
         context = {
             'data': [],
             'created_msg': self.request.session.pop('system_user_create_msg', None),
@@ -63,7 +63,9 @@ class ListView(TemplateView):
         if user_id is not '' and user_id is not None:
             params['user_id'] = user_id
 
-        is_success, status_code, status_message, data = RestFulClient.post(self.request, api_settings.SEARCH_SYSTEM_USER, self._get_headers(), logger, params)
+        is_success, status_code, status_message, data = RestFulClient.post(self.request,
+                                                                           api_settings.SEARCH_SYSTEM_USER,
+                                                                           self._get_headers(), logger, params)
 
         return status_code, status_message, data
 

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Manage Permission Entities</h3>
+        </div>
+
+        <div class="panel-body">
+            <h4>Permission Entities</h4>
+            <div class="no-more-tables">
+                <table id='tbl_bank_sofs_list' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="name">Name</th>
+                        <th id="description">Description</th>
+                        <th id="associated_role">Associated Role</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="modified_date">Modified Date</th>
+                        <th id="created_by">Created Date</th>
+                        <th class="col-sm-2" id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for permission in permissions|dictsort:"id" %}
+                    <tr>
+                        <td>{{ permission.id|default_if_none:'' }}</td>
+                        <td>{{ permission.name|default_if_none:'' }}</td>
+                        <td>{{ permission.description|default_if_none:'' }}</td>
+                        <td></td>
+                        <td>{{ permission.created_timestamp|default_if_none:'' }}</td>
+                        <td>{{ permission.last_updated_timestamp|default_if_none:'' }}</td>
+                        <td></td>
+                        <td class="col-sm-2"></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

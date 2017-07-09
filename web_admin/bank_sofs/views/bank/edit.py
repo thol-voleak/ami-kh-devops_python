@@ -23,23 +23,23 @@ class EditView(TemplateView, RESTfulMethods):
         return super(EditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start create bank sofs ==========')
+        self.logger.info('========== Start get bank sofs ==========')
         context = super(EditView, self).get_context_data(**kwargs)
         bank_id = context['bank_id']
         bank = self._get_bank_details(bank_id)
         currencies = self._get_currencies_list()
         self.logger.info(bank)
         context = {'bank': bank, 'currencies': currencies}
-        self.logger.info('========== Finished create bank sofs ==========')
+        self.logger.info('========== Finished get bank sofs ==========')
         return context
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start creating bank profile ==========')
+        self.logger.info('========== Start update bank profile ==========')
         bank_id = kwargs['bank_id']
 
         name = request.POST.get('name')
         bank_bin = request.POST.get('bin')
-        is_active = bool(request.POST.get('is_active'))
+        is_active = request.POST.get('is_active')
         description = request.POST.get('description')
         credit_url = request.POST.get('credit_url')
         debit_url = request.POST.get('debit_url')
@@ -50,6 +50,11 @@ class EditView(TemplateView, RESTfulMethods):
         cancel_url = request.POST.get('cancel_url')
         connection_timeout = request.POST.get('connection_timeout')
         read_timeout = request.POST.get('read_timeout')
+
+        if is_active == 0:
+            is_active = True
+        else:
+            is_active = False
 
         params = {
             "name": name,
@@ -71,7 +76,7 @@ class EditView(TemplateView, RESTfulMethods):
                                          func_description="Bank Profile",
                                          logger=logger, params=params)
         if success:
-            self.logger.info('========== Finished creating bank profile ==========')
+            self.logger.info('========== Finished update bank profile ==========')
             messages.add_message(
                 request,
                 messages.SUCCESS,
