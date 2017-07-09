@@ -42,13 +42,12 @@ class PermissionCreate(TemplateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Create permission entity successfully'
+                'Created permission entity successfully'
             )
+            self.logger.info('========== End creating permission ==========')
             return redirect('authentications:permissions_list')
         else:
             return render(request, self.template_name)
-
-        self.logger.info('========== End creating permission ==========')
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
