@@ -29,11 +29,11 @@
                     <tr>
                         <th id="id">ID</th>
                         <th id="name">Name</th>
+                        <th id="is_page_level">Page Level</th>
                         <th id="description">Description</th>
                         <th id="associated_role">Associated Role</th>
                         <th id="created_date">Created Date</th>
                         <th id="modified_date">Modified Date</th>
-                        <th id="created_by">Created Date</th>
                         <th class="col-sm-2" id="action">Action</th>
                     </tr>
                     </thead>
@@ -43,19 +43,27 @@
                         <tr>
                             <td>{{ permission.id|default_if_none:'' }}</td>
                             <td>{{ permission.name|default_if_none:'' }}</td>
+                            <td>{{ permission.is_page_level|default_if_none:'' }}</td>
                             <td>{{ permission.description|default_if_none:'' }}</td>
                             <td></td>
                             <td>{{ permission.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ permission.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td></td>
                             <td class="col-sm-2">
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info"
                                        role="button"
                                        id="permission_btn_detail_{{ permission.id }}"
+                                       href="{% url 'authentications:permission_detail' permission.id %}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-info"
+                                       role="button"
+                                       id="permission_btn_edit_{{ permission.id }}"
                                        href="{% url 'authentications:edit_permission' permission.id %}">
                                         <span class="small">Edit</span>
                                     </a>
+
                             </td>
                         </tr>
                     {% endif %}
