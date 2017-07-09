@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class ListView(TemplateView, RESTfulMethods):
     template_name = "bank/list.html"
-    url = "report/v1/banks"
+    url = "api-gateway/report/v1/banks"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

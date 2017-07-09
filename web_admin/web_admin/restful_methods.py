@@ -100,6 +100,7 @@ class RESTfulMethods(GetHeaderMixin):
             code = status.get('code', '')
         except Exception as e:
             logger.error(e)
+            raise Exception(response.content)
 
         if code == "success":
             result = response_json.get('data', {}), True
