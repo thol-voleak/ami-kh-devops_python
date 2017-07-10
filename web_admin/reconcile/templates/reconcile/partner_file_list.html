@@ -8,15 +8,16 @@
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_partner_file_list' %}">
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              action="{% url 'reconcile:reconcile_partner_file_list' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">On us/Off us</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_on_off_us" name="on_off_us_id">
-                        <option value=-1>All</option>
-                        <option value=1>On</option>
-                        <option value=0>Off</option>
+                        <option value=-1 {% if is_on_us == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if is_on_us == 1 %}selected="selected"{% endif %}>On</option>
+                        <option value=0 {% if is_on_us == 0 %}selected="selected"{% endif %}>Off</option>
                     </select>
                 </div>
             </div>
@@ -24,15 +25,12 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Service Group</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_service_group" name="service_group_id">
-                        <option value="" >All</option>
+                    <select class="form-control" id="ddl_service_group" name="service_group_id"
+                            onchange="ddl_service_group_change()">
+                        <option value=-1>All</option>
                         {% for group in choices.service_groups %}
-                            {% if group.service_group_id|slugify == body.service_group_id|slugify %}
-                                <option value="{{ body.service_group_id }}" selected>{{ group.service_group_name }}
-                            </option>
-                            {% else %}
-                                <option value="{{ group.service_group_id }}">{{ group.service_group_name }}</option>
-                            {% endif %}
+                            <option value={{ group.service_group_id }}
+                                            {% if service_group_id == group.service_group_id %}selected="selected"{% endif %}>{{ group.service_group_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -42,7 +40,11 @@
                 <label class="col-sm-2 control-label">Service</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_service" name="service_id">
-                        <option value="" >All</option>
+                        <option value=-1>All</option>
+                        {% for service_in in service_list %}
+                            <option value={{ service_in.service_id }}
+                                            {% if service_in.service_id == service_id %}selected="selected"{% endif %}>{{ service_in.service_name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -50,7 +52,8 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Partner ID (Agent ID)</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="partner_id" id="partner_id" style="text-align:right;"/>
+                    <input type="text" class="form-control input-rounded" name="partner_id" id="partner_id"
+                           value="{{ agent_id|default_if_none:'' }}" style="text-align:right;"/>
                 </div>
             </div>
 
@@ -58,14 +61,11 @@
                 <label class="col-sm-2 control-label">Currency</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_currency" name="currency_id">
-                        <option value="" >All</option>
-                        {% for currency in choices.currencies %}
-                        {% if currency.0|slugify == body.currency|slugify %}
-                                <option value="{{ currency.0 }}" selected>{{ currency.0 }}
-                            </option>
-                            {% else %}
-                                <option value="{{ currency.0 }}">{{ currency.0 }}</option>
-                            {% endif %}
+                        <option value="">All</option>
+                        {% for choice_currency in choices.currencies %}
+                            <option value="{{ choice_currency.0 }}"
+                                    {% if choice_currency.0 == currency %}selected="selected"{% endif %}>
+                                {{ choice_currency.0 }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -75,9 +75,9 @@
                 <label class="col-sm-2 control-label">Reconcile status</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
-                        <option value="" >All</option>
-                        <option value="reconciled">Reconciled</option>
-                        <option value="unreconciled">Unreconciled</option>
+                        <option value=-1 {% if status_id == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=4 {% if status_id == 4 %}selected="selected"{% endif %}>Reconciled</option>
+                        <option value=5 {% if status_id == 5 %}selected="selected"{% endif %}>Unreconciled</option>
                     </select>
                 </div>
             </div>
@@ -121,27 +121,69 @@
                 </tr>
                 </thead>
                 <tbody id="table_body">
-                    {% for file in file_list %}
-                        <tr>
-                            <td class="col-sm-2">{{ file.id }}</td>
-                            <td class="col-sm-2">{{ file.file_name }}</td>
-                            <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
-                            <td class="col-sm-2">{{ file.service_name }}</td>
-                            <td class="col-sm-2">{{ file.agent_id }}</td>
-                            <td class="col-sm-2">{{ file.currency }}</td>
-                            <td class="col-sm-2">{{ file.status.name }}</td>
-                            <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
-                            <td class="col-sm-3">
-                                <div class="btn-group">
-                                    <!--<button id="btn_detail" class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"-->
-                                            <!--onclick="location.href=''"><u>Result</u></button>-->
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                {% for file in file_list %}
+                    <tr>
+                        <td class="col-sm-2">{{ file.id }}</td>
+                        <td class="col-sm-2">{{ file.file_name }}</td>
+                        <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                        <td class="col-sm-2">{{ file.service_name }}</td>
+                        <td class="col-sm-2">{{ file.agent_id }}</td>
+                        <td class="col-sm-2">{{ file.currency }}</td>
+                        <td class="col-sm-2">{{ file.status.name }}</td>
+                        <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
+                        <td class="col-sm-3">
+                            <div class="btn-group">
+                                <button id="btn_detail"
+                                        class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                        onclick="location.href=''"><u>Result</u></button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+    ddl_service_group_change = function () {
+        console.log("{% url 'reconcile:reconcile_partner_service' %}")
+        serv_gr_id = $("#ddl_service_group").val()
+        console.log(serv_gr_id)
+        $.ajax({
+            type: "GET",
+            url: "{% url 'reconcile:reconcile_partner_service' %}",
+            data: {'service_group_id': serv_gr_id},
+            success: function (response) {
+                console.log(response.toString())
+                var options = {};
+                for (var i = 0; i < response[0].length; i++) {
+                    options[response[0][i]['service_id']] = response[0][i]['service_name']
+                }
+                console.log(options)
+                add_option('#ddl_service', options)
+            },
+            error: function (xhr) {
+                console.log("Error")
+            }
+        });
+    }
+
+    add_option = function (ddlId, dict) {
+        var _select = $(ddlId);
+        _select.empty()
+        _select.append(
+            $('<option></option>').val(-1).html('All')
+        );
+
+        $.each(dict, function (val, text) {
+            _option = $('<option></option>').val(val).html(text)
+            _select.append(_option);
+        });
+    }
+
+</script>
 {% endblock %}
