@@ -72,16 +72,20 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start creating agent ==========')
         ### Get data from dropdown list and user input ####
+        currency = request.POST.get('currency')
         agent_types_list = self._get_agent_types_list()
         currencies = self._get_currencies_dropdown()
         primary_Identify_id = request.POST.get('primary_Identify_id')
         primary_Identify_type = request.POST.get('primary_Identify_type')
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
-
+        date_of_birth = request.POST.get('date_of_birth')
+        if date_of_birth != '':
+            date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
+            date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
         primary_issue_Date = request.POST.get('primary_issue_date')
-        # if primary_issue_Date != '':
-        #     primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
-        #     primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
+        if primary_issue_Date != '':
+            primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
+            primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
 
 
         primary_expire_Date = request.POST.get('primary_expire_date')
@@ -129,6 +133,8 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'secondary_mobile_number' : request.POST.get('secondary_mobile_number'),
             'tertiary_mobile_number' : request.POST.get('tertiary_mobile_number'),
             'email' : request.POST.get('email'),
+            'date_of_birth': request.POST.get('date_of_birth'),
+            'currency': request.POST.get('currency'),
             'unique_reference': request.POST.get('unique_reference')
         }
         identity = {
@@ -139,18 +145,17 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
 
         ######## Fail case create agent profile ###############
         agent_profile_reponse, success = self._create_agent_profile(request)
-
+        context = {
+            'agent_types_list': agent_types_list,
+            'currencies': currencies,
+            'profile': profile,
+            'identity': identity,
+            'msg': agent_profile_reponse
+        }
         agent_id = ''
         if success:
             agent_id = agent_profile_reponse['id']
         else:
-            context = {
-                'agent_types_list': agent_types_list,
-                'currencies': currencies,
-                'profile': profile,
-                'identity': identity,
-                'msg': agent_profile_reponse
-            }
             self.logger.info('========== Finished creating agent ==========')
             return render(request, self.template_name, context)
 
@@ -162,13 +167,6 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             self.logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_detail', agent_id=agent_id)
         else:
-            context = {
-                'agent_types_list': agent_types_list,
-                'currencies': currencies,
-                'profile': profile,
-                'identity': identity,
-                'msg': agent_indentity
-            }
             self.logger.info('========== Finished creating agent ==========')
             return render(request, self.template_name, context)
 
