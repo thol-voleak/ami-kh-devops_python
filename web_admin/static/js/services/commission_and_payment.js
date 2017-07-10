@@ -12,6 +12,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         }
 
         oTable.fnDraw();
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     function editRow(oTable, nRow) {
@@ -199,6 +202,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
+
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     function saveRow(oTable, nRow) {
@@ -251,6 +258,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         oTable.fnDraw();
 
         onBindingButtonsDeleteEvent();
+
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     // Commission and Payment Table
@@ -300,6 +311,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         console.log('Updated Setting Payment & Fee Structure got error!');
                         addErrorMessage(response.msg);
                     }
+
+                    $("body").find("th").each(function () {
+                    $(this).removeAttr( "style" );
+            });
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
@@ -357,6 +372,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         addErrorMessage(response.msg);
                     }
 
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
+
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
@@ -412,6 +431,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         console.log('Error adding row data');
                         addErrorMessage(response.msg);
                     }
+
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
@@ -476,6 +499,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         console.log('Error adding row data');
                         addErrorMessage(response.msg);
                     }
+
+                    $("body").find("th").each(function () {
+                         $(this).removeAttr( "style" );
+                    });
                 },
                 error: function (err) {
                     var json = JSON.stringify(err);
@@ -494,6 +521,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
             restoreRow(oTable, nEditing);
             nEditing = nRow;
+
+            $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
         });
     }
 
@@ -534,6 +565,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 editRow(oTable, nRow);
                 nEditing = nRow;
             }
+
+            $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
 
             return false;
         });
