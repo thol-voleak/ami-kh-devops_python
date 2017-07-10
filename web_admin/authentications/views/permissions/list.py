@@ -19,10 +19,11 @@ class PermissionList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PermissionList, self).get_context_data(**kwargs)
-        is_success, status_code, data = RestFulClient.get(request=self.request,
-                                                          url=api_settings.PERMISSION_LIST,
-                                                          headers=self._get_headers(),
-                                                          logger=logger)
+        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
+                                                                           url=api_settings.PERMISSION_LIST,
+                                                                           headers=self._get_headers(),
+                                                                           logger=logger)
+        self.logger.info(data)
         if is_success:
             self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
             context['permissions'] = data

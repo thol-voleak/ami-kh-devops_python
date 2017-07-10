@@ -31,7 +31,6 @@
                         <th id="name">Name</th>
                         <th id="is_page_level">Page Level</th>
                         <th id="description">Description</th>
-                        <th id="associated_role">Associated Role</th>
                         <th id="created_date">Created Date</th>
                         <th id="modified_date">Modified Date</th>
                         <th class="col-sm-2" id="action">Action</th>
@@ -39,13 +38,11 @@
                     </thead>
                     <tbody>
                     {% for permission in permissions|dictsort:"id" %}
-                    {% if permission.is_deleted == False %}
                         <tr>
                             <td>{{ permission.id|default_if_none:'' }}</td>
                             <td>{{ permission.name|default_if_none:'' }}</td>
                             <td>{{ permission.is_page_level|default_if_none:'' }}</td>
                             <td>{{ permission.description|default_if_none:'' }}</td>
-                            <td></td>
                             <td>{{ permission.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ permission.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
@@ -66,7 +63,6 @@
 
                             </td>
                         </tr>
-                    {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
