@@ -72,7 +72,7 @@ SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/v1/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups'
 DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{}'
-GET_SERVICE_URL  = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
+GET_SERVICE_URL  = 'api-gateway/payment/v1/service-groups/{serviceGroupId}/services'
 GET_ALL_SERVICE_URL  = 'api-gateway/payment/v1/services'
 
 # Service

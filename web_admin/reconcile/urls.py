@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'^sof/report/$', login_required(SofReport.as_view(),
                                                 login_url='authentications:login'), name="reconcile_sof_report"),
     url(r'^service/list/$', login_required(ServiceList.as_view(),
-                                         login_url='authentications:login'), name="reconcile_partner_service"),
+                                         login_url='authentications:login'), name="reconcile_service_list"),
 ]
