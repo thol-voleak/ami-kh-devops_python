@@ -4,6 +4,7 @@ from django.conf.urls import url
 from .views.sof_report import SofReport
 from .views.partner_file_list import PartnerFileList
 from .views.sof_file_list import SofFileList
+from .views.service_list import ServiceList
 
 app_name = 'reconcile'
 
@@ -16,4 +17,6 @@ urlpatterns = [
                                                 login_url='authentications:login'), name="reconcile_sof_file_list"),
     url(r'^sof/report/$', login_required(SofReport.as_view(),
                                                 login_url='authentications:login'), name="reconcile_sof_report"),
+    url(r'^service/list/$', login_required(ServiceList.as_view(),
+                                         login_url='authentications:login'), name="reconcile_partner_service"),
 ]
