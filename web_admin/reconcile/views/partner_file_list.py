@@ -46,6 +46,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching partner file list ==========')
         choices, success = self._get_service_group_and_currency_choices()
 
+        opening_page_index = request.POST.get('current_page_index')
         is_on_us = request.POST.get('on_off_us_id')
         service_group = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
@@ -56,6 +57,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
 
         params = {}
+        params['opening_page_index'] = opening_page_index
 
         is_on_us_id = int(is_on_us)
         service_group_id = int(service_group)
@@ -88,7 +90,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data = self._search_file_list(params)
+        data, page = self._search_file_list(params)
 
         context = {'is_on_us' : is_on_us_id,
                    'service_group_id' : service_group_id,
@@ -100,7 +102,8 @@ class PartnerFileList(TemplateView, RESTfulMethods):
                    'choices' : choices,
                    'file_list' : data,
                    'selected_service':service_name,
-                   }
+                   'paginator': page,
+                   'page_range': self._calculate_page_range(page)}
 
         if get_service_status == True:
             context['service_list'] = service_list
@@ -109,16 +112,18 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _search_file_list(self, params):
-        self.logger.info('========== Start Searching Filed List ==========')
+        self.logger.info('========== Start Searching Partner File List ==========')
         api_path = api_settings.SEARCH_RECONCILE_PARTNER_FILE_LIST
-        data, success = self._post_method(
+        response_json, success = self._post_method(
             api_path=api_path,
             func_description="Search Partner File List",
             logger=logger,
-            params=params
+            params=params,
+            only_return_data=False
         )
-        self.logger.info('========== Finish Searching Filed List ==========')
-        return data
+        self.logger.info("data={}".format(response_json.get('data')))
+        self.logger.info('========== Finish Searching Partner File List ==========')
+        return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')
@@ -169,6 +174,30 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         service_list = self._get_method(url, "Get services list", logger, True)
         self.logger.info('========== Finish Getting Services List ==========')
         return service_list
+
+    def _calculate_page_range(self, pageInfo):
+        totalPages = pageInfo.get('total_pages')
+        currentPage = pageInfo.get('current_page')
+        pageRangeStart = 1
+        pageRangeStop = totalPages + 1
+
+        if totalPages > 6:
+            if currentPage > 1:
+                if currentPage == 3:
+                    pageRangeStart = 1
+                elif currentPage < totalPages:
+                    pageRangeStart = currentPage - 1
+                else:
+                    pageRangeStart = currentPage - 2
+            if currentPage < totalPages:
+                if currentPage == totalPages - 2:
+                    pageRangeStop = totalPages + 1
+                elif currentPage > 1:
+                    pageRangeStop = currentPage + 2
+                else:
+                    pageRangeStop = currentPage + 3
+        pageRange = range(pageRangeStart, pageRangeStop)
+        return pageRange
 
 
 

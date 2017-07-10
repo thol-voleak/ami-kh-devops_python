@@ -80,6 +80,7 @@ class SofFileList(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _search_file_list(self, params):
+        self.logger.info('========== Start Searching SOF File List ==========')
         api_path = api_settings.SEARCH_RECONCILE_SOF_FILE_LIST
 
         response_json, success = self._post_method(
@@ -90,6 +91,7 @@ class SofFileList(TemplateView, RESTfulMethods):
             only_return_data=False
         )
         self.logger.info("data={}".format(response_json.get('data')))
+        self.logger.info('========== Finish Searching SOF File List ==========')
         return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
