@@ -30,6 +30,9 @@ class ServiceDeleteForm(TemplateView, RESTfulMethods):
         data, success = self._get_method(url, "service detail", logger)
 
         if success:
+            service_group_id = data['service_group_id']
+            service_group_name = self._get_service_group_name(service_group_id)
+            data['service_group_name'] = service_group_name
             context = {'service_info': data}
             self.logger.info('========== Finished getting service delete detail ==========')
             return context
@@ -38,6 +41,14 @@ class ServiceDeleteForm(TemplateView, RESTfulMethods):
             context = {'service_info': data}
             self.logger.info('========== Finished getting service delete detail ==========')
             return context
+    
+    def _get_service_group_name(self, service_group_id):
+        url = api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        data, success = self._get_method(url, "service group detail", logger)
+        if success:
+            return data['service_group_name']
+        else:
+            return None
 
 
     def post(self, request, *args, **kwargs):
