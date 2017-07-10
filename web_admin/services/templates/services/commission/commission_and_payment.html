@@ -97,14 +97,14 @@
                            id="tbl_setting_payment_fee_structure">
                         <thead>
                         <tr>
-                            <th id="lbl_db">Debit/Credit</th>
-                            <th id="lbl_actor">Actor</th>
-                            <th id="lbl_specific_id">Specific ID</th>
-                            <th id="lbl_source_of_fund">Source of Fund</th>
-                            <th id="lbl_specific_source">Specific Source of Fund</th>
-                            <th id="lbl_from_amount">From Amount</th>
-                            <th id="lbl_rate">Rate %</th>
-                            <th id="lbl_actions">Actions</th>
+                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                            <th class="col-sm-2" id="lbl_actor">Actor</th>
+                            <th class="col-sm-2" id="lbl_specific_id">Specific ID</th>
+                            <th class="col-sm-1" id="lbl_source_of_fund">Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
+                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                            <th class="col-sm-1" id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -113,13 +113,13 @@
                                 data-url="{% url "services:payment_and_fee_stucture_update" d.balance_distribution_id %}"
                                 data-id="{{ d.balance_distribution_id }}">
                                 <td >{{ d.action_type|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
+                                <td>{{ d.actor_type|default_if_none:'' }}</td>
                                 <td >{{ d.specific_actor_id|default_if_none:'' }}</td>
                                 <td >{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
                                 <td >{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td >{{ d.amount_type|default_if_none:'' }}</td>
-                                <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
-                                <td class="col-sm-2">
+                                <td>{{ d.rate|default_if_none:'' }}</td>
+                                <td>
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
                                             id="btn_setting_payment_fee_structure_edit">Edit
@@ -226,14 +226,14 @@
                     <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
                         <thead>
                         <tr>
-                            <th id="lbl_db">Debit/Credit</th>
-                            <th id="lbl_actor">Actor</th>
-                            <th id="lbl_specific_id">Specific ID</th>
-                            <th id="lbl_source_of_fund">Source of Fund</th>
-                            <th id="lbl_specific_source">Specific Source of Fund</th>
-                            <th id="lbl_from_amount">Amount</th>
-                            <th id="lbl_rate">Rate %</th>
-                            <th id="lbl_actions">Actions</th>
+                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
+                            <th class="col-sm-2" id="lbl_actor">Actor</th>
+                            <th class="col-sm-2" id="lbl_specific_id">Specific ID</th>
+                            <th class="col-sm-1" id="lbl_source_of_fund">Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>
+                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
+                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                            <th class="col-sm-1" id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -242,13 +242,13 @@
                                 data-id="{{ d.bonus_distribution_id }}"
                                 id="bonus-distribution-{{ d.bonus_distribution_id }}">
                                 <td>{{ d.action_type|default_if_none:'' }}</td>
-                                <td class="col-sm-2">{{ d.actor_type|default_if_none:'' }}</td>
+                                <td>{{ d.actor_type|default_if_none:'' }}</td>
                                 <td>{{ d.specific_actor_id|default_if_none:'' }}</td>
                                 <td>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
                                 <td>{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td>{{ d.amount_type|default_if_none:'' }}</td>
-                                <td class="col-sm-1">{{ d.rate|default_if_none:'' }}</td>
-                                <td class="col-sm-2">
+                                <td>{{ d.rate|default_if_none:'' }}</td>
+                                <td>
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
                                             id="btn_setting_bonus_edit">Edit
@@ -770,6 +770,10 @@
 
             // 4. Bonus Table
             onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+
+            $("body").find("th").each(function () {
+                 $(this).removeAttr( "style" );
+            });
 
         });
 
