@@ -16,7 +16,19 @@ class ServiceDetailForm(TemplateView, RESTfulMethods):
 
         url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         data, success = self._get_method(url, "service detail", logger)
+        if success:
+            service_group_id = data['service_group_id']
+            service_group_name = self._get_service_group_name(service_group_id)
+            data['service_group_name'] = service_group_name
+
         context = {'service_info': data,
                    'add_service_msg': self.request.session.pop('add_service_msg', None),
                    'update_service_msg': self.request.session.pop('update_service_msg', None)}
         return context
+    def _get_service_group_name(self, service_group_id):
+        url = api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        data, success = self._get_method(url, "service group detail", logger)
+        if success:
+            return data['service_group_name']
+        else:
+            return None
