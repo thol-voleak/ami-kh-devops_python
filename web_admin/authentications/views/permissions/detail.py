@@ -23,13 +23,17 @@ class PermissionDetailView(TemplateView):
         self.logger.info('========== Start get permission entity ==========')
         context = super(PermissionDetailView, self).get_context_data(**kwargs)
         permission_id = context['permission_id']
-        is_success, status_code, data = RestFulClient.get(request=self.request,
-                                                          url=api_settings.PERMISSION_DETAIL_PATH.format(
-                                                              permission_id=permission_id),
-                                                          headers=self._get_headers(),
-                                                          logger=logger)
+        self.logger.info("Searching permission with [{}] id".format(permission_id))
+        params = {
+            'id': permission_id
+        }
+        self.logger.info("Searching permission with [{}] id".format(permission_id))
+        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
+                                                                           url=api_settings.PERMISSION_LIST,
+                                                                           headers=self._get_headers(),
+                                                                           logger=logger, params=params)
         if is_success:
-            context['permission'] = data
+            context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')
             return context
 
