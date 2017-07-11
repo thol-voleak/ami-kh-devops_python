@@ -8,6 +8,7 @@ from authentications.views.roles.create import RoleCreate
 from authentications.views.roles.delete import RoleDeleteView
 from authentications.views.roles.detail import RoleDetailView
 from authentications.views.roles.edit import RoleEditView
+from authentications.views.roles.manage_permission import ManagePermissionView
 
 from authentications.views.auth import login_user, logout_user
 
@@ -31,4 +32,6 @@ urlpatterns = [
     url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/delete', RoleDeleteView.as_view(), name='delete_role'),
     url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/details', RoleDetailView.as_view(),
         name='role_detail'),
+    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/manage-permission', ManagePermissionView.as_view(),
+        name='role_manage_permission'),
 ]

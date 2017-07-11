@@ -45,25 +45,32 @@
                             <td>{{ role.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 <a type="button"
-                                       class="btn btn-outline btn-xs btn-info"
+                                       class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
                                        id="role_btn_detail_{{ role.id }}"
                                        href="{% url 'authentications:role_detail' role.id %}">
                                         <span class="small">Detail</span>
                                     </a>
                                 <a type="button"
-                                       class="btn btn-outline btn-xs btn-info"
+                                       class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
                                        id="role_btn_edit_{{ role.id }}"
                                        href="{% url 'authentications:edit_role' role.id %}">
                                         <span class="small">Edit</span>
                                     </a>
                                 <a type="button"
-                                       class="btn btn-outline btn-xs btn-danger"
+                                       class="btn btn-outline btn-xs btn-danger mb5"
                                        role="button"
                                        id="role_btn_delete_{{ role.id }}"
                                        href="{% url 'authentications:delete_role' role.id %}">
                                         <span class="small">Delete</span>
+                                    </a>
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-success mb5"
+                                       role="button"
+                                       id="role_btn_manage_permission_{{ role.id }}"
+                                       href="{% url 'authentications:role_manage_permission' role.id %}">
+                                        <span class="small">Manage Permission</span>
                                     </a>
 
                             </td>
