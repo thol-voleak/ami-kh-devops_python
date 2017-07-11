@@ -46,3 +46,28 @@ def setup_logger(request, logger):
     else:
         client_ip = request.META.get('REMOTE_ADDR')
     return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip})
+
+
+def calculate_page_range_from_page_info(pageInfo):
+    totalPages = pageInfo.get('total_pages')
+    currentPage = pageInfo.get('current_page')
+    pageRangeStart = 1
+    pageRangeStop = totalPages + 1
+
+    if totalPages > 6:
+        if currentPage > 1:
+            if currentPage == 3:
+                pageRangeStart = 1
+            elif currentPage < totalPages:
+                pageRangeStart = currentPage - 1
+            else:
+                pageRangeStart = currentPage - 2
+        if currentPage < totalPages:
+            if currentPage == totalPages - 2:
+                pageRangeStop = totalPages + 1
+            elif currentPage > 1:
+                pageRangeStop = currentPage + 2
+            else:
+                pageRangeStop = currentPage + 3
+    pageRange = range(pageRangeStart, pageRangeStop)
+    return pageRange

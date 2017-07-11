@@ -49,21 +49,21 @@
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info"
                                        role="button"
-                                       id="btn_detail_{{ permission.id }}"
+                                       id="btn_detail"
                                        href="{% url 'authentications:permission_detail' permission.id %}">
                                         <span class="small">Detail</span>
                                     </a>
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info"
                                        role="button"
-                                       id="btn_edit_{{ permission.id }}"
+                                       id="btn_edit"
                                        href="{% url 'authentications:edit_permission' permission.id %}">
                                         <span class="small">Edit</span>
                                     </a>
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-danger"
                                        role="button"
-                                       id="btn_delete_{{ permission.id }}"
+                                       id="btn_delete"
                                        href="{% url 'authentications:delete_permission' permission.id %}">
                                         <span class="small">Delete</span>
                                     </a>

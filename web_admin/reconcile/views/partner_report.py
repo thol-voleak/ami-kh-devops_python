@@ -7,6 +7,7 @@ from web_admin import api_settings
 from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
         self.logger.info('========== Start search partner report ==========')
         choices, success = self._get_service_group_and_currency_choices()
 
+        opening_page_index = request.POST.get('current_page_index')
         on_off_us_id = int(request.POST.get('on_off_us_id'))
         service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_id')
@@ -69,6 +71,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
         service_group_id = int(service_group_id)
 
         params = {}
+        params['opening_page_index'] = opening_page_index
 
         if on_off_us_id >= 0:
             params['is_on_us'] = (on_off_us_id == 1)
@@ -101,7 +104,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data = self._search_partner_report(params)
+        data, page = self._search_partner_report(params)
         service_list, get_service_status = self._get_service(service_group_id)
 
         self.logger.info('Service group and currencies: {}'.format(choices))
@@ -118,7 +121,9 @@ class PartnerReport(TemplateView, RESTfulMethods):
                     'to_created_timestamp': to_created_timestamp,
                     'partner_report': data,
                     'service_list': service_list,
-                    'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL}
+                    'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL,
+                    'paginator': page,
+                    'page_range': calculate_page_range_from_page_info(page)}
 
         self.logger.info("========== Finish search partner report ==========")
         return render(request, self.template_name, context)
@@ -127,15 +132,16 @@ class PartnerReport(TemplateView, RESTfulMethods):
         self.logger.info('========== Start Searching Partner Report ==========')
         api_path = api_settings.SEARCH_RECONCILE_PARTNER_REPORT
 
-        data, success = self._post_method(
+        response_json, success = self._post_method(
             api_path=api_path,
             func_description="Search partner Reconcile Report",
             logger=logger,
-            params=params
+            params=params,
+            only_return_data=False
         )
-        self.logger.info("data={}".format(data))
+        self.logger.info("data={}".format(response_json.get('data')))
         self.logger.info('========== Finish Searching Partner Report ==========')
-        return data
+        return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')

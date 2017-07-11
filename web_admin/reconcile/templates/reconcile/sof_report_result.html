@@ -99,7 +99,9 @@
                 </div>
             </div>
         </form>
+        {% if paginator %}
         <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
+        {% endif %}
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_sof_report">
                 <thead>
@@ -134,31 +136,7 @@
                 </tbody>
             </table>
         </div>
-        {% if paginator.total_pages > 1 %}
-            <ul class="list-inline">
-                <li><span>Page </span></li>
-                {% if page_range.start > 1 %}
-                    <li><a class="page_idx">1</a></li>
-                    <li><span>...</span></li>
-                {% endif %}
-
-                {% for i in page_range %}
-                <li>{% if i == paginator.current_page %}<b><u>{% endif %}<a class="page_idx">{{i}}</a>{% if i == paginator.current_page %}</u></b>{% endif %}</li>
-                {% endfor %}
-
-                {% if page_range.stop < paginator.total_pages|add:1 %}
-                    <li><span>...</span></li>
-                    <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
-                {% endif %}
-            </ul>
-        {% endif %}
+        {% include "pagination.html" %}
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script>
-    $(".page_idx").click(function() {
-        $("#current_page_index").val($(this).text());
-        $("#btn_search").click();
-    });
-</script>
 {% endblock %}
