@@ -34,7 +34,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         choices, success = self._get_service_group_and_currency_choices()
         context ={'from_created_timestamp' : default_start_date,
                   'to_created_timestamp' : default_end_date,
-                  'service_get_url': api_settings.GET_SERVICE_URL,
+                  'service_group_id' : -1,
                   'choices' : choices}
 
         if get_service_status == True:
@@ -68,7 +68,10 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         service_list, get_service_status  = self._get_service(service_group)
 
         if service_name != '':
-            params['service_name'] = service_name
+            if service_name == None:
+                params['service_name'] = ''
+            else:
+                params['service_name'] = service_name
 
         if agent_id != '':
             params['agent_id'] = int(agent_id)
