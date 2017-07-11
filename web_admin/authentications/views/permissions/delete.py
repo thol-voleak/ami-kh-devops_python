@@ -49,7 +49,7 @@ class PermissionDeleteView(TemplateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Deleted permission entity successfully'
+                'Deleted data successfully'
             )
             self.logger.info('========== End delete permission entity ==========')
             return redirect('authentications:permissions_list')
