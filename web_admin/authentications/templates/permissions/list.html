@@ -60,6 +60,13 @@
                                        href="{% url 'authentications:edit_permission' permission.id %}">
                                         <span class="small">Edit</span>
                                     </a>
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-danger"
+                                       role="button"
+                                       id="permission_btn_delete_{{ permission.id }}"
+                                       href="{% url 'authentications:delete_permission' permission.id %}">
+                                        <span class="small">Delete</span>
+                                    </a>
 
                             </td>
                         </tr>
