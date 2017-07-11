@@ -23,13 +23,16 @@ class RoleEditView(TemplateView):
         self.logger.info('========== Start get role entity ==========')
         context = super(RoleEditView, self).get_context_data(**kwargs)
         role_id = context['role_id']
-        is_success, status_code, data = RestFulClient.get(request=self.request,
-                                                          url=api_settings.ROLE_DETAIL_PATH.format(
-                                                              role_id=role_id),
-                                                          headers=self._get_headers(),
-                                                          logger=logger)
+        self.logger.info("Searching role with [{}] role id".format(role_id))
+        params = {
+            'id': role_id
+        }
+        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
+                                                                           url=api_settings.ROLE_LIST,
+                                                                           headers=self._get_headers(),
+                                                                           logger=logger, params=params)
         if is_success:
-            context['role'] = data
+            context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')
             return context
 
