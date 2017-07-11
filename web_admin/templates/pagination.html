@@ -2,17 +2,21 @@
 <ul class="list-inline">
     <li><span>Page </span></li>
     {% if page_range.start > 1 %}
-        <li><a class="page_idx">1</a></li>
-        <li><span>...</span></li>
+    <li><a class="page_idx">1</a></li>
+    <li><span>...</span></li>
     {% endif %}
 
     {% for i in page_range %}
-    <li>{% if i == paginator.current_page %}<b><u>{% endif %}<a class="page_idx">{{i}}</a>{% if i == paginator.current_page %}</u></b>{% endif %}</li>
+        {% if i == paginator.current_page %}
+            <li><b><u><a>{{i}}</a></u></b></li>
+        {% else %}
+            <li><a class="page_idx">{{i}}</a></li>
+        {% endif %}
     {% endfor %}
 
     {% if page_range.stop < paginator.total_pages|add:1 %}
-        <li><span>...</span></li>
-        <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
+    <li><span>...</span></li>
+    <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
     {% endif %}
 </ul>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
