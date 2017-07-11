@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Partner Report</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_partner_report' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On us/Off us</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_on_off_us" name="on_off_us_id">
+                        <option value=-1 {% if is_on_us == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if is_on_us == 1 %}selected="selected"{% endif %}>On</option>
+                        <option value=0 {% if is_on_us == 0 %}selected="selected"{% endif %}>Off</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Service group</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_service_group" name="service_group_id" onchange="ddl_service_group_change()">
+                        <option value=-1 >All</option>
+                         {% for group in choices.service_groups %}
+                            <option value={{ group.service_group_id }}
+                                    {% if service_group_id == group.service_group_id %}selected="selected"{% endif %}>{{ group.service_group_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Service</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_service" name="service_id">
+                        {% if service_group_id == -1 %}
+                            <option value=''>All</option>
+                        {% endif %}
+                        {% for service_item in service_list %}
+                            <option value='{{ service_item.service_name }}'
+                                    {% if service_item.service_name == selected_service %} selected="selected"{% endif %}>{{ service_item.service_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Partner ID (Agent ID)</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="partner_id" id="partner_id"
+                               value="{{ agent_id|default_if_none:'' }}" style="text-align:right;"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id">
+                        <option value="" >All</option>
+                        {% for choice_currency in choices.currencies %}
+                            <option value="{{ choice_currency.0 }}" {% if choice_currency.0 == currency_id %}selected="selected"{% endif %}>{{ choice_currency.0 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Reconcile status</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
+                        <option value="-1">All</option>
+                        <option value="4" {% if reconcile_status_id == 4 %} selected="selected"{% endif %}>Reconciled</option>
+                        <option value="6" {% if reconcile_status_id == 6 %} selected="selected"{% endif %}>Unreconciled - Different Amount</option>
+                        <option value="7" {% if reconcile_status_id == 7 %} selected="selected"{% endif %}>Unreconciled - Type not match</option>
+                        <option value="8" {% if reconcile_status_id == 8 %} selected="selected"{% endif %}>Unreconciled - Only in partner</option>
+                        <option value="9" {% if reconcile_status_id == 9 %} selected="selected"{% endif %}>Unreconciled - Only in Equator</option>
+                    </select>
+                </div>
+            </div>
+
+             <div class="form-group">
+                <label class="col-sm-2 control-label">Payment type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payment_type" name="reconcile_payment_type_id">
+                        <option value="" >All</option>
+                        <option value="Payment" {% if reconcile_payment_type_id == 'Payment' %} selected="selected"{% endif %}>Payment</option>
+                        <option value="Cancel" {% if reconcile_payment_type_id == 'Cancel' %} selected="selected"{% endif %}>Cancel</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ from_created_timestamp|default_if_none:'' }}"
+                           id="dtp_from">
+                </div>
+                <label class="col-sm-1 control-label">End date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ to_created_timestamp|default_if_none:'' }}"
+                           id="dtp_to">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="pull-right col-sm-1">
+                    <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ sof_report|length }})</b></label>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_sof_report">
+                <thead>
+                <tr>
+                    <th id="id_clm">Order ID/Detail Txn ID</th>
+                    <th id="ext_transaction_id_clm">External Transaction ID</th>
+                    <th id="transaction_id_clm"> Transaction ID for Reconcile</th>
+                    <th id="is_us_on_clm">ON US/OFF US</th>
+                    <th id="payment_type_clm">Payment type</th>
+                    <th id="payment_type_partner_clm">Payment type from partner</th>
+                    <th id="reconcile_date_clm">Reconciliation Date&time</th>
+                    <th id="status_clm">Status</th>
+                    <th id="service_name_clm">Service Name</th>
+                    <th id="equator_amount_clm">Equator Amount</th>
+                    <th id="partner_amount_clmb">Partner Amount</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                    {% for partner in partner_report %}
+                        <tr>
+                            <td class="col-sm-2">{{ partner.order_id }}</td>
+                            <td class="col-sm-2">{{ partner.ext_trans_id }}</td>
+                            <td class="col-sm-2">{{ partner.partner_trans_id }}</td>
+                            <td class="col-sm-2">{% if partner.partner_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{{ partner.payment_type }}</td>
+                            <td class="col-sm-2">{{ partner.partner_payment_type }}</td>
+                            <td class="col-sm-2">{{ partner.last_updated_timestamp }}</td>
+                            <td class="col-sm-2">{{ partner.status.name  }}</td>
+                            <td class="col-sm-2">{{ partner.partner_file.service_name  }}</td>
+                            <td class="col-sm-2">{{ partner.tmn_amount }}</td>
+                            <td class="col-sm-2">{{ partner.partner_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    ddl_service_group_change = function () {
+        console.log("{% url 'reconcile:reconcile_service_list' %}")
+        serv_gr_id = $("#ddl_service_group").val()
+        console.log(serv_gr_id)
+        $.ajax({
+            type: "GET",
+            url: "{% url 'reconcile:reconcile_service_list' %}",
+            data: {'service_group_id': serv_gr_id},
+            success: function (response) {
+                console.log(response.toString())
+                var options = {};
+                for (var i = 0; i < response[0].length; i++) {
+                    options[response[0][i]['service_id']] = response[0][i]['service_name']
+                }
+                add_option('#ddl_service', options)
+            },
+            error: function (xhr) {
+                console.log("Error get service")
+            }
+        });
+
+    }
+
+    add_option = function (ddlId, dict) {
+        var _select = $(ddlId);
+        _select.empty()
+        if ($("#ddl_service_group").val() == -1) {
+            _select.append(
+            $('<option></option>').val('').html('All')
+            );
+        }
+
+        $.each(dict, function (val, text) {
+            _option = $('<option></option>').val(text).html(text)
+            _select.append(_option);
+        });
+    }
+</script>
+{% endblock %}
