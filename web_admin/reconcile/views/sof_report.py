@@ -4,9 +4,9 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
-from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ class SofReport(TemplateView, RESTfulMethods):
                     'to_created_timestamp': to_created_timestamp,
                     'sof_report': data,
                     'paginator': page,
-                    'page_range': self._calculate_page_range(page)}
+                    'page_range': calculate_page_range_from_page_info(page)}
         if sof_file_id is not None:
             context.update({'sof_file_id': sof_file_id})
 
@@ -147,27 +147,3 @@ class SofReport(TemplateView, RESTfulMethods):
             result = [], False
         self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
-
-    def _calculate_page_range(self, pageInfo):
-        totalPages = pageInfo.get('total_pages')
-        currentPage = pageInfo.get('current_page')
-        pageRangeStart = 1
-        pageRangeStop = totalPages + 1
-
-        if totalPages > 6:
-            if currentPage > 1:
-                if currentPage == 3:
-                    pageRangeStart = 1
-                elif currentPage < totalPages:
-                    pageRangeStart = currentPage - 1
-                else:
-                    pageRangeStart = currentPage - 2
-            if currentPage < totalPages:
-                if currentPage == totalPages - 2:
-                    pageRangeStop = totalPages + 1
-                elif currentPage > 1:
-                    pageRangeStop = currentPage + 2
-                else:
-                    pageRangeStop = currentPage + 3
-        pageRange = range(pageRangeStart, pageRangeStop)
-        return pageRange

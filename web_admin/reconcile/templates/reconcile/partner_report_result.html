@@ -111,13 +111,16 @@
                            id="dtp_to">
                 </div>
             </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
             <div class="form-group">
                 <div class="pull-right col-sm-1">
                     <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
                 </div>
             </div>
         </form>
-        <label class="col-sm-12" style="text-align:right"><b>(Total {{ sof_report|length }})</b></label>
+        {% if paginator %}
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
+        {% endif %}
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_sof_report">
                 <thead>
@@ -154,6 +157,7 @@
                 </tbody>
             </table>
         </div>
+        {% include "pagination.html" %}
     </div>
 </div>
 

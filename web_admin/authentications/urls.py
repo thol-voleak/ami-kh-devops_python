@@ -8,7 +8,7 @@ from authentications.views.roles.create import RoleCreate
 from authentications.views.roles.delete import RoleDeleteView
 from authentications.views.roles.detail import RoleDetailView
 from authentications.views.roles.edit import RoleEditView
-
+from django.contrib.auth.decorators import login_required
 from authentications.views.auth import login_user, logout_user
 
 from django.conf.urls import url
@@ -18,7 +18,7 @@ app_name = 'authentications'
 urlpatterns = [
     url(r'^logout/$', logout_user, name='logout'),
     url(r'^login/$', login_user, name='login'),
-    url(r'^permissions/list$', PermissionList.as_view(), name='permissions_list'),
+    url(r'^permissions/list$', login_required(PermissionList.as_view(), login_url='authentications:login'), name="permissions_list"),
     url(r'^permissions/create$', PermissionCreate.as_view(), name='create_permission'),
     url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/edit$', PermissionEditView.as_view(), name='edit_permission'),
     url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/delete', PermissionDeleteView.as_view(), name='delete_permission'),
