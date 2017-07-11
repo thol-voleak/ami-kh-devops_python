@@ -1,7 +1,7 @@
 from authentications.utils import get_auth_header
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
-
+from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 
 import logging
@@ -26,6 +26,12 @@ class PermissionList(TemplateView):
         if is_success:
             self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
             context['permissions'] = data
+        else:
+            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                        status_code == 'invalid_access_token'):
+                logger.info("{} for {} username".format(status_message, self.request.user))
+                raise InvalidAccessToken(status_message)
+
         return context
 
     def _get_headers(self):

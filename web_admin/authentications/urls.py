@@ -10,6 +10,7 @@ from authentications.views.roles.detail import RoleDetailView
 from authentications.views.roles.edit import RoleEditView
 from authentications.views.roles.manage_permission import ManagePermissionView
 
+from django.contrib.auth.decorators import login_required
 from authentications.views.auth import login_user, logout_user
 
 from django.conf.urls import url
@@ -19,19 +20,27 @@ app_name = 'authentications'
 urlpatterns = [
     url(r'^logout/$', logout_user, name='logout'),
     url(r'^login/$', login_user, name='login'),
-    url(r'^permissions/list$', PermissionList.as_view(), name='permissions_list'),
-    url(r'^permissions/create$', PermissionCreate.as_view(), name='create_permission'),
-    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/edit$', PermissionEditView.as_view(), name='edit_permission'),
-    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/delete', PermissionDeleteView.as_view(), name='delete_permission'),
-    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/details', PermissionDetailView.as_view(),
-        name='permission_detail'),
+    url(r'^permissions/list$', login_required(PermissionList.as_view(), login_url='authentications:login'),
+        name="permissions_list"),
+    url(r'^permissions/create$', login_required(PermissionCreate.as_view(), login_url='authentications:login'),
+        name="create_permission"),
+    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/edit$',
+        login_required(PermissionEditView.as_view(), login_url='authentications:login'), name="edit_permission"),
+    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/delete$',
+        login_required(PermissionDeleteView.as_view(), login_url='authentications:login'), name="delete_permission"),
+    url(r'^permissions/(?P<permission_id>[0-9A-Za-z]+)/details$',
+        login_required(PermissionDetailView.as_view(), login_url='authentications:login'), name="permission_detail"),
 
-    url(r'^roles/list$', RoleList.as_view(), name='role_list'),
-    url(r'^roles/create$', RoleCreate.as_view(), name='create_role'),
-    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/edit$', RoleEditView.as_view(), name='edit_role'),
-    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/delete', RoleDeleteView.as_view(), name='delete_role'),
-    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/details', RoleDetailView.as_view(),
-        name='role_detail'),
-    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/manage-permission', ManagePermissionView.as_view(),
+    url(r'^roles/list$', login_required(RoleList.as_view(), login_url='authentications:login'), name="role_list"),
+    url(r'^roles/create$', login_required(RoleCreate.as_view(), login_url='authentications:login'), name="create_role"),
+    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/edit$',
+        login_required(RoleEditView.as_view(), login_url='authentications:login'), name="edit_role"),
+    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/delete$',
+        login_required(RoleDeleteView.as_view(), login_url='authentications:login'), name="delete_role"),
+    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/details$',
+        login_required(RoleDetailView.as_view(), login_url='authentications:login'), name="role_detail"),
+
+    url(r'^roles/(?P<role_id>[0-9A-Za-z]+)/manage-permission',
+        login_required(ManagePermissionView.as_view(), login_url='authentications:login'),
         name='role_manage_permission'),
 ]

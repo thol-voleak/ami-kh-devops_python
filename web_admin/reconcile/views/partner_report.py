@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
+from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
 from web_admin.utils import calculate_page_range_from_page_info
@@ -16,38 +17,41 @@ IS_SUCCESS = {
 }
 
 
-class SofReport(TemplateView, RESTfulMethods):
-    template_name = "reconcile/sof_report_result.html"
+class PartnerReport(TemplateView, RESTfulMethods):
+    template_name = "reconcile/partner_report_result.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         self.logger = setup_logger(self.request, logger)
-        return super(SofReport, self).dispatch(request, *args, **kwargs)
+        return super(PartnerReport, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        currencies, success = self._get_currency_choices()
-
         # Set first load default date
         default_end_date = datetime.today().strftime("%Y-%m-%d")
         default_start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
+        data, success = self._get_service(-1)
+
+        choices, success = self._get_service_group_and_currency_choices()
         context = {'from_created_timestamp': default_start_date,
                    'to_created_timestamp': default_end_date,
-                   'currencies': currencies}
+                   'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL,
+                   'service_group_id': -1,
+                   'choices': choices
+                  }
 
+        context['service_list'] = data
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start search sof report ==========')
-        context = super(SofReport, self).get_context_data(**kwargs)
+        self.logger.info('========== Start search partner report ==========')
+        choices, success = self._get_service_group_and_currency_choices()
 
-        sof_file_id = context.get('sofFileId')
-        if sof_file_id is not None:
-            sof_file_id = int(sof_file_id)
         opening_page_index = request.POST.get('current_page_index')
         on_off_us_id = int(request.POST.get('on_off_us_id'))
-        source_of_fund_id = request.POST.get('source_of_fund_id')
-        sof_code = request.POST.get('sof_partner_name_id')
+        service_group_id = request.POST.get('service_group_id')
+        service_name = request.POST.get('service_id')
+        agent_id = request.POST.get('partner_id')
         currency_id = request.POST.get('currency_id')
         reconcile_status_id = int(request.POST.get('reconcile_status_id'))
         reconcile_payment_type_id = request.POST.get('reconcile_payment_type_id')
@@ -55,30 +59,37 @@ class SofReport(TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
 
         self.logger.info('On us/Off us: {}'.format(on_off_us_id))
-        self.logger.info('Source of fund: {}'.format(source_of_fund_id))
-        self.logger.info('Source of fund partner name: {}'.format(sof_code))
+        self.logger.info('Service group: {}'.format(service_group_id))
+        self.logger.info('Service name: {}'.format(service_name))
+        self.logger.info('Agent id: {}'.format(agent_id))
         self.logger.info('Currency: {}'.format(currency_id))
         self.logger.info('Reconcile status: {}'.format(reconcile_status_id))
         self.logger.info('Payment type: {}'.format(reconcile_payment_type_id))
         self.logger.info('Start date: {}'.format(from_created_timestamp))
         self.logger.info('End date: {}'.format(to_created_timestamp))
 
+        service_group_id = int(service_group_id)
+
         params = {}
         params['opening_page_index'] = opening_page_index
 
-        if sof_file_id is not None:
-            params['sof_file_id'] = sof_file_id
-
         if on_off_us_id >= 0:
             params['is_on_us'] = (on_off_us_id == 1)
-        if source_of_fund_id:
-            params['source_of_fund'] = source_of_fund_id
-        if sof_code:
-            params['sof_code'] = sof_code
-        if currency_id:
+
+        if service_name is None:
+            params['service_name'] = ''
+        elif service_name != '':
+            params['service_name'] = service_name
+
+        if currency_id != '':
             params['currency'] = currency_id
+
+        if agent_id != '':
+            params['agent_id'] = int(agent_id)
+
         if reconcile_status_id >=0:
             params['status_id'] = reconcile_status_id
+
         if reconcile_payment_type_id:
             params['payment_type'] = reconcile_payment_type_id
 
@@ -93,42 +104,43 @@ class SofReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data, page = self._search_sof_report(params)
+        data, page = self._search_partner_report(params)
+        service_list, get_service_status = self._get_service(service_group_id)
 
-        currencies, success = self._get_currency_choices()
-        self.logger.info('currencies: {}'.format(currencies))
+        self.logger.info('Service group and currencies: {}'.format(choices))
 
         context =  {'is_on_us' : on_off_us_id,
-                    'source_of_fund':source_of_fund_id,
-                    'sof_code': sof_code,
+                    'service_group_id': service_group_id,
+                    'selected_service': service_name,
+                    'agent_id': agent_id,
                     'currency_id': currency_id,
-                    'currencies': currencies,
+                    'choices': choices,
                     'reconcile_status_id': reconcile_status_id,
                     'reconcile_payment_type_id': reconcile_payment_type_id,
                     'from_created_timestamp': from_created_timestamp,
                     'to_created_timestamp': to_created_timestamp,
-                    'sof_report': data,
+                    'partner_report': data,
+                    'service_list': service_list,
+                    'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL,
                     'paginator': page,
                     'page_range': calculate_page_range_from_page_info(page)}
-        if sof_file_id is not None:
-            context.update({'sof_file_id': sof_file_id})
 
-        self.logger.info("========== Finish search sof report ==========")
+        self.logger.info("========== Finish search partner report ==========")
         return render(request, self.template_name, context)
 
-    def _search_sof_report(self, params):
-        self.logger.info('========== Start Searching Sof Report ==========')
-        api_path = api_settings.SEARCH_RECONCILE_SOF_REPORT
+    def _search_partner_report(self, params):
+        self.logger.info('========== Start Searching Partner Report ==========')
+        api_path = api_settings.SEARCH_RECONCILE_PARTNER_REPORT
 
         response_json, success = self._post_method(
             api_path=api_path,
-            func_description="Search sof Reconcile Report",
+            func_description="Search partner Reconcile Report",
             logger=logger,
             params=params,
             only_return_data=False
         )
         self.logger.info("data={}".format(response_json.get('data')))
-        self.logger.info('========== Finish Searching Sof Report ==========')
+        self.logger.info('========== Finish Searching Partner Report ==========')
         return response_json.get('data'), response_json.get('page')
 
     def _get_currency_choices(self):
@@ -147,3 +159,38 @@ class SofReport(TemplateView, RESTfulMethods):
             result = [], False
         self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
+
+    def _get_service_group_choices(self):
+        self.logger.info('========== Start Getting Service Group ==========')
+        url = api_settings.SERVICE_GROUP_LIST_URL
+
+        self.logger.info('========== Finish Getting Service Group ==========')
+        return self._get_method(url, "get services group list", logger, True)
+
+    def _get_service_group_and_currency_choices(self):
+        pool = ThreadPool(processes=1)
+        async_result = pool.apply_async(self._get_currency_choices)
+        self.logger.info('========== Start Getting Service Group Choices ==========')
+        service_groups, success_service = self._get_service_group_choices()
+        self.logger.info('========== Finish Getting Service Group Choices ==========')
+        currencies, success_currency = async_result.get()
+        if success_currency and success_service:
+            return {
+                       'currencies': currencies,
+                       'service_groups': service_groups,
+                   }, True
+        return None, False
+
+    def _get_service(self, service_group_id):
+        self.logger.info('========== Start Getting Service List ==========')
+        if service_group_id == -1:
+            data, success = self._get_method(api_settings.GET_ALL_SERVICE_URL, "Get all service", logger)
+
+        else:
+            data, success = self._get_method(
+                api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL.format(service_group_id=service_group_id),
+                "Get services by service group",
+                logger)
+
+        self.logger.info('========== Finish Getting Service List ==========')
+        return data, success

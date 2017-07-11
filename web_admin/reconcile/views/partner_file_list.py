@@ -6,6 +6,7 @@ from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
 from datetime import datetime, timedelta
+from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +107,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
                    'file_list' : data,
                    'selected_service':service_name,
                    'paginator': page,
-                   'page_range': self._calculate_page_range(page)}
+                   'page_range': calculate_page_range_from_page_info(page)}
 
         if get_service_status == True:
             context['service_list'] = service_list
@@ -177,30 +178,6 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         service_list = self._get_method(url, "Get services list", logger, True)
         self.logger.info('========== Finish Getting Services List ==========')
         return service_list
-
-    def _calculate_page_range(self, pageInfo):
-        totalPages = pageInfo.get('total_pages')
-        currentPage = pageInfo.get('current_page')
-        pageRangeStart = 1
-        pageRangeStop = totalPages + 1
-
-        if totalPages > 6:
-            if currentPage > 1:
-                if currentPage == 3:
-                    pageRangeStart = 1
-                elif currentPage < totalPages:
-                    pageRangeStart = currentPage - 1
-                else:
-                    pageRangeStart = currentPage - 2
-            if currentPage < totalPages:
-                if currentPage == totalPages - 2:
-                    pageRangeStop = totalPages + 1
-                elif currentPage > 1:
-                    pageRangeStop = currentPage + 2
-                else:
-                    pageRangeStop = currentPage + 3
-        pageRange = range(pageRangeStart, pageRangeStop)
-        return pageRange
 
 
 

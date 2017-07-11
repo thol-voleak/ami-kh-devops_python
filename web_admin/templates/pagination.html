@@ -1,0 +1,34 @@
+{% if paginator.total_pages > 1 %}
+<ul class="list-inline">
+    <li><span>Page </span></li>
+    {% if page_range.start > 1 %}
+    <li><a class="page_idx">1</a></li>
+    <li><span>...</span></li>
+    {% endif %}
+
+    {% for i in page_range %}
+        {% if i == paginator.current_page %}
+            <li><b><u><a>{{i}}</a></u></b></li>
+        {% else %}
+            <li><a class="page_idx">{{i}}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_range.stop < paginator.total_pages|add:1 %}
+    <li><span>...</span></li>
+    <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
+    {% endif %}
+</ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+    $(".page_idx").click(function() {
+        $("#current_page_index").val($(this).text());
+        $("#btn_search").click();
+    });
+
+    $(".btn_detail").click(function() {
+        $("#submit-form-result").attr('action', $(this).val());
+        $("#btn_result").click();
+    });
+</script>
+{% endif %}

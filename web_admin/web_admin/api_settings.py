@@ -46,11 +46,12 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
-GET_SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
-CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users'
-DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords'
+CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users'
+DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}'
+UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}'
+CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}/passwords'
+
+# Payment
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # Permission
@@ -145,3 +146,5 @@ BANK_SOFS_URL = "report/v1/banks/sofs"
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
 SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'
 SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/v1/reconciled/sofs/results'
+SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/v1/reconciled/partners/results'
+GET_SERVICE_BY_SERVICE_GROUP_URL  = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
