@@ -54,9 +54,14 @@ CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # Permission
-PERMISSION_LIST = 'api-gateway/system-user/v1/permissions'
+PERMISSION_LIST = 'api-gateway/report/v1/permissions'
 CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
 PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
+
+# Roles
+ROLE_LIST = 'api-gateway/report/v1/roles'
+CREATE_ROLE_PATH = 'api-gateway/system-user/v1/roles'
+ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
@@ -72,7 +77,7 @@ SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/v1/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups'
 DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{}'
-GET_SERVICE_URL  = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
+GET_SERVICE_URL  = 'api-gateway/payment/v1/service-groups/{serviceGroupId}/services'
 GET_ALL_SERVICE_URL  = 'api-gateway/payment/v1/services'
 
 # Service

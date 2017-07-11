@@ -22,7 +22,7 @@ class SPIUrlConfigurationDelete(TemplateView, SpiApi):
         return super(SPIUrlConfigurationDelete, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start getting SPI url list ==========')
+        self.logger.info('========== Start getting SPI url detail ==========')
         context = super(SPIUrlConfigurationDelete, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
@@ -35,9 +35,9 @@ class SPIUrlConfigurationDelete(TemplateView, SpiApi):
             "Get spi url configuration", logger)
         self.logger.info("SPI Url configuration details is [{}]".format(configuration_detail))
 
-        data, success = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger)
+        data, success = self._get_method(self.get_config_type_url, "", logger)
         self.logger.info("SPI url configuration types {}".format(data))
-
+        self.logger.info('========== Finish getting SPI url detail ==========')
         context['configuration_detail'] = configuration_detail
         context['configuration_type_list'] = data
         context['service_command_id'] = service_command_id
@@ -48,37 +48,21 @@ class SPIUrlConfigurationDelete(TemplateView, SpiApi):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.logger.info("========== Start adding SPI configuration url ==========")
+        self.logger.info("========== Start deleting SPI configuration url ==========")
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
         command_id = kwargs.get('command_id')
         spi_url_id = kwargs.get('spi_url_id')
         spi_url_config_id = kwargs.get('spi_url_config_id')
 
-        spi_url_configuration_type = request.POST.get('spi_url_configuration_type')
-        url = request.POST.get('spi_url_configuration_value', '')
-        connection_timeout = request.POST.get('connection_timeout', '')
-        read_timeout = request.POST.get('read_timeout', '')
-        max_retry = request.POST.get('max_retry', '')
-        retry_delay_millisecond = request.POST.get('retry_delay_millisecond', '')
-
-        params = {
-            'spi_url_configuration_type': spi_url_configuration_type,
-            'url': url,
-            'connection_timeout': int(connection_timeout) if connection_timeout else '',
-            'read_timeout': int(read_timeout) if read_timeout else '',
-            'max_retry': int(max_retry) if max_retry else '',
-            'retry_delay_millisecond': int(retry_delay_millisecond) if retry_delay_millisecond else ''
-        }
-
         path = self.spi_url_configuration.format(spiUrlConfigurationId=spi_url_config_id)
-        data, status = self._delete_method(path, "Updating SPI configuration url", logger)
+        data, status = self._delete_method(path, "Delete SPI Configuration Url", logger)
 
         self.logger.info("spi url configuration types {}".format(data))
-        self.logger.info("========== End adding SPI configuration url ==========")
+        self.logger.info("========== Finish deleting SPI configuration url ==========")
         if status:
             type_msg = messages.SUCCESS
-            text_msg = 'Delete data successfully'
+            text_msg = 'Deleted data successfully'
         else:
             type_msg = messages.ERROR
             text_msg = data

@@ -9,24 +9,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class PermissionList(TemplateView):
-    template_name = "permissions/list.html"
+class RoleList(TemplateView):
+    template_name = "roles/list.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         self.logger = setup_logger(self.request, logger)
-        return super(PermissionList, self).dispatch(request, *args, **kwargs)
+        return super(RoleList, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(PermissionList, self).get_context_data(**kwargs)
+        context = super(RoleList, self).get_context_data(**kwargs)
         is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.PERMISSION_LIST,
+                                                                           url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
                                                                            logger=logger)
-        self.logger.info(data)
         if is_success:
-            self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
-            context['permissions'] = data
+            self.logger.info("Roles have [{}] role in database".format(len(data)))
+            context['roles'] = data
         return context
 
     def _get_headers(self):

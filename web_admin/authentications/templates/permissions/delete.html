@@ -10,16 +10,16 @@
 
         <div class="row no-margin">
             <div class="col-lg-12">
-                <h4>Edit Permission Entity</h4>
+                <h4>Delete Permission Entity</h4>
             </div>
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="{% url 'authentications:edit_permission' permission_id %}">
+                      action="{% url 'authentications:delete_permission' permission_id %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">ID</label>
                         <div class="col-sm-8">
-                            <input type="area" class="form-control input-rounded" name="permission_id"
+                            <input type="area" class="form-control input-rounded"
                                    id="txt_permission_id" readonly
                                    value="{{ permission.id | default_if_none:'' }}">
 
@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Page Level</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="is_page_level"
+                            <input type="text" class="form-control input-rounded"
                                    id="txt_is_page_level" required="required" readonly
                                    value="{{ permission.is_page_level | default_if_none:'' }}">
 
@@ -38,8 +38,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Name *</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="name"
-                                   id="txt_name" required="required"
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_name" required="required" readonly
                                    value="{{ permission.name | default_if_none:'' }}">
 
                         </div>
@@ -48,8 +48,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="area" class="form-control input-rounded" name="description"
-                                   id="txt_description"
+                            <input type="area" class="form-control input-rounded"
+                                   id="txt_description" readonly
                                    value="{{ permission.description | default_if_none:'' }}">
 
                         </div>
@@ -57,7 +57,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="area" class="form-control input-rounded" name="created_date"
+                            <input type="area" class="form-control input-rounded"
                                    id="txt_created_date" readonly
                                    value="{{ permission.created_timestamp | default_if_none:'' }}">
 
@@ -66,15 +66,15 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-8">
-                            <input type="area" class="form-control input-rounded" name="modified_date"
+                            <input type="area" class="form-control input-rounded"
                                    id="txt_modified_date" readonly
                                    value="{{ permission.last_updated_timestamp | default_if_none:'' }}">
 
                         </div>
                     </div>
                     <div class="pull-right">
-                        <input id="permission_btn_add" role="button" class="btn btn-success text-left mb15" type="submit"
-                               value="Update"/>
+                        <input id="permission_btn_delete" role="button" class="btn btn-success text-left mb15" type="submit"
+                               value="Yes"/>
 
                         <a href="{% url 'authentications:permissions_list' %}">
                             <input id="permission_btn_cancel" class="btn text-left mb15" type="button"

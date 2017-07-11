@@ -48,7 +48,7 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.logger.info("========== Start adding SPI configuration url ==========")
+        self.logger.info("========== Start updating SPI configuration url ==========")
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
         command_id = kwargs.get('command_id')
@@ -77,10 +77,10 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
         data, status = self._put_method(path, "Updating SPI configuration url", logger, params)
 
         self.logger.info("spi url configuration types {}".format(data))
-        self.logger.info("========== End adding SPI configuration url ==========")
+        self.logger.info("========== Finish updating SPI configuration url ==========")
         if status:
             type_msg = messages.SUCCESS
-            text_msg = 'Add data successfully'
+            text_msg = 'Updated data successfully'
             messages.add_message(
                 request,
                 type_msg,

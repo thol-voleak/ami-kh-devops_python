@@ -39,11 +39,11 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Service</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_service" name="service_id">
-                        <option value=-1>All</option>
+                    <select class="form-control" id="ddl_service" name="service_name">
+                        <option value="">All</option>
                         {% for service_in in service_list %}
-                            <option value={{ service_in.service_id }}
-                                            {% if service_in.service_id == service_id %}selected="selected"{% endif %}>{{ service_in.service_name }}</option>
+                            <option value='{{ service_in.service_name }}'
+                                            {% if service_in.service_name == selected_service %}selected="selected"{% endif %}>{{ service_in.service_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -98,13 +98,14 @@
                            id="dtp_to">
                 </div>
             </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
             <div class="form-group">
                 <div class="pull-right col-sm-1">
                     <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
                 </div>
             </div>
         </form>
-        <label class="col-sm-12" style="text-align:right"><b>(Total {{ file_list|length }})</b></label>
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_file_list">
                 <thead>
@@ -132,30 +133,48 @@
                         <td class="col-sm-2">{{ file.status.name }}</td>
                         <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
                         <td class="col-sm-3">
-                            <div class="btn-group">
-                                <button id="btn_detail"
-                                        class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        onclick="location.href=''"><u>Result</u></button>
-                            </div>
+                            {% if file.status.id is 4 or file.status.id is 5 %}
+                                <div class="btn-group">
+                                    <button id="btn_detail" class="btn btn-outline btn-xs btn-primary"
+                                            onclick="location.href=''"><u>Result</u></button>
+                                </div>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% if paginator.total_pages > 1 %}
+            <ul class="list-inline">
+                <li><span>Page </span></li>
+                {% if page_range.start > 1 %}
+                    <li><a class="page_idx">1</a></li>
+                    <li><span>...</span></li>
+                {% endif %}
+
+                {% for i in page_range %}
+                <li>{% if i == paginator.current_page %}<b><u>{% endif %}<a class="page_idx">{{i}}</a>{% if i == paginator.current_page %}</u></b>{% endif %}</li>
+                {% endfor %}
+
+                {% if page_range.stop < paginator.total_pages|add:1 %}
+                    <li><span>...</span></li>
+                    <li><a class="page_idx">{{ paginator.total_pages }}</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
     </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
 <script type="text/javascript">
     ddl_service_group_change = function () {
-        console.log("{% url 'reconcile:reconcile_partner_service' %}")
+        console.log("{% url 'reconcile:reconcile_service_list' %}")
         serv_gr_id = $("#ddl_service_group").val()
         console.log(serv_gr_id)
         $.ajax({
             type: "GET",
-            url: "{% url 'reconcile:reconcile_partner_service' %}",
+            url: "{% url 'reconcile:reconcile_service_list' %}",
             data: {'service_group_id': serv_gr_id},
             success: function (response) {
                 console.log(response.toString())
@@ -176,14 +195,18 @@
         var _select = $(ddlId);
         _select.empty()
         _select.append(
-            $('<option></option>').val(-1).html('All')
+            $('<option></option>').val('').html('All')
         );
 
         $.each(dict, function (val, text) {
-            _option = $('<option></option>').val(val).html(text)
+            _option = $('<option></option>').val(text).html(text)
             _select.append(_option);
         });
     }
 
+    $(".page_idx").click(function() {
+        $("#current_page_index").val($(this).text());
+        $("#btn_search").click();
+    });
 </script>
 {% endblock %}
