@@ -47,7 +47,7 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
 GET_SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
-CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users'
+CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
 CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords'
