@@ -35,7 +35,7 @@ class SPIUrlConfigurationView(TemplateView, SpiApi):
             "Get all spi url configuration",
             logger)
 
-        data, success = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger)
+        data, success = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger, True)
         self.logger.info("spi url configuration types {}".format(data))
 
         context['configuration_data'] = configuration_data
@@ -79,12 +79,12 @@ class SPIUrlConfigurationView(TemplateView, SpiApi):
         data, status = self._post_method(path, "Adding SPI configuration url", logger, params)
 
         self.logger.info("spi url configuration types {}".format(data))
-        self.logger.info("========== End adding SPI configuration url ==========")
+        self.logger.info("========== Finish adding SPI configuration url ==========")
         if status:
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Add data successfully'
+                'Added SPI configuration successfully'
             )
             return redirect('services:spi_configuration_list',
                             service_command_id=service_command_id,

@@ -40,7 +40,7 @@
                 <label class="col-sm-2 control-label">Service</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_service" name="service_name">
-                        <option value="">All</option>
+                        {% if service_group_id == -1 %}<option value=''>All</option>{% endif %}
                         {% for service_in in service_list %}
                             <option value='{{ service_in.service_name }}'
                                             {% if service_in.service_name == selected_service %}selected="selected"{% endif %}>{{ service_in.service_name }}</option>
@@ -194,9 +194,11 @@
     add_option = function (ddlId, dict) {
         var _select = $(ddlId);
         _select.empty()
-        _select.append(
-            $('<option></option>').val('').html('All')
-        );
+        if ($("#ddl_service_group").val() == -1) {
+            _select.append(
+                $('<option></option>').val('').html('All')
+            );
+        }
 
         $.each(dict, function (val, text) {
             _option = $('<option></option>').val(text).html(text)

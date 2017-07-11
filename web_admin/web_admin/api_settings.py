@@ -36,7 +36,7 @@ DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
-AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents/profiles'
+AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/v1/agents/{agent_id}'
 CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}'
@@ -46,9 +46,9 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
-CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users'
+CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users'
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
+UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}'
 CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}/passwords'
 
 # Payment
@@ -58,6 +58,11 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 PERMISSION_LIST = 'api-gateway/report/v1/permissions'
 CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
 PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
+
+# Roles
+ROLE_LIST = 'api-gateway/report/v1/roles'
+CREATE_ROLE_PATH = 'api-gateway/system-user/v1/roles'
+ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
@@ -140,3 +145,5 @@ BANK_SOFS_URL = "report/v1/banks/sofs"
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
 SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'
 SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/v1/reconciled/sofs/results'
+SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/v1/reconciled/partners/results'
+GET_SERVICE_BY_SERVICE_GROUP_URL  = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
