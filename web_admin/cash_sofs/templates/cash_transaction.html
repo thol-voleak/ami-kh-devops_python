@@ -68,17 +68,19 @@
                         <th id="order_id">Order ID</th>
                         <th id="balance">Type</th>
                         <th id="currency">Amount</th>
+                        <th id="owner">Owner (ID)</th>
                         <th id="created_date">Created Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for transaction in transaction_list %}
                         <tr>
-                            <td class="col-sm-2">{{ transaction.sof_id }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.id }}</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.amount }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}

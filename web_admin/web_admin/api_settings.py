@@ -12,13 +12,13 @@ CONFIGURATION_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/conf
 CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}"
 
 # Client
-CREATE_CLIENT_URL = 'api-gateway/v1/oauth/clients'
-CLIENTS_LIST_URL = 'api-gateway/v1/oauth/clients'
-UPDATE_CLIENT_URL = 'api-gateway/v1/oauth/clients/{}'
-DELETE_CLIENT_URL = 'api-gateway/v1/oauth/clients/{}'
-REGENERATE_CLIENT_SECRET_URL = 'api-gateway/v1/oauth/clients/{}/credentials'
-SUSPEND_CLIENT_URL = 'api-gateway/v1/oauth/clients/{}/statuses'
-ACTIVATE_CLIENT_URL = 'api-gateway/v1/oauth/clients/{}/statuses'
+CREATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients'
+CLIENTS_LIST_URL = 'api-gateway/v1/admin/oauth/clients'
+UPDATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}'
+DELETE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}'
+REGENERATE_CLIENT_SECRET_URL = 'api-gateway/v1/admin/oauth/clients/{}/credentials'
+SUSPEND_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
+ACTIVATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
 
 # Agent Type
 AGENT_TYPES_LIST_URL = 'api-gateway/agent/v1/types'
@@ -95,7 +95,7 @@ SERVICE_DELETE_URL = 'api-gateway/payment/v1/services/{}'
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
 GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
-CLIENT_SCOPES = 'api-gateway/v1/oauth/clients/{client_id}/scopes'
+CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/v1/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/v1/companies/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
