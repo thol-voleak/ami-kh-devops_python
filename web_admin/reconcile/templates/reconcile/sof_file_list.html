@@ -118,8 +118,9 @@
                             <td class="col-sm-3">
                                 {% if file.status.id is 4 or file.status.id is 5 %}
                                 <div class="btn-group">
-                                    <button id="btn_detail" class="btn btn-outline btn-xs btn-primary"
-                                            onclick="location.href=''"><u>Result</u></button>
+                                    <button class="btn btn-outline btn-xs btn-primary btn_detail" value="{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}">
+                                        <u>Result</u>
+                                    </button>
                                 </div>
                                 {% endif %}
                             </td>
@@ -148,11 +149,102 @@
         {% endif %}
     </div>
 </div>
+
+
+
+<form id="submit-form-result" class="form-horizontal" role="form" method="post" action="" style="display:none">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">On us/Off us</label>
+        <div class="col-xs-2">
+            <select class="form-control" id="ddl_on_off_us_result" name="on_off_us_id">
+                <option value=-1 {% if is_on_us == -1 %}selected="selected"{% endif %}>All</option>
+                <option value=1 {% if is_on_us == 1 %}selected="selected"{% endif %}>On</option>
+                <option value=0 {% if is_on_us == 0 %}selected="selected"{% endif %}>Off</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Source of fund</label>
+        <div class="col-xs-2">
+            <select class="form-control" id="ddl_source_of_fund_result" name="source_of_fund_id">
+                <option value="bank">Bank</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Source of fund partner name</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control input-rounded" name="sof_partner_name_id"
+                   id="sof_partner_name_result_id" value="{{ sof_code|default_if_none:'' }}" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Currency</label>
+        <div class="col-xs-2">
+            <select class="form-control" id="ddl_currency_result" name="currency_id">
+                <option value="{{ currency|default_if_none:'' }}" selected>{{ currency|default_if_none:'' }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Reconcile status</label>
+        <div class="col-xs-2">
+            <select class="form-control" id="ddl_reconcile_status_result" name="reconcile_status_id">
+                <option value="-1" selected>All</option>
+            </select>
+        </div>
+    </div>
+
+     <div class="form-group">
+        <label class="col-sm-2 control-label">Payment type</label>
+        <div class="col-xs-2">
+            <select class="form-control" id="ddl_payment_type" name="reconcile_payment_type_id">
+                <option value="" selected>All</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Start date</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control input-rounded"
+                   name="from_created_timestamp"
+                   value="{{ start_date|default_if_none:'' }}"
+                   id="dtp_from_result">
+        </div>
+        <label class="col-sm-1 control-label">End date</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control input-rounded"
+                   name="to_created_timestamp"
+                   value="{{ end_date|default_if_none:'' }}"
+                   id="dtp_to_result">
+        </div>
+    </div>
+    <input id="current_page_index_result" name="current_page_index" style="display:none" value="1">
+    <div class="form-group">
+        <div class="pull-right col-sm-1">
+            <button id="btn_result" class="btn btn-success text-left mb15" type="submit">Result</button>
+        </div>
+    </div>
+</form>
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>
     $(".page_idx").click(function() {
         $("#current_page_index").val($(this).text());
         $("#btn_search").click();
+    });
+
+    $(".btn_detail").click(function() {
+        $("#submit-form-result").attr('action', $(this).val());
+        $("#btn_result").click();
     });
 </script>
 {% endblock %}

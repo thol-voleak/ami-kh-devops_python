@@ -39,7 +39,11 @@ class SofReport(TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search sof report ==========')
+        context = super(SofReport, self).get_context_data(**kwargs)
 
+        sof_file_id = context.get('sofFileId')
+        if sof_file_id is not None:
+            sof_file_id = int(sof_file_id)
         opening_page_index = request.POST.get('current_page_index')
         on_off_us_id = int(request.POST.get('on_off_us_id'))
         source_of_fund_id = request.POST.get('source_of_fund_id')
@@ -61,6 +65,9 @@ class SofReport(TemplateView, RESTfulMethods):
 
         params = {}
         params['opening_page_index'] = opening_page_index
+
+        if sof_file_id is not None:
+            params['sof_file_id'] = sof_file_id
 
         if on_off_us_id >= 0:
             params['is_on_us'] = (on_off_us_id == 1)
@@ -103,6 +110,8 @@ class SofReport(TemplateView, RESTfulMethods):
                     'sof_report': data,
                     'paginator': page,
                     'page_range': self._calculate_page_range(page)}
+        if sof_file_id is not None:
+            context.update({'sof_file_id': sof_file_id})
 
         self.logger.info("========== Finish search sof report ==========")
         return render(request, self.template_name, context)

@@ -5,6 +5,7 @@ from web_admin import setup_logger, RestFulClient
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
+from authentications.apps import InvalidAccessToken
 
 import logging
 
@@ -42,10 +43,14 @@ class PermissionCreate(TemplateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Created permission entity successfully'
+                'Added data successfully'
             )
             self.logger.info('========== End creating permission ==========')
             return redirect('authentications:permissions_list')
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                        status_code == 'invalid_access_token'):
+            logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
         else:
             return render(request, self.template_name)
 
