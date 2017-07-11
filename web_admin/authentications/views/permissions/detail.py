@@ -25,7 +25,7 @@ class PermissionDetailView(TemplateView):
         permission_id = context['permission_id']
         self.logger.info("Searching permission with [{}] id".format(permission_id))
         params = {
-            'id': permission_id
+            'id': int(permission_id)
         }
         self.logger.info("Searching permission with [{}] id".format(permission_id))
         is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
