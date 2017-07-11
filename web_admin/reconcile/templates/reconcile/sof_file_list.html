@@ -215,4 +215,11 @@
         </div>
     </div>
 </form>
+
+<script>
+    $(".btn_detail").click(function() {
+        $("#submit-form-result").attr('action', $(this).val());
+        $("#btn_result").click();
+    });
+</script>
 {% endblock %}
