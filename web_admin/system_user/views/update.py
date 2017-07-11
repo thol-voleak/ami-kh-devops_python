@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+from .system_user_client import SystemUserClient
 logger = logging.getLogger(__name__)
 
 '''
@@ -27,11 +28,10 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
         context = super(SystemUserUpdateForm, self).get_context_data(**kwargs)
         system_user_id = context['systemUserId']
 
-        # LOAD DATA
-        data = self._get_system_user_detail(system_user_id)
+        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(), logger, None, None, system_user_id)
 
         context = {
-            'system_user_info': data,
+            'system_user_info': data[0],
             'msg': self.request.session.pop('system_user_update_msg', None)
         }
         self.logger.info("Finish getting system user detail")
@@ -78,16 +78,3 @@ class SystemUserUpdateForm(TemplateView, RESTfulMethods):
                 'msg': data
             }
             return render(request, self.template_name, context)
-
-    def _get_system_user_detail(self, system_user_id):
-
-        api_path = api_settings.GET_SYSTEM_USER_DETAIL_URL.format(system_user_id)
-
-        data, status = self._get_method(
-            api_path=api_path,
-            func_description="System User Detail",
-            logger=logger
-        )
-
-        return data
-

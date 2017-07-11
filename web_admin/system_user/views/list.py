@@ -1,7 +1,8 @@
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
 from authentications.utils import get_auth_header
 from authentications.apps import InvalidAccessToken
+from web_admin import setup_logger
+from .system_user_client import SystemUserClient
+
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -39,7 +40,7 @@ class ListView(TemplateView):
         if email:
             params['email'] = email
 
-        status_code, status_message, data = self.search_system_user(username, email, None)
+        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(), logger, username, email, None)
 
         if (status_code == "access_token_expire") or \
                 (status_code == 'access_token_not_found') or \
@@ -52,22 +53,6 @@ class ListView(TemplateView):
         context['email'] = email
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)
-
-    def search_system_user(self, username, email, user_id):
-        params = {}
-
-        if username is not '' and username is not None:
-            params['username'] = username
-        if email is not '' and email is not None:
-            params['email'] = email
-        if user_id is not '' and user_id is not None:
-            params['user_id'] = user_id
-
-        is_success, status_code, status_message, data = RestFulClient.post(self.request,
-                                                                           api_settings.SEARCH_SYSTEM_USER,
-                                                                           self._get_headers(), logger, params)
-
-        return status_code, status_message, data
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:

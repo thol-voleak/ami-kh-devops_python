@@ -5,6 +5,7 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
+from .system_user_client import SystemUserClient
 logger = logging.getLogger(__name__)
 
 '''
@@ -22,15 +23,13 @@ class DeleteView(TemplateView, RESTfulMethods):
         return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-
         context = super(DeleteView, self).get_context_data(**kwargs)
         system_user_id = context['system_user_id']
 
-        # LOAD DATA
-        data = self._get_system_user_detail(system_user_id)
+        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(), logger, None, None, system_user_id)
 
         context = {
-            'system_user_info': data
+            'system_user_info': data[0]
         }
 
         return render(request, self.template_name, context)
@@ -54,15 +53,3 @@ class DeleteView(TemplateView, RESTfulMethods):
             return redirect('system_user:system-user-list')
         else:
             logger.info("Error deleting system user {}".format(system_user_id))
-
-    def _get_system_user_detail(self, system_user_id):
-
-        api_path = api_settings.GET_SYSTEM_USER_DETAIL_URL.format(system_user_id)
-
-        data, status = self._get_method(
-            api_path=api_path,
-            func_description="System User Detail",
-            logger=logger
-        )
-
-        return data
