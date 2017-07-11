@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>User Role</h3>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class='alert alert-success alert-dismissable' id="msg-update-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    <div class="panel-body col-xs-10">
+        <form class="form-horizontal" role="form" method="post" action="{% url 'system_user:system_user_role_management' system_user_id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Role *</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_role" name="role" required = "required">
+                        <option value="">-</option>
+                        {% for role in roles %}
+                            {% if user_role.id == role.id %}
+                                <option value="{{ role.id }}" selected>{{ role.name }}</option>
+                            {% else %}
+                                <option value="{{ role.id }}">{{ role.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group pull-right">
+                <a href="{% url 'system_user:system-user-list' %}">
+                    <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                </a>
+                <a>
+                    <input id="btn_add" class="btn btn-success" type="submit" value="Save"/>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
