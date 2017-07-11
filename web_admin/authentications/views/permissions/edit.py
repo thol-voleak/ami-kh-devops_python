@@ -56,7 +56,7 @@ class PermissionEditView(TemplateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Updated permission entity successfully'
+                'Updated data successfully'
             )
             self.logger.info('========== End update permission entity ==========')
             return redirect('authentications:permissions_list')
