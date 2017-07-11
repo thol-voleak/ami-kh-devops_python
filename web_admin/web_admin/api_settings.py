@@ -36,7 +36,7 @@ DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
-AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents/profiles'
+AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/v1/agents/{agent_id}'
 CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}'
@@ -57,6 +57,11 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 PERMISSION_LIST = 'api-gateway/report/v1/permissions'
 CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
 PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
+
+# Roles
+ROLE_LIST = 'api-gateway/report/v1/roles'
+CREATE_ROLE_PATH = 'api-gateway/system-user/v1/roles'
+ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'

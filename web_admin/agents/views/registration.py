@@ -160,8 +160,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             return render(request, self.template_name, context)
 
         ####### Fail case agent identity ############
-        agent_indentity, success = self._create_agent_identity(request, agent_id)
-        self._create_agent_balance(request, agent_id)
+        agent_balance, success = self._create_agent_balance(request, agent_id)
         if success:
             request.session['agent_registration_msg'] = 'Added agent successfully'
             self.logger.info('========== Finished creating agent ==========')
@@ -231,7 +230,7 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         kyc_status = request.POST.get('kyc_status')
         status = 1  # request.POST.get('status') #TODO: hard fix
 
-        body = {
+        profile = {
             'agent_type_id': agent_type_id,
             'parent_id': parent_id,
             'grand_parent_id': grand_parent_id,
@@ -264,27 +263,22 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
             'status': status,
         }
 
-        remove = [key for key, value in body.items() if not value]
-        for key in remove: del body[key]
-
-        data, success = self._post_method(api_path=api_settings.AGENT_REGISTRATION_URL,
-                                          func_description="Agent Profile",
-                                          logger=logger, params=body)
-        return data, success
-
-    def _create_agent_identity(self, request, agent_id):
-
         username = request.POST.get('username')
         password = request.POST.get('password')
         password = encrypt_text_agent(password)
 
-        body = {
+        identity = {
             'username': username,
             'password': password
         }
 
-        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_IDENTITY_URL.format(agent_id=agent_id),
-                                          func_description="Agent Identity",
+        body = {
+            'profile': profile,
+            'identity': identity
+        }
+
+        data, success = self._post_method(api_path=api_settings.AGENT_REGISTRATION_URL,
+                                          func_description="Agent Profile",
                                           logger=logger, params=body)
         return data, success
 
@@ -297,10 +291,4 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
         data, success = self._post_method(api_path=api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
                                           func_description="Agent Balance",
                                           logger=logger, params=body)
-
-        if success:
-            result = True
-        else:
-            request.session['agent_registration_msg'] = data
-            return redirect('agents:agent_registration')
-        return result
+        return data, success
