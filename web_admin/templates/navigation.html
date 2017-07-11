@@ -32,6 +32,17 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="menu-accordion {% if 'roles' in request.path %}open{% endif %}">
+                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Roles</span> </a>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'role_list' %}active{% endif %}">
+                                <a href="{% url 'authentications:role_list' %}"> <span>Role Entities</span> </a>
+                            </li>
+                            <li class="{% if url_name == 'create_permission' %}active{% endif %}">
+                                <a href="{% url 'authentications:create_role' %}"> <span>Create Role</span> </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">

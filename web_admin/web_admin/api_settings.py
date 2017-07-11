@@ -58,6 +58,11 @@ PERMISSION_LIST = 'api-gateway/report/v1/permissions'
 CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
 PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
 
+# Roles
+ROLE_LIST = 'api-gateway/report/v1/roles'
+CREATE_ROLE_PATH = 'api-gateway/system-user/v1/roles'
+ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
+
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
 SPI_TYPES_PATH = 'api-gateway/payment/v1/spi-url-types'
