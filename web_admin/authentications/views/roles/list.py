@@ -1,3 +1,4 @@
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
@@ -26,6 +27,9 @@ class RoleList(TemplateView):
         if is_success:
             self.logger.info("Roles have [{}] role in database".format(len(data)))
             context['roles'] = data
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (status_code == 'invalid_access_token'):
+            logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
         return context
 
     def _get_headers(self):

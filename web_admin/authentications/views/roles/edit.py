@@ -1,9 +1,10 @@
 from authentications.utils import get_auth_header
+from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
 
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 
 import logging
@@ -60,6 +61,9 @@ class RoleEditView(TemplateView):
             )
             self.logger.info('========== End update role entity ==========')
             return redirect('authentications:role_list')
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (status_code == 'invalid_access_token'):
+            logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:

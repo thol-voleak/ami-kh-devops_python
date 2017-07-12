@@ -73,7 +73,7 @@ class RoleManagementView(TemplateView):
                                                                            headers=self._get_headers(),
                                                                            logger=logger)
 
-        self.logger.info("Roles have {} role in database".format(len(data)))
+        self.logger.info("Roles have {} role in database".format(data))
 
         if is_success:
             return data
