@@ -33,7 +33,7 @@ AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 
 # Agent
-AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
+AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
@@ -56,8 +56,7 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # Permission
 PERMISSION_LIST = 'api-gateway/report/v1/permissions'
-CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
-PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
+CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/permissions'
 
 # Roles
 ROLE_LIST = 'api-gateway/report/v1/roles'
@@ -96,7 +95,7 @@ COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
 GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
 CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
-ALL_SCOPES_LIST_URL = 'api-gateway/v1/apis'
+ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/v1/companies/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
 

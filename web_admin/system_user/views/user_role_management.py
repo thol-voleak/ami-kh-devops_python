@@ -37,16 +37,25 @@ class RoleManagementView(TemplateView):
         context = {}
         system_user_id = kwargs['system_user_id']
 
-        role_id = request.POST.get('role', '')
+        role_id = request.POST.get('role', None)
 
         context['system_user_id'] = system_user_id
         context['roles'] = self.get_roles(logger)
 
         user_role = self.get_user_role(logger, system_user_id)
-        if user_role['id'] != role_id:
-            is_success_delete = self._delete_user_role(logger, user_role['id'], system_user_id)
+        if len(user_role) > 0:
+            if user_role['id'] != role_id:
+                is_success_delete = self._delete_user_role(logger, user_role['id'], system_user_id)
+                is_success_add = self._add_user_role(logger, role_id, system_user_id)
+                if is_success_delete and is_success_add:
+                    messages.add_message(
+                        request,
+                        messages.SUCCESS,
+                        'Updated data successfully'
+                    )
+        else:
             is_success_add = self._add_user_role(logger, role_id, system_user_id)
-            if is_success_delete and is_success_add:
+            if is_success_add:
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -82,7 +91,10 @@ class RoleManagementView(TemplateView):
 
         self.logger.info("User have {} role id".format(data))
         if is_success:
-            return data[0]
+            if len(data) > 0:
+                return data[0]
+            else:
+                return {}
         else:
             return []
 
