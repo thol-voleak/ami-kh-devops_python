@@ -65,7 +65,12 @@ class PermissionEditView(TemplateView):
                 'Updated data successfully'
             )
             self.logger.info('========== End update permission entity ==========')
-            return redirect('authentications:permissions_list')
+        else:
+            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                        status_code == 'invalid_access_token'):
+                logger.info("{} for {} username".format(status_message, self.request.user))
+                raise InvalidAccessToken(status_message)
+        return redirect('authentications:permissions_list')
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
