@@ -40,7 +40,7 @@ class PermissionDeleteView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start delete permission entity ==========')
         permission_id = kwargs['permission_id']
-        url = api_settings.PERMISSION_DETAIL_PATH.format(permission_id=permission_id)
+        url = api_settings.PERMISSION_DELETE_PATH.format(permission_id=permission_id)
 
         is_success, status_code, status_message = RestFulClient.delete(self.request, url, self._get_headers(),
                                                                        logger)
