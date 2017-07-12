@@ -121,16 +121,16 @@
                 <tbody id="table_body">
                     {% for report in sof_report %}
                         <tr>
-                            <td class="col-sm-2">{{ report.detail_trans_id }}</td>
-                            <td class="col-sm-2">{{ report.ext_trans_id }}</td>
-                            <td class="col-sm-2">{{ report.authorized_id }}</td>
+                            <td class="col-sm-2">{{ report.detail_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.ext_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.authorized_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if report.sof_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
-                            <td class="col-sm-2">{{ report.payment_type }}</td>
-                            <td class="col-sm-2">{{ report.sof_file.sof_code }}</td>
-                            <td class="col-sm-2">{{ report.last_updated_timestamp }}</td>
-                            <td class="col-sm-2">{{ report.status.name  }}</td>
-                            <td class="col-sm-2">{{ report.tmn_amount }}</td>
-                            <td class="col-sm-2">{{ report.authorized_amount }}</td>
+                            <td class="col-sm-2">{{ report.payment_type|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.sof_file.sof_code|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.status.name|default_if_none:''  }}</td>
+                            <td class="col-sm-2">{{ report.tmn_amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.authorized_amount|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
