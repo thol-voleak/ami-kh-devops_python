@@ -50,6 +50,9 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         specific_ids = self._get_specific_ids()
         if specific_ids and isinstance(specific_ids, list):
             context['specific_ids'] = specific_ids
+        else:
+            context['specific_ids'] = []
+            self.logger.error('Error when getting Specific IDs: {}'.format(specific_ids))
 
         context['fee_tier_detail'] = fee_tier_detail
         context['data'] = self._filter_deleted_items(data)
@@ -741,6 +744,9 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
         specific_ids = self._get_specific_ids()
         if specific_ids and isinstance(specific_ids, list):
             context['specific_ids'] = specific_ids
+        else:
+            context['specific_ids'] = []
+            self.logger.error('Error when getting Specific IDs: {}'.format(specific_ids))
             
         context['fee_tier_detail'] = fee_tier_detail
         context['data'] = self._filter_deleted_items(data)
