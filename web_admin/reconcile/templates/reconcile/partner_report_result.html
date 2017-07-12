@@ -141,17 +141,17 @@
                 <tbody id="table_body">
                     {% for partner in partner_report %}
                         <tr>
-                            <td class="col-sm-2">{{ partner.order_id }}</td>
-                            <td class="col-sm-2">{% if partner.ext_trans_id is None %} {% else %} {{ partner.ext_trans_id }} {% endif %}</td>
-                            <td class="col-sm-2">{{ partner.partner_trans_id }}</td>
+                            <td class="col-sm-2">{{ partner.order_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ ext_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ partner.partner_trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if partner.partner_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
-                            <td class="col-sm-2">{{ partner.payment_type }}</td>
-                            <td class="col-sm-2">{{ partner.partner_payment_type }}</td>
-                            <td class="col-sm-2">{{ partner.last_updated_timestamp }}</td>
-                            <td class="col-sm-2">{{ partner.status.name  }}</td>
-                            <td class="col-sm-2">{{ partner.partner_file.service_name  }}</td>
-                            <td class="col-sm-2">{{ partner.tmn_amount }}</td>
-                            <td class="col-sm-2">{{ partner.partner_amount }}</td>
+                            <td class="col-sm-2">{{ partner.payment_type|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ partner.partner_payment_type|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ partner.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ partner.status.name|default_if_none:''  }}</td>
+                            <td class="col-sm-2">{{ partner.partner_file.service_name|default_if_none:''  }}</td>
+                            <td class="col-sm-2">{{ partner.tmn_amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ partner.partner_amount|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
