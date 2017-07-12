@@ -104,14 +104,14 @@ class RestFulClient:
         return is_success, status_code, status_message, data
 
     @classmethod
-    def delete(cls, request, url, headers, logger):
+    def delete(cls, request, url, headers, logger, params={}):
         if 'http' not in url:
             url = settings.DOMAIN_NAMES + url
 
         logger = setup_logger(request, logger)
 
         start_time = time.time()
-        response = requests.delete(url, headers=headers, verify=settings.CERT)
+        response = requests.delete(url, headers=headers, json=params, verify=settings.CERT)
         end_time = time.time()
         processing_time = end_time - start_time
 
