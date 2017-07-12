@@ -99,7 +99,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
         if reconcile_status_id >=0:
             params['status_id'] = reconcile_status_id
 
-        if reconcile_payment_type_id:
+        if reconcile_payment_type_id != '' and int(reconcile_payment_type_id) >= 0:
             params['payment_type'] = reconcile_payment_type_id
 
         if from_created_timestamp is not '':
