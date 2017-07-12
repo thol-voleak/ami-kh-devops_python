@@ -63,8 +63,8 @@ ROLE_LIST = 'api-gateway/report/v1/roles'
 CREATE_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles'
 ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
 ROLE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/permissions'
-USER_ROLE_PATH = 'api-gateway/system-user/v1/roles/{role_id}/users'
-ROLE_USER_PATH = 'api-gateway/system-user/v1/users/{user_id}/roles'
+USER_ROLE_PATH = 'api-gateway/system-user/v1/roles/{role_id}/system-users'
+ROLE_USER_PATH = 'api-gateway/system-user/v1/system-users/{user_id}/roles'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
