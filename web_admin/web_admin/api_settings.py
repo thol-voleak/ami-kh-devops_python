@@ -56,7 +56,7 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 
 # Permission
 PERMISSION_LIST = 'api-gateway/report/v1/permissions'
-CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/permissions'
+CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/permissions'
 PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/permissions/{permission_id}'
 
 # Roles
