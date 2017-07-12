@@ -63,6 +63,7 @@ PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/admin/permissions/{permissi
 ROLE_LIST = 'api-gateway/report/v1/roles'
 CREATE_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles'
 ROLE_DELETE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
+ROLE_UPDATE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
 ROLE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/permissions'
 USER_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/users'
 ROLE_USER_PATH = 'api-gateway/system-user/v1/admin/users/{user_id}/roles'

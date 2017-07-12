@@ -50,7 +50,7 @@ class RoleEditView(TemplateView):
             'is_page_level': True
         }
 
-        url = api_settings.ROLE_DETAIL_PATH.format(role_id=role_id)
+        url = api_settings.ROLE_UPDATE_PATH.format(role_id=role_id)
         is_success, status_code, status_message, data = RestFulClient.put(self.request, url, self._get_headers(),
                                                                           logger, params)
         if is_success:
