@@ -34,7 +34,8 @@ class RoleDeleteView(TemplateView):
         if is_success:
             context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')
-            return context
+
+        return context
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start delete role entity ==========')
