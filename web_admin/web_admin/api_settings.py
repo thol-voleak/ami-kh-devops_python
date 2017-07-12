@@ -3,8 +3,8 @@ LOGIN_URL = 'api-gateway/v1/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 
 # API Management
-APIS_URL="api-gateway/v1/apis/"
-SERVICES_LIST_URL="api-gateway/v1/services"
+APIS_URL = "api-gateway/v1/apis/"
+SERVICES_LIST_URL = "api-gateway/v1/services"
 
 # Centralize configuration
 SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
@@ -33,7 +33,7 @@ AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 
 # Agent
-AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
+AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
@@ -57,11 +57,13 @@ PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
 # Permission
 PERMISSION_LIST = 'api-gateway/report/v1/permissions'
 CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/permissions'
+PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/admin/permissions/{permission_id}'
 
 # Roles
 ROLE_LIST = 'api-gateway/report/v1/roles'
 CREATE_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles'
-ROLE_DETAIL_PATH = 'api-gateway/system-user/v1/roles/{role_id}'
+ROLE_DELETE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
+ROLE_UPDATE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
 ROLE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/permissions'
 USER_ROLE_PATH = 'api-gateway/system-user/v1/roles/{role_id}/system-users'
 ROLE_USER_PATH = 'api-gateway/system-user/v1/system-users/{user_id}/roles'
@@ -80,8 +82,8 @@ SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/v1/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups'
 DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{}'
-GET_SERVICE_URL  = 'api-gateway/payment/v1/service-groups/{serviceGroupId}/services'
-GET_ALL_SERVICE_URL  = 'api-gateway/payment/v1/services'
+GET_SERVICE_URL = 'api-gateway/payment/v1/service-groups/{serviceGroupId}/services'
+GET_ALL_SERVICE_URL = 'api-gateway/payment/v1/services'
 
 # Service
 SERVICE_LIST_URL = 'api-gateway/payment/v1/services/'
@@ -104,7 +106,7 @@ COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/v1/services/{}/service-comman
 COMMAND_LIST_URL = 'api-gateway/payment/v1/commands/'
 SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/v1/service-commands/'
 
-#Tier
+# Tier
 FEE_TIER_LIST = 'api-gateway/payment/v1/service-commands/{service_command_id}/fee-tiers'
 ADD_TIER_URL = 'api-gateway/payment/v1/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/v1/fee-tier-conditions/'
@@ -148,4 +150,4 @@ SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
 SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'
 SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/v1/reconciled/sofs/results'
 SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/v1/reconciled/partners/results'
-GET_SERVICE_BY_SERVICE_GROUP_URL  = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
+GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'

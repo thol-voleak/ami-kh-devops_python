@@ -1,7 +1,7 @@
 from authentications.utils import get_auth_header
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
-
+from authentications.apps import InvalidAccessToken
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
@@ -35,7 +35,12 @@ class PermissionDeleteView(TemplateView):
         if is_success:
             context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')
-            return context
+        else:
+            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                        status_code == 'invalid_access_token'):
+                logger.info("{} for {} username".format(status_message, self.request.user))
+                raise InvalidAccessToken(status_message)
+        return context
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start delete permission entity ==========')
@@ -49,10 +54,22 @@ class PermissionDeleteView(TemplateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Deleted permission entity successfully'
+                'Deleted data successfully'
             )
             self.logger.info('========== End delete permission entity ==========')
             return redirect('authentications:permissions_list')
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                        status_code == 'invalid_access_token'):
+                logger.info("{} for {} username".format(status_message, self.request.user))
+                raise InvalidAccessToken(status_message)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                status_message
+            )
+            self.logger.info('========== End delete role entity ==========')
+            return redirect('authentications:delete_permission', permission_id=permission_id)
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:

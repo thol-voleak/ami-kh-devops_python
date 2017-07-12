@@ -45,7 +45,7 @@ class CreateView(TemplateView, RESTfulMethods):
         connection_timeout = request.POST.get('connection_timeout')
         read_timeout = request.POST.get('read_timeout')
 
-        if is_active == 1:
+        if is_active == '1':
             is_active = bool(True)
         else:
             is_active = bool(False)

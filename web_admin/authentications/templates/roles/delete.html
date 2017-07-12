@@ -12,6 +12,16 @@
             <div class="col-lg-12">
                 <h4>Delete Role Entity</h4>
             </div>
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-xs-12">
+                    <div class="alert alert-danger alert-dismissable" id="msg-role-delete">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message }}</strong>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post"
                       action="{% url 'authentications:delete_role' role_id %}">

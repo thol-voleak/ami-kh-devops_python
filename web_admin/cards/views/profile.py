@@ -26,18 +26,22 @@ class ProfileView(TemplateView, RESTfulMethods):
         self.logger.info('========== Start search card ==========')
 
         card_identifier = request.GET.get('card_identifier')
+        card_token = request.GET.get('card_token')
         user_id = request.GET.get('user_id')
         user_type = request.GET.get('user_type')
 
         self.logger.info('card_identifier: {}'.format(card_identifier))
+        self.logger.info('card_token: {}'.format(card_token))
         self.logger.info('user_id: {}'.format(user_id))
         self.logger.info('user_type: {}'.format(user_type))
 
         body = {}
         
-        if card_identifier is not '':
+        if card_identifier is not '' and card_identifier is not None:
             body['card_identifier'] = card_identifier
-        if user_id is not '':
+        if card_token is not '' and card_token is not None:
+            body['token'] = card_token
+        if user_id is not '' and user_id is not None:
             body['user_id'] = int(0 if user_id is None else user_id)
         if user_type is not '' and user_type is not '0':
             body['user_type_id'] = int(0 if user_type is None else user_type)
@@ -50,6 +54,7 @@ class ProfileView(TemplateView, RESTfulMethods):
 
         context = {'data': result_data,
                    'card_identifier': card_identifier,
+                   'card_token': card_token,
                    'user_id': user_id,
                    'user_type': user_type
                    }
