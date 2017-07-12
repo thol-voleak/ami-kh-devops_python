@@ -95,7 +95,7 @@ COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
 GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
 CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
-ALL_SCOPES_LIST_URL = 'api-gateway/v1/apis'
+ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/v1/companies/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
 
