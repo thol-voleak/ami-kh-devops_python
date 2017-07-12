@@ -40,7 +40,7 @@ class RoleDeleteView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start delete role entity ==========')
         role_id = kwargs['role_id']
-        url = api_settings.ROLE_DETAIL_PATH.format(role_id=role_id)
+        url = api_settings.ROLE_DELETE_PATH.format(role_id=role_id)
 
         is_success, status_code, status_message = RestFulClient.delete(self.request, url, self._get_headers(),
                                                                        logger)
