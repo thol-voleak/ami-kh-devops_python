@@ -4,7 +4,7 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Partner Report</h3>
+        <h3>Partner Reconcile Report</h3>
     </div>
 
     <div class="panel-body">
@@ -72,7 +72,7 @@
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Reconcile status</label>
-                <div class="col-xs-2">
+                <div class="col-xs-3">
                     <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
                         <option value="-1">All</option>
                         <option value="4" {% if reconcile_status_id == 4 %} selected="selected"{% endif %}>Reconciled</option>
@@ -142,7 +142,7 @@
                     {% for partner in partner_report %}
                         <tr>
                             <td class="col-sm-2">{{ partner.order_id }}</td>
-                            <td class="col-sm-2">{{ partner.ext_trans_id }}</td>
+                            <td class="col-sm-2">{% if partner.ext_trans_id is None %} {% else %} {{ partner.ext_trans_id }} {% endif %}</td>
                             <td class="col-sm-2">{{ partner.partner_trans_id }}</td>
                             <td class="col-sm-2">{% if partner.partner_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
                             <td class="col-sm-2">{{ partner.payment_type }}</td>
