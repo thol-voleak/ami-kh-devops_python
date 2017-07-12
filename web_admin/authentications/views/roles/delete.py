@@ -1,3 +1,4 @@
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_auth_header
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
@@ -44,7 +45,6 @@ class RoleDeleteView(TemplateView):
 
         is_success, status_code, status_message = RestFulClient.delete(self.request, url, self._get_headers(),
                                                                        logger)
-
         if is_success:
             messages.add_message(
                 request,
@@ -53,6 +53,18 @@ class RoleDeleteView(TemplateView):
             )
             self.logger.info('========== End delete role entity ==========')
             return redirect('authentications:role_list')
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                    status_code == 'invalid_access_token'):
+            logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                status_message
+            )
+            self.logger.info('========== End delete role entity ==========')
+            return redirect('authentications:delete_role', role_id=role_id)
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
