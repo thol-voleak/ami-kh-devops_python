@@ -14,6 +14,8 @@ urlpatterns = [
                                                 login_url='authentications:login'), name="reconcile_partner_file_list"),
     url(r'^partner/report/$', login_required(PartnerReport.as_view(),
                                                 login_url='authentications:login'), name="reconcile_partner_report"),
+    url(r'^partner/report/(?P<partner_file_id>[0-9A-Za-z]+)/$', login_required(PartnerReport.as_view(),
+                                                login_url='authentications:login'), name="reconcile_partner_report_by_file_id"),
     url(r'^sof/file-list/$', login_required(SofFileList.as_view(),
                                                 login_url='authentications:login'), name="reconcile_sof_file_list"),
     url(r'^sof/report/$', login_required(SofReport.as_view(),

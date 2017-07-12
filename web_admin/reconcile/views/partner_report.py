@@ -47,6 +47,12 @@ class PartnerReport(TemplateView, RESTfulMethods):
         self.logger.info('========== Start search partner report ==========')
         choices, success = self._get_service_group_and_currency_choices()
 
+        context = super(PartnerReport, self).get_context_data(**kwargs)
+
+        partner_file_id = context.get('partner_file_id')
+        if partner_file_id is not None:
+            partner_file_id = int(partner_file_id)
+
         opening_page_index = request.POST.get('current_page_index')
         on_off_us_id = int(request.POST.get('on_off_us_id'))
         service_group_id = request.POST.get('service_group_id')
@@ -73,6 +79,9 @@ class PartnerReport(TemplateView, RESTfulMethods):
         params = {}
         params['opening_page_index'] = opening_page_index
 
+        if partner_file_id is not None:
+            params['partner_file_id'] = partner_file_id
+
         if on_off_us_id >= 0:
             params['is_on_us'] = (on_off_us_id == 1)
 
@@ -84,7 +93,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
         if currency_id != '':
             params['currency'] = currency_id
 
-        if agent_id != '':
+        if agent_id is not None and agent_id != '':
             params['agent_id'] = int(agent_id)
 
         if reconcile_status_id >=0:
@@ -124,6 +133,9 @@ class PartnerReport(TemplateView, RESTfulMethods):
                     'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL,
                     'paginator': page,
                     'page_range': calculate_page_range_from_page_info(page)}
+
+        if partner_file_id is not None:
+            context.update({'partner_file_id': partner_file_id})
 
         self.logger.info("========== Finish search partner report ==========")
         return render(request, self.template_name, context)

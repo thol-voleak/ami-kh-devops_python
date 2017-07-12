@@ -8,7 +8,10 @@
     </div>
 
     <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_partner_report' %}">
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              {% if partner_file_id %} action="{% url 'reconcile:reconcile_partner_report_by_file_id' partner_file_id %}"
+              {% else %} action="{% url 'reconcile:reconcile_partner_report' %}"
+              {% endif %}>
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">On us/Off us</label>
