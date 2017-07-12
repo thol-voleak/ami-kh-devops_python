@@ -51,7 +51,7 @@ class EditView(TemplateView, RESTfulMethods):
         connection_timeout = request.POST.get('connection_timeout')
         read_timeout = request.POST.get('read_timeout')
 
-        if is_active == 1:
+        if is_active == '1':
             is_active = True
         else:
             is_active = False
@@ -60,7 +60,7 @@ class EditView(TemplateView, RESTfulMethods):
             "name": name,
             "bin": bank_bin,
             "description": description,
-            "is_active": is_active,
+            "is_active": bool(is_active),
             "debit_url": debit_url,
             "credit_url": credit_url,
             "bank_account_number": account_number,
