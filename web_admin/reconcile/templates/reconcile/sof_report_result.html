@@ -81,14 +81,14 @@
                 <div class="col-sm-2">
                     <input type="date" class="form-control input-rounded"
                            name="from_created_timestamp"
-                           value="{{ from_created_timestamp|default_if_none:'' }}"
+                           value="{{ from_created_timestamp |default_if_none:''| date:"mm/dd/yyyy" }}"
                            id="dtp_from">
                 </div>
                 <label class="col-sm-1 control-label">End date</label>
                 <div class="col-sm-2">
                     <input type="date" class="form-control input-rounded"
                            name="to_created_timestamp"
-                           value="{{ to_created_timestamp|default_if_none:'' }}"
+                           value="{{ to_created_timestamp|default_if_none:'' | date:"mm/dd/yyyy"}}"
                            id="dtp_to">
                 </div>
             </div>
@@ -126,7 +126,7 @@
                             <td class="col-sm-2">{{ report.authorized_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if report.sof_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
                             <td class="col-sm-2">{{ report.payment_type|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ report.sof_file.sof_code|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.partner_payment_type|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.status.name|default_if_none:''  }}</td>
                             <td class="col-sm-2">{{ report.tmn_amount|default_if_none:'' }}</td>
