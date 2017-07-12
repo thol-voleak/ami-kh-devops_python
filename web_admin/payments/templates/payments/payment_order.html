@@ -57,18 +57,18 @@
                 <thead>
                 <tr>
                     <th id="id">Order ID</th>
-                    <th id="currency">Service Name</th>
-                    <th id="created_date">Command</th>
-                    <th id="created_date">Status</th>
-                    <th id="created_date">Amount</th>
-                    <th id="created_date">Currency</th>
+                    <th id="service_name">Service Name</th>
+                    <th id="command">Command</th>
+                    <th id="status">Status</th>
+                    <th id="amount">Amount</th>
+                    <th id="currency">Currency</th>
                     <th id="balance">Payment Method</th>
-                    <th id="created_date">Last Modify Date</th>
-                    <th id="created_date">Initator (ID)</th>
-                    <th id="created_date">Payer (ID)</th>
-                    <th id="created_date">Payee (ID)</th>
-                    <th id="created_date">Fee</th>
-                    <th id="created_date">Bonus</th>
+                    <th id="last_modify_date">Last Modify Date</th>
+                    <th id="initiator_id">Initiator (ID)</th>
+                    <th id="payer_id">Payer (ID)</th>
+                    <th id="payee_id">Payee (ID)</th>
+                    <th id="free">Fee</th>
+                    <th id="bonus">Bonus</th>
                     <th id="user">Ext Transaction ID</th>
                 </tr>
                 </thead>
@@ -84,8 +84,8 @@
                             <td class="col-sm-2">{{ order.payment_method.name }}</td>
                             <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
                             <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
-                            <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.initiator.user_id }})</td>
-                            <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.payer.user_id }})</td>
+                            <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.payee.user_id }})</td>
                             <td class="col-sm-2">{{ order.fee }}</td>
                             <td class="col-sm-2">{{ order.bonus }}</td>
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
