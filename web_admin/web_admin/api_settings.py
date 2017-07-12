@@ -33,7 +33,7 @@ AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 
 # Agent
-AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
+AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
