@@ -65,8 +65,8 @@ CREATE_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles'
 ROLE_DELETE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
 ROLE_UPDATE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
 ROLE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/permissions'
-USER_ROLE_PATH = 'api-gateway/system-user/v1/roles/{role_id}/system-users'
-ROLE_USER_PATH = 'api-gateway/system-user/v1/system-users/{user_id}/roles'
+USER_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/system-users'
+ROLE_USER_PATH = 'api-gateway/system-user/v1/admin/system-users/{user_id}/roles'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
