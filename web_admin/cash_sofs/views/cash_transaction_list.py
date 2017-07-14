@@ -45,7 +45,7 @@ class CashTransactionView(TemplateView, RESTfulMethods):
 
         body = {}
         if sof_id is not '':
-            body['sof_id'] = sof_id
+            body['sof_id'] = int(sof_id)
         if order_id is not '':
             body['order_id'] = order_id
         if action_id is not '':
