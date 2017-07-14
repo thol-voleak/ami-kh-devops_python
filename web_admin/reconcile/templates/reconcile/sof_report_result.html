@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Source Of Fund Reconcile Report</h3>
+    </div>
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              {% if  sof_file_id %} action="{% url 'reconcile:reconcile_sof_report_by_file_id' sof_file_id %}"
+              {% else %} action="{% url 'reconcile:reconcile_sof_report' %}"
+              {% endif %}>
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On us/Off us</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_on_off_us" name="on_off_us_id">
+                        <option value=-1 {% if is_on_us == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if is_on_us == 1 %}selected="selected"{% endif %}>On</option>
+                        <option value=0 {% if is_on_us == 0 %}selected="selected"{% endif %}>Off</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_source_of_fund" name="source_of_fund_id">
+                        <option value="bank">Bank</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund partner name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="sof_partner_name_id" id="sof_partner_name_id" value="{{ sof_code }}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id">
+                        <option value="" >All</option>
+                        {% for currency in currencies %}
+                            <option value="{{ currency.0 }}" {% if currency_id == currency.0 %} selected="selected"{% endif %}>{{ currency.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Reconcile status</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
+                        <option value="-1">All</option>
+                        <option value="4" {% if reconcile_status_id == 4 %} selected="selected"{% endif %}>Reconciled</option>
+                        <option value="6" {% if reconcile_status_id == 6 %} selected="selected"{% endif %}>Unreconciled - Different Amount</option>
+                        <option value="7" {% if reconcile_status_id == 7 %} selected="selected"{% endif %}>Unreconciled - Type not match</option>
+                        <option value="8" {% if reconcile_status_id == 8 %} selected="selected"{% endif %}>Unreconciled - Only in partner</option>
+                        <option value="9" {% if reconcile_status_id == 9 %} selected="selected"{% endif %}>Unreconciled - Only in Equator</option>
+                    </select>
+                </div>
+            </div>
+
+             <div class="form-group">
+                <label class="col-sm-2 control-label">Payment type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payment_type" name="reconcile_payment_type_id">
+                        <option value="" >All</option>
+                        <option value="debit" {% if reconcile_payment_type_id == 'debit' %} selected="selected"{% endif %}>Debit</option>
+                        <option value="credit" {% if reconcile_payment_type_id == 'credit' %} selected="selected"{% endif %}>Credit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ from_created_timestamp |default_if_none:''}}"
+                           id="dtp_from">
+                </div>
+                <label class="col-sm-1 control-label">End date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ to_created_timestamp|default_if_none:''}}"
+                           id="dtp_to">
+                </div>
+            </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+            <div class="form-group">
+                <div class="pull-right col-sm-1">
+                    <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        {% if paginator %}
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_sof_report">
+                <thead>
+                <tr>
+                    <th id="id_clm">Order ID/Detail Txn ID</th>
+                    <th id="ext_transaction_id_clm">External Transaction ID</th>
+                    <th id="transaction_id_clm"> Transaction ID for Reconcile</th>
+                    <th id="is_us_on_clm">ON US/OFF US</th>
+                    <th id="payment_type_clm">Payment type</th>
+                    <th id="payment_type_partner_clm">Payment type from partner</th>
+                    <th id="reconcile_date_clm">Reconcilelation Date&time</th>
+                    <th id="status_clm">Status</th>
+                    <th id="equator_amount_clm">Equator Amount</th>
+                    <th id="partner_amount_clmb">Partner Amount</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                    {% for report in sof_report %}
+                        <tr>
+                            <td class="col-sm-2">{{ report.detail_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.ext_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.authorized_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{% if report.sof_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{{ report.payment_type|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.partner_payment_type|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.status.name|default_if_none:''  }}</td>
+                            <td class="col-sm-2">{{ report.tmn_amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.authorized_amount|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</div>
+{% endblock %}

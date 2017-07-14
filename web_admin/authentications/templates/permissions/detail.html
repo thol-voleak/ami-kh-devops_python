@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Manage Permission Entities</h3>
+        </div>
+
+    <div class="panel-body">
+
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <h4>View Permission Entity</h4>
+            </div>
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'authentications:edit_permission' permission_id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">ID</label>
+                        <div class="col-sm-8">
+                            <input type="area" class="form-control input-rounded" name="permission_id"
+                                   id="txt_permission_id" readonly
+                                   value="{{ permission.id | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Level Page</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="is_page_level"
+                                   id="txt_is_page_level" required="required" readonly
+                                   value="{{ permission.is_page_level | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="name"
+                                   id="txt_name" required="required" readonly
+                                   value="{{ permission.name | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <input type="area" class="form-control input-rounded" name="description"
+                                   id="txt_description" readonly
+                                   value="{{ permission.description | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Created Date</label>
+                        <div class="col-sm-8">
+                            <input type="area" class="form-control input-rounded" name="created_date"
+                                   id="txt_created_date" readonly
+                                   value="{{ permission.created_timestamp | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Modified Date</label>
+                        <div class="col-sm-8">
+                            <input type="area" class="form-control input-rounded" name="modified_date"
+                                   id="txt_modified_date" readonly
+                                   value="{{ permission.last_updated_timestamp | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <a href="{% url 'authentications:permissions_list' %}">
+                            <input id="permission_btn_back" class="btn text-left mb15" type="button"
+                                   value="Back"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

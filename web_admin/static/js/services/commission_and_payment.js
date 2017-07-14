@@ -1,4 +1,4 @@
-function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
+function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
 
     var nEditing = null;
     var oTable;
@@ -12,6 +12,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         }
 
         oTable.fnDraw();
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     function editRow(oTable, nRow) {
@@ -40,7 +43,19 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 htmlSelected = ' ';
             }
 
-            htmlDDActors += '<option value="' + this.actor_type_id + '"' + htmlSelected + '>' + this.actor_type + '</option>';
+            htmlDDActors += '<option value="' + this.actor_type + '"' + htmlSelected + '>' + this.actor_type + '</option>';
+        });
+
+        // Master: Specific ID Dropdown
+        var htmlDDSpecificIDs = '<option value=""></option>';
+        jQuery.each(m_specific_ids, function() {
+            if (aData[2] == this) {
+                htmlSelected = ' selected=\"selected\" ';
+            } else {
+                htmlSelected = ' ';
+            }
+
+            htmlDDSpecificIDs += '<option value="' + this + '"' + htmlSelected + '>' + this + '</option>';
         });
 
         // Master: SOFTypes Dropdown
@@ -78,8 +93,16 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var htmlIDAmount = 'id=\'';
 
         // For SpecificID changing according to Actor Types.
-        var htmlIDSpecificIDDisabled = '';
+        var setDisabled = '';
         var htmlActorEventJS = "";
+        var setRequired = '';
+
+        // For Specific SOF changing according to SpecificID & SOF Type.
+        var htmlgetSOFEventJS = "";
+
+        // For Amount Types.
+        var htmlAmountTypeEventJS = "";
+        var setRateDisabled = '';
 
         // Buttons
         var htmlIDBtnSave = 'id=\'';
@@ -88,41 +111,47 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         if (tableId == 'tbl_setting_payment_fee_structure') {
             htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
             htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
-            htmlIDSpecificID += 'txt_setting_payment_fee_structure_specific_id_edit';
+            htmlIDSpecificID += 'ddl_setting_payment_fee_structure_specific_id_edit';
             htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
-            htmlIDSpecificSOF += 'txt_setting_payment_fee_structure_specific_source_of_fund_edit';
+            htmlIDSpecificSOF += 'ddl_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#txt_setting_payment_fee_structure_specific_id_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit')\"";
 
         } else if (tableId == 'tbl_setting_bonus') {
             htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
-            htmlIDSpecificID += 'txt_setting_bonus_specific_id_edit';
+            htmlIDSpecificID += 'ddl_setting_bonus_specific_id_edit';
             htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
-            htmlIDSpecificSOF += 'txt_setting_bonus_spec_src_fund_edit';
+            htmlIDSpecificSOF += 'ddl_setting_bonus_spec_src_fund_edit';
             htmlIDAmount += 'ddl_setting_bonus_amount_edit';
             htmlIDRate += 'txt_setting_bonus_rate_edit';
             htmlIDBtnSave += 'btn_setting_bonus_save';
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
 
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#txt_setting_bonus_specific_id_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit')\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#ddl_setting_bonus_specific_id_edit', '#ddl_setting_bonus_spec_src_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
 
         } else if (tableId == 'tbl_bonus') {
             htmlIDActionTypes += 'ddl_bonus_dc_edit';
             htmlIDActorTypes += 'ddl_bonus_actor_edit';
-            htmlIDSpecificID += 'txt_bonus_specific_id_edit';
+            htmlIDSpecificID += 'ddl_bonus_specific_id_edit';
             htmlIDSOFTypes += 'ddl_bonus_source_of_fund_edit';
-            htmlIDSpecificSOF += 'txt_bonus_specific_source_of_fund_edit';
+            htmlIDSpecificSOF += 'ddl_bonus_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_bonus_amount_edit';
             htmlIDRate += 'txt_bonus_rate_edit';
             htmlIDBtnSave += 'btn_bonus_save';
             htmlIDBtnCancel += 'btn_bonus_cancel';
 
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#txt_bonus_specific_id_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit')\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#ddl_bonus_specific_id_edit', '#ddl_bonus_specific_source_of_fund_edit')\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_bonus_amount_edit', '#txt_bonus_rate_edit')\"";
         }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
@@ -134,18 +163,37 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         htmlIDBtnSave += '\'';
         htmlIDBtnCancel += '\'';
 
-        if (aData[1] === 'Specific ID')
-            htmlIDSpecificIDDisabled = '';
-        else
-            htmlIDSpecificIDDisabled = 'disabled';
+        // set disabled, required for specific ID & specific SOF according to Actor Types
+        if (aData[1] === 'Specific ID') {
+            setDisabled = '';
+            setRequired = 'required';
+        } else {
+            setDisabled = 'disabled';
+        }
+
+        // set disabled, required for Rate according to AmountType
+        if (aData[5].indexOf("Rate") >= 0) {
+            setRateDisabled = '';
+        } else {
+            setRateDisabled = 'disabled';
+        }
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
-        jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' type=\'text\' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '<input ' + htmlIDSpecificIDDisabled + ' ' + htmlIDSpecificID + ' type=\'text\' class=\'form-control\' name=\'specific_id\' value=\'' + aData[2] + '\'>';
-        jqTds[3].innerHTML = '<select ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<input ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\' value=\'' + aData[4] + '\'>';
-        jqTds[5].innerHTML = '<select ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
+        jqTds[2].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
+        jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
+        jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
+        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+
+        // Master: Specific SOF Dropdown
+        var htmlDDSpecificSOFs = '';
+        if (tableId == "tbl_setting_payment_fee_structure")
+            {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit',aData[4]);}
+        else if (tableId == "tbl_bonus")
+            {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit',aData[4]);}
+        else if (tableId == 'tbl_setting_bonus')
+            {getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit',aData[4]);}
 
         // Action Buttons
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
@@ -154,6 +202,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
+
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     function saveRow(oTable, nRow) {
@@ -165,18 +217,14 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         // DD Type
         oTable.fnUpdate($(jqSelects[0]).find(":selected").html(), nRow, 0, false);      // Action_Type
         oTable.fnUpdate($(jqSelects[1]).find(":selected").html(), nRow, 1, false);      // Actor_Type
-        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
-        oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 5, false);      // Amount Type
-
-        // Input Text Type
-        if (jqInputs.length > 2) { // In case we got "Specific ID"
-            oTable.fnUpdate(jqInputs[0].value, nRow, 2, false);                             // Specific ID
-            oTable.fnUpdate(jqInputs[1].value, nRow, 4, false);                             // Specific SOF
-            oTable.fnUpdate(jqInputs[2].value, nRow, 6, false);                             // Rate
-        } else {
-            oTable.fnUpdate(jqInputs[0].value, nRow, 4, false);                             // Specific SOF
-            oTable.fnUpdate(jqInputs[1].value, nRow, 6, false);                             // Rate
-        }
+        oTable.fnUpdate($(jqSelects[2]).find(":selected").html(), nRow, 2, false);      // Specific ID
+        oTable.fnUpdate($(jqSelects[3]).find(":selected").html(), nRow, 3, false);      // Sof Type ID
+        var spec_SOF = $(jqSelects[4]).find(":selected").html();
+        if (spec_SOF === undefined)
+            spec_SOF = "";
+        oTable.fnUpdate(spec_SOF, nRow, 4, false);      // Specific SOF
+        oTable.fnUpdate($(jqSelects[5]).find(":selected").html(), nRow, 5, false);      // Amount Type
+        oTable.fnUpdate(jqInputs[0].value, nRow, 6, false);                             // Rate
 
         // Build up HTML ID Element
         var htmlIDBtnEdit = 'id=\'';
@@ -210,6 +258,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         oTable.fnDraw();
 
         onBindingButtonsDeleteEvent();
+
+        $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
     }
 
     // Commission and Payment Table
@@ -217,48 +269,60 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
+        var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[5]).find(":selected").html();
 
-        // Request to server
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                "fee_tier_id": fee_tier_id,
-                "action_type": $(jqSelects[0]).find(":selected").html(),
-                "actor_type": $(jqSelects[1]).find(":selected").html(),
-                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "specific_actor_id": jqInputs[0].value,
-                "specific_sof": jqInputs[1].value,
-                "rate": jqInputs[2].value
-            },
-            dataType: "json",
+        if ((ActorType === 'Specific ID' && jqSelects[2].value === "") || (ActorType === 'Specific ID' && jqSelects[4].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[0].value === "")) {
+            document.getElementById("btn_setting_payment_fee_structure_add").click();
+            nEditing = nRow;
+        }
+        else {
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    "fee_tier_id": fee_tier_id,
+                    "action_type": $(jqSelects[0]).find(":selected").html(),
+                    "actor_type": $(jqSelects[1]).find(":selected").html(),
+                    "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
+                    "sof_type_id": $(jqSelects[3]).find(":selected").val(),
+                    "specific_sof": $(jqSelects[4]).find(":selected").html(),
+                    "amount_type": $(jqSelects[5]).find(":selected").html(),
+                    "rate": jqInputs[0].value
+                },
+                dataType: "json",
                 beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            },
-            success: function (response) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
 
-                if(response.status == 1) {
-                    // Logout
-                    var url = window.location.origin + "/admin-portal/logout/";
-                    window.location.replace(url);
-                } else if(response.status == 2) {
-                    // success
-                    console.log('Updated Setting Payment & Fee Structure Successfully');
-                    saveRow(oTable, nRow);
-                    addMessage("Updated Setting Payment & Fee Structure Successfully");
-                } else {
-                    // Failed
-                    console.log('Updated Setting Payment & Fee Structure got error!');
-                    addMessage("Updated Setting Payment & Fee Structure got error!");
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        // success
+                        console.log('Updated Setting Payment & Fee Structure Successfully');
+                        saveRow(oTable, nRow);
+                        addMessage("Updated Setting Payment & Fee Structure Successfully");
+                    } else {
+                        // Failed
+                        console.log('Updated Setting Payment & Fee Structure got error!');
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                    $(this).removeAttr( "style" );
+            });
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+
+                    addErrorMessage("Edit error!");
                 }
-            },
-            error: function (err) {
-                var json = JSON.stringify(err);
-
-                addMessage("Edit error!");
-            }
-        });
+            });
+        }
     }
 
     // Setting Bonus Table
@@ -266,46 +330,60 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
+        var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[5]).find(":selected").html();
 
-        // Request to server
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                "action_type": $(jqSelects[0]).find(":selected").html(),
-                "actor_type": $(jqSelects[1]).find(":selected").html(),
-                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "specific_actor_id": jqInputs[0].value,
-                "specific_sof": jqInputs[1].value,
-                "rate": jqInputs[2].value
-            },
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            },
-            success: function (response) {
+        if ((ActorType === 'Specific ID' && jqSelects[2].value === "") || (ActorType === 'Specific ID' && jqSelects[4].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[0].value === "")) {
+            document.getElementById("btn_setting_bonus_add").click();
+            nEditing = nRow;
+        }
+        else {
 
-                if(response.status == 1) {
-                    // Logout
-                    var url = window.location.origin + "/admin-portal/logout/";
-                    window.location.replace(url);
-                } else if(response.status == 2) {
-                    console.log('Saved row data');
-                    saveRow(oTable, nRow);
-                    addMessage("Updated Setting Bonus Successfully");
-                } else {
-                    console.log('Error adding row data');
-                    addMessage("Updated Setting Bonus got error!");
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    "fee_tier_id": fee_tier_id,
+                    "action_type": $(jqSelects[0]).find(":selected").html(),
+                    "actor_type": $(jqSelects[1]).find(":selected").html(),
+                    "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
+                    "sof_type_id": $(jqSelects[3]).find(":selected").val(),
+                    "specific_sof": $(jqSelects[4]).find(":selected").html(),
+                    "amount_type": $(jqSelects[5]).find(":selected").html(),
+                    "rate": jqInputs[0].value
+                },
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
+
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        console.log('Saved row data');
+                        saveRow(oTable, nRow);
+                        addMessage("Updated Setting Bonus Successfully");
+                    } else {
+                        console.log('Error adding row data');
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
+
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+
+                    addErrorMessage("Edit error!");
                 }
-
-            },
-            error: function (err) {
-                var json = JSON.stringify(err);
-
-                addMessage("Edit error!");
-            }
-        });
+            });
+        }
     }
 
     // Agent Bonus Table
@@ -313,46 +391,57 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
+        var ActorType = $(jqSelects[1]).find(":selected").html();
+        var AmountType = $(jqSelects[5]).find(":selected").html();
 
-        // Request to server
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                "fee_tier_id": fee_tier_id,
-                "action_type": $(jqSelects[0]).find(":selected").html(),
-                "actor_type": $(jqSelects[1]).find(":selected").html(),
-                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "specific_actor_id": jqInputs[0].value,
-                "specific_sof": jqInputs[1].value,
-                "rate": jqInputs[2].value
-            },
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            },
-            success: function (response) {
+        if ((ActorType === 'Specific ID' && jqSelects[2].value === "") || (ActorType === 'Specific ID' && jqSelects[4].value === "") || (AmountType.indexOf("Rate") !== -1 && jqInputs[0].value === "")) {
+            document.getElementById("btn_agent_hierarchy_distribution_bonus_add").click();
+            nEditing = nRow;
+        }
+        else {
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    "fee_tier_id": fee_tier_id,
+                    "action_type": $(jqSelects[0]).find(":selected").html(),
+                    "actor_type": $(jqSelects[1]).find(":selected").html(),
+                    "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
+                    "sof_type_id": $(jqSelects[3]).find(":selected").val(),
+                    "specific_sof": $(jqSelects[4]).find(":selected").html(),
+                    "amount_type": $(jqSelects[5]).find(":selected").html(),
+                    "rate": jqInputs[0].value
+                },
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
 
-                if(response.status == 1) {
-                    // Logout
-                    var url = window.location.origin + "/admin-portal/logout/";
-                    window.location.replace(url);
-                } else if(response.status == 2) {
-                    console.log('Saved row data');
-                    saveRow(oTable, nRow);
-                    addMessage("Updated Agent Hierrachy Distribution - Bonus Successfully");
-                } else {
-                    console.log('Error adding row data');
-                    addMessage("Updated Agent Hierrachy Distribution - Bonus got error!");
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        console.log('Saved row data');
+                        saveRow(oTable, nRow);
+                        addMessage("Updated Agent Hierrachy Distribution - Bonus Successfully");
+                    } else {
+                        console.log('Error adding row data');
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    addErrorMessage("Edit error!");
                 }
-
-            },
-            error: function (err) {
-                var json = JSON.stringify(err);
-                addMessage("Edit error!");
-            }
-        });
+            });
+        }
     }
 
     // for Agent Hierrachy Distribution - Fee
@@ -360,44 +449,67 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
         var jqInputs = $('input', nRow);
         var jqSelects = $('select', nRow);
         var url = $(nRow).data('url');
+        var ActorType = $(jqSelects[1]).find(":selected").html();
 
-        // Request to server
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                "action_type": $(jqSelects[0]).find(":selected").html(),
-                "actor_type": $(jqSelects[1]).find(":selected").html(),
-                "sof_type_id": $(jqSelects[2]).find(":selected").val(),
-                "amount_type": $(jqSelects[3]).find(":selected").html(),
-                "specific_actor_id": jqInputs[0].value,
-                "specific_sof": jqInputs[1].value,
-                "rate": jqInputs[2].value
-            },
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            },
-            success: function (response) {
+        //Validate Input Value specific_actor_id
+        if(ActorType == 'Specific ID' && jqInputs[0].value == "") {
+            editRow(oTable, nRow);
+            document.getElementById("txt_agent_hier_fee_specific_id_edit").style.borderColor = "red";
+            // $(jqInputs[0]).prop("style", "border-color: red;");
+            addErrorMessage("Please input Specific ID");
 
-                if(response.status == 1) {
-                    // Logout
-                    var url = window.location.origin + "/admin-portal/logout/";
-                    window.location.replace(url);
-                } else if(response.status == 2) {
-                    console.log('Saved row data');
-                    saveRow(oTable, nRow);
-                    addMessage("Updated Agent Hirarchy Distribution - Fee successfully");
-                } else {
-                    console.log('Error adding row data');
-                    addMessage("Updated Agent Hirarchy Distribution - Fee got error!");
+        }
+        //Validate Input Value specific_sof
+        else if(ActorType == 'Specific ID' && jqInputs[1].value == "") {
+            editRow(oTable, nRow);
+            document.getElementById("txt_agent_hier_fee_specific_source_of_fund_edit").style.borderColor = "red";
+            // $(jqInputs[1]).prop("style", "border-color: red;");
+            addErrorMessage("Please input Specific Source of Fund");
+        }
+        else {
+
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    "action_type": $(jqSelects[0]).find(":selected").html(),
+                    "actor_type": $(jqSelects[1]).find(":selected").html(),
+                    "sof_type_id": $(jqSelects[2]).find(":selected").val(),
+                    "amount_type": $(jqSelects[3]).find(":selected").html(),
+                    "specific_actor_id": jqInputs[0].value,
+                    "specific_sof": jqInputs[1].value,
+                    "rate": jqInputs[2].value
+                },
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
+
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/logout/";
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        console.log('Saved row data');
+                        saveRow(oTable, nRow);
+                        addMessage("Updated Agent Hirarchy Distribution - Fee successfully");
+                    } else {
+                        console.log('Error adding row data');
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                         $(this).removeAttr( "style" );
+                    });
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    addErrorMessage("Edit error!");
                 }
-            },
-            error: function (err) {
-                var json = JSON.stringify(err);
-                addMessage("Edit error!");
-            }
-        });
+            });
+        }
     }
 
     function onBindingButtonsCancelEvent() {
@@ -409,6 +521,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
 
             restoreRow(oTable, nEditing);
             nEditing = nRow;
+
+            $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
         });
     }
 
@@ -444,12 +560,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_sof_ty
                 else if (tableId == "tbl_bonus")
                     saveAgentBonusToServer(oTable, nEditing);
 
-                nEditing = null;
             } else {
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
                 nEditing = nRow;
             }
+
+            $("body").find("th").each(function () {
+               $(this).removeAttr( "style" );
+            });
 
             return false;
         });

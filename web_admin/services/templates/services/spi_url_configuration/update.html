@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel mb15">
+    <div class="panel-heading border mb15">
+        <h3>Edit SPI Configuration Url</h3>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="panel-body">
+        <form class="form-horizontal" role="form" method="post" action="{% url 'services:spi_configuration_edit' service_id command_id service_command_id spi_url_id spi_url_config_id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_spi_url_configuration_id"
+                           value="{{configuration_detail.spi_url_configuration_id}}"
+                           name="txt_spi_url_configuration_id" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">SPI Configuration Url Type *</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_spi_url_configuration_type" name="spi_url_configuration_type" required = "required">
+                        {% for type in configuration_type_list %}
+                            {% if type.spi_url_configuration_type == configuration_detail.spi_url_configuration_type %}
+                            <option value="{{ type.spi_url_configuration_type }}" selected>{{ type.spi_url_configuration_type }}</option>
+                            {% else %}
+                            <option value="{{ type.spi_url_configuration_type }}">{{ type.spi_url_configuration_type }}</option>
+                            {% endif %}
+
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">URL Value</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_spi_url_configuration_value"
+                           value="{{configuration_detail.url|default_if_none:''}}"
+                           name="spi_url_configuration_value"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Read Timeout (sec.)</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="txt_read_timeout"
+                           value="{{configuration_detail.read_timeout|default_if_none:''}}" name="read_timeout" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Connection Timeout (sec.)</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="txt_connection_timeout"
+                           value="{{configuration_detail.connection_timeout|default_if_none:''}}" name="connection_timeout" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Retry Delay Timeout (millisec.)</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="txt_retry_delay_millisecond"
+                           value="{{configuration_detail.retry_delay_millisecond|default_if_none:''}}" name="retry_delay_millisecond" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Max Retry</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="txt_max_retry"
+                           value="{{configuration_detail.max_retry|default_if_none:''}}" name="max_retry" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Expire in Minute *</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="txt_expire_in_minute"
+                           value="{{configuration_detail.expire_in_minute|default_if_none:''}}" name="expire_in_minute" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Created Timestamp</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_created_timestamp"
+                           value="{{configuration_detail.created_timestamp|default_if_none:''}}" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Last Updated Timestamp</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="txt_last_updated_timestamp"
+                           value="{{configuration_detail.last_updated_timestamp|default_if_none:''}}" readonly/>
+                </div>
+            </div>
+            <div class="form-group pull-right">
+                <a href="{% url 'services:spi_configuration_list' service_id command_id service_command_id spi_url_id %}">
+                    <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                </a>
+                <a>
+                    <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<div class="panel mb25">
-    <div class="panel-heading border">
+<div class="panel mb15">
+    <div class="panel-heading border mb15" >
         <h3>Tiers</h3>
     </div>
 
@@ -31,6 +31,21 @@
         <div class="alert alert-success alert-dismissable" id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ edit_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if delete_msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in delete_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-service-group">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ delete_msg }}</strong>
         </div>
     </div>
     {% endif %}
@@ -65,6 +80,7 @@
             <table class="table table-bordered table-striped mb0" id="tbl_tiers">
                 <thead>
                 <tr>
+                    <th id="lbl_id">ID</th>
                     <th id="lbl_name">Condition</th>
                     <th id="lbl_group">Amount</th>
                     <th id="lbl_currency">Fee Type</th>
@@ -80,15 +96,29 @@
                 <tbody>
                 {% for fee_tier in data %}
                 <tr>
-                    <td class="col-sm-2">{{ fee_tier.fee_tier_condition|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.condition_amount|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.fee_type|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.fee_amount|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.bonus_type|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.amount_type|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.bonus_amount|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
+                    {% if fee_tier.is_deleted %}
+                    <td class="col-sm-1">{{ fee_tier.fee_tier_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1"><del>{{ fee_tier.fee_tier_condition|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.condition_amount|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.fee_type|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.fee_amount|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.bonus_type|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.amount_type|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.bonus_amount|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.created_timestamp|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"><del>{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</del></td>
+                    <td class="col-sm-1"></td>
+                    {% else %}
+                    <td class="col-sm-1">{{ fee_tier.fee_tier_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.fee_tier_condition|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.condition_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.fee_type|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.fee_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.bonus_type|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.amount_type|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.bonus_amount|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">
                         <a type="button" class="btn btn-outline btn-xs btn-primary"  id="btn_edit" class="text-info"
                             href="{% url 'services:update_tier' service_id command_id service_command_id fee_tier.fee_tier_id %}"
@@ -101,7 +131,12 @@
                         class="text-info">
                         <span class="small">Balance movement</span>
                         </a>
+                        <a type="button" class="btn btn-outline btn-xs btn-danger"  id="btn_delete"
+                            href="{% url 'services:delete_tier' service_id command_id service_command_id fee_tier.fee_tier_id %}"
+                            role="button"> <span class="small">Delete</span>
+                        </a>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>

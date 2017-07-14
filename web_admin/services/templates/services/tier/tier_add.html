@@ -5,7 +5,20 @@
     <div class="panel-heading border">
         <h3>Add Service Tier</h3>
     </div>
-
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {%if "successfully" in message%}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-add-tier">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
@@ -28,12 +41,31 @@
                         </div>
                     </div>
 
+                     <div class="form-group" id="from_settlement_type">
+                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_settlement_type" name="settlement_type">
+                                {% for type in amount_types %}
+                                    {% if type.amount_type == body.settlement_type %}
+                                     <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
+                                    {% else %}
+                                     <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Condition</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_condition" name="condition" required>
                                 {% for item in conditions %}
-                                <option value="{{ item.fee_tier_condition }}">{{item.fee_tier_condition}}</option>
+                                    {% if item.fee_tier_condition == body.fee_tier_condition %}
+                                     <option value="{{ item.fee_tier_condition }}" selected>{{item.fee_tier_condition}}</option>
+                                    {% else %}
+                                     <option value="{{ item.fee_tier_condition }}">{{item.fee_tier_condition}}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -42,7 +74,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_amount">Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="condition_amount" id="txt_amount"/>
+                            <input value="{{ body.condition_amount|default_if_none:'' }}" type="text" step="0.01" class="form-control" name="condition_amount" id="txt_amount"  onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -52,7 +84,11 @@
                             <select class="form-control" id="ddl_fee_type" name="fee_type">
                                 <option value="">-</option>
                                 {% for item in fee_types %}
-                                <option value="{{ item.fee_type }}">{{ item.fee_type }}</option>
+                                    {% if item.fee_type == body.fee_type %}
+                                     <option value="{{ item.fee_type }}" selected>{{ item.fee_type }}</option>
+                                    {% else %}
+                                     <option value="{{ item.fee_type|default_if_none:'0' }}">{{ item.fee_type }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -61,7 +97,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="fee_amount" id="txt_fee_amount"/>
+                            <input value="{{ body.fee_amount }}" type="text" class="form-control"
+                                   name="fee_amount" id="txt_fee_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -71,7 +109,11 @@
                             <select class="form-control" id="ddl_bonus_type" name="bonus_type">
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% if item.bonus_type == body.bonus_type %}
+                                     <option value="{{ item.bonus_type }}" selected>{{ item.bonus_type }}</option>
+                                    {% else %}
+                                     <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -81,9 +123,12 @@
                         <label class="col-sm-2 control-label" id="txt_from">From</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_from" name="amount_type">
-                                <option value="">-</option>
                                 {% for type in amount_types %}
-                                <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% if type.amount_type == body.amount_type %}
+                                     <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
+                                    {% else %}
+                                     <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -92,7 +137,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="bonus_amount" id="txt_bonus_amount"/>
+                            <input value="{{ body.bonus_amount|default_if_none:'' }}" type="text" class="form-control" name="bonus_amount" id="txt_bonus_amount" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"/>
                         </div>
                     </div>
 
@@ -102,7 +147,7 @@
                                    value="Cancel"/>
                         </a>
                         <input id="btn_add" class="btn btn-success text-left mb15" type="submit"
-                                   value="Add"/>
+                                   value="Add" onClick="validateAmountFields(e)"/>
 
                     </div>
                 </form>
@@ -114,52 +159,295 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 <script>
-function changeValue() {
-    var $bonus_type = $('#ddl_bonus_type');
 
-    function toggleFromDropdownList() {
-        if($bonus_type.val() === 'Flat value') {
-            $("#from").fadeOut(500);
-        } else {
-            $("#from").fadeIn(1000);
+function changeStep(c){
+
+  var new_decimal = {{ decimal }} * -1;
+  c.step = Math.pow(10, new_decimal);
+}
+
+function forceAmountNumber(any_amount) {
+    var deci = {{ decimal }};
+    var amount = document.getElementById(any_amount);
+    any_amt = $('#'+any_amount);
+    any_amt.keypress(function(event) {
+        var $this = $(this);
+        if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+        ((event.which < 48 || event.which > 57) &&
+        (event.which != 0 && event.which != 8))) {
+            event.preventDefault();
+            } 
+        
+        var text = $(this).val();
+        if ((event.which == 46) && (text.indexOf('.') == -1)) {
+            setTimeout(function() {
+                if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
+                    $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
+                    }
+                }, 1);
+            }
+        if ((text.indexOf('.') != -1) &&
+        (text.substring(text.indexOf('.')).length > deci) &&
+        (event.which != 0 && event.which != 8) &&
+        ($(this)[0].selectionStart >= text.length - deci)) {
+            event.preventDefault();
+            }
+        });
+        
+        any_amt.bind("paste", function(e) {
+            var text = e.originalEvent.clipboardData.getData('Text');
+            if ($.isNumeric(text)) {
+                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
+                    e.preventDefault();
+                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
+                    }
+                }
+            else {
+                e.preventDefault();
+                }
+        });
+        
+    amount.onblur = function(){
+        num = amount.value;
+        if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
         }
     }
 
-    $bonus_type.on('change', function() {
-        toggleFromDropdownList();
-    });
+function forceNumber(any_amount, any_type) {
+    var deci = 0;
+    var ddl = document.getElementById(any_type);
+    var amount = document.getElementById(any_amount);
+    ddl.onchange = function() {
+        amount.value = '';
+    }
+    any_amt = $('#'+any_amount);
 
-    toggleFromDropdownList();
+    $('#' + any_type).change(function() {
+        var e = document.getElementById(any_type);   
+        if (e.value == '% rate'){
+            deci = 3;
+            }
+        else if ( e.value == 'Flat value'){
+            deci = {{ decimal }};
+            }
+        else {deci = 0;}
+        });    
 
-    <!--not require condition_amount, fee_amount, bonus_amount if condition = unlimit-->
-    var $condition = $('#ddl_condition');
+    any_amt.keypress(function(event) {
+        var $this = $(this);
+        if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+        ((event.which < 48 || event.which > 57) &&
+        (event.which != 0 && event.which != 8))) {
+            event.preventDefault();
+            } 
+        
+        var text = $(this).val();
+        if ((event.which == 46) && (text.indexOf('.') == -1)) {
+            setTimeout(function() {
+                if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
+                    $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
+                    }
+                }, 1);
+            }
+        if ((text.indexOf('.') != -1) &&
+        (text.substring(text.indexOf('.')).length > deci) &&
+        (event.which != 0 && event.which != 8) &&
+        ($(this)[0].selectionStart >= text.length - deci)) {
+            event.preventDefault();
+            }
+        });
+        
+        any_amt.bind("paste", function(e) {
+            var text = e.originalEvent.clipboardData.getData('Text');
+            if ($.isNumeric(text)) {
+                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
+                    e.preventDefault();
+                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
+                    }
+                }
+            else {
+                e.preventDefault();
+                }
+        });
+        
+    amount.onblur = function(){
+        num = amount.value;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(deci);
+                amount.value = num;
+            }
+        }
+    }
+
+forceAmountNumber("txt_amount");
+forceNumber("txt_fee_amount", "ddl_fee_type");
+forceNumber("txt_bonus_amount","ddl_bonus_type");
+
+
+// start Amount constraint
+var $condition = $('#ddl_condition');
     function updateByConditionType() {
         var $condition_amount = $('#txt_amount');
-        var $fee_amount = $('#txt_fee_amount');
-        var $bonus_amount = $('#txt_bonus_amount');
         if ($condition.val() == 'unlimit') {
             $("#label_amount").text("Amount");
-            $("#label_fee_amount").text("Fee Amount");
-            $("#label_bonus_amount").text("Bonus Amount");
             $condition_amount.removeAttr('required');
-            $fee_amount.removeAttr('required');
-            $bonus_amount.removeAttr('required');
+            $condition_amount.attr('disabled', true);
+            $condition_amount.val('');
         } else {
             $("#label_amount").text("Amount *");
-            $("#label_fee_amount").text("Fee Amount *");
-            $("#label_bonus_amount").text("Bonus Amount *");
             $condition_amount.attr('required', true);
-            $fee_amount.attr('required', true);
-            $bonus_amount.attr('required', true);
+            $condition_amount.removeAttr('disabled');
         }
     }
     updateByConditionType();
-    $condition.on('change', function() {
+    $condition.change(function() {
         updateByConditionType();
     });
+// end amount constraint
+
+
+// start Fee Amount constraint
+var $ddl_fee_type = $('#ddl_fee_type');
+
+    function validate_fee_type() {
+        if ($ddl_fee_type.val() == '') {
+            $('#txt_fee_amount').attr('disabled', true);
+            $('#txt_fee_amount').val('');
+            $("#label_fee_amount").text("Fee Amount");
+        } else {
+            $("#label_fee_amount").text("Fee Amount *")
+            $('#txt_fee_amount').removeAttr('disabled');
+            if($('#txt_fee_amount').val() == '') {
+                $('#txt_fee_amount').val('0');
+            }
+        }
+    }
+
+    $ddl_fee_type.change(function() {
+        validate_fee_type();
+        var element = document.getElementById('txt_fee_amount');
+        element.setCustomValidity("");
+    });
+    validate_fee_type();
+// end Fee Amount constraint
+
+
+
+// start Bonus Amount constraint
+var $bonus_type = $('#ddl_bonus_type');
+if($bonus_type.val() == ''){  
+    $('#txt_bonus_amount').attr('disabled', true);
+    $("#label_bonus_amount").text("Bonus Amount");
+    $("#from").hide();
+}
+    $bonus_type.change(function(){
+        if($bonus_type.val() == ''){
+            $('#txt_bonus_amount').attr('disabled', true);
+            $('#txt_bonus_amount').val('');
+            $("#label_bonus_amount").text("Bonus Amount");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == 'Flat value'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == '% rate'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeIn(1000);
+        }
+    })
+// end Bonus Amount constraint
+
+
+
+var txt_bonus_amount = document.getElementById("txt_bonus_amount");
+var txt_fee_amount = document.getElementById('txt_fee_amount');
+var condition_amount = document.getElementById('txt_amount');
+
+function validateBonusValue() {
+    if(txt_bonus_amount.value == '') {
+        <!--txt_bonus_amount.value = '0';-->
+    } else {
+        txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_bonus_amount.value == '') {
+        <!--txt_bonus_amount.value = '0';-->
+    }
+
+    // Validate min value
+    validateMinValue(txt_bonus_amount);
 }
 
-$(changeValue);
+function validateFeeValue() {
+    if(txt_fee_amount.value == '') {
+        <!--txt_fee_amount.value = '0';-->
+    } else {
+        txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_fee_amount.value == '') {
+        <!--txt_fee_amount.value = '0';-->
+    }
+
+    // Validate min value
+    validateMinValue(txt_fee_amount);
+
+    var $ddl_fee_type = $('#ddl_fee_type');
+    if ($ddl_fee_type.val() == '% rate') {
+        validateMaxValue(txt_fee_amount);
+    }
+}
+
+function validateConditionAmount() {
+    validateMinValue(condition_amount);
+}
+
+function validateMinValue(element) {
+    var value = parseFloat(element.value) || 0.0;
+    if(value < 0) {
+        element.setCustomValidity('Amount cannot be lower than 0');
+    } else {
+        element.setCustomValidity("");
+        //element.value = value;
+    }
+}
+
+function validateMaxValue(element) {
+    var max = parseInt(element.getAttribute("max")) || 100;
+    var value = parseFloat(element.value) || 0.0;
+    if(value > max) {
+        element.setCustomValidity('Amount cannot be greater than ' + max);
+    } else {
+        element.setCustomValidity("");
+        //element.value = value;
+    }
+}
+
+function validateAmountFields(e) {
+    e.preventDefault();
+    validateConditionAmount();
+    validateFeeValue();
+    validateBonusValue();
+}
+
+txt_bonus_amount.onkeyup = validateBonusValue;
+txt_fee_amount.onkeyup = validateFeeValue;
+condition_amount.onkeyup = validateConditionAmount;
+
 
 </script>
 

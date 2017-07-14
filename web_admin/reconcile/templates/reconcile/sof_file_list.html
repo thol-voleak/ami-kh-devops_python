@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Source Of Fund File List</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'reconcile:reconcile_sof_file_list' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On us/Off us</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_on_off_us" name="on_off_us_id">
+                        <option value=-1 {% if is_on_us == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if is_on_us == 1 %}selected="selected"{% endif %}>On</option>
+                        <option value=0 {% if is_on_us == 0 %}selected="selected"{% endif %}>Off</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_source_of_fund" name="source_of_fund_id">
+                        <option value="bank">Bank</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Source of fund partner name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="sof_partner_name_id"
+                           id="sof_partner_name_id" value="{{ sof_code|default_if_none:'' }}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id">
+                        <option value="" >All</option>
+                        {% for currency_item in currencies %}
+                        <option value="{{ currency_item.0 }}"
+                                {% if currency_item.0|slugify == currency|slugify %}
+                                selected
+                                {% endif %}>{{ currency_item.0 }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Reconcile status</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_reconcile_status" name="reconcile_status_id">
+                        <option value=-1 {% if status_id == -1 %}selected="selected"{% endif %}>All</option>
+                        <option value=4 {% if status_id == 4 %}selected="selected"{% endif %}>Reconciled</option>
+                        <option value=5 {% if status_id == 5 %}selected="selected"{% endif %}>Unreconciled</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ start_date|default_if_none:'' }}"
+                           id="dtp_from">
+                </div>
+                <label class="col-sm-1 control-label">End date</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ end_date|default_if_none:'' }}"
+                           id="dtp_to">
+                </div>
+            </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+            <div class="form-group">
+                <div class="pull-right col-sm-1">
+                    <button id="btn_search" class="btn btn-success text-left mb15" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        {% if paginator %}
+        <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_file_list">
+                <thead>
+                <tr>
+                    <th id="id_clm">ID</th>
+                    <th id="file_name_clm">File Name</th>
+                    <th id="is_us_on_clm">ON US/OFF US</th>
+                    <th id="sof_clm">Source of fund</th>
+                    <th id="sof_partner_name_clm">Source of fund partner name</th>
+                    <th id="currency_clm">Currency</th>
+                    <th id="processing_status_clm">Status</th>
+                    <th id="reconcile_date_clm">Reconcile Date</th>
+                    <th id="action_clm">Action</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                    {% for file in file_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ file.id }}</td>
+                            <td class="col-sm-2">{{ file.file_name }}</td>
+                            <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{{ file.source_of_fund }}</td>
+                            <td class="col-sm-2">{{ file.sof_code }}</td>
+                            <td class="col-sm-2">{{ file.currency }}</td>
+                            <td class="col-sm-2">{{ file.status.name }}</td>
+                            <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
+                            <td class="col-sm-3">
+                                {% if file.status.id is 4 or file.status.id is 5 %}
+                                <div class="btn-group">
+                                    <button class="btn btn-outline btn-xs btn-primary btn_detail"
+                                            value="{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}"
+                                            onclick="redirectToReportPage('{{ file.id }}', '{{ file.is_on_us }}',
+                                                    '{{ file.source_of_fund }}', '{{ file.sof_code }}', '{{ file.currency }}',
+                                                    '{{ file.start_data_timestamp }}', '{{ file.end_data_timestamp }}',
+                                                    '{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}')">
+                                        <u>Result</u>
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</div>
+
+<script>
+    function composeInput(name, value) {
+        return jQuery('<input>', {'name': name, 'value': value});
+    }
+
+    function convertDate(dateString) {
+        var aDate = new Date(dateString);
+        var year = aDate.getFullYear();
+        var month = aDate.getMonth() + 1;
+        var date = aDate.getDate();
+        if (month < 10) {
+            month = '0' + month;
+        }
+        if (date < 10) {
+            date = '0' + date;
+        }
+        return year + '-' + month + '-' + date;
+    }
+
+    function redirectToReportPage(fileId, isOnUS, sourceOfFund, sofPartnerName, currency, startDate, endDate, report_url) {
+        var newForm = jQuery('<form>', {
+            'action': report_url,
+            'method': 'post'
+        });
+
+        newForm.append(composeInput('csrfmiddlewaretoken', $("[name='csrfmiddlewaretoken']").val()));
+        newForm.append(composeInput('current_page_index', 1));
+        newForm.append(composeInput('on_off_us_id', isOnUS === "True" ? 1 : 0));
+        newForm.append(composeInput('source_of_fund_id', sourceOfFund));
+        newForm.append(composeInput('sof_partner_name_id', sofPartnerName));
+        newForm.append(composeInput('currency_id', currency));
+        newForm.append(composeInput('reconcile_status_id', -1));
+        newForm.append(composeInput('reconcile_payment_type_id', -1));
+        newForm.append(composeInput('from_created_timestamp', convertDate(startDate)));
+        newForm.append(composeInput('to_created_timestamp', convertDate(endDate)));
+
+        $(document.body).append(newForm);
+        newForm.submit();
+    }
+</script>
+{% endblock %}

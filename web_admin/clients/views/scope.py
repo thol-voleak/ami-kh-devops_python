@@ -5,14 +5,22 @@ from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
 import logging
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
+
 class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
     template_name = "clients/client_scope.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ScopeList, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        logger.info("========== Start Updating client scopes ==========")
+        self.logger.info("========== Start Updating client scopes ==========")
         context = super(ScopeList, self).get_context_data(**kwargs)
         client_id = context['client_id']
 
@@ -22,7 +30,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
         granted_scope_ids = [scope.get('id') for scope in granted_scopes]
 
         self.update_scopes(request, client_id, granted_scope_ids, update_scopes)
-        logger.info("========== Finish Updating client scopes ==========")
+        self.logger.info("========== Finish Updating client scopes ==========")
 
         return redirect(request.META['HTTP_REFERER'])
 
@@ -58,7 +66,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
         return success
 
     def get_context_data(self, **kwargs):
-        logger.info("========== Start Getting client scopes ==========")
+        self.logger.info("========== Start Getting client scopes ==========")
         context = super(ScopeList, self).get_context_data(**kwargs)
         client_id = context['client_id']
         all_scopes = self._get_all_scopes_list()
@@ -68,7 +76,7 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
 
         all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes,client_scopes)
         context['all_scopes'] = all_scopes
-        logger.info("========== Finish Getting client scopes ==========")
+        self.logger.info("========== Finish Getting client scopes ==========")
         return context
 
     def _get_all_scopes_list(self):

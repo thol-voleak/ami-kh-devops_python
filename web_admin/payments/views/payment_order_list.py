@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.api_settings import PAYMENT_URL
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +17,14 @@ IS_SUCCESS = {
 
 class PaymentOrderView(TemplateView, RESTfulMethods):
     template_name = "payments/payment_order.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(PaymentOrderView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start searching payment order ==========')
+        self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
@@ -26,12 +33,12 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
 
-        logger.info('order_id: {}'.format(order_id))
-        logger.info('service_name: {}'.format(service_name))
-        logger.info('payer_user_id: {}'.format(payer_user_id))
-        logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
-        logger.info('payee_user_id: {}'.format(payee_user_id))
-        logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
+        self.logger.info('order_id: {}'.format(order_id))
+        self.logger.info('service_name: {}'.format(service_name))
+        self.logger.info('payer_user_id: {}'.format(payer_user_id))
+        self.logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
+        self.logger.info('payee_user_id: {}'.format(payee_user_id))
+        self.logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
 
         body = {}
         if order_id:
@@ -60,7 +67,7 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
                    'payee_user_type_id':payee_user_type_id}
-        logger.info('========== Finished searching payment order ==========')
+        self.logger.info('========== Finished searching payment order ==========')
 
         return render(request, self.template_name, context)
 

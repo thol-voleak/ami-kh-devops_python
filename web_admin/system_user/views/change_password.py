@@ -5,12 +5,17 @@ from web_admin import api_settings
 import logging
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import encrypt_text
+from web_admin.utils import encrypt_text, setup_logger
 
 logger = logging.getLogger(__name__)
 
 class SystemUserChangePassword(TemplateView, RESTfulMethods):
     template_name = "system_user/system_user_change_password.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(SystemUserChangePassword, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         try:
@@ -30,16 +35,16 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
             return context
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start changing system user password ==========')
+        self.logger.info('========== Start changing system user password ==========')
         system_user_id = kwargs['systemUserId']
-        url = api_settings.SYSTEM_USER_CHANGE_PASSWORD_URL.format(system_user_id)
+        url = api_settings.CHANGE_PASSWORD_SYSTEM_USER_URL.format(system_user_id)
         password = request.POST.get('newpassword')
         params = {"password": encrypt_text(password)}
         data, success = self._put_method(api_path=url,
                                          func_description="password",
                                          logger=logger,
                                          params=params)
-        logger.info('========== Finish changing system user password ==========')
+        self.logger.info('========== Finish changing system user password ==========')
         if success:
             messages.add_message(request, messages.SUCCESS, 'Password has been changed successfully')
             return redirect('system_user:system-user-list')

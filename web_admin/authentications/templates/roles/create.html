@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Manage Role Entities</h3>
+        </div>
+
+    <div class="panel-body">
+
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <h4>Create New Role Entity</h4>
+            </div>
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'authentications:create_role' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="name"
+                                   id="txt_name" required="required"
+                                   value="{{ name | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <input type="area" class="form-control input-rounded" name="description"
+                                   id="txt_description"
+                                   value="{{ description | default_if_none:'' }}">
+
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                         <a href="{% url 'authentications:role_list' %}">
+                            <input id="bank_btn_cancel" class="btn text-left mb15" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <input id="bank_btn_add" role="button" class="btn btn-success text-left mb15" type="submit"
+                               value="Create"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

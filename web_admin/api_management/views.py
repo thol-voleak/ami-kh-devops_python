@@ -3,27 +3,40 @@ from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 import logging
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
+
 class APIListView(TemplateView, RESTfulMethods):
     template_name = 'api_management/list_api.html'
+    logger = logger
     response = {}
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(APIListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start getting api List ==========')
+        self.logger.info('========== Start getting api List ==========')
         url = api_settings.APIS_URL
         data, success = self._get_method(url, "service list", logger)
-        logger.info('========== Finished getting api List ==========')
+        self.logger.info('========== Finished getting api List ==========')
         self.response["data"] = data.get('apis', [])
         return self.response
 
 
 class AddAPIView(TemplateView, RESTfulMethods):
     template_name = 'api_management/add_api.html'
+    logger = logger
     choices = {"GET", "POST", "PUT", "DELETE"}
     boolean_list = {"true", "false"}
     data = {}
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(AddAPIView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         self.data["choices"] = self.choices
@@ -33,7 +46,7 @@ class AddAPIView(TemplateView, RESTfulMethods):
 
     def _get_services_list(self):
         if getattr(self, '_services', None) is None:
-            logger.info("Getting service list by {} user id".format(self.request.user.username))
+            self.logger.info("Getting service list by {} user id".format(self.request.user.username))
             url = api_settings.SERVICES_LIST_URL
             data, success = self._get_method(url, "service list", logger)
             self._services_list = data.get("services", [])
@@ -41,7 +54,7 @@ class AddAPIView(TemplateView, RESTfulMethods):
         return self._services_list
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start post add new api ==========')
+        self.logger.info('========== Start post add new api ==========')
         api_name = request.POST.get('api_name')
         api_http_method = request.POST.get('api_http_method')
         api_pattern = request.POST.get('api_pattern')
@@ -62,22 +75,27 @@ class AddAPIView(TemplateView, RESTfulMethods):
         
         url = api_settings.APIS_URL
         data, success = self._post_method(url, "API", logger, data)
-        logger.info('========== End post add new api ==========')
+        self.logger.info('========== End post add new api ==========')
         if success:
             return redirect('api_management:api_list')
 
 
 class ServiceListView(TemplateView, RESTfulMethods):
     template_name = 'api_management/service_list.html'
+    logger = logger
     response = {}
 
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ServiceListView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
-        logger.info('========== Start getting api List ==========')
+        self.logger.info('========== Start getting api List ==========')
         url = api_settings.APIS_URL
         data, success = self._get_method(url, "api List", logger)
 
         self.response["data"] = data.get('apis', [])
-        logger.info('========== Finish getting api List ==========')
+        self.logger.info('========== Finish getting api List ==========')
         return self.response
 
 

@@ -1,5 +1,5 @@
 import logging
-
+from web_admin.utils import setup_logger
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
@@ -10,10 +10,15 @@ logger = logging.getLogger(__name__)
 
 class ServiceGroupDeleteForm(TemplateView, RESTfulMethods):
     template_name = "service_group/delete.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ServiceGroupDeleteForm, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         try:
-            logger.info('========== Start getting service group delete detail ==========')
+            self.logger.info('========== Start getting service group delete detail ==========')
 
             context = super(ServiceGroupDeleteForm, self).get_context_data(**kwargs)
             service_group_id = context['ServiceGroupId']
@@ -31,17 +36,17 @@ class ServiceGroupDeleteForm(TemplateView, RESTfulMethods):
 
         if success:
             context = {'service_group_info': data}
-            logger.info('========== Finished getting service group delete detail ==========')
+            self.logger.info('========== Finished getting service group delete detail ==========')
             return context
         else:
-            logger.info("Error Getting System User Delete Detail.")
+            self.logger.info("Error Getting System User Delete Detail.")
             context = {'service_group_info': data}
-            logger.info('========== Finished getting service group delete detail ==========')
+            self.logger.info('========== Finished getting service group delete detail ==========')
             return context
 
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start deleting service group ==========')
+        self.logger.info('========== Start deleting service group ==========')
 
         context = super(ServiceGroupDeleteForm, self).get_context_data(**kwargs)
         service_group_id = context['ServiceGroupId']
@@ -53,13 +58,13 @@ class ServiceGroupDeleteForm(TemplateView, RESTfulMethods):
             func_description="Service Group Delete",
             logger=logger
         )
-        logger.info('========== Finish deleting service group ==========')
+        self.logger.info('========== Finish deleting service group ==========')
         if status:
             messages.add_message(request, messages.SUCCESS, 'Deleted data successfully')
             return redirect('service_group:service_group_list')
         else:
             messages.add_message(request, messages.ERROR, data)
-            logger.info("Error deleting service group {}".format(service_group_id))
+            self.logger.info("Error deleting service group {}".format(service_group_id))
             return redirect('service_group:service_group_delete', ServiceGroupId=(service_group_id))
 
 

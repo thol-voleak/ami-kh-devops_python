@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Manage Permission Entities</h3>
+        </div>
+
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-permissions">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <h4>Permission Entities</h4>
+            </div>
+            <div class="no-more-tables">
+                <table id='tbl_permission_entities' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="name">Name</th>
+                        <th id="description">Description</th>
+                        <th id="is_page_level">Page Level</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="modified_date">Modified Date</th>
+                        <th class="col-sm-2" id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for permission in permissions|dictsort:"id" %}
+                        <tr>
+                            <td>{{ permission.id|default_if_none:'' }}</td>
+                            <td>{{ permission.name|default_if_none:'' }}</td>
+                            <td>{{ permission.description|default_if_none:'' }}</td>
+                            <td>{{ permission.is_page_level|default_if_none:'' }}</td>
+                            <td>{{ permission.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ permission.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-info mb5"
+                                       role="button"
+                                       id="btn_detail"
+                                       href="{% url 'authentications:permission_detail' permission.id %}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-info mb5"
+                                       role="button"
+                                       id="btn_edit"
+                                       href="{% url 'authentications:edit_permission' permission.id %}">
+                                        <span class="small">Edit</span>
+                                    </a>
+                                <a type="button"
+                                       class="btn btn-outline btn-xs btn-danger mb5"
+                                       role="button"
+                                       id="btn_delete"
+                                       href="{% url 'authentications:delete_permission' permission.id %}">
+                                        <span class="small">Delete</span>
+                                    </a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 import logging
 from web_admin import api_settings
+from web_admin.utils import setup_logger
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
@@ -9,9 +10,14 @@ logger = logging.getLogger(__name__)
 
 class ClientUpdateForm(TemplateView, RESTfulMethods):
     template_name = "clients/update_client_form.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ClientUpdateForm, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info("========== Start Updating client detail ==========")
+        self.logger.info("========== Start Updating client detail ==========")
         context = super(ClientUpdateForm, self).get_context_data(**kwargs)
         client_id = context['client_id']
         return self._get_client_detail(client_id)
@@ -27,6 +33,12 @@ class ClientUpdateForm(TemplateView, RESTfulMethods):
 
 
 class ClientUpdate(TemplateView, RESTfulMethods):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ClientUpdate, self).dispatch(request, *args, **kwargs)
+    
     def post(self, request, *args, **kwargs):
 
         client_id = request.POST.get('client_id')
@@ -50,12 +62,12 @@ class ClientUpdate(TemplateView, RESTfulMethods):
         url = api_settings.UPDATE_CLIENT_URL.format(client_id)
 
         data, success = self._put_method(url, 'client', logger, params)
-        logger.info("========== Finish Updating client detail ==========")
+        self.logger.info("========== Finish Updating client detail ==========")
 
         if success:
             request.session['client_update_msg'] = 'Updated data successfully'
             return redirect('clients:client-list')
         else:
             context = {'client_info': params,
-                       'error_msg': None}
+                       'error_msg': data}
             return render(request, 'clients/update_client_form.html', context)

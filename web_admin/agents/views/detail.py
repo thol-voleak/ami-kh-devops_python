@@ -2,6 +2,8 @@ import logging
 from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -9,9 +11,14 @@ logger = logging.getLogger(__name__)
 class DetailView(TemplateView, RESTfulMethods):
     template_name = "agents/detail.html"
     get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        logger.info('========== Start showing Agent Detail page ==========')
+        self.logger.info('========== Start showing Agent Detail page ==========')
         try:
             context = super(DetailView, self).get_context_data(**kwargs)
             agent_id = context['agent_id']
@@ -19,6 +26,7 @@ class DetailView(TemplateView, RESTfulMethods):
             context, status = self._get_agent_detail(agent_id)
             agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
             currencies, status_get_currency = self._get_currencies(agent_id)
+
             context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
             if status and status_get_agent_identity and status_get_currency:
                 agent_type_name, status = self._get_agent_type_name(context['agent']['agent_type_id'])
@@ -36,13 +44,24 @@ class DetailView(TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
-            logger.info('========== Finished showing Agent Detail page ==========')
+            self.logger.info('========== Finished showing Agent Detail page ==========')
             return context
         except Exception as ex:
             logging.info(ex)
             context = {'agent': {}}
-            logger.info('========== Finished showing Agent Detail page ==========')
+            self.logger.info('========== Finished showing Agent Detail page ==========')
             return context
+
+    def _get_currencies(self, agent_id):
+        data, success = self._get_method(api_path=api_settings.GET_AGET_BALANCE.format(agent_id),
+                                         func_description="Agent Currencies",
+                                         logger=logger,
+                                         is_getting_list=True)
+        currencies_str = ''
+        if success:
+            currencies_str = ', '.join([elem["currency"] for elem in data])
+
+        return currencies_str, success
 
     def _get_agent_detail(self, agent_id):
         data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),

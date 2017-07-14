@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from services.views.commision.agent_fee_distribution import (FeeDistributionsUpdate)
 from services.views.tier.list import FeeTierListView
 from services.views.tier.update import UpdateView as TierUpdateView
+from services.views.tier.delete import TierDeleteView
 from .views.commision.agent_bonus_distribution import (AgentFeeHierarchyDistributionsDetail)
 from .views.command.delete import DeleteCommand
 from .views.command.list import ListCommandView
@@ -27,6 +28,13 @@ from .views.delete import ServiceDeleteForm
 from .views.spi.list import SPIView
 from .views.spi.update import SPIUpdate
 from .views.spi.delete import SPIDeleteView
+from .views.commision.bank_sofs import bank_sofs
+from .views.commision.cash_sofs import cash_sofs
+from .views.commision.get_specific_sof import GetSpecificSOF
+from .views.spi_url_configuration.list import SPIUrlConfigurationView
+from .views.spi_url_configuration.update import SPIUrlConfigurationUpdate
+from .views.spi_url_configuration.delete import SPIUrlConfigurationDelete
+
 
 app_name = "services"
 
@@ -41,7 +49,7 @@ urlpatterns = [
         name="delete_service"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/$', login_required(ListCommandView.as_view(), login_url='authentications:login'),
         name="command_list"),
-    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<service_command_id>[0-9A-Za-z]+)$',
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/delete/(?P<service_command_id>[0-9A-Za-z]+)$',
         login_required(DeleteCommand.as_view(), login_url='authentications:login'),
         name="command_delete"),
     url(
@@ -83,6 +91,10 @@ urlpatterns = [
         login_required(TierUpdateView.as_view(), login_url='authentications:login'),
         name="update_tier"),
     url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/delete/$',
+        login_required(TierDeleteView.as_view(), login_url='authentications:login'),
+        name="delete_tier"),
+    url(
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<bonus_distribution_id>[0-9A-Za-z]+)/$',
         login_required(DeleteSettingBonus.as_view(), login_url='authentications:login'),
         name="delete_setting_bonus"),
@@ -113,8 +125,24 @@ urlpatterns = [
         login_required(SPIUpdate.as_view(), login_url='authentications:login'),
         name="spi_update"),
     url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spiUrlId>[0-9A-Za-z]+)/list$',
+        login_required(SPIUrlConfigurationView.as_view(), login_url='authentications:login'),
+        name="spi_configuration_list"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/spi-url-configurations/(?P<spi_url_config_id>[0-9A-Za-z]+)/edit',
+        login_required(SPIUrlConfigurationUpdate.as_view(), login_url='authentications:login'),
+        name="spi_configuration_edit"),
+    url(
+        r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/spi-url-configurations/(?P<spi_url_config_id>[0-9A-Za-z]+)/delete',
+        login_required(SPIUrlConfigurationDelete.as_view(), login_url='authentications:login'),
+        name="spi_configuration_delete"),
+    url(
         r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/spi-urls/(?P<spi_url_id>[0-9A-Za-z]+)/delete/$',
         login_required(SPIDeleteView.as_view(), login_url='authentications:login'),
         name="spi-delete"),
-
+    url(r'^bank_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(bank_sofs, login_url='authentications:login'), name="bank_sofs"),
+    url(r'^cash_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(cash_sofs, login_url='authentications:login'), name="cash_sofs"),
+    url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<user_id>[0-9A-Za-z]+)/(?P<sof_type>[0-9A-Za-z]+)$',
+        login_required(GetSpecificSOF.as_view(),login_url='authentications:login'),name="get_specific_sof")
 ]
+

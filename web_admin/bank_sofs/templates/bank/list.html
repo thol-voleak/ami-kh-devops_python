@@ -47,7 +47,7 @@
                             <td>{{ bank.bank_account_name|default_if_none:'' }}</td>
                             <td>{{ bank.bank_account_number|default_if_none:'' }}</td>
                             <td>{{ bank.currency|default_if_none:'' }}</td>
-                            <td>{{ bank.is_active|default_if_none:'' }}</td>
+                            <td>{{ bank.is_active|yesno:'True,False' }}</td>
                             <td>{{ bank.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">

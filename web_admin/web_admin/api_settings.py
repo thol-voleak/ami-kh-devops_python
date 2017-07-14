@@ -1,10 +1,10 @@
 # Authentication
-LOGIN_URL = 'api-gateway/system-user/v1/oauth/token'
+LOGIN_URL = 'api-gateway/v1/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
 
 # API Management
-APIS_URL="api-gateway/v1/apis/"
-SERVICES_LIST_URL="api-gateway/v1/services"
+APIS_URL = "api-gateway/v1/apis/"
+SERVICES_LIST_URL = "api-gateway/v1/services"
 
 # Centralize configuration
 SCOPES_URL = "api-gateway/centralize-configuration/v1/scopes"
@@ -12,13 +12,13 @@ CONFIGURATION_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/conf
 CONFIGURATION_DETAIL_URL = "api-gateway/centralize-configuration/v1/scopes/{scope}/configurations/{key}"
 
 # Client
-CREATE_CLIENT_URL = 'api-gateway/v1/oauths/clients'
-CLIENTS_LIST_URL = 'api-gateway/v1/oauths/clients'
-UPDATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
-DELETE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}'
-REGENERATE_CLIENT_SECRET_URL = 'api-gateway/v1/oauths/clients/{}/credentials'
-SUSPEND_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}/statuses'
-ACTIVATE_CLIENT_URL = 'api-gateway/v1/oauths/clients/{}/statuses'
+CREATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients'
+CLIENTS_LIST_URL = 'api-gateway/v1/admin/oauth/clients'
+UPDATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}'
+DELETE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}'
+REGENERATE_CLIENT_SECRET_URL = 'api-gateway/v1/admin/oauth/clients/{}/credentials'
+SUSPEND_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
+ACTIVATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
 
 # Agent Type
 AGENT_TYPES_LIST_URL = 'api-gateway/agent/v1/types'
@@ -33,10 +33,10 @@ AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
 
 # Agent
-AGENT_LIST_PATH = 'api-gateway/agent/v1/agents'
+AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
-AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents/profiles'
+AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/v1/agents/{agent_id}'
 CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}'
@@ -46,13 +46,27 @@ AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
-GET_ALL_SYSTEM_USER = 'api-gateway/system-user/v1/users'
-SYSTEM_USER_DETAIL_URL = 'api-gateway/system-user/v1/users/{}'
-SYSTEM_USER_CREATE_URL = 'api-gateway/system-user/v1/users'
-DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/users/{}'
-SYSTEM_USER_CHANGE_PASSWORD_URL = 'api-gateway/system-user/v1/users/{}/passwords'
+CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users'
+DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}'
+UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}'
+CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/v1/admin/system-users/{}/passwords'
+
+# Payment
 PAYMENT_URL = 'api-gateway/report/v1/payments/orders'
+
+# Permission
+PERMISSION_LIST = 'api-gateway/report/v1/permissions'
+CREATE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/permissions'
+PERMISSION_DETAIL_PATH = 'api-gateway/system-user/v1/admin/permissions/{permission_id}'
+
+# Roles
+ROLE_LIST = 'api-gateway/report/v1/roles'
+CREATE_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles'
+ROLE_DELETE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
+ROLE_UPDATE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}'
+ROLE_PERMISSION_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/permissions'
+USER_ROLE_PATH = 'api-gateway/system-user/v1/admin/roles/{role_id}/system-users'
+ROLE_USER_PATH = 'api-gateway/system-user/v1/admin/system-users/{user_id}/roles'
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/v1/service-commands/{}/spi-urls'
@@ -68,6 +82,8 @@ SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/v1/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/v1/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups'
 DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{}'
+GET_SERVICE_URL = 'api-gateway/payment/v1/service-groups/{serviceGroupId}/services'
+GET_ALL_SERVICE_URL = 'api-gateway/payment/v1/services'
 
 # Service
 SERVICE_LIST_URL = 'api-gateway/payment/v1/services/'
@@ -80,8 +96,8 @@ SERVICE_DELETE_URL = 'api-gateway/payment/v1/services/{}'
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
 GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
-CLIENT_SCOPES = 'api-gateway/v1/oauths/clients/{client_id}/scopes'
-ALL_SCOPES_LIST_URL = 'api-gateway/v1/apis'
+CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
+ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/v1/companies/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
 
@@ -90,7 +106,7 @@ COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/v1/services/{}/service-comman
 COMMAND_LIST_URL = 'api-gateway/payment/v1/commands/'
 SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/v1/service-commands/'
 
-#Tier
+# Tier
 FEE_TIER_LIST = 'api-gateway/payment/v1/service-commands/{service_command_id}/fee-tiers'
 ADD_TIER_URL = 'api-gateway/payment/v1/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/v1/fee-tier-conditions/'
@@ -127,3 +143,11 @@ CARD_HISTORY_PATH = 'api-gateway/report/v1/cards/histories'
 GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid-card/default"
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"
 CASH_SOFS_URL = "api-gateway/report/v1/cash/sofs"
+BANK_SOFS_URL = "report/v1/banks/sofs"
+
+# Reconcile
+SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
+SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'
+SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/v1/reconciled/sofs/results'
+SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/v1/reconciled/partners/results'
+GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'

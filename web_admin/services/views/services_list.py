@@ -1,6 +1,5 @@
 from web_admin.api_settings import SERVICE_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
-
 from django.views.generic.base import TemplateView
 
 import logging
@@ -18,5 +17,5 @@ class ListView(TemplateView, RESTfulMethods):
 
     def get_services_list(self):
         url = SERVICE_LIST_URL
-        data, sucess = self._get_method(url, "service list", logger, True)
+        data, success = self._get_method(url, "service list", logger, True)
         return data

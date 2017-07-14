@@ -5,11 +5,21 @@ from web_admin import api_settings
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.utils import setup_logger
+
+
 logger = logging.getLogger(__name__)
 
+
 class ClientCreate(TemplateView, RESTfulMethods):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ClientCreate, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        logger.info("========== Start Creating client ==========")
+        self.logger.info("========== Start Creating client ==========")
         client_id = _generate_client_id()
         client_secret = _generate_client_secret()
         client_info = {
@@ -46,18 +56,24 @@ class ClientCreate(TemplateView, RESTfulMethods):
 
         data, success = self._post_method(url, 'client', logger, params)
 
-        logger.info("========== Finish Creating client ==========")
+        self.logger.info("========== Finish Creating client ==========")
         if success:
+            self.request.session['add_client_msg'] = "Added data successfully"
             return redirect('clients:client-list')
         else:
             client_info = {
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "authorized_grant_types": None,
-                "access_token_validity": None,
-                "refresh_token_validity": None,
-            }
-            context = {'client_info': client_info, 'error_msg': None}
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "client_name": request.POST.get('client_name'),
+            "scope": "",
+            "authorized_grant_types": request.POST.get('authorized_grant_types'),
+            "web_server_redirect_uri": request.POST.get('web_server_redirect_uri'),
+            "authorities": "",
+            "access_token_validity": request.POST.get('access_token_validity'),
+            "refresh_token_validity": request.POST.get('refresh_token_validity'),
+            "authorization_code_validity": request.POST.get('authorization_code_validity')
+        }
+            context = {'client_info': client_info, 'error_msg': data}
             return render(request, 'clients/create_client_form.html', context)
 
 

@@ -4,15 +4,20 @@ from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from authentications.utils import get_auth_header
 from django.shortcuts import redirect
-
+from web_admin.utils import setup_logger
 logger = logging.getLogger(__name__)
 
 
 class ListCommandView(TemplateView, RESTfulMethods):
     template_name = "services/command/command_list.html"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(ListCommandView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        logger.info('========== Start adding service command ==========')
+        self.logger.info('========== Start adding service command ==========')
 
         service_id = kwargs['service_id']
         command_id = request.POST.get('command_id')
@@ -23,7 +28,7 @@ class ListCommandView(TemplateView, RESTfulMethods):
         }
 
         data, success = self._add_service_command(data)
-        logger.info('========== Finish adding service command ==========')
+        self.logger.info('========== Finish adding service command ==========')
         if success:
             request.session['add_command_msg'] = 'Added command successfully'
         else:
@@ -45,20 +50,21 @@ class ListCommandView(TemplateView, RESTfulMethods):
         context = super(ListCommandView, self).get_context_data(**kwargs)
         service_id = context['service_id']
 
-        logger.info('========== Start get Services Command List ==========')
+        self.logger.info('========== Start get Services Command List ==========')
         data, service_name = self.get_commands_list(service_id)
-        logger.info('========== Finished get Services Command List ==========')
+        self.logger.info('========== Finished get Services Command List ==========')
 
-        logger.info('========== Start get Command List ==========')
+        self.logger.info('========== Start get Command List ==========')
         commands_dd_list = self._get_commands_dd_list()
-        logger.info('========== Finished get Command List ==========')
+        self.logger.info('========== Finished get Command List ==========')
 
         context['data'] = data
         context['service_name'] = service_name
         context['command_id'] = commands_dd_list[0]["command_id"]
         context['commands_dd_list'] = commands_dd_list
         context['msg'] = self.request.session.pop('add_command_msg', None)
-        context['msg_failed'] = self.request.session.pop('add_failed_msg', None)        
+        context['msg_failed'] = self.request.session.pop('add_failed_msg', None) 
+        context['delete_msg'] = self.request.session.pop('delete_command_msg', None)       
 
         return context
 

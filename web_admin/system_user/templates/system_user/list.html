@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="panel mb30">
-    <div class="panel-heading">
+    <div class="panel-heading border mb15">
         <h3>System Users</h3>
     </div>
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
@@ -99,39 +99,44 @@
                         <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             <div id="client_btn_group_{{ system_user.id }}">
-                                <div class="btn-group">
-                                    {% if systemuser.is_deleted %}
-                                    {% else %}
-                                        <a type="button"
-                                           class="btn btn-outline btn-xs btn-info"
-                                           role="button"
-                                           id="system_user_btn_detail"
-                                           href="{% url 'system_user:system-user-detail' systemuser.id %}">
-                                            <span class="small">Detail</span>
-                                        </a>
-                                        <a type="button"
-                                           class="btn btn-outline btn-xs btn-primary"
-                                           role="button"
-                                           id="system_user_btn_edit"
-                                           href="{% url 'system_user:system-user-edit' systemuser.id %}">
-                                            <span class="small">Edit</span>
-                                        </a>
-                                        <a type="button"
-                                           class="btn btn-outline btn-xs btn-danger"
-                                           role="button"
-                                           id="system_user_btn_delete"
-                                           href="{% url 'system_user:delete-system-user' systemuser.id %}">
-                                            <span class="small">Delete</span>
-                                        </a>
-                                        <a type="button"
-                                           class="btn btn-outline btn-xs btn-primary"
-                                           role="button"
-                                           id="btn_system_user_change_password"
-                                           href="{% url 'system_user:system-user-change-password' systemuser.id %}">
-                                            <span class="small">ChangePassword</span>
-                                        </a>
-                                    {% endif %}
-                                </div>
+                                {% if systemuser.is_deleted %}
+                                {% else %}
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-info mb5"
+                                       role="button"
+                                       id="system_user_btn_detail"
+                                       href="{% url 'system_user:system-user-detail' systemuser.id %}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-primary mb5"
+                                       role="button"
+                                       id="system_user_btn_edit"
+                                       href="{% url 'system_user:system-user-edit' systemuser.id %}">
+                                        <span class="small">Edit</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-danger mb5"
+                                       role="button"
+                                       id="system_user_btn_delete"
+                                       href="{% url 'system_user:delete-system-user' systemuser.id %}">
+                                        <span class="small">Delete</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-primary mb5"
+                                       role="button"
+                                       id="btn_system_user_change_password"
+                                       href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                                        <span class="small">ChangePassword</span>
+                                    </a>
+                                    <a type="button"
+                                       class="btn btn-outline btn-xs btn-success mb5"
+                                       role="button"
+                                       id="btn_system_user_change_role"
+                                       href="{% url 'system_user:system_user_role_management' systemuser.id %}">
+                                        <span class="small">ChangeRole</span>
+                                    </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>

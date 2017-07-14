@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
-
+from web_admin.utils import setup_logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,13 +13,18 @@ logger = logging.getLogger(__name__)
 class BankSOFTransaction(TemplateView, RESTfulMethods):
     template_name = "sof/bank_transaction.html"
     search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/transactions"
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(BankSOFTransaction, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        logger.info('========== Start search bank transaction history ==========')
-        logger.info(self.search_bank_transaction)
+        self.logger.info('========== Start search bank transaction history ==========')
+        self.logger.info(self.search_bank_transaction)
         search = request.GET.get('search')
         if search is None:
-            logger.info("Search is none")
+            self.logger.info("Search is none")
             return render(request, self.template_name)
 
         sof_id = request.GET.get('sof_id')
@@ -29,12 +34,12 @@ class BankSOFTransaction(TemplateView, RESTfulMethods):
         from_created_timestamp = request.GET.get('from_created_timestamp')
         to_created_timestamp = request.GET.get('to_created_timestamp')
 
-        logger.info('Search key "sof_id is" is [{}]'.format(sof_id))
-        logger.info('Search key "order_id" is [{}]'.format(order_id))
-        logger.info('Search key "type" is [{}]'.format(type))
-        logger.info('Search key "status" is [{}]'.format(status))
-        logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
+        self.logger.info('Search key "sof_id is" is [{}]'.format(sof_id))
+        self.logger.info('Search key "order_id" is [{}]'.format(order_id))
+        self.logger.info('Search key "type" is [{}]'.format(type))
+        self.logger.info('Search key "status" is [{}]'.format(status))
+        self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
+        self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
 
 
         body = self.createSearchBody(from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type)
@@ -48,7 +53,7 @@ class BankSOFTransaction(TemplateView, RESTfulMethods):
             'to_created_timestamp': to_created_timestamp
         }
 
-        logger.info('========== Start search bank transaction history ==========')
+        self.logger.info('========== Start search bank transaction history ==========')
         return render(request, self.template_name, context)
 
     def createSearchBody(self, from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type):

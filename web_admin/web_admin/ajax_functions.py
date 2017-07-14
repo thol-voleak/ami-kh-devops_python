@@ -4,12 +4,17 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
 from authentications.utils import get_auth_header
+from web_admin.utils import setup_logger
+import logging
+
 
 def _delete_method(request, api_path, func_description, logger, params=None):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
     start = time.time()
     response = requests.delete(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
@@ -35,16 +40,22 @@ def _delete_method(request, api_path, func_description, logger, params=None):
 
     return JsonResponse({"status": code, "msg": message})
 
+
 def _post_method(request, api_path, func_description, logger, params={}):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
 
     start = time.time()
     response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
     done = time.time()
+
+
+
     logger.info('Response_code: {}'.format(response.status_code))
     logger.info('Response_content: {}'.format(response.text))
     logger.info('Response_time: {}'.format(done - start))
@@ -66,11 +77,14 @@ def _post_method(request, api_path, func_description, logger, params={}):
 
     return JsonResponse({"status": code, "msg": message, "data":  response_json.get('data', {})})
 
+
 def _put_method(request, api_path, func_description, logger, params={}):
-    if 'https' not in api_path:
-        url = settings.DOMAIN_NAMES + api_path
-    else:
+    if 'http' in api_path:
         url = api_path
+    else:
+        url = settings.DOMAIN_NAMES + api_path
+    # logger = logging.getLogger(__name__)
+    # logger = setup_logger(request, logger)
     logger.info('API-Path: {path}'.format(path=api_path))
     logger.info("Params: {} ".format(params))
 

@@ -14,9 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
-from django.contrib.auth import views as auth_views
-from authentications.views import logout_user
+from authentications.views.auth import logout_user
 from web.views import health
 from web.views import backlog
 
@@ -41,4 +39,5 @@ urlpatterns = [
     url(r'^admin-portal/api-management/', include('api_management.urls')),
     url(r'^admin-portal/centralize-configuration/', include('centralize_configuration.urls')),
     url(r'^admin-portal/bank/', include('bank_sofs.urls')),
+    url(r'^admin-portal/reconcile/', include('reconcile.urls')),
 ]

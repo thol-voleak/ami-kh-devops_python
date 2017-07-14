@@ -9,6 +9,7 @@ from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 from services.views.mixins import GetCommandNameAndServiceNameMixin
+from web_admin.utils import setup_logger
 
 logger = logging.getLogger(__name__)
 
@@ -16,10 +17,15 @@ logger = logging.getLogger(__name__)
 
 
 class FeeDistributionsUpdate(View):
+    logger= logger
+
+    def dispatch(self, request, *args, **kwargs):
+        self.logger = setup_logger(self.request, logger)
+        return super(FeeDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
 
-        logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
+        self.logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
 
         agent_fee_distribution_id = kwargs.get('fee_distributions_id')
         url = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
@@ -37,6 +43,6 @@ class FeeDistributionsUpdate(View):
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
-        response = ajax_functions._put_method(request, url, "", logger, post_data)
-        logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
+        response = ajax_functions._put_method(request, url, "", self.logger, post_data)
+        self.logger.info("========== Finish updating Agent Hierarchy Distribution - Fee ==========")
         return response

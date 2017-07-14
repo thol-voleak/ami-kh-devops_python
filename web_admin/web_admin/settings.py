@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'payments',
     'api_management',
     'centralize_configuration',
+    'reconcile',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -93,7 +95,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments', 'bank', 'sof')],
+                              'cards', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,7 +161,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-admin-portal | %(thread)d | %(name)s | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | %(IPAddress)s | %(name)s | ami-admin-portal | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },
@@ -249,6 +251,11 @@ LOGGING = {
 
         },
         'payments': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'reconcile': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

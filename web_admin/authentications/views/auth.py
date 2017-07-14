@@ -1,11 +1,11 @@
-from .apps import InvalidAccessToken
+from authentications.apps import InvalidAccessToken
+from authentications.models import Authentications
 from web_admin import api_settings
 from web_admin.utils import setup_logger
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.conf import settings
-from .models import Authentications
 
 import time
 import requests
@@ -27,7 +27,8 @@ def login_user(request):
             # TODO: set authentication user is unique from db
             request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
             login(request, user)
-            return redirect('web:web-index')
+            next_request = request.POST.get('next') or 'web:web-index'
+            return redirect(next_request)
 
     elif request.GET:
         next_request = request.GET['next']
@@ -37,6 +38,7 @@ def login_user(request):
 
 def logout_user(request):
     logger = logging.getLogger(__name__)
+    logger = setup_logger(request, logger)
     logger.info('========== Start to logout ==========')
     url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username

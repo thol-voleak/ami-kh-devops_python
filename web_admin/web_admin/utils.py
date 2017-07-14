@@ -39,6 +39,35 @@ def encrypt_text_agent(input_text):
 
 
 def setup_logger(request, logger):
-    correlation_id = request.session.get('correlation_id', '')
-    client_ip = request.META['REMOTE_ADDR']
-    return logging.LoggerAdapter(logger, extra={'correlationId': correlation_id, 'IPAddress': client_ip})
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        # logger.info("Found HTTP_X_FORWARDED_FOR header with value [{}]".format(x_forwarded_for))
+        client_ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        client_ip = request.META.get('REMOTE_ADDR')
+    return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip})
+
+
+def calculate_page_range_from_page_info(pageInfo):
+    totalPages = pageInfo.get('total_pages')
+    currentPage = pageInfo.get('current_page')
+    pageRangeStart = 1
+    pageRangeStop = totalPages + 1
+
+    if totalPages > 6:
+        if currentPage > 1:
+            if currentPage == 3:
+                pageRangeStart = 1
+            elif currentPage < totalPages:
+                pageRangeStart = currentPage - 1
+            else:
+                pageRangeStart = currentPage - 2
+        if currentPage < totalPages:
+            if currentPage == totalPages - 2:
+                pageRangeStop = totalPages + 1
+            elif currentPage > 1:
+                pageRangeStop = currentPage + 2
+            else:
+                pageRangeStop = currentPage + 3
+    pageRange = range(pageRangeStart, pageRangeStop)
+    return pageRange
