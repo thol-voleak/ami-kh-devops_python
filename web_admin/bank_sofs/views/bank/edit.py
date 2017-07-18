@@ -1,6 +1,6 @@
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
-
+from django.shortcuts import redirect, render
 from web_admin.utils import setup_logger
 from django.conf import settings
 from django.contrib import messages
@@ -83,6 +83,17 @@ class EditView(TemplateView, RESTfulMethods):
                 'Update bank successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
+        else:
+            self.logger.info('========== Finished update bank profile ==========')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            params['id'] = bank_id
+            currencies = self._get_currencies_list()
+            context = {'bank': params, 'currencies': currencies}
+            return render(request, self.template_name, context)
 
     def _get_currencies_list(self):
         url = GET_ALL_CURRENCY_URL
