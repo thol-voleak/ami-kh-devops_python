@@ -144,6 +144,7 @@ GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"
 CASH_SOFS_URL = "api-gateway/report/v1/cash/sofs"
 BANK_SOFS_URL = "report/v1/banks/sofs"
+CUSTOMER_IDENTITIES_LIST = "api-gateway/customer/v1/customers/identities"
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'

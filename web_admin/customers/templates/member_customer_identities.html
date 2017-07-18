@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Member Customer</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                <h4>Identities</h4>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Customer ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control"
+                       id="txt_customer_id"
+                       value="{{ customer_id | default_if_none:'' }}" readonly>
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_identities">
+                <thead>
+                <tr>
+                    <th id="id">ID</th>
+                    <th id="identify">Identity</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for customer in data %}
+                    {% if not customer.is_deleted %}
+                        <tr>
+                            <td class="col-sm-1">{{ customer.id }}</td>
+                            <td class="col-sm-3">{{ customer.username|default_if_none:'' }}</td>
+                            <td class="col-sm-3">
+                                <div class="btn-group">
+                                    <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary">
+                                        ResetPassword
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <br/>
+
+        <div class="pull-right">
+            <a href="{% url 'customers:customer-list' %}">
+                <input id="btn_back" class="btn btn-success text-left mb15" type="button"
+                       value="Back"/>
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
