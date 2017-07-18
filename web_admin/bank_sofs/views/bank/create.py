@@ -23,7 +23,14 @@ class CreateView(TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start create bank sofs ==========')
-        currencies = self._get_currencies_list()
+        currencies, success = self._get_currencies_list()
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                currencies
+            )
+            currencies = []
         context = {'currencies': currencies}
         self.logger.info('========== Finished create bank sofs ==========')
         return context
@@ -84,7 +91,14 @@ class CreateView(TemplateView, RESTfulMethods):
                 messages.ERROR,
                 data
             )
-            currencies = self._get_currencies_list()
+            currencies, success = self._get_currencies_list()
+            if not success:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    currencies
+                )
+                currencies = []
             context = {'currencies': currencies, 'bank_info':params}
             return render(request, self.template_name, context)
 
@@ -98,6 +112,6 @@ class CreateView(TemplateView, RESTfulMethods):
         if success:
             value = data.get('value', '')
             currencies = [i.split('|') for i in value.split(',')]
+            return currencies, success
         else:
-            currencies = []
-        return currencies
+            return data, success
