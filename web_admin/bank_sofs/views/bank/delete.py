@@ -44,6 +44,15 @@ class DeleteView(TemplateView, RESTfulMethods):
                 'Deleted bank account successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
+        else:
+            self.logger.info('========== Finished delete bank source of fund ==========')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            return redirect('bank_sofs:bank_sofs_list')
+
 
     def _get_bank_details(self, bank_id):
         params = {
