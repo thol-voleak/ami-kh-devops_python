@@ -42,7 +42,7 @@ CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}'
 GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 GET_AGENT_TYPES_PATH = 'api-gateway/agent/v1/types'
-AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
+AGENT_UPDATE_PATH = 'api-gateway/agent/v1/admin/agents/{agent_id}'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
