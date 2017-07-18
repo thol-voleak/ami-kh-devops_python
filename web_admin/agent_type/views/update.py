@@ -1,4 +1,4 @@
-from web_admin.api_settings import AGENT_TYPE_UPDATE_URL
+from web_admin.api_settings import AGENT_TYPE_UPDATE_URL, AGENT_TYPE_DETAIL_URL
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import setup_logger
 from django.shortcuts import redirect, render
@@ -58,7 +58,7 @@ class AgentTypeUpdateForm(TemplateView, RESTfulMethods):
             return render(request, 'agent_type/agent_type_update.html', context)
 
     def _get_agent_type_detail(self, agent_type_id):
-        data, success = self._get_method(api_path=AGENT_TYPE_UPDATE_URL.format(agent_type_id),
+        data, success = self._get_method(api_path=AGENT_TYPE_DETAIL_URL.format(agent_type_id),
                                          func_description="Agent Type Detail",
                                          logger=logger)
         context = {'agent_type_info': data}
