@@ -1,12 +1,9 @@
 import logging
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.shortcuts import redirect, render
-from django.http import HttpResponseBadRequest, HttpResponse
-from django.views.generic.base import View, TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from django.contrib import messages
 from services.views.update import UpdateView
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 logger = logging.getLogger(__name__)
 
 
@@ -15,7 +12,8 @@ class DeleteCommand(UpdateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(DeleteCommand, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

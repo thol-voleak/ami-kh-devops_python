@@ -12,7 +12,7 @@ class RestFulClient:
         if 'http' not in url:
             url = settings.DOMAIN_NAMES + url
 
-        logger = setup_logger(request, logger)
+        logger = setup_logger(request, logger, request.user)
 
         start_time = time.time()
         response = requests.get(url, headers=headers, verify=settings.CERT)
@@ -44,7 +44,7 @@ class RestFulClient:
         if 'http' not in url:
             url = settings.DOMAIN_NAMES + url
 
-        logger = setup_logger(request, logger)
+        logger = setup_logger(request, logger, request.user)
 
         start_time = time.time()
         response = requests.post(url, headers=headers, json=params, verify=settings.CERT)
@@ -76,7 +76,7 @@ class RestFulClient:
         if 'http' not in url:
             url = settings.DOMAIN_NAMES + url
 
-        logger = setup_logger(request, logger)
+        logger = setup_logger(request, logger, request.user)
 
         start_time = time.time()
         response = requests.put(url, headers=headers, json=params, verify=settings.CERT)
@@ -108,7 +108,7 @@ class RestFulClient:
         if 'http' not in url:
             url = settings.DOMAIN_NAMES + url
 
-        logger = setup_logger(request, logger)
+        logger = setup_logger(request, logger, request.user)
 
         start_time = time.time()
         response = requests.delete(url, headers=headers, json=params, verify=settings.CERT)

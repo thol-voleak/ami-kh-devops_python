@@ -2,9 +2,9 @@ import logging
 import time
 import requests
 
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 from web_admin.restful_methods import RESTfulMethods
 
 
@@ -16,7 +16,8 @@ class CustomerDetailView(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CustomerDetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -161,7 +160,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | %(IPAddress)s | %(name)s | ami-admin-portal | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-merchant-portal | %(correlationId)s | %(thread)d  | %(IPAddress)s | %(name)s | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },

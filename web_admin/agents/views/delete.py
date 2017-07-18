@@ -1,12 +1,10 @@
 from agents.views import AgentAPIService
-from web_admin import api_settings
 
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
-from web_admin.utils import setup_logger
-from web_admin.restful_methods import RESTfulMethods
-from web_admin import api_settings
+from authentications.utils import get_correlation_id_from_username
+from web_admin import api_settings, setup_logger, setup_logger
 
 
 
@@ -22,7 +20,8 @@ class AgentDelete(TemplateView, AgentAPIService):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentDelete, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

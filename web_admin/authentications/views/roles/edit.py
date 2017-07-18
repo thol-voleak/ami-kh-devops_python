@@ -1,4 +1,4 @@
-from authentications.utils import get_auth_header
+from authentications.utils import get_correlation_id_from_username, get_auth_header
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
@@ -17,7 +17,8 @@ class RoleEditView(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleEditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -61,7 +62,8 @@ class RoleEditView(TemplateView):
             )
             self.logger.info('========== End update role entity ==========')
             return redirect('authentications:role_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (status_code == 'invalid_access_token'):
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                    status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
 

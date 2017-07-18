@@ -1,5 +1,5 @@
-from web_admin import api_settings
-from web_admin.utils import setup_logger
+from web_admin import api_settings, setup_logger
+from authentications.utils import get_correlation_id_from_username
 from services.views.spi import SpiApi
 
 from django.contrib import messages
@@ -18,7 +18,8 @@ class SPIView(TemplateView, SpiApi):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SPIView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

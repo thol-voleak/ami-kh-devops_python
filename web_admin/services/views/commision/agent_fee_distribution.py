@@ -1,30 +1,23 @@
 import logging
 
 from web_admin import api_settings
-from django.contrib import messages
-from django.shortcuts import redirect
-from django.views.generic.base import TemplateView, View
-from django.http import Http404
-from multiprocessing.pool import ThreadPool
-from web_admin.restful_methods import RESTfulMethods
+from django.views.generic.base import View
 from web_admin import ajax_functions
-from services.views.mixins import GetCommandNameAndServiceNameMixin
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
 
 logger = logging.getLogger(__name__)
 
 
-
-
 class FeeDistributionsUpdate(View):
-    logger= logger
+    logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(FeeDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-
         self.logger.info("========== Start updating Agent Hierarchy Distribution - Fee ==========")
 
         agent_fee_distribution_id = kwargs.get('fee_distributions_id')

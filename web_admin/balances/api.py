@@ -7,9 +7,9 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import HttpResponse
 
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
+from web_admin import api_settings, setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 # logger = logging.getLogger(__name__)
 

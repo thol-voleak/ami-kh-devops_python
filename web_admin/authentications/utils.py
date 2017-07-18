@@ -23,3 +23,12 @@ def get_auth_header(user):
         'Authorization': 'Bearer {}'.format(access_token),
     }
     return headers
+
+
+def get_correlation_id_from_username(user):
+    try:
+        auth = Authentications.objects.get(user=user)
+        return auth.correlation_id
+    except Exception as e:
+        logger.error(e)
+        return None

@@ -10,7 +10,7 @@ History:
 '''
 
 import logging
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from datetime import datetime
 from django.shortcuts import redirect, render
 from web_admin.mixins import GetChoicesMixin
@@ -52,7 +52,8 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentRegistration, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *arg, **kwargs):

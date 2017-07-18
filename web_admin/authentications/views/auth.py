@@ -1,7 +1,7 @@
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from web_admin import api_settings
-from web_admin.utils import setup_logger
+from web_admin import setup_logger, RestFulClient
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
@@ -15,7 +15,7 @@ import logging
 def login_user(request):
     next_request = None
     logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    logger = setup_logger(request, logger, request.user)
     if request.POST:
         logger.info("========== Start login from web page ==========")
         username = request.POST['username']
@@ -24,8 +24,6 @@ def login_user(request):
         user = authenticate(request=request, username=username, password=password)
 
         if user is not None:
-            # TODO: set authentication user is unique from db
-            request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
             login(request, user)
             next_request = request.POST.get('next') or 'web:web-index'
             return redirect(next_request)
@@ -38,7 +36,7 @@ def login_user(request):
 
 def logout_user(request):
     logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    logger = setup_logger(request, logger, request.user)
     logger.info('========== Start to logout ==========')
     url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username
@@ -74,7 +72,6 @@ def logout_user(request):
         return render(request, "authentications/login.html", {'next': next_request})
 
     return redirect('authentications:login')
-
 
 def get_auth_header(user):
     client_id = settings.CLIENTID

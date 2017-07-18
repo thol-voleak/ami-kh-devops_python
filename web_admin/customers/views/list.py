@@ -1,21 +1,22 @@
-import requests
-import logging
-import time
+from authentications.utils import get_correlation_id_from_username
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods import RESTfulMethods
 
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 
-from web_admin import api_settings
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+import logging
+
 logger = logging.getLogger(__name__)
+
 
 class ListView(TemplateView, RESTfulMethods):
     template_name = 'member_customer_list.html'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

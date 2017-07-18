@@ -1,15 +1,13 @@
-import copy
-import logging
-import json
+from authentications.utils import get_correlation_id_from_username
+from web_admin.restful_methods import RESTfulMethods
+from web_admin import ajax_functions, setup_logger
+from web_admin.api_settings import ADD_COUNTRY_CODE_URL, GLOBAL_CONFIGURATIONS_URL
 
-from web_admin.utils import setup_logger
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from web_admin.restful_methods import RESTfulMethods
-from web_admin import ajax_functions
-from web_admin.api_settings import GLOBAL_CONFIGURATIONS_URL
-from web_admin.api_settings import ADD_COUNTRY_CODE_URL
+
+import copy
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +16,8 @@ class CountryCode(View, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CountryCode, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

@@ -3,9 +3,9 @@ import logging
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,8 @@ class SofFileList(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SofFileList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

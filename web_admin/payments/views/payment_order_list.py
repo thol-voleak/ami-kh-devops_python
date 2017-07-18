@@ -1,11 +1,12 @@
-import logging
+from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
+from web_admin.api_settings import PAYMENT_URL
+from web_admin.restful_methods import RESTfulMethods
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin.api_settings import PAYMENT_URL
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
 
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,8 @@ class PaymentOrderView(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PaymentOrderView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

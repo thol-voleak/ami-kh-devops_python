@@ -1,7 +1,6 @@
 from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header, get_correlation_id_from_username
+from web_admin import api_settings, setup_logger, RestFulClient
 
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -17,7 +16,8 @@ class ManagePermissionView(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ManagePermissionView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

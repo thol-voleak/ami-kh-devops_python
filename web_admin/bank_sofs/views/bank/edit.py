@@ -1,7 +1,8 @@
+from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 
-from web_admin.utils import setup_logger
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -19,7 +20,8 @@ class EditView(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(EditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

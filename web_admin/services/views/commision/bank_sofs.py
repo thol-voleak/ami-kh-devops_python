@@ -2,7 +2,7 @@ import logging
 from django.conf import settings
 from web_admin.api_settings import BANK_SOFS_URL
 from web_admin import ajax_functions
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 def bank_sofs(request, user_id):
     logger = logging.getLogger(__name__)

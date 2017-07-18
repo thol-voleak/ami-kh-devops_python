@@ -1,11 +1,11 @@
 from django.views.generic.base import TemplateView
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.contrib import messages
 from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
 import logging
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,8 @@ class ScopeList(TemplateView, GetChoicesMixin, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ScopeList, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

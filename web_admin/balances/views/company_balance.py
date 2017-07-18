@@ -1,13 +1,17 @@
-import logging
-import copy
-from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CREATE_COMPANY_BALANCE
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 from web_admin.api_settings import GET_AGET_BALANCE
+
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.views.generic.base import TemplateView
+
+import logging
+import copy
+
 logger = logging.getLogger(__name__)
+
 
 class CompanyBalanceView(TemplateView, RESTfulMethods):
     template_name = "currencies/initial_company_balance.html"
@@ -50,7 +54,7 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
         currency = request.POST.get('currency')
 
         url = CREATE_COMPANY_BALANCE.format(currency)
-        data, success = self._post_method(api_path= url,
+        data, success = self._post_method(api_path=url,
                                           func_description="create company balance",
                                           logger=logger)
         if success:
@@ -91,7 +95,7 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
         data, success = self._get_method(api_path=url,
                                          func_description="currency list from backend",
                                          logger=logger,
-                                         is_getting_list= True)
+                                         is_getting_list=True)
         if success:
             value = data.get('value', '')
             currency_list = [i.split('|') for i in value.split(',')]
@@ -102,14 +106,6 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
     def _get_agent_balances(self, agent_id):
         url = GET_AGET_BALANCE.format(agent_id)
         return self._get_method(api_path=url,
-                                         func_description="agent balances",
-                                         logger=logger,
-                                         is_getting_list=True)
-
-            
-        
-        
-        
-
-
-
+                                func_description="agent balances",
+                                logger=logger,
+                                is_getting_list=True)

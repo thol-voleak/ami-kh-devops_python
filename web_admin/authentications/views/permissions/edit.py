@@ -1,5 +1,5 @@
-from authentications.utils import get_auth_header
-from web_admin import api_settings
+from authentications.utils import get_correlation_id_from_username
+from web_admin import api_settings, setup_logger
 from web_admin import setup_logger, RestFulClient
 from authentications.apps import InvalidAccessToken
 
@@ -17,7 +17,8 @@ class PermissionEditView(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PermissionEditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

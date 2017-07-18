@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
 from authentications.utils import get_auth_header
-from web_admin.utils import setup_logger
+
 import logging
 
 
@@ -54,8 +54,6 @@ def _post_method(request, api_path, func_description, logger, params={}):
     response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
     done = time.time()
 
-
-
     logger.info('Response_code: {}'.format(response.status_code))
     logger.info('Response_content: {}'.format(response.text))
     logger.info('Response_time: {}'.format(done - start))
@@ -75,7 +73,7 @@ def _post_method(request, api_path, func_description, logger, params={}):
     else:
         code = 3
 
-    return JsonResponse({"status": code, "msg": message, "data":  response_json.get('data', {})})
+    return JsonResponse({"status": code, "msg": message, "data": response_json.get('data', {})})
 
 
 def _put_method(request, api_path, func_description, logger, params={}):
@@ -111,4 +109,3 @@ def _put_method(request, api_path, func_description, logger, params={}):
         code = 3
 
     return JsonResponse({"status": code, "msg": message})
-

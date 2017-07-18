@@ -1,7 +1,6 @@
 from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header, get_correlation_id_from_username
+from web_admin import api_settings, setup_logger, RestFulClient
 
 from django.views.generic.base import TemplateView
 
@@ -15,7 +14,8 @@ class RoleList(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleList, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -27,7 +27,8 @@ class RoleList(TemplateView):
         if is_success:
             self.logger.info("Roles have [{}] role in database".format(len(data)))
             context['roles'] = data
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (status_code == 'invalid_access_token'):
+        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+                    status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
         return context

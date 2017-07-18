@@ -1,6 +1,5 @@
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_correlation_id_from_username, get_auth_header
+from web_admin import setup_logger, RestFulClient, api_settings
 
 from django.contrib import messages
 from django.shortcuts import render
@@ -16,7 +15,8 @@ class RoleManagementView(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleManagementView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -73,7 +73,7 @@ class RoleManagementView(TemplateView):
                                                                            headers=self._get_headers(),
                                                                            logger=logger)
 
-        self.logger.info("Roles have {} role in database".format(data))
+        self.logger.info("Have {} roles in database".format(len(data)))
 
         if is_success:
             return data

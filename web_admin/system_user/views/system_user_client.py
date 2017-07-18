@@ -1,4 +1,4 @@
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from web_admin import setup_logger, RestFulClient
 
 

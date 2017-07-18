@@ -1,5 +1,5 @@
 from web_admin.restful_methods import RESTfulMethods
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 
 import logging
 

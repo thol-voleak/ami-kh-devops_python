@@ -1,10 +1,12 @@
-import logging
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
+from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CARD_HISTORY_PATH
-from web_admin.utils import setup_logger
 
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +21,8 @@ class HistoryView(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(HistoryView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
