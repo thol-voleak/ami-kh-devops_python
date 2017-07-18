@@ -30,7 +30,7 @@ GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/v1/scopes/glob
 GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currencies'
 ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
-DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
+DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/admin/agent-types/{}'
 
 # Agent
 AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
