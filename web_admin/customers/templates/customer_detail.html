@@ -157,6 +157,14 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label">KYC Remark</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_kyc_remark"
+                                       value="{{ customer_info.kyc_remark | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">Profile Create Date</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
@@ -170,6 +178,14 @@
                                 <input type="text" class="form-control input-rounded"
                                        id="txt_profile_update_date"
                                        value="{{ customer_info.last_updated_timestamp | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">KYC Update Date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_kyc_updated_date"
+                                       value="{{ customer_info.kyc_updated_timestamp | default_if_none:'' }}" readonly>
                             </div>
                         </div>
                         <div class="pull-right">
