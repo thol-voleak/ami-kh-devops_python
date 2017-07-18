@@ -23,7 +23,7 @@ ACTIVATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
 # Agent Type
 AGENT_TYPES_LIST_URL = 'api-gateway/agent/v1/types'
 GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
-AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/types'
+AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/admin/agent-types'
 AGENT_TYPE_DETAIL_URL = 'api-gateway/agent/v1/types/{}'
 ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/country'
 GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations'
