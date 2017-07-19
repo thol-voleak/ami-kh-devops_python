@@ -71,11 +71,11 @@
                             <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
                             <button id="btn_identities" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
                             {% if not customer.is_suspended %} 
-                            <button id="btn_status" class="btn btn-outline btn-xs btn-primary"
+                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
                                     onclick="suspend('{{ customer.id }}')">Suspend</button>
                             {% else %} 
-                            <button id="btn_status" class="btn btn-outline btn-xs btn-primary"
+                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
                                     onclick="activate('{{ customer.id }}')">Activate</button> 
                             {% endif %}
