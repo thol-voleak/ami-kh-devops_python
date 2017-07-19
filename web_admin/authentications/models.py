@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class Authentications(models.Model):
     user = models.OneToOneField(User, unique=True)
-    system_user_id = models.CharField(max_length=128, null=True, blank=True)
-    username = models.CharField(max_length=256, null=True)
+    system_user_id = models.CharField(max_length=128)
+    username = models.CharField(max_length=256)
     firstname = models.CharField(max_length=256, null=True)
     lastname = models.CharField(max_length=256, null=True)
     mobile_number = models.CharField(max_length=128, null=True)
