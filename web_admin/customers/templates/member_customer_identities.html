@@ -50,9 +50,7 @@
                                 <div class="btn-group">
                                     <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
                                             data-url="{% url 'customers:reset-identity-password' customer_id identity.id %}"
-                                            onClick="reset()">
-                                        ResetPassword
-                                    </button>
+                                            onClick="reset()">ResetPassword</button>
                                 </div>
                             </td>
                         </tr>
@@ -66,8 +64,8 @@
 
         <div class="pull-right">
             <a href="{% url 'customers:customer-list' %}">
-                <input id="btn_back" class="btn btn-success text-left mb15" type="button"
-                       value="Back"/>
+                <input id="btn_cancel" class="btn btn-success text-left mb15" type="button"
+                       value="Cancel"/>
             </a>
         </div>
     </div>

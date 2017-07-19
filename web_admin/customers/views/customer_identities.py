@@ -20,7 +20,6 @@ class CustomerIdentitiesListView(TemplateView, RESTfulMethods):
         self.logger.info('========== Start getting member customer identities ==========')
         customer_id = int(kwargs.get('customerId'))
         url = CUSTOMER_IDENTITIES_LIST
-        self.logger.info('API-Path: {};'.format(url))
         param = {'customer_id':customer_id}
         data, success = self._post_method(api_path=url,
                                           func_description="member customer identities",
@@ -28,8 +27,5 @@ class CustomerIdentitiesListView(TemplateView, RESTfulMethods):
                                           params=param)
 
         context = {'customer_id':customer_id,'data': data}
-        self.logger.info('========== Finished member customer identities ==========')
+        self.logger.info('========== Finished getting member customer identities ==========')
         return render(request, self.template_name, context)
-
-
-
