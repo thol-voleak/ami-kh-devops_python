@@ -12,7 +12,6 @@ def suspend(request, customer_id):
     logger = logging.getLogger(__name__)
     logger = setup_logger(request, logger)
     logger.info('========== Start suspending customer ==========')
-    print("customer id is : {}>>>>>>>>>>>".format(customer_id))
     url = settings.DOMAIN_NAMES + api_settings.SUSPEND_CUSTOMER.format(customer_id)
     params = {
         'is_suspended': 'true',
