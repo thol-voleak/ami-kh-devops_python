@@ -49,4 +49,4 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
 
     def _get_fee_tier_list(self, service_command_id):
         url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
-        return self._get_precision_method(url, "fee tier list", logger)
+        return self._get_precision_method(api_path=url, func_description="fee tier list")

@@ -4,6 +4,7 @@ import json
 from decimal import Decimal
 
 from django.conf import settings
+from web_admin.utils import setup_logger
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
@@ -23,46 +24,58 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+
         self.logger.info('API-Path: {path}'.format(path=url))
-        start_date = time.time()
+        start_time = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        done = time.time()
+        end_time = time.time()
 
-        try:
-            response_json = response.json()
-            status = response_json.get('status', {})
-            code = status.get('code', '')
-        except Exception as e:
-            self.logger.error(e)
-            raise Exception(response.content)
+        self.logger.info("Response_code: {}".format(response.status_code))
+        self.logger.info("Response_time: {}".format(end_time - start_time))
 
-        if response.status_code == 200 and code == "success":
-            if is_getting_list:
-                default_data = []
-            else:
-                default_data = {}
-            data = response_json.get('data', default_data)
+        response_json = response.json()
+        response_json['status_code'] = response.status_code
 
-            if len(params) > 0:
-                self.logger.info("Params: {} ".format(params))
-            self.logger.info('Response_code: {}'.format(response.status_code))
-            if is_getting_list:
-                self.logger.info('Response_content_count: {}'.format(len(data)))
-            else:
-                self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Response_time: {}'.format(done - start_date))
-
-            result = data, True
+        if response.status_code == 500:
+            self.logger.info("Response: {}".format(response_json))
+            result = response_json, False
         else:
-            message = status.get('message', '')
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
-                        code == 'invalid_access_token'):
-                self.logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-            if message:
-                result = message, False
-            else:
+            try:
+                status = response_json.get('status', {})
+                code = status.get('code', '')
+            except Exception as e:
+                self.logger.error(e)
                 raise Exception(response.content)
+
+            if response.status_code == 200 and code == "success":
+                if is_getting_list:
+                    default_data = []
+                else:
+                    default_data = {}
+                data = response_json.get('data', default_data)
+
+                if len(params) > 0:
+                    self.logger.info("Params: {} ".format(params))
+
+                self.logger.info('Response_code: {}'.format(response.status_code))
+                if is_getting_list:
+                    self.logger.info('Response_content_count: {}'.format(len(data)))
+                else:
+                    self.logger.info('Response_content: {}'.format(response.text))
+                self.logger.info('Response_time: {}'.format(end_time - start_time))
+
+                result = data, True
+            else:
+                message = status.get('message', '')
+                if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                            code == 'invalid_access_token'):
+                    self.logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
+
         return result
 
     def _put_method(self, api_path, func_description, logger=None, params={}):
@@ -78,6 +91,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
 
         start_date = time.time()
@@ -127,6 +141,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
 
         start_time = time.time()
@@ -140,31 +155,38 @@ class RESTfulMethods(GetHeaderMixin):
         self.logger.info("Response_code: {}".format(response.status_code))
 
         response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
-        self.logger.info("Response_time: {}".format(end_time - start_time))
-        if code == "success":
-            data = response_json.get('data', {})
-            if isinstance(data, list):
-                self.logger.info("Response_content_count: {}".format(len(data)))
-            else:
-                self.logger.info("Response_content: {}".format(response.content))
-            if only_return_data:
-                result = data, True
-            else:
-                result = response_json, True
-        else:
-            self.logger.info("Response_content: {}".format(response.text))
-            message = status.get('message', '')
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
-                        code == 'invalid_access_token'):
-                self.logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
 
-            if message:
-                result = message, False
+        self.logger.info("Response_time: {}".format(end_time - start_time))
+        response_json['status_code'] = response.status_code
+
+        if response.status_code == 500:
+            self.logger.info("Response: {}".format(response_json))
+            result = response_json, False
+        else:
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+            if code == "success":
+                data = response_json.get('data', {})
+                if isinstance(data, list):
+                    self.logger.info("Response_content_count: {}".format(len(data)))
+                else:
+                    self.logger.info("Response_content: {}".format(response.content))
+                if only_return_data:
+                    result = data, True
+                else:
+                    result = response_json, True
             else:
-                raise Exception(response.content)
+                self.logger.info("Response_content: {}".format(response.text))
+                message = status.get('message', '')
+                if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                            code == 'invalid_access_token'):
+                    self.logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
         return result
 
     def _delete_method(self, api_path, func_description, logger=None, params={}):
@@ -173,6 +195,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
 
         start_time = time.time()
@@ -200,8 +223,8 @@ class RESTfulMethods(GetHeaderMixin):
             else:
                 raise Exception(response.content)
         return result
-
-    def _get_precision_method(self, api_path, func_description, logger, is_getting_list=False, params={}):
+    
+    def _get_precision_method(self, api_path, func_description, logger=None, is_getting_list=False, params={}):
         """
         :param api_path: 
         :param func_description: 
@@ -215,6 +238,7 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
+
         self.logger.info('API-Path: {path}'.format(path=url))
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
@@ -237,19 +261,20 @@ class RESTfulMethods(GetHeaderMixin):
 
             if len(params) > 0:
                 self.logger.info("Params: {} ".format(params))
-                self.logger.info('Response_code: {}'.format(response.status_code))
+            self.logger.info('Response_code: {}'.format(response.status_code))
+
             if is_getting_list:
                 self.logger.info('Response_content_count: {}'.format(len(data)))
             else:
                 self.logger.info('Response_content: {}'.format(response.text))
-                self.logger.info('Response_time: {}'.format(done - start_date))
+            self.logger.info('Response_time: {}'.format(done - start_date))
 
             result = data, True
         else:
             message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
-                logger.info("{} for {} username".format(message, self.request.user))
+                self.logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
             if message:
                 result = message, False

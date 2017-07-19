@@ -6,7 +6,21 @@
     <div class="panel-heading border">
         <h3>Partner Reconcile Report</h3>
     </div>
-
+    <!--If success return green notification and return red notification if message is failed-->
+    {% if partner_report_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in partner_report_update_msg %}
+                    alert-successPo
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ partner_report_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post"
               {% if partner_file_id %} action="{% url 'reconcile:reconcile_partner_report_by_file_id' partner_file_id %}"
