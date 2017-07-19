@@ -1,6 +1,8 @@
 import logging
 
 from datetime import datetime, timedelta
+
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
@@ -67,15 +69,20 @@ class SofFileList(TemplateView, RESTfulMethods):
             converted_end_date = converted_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = converted_end_date
 
-        data, page = self._search_file_list(params)
+        context = {}
+        try:
+            data, page = self._search_file_list(params)
+            context.update({'file_list': data, 'paginator': page,
+                            'page_range': calculate_page_range_from_page_info(page)})
+        except requests.Timeout:
+            self.logger.error('========== Search SOF file list request timeout ==========')
+            context.update(
+                {'sof_file_list_time_out_msg': 'Search timeout, please try again or contact technical support'})
 
         currencies, success = self._get_currency_choices()
-        context = {'currencies': currencies,
-                   'file_list': data,
-                   'start_date': start_date,
-                   'end_date': end_date,
-                   'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page)}
+        context.update({'currencies': currencies,
+                        'start_date': start_date,
+                        'end_date': end_date})
         context.update(params)
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)

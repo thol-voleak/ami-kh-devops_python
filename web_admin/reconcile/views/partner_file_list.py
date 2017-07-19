@@ -1,4 +1,6 @@
 import logging
+
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
@@ -94,20 +96,26 @@ class PartnerFileList(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data, page = self._search_file_list(params)
+        context = {}
+        try:
+            data, page = self._search_file_list(params)
+            context.update({'file_list': data, 'paginator': page,
+                            'page_range': calculate_page_range_from_page_info(page)})
+        except requests.Timeout:
+            self.logger.error('========== Search partner file list request timeout ==========')
+            context.update({'from_created_timestamp': from_created_timestamp,
+                            'to_created_timestamp': to_created_timestamp,
+                            'partner_file_list_time_out_msg': 'Search timeout, please try again or contact technical support'})
 
-        context = {'is_on_us' : is_on_us_id,
-                   'service_group_id' : service_group_id,
-                   'agent_id' : agent_id,
-                   'currency' : currency,
-                   'status_id' : reconcile_status_id,
-                   'from_created_timestamp' : from_created_timestamp,
-                   'to_created_timestamp' : to_created_timestamp,
-                   'choices' : choices,
-                   'file_list' : data,
-                   'selected_service':service_name,
-                   'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page)}
+        context.update({'is_on_us': is_on_us_id,
+                        'service_group_id': service_group_id,
+                        'agent_id': agent_id,
+                        'currency': currency,
+                        'status_id': reconcile_status_id,
+                        'from_created_timestamp': from_created_timestamp,
+                        'to_created_timestamp': to_created_timestamp,
+                        'choices': choices,
+                        'selected_service': service_name})
 
         if get_service_status == True:
             context['service_list'] = service_list
