@@ -3,7 +3,7 @@ from web_admin import api_settings, setup_logger, RestFulClient
 
 class SystemUserClient:
     @classmethod
-    def search_system_user(cls, request, headers, logger, username, email, user_id):
+    def search_system_user(cls, headers=None, logger=None, username=None, email=None, user_id=None):
         params = {}
 
         if username is not '' and username is not None:

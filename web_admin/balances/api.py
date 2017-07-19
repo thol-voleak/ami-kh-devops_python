@@ -1,24 +1,20 @@
-import logging
-import requests
-import time
-import datetime
+from authentications.utils import get_correlation_id_from_username, get_auth_header
+from web_admin import api_settings, setup_logger
+
 from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
-from django.http import HttpResponse
 
-from authentications.utils import get_correlation_id_from_username
-from web_admin import api_settings, setup_logger
-from authentications.utils import get_correlation_id_from_username
-
-# logger = logging.getLogger(__name__)
+import logging
+import requests
+import time
 
 
 class BalanceApi():
-
     def add(request, currency):
         logger = logging.getLogger(__name__)
-        logger = setup_logger(request, logger)
+        correlation_id = get_correlation_id_from_username(request.user)
+        logger = setup_logger(request, logger, correlation_id)
         logger.info('========== Start add currency ==========')
 
         url = settings.DOMAIN_NAMES + api_settings.ADD_CURRENCY_URL.format(currency)
@@ -64,7 +60,6 @@ class BalanceApi():
 
 
 def refine_data(data):
-
     currencies = data['value'].split(',')
     currencyList = []
 

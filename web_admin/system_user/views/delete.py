@@ -24,9 +24,9 @@ class DeleteView(TemplateView, RESTfulMethods):
         context = super(DeleteView, self).get_context_data(**kwargs)
         system_user_id = context['system_user_id']
 
-        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(),
-                                                                                logger, None, None, system_user_id)
-
+        status_code, status_message, data = SystemUserClient.search_system_user(headers=self._get_headers(),
+                                                                                logger=self.logger,
+                                                                                user_id=system_user_id)
         context = {
             'system_user_info': data[0]
         }
@@ -43,8 +43,7 @@ class DeleteView(TemplateView, RESTfulMethods):
         # Do Request
         data, status = self._delete_method(
             api_path=api_path,
-            func_description="System User Delete",
-            logger=logger
+            func_description="System User Delete"
         )
         self.logger.info('========== Finish deleting system user ==========')
         if status:

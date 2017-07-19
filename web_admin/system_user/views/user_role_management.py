@@ -42,7 +42,7 @@ class RoleManagementView(TemplateView):
         context['system_user_id'] = system_user_id
         context['roles'] = self.get_roles()
 
-        user_role = self.get_user_role(logger, system_user_id)
+        user_role = self.get_user_role(system_user_id)
         if len(user_role) > 0:
             if user_role['id'] != role_id:
                 is_success_delete = self._delete_user_role(user_role['id'], system_user_id)
@@ -70,7 +70,7 @@ class RoleManagementView(TemplateView):
     def get_roles(self):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=self.logger)
+                                                                           loggers=self.logger)
 
         self.logger.info("Have {} roles in database".format(len(data)))
 
@@ -79,15 +79,13 @@ class RoleManagementView(TemplateView):
         else:
             return []
 
-    def get_user_role(self, logger, user_id):
+    def get_user_role(self, user_id):
         params = {
             'user_id': user_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
-
+                                                                           loggers=self.logger, params=params)
         self.logger.info("User have {} role id".format(data))
         if is_success:
             if len(data) > 0:

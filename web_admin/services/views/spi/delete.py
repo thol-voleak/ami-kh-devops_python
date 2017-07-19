@@ -1,3 +1,4 @@
+from web_admin import setup_logger
 from web_admin.api_settings import SPI_DETAIL_PATH, SPI_DELETE_PATH
 from authentications.utils import get_correlation_id_from_username
 from web_admin.restful_methods import RESTfulMethods

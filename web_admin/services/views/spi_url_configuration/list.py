@@ -1,5 +1,7 @@
 from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
 from services.views.spi import SpiApi
+
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.http import Http404

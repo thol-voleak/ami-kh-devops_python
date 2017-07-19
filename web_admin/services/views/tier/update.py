@@ -1,8 +1,6 @@
 import logging
 from django.contrib import messages
-from multiprocessing import Process, Manager
 from django.views.generic.base import TemplateView
-from django.conf import settings
 from web_admin import api_settings, setup_logger
 from django.shortcuts import redirect, render
 from web_admin.restful_methods import RESTfulMethods

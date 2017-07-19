@@ -31,8 +31,8 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
             }
             context = {'system_user_info': system_user_info}
             return context
-
-        except:
+        except Exception as ex:
+            self.logger.info(ex)
             context = {'system_user_info': {}}
             return context
 
@@ -44,7 +44,6 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
         params = {"password": encrypt_text(password)}
         data, success = self._put_method(api_path=url,
                                          func_description="password",
-                                         logger=logger,
                                          params=params)
         self.logger.info('========== Finish changing system user password ==========')
         if success:

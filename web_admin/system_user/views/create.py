@@ -57,7 +57,6 @@ class SystemUserCreate(TemplateView, RESTfulMethods):
         data, status = self._post_method(
             api_path=api_path,
             func_description="System User Create",
-            logger=logger,
             params=params
         )
 
