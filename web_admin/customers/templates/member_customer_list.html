@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
 {% block content %}
 {% csrf_token %}
 
@@ -42,6 +46,7 @@
                     <th id="mobile_number">Mobile Number</th>
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
+                    <th id="modified_date">Status</th>
                     <th id="action">Action</th>
                 </tr>
                 </thead>
@@ -53,15 +58,27 @@
                     <td class="col-sm-3">{{ customer.firstname|default_if_none:'' }}</td>
                     <td class="col-sm-3">{{ customer.lastname|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
-                    <td class="col-sm-2 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
+                    <td class="col-sm-1 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ customer.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ customer.last_updated_timestamp|default_if_none:'' }}</td> 
+                    <td class="col-sm-2">{% if not customer.is_suspended %} Active
+                                         {% else %} Suspended
+                                         {% endif %}</td>                   
                     <td class="col-sm-3">
                         <div class="btn-group">
                             <!-- <button id="btn_detail" class="btn btn-outline btn-xs btn-primary">Detail</button> -->
                             <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
                             <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
                             <button id="btn_identities" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
+                            {% if not customer.is_suspended %} 
+                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
+                                    data-url="{% url 'customers:suspend-customer' customer.id %}"
+                                    onclick="suspend('{{ customer.id }}')">Suspend</button>
+                            {% else %} 
+                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
+                                    data-url="{% url 'customers:activate-customer' customer.id %}"
+                                    onclick="activate('{{ customer.id }}')">Activate</button> 
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -73,4 +90,104 @@
     </div>
 </div>
 
+<script>
+    function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+        $("#alert-error-msg").text(msg);
+        $("#alert-error").prop("hidden", false);
+        $("#alert-error").fadeIn(1000);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+
+    }
+    function suspend(customer_id) {
+        swal({
+                title: "Are you sure you want to suspend?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    console.log(customer_id)
+                    var url = '/admin-portal/customers/suspend/' + customer_id + '/';
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        data: {},
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                location.reload(true)
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error suspending the customer ID' + customer_id + msg)
+                        }
+                    });
+                }
+            });
+    }
+
+    function activate(customer_id) {
+        swal({
+                title: "Are you sure you want to activate?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    console.log(customer_id)
+                    var url = '/admin-portal/customers/activate/' + customer_id + '/';
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        data: {},
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                                console.log(window.location.origin);
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                location.reload(true)
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error activating the customer ID' + customer_id + msg)
+                        }
+                    });
+                }
+            });
+    }
+
+
+</script>
+
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}
