@@ -6,7 +6,10 @@
     <div class="panel-heading border mb15">
         <h3>Member Customer</h3>
     </div>
-
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-2">
@@ -69,6 +72,27 @@
         </div>
     </div>
 <script>
+
+    function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-success");
+        $('#msg-update-success').addClass("alert-danger");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+    }
+
+    function showSuccessMessage(msg) {
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-danger");
+        $('#msg-update-success').addClass("alert-success");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+
+    }
+
     function reset() {
         swal({
                 title: "Confirm password reset",
@@ -85,7 +109,6 @@
                     url1 = window.location.href;
                     url2 = window.location.origin;
                     var url_original = url1.replace(url2, "");
-                    //var url = '/admin-portal/customers/' + customer_id + '/identities/' + identity_id + '/' ;
                     var url = $("#btn_reset_password").data("url");
                     $.ajax({
                         url: url,
@@ -98,14 +121,14 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                location.reload(true)
+                                showSuccessMessage('Password reset successfully');
                             } else {
                                 // Failed
-                                //showErrorMessage(response.msg);
+                                showErrorMessage('Password cannot be reset for this user, please try again or contact technical support');
                             }
                         },
-                        error: function (msg) {
-                            console.log('Error suspending the client id' + customer_id + msg)
+                        error: function (err) {
+                            showErrorMessage('Password cannot be reset for this user, please try again or contact technical support');
                         }
                     });
                 }
