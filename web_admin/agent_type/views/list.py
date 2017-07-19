@@ -30,8 +30,7 @@ class ListView(TemplateView, RESTfulMethods):
         return result
 
     def get_agent_types_list(self):
-        data, success = self._get_method(api_path=AGENT_TYPES_LIST_URL,
+        data, success = self._post_method(api_path=AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
-                                         logger=logger,
-                                         is_getting_list=True)
+                                         logger=logger)
         return data

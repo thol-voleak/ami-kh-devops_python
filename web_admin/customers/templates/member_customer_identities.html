@@ -6,7 +6,10 @@
     <div class="panel-heading border mb15">
         <h3>Member Customer</h3>
     </div>
-
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-2">
@@ -38,14 +41,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for customer in data %}
-                    {% if not customer.is_deleted %}
+                {% for identity in data %}
+                    {% if not identity.is_deleted %}
                         <tr>
-                            <td class="col-sm-1">{{ customer.id }}</td>
-                            <td class="col-sm-3">{{ customer.username|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ identity.id }}</td>
+                            <td class="col-sm-3">{{ identity.username|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <div class="btn-group">
-                                    <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary">
+                                    <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
+                                            data-url="{% url 'customers:reset-identity-password' customer_id identity.id %}"
+                                            onClick="reset()">
                                         ResetPassword
                                     </button>
                                 </div>
@@ -66,5 +71,70 @@
             </a>
         </div>
     </div>
+<script>
+
+    function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-success");
+        $('#msg-update-success').addClass("alert-danger");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+    }
+
+    function showSuccessMessage(msg) {
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-danger");
+        $('#msg-update-success').addClass("alert-success");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+
+    }
+
+    function reset() {
+        swal({
+                title: "Confirm password reset",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    url1 = window.location.href;
+                    url2 = window.location.origin;
+                    var url_original = url1.replace(url2, "");
+                    var url = $("#btn_reset_password").data("url");
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        data: {},
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.href+ "?next=" + url_original;
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                showSuccessMessage('Password reset successfully');
+                            } else {
+                                // Failed
+                                showErrorMessage('Password cannot be reset for this user, please try again or contact technical support');
+                            }
+                        },
+                        error: function (err) {
+                            showErrorMessage('Password cannot be reset for this user, please try again or contact technical support');
+                        }
+                    });
+                }
+            });
+    }
+
+</script>
 
 {% endblock %}

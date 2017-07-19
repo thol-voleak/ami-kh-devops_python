@@ -65,11 +65,12 @@ class DetailView(TemplateView, RESTfulMethods):
         return currencies_str, success
 
     def _get_agent_detail(self, agent_id):
-        data, success = self._get_method(api_path=api_settings.AGENT_DETAIL_PATH.format(agent_id=agent_id),
+        body = {'id' : agent_id}
+        data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                          func_description="Agent detail",
-                                         logger=logger)
+                                         logger=logger, params=body)
         context = {
-            'agent': data,
+            'agent': data[0],
             'agent_id': agent_id,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
@@ -97,10 +98,9 @@ class DetailView(TemplateView, RESTfulMethods):
         return currencies_str, success
 
     def _get_agent_type_name(self, agent_type_id):
-        agent_types_list, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
-                                                     func_description="Agent types list from backend",
-                                                     logger=logger,
-                                                     is_getting_list=True)
+        agent_types_list, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+                                          func_description="Agent Type List",
+                                          logger=logger)
         if success:
             my_id = int(agent_type_id)
             for x in agent_types_list:

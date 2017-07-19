@@ -21,8 +21,8 @@ class CustomerIdentitiesListView(TemplateView, RESTfulMethods):
         customer_id = int(kwargs.get('customerId'))
         url = CUSTOMER_IDENTITIES_LIST
         self.logger.info('API-Path: {};'.format(url))
-        param = {}
-        data, success = self._get_method(api_path=url,
+        param = {'customer_id':customer_id}
+        data, success = self._post_method(api_path=url,
                                           func_description="member customer identities",
                                           logger=logger,
                                           params=param)

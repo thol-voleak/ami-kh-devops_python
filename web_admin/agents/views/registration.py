@@ -23,10 +23,9 @@ logger = logging.getLogger(__name__)
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
-        data, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+        data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
-                                         logger=logger,
-                                         is_getting_list=True)
+                                         logger=logger)
         newdata = [i for i in data if not i['is_deleted']]
         return newdata
 
@@ -286,10 +285,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     def _create_agent_balance(self, request, agent_id):
 
         currency = request.POST.get('currency')
-        sof_type = "cash"  # TODO: Hard code for Sof_Type
-        body = {}
+        # sof_type = "cash"  # TODO: Hard code for Sof_Type
+        body = {'currency': currency}
+        api_path = api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id)
 
-        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
+        data, success = self._post_method(api_path=api_path,
                                           func_description="Agent Balance",
                                           logger=logger, params=body)
         return data, success
