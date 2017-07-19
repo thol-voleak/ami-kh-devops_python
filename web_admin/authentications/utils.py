@@ -1,9 +1,25 @@
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
+from django import template
+from django.db import models
 from django.conf import settings
+
 import logging
+import json
+
+register = template.Library()
 
 logger = logging.getLogger(__name__)
+
+
+@register.filter('has_permission_name')
+def has_permission_name(user, group_name):
+    """
+    Verify User have permission to see menu
+    """
+    authens = Authentications.objects.get(user=user)
+    permissions = authens.permissions
+    return True if group_name in [x['name'] for x in permissions] else False
 
 
 def get_auth_header(user):

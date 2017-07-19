@@ -2,6 +2,7 @@ from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header as get_header
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
@@ -22,9 +23,13 @@ def login_user(request):
         password = request.POST['password']
 
         user = authenticate(request=request, username=username, password=password)
-
         if user is not None:
             login(request, user)
+            permissions = get_permission_from_backend(user, logger)
+            authens = Authentications.objects.get(user=user)
+            authens.permissions = permissions['permissions']
+            authens.save()
+
             next_request = request.POST.get('next') or 'web:web-index'
             return redirect(next_request)
 
@@ -32,6 +37,15 @@ def login_user(request):
         next_request = request.GET['next']
 
     return render(request, "authentications/login.html", {'next': next_request})
+
+
+def get_permission_from_backend(username, logger):
+    headers = get_header(username)
+    url = api_settings.GET_PERMISSION_PATH
+    is_success, status_code, data = RestFulClient.get(url=url, headers=headers, loggers=logger)
+    logger.info("Permissions is [{}]".format(len(data)))
+    if is_success:
+        return data
 
 
 def logout_user(request):

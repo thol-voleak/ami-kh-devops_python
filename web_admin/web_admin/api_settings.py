@@ -1,6 +1,8 @@
 # Authentication
 LOGIN_URL = 'api-gateway/v1/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/v1/oauth/token/revoke'
+GET_PERMISSION_PATH = 'api-gateway/system-user/v1/roles-permissions'
+
 
 # API Management
 APIS_URL = "api-gateway/v1/apis/"

@@ -29,7 +29,7 @@ def _delete_method(request, api_path, func_description, logger, params=None):
     message = status.get('message', 'Something went wrong.')
     if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 
@@ -64,7 +64,7 @@ def _post_method(request, api_path, func_description, logger, params={}):
     message = status.get('message', 'Something went wrong.')
     if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 
@@ -99,7 +99,7 @@ def _put_method(request, api_path, func_description, logger, params={}):
     message = status.get('message', 'Something went wrong.')
     if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 

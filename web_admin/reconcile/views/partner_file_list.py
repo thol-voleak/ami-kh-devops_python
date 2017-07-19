@@ -1,10 +1,12 @@
 import logging
+
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin import api_settings, setup_logger
+from web_admin import api_settings
 from multiprocessing.pool import ThreadPool
 from web_admin.restful_methods import RESTfulMethods
-from authentications.utils import get_correlation_id_from_username
+from web_admin.utils import setup_logger
 from datetime import datetime, timedelta
 from web_admin.utils import calculate_page_range_from_page_info
 
@@ -21,8 +23,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        self.logger = setup_logger(self.request, logger)
         return super(PartnerFileList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -34,10 +35,10 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         service_list, get_service_status = self._get_service('-1')
 
         choices, success = self._get_service_group_and_currency_choices()
-        context = {'from_created_timestamp': default_start_date,
-                   'to_created_timestamp': default_end_date,
-                   'service_group_id': -1,
-                   'choices': choices}
+        context ={'from_created_timestamp' : default_start_date,
+                  'to_created_timestamp' : default_end_date,
+                  'service_group_id' : -1,
+                  'choices' : choices}
 
         if get_service_status == True:
             context['service_list'] = service_list
@@ -67,7 +68,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
 
         if is_on_us_id >= 0:
             params['is_on_us'] = (is_on_us_id == 1)
-        service_list, get_service_status = self._get_service(service_group)
+        service_list, get_service_status  = self._get_service(service_group)
 
         if service_name != '':
             if service_name == None:
@@ -95,20 +96,26 @@ class PartnerFileList(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data, page = self._search_file_list(params)
+        context = {}
+        try:
+            data, page = self._search_file_list(params)
+            context.update({'file_list': data, 'paginator': page,
+                            'page_range': calculate_page_range_from_page_info(page)})
+        except requests.Timeout:
+            self.logger.error('========== Search partner file list request timeout ==========')
+            context.update({'from_created_timestamp': from_created_timestamp,
+                            'to_created_timestamp': to_created_timestamp,
+                            'partner_file_list_time_out_msg': 'Search timeout, please try again or contact technical support'})
 
-        context = {'is_on_us': is_on_us_id,
-                   'service_group_id': service_group_id,
-                   'agent_id': agent_id,
-                   'currency': currency,
-                   'status_id': reconcile_status_id,
-                   'from_created_timestamp': from_created_timestamp,
-                   'to_created_timestamp': to_created_timestamp,
-                   'choices': choices,
-                   'file_list': data,
-                   'selected_service': service_name,
-                   'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page)}
+        context.update({'is_on_us': is_on_us_id,
+                        'service_group_id': service_group_id,
+                        'agent_id': agent_id,
+                        'currency': currency,
+                        'status_id': reconcile_status_id,
+                        'from_created_timestamp': from_created_timestamp,
+                        'to_created_timestamp': to_created_timestamp,
+                        'choices': choices,
+                        'selected_service': service_name})
 
         if get_service_status == True:
             context['service_list'] = service_list
@@ -179,3 +186,6 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         service_list = self._get_method(url, "Get services list", logger, True)
         self.logger.info('========== Finish Getting Services List ==========')
         return service_list
+
+
+

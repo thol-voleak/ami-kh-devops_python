@@ -43,7 +43,7 @@ class CustomBackend:
     def authenticate(self, request=None, username=None, password=None):
         try:
             loggers = setup_logger(request, logger, request.user)
-            loggers.info('========== Start authentication backend service ==========')
+            loggers.info('[Start authentication backend service]')
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
             url = settings.DOMAIN_NAMES + api_settings.LOGIN_URL
@@ -103,7 +103,7 @@ class CustomBackend:
                     return user
                 else:
                     loggers.error("Cannot get access token from response of {} user name".format(username))
-                    loggers.info('========== Finish authentication backend service ==========')
+                    loggers.info('[Finish authentication backend service]')
                     return None
             else:
                 if json_data.get('error_description') == 'Invalid credential':
@@ -115,8 +115,7 @@ class CustomBackend:
 
         except Exception as ex:
             loggers.error(ex)
-            loggers.error("{} user name authentication to backend was failed".format(username))
-            loggers.info('========== Finish authentication backend service ==========')
+            loggers.error("[{} user name authentication to backend was failed]".format(username))
             return None
 
     def get_user(self, user_id):
