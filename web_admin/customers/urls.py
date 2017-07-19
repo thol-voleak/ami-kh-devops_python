@@ -6,6 +6,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from .views.suspend import suspend
 from .views.activate import activate
+from .views.reset_identity_password import reset_password
 
 app_name = 'customers'
 
@@ -18,4 +19,5 @@ urlpatterns = [
         name="suspend-customer"),
     url(r'^activate/(?P<customer_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'),
         name="activate-customer"),
+    url(r'^(?P<customer_id>[0-9A-Za-z]+)/identities/(?P<identity_id>[0-9A-Za-z]+)/$', login_required(reset_password, login_url='authentications:login'), name="reset-identity-password"),
 ]

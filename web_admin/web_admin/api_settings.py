@@ -147,6 +147,7 @@ BANK_SOFS_URL = "report/v1/banks/sofs"
 CUSTOMER_IDENTITIES_LIST = "api-gateway/customer/v1/customers/identities"
 SUSPEND_CUSTOMER = 'api-gateway/customer/v1/admin/customers/{}/status'
 ACTIVATE_CUSTOMER = 'api-gateway/customer/v1/admin/customers/{}/status'
+RESET_IDENTITY_PASSWORD = 'api-gateway/customer/v1/admin/customers/{}/identities/{}/passwords/temporary'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'
