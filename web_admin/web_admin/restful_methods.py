@@ -43,38 +43,37 @@ class RESTfulMethods(GetHeaderMixin):
             try:
                 status = response_json.get('status', {})
                 code = status.get('code', '')
-
-                if response.status_code == 200 and code == "success":
-                    if is_getting_list:
-                        default_data = []
-                    else:
-                        default_data = {}
-                    data = response_json.get('data', default_data)
-
-                    if len(params) > 0:
-                        logger.info("Params: {} ".format(params))
-                    logger.info('Response_code: {}'.format(response.status_code))
-                    if is_getting_list:
-                        logger.info('Response_content_count: {}'.format(len(data)))
-                    else:
-                        logger.info('Response_content: {}'.format(response.text))
-                    logger.info('Response_time: {}'.format(end_time - start_time))
-
-                    result = data, True
-                else:
-                    message = status.get('message', '')
-                    if (code == "access_token_expire") or (code == 'access_token_not_found') or (
-                                code == 'invalid_access_token'):
-                        logger.info("{} for {} username".format(message, self.request.user))
-                        raise InvalidAccessToken(message)
-                    if message:
-                        result = message, False
-                    else:
-                        raise Exception(response.content)
-
             except Exception as e:
                 logger.error(e)
                 raise Exception(response.content)
+
+            if response.status_code == 200 and code == "success":
+                if is_getting_list:
+                    default_data = []
+                else:
+                    default_data = {}
+                data = response_json.get('data', default_data)
+
+                if len(params) > 0:
+                    logger.info("Params: {} ".format(params))
+                logger.info('Response_code: {}'.format(response.status_code))
+                if is_getting_list:
+                    logger.info('Response_content_count: {}'.format(len(data)))
+                else:
+                    logger.info('Response_content: {}'.format(response.text))
+                logger.info('Response_time: {}'.format(end_time - start_time))
+
+                result = data, True
+            else:
+                message = status.get('message', '')
+                if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                            code == 'invalid_access_token'):
+                    logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
 
         return result
 
