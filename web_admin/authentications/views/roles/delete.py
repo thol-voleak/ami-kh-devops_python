@@ -29,10 +29,10 @@ class RoleDeleteView(TemplateView):
         params = {
             'id': role_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
+                                                                           loggers=self.logger,
+                                                                           params=params)
         if is_success:
             context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')
@@ -44,8 +44,9 @@ class RoleDeleteView(TemplateView):
         role_id = kwargs['role_id']
         url = api_settings.ROLE_DELETE_PATH.format(role_id=role_id)
 
-        is_success, status_code, status_message = RestFulClient.delete(self.request, url, self._get_headers(),
-                                                                       logger)
+        is_success, status_code, status_message = RestFulClient.delete(url=url,
+                                                                       headers=self._get_headers(),
+                                                                       loggers=self.logger)
         if is_success:
             messages.add_message(
                 request,

@@ -4,13 +4,12 @@ import json
 from decimal import Decimal
 
 from django.conf import settings
-from authentications.utils import get_correlation_id_from_username
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
 
 class RESTfulMethods(GetHeaderMixin):
-    def _get_method(self, api_path, func_description, logger, is_getting_list=False, params={}):
+    def _get_method(self, api_path, func_description, logger=None, is_getting_list=False, params={}):
         """
         :param api_path: 
         :param func_description: 
@@ -66,7 +65,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _put_method(self, api_path, func_description, logger, params={}):
+    def _put_method(self, api_path, func_description, logger=None, params={}):
         """
         :param api_path: the API path
         :param func_description: the description of method, used for logging
@@ -115,7 +114,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _post_method(self, api_path, func_description, logger, params={}, only_return_data=True):
+    def _post_method(self, api_path, func_description, logger=None, params={}, only_return_data=True):
         """
         :param api_path: 
         :param func_description: 
@@ -168,7 +167,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _delete_method(self, api_path, func_description, logger, params={}):
+    def _delete_method(self, api_path, func_description, logger=None, params={}):
 
         if 'http' in api_path:
             url = api_path
@@ -243,27 +242,20 @@ class RESTfulMethods(GetHeaderMixin):
                 self.logger.info('Response_content_count: {}'.format(len(data)))
             else:
                 self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Response_time: {}'.format(done - start_date))
+                self.logger.info('Response_time: {}'.format(done - start_date))
 
             result = data, True
         else:
             message = status.get('message', '')
             if (code == "access_token_expire") or (code == 'access_token_not_found') or (
                         code == 'invalid_access_token'):
-                self.logger.info("{} for {} username".format(message, self.request.user))
+                logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
             if message:
                 result = message, False
             else:
                 raise Exception(response.content)
         return result
-
-    '''
-    Author: Steve Le
-    History:
-    # 2017-05-18: Init
-    - For skip sensitive fields for logging data.
-    '''
 
     @staticmethod
     def _filter_sensitive_fields(params={}):

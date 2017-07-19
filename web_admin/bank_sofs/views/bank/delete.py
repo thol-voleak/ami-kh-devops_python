@@ -5,7 +5,7 @@ from web_admin.restful_methods import RESTfulMethods
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 import logging
 
@@ -36,6 +36,8 @@ class DeleteView(TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start delete bank source of fund ==========')
         bank_id = kwargs['bank_id']
+        bank = self._get_bank_details(bank_id)
+        context = {'bank': bank}
         data, success = self._delete_method(api_path=self.delete_bank_sof_detail_url.format(id=bank_id),
                                             func_description="Delete bank source of fund",
                                             logger=logger)
@@ -47,6 +49,14 @@ class DeleteView(TemplateView, RESTfulMethods):
                 'Deleted bank account successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
+        else:
+            self.logger.info('========== Finished delete bank source of fund ==========')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            return render(request, "bank/delete.html", context)
 
     def _get_bank_details(self, bank_id):
         params = {

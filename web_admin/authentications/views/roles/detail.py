@@ -25,10 +25,9 @@ class RoleDetailView(TemplateView):
         params = {
             'id': role_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
+                                                                           loggers=self.logger, params=params)
         if is_success:
             context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')

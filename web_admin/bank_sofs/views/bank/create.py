@@ -1,8 +1,9 @@
+from authentications.utils import get_correlation_id_from_username
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 
-from authentications.utils import get_correlation_id_from_username
+from django.shortcuts import redirect, render
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -25,7 +26,14 @@ class CreateView(TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start create bank sofs ==========')
-        currencies = self._get_currencies_list()
+        currencies, success = self._get_currencies_list()
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                currencies
+            )
+            currencies = []
         context = {'currencies': currencies}
         self.logger.info('========== Finished create bank sofs ==========')
         return context
@@ -79,6 +87,23 @@ class CreateView(TemplateView, RESTfulMethods):
                 'Add bank successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
+        else:
+            self.logger.info('========== Finished creating bank profile ==========')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            currencies, success = self._get_currencies_list()
+            if not success:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    currencies
+                )
+                currencies = []
+            context = {'currencies': currencies, 'bank_info': params}
+            return render(request, self.template_name, context)
 
     def _get_currencies_list(self):
         url = GET_ALL_CURRENCY_URL
@@ -89,6 +114,6 @@ class CreateView(TemplateView, RESTfulMethods):
         if success:
             value = data.get('value', '')
             currencies = [i.split('|') for i in value.split(',')]
+            return currencies, success
         else:
-            currencies = []
-        return currencies
+            return data, success

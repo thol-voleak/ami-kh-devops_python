@@ -39,7 +39,14 @@ class CustomerDetailView(TemplateView, RESTfulMethods):
                                           func_description="member customer detail",
                                           logger=logger,
                                           params=body)
+        status = {
+            True: 'Suspended',   # is_suspended == True
+            False: 'Active'      # is_suspended == False
+        }
         context = {'customer_info': data[0]}
+        is_suspended = context['customer_info'].get('is_suspended')
+        context['customer_info']['is_suspended'] = status[is_suspended]
+
         return context
 
                 

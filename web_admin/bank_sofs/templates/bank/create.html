@@ -5,6 +5,14 @@
     <div class="panel-heading border">
         <h3>Create Bank Profile</h3>
     </div>
+    {% for message in messages %}
+         <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-error">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+         </div>
+    {% endfor %}
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
@@ -25,11 +33,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Name</label>
+                        <label class="col-sm-2 control-label">Bank Name *</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="name"
                                    id="bank_name"
-                                   value="{{ bank_info.bank_name | default_if_none:'' }}" >
+                                   value="{{ bank_info.name | default_if_none:'' }}" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -37,7 +45,7 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="bin"
                                    id="bank_bin"
-                                   value="{{ bank_info.bank_bin | default_if_none:'' }}">
+                                   value="{{ bank_info.bin | default_if_none:'' }}">
 
                         </div>
                     </div>
@@ -47,7 +55,7 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="description"
                                    id="bank_description"
-                                   value="{{ bank_info.bank_description | default_if_none:'' }}">
+                                   value="{{ bank_info.description | default_if_none:'' }}">
 
                         </div>
                     </div>
@@ -57,7 +65,7 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="credit_url"
                                    id="bank_credit_url"
-                                   value="{{ bank_info.bank_credit_url | default_if_none:'' }}">
+                                   value="{{ bank_info.credit_url | default_if_none:'' }}">
 
                         </div>
                     </div>
@@ -67,7 +75,7 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="debit_url"
                                    id="bank_debit_url"
-                                   value="{{ bank_info.bank_debit_url | default_if_none:'' }}">
+                                   value="{{ bank_info.debit_url | default_if_none:'' }}">
 
                         </div>
                     </div>
@@ -128,11 +136,13 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Currency</label>
                         <div class="col-sm-8">
-                            <select class="form-control" id="bank_currency" name="currency" >
+                            <select class="form-control" id="bank_currency" name="currency" required>
                                 {% for currency in currencies %}
-                                <option value="{{ currency.0 }}"
-                                        {% if request.GET.currency == currency.0 %}selected{% endif %}>{{ currency.0 }}
-                                </option>
+                                {% if currency.0 == bank_info.currency %}
+                                <option value="{{ currency.0 }}" selected>{{ currency.0 }}</option>
+                                {% else %}
+                                <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                                {% endif %}
                                 {% endfor %}
                             </select>
                         </div>

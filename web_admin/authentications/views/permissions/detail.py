@@ -27,10 +27,10 @@ class PermissionDetailView(TemplateView):
             'id': int(permission_id)
         }
         self.logger.info("Searching permission with [{}] id".format(permission_id))
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.PERMISSION_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.PERMISSION_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
+                                                                           loggers=self.logger,
+                                                                           params=params)
         if is_success:
             context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')

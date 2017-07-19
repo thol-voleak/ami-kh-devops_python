@@ -1,7 +1,7 @@
-from authentications.utils import get_correlation_id_from_username, get_correlation_id_from_username
-from web_admin import api_settings, setup_logger
-from web_admin import setup_logger, RestFulClient
 from authentications.apps import InvalidAccessToken
+from authentications.utils import get_auth_header, get_correlation_id_from_username
+from web_admin import setup_logger, RestFulClient, api_settings
+
 from django.views.generic.base import TemplateView
 
 import logging
@@ -20,10 +20,9 @@ class PermissionList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PermissionList, self).get_context_data(**kwargs)
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.PERMISSION_LIST,
-                                                                           headers=self._get_headers(),
-                                                                           logger=logger)
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.PERMISSION_LIST,
+                                                                           loggers=self.logger,
+                                                                           headers=self._get_headers())
         if is_success:
             self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
             context['permissions'] = data

@@ -20,10 +20,9 @@ class RoleList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(RoleList, self).get_context_data(**kwargs)
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger)
+                                                                           loggers=self.logger)
         if is_success:
             self.logger.info("Roles have [{}] role in database".format(len(data)))
             context['roles'] = data

@@ -81,7 +81,7 @@ class CustomBackend:
                         user.is_staff = True
                         user.save()
 
-                    user_profiles = self.get_user_profiles(request, username, access_token, correlation_id)
+                    user_profiles = self.get_user_profiles(username, access_token, correlation_id, loggers)
                     loggers.info("Adding access token for {} user name".format(username))
 
                     auth, created_token = Authentications.objects.get_or_create(user=user)
@@ -125,7 +125,7 @@ class CustomBackend:
         except User.DoesNotExist:
             return None
 
-    def get_user_profiles(self, request, username, access_token, correlation_id):
+    def get_user_profiles(self, username, access_token, correlation_id, loggers):
         url = api_settings.SEARCH_SYSTEM_USER
 
         headers = {
@@ -140,7 +140,7 @@ class CustomBackend:
             'username': username
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(request=request, url=url, headers=headers,
-                                                                           logger=logger, params=params)
+        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=headers, loggers=loggers,
+                                                                           params=params)
         if is_success:
             return data[0]

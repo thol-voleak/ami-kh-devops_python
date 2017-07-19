@@ -1,5 +1,4 @@
-from web_admin import api_settings, setup_logger
-from web_admin import setup_logger, RestFulClient
+from web_admin import api_settings, setup_logger, RestFulClient
 
 
 class SystemUserClient:
@@ -14,8 +13,7 @@ class SystemUserClient:
         if user_id is not '' and user_id is not None:
             params['user_id'] = user_id
 
-        is_success, status_code, status_message, data = RestFulClient.post(request,
-                                                                           api_settings.SEARCH_SYSTEM_USER,
+        is_success, status_code, status_message, data = RestFulClient.post(api_settings.SEARCH_SYSTEM_USER,
                                                                            headers, logger, params)
 
         return status_code, status_message, data

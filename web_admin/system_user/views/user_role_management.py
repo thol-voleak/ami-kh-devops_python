@@ -29,8 +29,8 @@ class RoleManagementView(TemplateView):
 
         self.logger.info('========== End get all role entities ==========')
 
-        context['user_role'] = self.get_user_role(logger, system_user_id)
-        context['roles'] = self.get_roles(logger)
+        context['user_role'] = self.get_user_role(system_user_id)
+        context['roles'] = self.get_roles()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -40,13 +40,13 @@ class RoleManagementView(TemplateView):
         role_id = request.POST.get('role', None)
 
         context['system_user_id'] = system_user_id
-        context['roles'] = self.get_roles(logger)
+        context['roles'] = self.get_roles()
 
         user_role = self.get_user_role(logger, system_user_id)
         if len(user_role) > 0:
             if user_role['id'] != role_id:
-                is_success_delete = self._delete_user_role(logger, user_role['id'], system_user_id)
-                is_success_add = self._add_user_role(logger, role_id, system_user_id)
+                is_success_delete = self._delete_user_role(user_role['id'], system_user_id)
+                is_success_add = self._add_user_role(role_id, system_user_id)
                 if is_success_delete and is_success_add:
                     messages.add_message(
                         request,
@@ -54,7 +54,7 @@ class RoleManagementView(TemplateView):
                         'Updated data successfully'
                     )
         else:
-            is_success_add = self._add_user_role(logger, role_id, system_user_id)
+            is_success_add = self._add_user_role(role_id, system_user_id)
             if is_success_add:
                 messages.add_message(
                     request,
@@ -62,16 +62,15 @@ class RoleManagementView(TemplateView):
                     'Updated data successfully'
                 )
 
-        context['user_role'] = self.get_user_role(logger, system_user_id)
-        context['roles'] = self.get_roles(logger)
+        context['user_role'] = self.get_user_role(system_user_id)
+        context['roles'] = self.get_roles()
 
         return render(request, self.template_name, context)
 
-    def get_roles(self, logger):
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+    def get_roles(self):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger)
+                                                                           logger=self.logger)
 
         self.logger.info("Have {} roles in database".format(len(data)))
 
@@ -98,25 +97,26 @@ class RoleManagementView(TemplateView):
         else:
             return []
 
-    def _delete_user_role(self, logger, role_id, user_id):
+    def _delete_user_role(self, role_id, user_id):
         url = api_settings.ROLE_USER_PATH.format(user_id=user_id)
         params = {
             'role_id': int(role_id)
         }
-        is_success_delete, status_code_delete, status_message_delete = RestFulClient.delete(self.request, url,
+        is_success_delete, status_code_delete, status_message_delete = RestFulClient.delete(url,
                                                                                             self._get_headers(),
-                                                                                            logger,
+                                                                                            self.logger,
                                                                                             params=params)
         return is_success_delete
 
-    def _add_user_role(self, logger, role_id, user_id):
+    def _add_user_role(self, role_id, user_id):
         url = api_settings.USER_ROLE_PATH.format(role_id=role_id)
         params = {
             'user_id': int(user_id)
         }
-        is_success_add, status_code_add, status_message_add, data = RestFulClient.post(self.request, url,
+        is_success_add, status_code_add, status_message_add, data = RestFulClient.post(url,
                                                                                        self._get_headers(),
-                                                                                       logger, params=params)
+                                                                                       self.logger,
+                                                                                       params=params)
         return is_success_add
 
     def _get_headers(self):

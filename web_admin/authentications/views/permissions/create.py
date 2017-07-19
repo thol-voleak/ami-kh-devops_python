@@ -1,4 +1,4 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, get_auth_header
 from web_admin import setup_logger, RestFulClient, api_settings
 
 from django.contrib import messages
@@ -18,7 +18,6 @@ class PermissionCreate(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PermissionCreate, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -37,9 +36,9 @@ class PermissionCreate(TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(self.request,
-                                                                           api_settings.CREATE_PERMISSION_PATH,
-                                                                           self._get_headers(), logger, params)
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_PERMISSION_PATH,
+                                                                           loggers=self.logger,
+                                                                           headers=self._get_headers(), params=params)
         if is_success:
             messages.add_message(
                 request,

@@ -23,26 +23,26 @@ ACTIVATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
 # Agent Type
 AGENT_TYPES_LIST_URL = 'api-gateway/agent/v1/types'
 GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
-AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/types'
+AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/admin/agent-types'
 AGENT_TYPE_DETAIL_URL = 'api-gateway/agent/v1/types/{}'
 ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/country'
 GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations'
 GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currencies'
 ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
-AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/types/{}'
-DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/types/{}'
+AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/v1/admin/agent-types/{}'
+DELETE_AGENT_TYPE_URL = 'api-gateway/agent/v1/admin/agent-types/{}'
 
 # Agent
 AGENT_LIST_PATH = 'api-gateway/report/v1/agents'
 SEARCH_AGENT = 'api-gateway/report/v1/agents'
 AGENT_DETAIL_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/v1/agents'
-AGENT_DELETE_URL = 'api-gateway/agent/v1/agents/{agent_id}'
+AGENT_DELETE_URL = 'api-gateway/agent/v1/admin/agents/{agent_id}'
 CREATE_AGENT_IDENTITY_URL = 'api-gateway/agent/v1/agents/{agent_id}/identities'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/v1/agents/{agent_id}/sofs/{sof_type}/{currency}'
 GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 GET_AGENT_TYPES_PATH = 'api-gateway/agent/v1/types'
-AGENT_UPDATE_PATH = 'api-gateway/agent/v1/agents/{agent_id}/profiles'
+AGENT_UPDATE_PATH = 'api-gateway/agent/v1/admin/agents/{agent_id}'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/v1/system-users'
@@ -144,6 +144,7 @@ GET_CENTRALIZE_CONFIGURATION_URL = "api-gateway/centralize-configuration/prepaid
 CASH_TRANSACTIONS_URL = "api-gateway/report/v1/cash/transactions"
 CASH_SOFS_URL = "api-gateway/report/v1/cash/sofs"
 BANK_SOFS_URL = "report/v1/banks/sofs"
+CUSTOMER_IDENTITIES_LIST = "api-gateway/customer/v1/customers/identities"
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/v1/reconciled/partners'

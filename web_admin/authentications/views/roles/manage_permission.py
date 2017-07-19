@@ -29,10 +29,9 @@ class ManagePermissionView(TemplateView):
         }
 
         is_success_role_perm, status_code_role_perm, status_message_role_perm, data_role_perm = RestFulClient.post(
-            request=self.request,
             url=api_settings.PERMISSION_LIST,
             headers=self._get_headers(),
-            logger=logger, params=params)
+            loggers=self.logger, params=params)
         if (status_code_role_perm == "access_token_expire") or (status_code_role_perm == 'access_token_not_found') or (
                     status_code_role_perm == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message_role_perm, self.request.user))
@@ -67,10 +66,9 @@ class ManagePermissionView(TemplateView):
             'role_id': int(role_id)
         }
         is_success_role_perm, status_code_role_perm, status_message_role_perm, data_role_perm = RestFulClient.post(
-            request=self.request,
             url=api_settings.PERMISSION_LIST,
             headers=self._get_headers(),
-            logger=logger, params=params)
+            loggers=self.logger, params=params)
 
         if (status_code_role_perm == "access_token_expire") or (status_code_role_perm == 'access_token_not_found') or (
                     status_code_role_perm == 'invalid_access_token'):
@@ -94,8 +92,8 @@ class ManagePermissionView(TemplateView):
             'permissions': permissions_to_insert
         }
 
-        is_success_delete = self._delete_role_permission(url, logger, params_to_delete)
-        is_success_add = self._add_role_permission(url, logger, params_to_insert)
+        is_success_delete = self._delete_role_permission(url, params_to_delete)
+        is_success_add = self._add_role_permission(url, params_to_insert)
 
         if is_success_add and is_success_delete:
             messages.add_message(
@@ -111,10 +109,10 @@ class ManagePermissionView(TemplateView):
             self._headers = get_auth_header(self.request.user)
         return self._headers
 
-    def _delete_role_permission(self, url, logger, params_to_delete):
-        is_success_delete, status_code_delete, status_message_delete = RestFulClient.delete(self.request, url,
+    def _delete_role_permission(self, url, params_to_delete):
+        is_success_delete, status_code_delete, status_message_delete = RestFulClient.delete(url,
                                                                                             self._get_headers(),
-                                                                                            logger,
+                                                                                            self.logger,
                                                                                             params=params_to_delete)
         if (status_code_delete == "access_token_expire") or (status_code_delete == 'access_token_not_found') or (
                     status_code_delete == 'invalid_access_token'):
@@ -122,10 +120,11 @@ class ManagePermissionView(TemplateView):
             raise InvalidAccessToken(status_message_delete)
         return is_success_delete
 
-    def _add_role_permission(self, url, logger, params_to_insert):
-        is_success_add, status_code_add, status_message_add, data = RestFulClient.post(self.request, url,
+    def _add_role_permission(self, url, params_to_insert):
+        is_success_add, status_code_add, status_message_add, data = RestFulClient.post(url,
                                                                                        self._get_headers(),
-                                                                                       logger, params=params_to_insert)
+                                                                                       self.logger,
+                                                                                       params=params_to_insert)
         if (status_code_add == "access_token_expire") or (status_code_add == 'access_token_not_found') or (
                     status_code_add == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message_add, self.request.user))
@@ -135,10 +134,9 @@ class ManagePermissionView(TemplateView):
     def _get_all_permission(self):
         if getattr(self, '_permissions', None) is None:
             is_success_permissions, status_code_permissions, status_message_permissions, data_permissions = RestFulClient.post(
-                request=self.request,
                 url=api_settings.PERMISSION_LIST,
                 headers=self._get_headers(),
-                logger=logger)
+                loggers=self.logger)
             if (status_code_permissions == "access_token_expire") or (
                         status_code_permissions == 'access_token_not_found') or (
                         status_code_permissions == 'invalid_access_token'):

@@ -36,9 +36,10 @@ class RoleCreate(TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(self.request,
-                                                                           api_settings.CREATE_ROLE_PATH,
-                                                                           self._get_headers(), logger, params)
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_ROLE_PATH,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=params)
         if is_success:
             messages.add_message(
                 request,
