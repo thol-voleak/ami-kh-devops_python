@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
@@ -113,19 +114,24 @@ class PartnerReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        data, page, status_code = self._search_partner_report(params)
+        try:
+            data, page, status_code = self._search_partner_report(params)
+            if status_code == 500:
+                self.logger.error('Search fail, please try again or contact technical support')
+                request.session['partner_report_update_msg'] = 'Search fail, please try again or contact technical support'
+            else:
+                service_list, get_service_status = self._get_service(service_group_id)
+                self.logger.info('Service group and currencies: {}'.format(choices))
+                context.update(
+                    {'paginator': page, 'page_range': calculate_page_range_from_page_info(page), 'service_list': service_list})
 
-        if status_code == 500:
-            self.logger.error('Search fail, please try again or contact technical support')
-            request.session['partner_report_update_msg'] = 'Search fail, please try again or contact technical support'
-        else:
-            service_list, get_service_status = self._get_service(service_group_id)
-            self.logger.info('Service group and currencies: {}'.format(choices))
-            context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page), 'service_list': service_list})
+            context.update({'partner_report': data})
 
-        context.update({'partner_report_update_msg': self.request.session.pop('partner_report_update_msg', None)})
+        except requests.Timeout as e:
+            logger.error("Search Partner Report Timeout", e)
+            request.session['partner_report_update_msg'] = 'Search timeout, please try again or contact technical support'
 
-        context.update({'is_on_us' : on_off_us_id,
+        context.update({'is_on_us': on_off_us_id,
                         'service_group_id': service_group_id,
                         'selected_service': service_name,
                         'agent_id': agent_id,
@@ -135,9 +141,8 @@ class PartnerReport(TemplateView, RESTfulMethods):
                         'reconcile_payment_type_id': reconcile_payment_type_id,
                         'from_created_timestamp': from_created_timestamp,
                         'to_created_timestamp': to_created_timestamp,
-                        'partner_report': data,
-                        'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL
-                    })
+                        'partner_report_update_msg': self.request.session.pop('partner_report_update_msg', None)
+                        })
 
         if partner_file_id is not None:
             context.update({'partner_file_id': partner_file_id})

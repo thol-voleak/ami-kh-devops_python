@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
@@ -92,32 +93,32 @@ class SofReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
+        try:
+            data, page, status_code = self._search_sof_report(params)
+            if status_code == 500:
+                self.logger.error('Search fail, please try again or contact technical support')
+                request.session['sof_report_update_msg'] = 'Search fail, please try again or contact technical support'
+            else:
+                context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
+            context.update({'sof_report': data})
 
-        data, page, status_code = self._search_sof_report(params)
-
-        if status_code == 500:
-            self.logger.error('Search fail, please try again or contact technical support')
-            request.session['sof_report_update_msg'] = 'Search fail, please try again or contact technical support'
-        else:
-            context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
-
-        context.update({'sof_report_update_msg': self.request.session.pop('sof_report_update_msg', None)})
+        except requests.Timeout as e:
+            logger.error("Search Sof Report Timeout", e)
+            request.session['sof_report_update_msg'] = 'Search timeout, please try again or contact technical support'
 
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
-
-        context.update({'is_on_us' : on_off_us_id,
-                        'source_of_fund':source_of_fund_id,
+        context.update({'is_on_us': on_off_us_id,
+                        'source_of_fund': source_of_fund_id,
                         'sof_code': sof_code,
                         'currency_id': currency_id,
                         'currencies': currencies,
                         'reconcile_status_id': reconcile_status_id,
                         'reconcile_payment_type_id': reconcile_payment_type_id,
                         'from_created_timestamp': from_created_timestamp,
-                        'to_created_timestamp': to_created_timestamp,
-                        'sof_report': data,
-                    })
-
+                        'to_created_timestamp': to_created_timestamp
+                        })
+        context.update({'sof_report_update_msg': self.request.session.pop('sof_report_update_msg', None)})
         if sof_file_id is not None:
             context.update({'sof_file_id': sof_file_id})
 
