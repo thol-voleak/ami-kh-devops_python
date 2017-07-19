@@ -41,7 +41,7 @@ def _delete_method(request, api_path, func_description, logger, params=None):
     return JsonResponse({"status": code, "msg": message})
 
 
-def _post_method(request, api_path, func_description, logger, params={}):
+def _post_method(request, api_path, func_description, logger, params={}, timeout=None):
     if 'http' in api_path:
         url = api_path
     else:
@@ -51,10 +51,11 @@ def _post_method(request, api_path, func_description, logger, params={}):
     logger.info('API-Path: {path}'.format(path=api_path))
 
     start = time.time()
-    response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
+    try:
+        response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT, timeout=timeout)
+    except requests.exceptions.Timeout:
+        return JsonResponse({'status': 'timeout'})
     done = time.time()
-
-
 
     logger.info('Response_code: {}'.format(response.status_code))
     logger.info('Response_content: {}'.format(response.text))

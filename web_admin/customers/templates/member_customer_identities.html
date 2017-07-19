@@ -71,6 +71,7 @@
             </a>
         </div>
     </div>
+    </div>
 <script>
 
     function showErrorMessage(msg) {
@@ -122,6 +123,8 @@
                             } else if(response.status == 2) {
                                 // success
                                 showSuccessMessage('Password reset successfully');
+                            } else if(response.status == 'timeout') {
+                                showErrorMessage('System timeout. Please try again to reset password or contact technical support')
                             } else {
                                 // Failed
                                 showErrorMessage('Password cannot be reset for this user, please try again or contact technical support');
