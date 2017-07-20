@@ -1,13 +1,21 @@
 from django.views.generic.base import TemplateView
 from web_admin import api_settings, setup_logger
-import logging
+from authentications.utils import get_correlation_id_from_username
 from web_admin.restful_methods import RESTfulMethods
+
+import logging
 
 logger = logging.getLogger(__name__)
 
 
 class ServiceDetailForm(TemplateView, RESTfulMethods):
     template_name = "services/service_detail.html"
+    logger=logger
+
+    def dispatch(self, request, *args, **kwargs):
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(ServiceDetailForm, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(ServiceDetailForm, self).get_context_data(**kwargs)
@@ -30,7 +38,7 @@ class ServiceDetailForm(TemplateView, RESTfulMethods):
 
     def _get_service_group_name(self, service_group_id):
         url = api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
-        data, success = self._get_method(url, "service group detail", logger)
+        data, success = self._get_method(api_path=url)
         if success:
             return data['service_group_name']
         else:

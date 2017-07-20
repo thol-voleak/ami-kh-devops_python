@@ -10,7 +10,7 @@ from authentications.apps import InvalidAccessToken
 
 
 class RESTfulMethods(GetHeaderMixin):
-    def _get_method(self, api_path, func_description, logger=None, is_getting_list=False, params={}):
+    def _get_method(self, api_path, func_description=None, logger=None, is_getting_list=False, params={}):
         """
         :param api_path: 
         :param func_description: 
