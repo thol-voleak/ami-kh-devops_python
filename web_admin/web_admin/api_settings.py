@@ -102,6 +102,8 @@ ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/v1/companies/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/v1/agents/{agent_id}/balances/{currency}'
 
+GET_REPORT_AGENT_BALANCE = 'api-gateway/report/v1/cash/sofs'
+
 # Command
 COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/v1/services/{}/service-commands'
 COMMAND_LIST_URL = 'api-gateway/payment/v1/commands/'

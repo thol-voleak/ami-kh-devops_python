@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from authentications.utils import get_correlation_id_from_username
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
 class AgentUpdate(TemplateView, AgentAPIService):

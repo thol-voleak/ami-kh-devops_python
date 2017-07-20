@@ -128,7 +128,7 @@ class RESTfulMethods(GetHeaderMixin):
                 raise Exception(response.content)
         return result
 
-    def _post_method(self, api_path, func_description, logger=None, params={}, only_return_data=True):
+    def _post_method(self, api_path, func_description=None, logger=None, params={}, only_return_data=True):
         """
         :param api_path: 
         :param func_description: 

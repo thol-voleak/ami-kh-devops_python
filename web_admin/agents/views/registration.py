@@ -20,6 +20,7 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import encrypt_text_agent, setup_logger
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):

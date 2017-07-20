@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView
 import logging
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 STATUS = {
     1: 'Active',

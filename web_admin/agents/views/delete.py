@@ -10,8 +10,8 @@ from web_admin import api_settings, setup_logger, setup_logger
 
 import logging
 
-
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
 class AgentDelete(TemplateView, AgentAPIService):
