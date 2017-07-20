@@ -14,6 +14,7 @@ class ServiceList(TemplateView, RESTfulMethods):
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ServiceList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
