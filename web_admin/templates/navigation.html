@@ -14,14 +14,12 @@
     {% with request.resolver_match.url_name as url_name %}
     <nav role="navigation">
         <ul class="nav">
-            <!--{% if request.user|has_permission_name:"Administradores"%}-->
             <li class="class={% if url_name == 'web-index' %} active{% endif %}">
                 <a href="{% url 'web:web-index' %}">
                     <i class="fa fa-home"></i>
                     <span>Home</span>
                 </a>
             </li>
-            <!--{% endif %}-->
             <li class="menu-accordion {% if 'authentications' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
