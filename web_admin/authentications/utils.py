@@ -1,11 +1,9 @@
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from django import template
-from django.db import models
 from django.conf import settings
 
 import logging
-import json
 
 register = template.Library()
 

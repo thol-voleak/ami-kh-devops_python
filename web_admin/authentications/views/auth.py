@@ -26,9 +26,10 @@ def login_user(request):
         if user is not None:
             login(request, user)
             permissions = get_permission_from_backend(user, logger)
-            authens = Authentications.objects.get(user=user)
-            authens.permissions = permissions['permissions']
-            authens.save()
+            if permissions is not None:
+                authens = Authentications.objects.get(user=user)
+                authens.permissions = permissions['permissions']
+                authens.save()
 
             next_request = request.POST.get('next') or 'web:web-index'
             return redirect(next_request)
@@ -43,8 +44,10 @@ def get_permission_from_backend(username, logger):
     headers = get_header(username)
     url = api_settings.GET_PERMISSION_PATH
     is_success, status_code, data = RestFulClient.get(url=url, headers=headers, loggers=logger)
-    logger.info("Permissions is [{}]".format(len(data)))
     if is_success:
+        if data is None or data == "":
+            return None
+        logger.info("Permissions is [{}]".format(len(data)))
         return data
 
 

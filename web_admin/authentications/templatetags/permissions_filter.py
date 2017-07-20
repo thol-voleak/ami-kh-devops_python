@@ -9,7 +9,12 @@ def has_permission_name(user, group_name):
     """
     Verify User have permission to see menu
     """
-    authens = Authentications.objects.get(user=user)
-    permissions = authens.permissions
-    return True if group_name in [x['name'] for x in permissions] else False
+    try:
+        authens = Authentications.objects.get(user=user)
+        permissions = authens.permissions
+        return True if group_name in [x['name'] for x in permissions] else False
+    except Exception as ex:
+        return False
+
+
 
