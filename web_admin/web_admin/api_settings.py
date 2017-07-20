@@ -95,7 +95,7 @@ SERVICE_DELETE_URL = 'api-gateway/payment/v1/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
-GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
+GET_AGENT_BALANCE = "api-gateway/report/v1/cash/sofs"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
 CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'

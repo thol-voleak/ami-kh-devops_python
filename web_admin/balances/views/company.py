@@ -8,7 +8,7 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_AGENT_BALANCE_BY_CURRENCY
 from web_admin.api_settings import COMPANY_BALANCE_HISTORY
 from web_admin.api_settings import COMPANY_BALANCE_ADD
-from web_admin.api_settings import GET_AGET_BALANCE
+from web_admin.api_settings import GET_AGENT_BALANCE
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username
 
@@ -97,11 +97,12 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                                  params=body)
 
     def _get_currency_choices_by_agent(self, agent_id):
-        url = GET_AGET_BALANCE.format(agent_id)
-        data, success = self._get_method(api_path=url,
+        url = GET_AGENT_BALANCE
+        body = {'user_id': agent_id}
+        data, success = self._post_method(api_path=url,
                                          func_description="currency list by agent",
                                          logger=logger,
-                                         is_getting_list=True)
+                                         params = body)
         if success:
             currency_list = [i['currency'] for i in data]
             return currency_list, True
