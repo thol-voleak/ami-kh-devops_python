@@ -10,6 +10,7 @@ History:
 '''
 
 import logging
+from authentications.utils import get_correlation_id_from_username
 from web_admin import api_settings, setup_logger
 from datetime import datetime
 from django.shortcuts import redirect, render

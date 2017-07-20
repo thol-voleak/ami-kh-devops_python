@@ -4,14 +4,11 @@ import logging
 
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
-from django.conf import settings
-from authentications.utils import get_correlation_id_from_username
 from django.shortcuts import redirect, render
 from datetime import datetime
 from django.utils import dateparse
 from django.http import HttpResponseRedirect
 
-from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username
 
 logger = logging.getLogger(__name__)
