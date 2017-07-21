@@ -72,6 +72,7 @@
                                         <span class="small">Delete</span>
                                     </a>
                                 {% endif %}
+                                {% if request.user|has_permission_name:"CAN_MANAGE_PERM_FOR_ROLE"%}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-success mb5"
                                        role="button"
@@ -79,6 +80,7 @@
                                        href="{% url 'authentications:role_manage_permission' role.id %}">
                                         <span class="small">Manage Permission</span>
                                     </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
