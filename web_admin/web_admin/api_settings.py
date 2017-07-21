@@ -158,3 +158,6 @@ SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/v1/reconciled/sofs'
 SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/v1/reconciled/sofs/results'
 SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/v1/reconciled/partners/results'
 GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/v1/service-groups/{service_group_id}/services'
+
+# card type
+SEARCH_CARD_TYPE = 'api-gateway/report/v1/card-types'
