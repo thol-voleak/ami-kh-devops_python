@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'agents',
     'customers',
     'cards',
+    'card_type',
     'cash_sofs',
     'bank_sofs',
 
@@ -94,7 +95,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
+                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -230,6 +231,11 @@ LOGGING = {
             'propagate': True,
         },
         'cards': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'card_type': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

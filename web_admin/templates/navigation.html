@@ -19,11 +19,11 @@
                     <span>Home</span>
                 </a>
             </li>
-            {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES" or request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
+            {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES" or request.user|has_permission_name:"SYS_CREATE_PERMISSION_ENTITIES"%}
             <li class="menu-accordion {% if 'authentications' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
-                    {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES"%}
+                    {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES"%}
                     <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Permissions</span> </a>
                         <ul class="sub-menu">
@@ -152,7 +152,6 @@
                     </li>
                 </ul>
             </li>
-            {% if request.user|has_permission_name:"SYS_MANAGE_SYSTEM_USER"%}
             <li class="{% if 'system-user' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                 <ul class="sub-menu">
@@ -161,8 +160,7 @@
                     </li>
                 </ul>
             </li>
-            {% endif %}
-            <li class="menu-accordion {% if 'cards' in request.path %}open{% endif %}">
+            <li class="menu-accordion {% if 'card' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'profile' %}active{% endif %}">
@@ -172,6 +170,11 @@
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'history' %}active{% endif %}">
                         <a href="{% url 'cards:history' %}"> <span>History</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'card-type-list' %}active{% endif %}">
+                        <a href="{% url 'card_type:card-type-list' %}"> <span>Card Type List</span> </a>
                     </li>
                 </ul>
             </li>

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.api_settings import GET_AGENT_BALANCE_BY_CURRENCY
+from web_admin.api_settings import GET_REPORT_AGENT_BALANCE
 from web_admin.api_settings import COMPANY_BALANCE_HISTORY
 from web_admin.api_settings import COMPANY_BALANCE_ADD
 from web_admin.api_settings import GET_AGENT_BALANCE
@@ -63,17 +63,16 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             return render(request, self.template_name, context)
 
     def _get_total_initial_company_balance(self, currency):
-        url = GET_AGENT_BALANCE_BY_CURRENCY.format(
-            agent_id=self.company_agent_id,
-            currency=currency)
+        url = GET_REPORT_AGENT_BALANCE
+        body = {'user_id':self.company_agent_id, 'currency':currency}
         func_description = "Getting total initial balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
                                                currency, )
-        return self._get_method(api_path=url,
+        return self._post_method(api_path=url,
                                 func_description=func_description,
                                 logger=logger,
-                                is_getting_list=False)
+                                params=body)
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
