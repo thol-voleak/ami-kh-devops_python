@@ -5,7 +5,7 @@ import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings, setup_logger
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
 from authentications.utils import get_correlation_id_from_username
 from web_admin.utils import calculate_page_range_from_page_info
 
@@ -17,7 +17,7 @@ IS_SUCCESS = {
 }
 
 
-class SofReport(TemplateView, RESTfulMethods):
+class SofReport(TemplateView, RESTfulReconcileMethods):
     template_name = "reconcile/sof_report_result.html"
     logger = logger
 

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings, setup_logger
 from multiprocessing.pool import ThreadPool
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
 from authentications.utils import get_correlation_id_from_username
 from web_admin.utils import calculate_page_range_from_page_info
 
@@ -18,7 +18,7 @@ IS_SUCCESS = {
 }
 
 
-class PartnerReport(TemplateView, RESTfulMethods):
+class PartnerReport(TemplateView, RESTfulReconcileMethods):
     template_name = "reconcile/partner_report_result.html"
     logger = logger
 
