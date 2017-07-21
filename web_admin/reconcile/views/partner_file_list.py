@@ -100,14 +100,16 @@ class PartnerFileList(TemplateView, RESTfulMethods):
 
         context = {}
         try:
-            data, page = self._search_file_list(params)
-            context.update({'file_list': data, 'paginator': page,
-                            'page_range': calculate_page_range_from_page_info(page)})
+            data, page, status_code = self._search_file_list(params)
+            if status_code == 500:
+                self.logger.error('Search fail, please try again or contact technical support')
+                context.update({'partner_file_list_error_msg': 'Search fail, please try again or contact technical support'})
+            else:
+                context.update({'file_list': data, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
+
         except requests.Timeout:
-            self.logger.error('========== Search partner file list request timeout ==========')
-            context.update({'from_created_timestamp': from_created_timestamp,
-                            'to_created_timestamp': to_created_timestamp,
-                            'partner_file_list_time_out_msg': 'Search timeout, please try again or contact technical support'})
+            self.logger.error('Search partner file list request timeout')
+            context.update({'partner_file_list_error_msg': 'Search timeout, please try again or contact technical support'})
 
         context.update({'is_on_us': is_on_us_id,
                         'service_group_id': service_group_id,
@@ -137,7 +139,7 @@ class PartnerFileList(TemplateView, RESTfulMethods):
         )
         self.logger.info("data={}".format(response_json.get('data')))
         self.logger.info('========== Finish Searching Partner File List ==========')
-        return response_json.get('data'), response_json.get('page')
+        return response_json.get('data'), response_json.get('page'), response_json.get("status_code")
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')

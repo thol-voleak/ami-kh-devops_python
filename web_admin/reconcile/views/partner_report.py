@@ -119,7 +119,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
             data, page, status_code = self._search_partner_report(params)
             if status_code == 500:
                 self.logger.error('Search fail, please try again or contact technical support')
-                request.session['partner_report_update_msg'] = 'Search fail, please try again or contact technical support'
+                context.update({'partner_report_update_msg': 'Search fail, please try again or contact technical support'})
             else:
                 service_list, get_service_status = self._get_service(service_group_id)
                 self.logger.info('Service group and currencies: {}'.format(choices))
@@ -130,7 +130,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
 
         except requests.Timeout as e:
             logger.error("Search Partner Report Timeout", e)
-            request.session['partner_report_update_msg'] = 'Search timeout, please try again or contact technical support'
+            context.update({'partner_report_update_msg': 'Search timeout, please try again or contact technical support'})
 
         context.update({'is_on_us': on_off_us_id,
                         'service_group_id': service_group_id,
@@ -141,8 +141,7 @@ class PartnerReport(TemplateView, RESTfulMethods):
                         'reconcile_status_id': reconcile_status_id,
                         'reconcile_payment_type_id': reconcile_payment_type_id,
                         'from_created_timestamp': from_created_timestamp,
-                        'to_created_timestamp': to_created_timestamp,
-                        'partner_report_update_msg': self.request.session.pop('partner_report_update_msg', None)
+                        'to_created_timestamp': to_created_timestamp
                         })
 
         if partner_file_id is not None:

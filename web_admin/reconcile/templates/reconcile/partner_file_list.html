@@ -8,11 +8,11 @@
     </div>
 
     <div class="panel-body">
-        {% if partner_file_list_time_out_msg is not None %}
+        {% if partner_file_list_error_msg is not None %}
         <div class="col-xs-12">
             <div class='alert alert-danger alert-dismissable' id="msg-update-client">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ partner_file_list_time_out_msg }}</strong>
+                <strong>{{ partner_file_list_error_msg }}</strong>
             </div>
         </div>
         {% endif %}
