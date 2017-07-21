@@ -14,11 +14,12 @@ class AgentAPIService(RESTfulMethods):
                                           logger=logger, params=body)
         return data[0]
 
-    def get_agent_types(self):
-        data, success = self._get_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
+    def get_agent_types(self, agent_id):
+        body = {'id': agent_id}
+        data, success = self._post_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
                                          func_description="Agent Type List",
                                          logger=logger,
-                                         is_getting_list=True)
+                                         params=body)
         return data, success
 
     def get_agent_detail(self, agent_id):
