@@ -10,6 +10,3 @@ def has_permission_name(user, group_name):
     Verify User have permission to see menu
     """
     return check_permissions_by_user(user, group_name)
-
-
-

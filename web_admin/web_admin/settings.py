@@ -103,10 +103,16 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
-            ],
+            ]
         },
     },
 ]
+
+OPTIONS = {
+    'libraries': {
+        'myapp_tags': 'authentications.templatetags.permissions_filter',
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

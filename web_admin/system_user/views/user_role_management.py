@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from web_admin import setup_logger, RestFulClient, api_settings
 
 from django.contrib import messages
@@ -10,7 +12,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleManagementView(TemplateView):
+class RoleManagementView(GroupRequiredMixin, TemplateView):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/user_role_management.html"
     logger = logger
 
@@ -111,6 +122,7 @@ class RoleManagementView(TemplateView):
         params = {
             'user_id': int(user_id)
         }
+
         is_success_add, status_code_add, status_message_add, data = RestFulClient.post(url,
                                                                                        self._get_headers(),
                                                                                        self.logger,

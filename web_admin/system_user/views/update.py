@@ -1,15 +1,27 @@
 import logging
+
+from braces.views import GroupRequiredMixin
+
 from web_admin import api_settings, setup_logger
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from .system_user_client import SystemUserClient
 
 logger = logging.getLogger(__name__)
 
 
-class SystemUserUpdateForm(TemplateView, RESTfulMethods):
+class SystemUserUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/update.html"
     logger = logger
 

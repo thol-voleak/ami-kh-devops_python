@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
 from web_admin import setup_logger
 from .system_user_client import SystemUserClient
@@ -11,7 +13,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView):
+class ListView(GroupRequiredMixin, TemplateView):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/list.html"
     logger = logger
 

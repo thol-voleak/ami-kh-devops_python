@@ -83,7 +83,6 @@ class CustomBackend:
 
                     user_profiles = self.get_user_profiles(username, access_token, correlation_id, loggers)
                     loggers.info("Adding access token for {} user name".format(username))
-
                     auth, created_token = Authentications.objects.get_or_create(user=user)
                     auth.access_token = access_token
                     auth.correlation_id = correlation_id

@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from .system_user_client import SystemUserClient
@@ -12,8 +14,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DeleteView(TemplateView, RESTfulMethods):
+class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/delete.html"
+    logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
