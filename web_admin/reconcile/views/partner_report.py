@@ -32,23 +32,24 @@ class PartnerReport(TemplateView, RESTfulReconcileMethods):
         default_end_date = datetime.today().strftime("%Y-%m-%d")
         default_start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-        data, success = self._get_service(-1)
-
-        choices, success = self._get_service_group_and_currency_choices()
         context = {'from_created_timestamp': default_start_date,
-                   'to_created_timestamp': default_end_date,
-                   'service_get_url': api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL,
-                   'service_group_id': -1,
-                   'choices': choices
+                   'to_created_timestamp': default_end_date
                   }
 
-        context['service_list'] = data
+        currencies, success = self._get_currency_choices()
+        if success is True:
+            context.update({'currencies':currencies})
+
+        services_list, service_groups, service_group_id, success = self._get_service_group_and_services_list(-1)
+        if success is True:
+            context.update({'service_list': services_list, 'service_groups': service_groups, 'service_group_id': service_group_id})
+        else:
+            context.update({'partner_report_update_msg': 'Fail to get service group, please refresh the page or contact technical support'})
+
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search partner report ==========')
-        choices, success = self._get_service_group_and_currency_choices()
-
         context = super(PartnerReport, self).get_context_data(**kwargs)
 
         partner_file_id = context.get('partner_file_id')
@@ -75,8 +76,6 @@ class PartnerReport(TemplateView, RESTfulReconcileMethods):
         self.logger.info('Payment type: {}'.format(reconcile_payment_type_id))
         self.logger.info('Start date: {}'.format(from_created_timestamp))
         self.logger.info('End date: {}'.format(to_created_timestamp))
-
-        service_group_id = int(service_group_id)
 
         params = {}
         params['opening_page_index'] = opening_page_index
@@ -115,33 +114,39 @@ class PartnerReport(TemplateView, RESTfulReconcileMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
+
+        currencies, success = self._get_currency_choices()
+        if success is True:
+            context.update({'currencies': currencies})
+
+        services_list, service_groups, service_group_id, success = self._get_service_group_and_services_list(service_group_id)
+        if success is True:
+            context.update({'service_list': services_list, 'service_groups': service_groups, 'service_group_id': service_group_id})
+        else:
+            context.update({'partner_report_update_msg': 'Fail to get service group, please refresh the page or contact technical support'})
+            params['service_name'] = None
         try:
             data, page, status_code = self._search_partner_report(params)
             if status_code == 500:
                 self.logger.error('Search fail, please try again or contact technical support')
-                context.update({'partner_report_update_msg': 'Search fail, please try again or contact technical support'})
-            else:
-                service_list, get_service_status = self._get_service(service_group_id)
-                self.logger.info('Service group and currencies: {}'.format(choices))
                 context.update(
-                    {'paginator': page, 'page_range': calculate_page_range_from_page_info(page), 'service_list': service_list})
-
-            context.update({'partner_report': data})
+                    {'partner_report_update_msg': 'Search fail, please try again or contact technical support'})
+            else:
+                context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page),
+                 'partner_report': data})
 
         except requests.Timeout as e:
             logger.error("Search Partner Report Timeout", e)
             context.update({'partner_report_update_msg': 'Search timeout, please try again or contact technical support'})
 
         context.update({'is_on_us': on_off_us_id,
-                        'service_group_id': service_group_id,
                         'selected_service': service_name,
                         'agent_id': agent_id,
                         'currency_id': currency_id,
-                        'choices': choices,
                         'reconcile_status_id': reconcile_status_id,
                         'reconcile_payment_type_id': reconcile_payment_type_id,
                         'from_created_timestamp': from_created_timestamp,
-                        'to_created_timestamp': to_created_timestamp
+                        'to_created_timestamp': to_created_timestamp,
                         })
 
         if partner_file_id is not None:
@@ -187,32 +192,35 @@ class PartnerReport(TemplateView, RESTfulReconcileMethods):
         url = api_settings.SERVICE_GROUP_LIST_URL
 
         self.logger.info('========== Finish Getting Service Group ==========')
-        return self._get_method(url, "get services group list", logger, True)
-
-    def _get_service_group_and_currency_choices(self):
-        pool = ThreadPool(processes=1)
-        async_result = pool.apply_async(self._get_currency_choices)
-        self.logger.info('========== Start Getting Service Group Choices ==========')
-        service_groups, success_service = self._get_service_group_choices()
-        self.logger.info('========== Finish Getting Service Group Choices ==========')
-        currencies, success_currency = async_result.get()
-        if success_currency and success_service:
-            return {
-                       'currencies': currencies,
-                       'service_groups': service_groups,
-                   }, True
-        return None, False
+        service_groups = self._get_method(url, "get services group list", logger, True)
+        return service_groups
 
     def _get_service(self, service_group_id):
         self.logger.info('========== Start Getting Service List ==========')
         if service_group_id == -1:
             data, success = self._get_method(api_settings.GET_ALL_SERVICE_URL, "Get all service", logger)
-
         else:
             data, success = self._get_method(
                 api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL.format(service_group_id=service_group_id),
                 "Get services by service group",
                 logger)
-
         self.logger.info('========== Finish Getting Service List ==========')
         return data, success
+
+    def _get_service_group_and_services_list(self, service_group_id):
+        if service_group_id is not None:
+            service_groups, success = self._get_service_group_choices()
+            if success is True:
+                service_group_id = int(service_group_id)
+                services_list, success = self._get_service(service_group_id)
+                if success is True:
+                    return  services_list, service_groups, service_group_id, True
+                else:
+                    logger.error("Get Services List Error")
+                    return None, None, None, False
+            else:
+                logger.error("Get Service Group Error")
+                return None, None, None, False
+        else:
+            logger.error("No service group")
+            return None, None, None, False

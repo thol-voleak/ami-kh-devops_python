@@ -30,5 +30,8 @@ class ServiceList(TemplateView, RESTfulReconcileMethods):
         else:
             url = api_settings.GET_SERVICE_URL.format(serviceGroupId=service_group_id)
         service_list = self._get_method(url, "Get services list", logger, True)
+        status = service_list[1]
+        if status is not True:
+            logger.error("Get Services List Error")
         self.logger.info('========== Finish Getting Services List ==========')
         return service_list
