@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from multiprocessing.pool import ThreadPool
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
 from web_admin.utils import setup_logger
 from datetime import datetime, timedelta
 from web_admin.utils import calculate_page_range_from_page_info
@@ -19,7 +19,7 @@ IS_SUCCESS = {
 }
 
 
-class PartnerFileList(TemplateView, RESTfulMethods):
+class PartnerFileList(TemplateView, RESTfulReconcileMethods):
     template_name = "reconcile/partner_file_list.html"
     logger = logger
 
