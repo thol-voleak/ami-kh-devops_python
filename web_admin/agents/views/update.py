@@ -30,7 +30,7 @@ class AgentUpdate(TemplateView, AgentAPIService):
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
-        agent_types_list, agent_type_status = self.get_agent_types()
+        agent_types_list, agent_type_status = self.get_agent_types(agent_id)
         currencies, get_currency_status = self.get_currencies(agent_id)
         agent_profile = self.get_agent_profile(agent_id)
 

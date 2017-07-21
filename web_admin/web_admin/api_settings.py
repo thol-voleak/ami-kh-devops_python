@@ -44,7 +44,7 @@ AGENT_REGISTRATION_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}/sofs/types/cash'
 GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
-GET_AGENT_TYPES_PATH = 'api-gateway/agent/'+API_VERSION+'/types'
+GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 
 # System User
