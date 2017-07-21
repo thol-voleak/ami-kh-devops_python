@@ -1,4 +1,4 @@
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 from datetime import datetime
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class BankSOFTransaction(TemplateView, RESTfulMethods):
     template_name = "sof/bank_transaction.html"
-    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/transactions"
+    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks/transactions"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

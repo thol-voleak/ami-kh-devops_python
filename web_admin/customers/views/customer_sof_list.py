@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 from django.conf import settings
@@ -20,12 +20,12 @@ class CustomerSOFListView(TemplateView, RESTfulMethods):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CustomerSOFListView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args,**kwargs):
+    def get(self, request, *args, **kwargs):
         self.logger.info('========== Start getting customer sof bank ==========')
 
         customer_id = int(kwargs.get('customerId'))
 
-        url = settings.DOMAIN_NAMES + "report/v1/banks/sofs"
+        url = settings.DOMAIN_NAMES + "report/" + api_settings.API_VERSION + "/banks/sofs"
         self.logger.info('API-Path: {};'.format(url))
         param = {
             "user_id": customer_id
@@ -38,6 +38,3 @@ class CustomerSOFListView(TemplateView, RESTfulMethods):
         context = {'data': data}
         self.logger.info('========== Finished searching customer sof ==========')
         return render(request, self.template_name, context)
-
-
-

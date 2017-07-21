@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class CreateView(TemplateView, RESTfulMethods):
     template_name = "bank/create.html"
-    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks"
+    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/banks"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

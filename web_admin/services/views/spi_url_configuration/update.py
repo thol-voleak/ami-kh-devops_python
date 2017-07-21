@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from services.views.spi import SpiApi
 
 from django.contrib import messages
@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
     template_name = 'services/spi_url_configuration/update.html'
-    get_config_type_url = 'api-gateway/payment/v1/spi-url-configuration-types'
-    spi_url_configuration = 'api-gateway/payment/v1/spi-url-configurations/{spiUrlConfigurationId}'
+    get_config_type_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configuration-types'
+    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configurations/{spiUrlConfigurationId}'
 
     logger = logger
 

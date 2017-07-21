@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 from datetime import datetime
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class BankSOFView(TemplateView, RESTfulMethods):
     template_name = "sof/bank_sof.html"
-    search_banks_sof = settings.DOMAIN_NAMES + "report/v1/banks/sofs"
+    search_banks_sof = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/banks/sofs"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

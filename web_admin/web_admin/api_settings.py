@@ -1,4 +1,4 @@
-API_VERSION = 'v1'
+API_VERSION = 'v1.0'
 
 # Authentication
 LOGIN_URL = 'api-gateway/'+API_VERSION+'/system-user/oauth/token'

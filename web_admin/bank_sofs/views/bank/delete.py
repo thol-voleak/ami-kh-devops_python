@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin import setup_logger
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 from django.conf import settings
@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(TemplateView, RESTfulMethods):
     template_name = "bank/delete.html"
-    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks"
-    delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
+    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks"
+    delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/banks/{id}"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

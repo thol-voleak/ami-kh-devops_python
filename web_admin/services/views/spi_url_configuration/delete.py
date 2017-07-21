@@ -7,13 +7,15 @@ from django.shortcuts import redirect
 
 import logging
 
+from web_admin import api_settings
+
 logger = logging.getLogger(__name__)
 
 
 class SPIUrlConfigurationDelete(TemplateView, SpiApi):
     template_name = 'services/spi_url_configuration/delete.html'
-    get_config_type_url = 'api-gateway/payment/v1/spi-url-configuration-types'
-    spi_url_configuration = 'api-gateway/payment/v1/spi-url-configurations/{spiUrlConfigurationId}'
+    get_config_type_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configuration-types'
+    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configurations/{spiUrlConfigurationId}'
 
     logger = logger
 
