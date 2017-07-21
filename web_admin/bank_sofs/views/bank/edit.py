@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class EditView(TemplateView, RESTfulMethods):
     template_name = "bank/edit.html"
     get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks"
-    update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks/{id}"
+    update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/admin/banks/{id}"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
