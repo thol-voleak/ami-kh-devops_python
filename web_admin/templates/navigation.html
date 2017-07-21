@@ -30,7 +30,6 @@
                             <li class="{% if url_name == 'permissions_list' %}active{% endif %}">
                                 <a href="{% url 'authentications:permissions_list' %}"> <span>Permission Entities</span> </a>
                             </li>
-                            {% endif %}
                             {% if request.user|has_permission_name:"SYS_CREATE_PERMISSION_ENTITIES"%}
                             <li class="{% if url_name == 'create_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:create_permission' %}"> <span>Create Permission</span> </a>
@@ -38,15 +37,15 @@
                             {% endif %}
                         </ul>
                     </li>
+                    {% endif %}
+
                     {% if request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
                     <li class="menu-accordion {% if 'roles' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Roles</span> </a>
                         <ul class="sub-menu">
-                            {% if request.user|has_permission_name:"CAN_SEARCH_ROLE"%}
                             <li class="{% if url_name == 'role_list' %}active{% endif %}">
                                 <a href="{% url 'authentications:role_list' %}"> <span>Role Entities</span> </a>
                             </li>
-                            {% endif %}
                             {% if request.user|has_permission_name:"CAN_CREATE_ROLE"%}
                             <li class="{% if url_name == 'create_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:create_role' %}"> <span>Create Role</span> </a>
@@ -96,9 +95,11 @@
             <li class="menu-accordion {% if 'agent' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
                 <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE"%}
                     <li class="class={% if url_name == 'agent-type-list' %} active{% endif %}">
                         <a href="{% url 'agent_type:agent-type-list' %}"> <span>Agent Types</span> </a>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="sub-menu">
                     <li class="class={% if url_name == 'agent_registration' %} active{% endif %}">
