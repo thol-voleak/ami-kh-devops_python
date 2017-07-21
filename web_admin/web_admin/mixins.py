@@ -1,4 +1,4 @@
-from authentications.utils import get_auth_header
+from authentications.utils import get_auth_header, check_permissions_by_user
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
 
@@ -52,3 +52,4 @@ class GetChoicesMixin(RESTfulMethods):
                        'service_groups': service_groups,
                    }, True
         return None, False
+

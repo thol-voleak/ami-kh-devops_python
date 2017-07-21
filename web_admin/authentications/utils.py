@@ -5,6 +5,8 @@ from django.conf import settings
 
 import logging
 
+from web_admin import setup_logger
+
 register = template.Library()
 
 logger = logging.getLogger(__name__)
@@ -46,3 +48,12 @@ def get_correlation_id_from_username(user):
     except Exception as e:
         logger.error(e)
         return None
+
+
+def check_permissions_by_user(user, permission):
+    try:
+        authens = Authentications.objects.get(user=user)
+        permissions = authens.permissions
+        return True if permission in [x['name'] for x in permissions] else False
+    except Exception as ex:
+        return False

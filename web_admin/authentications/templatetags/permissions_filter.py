@@ -1,4 +1,4 @@
-from authentications.models import Authentications
+from authentications.utils import check_permissions_by_user
 from django import template
 
 register = template.Library()
@@ -9,12 +9,7 @@ def has_permission_name(user, group_name):
     """
     Verify User have permission to see menu
     """
-    try:
-        authens = Authentications.objects.get(user=user)
-        permissions = authens.permissions
-        return True if group_name in [x['name'] for x in permissions] else False
-    except Exception as ex:
-        return False
+    return check_permissions_by_user(user, group_name)
 
 
 

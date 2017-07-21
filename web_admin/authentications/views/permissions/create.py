@@ -1,5 +1,7 @@
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from web_admin import setup_logger, RestFulClient, api_settings
+
+from braces.views import GroupRequiredMixin
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
@@ -11,9 +13,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class PermissionCreate(TemplateView):
+class PermissionCreate(GroupRequiredMixin, TemplateView):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "permissions/create.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -48,7 +59,7 @@ class PermissionCreate(TemplateView):
             self.logger.info('========== End creating permission ==========')
             return redirect('authentications:permissions_list')
         elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
-                        status_code == 'invalid_access_token'):
+                    status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
         else:

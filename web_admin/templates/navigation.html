@@ -1,5 +1,4 @@
 {% load permissions_filter %}
-
 {% block sidebar_panel %}
 <div class="sidebar-panel offscreen-left">
     <div class="brand">
@@ -20,33 +19,45 @@
                     <span>Home</span>
                 </a>
             </li>
+            {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES" or request.user|has_permission_name:"SYS_CREATE_PERMISSION_ENTITIES"%}
             <li class="menu-accordion {% if 'authentications' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES"%}
                     <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Permissions</span> </a>
                         <ul class="sub-menu">
                             <li class="{% if url_name == 'permissions_list' %}active{% endif %}">
                                 <a href="{% url 'authentications:permissions_list' %}"> <span>Permission Entities</span> </a>
                             </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"SYS_CREATE_PERMISSION_ENTITIES"%}
                             <li class="{% if url_name == 'create_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:create_permission' %}"> <span>Create Permission</span> </a>
                             </li>
+                            {% endif %}
                         </ul>
                     </li>
+                    {% if request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
                     <li class="menu-accordion {% if 'roles' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Roles</span> </a>
                         <ul class="sub-menu">
+                            {% if request.user|has_permission_name:"CAN_SEARCH_ROLE"%}
                             <li class="{% if url_name == 'role_list' %}active{% endif %}">
                                 <a href="{% url 'authentications:role_list' %}"> <span>Role Entities</span> </a>
                             </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_CREATE_ROLE"%}
                             <li class="{% if url_name == 'create_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:create_role' %}"> <span>Create Role</span> </a>
                             </li>
+                            {% endif %}
                         </ul>
                     </li>
+                    {% endif %}
                 </ul>
             </li>
+            {% endif %}
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                 <ul class="sub-menu">
