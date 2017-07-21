@@ -63,6 +63,12 @@ class AddView(TemplateView, RESTfulMethods):
         bonus_type = request.POST.get('bonus_type', '')
         bonus_amount = request.POST.get('bonus_amount', '')
 
+        if not bonus_type:
+            bonus_type = 'NON'
+
+        if not fee_type:
+            fee_type = 'NON'
+
         if condition_amount:
             condition_amount = condition_amount.replace(',', '')
 
@@ -86,7 +92,7 @@ class AddView(TemplateView, RESTfulMethods):
 
         bonus_type_value = request.POST.get('bonus_type', '')
 
-        if bonus_type_value != 'Flat value':
+        if bonus_type_value == '% rate':
             params['amount_type'] = request.POST.get('amount_type')
 
         data, success = self._add_tier(service_command_id, params)
