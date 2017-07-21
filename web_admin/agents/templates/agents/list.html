@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
+
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border mb15">
@@ -29,9 +31,7 @@
                        id="txt_unique_reference"
                        value="{{ unique_reference|default_if_none:'' }}">
             </div>
-            <div class="col-xs-1">
-                <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
-            </div>
+
         </div>
 
         <div class="form-group">
@@ -59,20 +59,23 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">Created Date</label>
-            <label class="col-sm-2 control-label">From</label>
+            <!--<label class="col-sm-1 control-label">Created Date</label>-->
+            <label class="col-sm-2 control-label">Created Date: From</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="from_created_timestamp"
                        value="{{ from_created_timestamp|default_if_none:'' }}"
                        id="dtp_from">
             </div>
-            <label class="col-sm-1 control-label">To</label>
+            <label class="col-sm-1 control-label">: To</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="to_created_timestamp"
                        value="{{ to_created_timestamp|default_if_none:'' }}"
                        id="dtp_to">
+            </div>
+            <div class="col-xs-1">
+                <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
         </div>
     </form>
@@ -98,9 +101,9 @@
                 {% for agent in data|dictsort:"id" %}
                     <tr>
                         {% if agent.is_deleted %}
-                            <td class="col-sm-3"><s>{{ agent.id }}</s></td>
+                            <td class="col-sm-1"><s>{{ agent.id }}</s></td>
                         {% else %}
-                            <td class="col-sm-3">{{ agent.id }}</td>
+                            <td class="col-sm-1">{{ agent.id }}</td>
                         {% endif %}
                         <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
                         <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
@@ -111,14 +114,15 @@
                         <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.status|default_if_none:'' }}</td>
                         <td class="col-sm-3">
-                            <div class="btn-group">
-                                <button id="btn_detail" class="btn btn-outline btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
-                                <button id="btn_edit" class="btn btn-outline btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
-                                <button id="btn_delete" class="btn btn-outline btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
-                            </div>
+                            {% if request.user|has_permission_name:"CAN_VIEW_AGENT"%}
+                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS"%}
+                                <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

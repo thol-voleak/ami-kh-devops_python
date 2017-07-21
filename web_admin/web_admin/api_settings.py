@@ -1,4 +1,4 @@
-API_VERSION = 'v1.0'
+API_VERSION = 'v1'
 
 # Authentication
 LOGIN_URL = 'api-gateway/'+API_VERSION+'/system-user/oauth/token'
@@ -46,6 +46,8 @@ CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agen
 GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
+
+GET_AGENT_IDENTITY_URL = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/identities'
 
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/'+API_VERSION+'/system-users'

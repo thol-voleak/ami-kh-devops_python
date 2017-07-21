@@ -1,7 +1,9 @@
+from braces.views import GroupRequiredMixin
+
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 import logging
 
@@ -9,9 +11,18 @@ logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
 
-class DetailView(TemplateView, RESTfulMethods):
+class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_VIEW_AGENT"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/detail.html"
-    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    get_agent_identity_url = api_settings.GET_AGENT_IDENTITY_URL
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -33,7 +44,8 @@ class DetailView(TemplateView, RESTfulMethods):
 
             if status and status_get_agent_identity and status_get_currency:
 
-                agent_type_id = context['agent']['agent_type_id'] if context['agent']['agent_type_id'] is not None else 0
+                agent_type_id = context['agent']['agent_type_id'] if context['agent'][
+                                                                         'agent_type_id'] is not None else 0
                 agent_type_name, status = self._get_agent_type_name(agent_type_id)
 
                 if status and status_get_agent_identity and status_get_currency:
@@ -107,6 +119,7 @@ class DetailView(TemplateView, RESTfulMethods):
         return currencies_str, success
 
     def _get_agent_type_name(self, agent_type_id):
+        self.logger.info("Getting agent type list with url [{}]".format(api_settings.AGENT_TYPES_LIST_URL))
         agent_types_list, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                                       func_description="Agent Type List",
                                                       logger=logger)
