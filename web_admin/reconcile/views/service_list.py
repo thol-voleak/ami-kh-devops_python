@@ -5,12 +5,12 @@ from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 
 from web_admin import api_settings, setup_logger
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
 from authentications.utils import get_correlation_id_from_username
 
 logger = logging.getLogger(__name__)
 
-class ServiceList(TemplateView, RESTfulMethods):
+class ServiceList(TemplateView, RESTfulReconcileMethods):
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
