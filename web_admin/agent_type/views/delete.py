@@ -1,7 +1,9 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import AGENT_TYPE_DETAIL_URL, DELETE_AGENT_TYPE_URL
 from web_admin import setup_logger
+
+from braces.views import GroupRequiredMixin
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -11,7 +13,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DeleteView(TemplateView, RESTfulMethods):
+class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_DELETE_AGENT_TYPE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agent_type/agent_type_delete.html"
     logger = logger
 

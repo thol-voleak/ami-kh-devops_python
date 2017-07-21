@@ -1,13 +1,11 @@
-from django.conf import settings
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import ObjectDoesNotExist
-
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import AGENT_TYPE_CREATE_URL
 from web_admin import setup_logger
 
+from braces.views import GroupRequiredMixin
 
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
@@ -16,10 +14,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 
+class AgentTypeCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_CREATE_AGENT_TYPE"
+    login_url = 'authentications:login'
+    raise_exception = False
 
-class AgentTypeCreate(LoginRequiredMixin, PermissionRequiredMixin, TemplateView, RESTfulMethods):
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agent_type/create_agent_type.html"
     logger = logger
 
@@ -31,10 +36,6 @@ class AgentTypeCreate(LoginRequiredMixin, PermissionRequiredMixin, TemplateView,
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentTypeCreate, self).dispatch(request, *args, **kwargs)
-
-    def check_permissions(self, permission):
-        print("teststeest ===================== dadadfar")
-        return False
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Create Agent Type page ==========')
