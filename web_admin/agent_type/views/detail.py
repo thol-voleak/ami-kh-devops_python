@@ -21,22 +21,20 @@ class DetailView(TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Agent Type Detail page ==========')
-        try:
-            context = super(DetailView, self).get_context_data(**kwargs)
-
-            agent_type_id = context['agentTypeId']
-            data, success = self._get_method(api_path=AGENT_TYPE_DETAIL_URL.format(agent_type_id),
-                                             func_description="Agent Type Detail",
-                                             logger=logger)
+        context = super(DetailView, self).get_context_data(**kwargs)
+        agent_type_id = context['agentTypeId']
+        params = {"id": agent_type_id}
+        data, success = self._post_method(AGENT_TYPE_DETAIL_URL, func_description="", logger=logger, params=params, only_return_data=True)
+        if success:
             context = {
-                'agent_type_info': data,
+                'agent_type_info': data[0],
+                'msg': self.request.session.pop('agent_type_update_msg', None)
+            }
+        else:
+            context = {
+                'agent_type_info': {},
                 'msg': self.request.session.pop('agent_type_update_msg', None)
             }
 
-            self.logger.info('========== Finished showing Agent Type Detail page ==========')
-            return context
-        except Exception as e:
-            self.logger.error(e)
-            context = {'agent_type_info': {}}
-            self.logger.info('========== Finished showing Agent Type Detail page ==========')
-            return context
+        self.logger.info('========== Finished showing Agent Type Detail page ==========')
+        return context
