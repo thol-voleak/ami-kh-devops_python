@@ -3,7 +3,7 @@ from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CREATE_COMPANY_BALANCE
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
-from web_admin.api_settings import GET_AGET_BALANCE
+from web_admin.api_settings import GET_AGENT_BALANCE
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
@@ -109,7 +109,6 @@ class CompanyBalanceView(TemplateView, RESTfulMethods):
             return data, False
 
     def _get_agent_balances(self, agent_id):
-        url = GET_AGET_BALANCE.format(agent_id)
-        return self._get_method(api_path=url,
-                                func_description="agent balances",
-                                is_getting_list=True)
+        url = GET_AGENT_BALANCE
+        body = {'user_id' : agent_id}
+        return self._post_method(api_path=url,func_description="agent balances",params=body)

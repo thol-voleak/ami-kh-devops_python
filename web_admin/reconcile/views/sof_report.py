@@ -98,14 +98,14 @@ class SofReport(TemplateView, RESTfulMethods):
             data, page, status_code = self._search_sof_report(params)
             if status_code == 500:
                 self.logger.error('Search fail, please try again or contact technical support')
-                request.session['sof_report_update_msg'] = 'Search fail, please try again or contact technical support'
+                context.update({'sof_report_update_msg': 'Search fail, please try again or contact technical support'})
             else:
                 context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
             context.update({'sof_report': data})
 
         except requests.Timeout as e:
             logger.error("Search Sof Report Timeout", e)
-            request.session['sof_report_update_msg'] = 'Search timeout, please try again or contact technical support'
+            context.update({'sof_report_update_msg': 'Search timeout, please try again or contact technical support'})
 
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
@@ -119,7 +119,7 @@ class SofReport(TemplateView, RESTfulMethods):
                         'from_created_timestamp': from_created_timestamp,
                         'to_created_timestamp': to_created_timestamp
                         })
-        context.update({'sof_report_update_msg': self.request.session.pop('sof_report_update_msg', None)})
+
         if sof_file_id is not None:
             context.update({'sof_file_id': sof_file_id})
 

@@ -26,7 +26,7 @@ ACTIVATE_CLIENT_URL = 'api-gateway/v1/admin/oauth/clients/{}/statuses'
 AGENT_TYPES_LIST_URL = 'api-gateway/report/v1/agent-types'
 GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/currency'
 AGENT_TYPE_CREATE_URL = 'api-gateway/agent/v1/admin/agent-types'
-AGENT_TYPE_DETAIL_URL = 'api-gateway/agent/v1/types/{}'
+AGENT_TYPE_DETAIL_URL = 'api-gateway/report/v1/agent-types'
 ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations/country'
 GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/v1/scopes/global/configurations'
 GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/v1/currencies'
@@ -95,7 +95,7 @@ SERVICE_DELETE_URL = 'api-gateway/payment/v1/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/v1/companies/balances/histories/'
-GET_AGET_BALANCE = "api-gateway/agent/v1/agents/{}/balances"
+GET_AGENT_BALANCE = "api-gateway/report/v1/cash/sofs"
 CREATE_COMPANY_BALANCE = "api-gateway/agent/v1/companies/sofs/{}"
 CLIENT_SCOPES = 'api-gateway/v1/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/v1/admin/apis'
