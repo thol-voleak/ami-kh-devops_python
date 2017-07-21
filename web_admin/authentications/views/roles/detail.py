@@ -1,5 +1,7 @@
-from authentications.utils import get_auth_header, get_correlation_id_from_username
+from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger, RestFulClient
+
+from braces.views import GroupRequiredMixin
 
 from django.views.generic.base import TemplateView
 
@@ -8,9 +10,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleDetailView(TemplateView):
+class RoleDetailView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_VIEW_ROLE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "roles/detail.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

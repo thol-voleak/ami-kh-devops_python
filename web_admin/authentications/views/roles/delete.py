@@ -1,10 +1,12 @@
 from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header, get_correlation_id_from_username
-from web_admin import api_settings, setup_logger
+from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
 
+from braces.views import GroupRequiredMixin
+
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 
 import logging
@@ -12,9 +14,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleDeleteView(TemplateView):
+class RoleDeleteView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_DELETE_ROLE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "roles/delete.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

@@ -1,7 +1,9 @@
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
+
+from braces.views import GroupRequiredMixin
 
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -12,9 +14,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleEditView(TemplateView):
+class RoleEditView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_EDIT_ROLE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "roles/edit.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
