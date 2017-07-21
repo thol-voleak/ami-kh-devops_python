@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
-    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    group_required = "SYS_VIEW_SYSTEM_USER"
     login_url = 'authentications:login'
     raise_exception = False
 

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class RoleList(GroupRequiredMixin, TemplateView):
-    group_required = "CAN_SEARCH_ROLE"
+    group_required = "CAN_MANAGE_ROLE"
     login_url = 'authentications:login'
     raise_exception = False
 

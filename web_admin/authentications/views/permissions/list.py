@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class PermissionList(GroupRequiredMixin, TemplateView):
-    group_required = "SYS_SEARCH_PERMISSION_ENTITIES"
+    group_required = "SYS_MANAGE_PERMISSION_ENTITIES"
     login_url = 'authentications:login'
     raise_exception = False
 

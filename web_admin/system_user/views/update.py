@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class SystemUserUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
-    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    group_required = "SYS_EDIT_SYSTEM_USER"
     login_url = 'authentications:login'
     raise_exception = False
 

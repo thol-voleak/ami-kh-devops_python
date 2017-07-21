@@ -19,11 +19,11 @@
                     <span>Home</span>
                 </a>
             </li>
-            {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES" or request.user|has_permission_name:"SYS_CREATE_PERMISSION_ENTITIES"%}
+            {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES" or request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
             <li class="menu-accordion {% if 'authentications' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
-                    {% if request.user|has_permission_name:"SYS_SEARCH_PERMISSION_ENTITIES"%}
+                    {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES"%}
                     <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Permissions</span> </a>
                         <ul class="sub-menu">

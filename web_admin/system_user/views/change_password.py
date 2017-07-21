@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class SystemUserChangePassword(GroupRequiredMixin, TemplateView, RESTfulMethods):
-    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    group_required = "SYS_CHANGE_SYSTEM_USER_PASSWORD"
     login_url = 'authentications:login'
     raise_exception = False
 
