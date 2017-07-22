@@ -165,3 +165,4 @@ GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-
 
 # card type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
+UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
