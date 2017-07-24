@@ -227,7 +227,7 @@
                     </li>
                 </ul>
             </li>
-            <li id="bank_sof_menu" class="menu-accordion {% if 'bank/sofs' in request.path %}open{% endif %}">
+            <li id="bank_sof_menu" class="menu-accordion {% if request.path|slice:"-5:" == 'sofs/' or 'sofs/transaction' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Bank Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sof' %}active{% endif %}">
@@ -239,7 +239,7 @@
                 </ul>
             </li>
             {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
-                <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
+                <li class="menu-accordion {% if 'bank/management' in request.path or 'bank/sofs' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
