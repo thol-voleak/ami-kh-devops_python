@@ -11,7 +11,7 @@
         <form class="form-horizontal col-sm-12" role="form" method="post" action="{% url 'services:spi_configuration_delete' service_id command_id service_command_id spi_url_id spi_url_config_id %}">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-2 control-label">ID</label>
+                <label class="col-sm-3 control-label">ID</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_spi_url_configuration_id"
                            value="{{configuration_detail.spi_url_configuration_id}}"
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">SPI Configuration Url Type *</label>
+                <label class="col-sm-3 control-label">SPI Configuration Url Type *</label>
                 <div class="col-sm-4">
                     <select class="form-control" id="ddl_spi_url_configuration_type" name="spi_url_configuration_type" readonly>
                         {% for type in configuration_type_list %}
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">URL Value</label>
+                <label class="col-sm-3 control-label">URL Value</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_spi_url_configuration_value"
                            value="{{configuration_detail.url|default_if_none:''}}"
@@ -41,49 +41,42 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Read Timeout (sec.)</label>
+                <label class="col-sm-3 control-label">Read Timeout (millisec.)</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_read_timeout"
                            value="{{configuration_detail.read_timeout|default_if_none:''}}" name="read_timeout" readonly />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Connection Timeout (sec.)</label>
-                <div class="col-sm-4">
-                    <input type="number" class="form-control" id="txt_connection_timeout"
-                           value="{{configuration_detail.connection_timeout|default_if_none:''}}" name="connection_timeout" readonly />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Max Retry</label>
+                <label class="col-sm-3 control-label">Max Retry</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_max_retry"
                            value="{{configuration_detail.max_retry|default_if_none:''}}" name="max_retry" readonly />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Expire in Minute *</label>
+                <label class="col-sm-3 control-label">Expire in Minute *</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_expire_in_minute"
                            value="{{configuration_detail.expire_in_minute|default_if_none:''}}" name="expire_in_minute" readonly />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Retr Delay Timeout (millisec.)</label>
+                <label class="col-sm-3 control-label">Retry Delay Timeout (millisec.)</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_retry_delay_millisecond"
                            value="{{configuration_detail.retry_delay_millisecond|default_if_none:''}}" name="retry_delay_millisecond" readonly />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Created Timestamp</label>
+                <label class="col-sm-3 control-label">Created Timestamp</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_created_timestamp"
                            value="{{configuration_detail.created_timestamp|default_if_none:''}}" readonly/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Last Updated Timestamp</label>
+                <label class="col-sm-3 control-label">Last Updated Timestamp</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_last_updated_timestamp"
                            value="{{configuration_detail.created_timestamp|default_if_none:''}}" readonly/>

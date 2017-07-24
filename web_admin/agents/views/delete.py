@@ -1,12 +1,12 @@
+from braces.views import GroupRequiredMixin
+
 from agents.views import AgentAPIService
 
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
-from authentications.utils import get_correlation_id_from_username
-from web_admin import api_settings, setup_logger, setup_logger
-
-
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
 
 import logging
 
@@ -14,9 +14,18 @@ logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
 
-class AgentDelete(TemplateView, AgentAPIService):
+class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
+    group_required = "CAN_DELETE_AGENT"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/delete.html"
-    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    get_agent_identity_url = api_settings.GET_AGENT_IDENTITY_URL
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

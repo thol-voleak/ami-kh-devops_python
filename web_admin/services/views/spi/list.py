@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class SPIView(TemplateView, SpiApi):
     template_name = 'services/spi/list.html'
-    get_call_method_url = 'api-gateway/payment/v1/spi-url-call-methods'
+    get_call_method_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-call-methods'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

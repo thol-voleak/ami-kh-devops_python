@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
+{% load permissions_filter %}
 
+{% block content %}
 <div class="panel mb30">
     <div class="panel-heading border">
         <h3>Currencies</h3>
@@ -12,6 +13,7 @@
     </div>
 
     <div class="panel-body">
+        {% if request.user|has_permission_name:"SYS_ADD_CURRENCY"%}
         <div class="form-group">
             <label class="col-sm-1 mt5 ml5 control-label">Currency</label>
             <div class="col-sm-4 mb15">
@@ -31,6 +33,7 @@
                        value="Add" onClick="add()">
             </div>
         </div>
+        {% endif %}
         <div class="table-responsive" id=currency_table>
             <table class="table table-bordered table-striped mb0">
                 <thead>

@@ -7,9 +7,24 @@
         <h3>Card Type List</h3>
     </div>
 
+    {% if card_type_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in card_type_update_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ card_type_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="panel-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
+            <table class="table table-bordered table-striped mb0" id="tbl_card_type_list">
                 <thead>
                 <tr>
                     <th id="id_clm">ID</th>
@@ -28,11 +43,12 @@
                         <td class="col-sm-2">{{ card_type.url_get_card_detail }}</td>
                         <td class="col-sm-1">
                             <div class="btn-group">
-                                <button class="btn btn-outline btn-xs btn-primary" onclick="">
-                                    <u>Detail</u>
+                                <button class="btn btn-outline btn-xs btn-primary" id="btn_detail">
+                                    <a href="{% url 'card_type:card_type_detail' card_type.id %}">Detail</a>
                                 </button>
-                                <button class="btn btn-outline btn-xs btn-primary" onclick="">
-                                    <u>Edit</u>
+                                </a>
+                                <button class="btn btn-outline btn-xs btn-primary" id="btn_edit">
+                                    <a href="{% url 'card_type:card-type-update' card_type.id %}">Edit</a>
                                 </button>
                             </div>
                         </td>

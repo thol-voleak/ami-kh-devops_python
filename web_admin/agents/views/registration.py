@@ -10,7 +10,10 @@ History:
 '''
 
 import logging
-from authentications.utils import get_correlation_id_from_username
+
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from datetime import datetime
 from django.shortcuts import redirect, render
@@ -48,7 +51,16 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
         return result
 
 
-class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
+class AgentRegistration(GroupRequiredMixin, GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
+    group_required = "CAN_PERFORM_AGENT_REGISTRATION"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/registration.html"
     logger = logger
 

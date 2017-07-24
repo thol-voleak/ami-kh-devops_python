@@ -28,7 +28,7 @@
         <form class="form-horizontal" role="form" method="post" action="{% url 'services:spi_configuration_list' service_id command_id service_command_id spiUrlId %}">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-2 control-label">SPI Configuration Url Type *</label>
+                <label class="col-sm-3 control-label">SPI Configuration Url Type *</label>
                 <div class="col-sm-4">
                     <select class="form-control" id="ddl_spi_url_configuration_type" name="spi_url_configuration_type" required = "required">
                         {% for type in configuration_type_list %}
@@ -42,38 +42,32 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">URL Value</label>
+                <label class="col-sm-3 control-label">URL Value</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="txt_spi_url_configuration_value"
                            name="spi_url_configuration_value" value="{{params.url}}"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Read Timeout (sec.)</label>
+                <label class="col-sm-3 control-label">Read Timeout (millisec.)</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{params.read_timeout}}"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Connection Timeout (sec.)</label>
-                <div class="col-sm-4">
-                    <input type="number" class="form-control" id="txt_connection_timeout" name="connection_timeout" value="{{params.connection_timeout|default_if_none:''}}" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Retry Delay Timeout (millisec.)</label>
+                <label class="col-sm-3 control-label">Retry Delay Timeout (millisec.)</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_retry_delay_millisecond" name="retry_delay_millisecond" value="{{params.retry_delay_millisecond|default_if_none:''}}"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Max Retry</label>
+                <label class="col-sm-3 control-label">Max Retry</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_max_retry" name="max_retry" value="{{params.max_retry|default_if_none:''}}"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Expire in Minute *</label>
+                <label class="col-sm-3 control-label">Expire in Minute *</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_expire_in_minute" name="expire_in_minute" value="{{params.expire_in_minute}}" required/>
                 </div>
@@ -94,8 +88,7 @@
                 <tr>
                     <th id="lbl_spi_url_type">URL Type</th>
                     <th id="lbl_spi_url_value">URL Value</th>
-                    <th id="lbl_spi_connection_timeout">Connection Timeout (s)</th>
-                    <th id="lbl_spi_read_timeout">Read Timeout (s)</th>
+                    <th id="lbl_spi_read_timeout">Read Timeout (sec.)</th>
                     <th id="lbl_action">Action</th>
                 </tr>
                 </thead>
@@ -104,7 +97,6 @@
                 <tr>
                     <td class="col-sm-2">{{ spi.spi_url_configuration_type|default_if_none:'' }}</td>
                     <td class="col-sm-3">{{ spi.url|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ spi.connection_timeout|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ spi.read_timeout|default_if_none:'' }}</td>
                     <td class="col-sm-3">
                         <a type="button" class="btn btn-outline btn-xs btn-primary"

@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import SEARCH_AGENT
 from web_admin.restful_methods import RESTfulMethods
@@ -17,7 +19,16 @@ STATUS = {
 }
 
 
-class ListView(TemplateView, RESTfulMethods):
+class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_MANAGE_AGENT_REGISTRATION"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = 'agents/list.html'
     logger = logger
 

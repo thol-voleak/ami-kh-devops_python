@@ -48,6 +48,8 @@ GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/scop
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 
+GET_AGENT_IDENTITY_URL = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/identities'
+
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/'+API_VERSION+'/system-users'
 CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users'
@@ -164,3 +166,4 @@ GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-
 
 # card type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
+UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
