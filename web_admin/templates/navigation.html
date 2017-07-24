@@ -214,7 +214,8 @@
                 {% endif %}
             </li>
             {% endif %}
-            <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
+            {% if request.user|has_permission_name:"CAN_MANAGE_CASH_SOF"%}
+                 <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
@@ -227,7 +228,9 @@
                     </li>
                 </ul>
             </li>
-            <li id="bank_sof_menu" class="menu-accordion {% if 'bank/sofs' in request.path %}open{% endif %}">
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_BANK_SOF"%}
+                <li id="bank_sof_menu" class="menu-accordion {% if 'bank/sofs' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Bank Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sof' %}active{% endif %}">
@@ -238,6 +241,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
             {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
                 <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
