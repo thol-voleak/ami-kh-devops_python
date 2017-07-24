@@ -36,19 +36,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Timeout - Create Card</label>
+                        <label class="col-sm-3 control-label">Timeout - Create Card (s)</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_timeout_create_card"
-                                   value="{{ card_type_info.timeout_create_card | default_if_none:'' }}" disabled>
+                                   value="{{ card_type_info.timeout_create_card_in_second | default_if_none:'' }}" disabled>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Timeout - Get Card Full Detail</label>
+                        <label class="col-sm-3 control-label">Timeout - Get Card Full Detail (s)</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_timeout_get_card_detail"
-                                   value="{{ card_type_info.timeout_get_card_detail | default_if_none:'' }}" disabled>
+                                   value="{{ card_type_info.timeout_get_card_detail_in_second | default_if_none:'' }}" disabled>
                         </div>
                     </div>
                     <div class="form-group">
