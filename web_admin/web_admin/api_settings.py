@@ -8,7 +8,7 @@ GET_PERMISSION_PATH = 'api-gateway/system-user/'+API_VERSION+'/roles-permissions
 
 # API Management
 APIS_URL = 'api-gateway/'+API_VERSION+'/apis/'
-SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/services'
+SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/services'
 
 # Centralize configuration
 SCOPES_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes'
