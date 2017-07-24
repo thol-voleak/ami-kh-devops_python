@@ -82,12 +82,12 @@ SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-urls/{spiUrlId}'
 SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-urls/{spi_url_id}'
 
 # Service Group
-SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups'
-SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups'
-DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{serviceGroupId}/services'
+SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{serviceGroupId}/services'
 GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/services'
 
 # Service
