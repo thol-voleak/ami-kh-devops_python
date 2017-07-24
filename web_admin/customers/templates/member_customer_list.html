@@ -61,9 +61,7 @@
                     <td class="col-sm-1 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ customer.last_updated_timestamp|default_if_none:'' }}</td> 
-                    <td class="col-sm-2">{% if not customer.is_suspended %} Active
-                                         {% else %} Suspended
-                                         {% endif %}</td>                   
+                    <td class="col-sm-2">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                     <td class="col-sm-3">
                         <div class="btn-group">
                             <!-- <button id="btn_detail" class="btn btn-outline btn-xs btn-primary">Detail</button> -->
