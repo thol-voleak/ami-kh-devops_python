@@ -121,11 +121,11 @@ FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-condition
 
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/amount-types'
-BALANCE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/balance-distributions'
+BALANCE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'
 ACTION_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/action-types'
 SOF_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/sof-types'
 ACTOR_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/actor-types'
-TIER_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/balance-distributions'
+TIER_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'
 BALANCE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/balance-distributions/{balance_distribution_id}'
 BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/bonus-distributions'
 BALANCE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/balance-distributions/{balance_distribution_id}'
