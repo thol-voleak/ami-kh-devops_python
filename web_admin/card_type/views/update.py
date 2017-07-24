@@ -43,10 +43,13 @@ class CardTypeUpdateForm(TemplateView, RESTfulMethods):
         url_create_card = request.POST.get('url_create_card_input')
         url_get_card_detail = request.POST.get('url_get_card_detail_input')
 
+        timeout_create_card_in_millisecond = int(timeout_create_card) * 1000
+        timeout_get_card_detail_in_millisecond = int(timeout_get_card_detail) * 1000
+
         params = {
             'name': card_type_name,
-            'timeout_create_card': timeout_create_card,
-            'timeout_get_card_detail': timeout_get_card_detail,
+            'timeout_create_card': timeout_create_card_in_millisecond,
+            'timeout_get_card_detail': timeout_get_card_detail_in_millisecond,
             'create_card_endpoint_host': url_create_card,
             'card_detail_endpoint_host': url_get_card_detail
         }
@@ -67,4 +70,8 @@ class CardTypeUpdateForm(TemplateView, RESTfulMethods):
                                           func_description="Card Type detail",
                                           params={'id': card_type_id},
                                           logger=logger)
+        timeout_create_card_in_second = int(data[0]['timeout_create_card']) / 1000
+        timeout_get_card_detail_in_second = int(data[0]['timeout_get_card_detail']) / 1000
+        data[0].update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
+                        'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
         return data[0]

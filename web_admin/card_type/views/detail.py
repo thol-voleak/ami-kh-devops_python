@@ -51,6 +51,10 @@ class CardTypeDetail(TemplateView, RESTfulMethods):
         self.logger.info("data={}".format(response_json.get('data')))
         try:
             card_type_detail = response_json.get('data')[0]
+            timeout_create_card_in_second = int(card_type_detail['timeout_create_card']) / 1000
+            timeout_get_card_detail_in_second = int(card_type_detail['timeout_get_card_detail']) / 1000
+            card_type_detail.update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
+                                     'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
         except IndexError:
             card_type_detail = {}
         self.logger.info('========== Finish Get Card Type Detail ==========')
