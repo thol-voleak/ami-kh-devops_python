@@ -103,7 +103,7 @@ GET_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/companies/sofs/{}'
 CLIENT_SCOPES = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/apis'
-COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/companies/balances/'
+COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/balances/{currency}'
 
 GET_REPORT_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
