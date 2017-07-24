@@ -38,6 +38,16 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_service_group_list(self):
         url = api_settings.SERVICE_GROUP_LIST_URL
         data, success = self._get_method(url, "service group list", logger, True)
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_SERVICE_GROUP')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_SERVICE_GROUP')
+        is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_SERVICE_GROUP')
+
+        if success:
+            self.logger.info('========== Finished get get bank list ==========')
+            for i in data:
+                i['is_permission_detail'] = is_permission_detail
+                i['is_permission_edit'] = is_permission_edit
+                i['is_permission_delete'] = is_permission_delete
         return data
 
 

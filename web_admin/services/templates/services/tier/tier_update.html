@@ -114,7 +114,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bonus Type</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_bonus_type" name="bonus_type" required>
+                            <select class="form-control" id="ddl_bonus_type" name="bonus_type" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
                                     {% if item.bonus_type == update_tier.bonus_type %}

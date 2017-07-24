@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class SPIUrlConfigurationView(TemplateView, SpiApi):
     template_name = 'services/spi_url_configuration/list.html'
     get_config_type_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configuration-types'
-    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-urls/{spiUrlId}/spi-url-configurations'
+    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/admin/spi-urls/{spiUrlId}/spi-url-configurations'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
