@@ -8,6 +8,21 @@
         <h3>Card Type Detail</h3>
     </div>
 
+    {% if card_type_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in card_type_update_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ card_type_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
@@ -57,7 +72,7 @@
                             <input id="btn_card_type_detail_cancel" class="btn text-left mb15" type="button"
                                    value="Cancel"/>
                         </a>
-                        <a href="#">
+                        <a href="{% url 'card_type:card-type-update' card_type_info.id %}">
                             <input id="btn_card_type_detail_edit" class="btn btn-success text-left mb15"
                                    type="button" value="Edit"/>
                         </a>
