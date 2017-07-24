@@ -113,14 +113,18 @@
                     {% endif %}
                 </ul>
                 <ul class="sub-menu">
-                    <li class="class={% if url_name == 'agent_registration' %} active{% endif %}">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION"%}
+                        <li class="class={% if url_name == 'agent_registration' %} active{% endif %}">
                         <a href="{% url 'agents:agent_registration' %}"> <span>Agent Registration</span> </a>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="sub-menu">
-                    <li class="class={% if url_name == 'agent-list' %} active{% endif %}">
+                    {% if request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
+                         <li class="class={% if url_name == 'agent-list' %} active{% endif %}">
                         <a href="{% url 'agents:agent-list' %}"> <span>Agent List</span> </a>
                     </li>
+                    {% endif %}
                 </ul>
             </li>
             <li class="class={% if url_name == 'client-list' %} active{% endif %}">
