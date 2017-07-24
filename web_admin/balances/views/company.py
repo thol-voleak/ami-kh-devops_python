@@ -99,8 +99,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _add_company_balance(self, currency, body):
         url = COMPANY_BALANCE_ADD + currency
-        return self._post_method(api_path=url,
-                                 func_description="company balance by user",
+        return self._put_method(api_path=url,
+                                 func_description="add company balance",
                                  logger=logger,
                                  params=body)
 
