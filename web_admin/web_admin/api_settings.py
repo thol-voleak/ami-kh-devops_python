@@ -74,28 +74,28 @@ USER_ROLE_PATH = 'api-gateway/system-user/'+API_VERSION+'/admin/roles/{role_id}/
 ROLE_USER_PATH = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{user_id}/roles'
 
 # SPI URL
-SPI_LIST_PATH = 'api-gateway/payment/'+API_VERSION+'/service-commands/{}/spi-urls'
+SPI_LIST_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/spi-urls'
 SPI_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-types'
-SPI_ADD_PATH = 'api-gateway/payment/'+API_VERSION+'/service-commands/{}/spi-urls'
-SPI_DETAIL_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-urls/{spiUrlId}'
-SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-urls/{spiUrlId}'
-SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-urls/{spi_url_id}'
+SPI_ADD_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/spi-urls'
+SPI_DETAIL_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
+SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
+SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spi_url_id}'
 
 # Service Group
-SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups'
-SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups'
-DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{}'
-GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{serviceGroupId}/services'
-GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/services'
+SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+DELETE_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
+GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{serviceGroupId}/services'
+GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
-SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/services/'
-SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/services'
-SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/services/{}'
-SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/services/{}'
-SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/services/{}'
+SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
+SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
+SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
+SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
+SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/'+API_VERSION+'/companies/balances/histories/'
@@ -114,8 +114,8 @@ COMMAND_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/commands/'
 SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/'+API_VERSION+'/service-commands/'
 
 # Tier
-FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/service-commands/{service_command_id}/fee-tiers'
-ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/service-commands/{service_command_id}/fee-tiers/'
+FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers'
+ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
 # Balance Movement
@@ -130,7 +130,7 @@ BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tie
 BALANCE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/balance-distributions/{balance_distribution_id}'
 BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/bonus-distributions/{bonus_distributions_id}'
 BONUS_SETTINGS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/bonus-distributions/{bonus_distribution_id}'
-TIER_PATH = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{}'
+TIER_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{}'
 GET_BONUS_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/bonus-types'
 GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/fee-types'
 AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/agent-fee-distributions'
