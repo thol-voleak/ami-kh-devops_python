@@ -395,7 +395,7 @@ function onChangesAmount(s) {
 };
 
 function validateBonusValue() {
-    if(txt_bonus_amount.value == '') {
+    /*if(txt_bonus_amount.value == '') {
         <!--txt_bonus_amount.value = '0';-->
     } else {
         txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
@@ -403,14 +403,14 @@ function validateBonusValue() {
 
     if(txt_bonus_amount.value == '') {
         <!--txt_bonus_amount.value = '0';-->
-    }
+    }*/
 
     // Validate min value
     return validateMinValue(txt_bonus_amount);
 }
 
 function validateFeeValue() {
-    if(txt_fee_amount.value == '') {
+    /*if(txt_fee_amount.value == '') {
         <!--txt_fee_amount.value = '0';-->
     } else {
         txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
@@ -418,7 +418,7 @@ function validateFeeValue() {
 
     if(txt_fee_amount.value == '') {
         <!--txt_fee_amount.value = '0';-->
-    }
+    }*/
 
     // Validate min value
     if(validateMinValue(txt_fee_amount)) {

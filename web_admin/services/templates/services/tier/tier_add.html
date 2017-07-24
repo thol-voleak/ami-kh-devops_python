@@ -378,30 +378,30 @@ var txt_fee_amount = document.getElementById('txt_fee_amount');
 var condition_amount = document.getElementById('txt_amount');
 
 function validateBonusValue() {
-    if(txt_bonus_amount.value == '') {
+    /*if(txt_bonus_amount.value == '') {
         <!--txt_bonus_amount.value = '0';-->
     } else {
-        txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
+        // txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
     }
 
     if(txt_bonus_amount.value == '') {
         <!--txt_bonus_amount.value = '0';-->
-    }
+    }*/
 
     // Validate min value
     validateMinValue(txt_bonus_amount);
 }
 
 function validateFeeValue() {
-    if(txt_fee_amount.value == '') {
+    /*if(txt_fee_amount.value == '') {
         <!--txt_fee_amount.value = '0';-->
     } else {
-        txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
+        // txt_fee_amount.value = txt_fee_amount.value.replace(/^0+/, '')
     }
 
     if(txt_fee_amount.value == '') {
         <!--txt_fee_amount.value = '0';-->
-    }
+    }*/
 
     // Validate min value
     validateMinValue(txt_fee_amount);
