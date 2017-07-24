@@ -1,4 +1,4 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL, GET_ALL_PRELOAD_CURRENCY_URL
@@ -11,8 +11,17 @@ logger = logging.getLogger(__name__)
 
 
 class ListView(TemplateView, RESTfulMethods):
+    group_required = "SYS_VIEW_CURRENCY"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "currencies/currencies_list.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

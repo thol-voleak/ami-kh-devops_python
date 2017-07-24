@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 
 from django.http import JsonResponse
@@ -10,7 +12,16 @@ import requests
 import time
 
 
-class BalanceApi():
+class BalanceApi(GroupRequiredMixin):
+    group_required = "SYS_MANAGE_COUNTRYCODE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def add(request, currency):
         logger = logging.getLogger(__name__)
         correlation_id = get_correlation_id_from_username(request.user)

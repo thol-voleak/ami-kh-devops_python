@@ -59,16 +59,20 @@
             {% endif %}
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
+                {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'country-code' %}active{% endif %}">
                         <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if request.user|has_permission_name:"SYS_VIEW_CURRENCY"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'currency-list' %}active{% endif %}">
                         <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                     </li>
                 </ul>
+                {% endif %}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
                         <a href="{% url 'balances:initial_company_balance' %}">

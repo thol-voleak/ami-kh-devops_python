@@ -1,10 +1,12 @@
-from authentications.utils import get_correlation_id_from_username
+from braces.views import GroupRequiredMixin
+from django.views.generic import TemplateView
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions, setup_logger
 from web_admin.api_settings import ADD_COUNTRY_CODE_URL, GLOBAL_CONFIGURATIONS_URL
 
 from django.shortcuts import render
-from django.views import View
 
 import copy
 import logging
@@ -12,8 +14,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CountryCode(View, RESTfulMethods):
+class CountryCode(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_MANAGE_COUNTRYCODE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    template_name = "country/country_code.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -31,7 +43,7 @@ class CountryCode(View, RESTfulMethods):
         else:
             context = {'country_code': None}
 
-        return render(request, 'country/country_code.html', context)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start add country code ==========')
@@ -45,4 +57,3 @@ class CountryCode(View, RESTfulMethods):
         result = ajax_functions._put_method(request, url, "", self.logger, params)
         self.logger.info('========== Finish add country code ==========')
         return result
-
