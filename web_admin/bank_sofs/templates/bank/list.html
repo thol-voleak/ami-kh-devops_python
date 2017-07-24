@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
+
 {% block content %}
 <div class="col-md-12">
     <div class="panel mb25">
         <div class="panel-heading border mb15">
             <h3>Bank List</h3>
         </div>
-        <div class="pull-right mr15 text-right">
+        {% if request.user|has_permission_name:"SYS_ADD_BANK"%}
+            <div class="pull-right mr15 text-right">
             <a href="{% url 'bank_sofs:bank_sofs_create' %}">
                 <input id="bank_sofs_btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                        value="Add"/>
             </a>
         </div>
+        {% endif %}
 
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
@@ -51,29 +55,33 @@
                             <td>{{ bank.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ bank.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
-                                <div class="btn-group">
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-info"
-                                       role="button"
-                                       id="bank_sof_btn_detail_{{ bank.id }}"
-                                       href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
-                                        <span class="small">Detail</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-primary"
-                                       role="button"
-                                       href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
-                                       id="bank_sof_btn_edit_{{ bank.id }}">
-                                        <span class="small">Edit</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-danger"
-                                       role="button"
-                                       href="{% url 'bank_sofs:bank_sofs_delete' bank.id %}"
-                                       id="bank_sof_btn_delete_{{ bank.id }}">
-                                        <span class="small">Delete</span>
-                                    </a>
-                                </div>
+                                    {% if bank.is_permision_detail%}
+                                        <a type="button"
+                                            class="btn btn-outline btn-xs btn-info"
+                                            role="button"
+                                            id="bank_sof_btn_detail_{{ bank.id }}"
+                                            href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
+                                            <span class="small">Detail</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if bank.is_permision_edit%}
+                                        <a type="button"
+                                            class="btn btn-outline btn-xs btn-primary"
+                                            role="button"
+                                            href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
+                                            id="bank_sof_btn_edit_{{ bank.id }}">
+                                            <span class="small">Edit</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if bank.is_permision_delete%}
+                                        <a type="button"
+                                            class="btn btn-outline btn-xs btn-danger"
+                                            role="button"
+                                            href="{% url 'bank_sofs:bank_sofs_delete' bank.id %}"
+                                            id="bank_sof_btn_delete_{{ bank.id }}">
+                                            <span class="small">Delete</span>
+                                        </a>
+                                    {% endif %}
                             </td>
                         </tr>
                     {% endif %}

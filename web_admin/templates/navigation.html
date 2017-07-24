@@ -211,7 +211,8 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
+            {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
+                <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
@@ -219,6 +220,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
             <li class="menu-accordion {% if 'reconcile' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Reconcile</span> </a>
                 <ul class="sub-menu">
