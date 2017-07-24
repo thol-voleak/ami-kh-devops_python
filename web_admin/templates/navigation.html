@@ -73,17 +73,21 @@
                     </li>
                 </ul>
                 {% endif %}
+                {% if request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
                         <a href="{% url 'balances:initial_company_balance' %}">
                             <span>Setup Company Balance</span> </a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'company_balance' %}active{% endif %}">
                         <a href="{% url 'balances:company_balance' %}"> <span>Company Balance</span> </a>
                     </li>
                 </ul>
+                {% endif %}
             </li>
             <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>

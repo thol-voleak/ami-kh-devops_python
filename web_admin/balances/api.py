@@ -13,7 +13,7 @@ import time
 
 
 class BalanceApi(GroupRequiredMixin):
-    group_required = "SYS_MANAGE_COUNTRYCODE"
+    group_required = "SYS_ADD_COMPANY_BALANCE"
     login_url = 'authentications:login'
     raise_exception = False
 
