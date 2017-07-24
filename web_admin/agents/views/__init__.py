@@ -36,9 +36,10 @@ class AgentAPIService(RESTfulMethods):
 
     def get_agent_identity(self, agent_id):
         body = {'agent_id': agent_id}
-        data, success = self._get_method(api_path=api_settings.GET_AGENT_IDENTITY_URL.format(agent_id=agent_id),
+        data, success = self._post_method(api_path=api_settings.GET_AGENT_IDENTITY_URL.format(agent_id=agent_id),
                                          func_description="Get agent identity",
-                                         logger=logger)
+                                         logger=logger,
+                                         params=body)
         context = {
             'agent_identities': data
         }
