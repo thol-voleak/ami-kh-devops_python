@@ -156,7 +156,8 @@
                     </li>
                 </ul>
             </li> -->
-            <li class="{% if 'customers' in request.path %} open{% endif %}">
+            {% if request.user|has_permission_name:"CAN_MANAGE_MEMBER_CUSTOMER_PROFILE"%}
+                <li class="{% if 'customers' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
                 <ul class="sub-menu">
                     <li id="customers_menu" class="{% if url_name == 'customer-list' %}active{% endif %}">
@@ -164,6 +165,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
             <li class="{% if 'system-user' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                 <ul class="sub-menu">

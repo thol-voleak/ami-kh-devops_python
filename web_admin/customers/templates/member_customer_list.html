@@ -63,21 +63,26 @@
                     <td class="col-sm-2">{{ customer.last_updated_timestamp|default_if_none:'' }}</td> 
                     <td class="col-sm-2">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                     <td class="col-sm-3">
-                        <div class="btn-group">
-                            <!-- <button id="btn_detail" class="btn btn-outline btn-xs btn-primary">Detail</button> -->
-                            <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
-                            <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
-                            <button id="btn_identities" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
-                            {% if not customer.is_suspended %} 
+                    {% if customer.is_permission_detail%}
+                        <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
+                    {% endif %}
+                    {% if customer.is_permission_sof_bank%}
+                        <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
+                    {% endif %}
+                    {% if customer.is_permission_identity%}
+                        <button id="btn_idesntities" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
+                    {% endif %}
+                    {% if customer.is_permission_suspend%}
+                        {% if not customer.is_suspended %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
                                     onclick="suspend('{{ customer.id }}')">Suspend</button>
-                            {% else %} 
+                        {% else %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
-                                    onclick="activate('{{ customer.id }}')">Activate</button> 
-                            {% endif %}
-                        </div>
+                                    onclick="activate('{{ customer.id }}')">Activate</button>
+                        {% endif %}
+                    {% endif %}
                     </td>
                 </tr>
                 {% endif %}
