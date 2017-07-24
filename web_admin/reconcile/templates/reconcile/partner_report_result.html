@@ -165,7 +165,7 @@
                             <td class="col-sm-2">{{ partner.order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ partner.ext_trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ partner.partner_trans_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if partner.partner_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{% if partner.partner_file.is_on_us is True %} ON US {% elif partner.partner_file.is_on_us is False %} OFF US {% endif %}</td>
                             <td class="col-sm-2">{{ partner.payment_type|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ partner.partner_payment_type|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ partner.last_updated_timestamp|default_if_none:'' }}</td>
