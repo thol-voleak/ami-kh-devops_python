@@ -174,24 +174,30 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu-accordion {% if 'card' in request.path %}open{% endif %}">
+            {% if request.user|has_permission_name:"CAN_MANAGE_CARD"%}
+                <li class="menu-accordion {% if 'card' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
-                <ul class="sub-menu">
+                {% if request.user|has_permission_name:"CAN_SEARCH_CARD_PROFILE"%}
+                    <ul class="sub-menu">
                     <li class="{% if url_name == 'profile' %}active{% endif %}">
                         <a href="{% url 'cards:profile' %}"> <span>Profile</span> </a>
                     </li>
                 </ul>
-                <ul class="sub-menu">
+                {% endif %}
+                {% if request.user|has_permission_name:"CAN_SEARCH_CARD_HISTORY"%}
+                    <ul class="sub-menu">
                     <li class="{% if url_name == 'history' %}active{% endif %}">
                         <a href="{% url 'cards:history' %}"> <span>History</span> </a>
                     </li>
                 </ul>
+                {% endif %}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'card-type-list' %}active{% endif %}">
                         <a href="{% url 'card_type:card-type-list' %}"> <span>Card Type List</span> </a>
                     </li>
                 </ul>
             </li>
+            {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
             <li class="menu-accordion {% if 'payment' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Payment</span> </a>
