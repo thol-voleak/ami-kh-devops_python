@@ -114,13 +114,13 @@
                         <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.status|default_if_none:'' }}</td>
                         <td class="col-sm-3">
-                            {% if request.user|has_permission_name:"CAN_VIEW_AGENT"%}
+                            {% if agent.is_permission_view %}
                                 <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                             {% endif %}
-                            {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS"%}
+                            {% if agent.is_permission_edit %}
                                 <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                             {% endif %}
-                            {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                            {% if agent.is_permission_delete %}
                                 <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
                             {% endif %}
                         </td>

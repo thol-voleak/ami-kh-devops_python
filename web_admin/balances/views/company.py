@@ -171,6 +171,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                 message=totalData
             )
             totalData = {}
+        else:
+            totalData = totalData[0]
 
         data, success_balance = self._get_company_balance_history(currency)
         if success_balance:
