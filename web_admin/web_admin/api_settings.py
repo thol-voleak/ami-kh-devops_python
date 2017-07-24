@@ -110,9 +110,9 @@ GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/'+API_VERSION+'/agents/{agent
 GET_REPORT_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 
 # Command
-COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/services/{}/service-commands'
+COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}/service-commands'
 COMMAND_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/commands/'
-SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/'+API_VERSION+'/service-commands/'
+SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/'
 
 # Tier
 FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers'
@@ -126,23 +126,23 @@ ACTION_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/action-types'
 SOF_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/sof-types'
 ACTOR_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/actor-types'
 TIER_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/balance-distributions'
-BALANCE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/balance-distributions/{balance_distribution_id}'
-BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/bonus-distributions'
-BALANCE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/balance-distributions/{balance_distribution_id}'
-BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/bonus-distributions/{bonus_distributions_id}'
-BONUS_SETTINGS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/bonus-distributions/{bonus_distribution_id}'
+BALANCE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/balance-distributions/{balance_distribution_id}'
+BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/bonus-distributions'
+BALANCE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/balance-distributions/{balance_distribution_id}'
+BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-distributions/{bonus_distributions_id}'
+BONUS_SETTINGS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-distributions/{bonus_distribution_id}'
 TIER_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{}'
 GET_BONUS_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/bonus-types'
 GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/fee-types'
-AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{fee_tier_id}/agent-fee-distributions'
-AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/agent-bonus-distributions/{agent_bonus_distribution_id}'
+AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/agent-fee-distributions'
+AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus-distributions/{agent_bonus_distribution_id}'
 
 # Agent Bonus Distribution
-AGENT_BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tiers/{tf_fee_tier_id}/agent-bonus-distributions'
-AGENT_FEE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/agent-fee-distributions/{agent_fee_distribution_id}'
-AGENT_BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/agent-bonus-distributions/{agent_bonus_distribution_id}'
-FEE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/bonus-distributions/{fee_distributions_id}'
-SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/service-commands/{}'
+AGENT_BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{tf_fee_tier_id}/agent-bonus-distributions'
+AGENT_FEE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/agent-fee-distributions/{agent_fee_distribution_id}'
+AGENT_BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus-distributions/{agent_bonus_distribution_id}'
+FEE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-distributions/{fee_distributions_id}'
+SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}'
 
 # Member Customer
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
@@ -162,7 +162,7 @@ SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconci
 SEARCH_RECONCILE_SOF_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/sofs'
 SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/sofs/results'
 SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/partners/results'
-GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-groups/{service_group_id}/services'
+GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{service_group_id}/services'
 
 # card type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
