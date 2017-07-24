@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
 
 {% block content %}
 <div class="panel mb25">
@@ -45,10 +46,13 @@
                             <input id="agent_type_btn_cancel" class="btn text-left mb15" type="button"
                                    value="Cancel"/>
                         </a>
-                        <a href="{% url 'agent_type:agent-type-info' agent_type_info.id%}">
+
+                        {% if request.user|has_permission_name:"CAN_EDIT_AGENT_TYPE"%}
+                            <a href="{% url 'agent_type:agent-type-info' agent_type_info.id%}">
                             <input id="agent_type_btn_edit" class="btn btn-success text-left mb15" type="button"
                                    value="Edit"/>
-                        </a>
+                            </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>

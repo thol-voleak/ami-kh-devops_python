@@ -138,14 +138,14 @@
                 <tbody id="table_body">
                 {% for file in file_list %}
                     <tr>
-                        <td class="col-sm-2">{{ file.id }}</td>
-                        <td class="col-sm-2">{{ file.file_name }}</td>
-                        <td class="col-sm-2">{% if file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
-                        <td class="col-sm-2">{{ file.service_name }}</td>
-                        <td class="col-sm-2">{{ file.agent_id }}</td>
-                        <td class="col-sm-2">{{ file.currency }}</td>
-                        <td class="col-sm-2">{{ file.status.name }}</td>
-                        <td class="col-sm-2">{{ file.last_updated_timestamp }}</td>
+                        <td class="col-sm-2">{{ file.id|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{{ file.file_name|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{% if file.is_on_us is True %} ON US {% elif file.is_on_us is False %} OFF US {% endif %}</td>
+                        <td class="col-sm-2">{{ file.service_name|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{{ file.agent_id|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{{ file.currency|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{{ file.status.name|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{{ file.last_updated_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             {% if file.status.id is 4 or file.status.id is 5 %}
                                 <div class="btn-group">

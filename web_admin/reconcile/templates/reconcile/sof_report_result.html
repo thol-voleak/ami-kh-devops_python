@@ -139,7 +139,7 @@
                             <td class="col-sm-2">{{ report.detail_trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.ext_trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.authorized_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if report.sof_file.is_on_us %} ON US {% else %} OFF US {% endif %}</td>
+                            <td class="col-sm-2">{% if report.sof_file.is_on_us is True %} ON US {% elif report.sof_file.is_on_us is False %} OFF US {% endif %}</td>
                             <td class="col-sm-2">{{ report.payment_type|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.partner_payment_type|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.last_updated_timestamp|default_if_none:'' }}</td>

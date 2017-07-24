@@ -15,11 +15,10 @@ class AgentAPIService(RESTfulMethods):
         return data[0]
 
     def get_agent_types(self, agent_id):
-        body = {'id': agent_id}
+        # body = {'id': agent_id}
         data, success = self._post_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
                                          func_description="Agent Type List",
-                                         logger=logger,
-                                         params=body)
+                                         logger=logger)
         return data, success
 
     def get_agent_detail(self, agent_id):
@@ -36,23 +35,26 @@ class AgentAPIService(RESTfulMethods):
 
     def get_agent_identity(self, agent_id):
         body = {'agent_id': agent_id}
-        data, success = self._get_method(api_path=api_settings.GET_AGENT_IDENTITY_URL.format(agent_id=agent_id),
+        data, success = self._post_method(api_path=api_settings.GET_AGENT_IDENTITY_URL.format(agent_id=agent_id),
                                          func_description="Get agent identity",
-                                         logger=logger)
+                                         logger=logger,
+                                         params=body)
         context = {
             'agent_identities': data
         }
         return context, success
 
     def get_currencies(self, agent_id):
-        url = api_settings.GET_AGENT_BALANCE
-        body = {'user_id': agent_id}
+        url = api_settings.GET_REPORT_AGENT_BALANCE
+        body = {
+                'user_id': agent_id,
+                'user_type': 2}
         data, success = self._post_method(api_path=url,
                                           func_description="currency list by agent",
                                           logger=logger,
                                           params=body)
         currencies_str = ''
-        if success:
+        if success and len(data) > 0:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 
         return currencies_str, success

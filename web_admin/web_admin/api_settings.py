@@ -48,8 +48,7 @@ GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/scop
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 
-GET_AGENT_IDENTITY_URL = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/identities'
-
+GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 # System User
 SEARCH_SYSTEM_USER = 'api-gateway/report/'+API_VERSION+'/system-users'
 CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users'
@@ -104,7 +103,7 @@ GET_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/companies/sofs/{}'
 CLIENT_SCOPES = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/apis'
-COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/companies/balances/'
+COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/balances/{currency}'
 
 GET_REPORT_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'

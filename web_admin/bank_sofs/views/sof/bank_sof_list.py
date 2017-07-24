@@ -1,4 +1,4 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
@@ -6,13 +6,23 @@ from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
+from braces.views import GroupRequiredMixin
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class BankSOFView(TemplateView, RESTfulMethods):
+class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_SEARCH_BANK_SOF_CREATION"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "sof/bank_sof.html"
     search_banks_sof = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/banks/sofs"
     logger = logger

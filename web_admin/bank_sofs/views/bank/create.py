@@ -26,7 +26,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "bank/create.html"
-    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/banks"
+    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/admin/banks"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

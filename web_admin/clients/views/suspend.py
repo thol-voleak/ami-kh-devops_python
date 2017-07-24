@@ -3,7 +3,8 @@ from django.conf import settings
 from web_admin import api_settings, setup_logger
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
-
+from django.contrib import messages
+import json
 
 # logger = logging.getLogger(__name__)
 
@@ -18,5 +19,14 @@ def suspend(request, client_id):
         'status': 'suspend',
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
+    response = result.getvalue()
+    json_data = json.loads(response)
+
+    if (json_data['status'] == 2):
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            message='Suspended data successfully'
+        )
     logger.info('========== Finish suspending client ==========')
     return result

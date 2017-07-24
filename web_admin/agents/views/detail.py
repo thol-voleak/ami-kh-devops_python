@@ -96,10 +96,11 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return context, success
 
     def _get_agent_identity(self, agent_id):
-        self.logger.info("Get agent identity [{}] agent Id".format(agent_id))
-        data, success = self._get_method(api_path=self.get_agent_identity_url.format(agent_id=agent_id),
-                                         func_description="Get agent identity",
-                                         logger=logger)
+        self.logger.info("Get agent identity [{}] agent Id".format(agent_id)) # agent_id
+
+        params = {"agent_id": agent_id}
+        data, success = self._post_method(api_path=self.get_agent_identity_url, func_description=None, logger=self.logger, params=params, only_return_data=True)
+
         context = {
             'agent_identities': data
         }

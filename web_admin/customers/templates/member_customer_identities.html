@@ -47,11 +47,13 @@
                             <td class="col-sm-1">{{ identity.id }}</td>
                             <td class="col-sm-3">{{ identity.username|default_if_none:'' }}</td>
                             <td class="col-sm-3">
-                                <div class="btn-group">
+                                {% if identity.is_permision_reset_password%}
+                                    <div class="btn-group">
                                     <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
                                             data-url="{% url 'customers:reset-identity-password' customer_id identity.id %}"
                                             onClick="reset()">ResetPassword</button>
-                                </div>
+                                    </div>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endif %}

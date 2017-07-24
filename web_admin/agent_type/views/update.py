@@ -72,8 +72,10 @@ class AgentTypeUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
             return render(request, 'agent_type/agent_type_update.html', context)
 
     def _get_agent_type_detail(self, agent_type_id):
-        data, success = self._get_method(api_path=AGENT_TYPE_DETAIL_URL.format(agent_type_id),
+        body = {"id" : agent_type_id}
+        data, success = self._post_method(api_path=AGENT_TYPE_DETAIL_URL.format(agent_type_id),
                                          func_description="Agent Type Detail",
-                                         logger=logger)
-        context = {'agent_type_info': data}
+                                         logger=logger,
+                                         params=body)
+        context = {'agent_type_info': data[0]}
         return context

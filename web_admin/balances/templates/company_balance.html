@@ -189,7 +189,6 @@ function changeValue() {
         });
 
     amount.onblur = function(){
-
         num = amount.value;
             if (num != "") {
                 num = parseFloat(num);
@@ -203,6 +202,9 @@ function changeValue() {
                 amount.value = num;
             }
         }
+    amount.onfocus = function(){
+        amount.value = amount.value.replace(/,/g , '');
+    }
 }
 
 $(changeValue);
