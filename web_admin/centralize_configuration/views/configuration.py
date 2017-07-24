@@ -1,18 +1,28 @@
+from braces.views import GroupRequiredMixin
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class ConfigurationListView(TemplateView, RESTfulMethods):
+class ConfigurationListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = 'centralize_configuration/configuration_list.html'
     logger = logger
+
+    group_required = "SYS_CONFIGURE_SCOPE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -26,15 +36,26 @@ class ConfigurationListView(TemplateView, RESTfulMethods):
         url = api_settings.CONFIGURATION_URL.format(scope=scope)
         data, success = self._get_method(url, 'configuration scope', logger)
         if success:
-            self.logger.info('========== Finish getting all configuration scope ==========')
+            is_permission_scope_attr = check_permissions_by_user(self.request.user, "SYS_EDIT_SCOPE_ATTRIBUTE")
             context["configurations"] = data
             context["scope_name"] = scope
+            context["is_permission_scope_attr"] = is_permission_scope_attr
+            self.logger.info('========== Finish getting all configuration scope ==========')
             return context
 
 
-class ConfigurationDetailsView(TemplateView, RESTfulMethods):
+class ConfigurationDetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = 'centralize_configuration/configuration_details.html'
     logger = logger
+
+    group_required = "SYS_EDIT_SCOPE_ATTRIBUTE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -47,8 +68,7 @@ class ConfigurationDetailsView(TemplateView, RESTfulMethods):
         scope = context['scope']
         conf_key = context['conf_key']
         url = api_settings.CONFIGURATION_DETAIL_URL.format(scope=scope, key=conf_key)
-        
-        
+
         data, success = self._get_method(url, 'configuration scope details', logger)
         if success:
             self.logger.info(
@@ -63,11 +83,11 @@ class ConfigurationDetailsView(TemplateView, RESTfulMethods):
         scope = kwargs.get('scope', None)
         conf_key = kwargs.get('conf_key', None)
         conf_value = request.POST.get('conf_value')
-        
+
         url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_DETAIL_URL.format(
                        scope=scope, key=conf_key)
         params = {'value': conf_value}
-        
+
         data, success = self._put_method(url, 'configuration scope', logger, params)
         if success:
             messages.add_message(

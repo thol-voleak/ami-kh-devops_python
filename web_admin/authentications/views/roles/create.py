@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class RoleCreate(GroupRequiredMixin, TemplateView):
+    template_name = "roles/create.html"
+    logger = logger
+
     group_required = "CAN_CREATE_ROLE"
     login_url = 'authentications:login'
     raise_exception = False
-
-    template_name = "roles/create.html"
-    logger = logger
 
     def check_membership(self, permission):
         self.logger.info(
