@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 
 import logging
 
-from web_admin import api_settings
+from web_admin import setup_logger,api_settings
 
 logger = logging.getLogger(__name__)
 
