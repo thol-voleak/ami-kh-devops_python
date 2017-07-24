@@ -25,7 +25,7 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     template_name = "bank/delete.html"
     get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks"
-    delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/banks/{id}"
+    delete_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/admin/banks/{id}"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
