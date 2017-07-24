@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL
 from web_admin.restful_methods import RESTfulMethods
@@ -16,9 +18,18 @@ IS_SUCCESS = {
 }
 
 
-class PaymentOrderView(TemplateView, RESTfulMethods):
+class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "payments/payment_order.html"
     logger = logger
+
+    group_required = "CAN_SEARCH_PAYMENT_ORDER"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
