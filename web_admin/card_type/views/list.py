@@ -23,7 +23,8 @@ class ListView(TemplateView, RESTfulMethods):
         self.logger.info('========== Start showing Card Type List page ==========')
         data = self.get_card_types_list()
         result = {
-            'card_type_list': data
+            'card_type_list': data,
+            'card_type_update_msg': self.request.session.pop('card_type_update_msg', None)
         }
         self.logger.info('========== Finished showing Card Type List page ==========')
         return result
