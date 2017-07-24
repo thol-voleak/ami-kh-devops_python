@@ -9,7 +9,11 @@
     {% if add_service_msg is not None %}
     <div class="col-xs-12">
         <div class='alert
+                    {%if "successfully" in add_service_msg%}
                     alert-success
+                    {%else%}
+                    alert-danger
+                    {%endif%}
                     alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ add_service_msg }}</strong>
