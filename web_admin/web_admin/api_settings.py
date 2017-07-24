@@ -8,7 +8,7 @@ GET_PERMISSION_PATH = 'api-gateway/system-user/'+API_VERSION+'/roles-permissions
 
 # API Management
 APIS_URL = 'api-gateway/'+API_VERSION+'/apis/'
-SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/services'
+SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/services'
 
 # Centralize configuration
 SCOPES_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes'
@@ -110,7 +110,7 @@ GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/'+API_VERSION+'/agents/{agent
 GET_REPORT_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 
 # Command
-COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/services/{}/service-commands'
+COMMAND_LIST_BY_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}/service-commands'
 COMMAND_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/commands/'
 SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/'+API_VERSION+'/service-commands/'
 
