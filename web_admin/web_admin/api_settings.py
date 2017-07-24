@@ -99,7 +99,7 @@ SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
-COMPANY_BALANCE_HISTORY = 'api-gateway/agent/'+API_VERSION+'/companies/balances/histories/'
+COMPANY_BALANCE_HISTORY = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/histories/'
 GET_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/companies/sofs/{}'
 CLIENT_SCOPES = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{client_id}/scopes'
