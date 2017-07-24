@@ -46,14 +46,16 @@ class AgentAPIService(RESTfulMethods):
         return context, success
 
     def get_currencies(self, agent_id):
-        url = api_settings.GET_AGENT_BALANCE
-        body = {'user_id': agent_id}
+        url = api_settings.GET_REPORT_AGENT_BALANCE
+        body = {
+                'user_id': agent_id,
+                'user_type': 2}
         data, success = self._post_method(api_path=url,
                                           func_description="currency list by agent",
                                           logger=logger,
                                           params=body)
         currencies_str = ''
-        if success:
+        if success and len(data) > 0:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 
         return currencies_str, success
