@@ -20,13 +20,13 @@ class AgentFeeHierarchyDistributionsDetail(View, RESTfulMethods):
         return super(AgentFeeHierarchyDistributionsDetail, self).dispatch(request, *args, **kwargs)
 
 
-def delete(self, request, *args, **kwargs):
-    agent_fee_distribution_id = kwargs.get('agent_fee_distribution_id')
+    def delete(self, request, *args, **kwargs):
+        agent_fee_distribution_id = kwargs.get('agent_fee_distribution_id')
 
-    self.logger.info('========== Start deleting Agent Hirarchy Distribution - Fee ==========')
+        self.logger.info('========== Start deleting Agent Hirarchy Distribution - Fee ==========')
 
-    url = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
+        url = api_settings.AGENT_FEE_DISTRIBUTION_DETAIL_URL.format(agent_fee_distribution_id=agent_fee_distribution_id)
 
-    response = ajax_functions._delete_method(request, url, "", self.logger)
-    self.logger.info('========== Finish deleting Agent Hirarchy Distribution - Fee ==========')
-    return response
+        response = ajax_functions._delete_method(request, url, "", self.logger)
+        self.logger.info('========== Finish deleting Agent Hirarchy Distribution - Fee ==========')
+        return response
