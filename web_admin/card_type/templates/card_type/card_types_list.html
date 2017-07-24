@@ -28,9 +28,11 @@
                         <td class="col-sm-2">{{ card_type.url_get_card_detail }}</td>
                         <td class="col-sm-1">
                             <div class="btn-group">
-                                <button class="btn btn-outline btn-xs btn-primary" onclick="">
-                                    <u>Detail</u>
-                                </button>
+                                <a href="{% url 'card_type:card_type_detail' card_type.id %}">
+                                    <button class="btn btn-outline btn-xs btn-primary">
+                                        <u>Detail</u>
+                                    </button>
+                                </a>
                                 <button class="btn btn-outline btn-xs btn-primary" onclick="">
                                     <u>Edit</u>
                                 </button>
