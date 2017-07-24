@@ -2,7 +2,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import AGENT_TYPE_DETAIL_URL, DELETE_AGENT_TYPE_URL
 from web_admin import setup_logger
-
+from django.shortcuts import render
 from braces.views import GroupRequiredMixin
 
 from django.http import HttpResponseRedirect
@@ -56,8 +56,12 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             self.logger.info('========== Finished deleting agent type ==========')
             return HttpResponseRedirect(reverse('agent_type:agent-type-list'))
         else:
+            context = self._get_agent_type_detail(agent_type_id)
             self.logger.info('========== Finished deleting agent type ==========')
-            raise Exception("Something went wrong.")
+            context.update({
+                'msg':'Something wrong happen',
+            })
+            return render(request, self.template_name, context)
         return success
 
     def _get_agent_type_detail(self, agent_type_id):
