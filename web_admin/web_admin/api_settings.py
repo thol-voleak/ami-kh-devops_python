@@ -25,6 +25,7 @@ SUSPEND_CLIENT_URL = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{}/statuse
 ACTIVATE_CLIENT_URL = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{}/statuses'
 
 # Agent Type
+GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_TYPES_LIST_URL = 'api-gateway/report/'+API_VERSION+'/agent-types'
 GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
 AGENT_TYPE_CREATE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agent-types'
@@ -165,3 +166,4 @@ GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/service-
 
 # card type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
+UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'

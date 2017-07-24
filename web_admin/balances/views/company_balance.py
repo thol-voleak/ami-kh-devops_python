@@ -1,4 +1,6 @@
-from authentications.utils import get_correlation_id_from_username
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CREATE_COMPANY_BALANCE
@@ -15,9 +17,18 @@ import copy
 logger = logging.getLogger(__name__)
 
 
-class CompanyBalanceView(TemplateView, RESTfulMethods):
+class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_VIEW_COMPANY_BALANCE"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "currencies/initial_company_balance.html"
     company_agent_id = 1
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

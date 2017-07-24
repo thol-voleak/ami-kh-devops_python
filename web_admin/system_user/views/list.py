@@ -59,6 +59,19 @@ class ListView(GroupRequiredMixin, TemplateView):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
 
+        is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_SYSTEM_USER')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_SYSTEM_USER')
+        is_permission_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_SYSTEM_USER')
+        is_permission_change_pwd = check_permissions_by_user(self.request.user, 'SYS_CHANGE_SYSTEM_USER_PASSWORD')
+        is_permission_change_role = check_permissions_by_user(self.request.user, 'CAN_CHANGE_ROLE_FOR_USER')
+
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
+            i['is_permission_edit'] = is_permission_edit
+            i['is_permission_delete'] = is_permission_delete
+            i['is_permission_change_pwd'] = is_permission_change_pwd
+            i['is_permission_change_role'] = is_permission_change_role
+
         context['data'] = data
         context['username'] = username
         context['email'] = email

@@ -1,15 +1,24 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
-
 from django.views.generic.base import TemplateView
+from braces.views import GroupRequiredMixin
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView, RESTfulMethods):
+class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_VIEW_LIST_BANK"
+    login_url = 'authentications:login'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "bank/list.html"
     url = "api-gateway/report/"+api_settings.API_VERSION+"/banks"
     logger = logger
@@ -23,7 +32,15 @@ class ListView(TemplateView, RESTfulMethods):
         self.logger.info('========== Start get bank list ==========')
         data, success = self._post_method(self.url, "get bank list", logger)
 
+        is_permision_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_BANK')
+        is_permision_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_BANK')
+        is_permision_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_BANK')
+
         if success:
             self.logger.info('========== Finished get get bank list ==========')
+            for i in data:
+                i['is_permision_detail'] = is_permision_detail
+                i['is_permision_edit'] = is_permision_edit
+                i['is_permision_delete'] = is_permision_delete
             result = {'data': data}
             return result

@@ -28,7 +28,10 @@ class CardTypeDetail(TemplateView, RESTfulMethods):
 
         data = self._get_card_type_detail(params)
 
-        context = {'card_type_info': data}
+        context = {
+            'card_type_info': data,
+            'card_type_update_msg': self.request.session.pop('card_type_update_msg', None)
+        }
 
         self.logger.info('========== Finished showing Card Type Detail page ==========')
 

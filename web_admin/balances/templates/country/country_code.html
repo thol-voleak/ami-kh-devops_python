@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
 
 {% block body_stylesheet %}
 {{ block.super }}
@@ -34,6 +35,7 @@
                                     {% if country_code is not None %} readonly {% endif %}>
                         </div>
                     </div>
+                    {% if request.user|has_permission_name:"SYS_CREATE_COUNTRYCODE"%}
                     <div class="pull-right {% if country_code is not None %} hidden {% endif %}">
                         <button id='country_btn_save' type="button" class="btn btn-success"
                                 data-url="{% url 'balances:country-code' %}"
@@ -43,6 +45,7 @@
                         <button id='country_btn_save2' type="submit" class="btn btn-success" style="display: none;">
                         </button>
                     </div>
+                    {% endif %}
                 </form>
             </div>
         </div>

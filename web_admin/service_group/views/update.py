@@ -1,14 +1,28 @@
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods import RESTfulMethods
+
+from braces.views import GroupRequiredMixin
+
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
-from web_admin import api_settings, setup_logger
+
 import logging
-from authentications.utils import get_correlation_id_from_username
-from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
-class ServiceGroupUpdateForm(TemplateView, RESTfulMethods):
+
+class ServiceGroupUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_EDIT_SERVICE_GROUP"
+    login_url = 'authentications:login'
+    raise_exception = False
+
     template_name = "service_group/update.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

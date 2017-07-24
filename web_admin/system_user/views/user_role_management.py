@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class RoleManagementView(GroupRequiredMixin, TemplateView):
-    group_required = "CAN_CHANGE_ROLE_FOR_USER "
+    group_required = "CAN_CHANGE_ROLE_FOR_USER"
     login_url = 'authentications:login'
     raise_exception = False
 

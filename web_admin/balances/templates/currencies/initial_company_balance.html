@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
 
 {% block content %}
 <div class="panel mb30">
@@ -22,6 +23,7 @@
                 </div>
             </div>
             {% endfor %}
+            {% if request.user|has_permission_name:"SYS_ADD_COMPANY_BALANCE"%}
             <form class="form-horizontal" role="form" method="post" action="{% url 'balances:initial_company_balance' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -44,8 +46,9 @@
                     </div>
                 </div>
             </form>
+            {% endif %}
         </div>
-
+        {% if request.user|has_permission_name:"SYS_VIEW_COMPANY_BALANCE"%}
         <div class="row no-margin col-xs-10">
             <div class="table-responsive" id=currency_table>
                 <table class="table table-bordered table-striped mb0">
@@ -72,6 +75,7 @@
                 </table>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

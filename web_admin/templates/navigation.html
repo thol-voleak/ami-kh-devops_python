@@ -59,37 +59,48 @@
             {% endif %}
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
+                {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'country-code' %}active{% endif %}">
                         <a href="{% url 'balances:country-code' %}"> <span>Country Code</span> </a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if request.user|has_permission_name:"SYS_VIEW_CURRENCY"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'currency-list' %}active{% endif %}">
                         <a href="{% url 'balances:currency-list' %}"> <span>Currencies</span> </a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'initial_company_balance' %}active{% endif %}">
                         <a href="{% url 'balances:initial_company_balance' %}">
                             <span>Setup Company Balance</span> </a>
                     </li>
                 </ul>
+                {% endif %}
+                {% if request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'company_balance' %}active{% endif %}">
                         <a href="{% url 'balances:company_balance' %}"> <span>Company Balance</span> </a>
                     </li>
                 </ul>
+                {% endif %}
             </li>
             <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
                 <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP"%}
                     <li class="class={% if url_name == 'service_group_list' %} active{% endif %}">
                         <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
                     </li>
+                    {% endif %}
                     <li class="class={% if url_name == 'services_list' %} active{% endif %}">
                         <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
                     </li>
+
                 </ul>
             </li>
             <li class="menu-accordion {% if 'agent' in request.path %}open{% endif %}">
@@ -211,7 +222,8 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
+            {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
+                <li class="menu-accordion {% if 'bank/management' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
@@ -219,6 +231,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
             <li class="menu-accordion {% if 'reconcile' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Reconcile</span> </a>
                 <ul class="sub-menu">

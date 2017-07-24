@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Edit Card Type</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'card_type:card-type-update' card_type.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Card Type Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="card_type_name_input"
+                                   id="card_type_name_input"
+                                   value="{{ card_type.name }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Timeout - Create Card</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="timeout_create_card_input"
+                                   id="timeout_create_card_input"
+                                   value="{{ card_type.timeout_create_card }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Timeout - Get Card Full Detail</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="timeout_get_card_detail_input"
+                                   id="timeout_get_card_detail_input"
+                                   value="{{ card_type.timeout_get_card_detail }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">URL - Create Card</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="url_create_card_input"
+                                   id="url_create_card_input"
+                                   value="{{ card_type.url_create_card }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">URL - Get Card Full Detail</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="url_get_card_detail_input"
+                                   id="url_get_card_detail_input"
+                                   value="{{ card_type.url_get_card_detail }}" required>
+                        </div>
+                    </div>
+
+                    <input name="previous_page" value="{{ request.META.HTTP_REFERER }}" hidden/>
+                    <div class="pull-right">
+                        <a href="{{ request.META.HTTP_REFERER }}">
+                            <input id="card_type_btn_cancel" class="btn" type="button" value="Cancel"/>
+                        </a>
+                        <a>
+                            <input id="card_type_btn_save" class="btn btn-success" type="submit" value="Save"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
