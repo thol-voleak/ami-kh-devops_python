@@ -35,11 +35,13 @@
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_service_group" name="service_group_id"
                             onchange="ddl_service_group_change()">
+                     {% if service_groups is not None %}
                         <option value=-1>All</option>
-                        {% for group in choices.service_groups %}
+                        {% for group in service_groups %}
                             <option value={{ group.service_group_id }}
                                             {% if service_group_id == group.service_group_id %}selected="selected"{% endif %}>{{ group.service_group_name }}</option>
                         {% endfor %}
+                    {% endif %}
                     </select>
                 </div>
             </div>
@@ -48,11 +50,13 @@
                 <label class="col-sm-2 control-label">Service</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_service" name="service_name">
+                    {% if service_list is not None %}
                         {% if service_group_id == -1 %}<option value=''>All</option>{% endif %}
                         {% for service_in in service_list %}
                             <option value='{{ service_in.service_name }}'
                                             {% if service_in.service_name == selected_service %}selected="selected"{% endif %}>{{ service_in.service_name }}</option>
                         {% endfor %}
+                    {% endif %}
                     </select>
                 </div>
             </div>
@@ -70,7 +74,7 @@
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_currency" name="currency_id">
                         <option value="">All</option>
-                        {% for choice_currency in choices.currencies %}
+                        {% for choice_currency in currencies %}
                             <option value="{{ choice_currency.0 }}"
                                     {% if choice_currency.0 == currency %}selected="selected"{% endif %}>
                                 {{ choice_currency.0 }}</option>
@@ -177,17 +181,36 @@
             data: {'service_group_id': serv_gr_id},
             success: function (response) {
                 console.log(response.toString())
-                var options = {};
-                for (var i = 0; i < response[0].length; i++) {
-                    options[response[0][i]['service_id']] = response[0][i]['service_name']
+                var success = response[1]
+                if (success == true) {
+                    var options = {};
+                    for (var i = 0; i < response[0].length; i++) {
+                        options[response[0][i]['service_id']] = response[0][i]['service_name']
+                    }
+                    add_option('#ddl_service', options)
+                } else {
+                    console.log("Error get service")
+                    on_get_services_error()
                 }
-                console.log(options)
-                add_option('#ddl_service', options)
             },
             error: function (xhr) {
-                console.log("Error")
+                console.log("Error get service")
+                on_get_services_error()
             }
         });
+    }
+
+    on_get_services_error = function () {
+        $('#ddl_service').empty()
+        $('#ddl_service_group').empty()
+        var error_alert = $("<div class='col-xs-12'></div>").append(
+            $("<div class='alert alert-danger alert-dismissable' id='msg-update-client'></div>").append(
+                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>×</a>").append(
+                "<strong>Fail to get service group, please refresh the page or contact technical support</strong>"
+            )
+        );
+        var _panel_heading = document.getElementsByClassName('panel-heading border')
+        error_alert.insertAfter(_panel_heading)
     }
 
     add_option = function (ddlId, dict) {

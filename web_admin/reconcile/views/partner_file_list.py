@@ -34,26 +34,30 @@ class PartnerFileList(TemplateView, RESTfulReconcileMethods):
         default_end_date = datetime.today().strftime("%Y-%m-%d")
         default_start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-        service_list, get_service_status = self._get_service('-1')
+        context = {'from_created_timestamp': default_start_date,
+                   'to_created_timestamp': default_end_date }
 
-        choices, success = self._get_service_group_and_currency_choices()
-        context ={'from_created_timestamp' : default_start_date,
-                  'to_created_timestamp' : default_end_date,
-                  'service_group_id' : -1,
-                  'choices' : choices}
+        currencies, success = self._get_currency_choices()
+        if success:
+            context.update({'currencies': currencies})
 
-        if get_service_status == True:
-            context['service_list'] = service_list
+        services_list, service_groups, service_group_id, success = self._get_service_group_and_services_list(-1)
+        if success:
+            context.update({'service_list': services_list,
+                            'service_groups': service_groups,
+                            'service_group_id': service_group_id})
+        else:
+            context.update({'partner_file_list_error_msg': 'Fail to get service group, please refresh the page or contact technical support'})
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start searching partner file list ==========')
-        choices, success = self._get_service_group_and_currency_choices()
+        context = super(PartnerFileList, self).get_context_data(**kwargs)
 
         opening_page_index = request.POST.get('current_page_index')
         is_on_us = request.POST.get('on_off_us_id')
-        service_group = request.POST.get('service_group_id')
+        service_group_id = request.POST.get('service_group_id')
         service_name = request.POST.get('service_name')
         agent_id = request.POST.get('partner_id')
         currency = request.POST.get('currency_id')
@@ -65,12 +69,10 @@ class PartnerFileList(TemplateView, RESTfulReconcileMethods):
         params['opening_page_index'] = opening_page_index
 
         is_on_us_id = int(is_on_us)
-        service_group_id = int(service_group)
         reconcile_status_id = int(reconcile_status)
 
         if is_on_us_id >= 0:
             params['is_on_us'] = (is_on_us_id == 1)
-        service_list, get_service_status  = self._get_service(service_group)
 
         if service_name != '':
             if service_name == None:
@@ -98,7 +100,20 @@ class PartnerFileList(TemplateView, RESTfulReconcileMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
 
-        context = {}
+        currencies, success = self._get_currency_choices()
+        if success is True:
+            context.update({'currencies': currencies})
+
+        services_list, service_groups, service_group_id, success = self._get_service_group_and_services_list(
+            service_group_id)
+        if success is True:
+            context.update({'service_list': services_list,
+                            'service_groups': service_groups,
+                            'service_group_id': service_group_id})
+        else:
+            context.update({'partner_file_list_error_msg': 'Fail to get service group, please refresh the page or contact technical support'})
+            params.pop('service_name','')
+
         try:
             data, page, status_code = self._search_file_list(params)
             if status_code == 500:
@@ -112,17 +127,13 @@ class PartnerFileList(TemplateView, RESTfulReconcileMethods):
             context.update({'partner_file_list_error_msg': 'Search timeout, please try again or contact technical support'})
 
         context.update({'is_on_us': is_on_us_id,
-                        'service_group_id': service_group_id,
                         'agent_id': agent_id,
                         'currency': currency,
                         'status_id': reconcile_status_id,
                         'from_created_timestamp': from_created_timestamp,
                         'to_created_timestamp': to_created_timestamp,
-                        'choices': choices,
                         'selected_service': service_name})
 
-        if get_service_status == True:
-            context['service_list'] = service_list
         self.logger.info("========== Finish searching partner file list ==========")
 
         return render(request, self.template_name, context)
@@ -182,14 +193,34 @@ class PartnerFileList(TemplateView, RESTfulReconcileMethods):
         return None, False
 
     def _get_service(self, service_group_id):
-        self.logger.info('========== Start Getting Services List ==========')
-        if service_group_id == '-1':
-            url = api_settings.GET_ALL_SERVICE_URL
+        self.logger.info('========== Start Getting Service List ==========')
+        if service_group_id == -1:
+            data, success = self._get_method(api_settings.GET_ALL_SERVICE_URL, "Get all service", logger)
         else:
-            url = api_settings.GET_SERVICE_URL.format(serviceGroupId=service_group_id)
-        service_list = self._get_method(url, "Get services list", logger, True)
-        self.logger.info('========== Finish Getting Services List ==========')
-        return service_list
+            data, success = self._get_method(
+                api_settings.GET_SERVICE_BY_SERVICE_GROUP_URL.format(service_group_id=service_group_id),
+                "Get services by service group",
+                logger)
+        self.logger.info('========== Finish Getting Service List ==========')
+        return data, success
+
+    def _get_service_group_and_services_list(self, service_group_id):
+        if service_group_id is not None:
+            service_groups, success = self._get_service_group_choices()
+            if success:
+                service_group_id = int(service_group_id)
+                services_list, success = self._get_service(service_group_id)
+                if success:
+                    return  services_list, service_groups, service_group_id, True
+                else:
+                    logger.error("Get Services List Error")
+                    return None, None, None, False
+            else:
+                logger.error("Get Service Group Error")
+                return None, None, None, False
+        else:
+            logger.error("No service group")
+            return None, None, None, False
 
 
 
