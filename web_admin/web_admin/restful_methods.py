@@ -42,6 +42,7 @@ class RESTfulMethods(GetHeaderMixin):
         except Exception as e:
             self.logger.error(e)
             raise Exception(response.content)
+
         self.logger.info("Status code [{}] and message [{}]".format(status, code))
         if response.status_code == 200 and code == "success":
             if is_getting_list:
@@ -153,8 +154,13 @@ class RESTfulMethods(GetHeaderMixin):
         self.logger.info("Response_time: {}".format(end_time - start_time))
         response_json['status_code'] = response.status_code
 
-        status = response_json.get('status', {})
-        code = status.get('code', '')
+        try:
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+        except Exception as e:
+            self.logger.error(e)
+            raise Exception(response.content)
+
         if code == "success":
             data = response_json.get('data', {})
             if isinstance(data, list):
@@ -197,13 +203,16 @@ class RESTfulMethods(GetHeaderMixin):
         self.logger.info("Response_time: {}".format(end_time - start_time))
 
         response_json = response.json()
-        status = response_json.get('status', {})
-        code = status.get('code', '')
+        try:
+            status = response_json.get('status', {})
+            code = status.get('code', '')
+        except Exception as e:
+            self.logger.error(e)
+            raise Exception(response.content)
 
         if code == "success":
             result = response_json.get('data', {}), True
         else:
-            result = {}, False
             message = status.get('message', '')
             if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token', 'authentication_fail']:
                 raise InvalidAccessToken(message)
