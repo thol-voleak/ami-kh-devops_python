@@ -59,7 +59,7 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context = self._get_agent_type_detail(agent_type_id)
             self.logger.info('========== Finished deleting agent type ==========')
             context.update({
-                'msg':'Something wrong happen',
+                'msg':data,
             })
             return render(request, self.template_name, context)
         return success
