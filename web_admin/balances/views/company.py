@@ -79,7 +79,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
 
     def _get_total_initial_company_balance(self, currency):
         url = GET_REPORT_AGENT_BALANCE
-        body = {'user_id':self.company_agent_id, 'currency':currency}
+        body = {'user_id':self.company_agent_id, 'currency':currency, 'user_type': 2}
         func_description = "Getting total initial balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
