@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load permissions_filter %}
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
@@ -61,9 +61,11 @@
                         <a href="{% url 'service_group:service_group_list' %}">
                             <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
                         </a>
-                        <a href="{% url 'service_group:service_group_update' service_group_info.service_group_id %}">
+                        {% if request.user|has_permission_name:"CAN_EDIT_SERVICE_GROUP"%}
+                            <a href="{% url 'service_group:service_group_update' service_group_info.service_group_id %}">
                             <input id="btn_service_group_edit" class="btn btn-success" type="button" value="Edit">
                         </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>
