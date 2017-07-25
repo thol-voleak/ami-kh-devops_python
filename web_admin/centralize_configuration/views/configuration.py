@@ -84,8 +84,8 @@ class ConfigurationDetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods)
         conf_key = kwargs.get('conf_key', None)
         conf_value = request.POST.get('conf_value')
 
-        url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_DETAIL_URL.format(
-                       scope=scope, key=conf_key)
+        url = settings.DOMAIN_NAMES + api_settings.CONFIGURATION_UPDATE_URL.format(
+            scope=scope, key=conf_key)
         params = {'value': conf_value}
 
         data, success = self._put_method(url, 'configuration scope', logger, params)
@@ -94,12 +94,12 @@ class ConfigurationDetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods)
                 request,
                 messages.ERROR,
                 'Please restart service to get configuration effect.'
-                  )
+            )
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
-                'Something wrong happened.'
-                   )
+                data
+            )
         self.logger.info('========== Finish updating configuration scope ==========')
         return redirect('centralize_configuration:configuration_list', scope=scope)

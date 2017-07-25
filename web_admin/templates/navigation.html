@@ -57,6 +57,8 @@
                 </ul>
             </li>
             {% endif %}
+
+            {% if request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" %}
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
                 {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE"%}
@@ -89,6 +91,8 @@
                 </ul>
                 {% endif %}
             </li>
+            {% endif %}
+
             <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
                 <ul class="sub-menu">
