@@ -27,7 +27,7 @@ def _delete_method(request, api_path, func_description, logger, params=None):
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
         messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
@@ -65,7 +65,7 @@ def _post_method(request, api_path, func_description, logger, params={}, timeout
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
         messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
@@ -100,7 +100,7 @@ def _put_method(request, api_path, func_description, logger, params={}):
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
         messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
