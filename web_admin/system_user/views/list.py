@@ -54,7 +54,7 @@ class ListView(GroupRequiredMixin, TemplateView):
         status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
                                                                                 self.logger, username, email, None)
         if (status_code == "access_token_expire") or \
-                (status_code == 'access_token_not_found') or \
+                (status_code == 'authentication_fail') or \
                 (status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)

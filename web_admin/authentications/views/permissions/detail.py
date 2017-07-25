@@ -46,7 +46,7 @@ class PermissionDetailView(GroupRequiredMixin, TemplateView):
             context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')
         else:
-            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                         status_code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(status_message, self.request.user))
                 raise InvalidAccessToken(status_message)

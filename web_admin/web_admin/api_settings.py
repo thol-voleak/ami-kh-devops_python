@@ -1,10 +1,10 @@
 API_VERSION = 'v1.0'
+API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
 LOGIN_URL = 'api-gateway/'+API_VERSION+'/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/'+API_VERSION+'/oauth/token/revoke'
 GET_PERMISSION_PATH = 'api-gateway/system-user/'+API_VERSION+'/roles-permissions'
-
 
 # API Management
 APIS_URL = 'api-gateway/'+API_VERSION+'/apis/'
@@ -101,7 +101,7 @@ SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/histories/'
 GET_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
-CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/companies/sofs/{}'
+CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash'
 CLIENT_SCOPES = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/apis'
 COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/'
