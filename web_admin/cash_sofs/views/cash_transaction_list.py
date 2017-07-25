@@ -20,7 +20,7 @@ IS_SUCCESS = {
 
 class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_CASH_TXN"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     def check_membership(self, permission):

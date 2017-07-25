@@ -16,7 +16,7 @@ class RoleList(GroupRequiredMixin, TemplateView):
     logger = logger
 
     group_required = "CAN_MANAGE_ROLE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     def check_membership(self, permission):

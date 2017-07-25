@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionEditView(GroupRequiredMixin, TemplateView):
     group_required = "SYS_EDIT_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "permissions/edit.html"

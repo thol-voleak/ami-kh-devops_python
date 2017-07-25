@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_LIST_SERVICE_GROUP"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "service_group/service_group_list.html"

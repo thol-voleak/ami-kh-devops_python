@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethods):
     group_required = "SYS_VIEW_COMPANY_BALANCE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "company_balance.html"

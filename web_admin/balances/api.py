@@ -14,7 +14,7 @@ import time
 
 class BalanceApi(GroupRequiredMixin):
     group_required = "SYS_ADD_COMPANY_BALANCE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     def check_membership(self, permission):

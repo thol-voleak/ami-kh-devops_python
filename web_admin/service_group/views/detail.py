@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class ServiceGroupDetailForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_SERVICE_GROUP"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "service_group/detail.html"

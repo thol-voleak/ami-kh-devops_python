@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class RoleDetailView(GroupRequiredMixin, TemplateView):
     group_required = "CAN_VIEW_ROLE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "roles/detail.html"

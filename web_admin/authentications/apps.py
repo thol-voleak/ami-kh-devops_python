@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+
 from authentications.models import Authentications
 from web_admin import api_settings, setup_logger
 
@@ -42,6 +44,13 @@ class InvalidAccessTokenException(object):
                                  "Your account doesn't have access to this page. To proceed, please login with an account that has access.")
             logout(request)
             return HttpResponseRedirect(request.path)
+        if type(exception) == Exception:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'System error'
+            )
+            return redirect('web:web-index')
         return None
 
 

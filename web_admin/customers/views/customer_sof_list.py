@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class CustomerSOFListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     def check_membership(self, permission):

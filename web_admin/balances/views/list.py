@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ListView(TemplateView, RESTfulMethods):
     group_required = "SYS_VIEW_CURRENCY"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "currencies/currencies_list.html"

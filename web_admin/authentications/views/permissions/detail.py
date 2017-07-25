@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionDetailView(GroupRequiredMixin, TemplateView):
     group_required = "SYS_VIEW_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     template_name = "permissions/detail.html"

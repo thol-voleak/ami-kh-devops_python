@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class ServiceGroupCreate(GroupRequiredMixin, View, RESTfulMethods):
     group_required = "CAN_ADD_SERVICE_GROUP"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     logger = logger

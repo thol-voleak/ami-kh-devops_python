@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_DELETE_AGENT_TYPE"
-    login_url = 'authentications:login'
+    login_url = 'web:web-index'
     raise_exception = False
 
     def check_membership(self, permission):
