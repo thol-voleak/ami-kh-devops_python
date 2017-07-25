@@ -42,8 +42,7 @@ class InvalidAccessTokenException(object):
         if type(exception) == PermissionDeniedException:
             messages.add_message(request, messages.INFO,
                                  "Your account doesn't have access to this page. To proceed, please login with an account that has access.")
-            logout(request)
-            return HttpResponseRedirect(request.path)
+            return redirect('web:permission_denied')
         if type(exception) == Exception:
             messages.add_message(
                 request,
