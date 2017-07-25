@@ -17,7 +17,7 @@
     {% for message in messages %}
     <div class="col-xs-12">
         <div class='alert
-                    {%if "successfully" in message or 'Successfully' in message%}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                     alert-success
                     {%else%}
                     alert-danger
