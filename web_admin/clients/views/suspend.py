@@ -2,7 +2,7 @@ import logging
 from django.conf import settings
 from web_admin import api_settings, setup_logger
 from web_admin import ajax_functions
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from django.contrib import messages
 import json
 
@@ -10,6 +10,9 @@ import json
 
 
 def suspend(request, client_id):
+    if not check_permissions_by_user(request.user, 'CAN_SUSPEND_CLIENTS'):
+        return
+
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
