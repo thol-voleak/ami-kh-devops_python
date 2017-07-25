@@ -14,7 +14,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "clients/client_detail.html"
     logger = logger
 
-    group_required = "CAN_DETAIL_CLIENTS"
+    group_required = "CAN_VIEW_CLIENTS"
     login_url = 'web:permission_denied'
     raise_exception = False
 
