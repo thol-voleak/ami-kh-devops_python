@@ -42,7 +42,6 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
                       )
 
     def post(self, request, *args, **kwargs):
-
         if not check_permissions_by_user(request.user, 'SYS_ADD_COMPANY_BALANCE'):
             raise PermissionDeniedException()
 

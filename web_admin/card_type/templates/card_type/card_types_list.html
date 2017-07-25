@@ -43,13 +43,13 @@
                         <td class="col-sm-2">{{ card_type.url_get_card_detail }}</td>
                         <td class="col-sm-1">
                             <div class="btn-group">
-                                <button class="btn btn-outline btn-xs btn-primary" id="btn_detail">
-                                    <a href="{% url 'card_type:card_type_detail' card_type.id %}">Detail</a>
-                                </button>
-                                </a>
-                                <button class="btn btn-outline btn-xs btn-primary" id="btn_edit">
-                                    <a href="{% url 'card_type:card-type-update' card_type.id %}">Edit</a>
-                                </button>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   id="btn_detail"
+                                   href="{% url 'card_type:card_type_detail' card_type.id %}">Detail</a>
+                                <a class="btn btn-outline btn-xs btn-primary"
+                                   id="btn_edit"
+                                   href="{% url 'card_type:card-type-update' card_type.id %}">Edit</a>
                             </div>
                         </td>
                     </tr>
