@@ -25,12 +25,19 @@ class InvalidAccessToken(Exception):
     """Raised when the access token is invalid"""
     pass
 
+class PermissionDeniedException(Exception):
+    pass
 
 class InvalidAccessTokenException(object):
     def process_exception(self, request, exception):
         if type(exception) == InvalidAccessToken:
             messages.add_message(request, messages.INFO,
                                  'Your login credentials have expired. Please login again.')
+            logout(request)
+            return HttpResponseRedirect(request.path)
+        if type(exception) == PermissionDeniedException:
+            messages.add_message(request, messages.INFO,
+                                 "Your account doesn't have access to this page. To proceed, please login with an account that has access.")
             logout(request)
             return HttpResponseRedirect(request.path)
         return None
