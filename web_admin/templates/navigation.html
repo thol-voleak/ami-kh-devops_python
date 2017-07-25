@@ -57,7 +57,6 @@
                 </ul>
             </li>
             {% endif %}
-
             {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE" or request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" %}
             <li class="menu-accordion {% if 'balances' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>

@@ -1,3 +1,5 @@
+from django.core.checks import messages
+
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from django import template
@@ -46,7 +48,7 @@ def get_correlation_id_from_username(user):
         auth = Authentications.objects.get(user=user)
         return auth.correlation_id
     except Exception as e:
-        logger.error(e)
+        # logger.error(e)
         return None
 
 

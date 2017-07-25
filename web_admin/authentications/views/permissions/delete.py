@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionDeleteView(GroupRequiredMixin, TemplateView):
     group_required = "SYS_DELETE_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "permissions/delete.html"

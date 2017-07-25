@@ -14,8 +14,8 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "clients/client_detail.html"
     logger = logger
 
-    group_required = "CAN_DETAIL_CLIENTS"
-    login_url = 'authentications:login'
+    group_required = "CAN_VIEW_CLIENTS"
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class RoleEditView(GroupRequiredMixin, TemplateView):
     group_required = "CAN_EDIT_ROLE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "roles/edit.html"

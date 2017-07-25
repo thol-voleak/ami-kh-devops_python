@@ -16,7 +16,7 @@ class ConfigurationListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     logger = logger
 
     group_required = "SYS_CONFIGURE_SCOPE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
@@ -49,7 +49,7 @@ class ConfigurationDetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods)
     logger = logger
 
     group_required = "SYS_EDIT_SCOPE_ATTRIBUTE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

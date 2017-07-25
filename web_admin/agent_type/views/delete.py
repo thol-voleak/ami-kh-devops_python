@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_DELETE_AGENT_TYPE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
@@ -59,7 +59,7 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context = self._get_agent_type_detail(agent_type_id)
             self.logger.info('========== Finished deleting agent type ==========')
             context.update({
-                'msg':'Something wrong happen',
+                'msg':data,
             })
             return render(request, self.template_name, context)
         return success
