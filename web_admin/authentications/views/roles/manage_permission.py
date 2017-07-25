@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class ManagePermissionView(GroupRequiredMixin, TemplateView):
     group_required = "CAN_MANAGE_PERM_FOR_ROLE"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_BANK_SOF_CREATION"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class CountryCode(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_MANAGE_COUNTRYCODE"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "country/country_code.html"

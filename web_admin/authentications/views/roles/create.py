@@ -20,7 +20,7 @@ class RoleCreate(GroupRequiredMixin, TemplateView):
     logger = logger
 
     group_required = "CAN_CREATE_ROLE"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_DELETE_SYSTEM_USER"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

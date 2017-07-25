@@ -13,7 +13,7 @@ class ScopeListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     logger = logger
 
     group_required = "SYS_VIEW_LIST_SCOPES"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

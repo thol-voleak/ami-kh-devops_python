@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_VIEW_COMPANY_BALANCE"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "currencies/initial_company_balance.html"

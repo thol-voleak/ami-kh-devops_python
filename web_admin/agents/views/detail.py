@@ -13,7 +13,7 @@ logging.captureWarnings(True)
 
 class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_AGENT"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

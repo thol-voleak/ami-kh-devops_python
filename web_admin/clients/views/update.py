@@ -16,7 +16,7 @@ class ClientUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
     logger = logger
 
     group_required = "CAN_UPDATE_CLIENTS"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

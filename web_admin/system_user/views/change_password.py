@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class SystemUserChangePassword(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_CHANGE_SYSTEM_USER_PASSWORD"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

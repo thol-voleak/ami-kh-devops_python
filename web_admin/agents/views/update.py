@@ -19,7 +19,7 @@ logging.captureWarnings(True)
 
 class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
     group_required = "CAN_EDIT_AGENT_DETAILS"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

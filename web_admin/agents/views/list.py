@@ -21,7 +21,7 @@ STATUS = {
 
 class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_MANAGE_AGENT_REGISTRATION"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

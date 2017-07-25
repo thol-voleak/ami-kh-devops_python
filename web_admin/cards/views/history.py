@@ -19,7 +19,7 @@ IS_SUCCESS = {
 
 class HistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_CARD_HISTORY"
-    login_url = 'web:web-index'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
