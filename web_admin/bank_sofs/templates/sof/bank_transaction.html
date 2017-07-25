@@ -32,9 +32,9 @@
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
                          <select class="form-control" id="status_dropdown" name="status">
-                            <option value='' {% if search_by.status_id == 0 %}selected="selected"{% endif %}>All</option>
-                            <option value='1' {% if search_by.status_id == 1 %}selected="selected"{% endif %}>processing</option>
-                            <option value='2' {% if search_by.status_id == 2 %}selected="selected"{% endif %}>success</option>
+                            <option value='' {% if search_by.status_id.0 == 0 %}selected="selected"{% endif %}>All</option>
+                            <option value='1' {% if search_by.status_id.0 == 1 %}selected="selected"{% endif %}>processing</option>
+                            <option value='2' {% if search_by.status_id.0 == 2 %}selected="selected"{% endif %}>success</option>
                         </select>
                     </div>
                 </div>

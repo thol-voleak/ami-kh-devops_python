@@ -75,7 +75,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if order_id is not '' and order_id is not None:
             body['order_id'] = order_id
         if status is not '' and status is not None:
-            body['status_id'] = int(status)
+            body['status_id'] = [int(status)]
         if type is not '' and type is not None:
             body['action_id'] = int(type)
         if from_created_timestamp is not '' and to_created_timestamp is not None:
