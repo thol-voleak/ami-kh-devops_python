@@ -14,6 +14,7 @@ SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/services'
 SCOPES_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes'
 CONFIGURATION_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations'
 CONFIGURATION_DETAIL_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations/{key}'
+CONFIGURATION_UPDATE_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations/{key}'
 
 # Client
 CREATE_CLIENT_URL = 'api-gateway/'+API_VERSION+'/admin/oauth/clients'
