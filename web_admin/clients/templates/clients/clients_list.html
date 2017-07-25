@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load permissions_filter %}
 {% block body_stylesheet %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
@@ -12,12 +12,14 @@
     <div class="panel-heading border mb15">
         <h3>Clients</h3>
     </div>
-    <div class="pull-right mr15 text-right">
+    {% if request.user|has_permission_name:"CAN_CREATE_CLIENTS"%}
+        <div class="pull-right mr15 text-right">
         <a href="{% url 'clients:create-client' %}">
             <input id="client-btn-create" class="btn btn-success btn-block btn-sm text-left no-print mb15" type="button"
                    value="Create"/>
         </a>
     </div>
+    {% endif %}
     {% for message in messages %}
     <div class="col-xs-12">
         <div class='alert
