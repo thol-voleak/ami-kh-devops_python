@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_CUSTOMER"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

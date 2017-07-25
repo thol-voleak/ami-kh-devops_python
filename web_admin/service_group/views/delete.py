@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ServiceGroupDeleteForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_DELETE_SERVICE_GROUP"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "service_group/delete.html"

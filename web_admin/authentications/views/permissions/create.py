@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionCreate(GroupRequiredMixin, TemplateView):
     group_required = "SYS_CREATE_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
