@@ -11,11 +11,13 @@ from web_admin.api_settings import COMPANY_BALANCE_ADD
 from web_admin.api_settings import GET_AGENT_BALANCE
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from authentications.apps import PermissionDeniedException
+from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)
 
 
-class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
+class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethods):
     group_required = "SYS_VIEW_COMPANY_BALANCE"
     login_url = 'authentications:login'
     raise_exception = False
@@ -40,6 +42,10 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                       )
 
     def post(self, request, *args, **kwargs):
+
+        if not check_permissions_by_user(request.user, 'SYS_ADD_COMPANY_BALANCE'):
+            raise PermissionDeniedException()
+
         new_company_balance = request.POST.get('new_company_balance')
         amount = request.POST.get('adding_balance')
         string_amount = amount

@@ -17,7 +17,7 @@ class ClientCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = 'clients/create_client_form.html'
     logger = logger
 
-    group_required = "CAN_DETAIL_CLIENTS"
+    group_required = "CAN_CREATE_CLIENTS"
     login_url = 'authentications:login'
     raise_exception = False
 

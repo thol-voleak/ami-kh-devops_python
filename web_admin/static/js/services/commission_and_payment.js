@@ -514,17 +514,18 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
     function onBindingButtonsCancelEvent() {
         $('#' + tableId).on('click', 'button.cancel', function (e) {
-            e.preventDefault();
-
-            /* Get the row as a parent of the link that was clicked on */
-            var nRow = $(this).parents('tr')[0];
-
-            restoreRow(oTable, nEditing);
-            nEditing = nRow;
-
-            $("body").find("th").each(function () {
-               $(this).removeAttr( "style" );
-            });
+            // e.preventDefault();
+            //
+            // /* Get the row as a parent of the link that was clicked on */
+            // var nRow = $(this).parents('tr')[0];
+            //
+            // restoreRow(oTable, nEditing);
+            // nEditing = nRow;
+            //
+            // $("body").find("th").each(function () {
+            //    $(this).removeAttr( "style" );
+            // });
+            location.reload();
         });
     }
 

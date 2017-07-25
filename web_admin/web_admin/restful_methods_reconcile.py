@@ -67,7 +67,7 @@ class RESTfulReconcileMethods(GetHeaderMixin):
                 result = data, True
             else:
                 message = status.get('message', '')
-                if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                if (code == "access_token_expire") or (code == 'authentication_fail') or (
                             code == 'invalid_access_token'):
                     self.logger.info("{} for {} username".format(message, self.request.user))
                     raise InvalidAccessToken(message)
@@ -117,7 +117,7 @@ class RESTfulReconcileMethods(GetHeaderMixin):
             result = response_json.get('data', {}), True
         else:
             message = status.get('message', '')
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+            if (code == "access_token_expire") or (code == 'authentication_fail') or (
                         code == 'invalid_access_token'):
                 self.logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
@@ -178,7 +178,7 @@ class RESTfulReconcileMethods(GetHeaderMixin):
             else:
                 self.logger.info("Response_content: {}".format(response.text))
                 message = status.get('message', '')
-                if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+                if (code == "access_token_expire") or (code == 'authentication_fail') or (
                             code == 'invalid_access_token'):
                     self.logger.info("{} for {} username".format(message, self.request.user))
                     raise InvalidAccessToken(message)
@@ -215,7 +215,7 @@ class RESTfulReconcileMethods(GetHeaderMixin):
         else:
             result = {}, False
             message = status.get('message', '')
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+            if (code == "access_token_expire") or (code == 'authentication_fail') or (
                         code == 'invalid_access_token'):
                 raise InvalidAccessToken(message)
             if message:
@@ -272,7 +272,7 @@ class RESTfulReconcileMethods(GetHeaderMixin):
             result = data, True
         else:
             message = status.get('message', '')
-            if (code == "access_token_expire") or (code == 'access_token_not_found') or (
+            if (code == "access_token_expire") or (code == 'authentication_fail') or (
                         code == 'invalid_access_token'):
                 self.logger.info("{} for {} username".format(message, self.request.user))
                 raise InvalidAccessToken(message)
