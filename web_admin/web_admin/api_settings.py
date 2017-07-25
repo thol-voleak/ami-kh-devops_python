@@ -1,10 +1,10 @@
 API_VERSION = 'v1.0'
+API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
 LOGIN_URL = 'api-gateway/'+API_VERSION+'/system-user/oauth/token'
 LOGOUT_URL = 'api-gateway/'+API_VERSION+'/oauth/token/revoke'
 GET_PERMISSION_PATH = 'api-gateway/system-user/'+API_VERSION+'/roles-permissions'
-
 
 # API Management
 APIS_URL = 'api-gateway/'+API_VERSION+'/apis/'
