@@ -94,7 +94,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 )
                 currencies = []
 
-            agent_balance_list, success = self._get_agent_balances(self.company_agent_id)
+            agent_balance_list, success = self._get_agent_balances(self.company_agent_id,self.company_agent_user_type)
             if not success:
                 messages.add_message(
                     self.request,
