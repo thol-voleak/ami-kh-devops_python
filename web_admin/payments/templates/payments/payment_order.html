@@ -77,7 +77,7 @@
                     {% for order in order_list %}
                         <tr>
                             <td class="col-sm-2">{{ order.order_id }}</td>
-                            <td class="col-sm-2">{{ order.ref_order_id }}</td>
+                            <td class="col-sm-2">{{ order.ref_order_id|default_if_none:""}}</td>
                             <td class="col-sm-2">{{ order.product_service.name }}</td>
                             <td class="col-sm-2">{{ order.product_command.name }}</td>
                             <td class="col-sm-2">{{ order.status }}</td>
