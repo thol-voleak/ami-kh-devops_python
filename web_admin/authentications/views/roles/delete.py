@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class RoleDeleteView(GroupRequiredMixin, TemplateView):
+    template_name = "roles/delete.html"
+    logger = logger
+
     group_required = "CAN_DELETE_ROLE"
     login_url = 'authentications:login'
     raise_exception = False
-
-    template_name = "roles/delete.html"
-    logger = logger
 
     def check_membership(self, permission):
         self.logger.info(
