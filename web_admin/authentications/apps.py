@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+
 from authentications.models import Authentications
 from web_admin import api_settings, setup_logger
 
@@ -26,6 +28,10 @@ class InvalidAccessToken(Exception):
     pass
 
 
+class PermissionDeniedException(Exception):
+    pass
+
+
 class InvalidAccessTokenException(object):
     def process_exception(self, request, exception):
         if type(exception) == InvalidAccessToken:
@@ -33,6 +39,18 @@ class InvalidAccessTokenException(object):
                                  'Your login credentials have expired. Please login again.')
             logout(request)
             return HttpResponseRedirect(request.path)
+        if type(exception) == PermissionDeniedException:
+            messages.add_message(request, messages.INFO,
+                                 "Your account doesn't have access to this page. To proceed, please login with an account that has access.")
+            logout(request)
+            return HttpResponseRedirect(request.path)
+        if type(exception) == Exception:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'System error'
+            )
+            return redirect('web:web-index')
         return None
 
 
@@ -124,7 +142,7 @@ class CustomBackend:
             return None
 
     def get_user_profiles(self, username, access_token, correlation_id, loggers):
-        url = api_settings.SEARCH_SYSTEM_USER
+        url = api_settings.GET_PROFILE_SYSTEM_USER_PATH
 
         headers = {
             'content-type': 'application/json',
@@ -134,11 +152,6 @@ class CustomBackend:
             'Authorization': 'Bearer {}'.format(access_token),
         }
 
-        params = {
-            'username': username
-        }
-
-        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=headers, loggers=loggers,
-                                                                           params=params)
+        is_success, status_code, data = RestFulClient.get(url=url, headers=headers, loggers=loggers)
         if is_success:
-            return data[0]
+            return data

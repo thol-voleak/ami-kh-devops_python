@@ -30,12 +30,14 @@
                 <td class="col-sm-1">{{ key|default_if_none:'' }}</td>
                 <td class="col-sm-2"><code>{{ values|safe }}</code></td>
                 <td class="col-sm-2">
+                    {% if is_permission_scope_attr %}
                         <a type="button" class="btn btn-outline btn-xs btn-primary"
                         {{ client.is_deleted|yesno:"disable=true, disable=false" }}
                         role="button" id="btn_edit" class="text-info" role="button"
                         href="{% url 'centralize_configuration:configuration_details' scope_name key %}">
                             <span class="small">Edit</span>
                         </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

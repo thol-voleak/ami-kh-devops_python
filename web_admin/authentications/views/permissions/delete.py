@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionDeleteView(GroupRequiredMixin, TemplateView):
     group_required = "SYS_DELETE_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "permissions/delete.html"
@@ -48,7 +48,7 @@ class PermissionDeleteView(GroupRequiredMixin, TemplateView):
             context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')
         else:
-            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                         status_code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(status_message, self.request.user))
                 raise InvalidAccessToken(status_message)
@@ -70,7 +70,7 @@ class PermissionDeleteView(GroupRequiredMixin, TemplateView):
             )
             self.logger.info('========== End delete permission entity ==========')
             return redirect('authentications:permissions_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_VIEW_COMPANY_BALANCE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "currencies/initial_company_balance.html"
@@ -70,10 +70,12 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         currency = request.POST.get('currency')
+        param = {'currency': currency}
 
-        url = CREATE_COMPANY_BALANCE.format(currency)
+        url = CREATE_COMPANY_BALANCE
         data, success = self._post_method(api_path=url,
-                                          func_description="create company balance")
+                                          func_description="create company balance",
+                                          params=param )
         if success:
             return redirect('balances:initial_company_balance')
         else:

@@ -45,7 +45,7 @@
                             <td>{{ role.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ role.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
-                                {% if request.user|has_permission_name:"CAN_VIEW_ROLE"%}
+                                {% if permissions.is_permission_detail %}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
@@ -54,7 +54,7 @@
                                         <span class="small">Detail</span>
                                     </a>
                                 {% endif %}
-                                {% if request.user|has_permission_name:"CAN_EDIT_ROLE"%}
+                                {% if permissions.is_permission_detail %}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
@@ -63,7 +63,7 @@
                                         <span class="small">Edit</span>
                                     </a>
                                 {% endif %}
-                                {% if request.user|has_permission_name:"CAN_DELETE_ROLE"%}
+                                {% if permissions.is_permission_detail %}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-danger mb5"
                                        role="button"
@@ -72,7 +72,7 @@
                                         <span class="small">Delete</span>
                                     </a>
                                 {% endif %}
-                                {% if request.user|has_permission_name:"CAN_MANAGE_PERM_FOR_ROLE"%}
+                                {% if permissions.is_permission_detail %}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-success mb5"
                                        role="button"

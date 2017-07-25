@@ -26,7 +26,7 @@ def login_user(request):
         if user is not None:
             login(request, user)
             permissions = get_permission_from_backend(user, logger)
-            logger.info("Got permissions from backend: [{}]".format(len(permissions)))
+
             if permissions is not None:
                 authens = Authentications.objects.get(user=user)
                 authens.permissions = permissions['permissions']

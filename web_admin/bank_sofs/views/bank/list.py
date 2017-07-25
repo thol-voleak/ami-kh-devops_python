@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "SYS_VIEW_LIST_BANK"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
@@ -32,15 +32,11 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start get bank list ==========')
         data, success = self._post_method(self.url, "get bank list", logger)
 
-        is_permision_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_BANK')
-        is_permision_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_BANK')
-        is_permision_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_BANK')
-
         if success:
             self.logger.info('========== Finished get get bank list ==========')
             for i in data:
-                i['is_permision_detail'] = is_permision_detail
-                i['is_permision_edit'] = is_permision_edit
-                i['is_permision_delete'] = is_permision_delete
+                i['is_permision_detail'] = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_BANK')
+                i['is_permision_edit'] = check_permissions_by_user(self.request.user, 'SYS_EDIT_BANK')
+                i['is_permision_delete'] = check_permissions_by_user(self.request.user, 'SYS_DELETE_BANK')
             result = {'data': data}
             return result

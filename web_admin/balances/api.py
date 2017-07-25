@@ -14,7 +14,7 @@ import time
 
 class BalanceApi(GroupRequiredMixin):
     group_required = "SYS_ADD_COMPANY_BALANCE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):
@@ -50,7 +50,7 @@ class BalanceApi(GroupRequiredMixin):
 
         ajax_code = 0
         message = status.get('message', 'Something went wrong.')
-        if code in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+        if code in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
             logger.info("{} for {} username".format(message, request.user))
             messages.add_message(request, messages.INFO, str('session_is_expired'))
             ajax_code = 1

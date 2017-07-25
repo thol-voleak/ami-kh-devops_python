@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PermissionEditView(GroupRequiredMixin, TemplateView):
     group_required = "SYS_EDIT_PERMISSION_ENTITIES"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "permissions/edit.html"
@@ -49,7 +49,7 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
             context['permission'] = data[0]
             self.logger.info('========== End get permission entity ==========')
         else:
-            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                         status_code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(status_message, self.request.user))
                 raise InvalidAccessToken(status_message)
@@ -81,7 +81,7 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
             )
             self.logger.info('========== End update permission entity ==========')
         else:
-            if (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                         status_code == 'invalid_access_token'):
                 logger.info("{} for {} username".format(status_message, self.request.user))
                 raise InvalidAccessToken(status_message)

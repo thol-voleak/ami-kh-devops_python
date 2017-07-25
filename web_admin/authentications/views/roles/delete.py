@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class RoleDeleteView(GroupRequiredMixin, TemplateView):
-    group_required = "CAN_DELETE_ROLE"
-    login_url = 'authentications:login'
-    raise_exception = False
-
     template_name = "roles/delete.html"
     logger = logger
+
+    group_required = "CAN_DELETE_ROLE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
 
     def check_membership(self, permission):
         self.logger.info(
@@ -66,7 +66,7 @@ class RoleDeleteView(GroupRequiredMixin, TemplateView):
             )
             self.logger.info('========== End delete role entity ==========')
             return redirect('authentications:role_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)

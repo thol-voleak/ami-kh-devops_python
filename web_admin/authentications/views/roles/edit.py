@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class RoleEditView(GroupRequiredMixin, TemplateView):
     group_required = "CAN_EDIT_ROLE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     template_name = "roles/edit.html"
@@ -74,7 +74,7 @@ class RoleEditView(GroupRequiredMixin, TemplateView):
             )
             self.logger.info('========== End update role entity ==========')
             return redirect('authentications:role_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)

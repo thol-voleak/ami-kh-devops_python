@@ -19,7 +19,7 @@ IS_STOP = {
 
 class ProfileView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_CARD_PROFILE"
-    login_url = 'authentications:login'
+    login_url = 'web:permission_denied'
     raise_exception = False
 
     def check_membership(self, permission):

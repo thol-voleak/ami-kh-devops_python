@@ -35,7 +35,7 @@ class RestFulClient:
             is_success = (http_status_code == 200) and (status_code == "success")
         except Exception as e:
             loggers.error(e)
-            raise Exception(response.content)
+            raise Exception(response)
 
         return is_success, status_code, data
 
@@ -65,7 +65,7 @@ class RestFulClient:
             is_success = (http_status_code == 200) and (status_code == "success")
         except Exception as e:
             loggers.error(e)
-            raise Exception(response.content)
+            raise Exception(response)
 
         return is_success, status_code, status_message, data
 
@@ -95,7 +95,7 @@ class RestFulClient:
             is_success = (http_status_code == 200) and (status_code == "success")
         except Exception as e:
             loggers.error(e)
-            raise Exception(response.content)
+            raise Exception(response)
 
         return is_success, status_code, status_message, data
 
@@ -123,6 +123,6 @@ class RestFulClient:
             is_success = (http_status_code == 200) and (status_code == "success")
         except Exception as e:
             loggers.error(e)
-            raise Exception(response.content)
+            raise Exception(response)
 
         return is_success, status_code, status_message

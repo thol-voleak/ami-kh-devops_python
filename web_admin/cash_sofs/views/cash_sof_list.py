@@ -1,10 +1,11 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import CASH_SOFS_URL
 from web_admin.restful_methods import RESTfulMethods
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
+from braces.views import GroupRequiredMixin
 
 import logging
 
@@ -16,7 +17,16 @@ IS_SUCCESS = {
 }
 
 
-class CashSOFView(TemplateView, RESTfulMethods):
+class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_SEARCH_CASH_SOF_CREATION"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "cash_sof.html"
     logger = logger
 

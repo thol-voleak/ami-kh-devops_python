@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block body_stylesheet %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -84,60 +84,69 @@
                     <td class="col-sm-2">{{ client.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-3">
                         <div id="client-btn-group-{{ client.client_id }}">
-                            <div class="btn-group mb5">
-                                <button type="button"
-                                        class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                id="client-btn-regenerate-{{ client.client_id }}"
-                                data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
-                                onClick="regenerate('{{ client.client_id }}')">
+                            {% if permissions.is_perm_client_generate %}
+                            <button type="button"
+                                    class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:'hidden,no-hidden' }}"
+                                    id="client-btn-regenerate-{{ client.client_id }}"
+                                    data-url="{% url 'clients:regenerate-client-secret' client.client_id %}"
+                                    onClick="regenerate('{{ client.client_id }}')">
                                 <span class="small">Regenerate</span>
-                                </button>
-                                <a type="button"
-                                   class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                role="button"
-                                id="client-btn-update-{{ client.client_id }}" class="text-info"
-                                href="{% url 'clients:client-info' client.client_id %}" role="button"
-                                id="client-btn-update-{{ client.client_id }}" class="text-info">
-                                <span class="small">Update</span>
-                                </a>
-                            </div>
-                            <div class="btn-group mb5">
-                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                class="btn btn-danger btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden"}}"
-                                id="client-btn-delete-{{ client.client_id }}"
-                                data-url="{% url 'clients:delete-client' client.client_id %}"
-                                onclick="delete_client('{{ client.client_id }}')">
-                                <span class="small">Delete</span>
-                                </button>
-                                {% if client.status == 'active' %}
-                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                id="client-btn-status-{{ client.client_id }}"
-                                data-url="{% url 'clients:suspend-client' client.client_id %}"
-                                onClick="suspend('{{ client.client_id }}')">
-                                <span class="small">Suspend</span>
-                                </button>
+                            </button>
+                            {% endif %}
 
-                                {% else %}
-                                <button type="button" {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                class="btn btn-info btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
-                                id="client-btn-status-{{ client.client_id }}"
-                                data-url="{% url 'clients:activate-client' client.client_id %}"
-                                onClick="activate('{{ client.client_id }}')">
-                                <span class="small">Activate</span>
-                                </button>
-                                {% endif %}
-                                <a type="button"
-                                   class="btn btn-primary btn-outline btn-xs {{ client.is_deleted|yesno:"
-                                   hidden,no-hidden" }}"
-                                {{ client.is_deleted|yesno:"disable=true, disable=false" }}
-                                role="button"
-                                id="btn_scopes" class="text-info"
-                                href="{% url 'clients:scope-client' client.client_id %}" role="button">
-                                <span class="small">Scopes</span>
-                                </a>
-                            </div>
+                            {% if permissions.is_perm_client_update %}
+                            <a type="button"
+                               class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:" hidden,no-hidden"
+                            }}"
+                            {{ client.is_deleted|yesno:"disable=true, disable=false" }}
+                            role="button"
+                            id="client-btn-update-{{ client.client_id }}" class="text-info"
+                            href="{% url 'clients:client-info' client.client_id %}" role="button"
+                            id="client-btn-update-{{ client.client_id }}" class="text-info">
+                            <span class="small">Update</span>
+                            </a>
+                            {% endif %}
+
+                            {% if permissions.is_perm_client_delete %}
+                            <button type="button" {{ client.is_deleted|yesno:'disable=true, disable=false' }}
+                            class="btn btn-danger mb5 btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden"}}"
+                            id="client-btn-delete-{{ client.client_id }}"
+                            data-url="{% url 'clients:delete-client' client.client_id %}"
+                            onclick="delete_client('{{ client.client_id }}')">
+                            <span class="small">Delete</span>
+                            </button>
+                            {% endif %}
+
+                            {% if permissions.is_perm_client_suspend %}
+                            {% if client.status == 'active' %}
+                            <button type="button" {{ client.is_deleted|yesno:'disable=true, disable=false' }}
+                            class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                            id="client-btn-status-{{ client.client_id }}"
+                            data-url="{% url 'clients:suspend-client' client.client_id %}"
+                            onClick="suspend('{{ client.client_id }}')">
+                            <span class="small">Suspend</span>
+                            </button>
+                            {% else %}
+                            <button type="button" {{ client.is_deleted|yesno:'disable=true, disable=false' }}
+                            class="btn btn-info btn-outline mb5 btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                            id="client-btn-status-{{ client.client_id }}"
+                            data-url="{% url 'clients:activate-client' client.client_id %}"
+                            onClick="activate('{{ client.client_id }}')">
+                            <span class="small">Activate</span>
+                            </button>
+                            {% endif %}
+                            {% endif %}
+
+                            {% if permissions.is_perm_client_change_scope %}
+                            <a type="button"
+                               class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:'hidden,no-hidden' }}"
+                            {{ client.is_deleted|yesno:'disable=true, disable=false' }}
+                            role="button"
+                            id="btn_scopes" class="text-info"
+                            href="{% url 'clients:scope-client' client.client_id %}" role="button">
+                            <span class="small">Scopes</span>
+                            </a>
+                            {% endif %}
                         </div>
                     </td>
                     {% endif %}
@@ -154,7 +163,7 @@
         $("#alert-error-msg").text(msg);
         $("#alert-error").prop("hidden", false);
         $("#alert-error").fadeIn(1000);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("html, body").animate({scrollTop: 0}, "slow");
 
     }
     function regenerate(client_id) {
@@ -178,16 +187,16 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            if(response.status == 1) {
+                            if (response.status == 1) {
                                 // Logout
                                 var url = window.location.origin + "/admin-portal/logout/";
                                 window.location.replace(url);
-                            } else if(response.status == 2) {
+                            } else if (response.status == 2) {
                                 // success
                                 $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
                                 $("#alert-success-client").show();
-                                setTimeout(function(){
-                                  location.reload(true);
+                                setTimeout(function () {
+                                    location.reload(true);
                                 }, 10000);
 
                             } else {
@@ -226,11 +235,11 @@
                     },
                     success: function (response) {
                         console.log(response);
-                        if(response.status == 1) {
+                        if (response.status == 1) {
                             // Logout
                             var url = window.location.origin + "/admin-portal/logout/";
                             window.location.replace(url);
-                        } else if(response.status == 2) {
+                        } else if (response.status == 2) {
                             // success
                             $("#client-btn-delete-" + client_id).hide();
                             $("#alert-success-msg").text('Deleted data successfully')
@@ -268,11 +277,11 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            if(response.status == 1) {
+                            if (response.status == 1) {
                                 // Logout
                                 var url = window.location.origin + "/admin-portal/logout/";
                                 window.location.replace(url);
-                            } else if(response.status == 2) {
+                            } else if (response.status == 2) {
                                 // success
                                 location.reload(true)
                             } else {
@@ -309,11 +318,11 @@
                         type: "GET",
                         data: {},
                         success: function (response) {
-                            if(response.status == 1) {
+                            if (response.status == 1) {
                                 // Logout
                                 var url = window.location.origin + "/admin-portal/logout/";
                                 window.location.replace(url);
-                            } else if(response.status == 2) {
+                            } else if (response.status == 2) {
                                 // success
                                 location.reload(true)
                             } else {
@@ -334,6 +343,6 @@
 {% endblock %}
 
 {% block body_js %}
-    {{ block.super }}
-    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+{{ block.super }}
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}
