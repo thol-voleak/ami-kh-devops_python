@@ -77,7 +77,7 @@ ROLE_USER_PATH = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{us
 
 # SPI URL
 SPI_LIST_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/spi-urls'
-SPI_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-types'
+SPI_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-url-types'
 SPI_ADD_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/spi-urls'
 SPI_DETAIL_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
 SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
