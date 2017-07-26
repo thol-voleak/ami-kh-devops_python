@@ -126,9 +126,9 @@ FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-condition
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
 BALANCE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'
-ACTION_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/action-types'
-SOF_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/sof-types'
-ACTOR_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/actor-types'
+ACTION_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/action-types'
+SOF_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/sof-types'
+ACTOR_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/actor-types'
 TIER_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'
 BALANCE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/balance-distributions/{balance_distribution_id}'
 BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/bonus-distributions'
@@ -136,8 +136,8 @@ BALANCE_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/bal
 BONUS_DISTRIBUTION_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-distributions/{bonus_distributions_id}'
 BONUS_SETTINGS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-distributions/{bonus_distribution_id}'
 TIER_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{}'
-GET_BONUS_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/bonus-types'
-GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/fee-types'
+GET_BONUS_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/bonus-types'
+GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-types'
 AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/agent-fee-distributions'
 AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus-distributions/{agent_bonus_distribution_id}'
 
