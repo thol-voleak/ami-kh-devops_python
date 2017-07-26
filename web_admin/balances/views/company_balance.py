@@ -24,6 +24,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     template_name = "currencies/initial_company_balance.html"
     company_agent_id = 1
+    company_agent_user_type = 2
 
     def check_membership(self, permission):
         self.logger.info(
@@ -45,7 +46,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             )
             currencies = []
 
-        agent_balance_list, success = self._get_agent_balances(self.company_agent_id)
+        agent_balance_list, success = self._get_agent_balances(self.company_agent_id, self.company_agent_user_type)
         if not success:
             messages.add_message(
                 self.request,
@@ -93,7 +94,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 )
                 currencies = []
 
-            agent_balance_list, success = self._get_agent_balances(self.company_agent_id)
+            agent_balance_list, success = self._get_agent_balances(self.company_agent_id,self.company_agent_user_type)
             if not success:
                 messages.add_message(
                     self.request,
@@ -121,7 +122,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         else:
             return data, False
 
-    def _get_agent_balances(self, agent_id):
+    def _get_agent_balances(self, agent_id, agent_type_id):
         url = GET_AGENT_BALANCE
-        body = {'user_id' : agent_id}
+        body = {'user_id' : agent_id, 'user_type':agent_type_id}
         return self._post_method(api_path=url,func_description="agent balances",params=body)
