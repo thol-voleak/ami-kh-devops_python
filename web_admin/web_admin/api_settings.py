@@ -11,10 +11,17 @@ APIS_URL = 'api-gateway/'+API_VERSION+'/apis/'
 SERVICES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/services'
 
 # Centralize configuration
-SCOPES_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes'
-CONFIGURATION_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations'
-CONFIGURATION_DETAIL_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations/{key}'
-CONFIGURATION_UPDATE_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/{scope}/configurations/{key}'
+SCOPES_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes'
+GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/currencies'
+
+CONFIGURATION_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/{scope}/configurations'
+CONFIGURATION_DETAIL_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/{scope}/configurations/{key}'
+CONFIGURATION_UPDATE_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/{scope}/configurations/{key}'
+GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/global/configurations/currency'
+ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/global/configurations/country'
+GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/global/configurations'
+ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/global/configurations/currency'
+GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/global/configurations/currency'
 
 # Client
 CREATE_CLIENT_URL = 'api-gateway/'+API_VERSION+'/admin/oauth/clients'
@@ -28,13 +35,10 @@ ACTIVATE_CLIENT_URL = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{}/status
 # Agent Type
 # GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_TYPES_LIST_URL = 'api-gateway/report/'+API_VERSION+'/agent-types'
-GET_ALL_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
+
 AGENT_TYPE_CREATE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agent-types'
 AGENT_TYPE_DETAIL_URL = 'api-gateway/report/'+API_VERSION+'/agent-types'
-ADD_COUNTRY_CODE_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/country'
-GLOBAL_CONFIGURATIONS_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations'
-GET_ALL_PRELOAD_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/currencies'
-ADD_CURRENCY_URL = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
+
 AGENT_TYPE_UPDATE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agent-types/{}'
 DELETE_AGENT_TYPE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agent-types/{}'
 
@@ -45,7 +49,6 @@ AGENT_DETAIL_PATH = 'api-gateway/report/'+API_VERSION+'/agents'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}/sofs/types/cash'
-GET_CURRENCIES_PATH = 'api-gateway/centralize-configuration/'+API_VERSION+'/scopes/global/configurations/currency'
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 
@@ -149,7 +152,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
-GET_CENTRALIZE_CONFIGURATION_URL = 'api-gateway/centralize-configuration/prepaid-card/default'
+
 CASH_TRANSACTIONS_URL = 'api-gateway/report/'+API_VERSION+'/cash/transactions'
 CASH_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 BANK_SOFS_URL = 'report/'+API_VERSION+'/banks/sofs'
