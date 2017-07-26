@@ -124,7 +124,7 @@ ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{serv
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
 # Balance Movement
-AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/amount-types'
+AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
 BALANCE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'
 ACTION_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/action-types'
 SOF_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/sof-types'
