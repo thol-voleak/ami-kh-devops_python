@@ -1,6 +1,9 @@
 import logging
-from web_admin import api_settings
-from web_admin.utils import setup_logger
+
+from braces.views import GroupRequiredMixin
+
+from web_admin import api_settings, setup_logger
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
@@ -8,12 +11,22 @@ from web_admin.restful_methods import RESTfulMethods
 logger = logging.getLogger(__name__)
 
 
-class ClientUpdateForm(TemplateView, RESTfulMethods):
+class ClientUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "clients/update_client_form.html"
     logger = logger
 
+    group_required = "CAN_UPDATE_CLIENTS"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ClientUpdateForm, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -36,7 +49,8 @@ class ClientUpdate(TemplateView, RESTfulMethods):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ClientUpdate, self).dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):

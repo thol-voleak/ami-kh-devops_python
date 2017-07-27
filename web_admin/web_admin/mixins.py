@@ -1,12 +1,10 @@
-import logging
-from multiprocessing.pool import ThreadPool
-from authentications.apps import InvalidAccessToken
-import requests
-from django.conf import settings
+from authentications.utils import get_auth_header, check_permissions_by_user
 from web_admin import api_settings
 from web_admin.restful_methods import RESTfulMethods
 
-from authentications.utils import get_auth_header
+from multiprocessing.pool import ThreadPool
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +22,8 @@ class GetChoicesMixin(RESTfulMethods):
                                          func_description="currency choice list",
                                          logger=logger,
                                          is_getting_list=False)
-        if success: 
-            value = data.get('value','')
+        if success:
+            value = data.get('value', '')
             if isinstance(value, str):
                 currency_list = map(lambda x: x.split('|'), value.split(','))
             else:
@@ -35,15 +33,13 @@ class GetChoicesMixin(RESTfulMethods):
             result = [], False
         return result
 
-
     def _get_service_group_choices(self):
         url = api_settings.SERVICE_GROUP_LIST_URL
         logger.info('Get services group list from backend')
-        return  self._get_method(api_path=url,
-                                         func_description="currency choice list",
-                                         logger=logger,
-                                         is_getting_list=False)
-
+        return self._get_method(api_path=url,
+                                func_description="currency choice list",
+                                logger=logger,
+                                is_getting_list=False)
 
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)
@@ -56,3 +52,4 @@ class GetChoicesMixin(RESTfulMethods):
                        'service_groups': service_groups,
                    }, True
         return None, False
+

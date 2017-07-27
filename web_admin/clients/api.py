@@ -1,15 +1,16 @@
 import logging
-from web_admin import api_settings
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
 from web_admin import ajax_functions
-from web_admin.utils import setup_logger
-
-# logger = logging.getLogger(__name__)
 
 
 class ClientApi():
     def regenerate(request, client_id):
+        if not check_permissions_by_user(request.user, 'CAN_REGENERATE_CLIENTS'):
+            return
         logger = logging.getLogger(__name__)
-        logger = setup_logger(request, logger)
+        correlation_id = get_correlation_id_from_username(request.user)
+        logger = setup_logger(request, logger, correlation_id)
         logger.info('========== Start regenerating client secret ==========')
         url = api_settings.REGENERATE_CLIENT_SECRET_URL.format(client_id)
         result = ajax_functions._post_method(request, url, "regenerating client secret", logger)
@@ -17,8 +18,11 @@ class ClientApi():
         return result
 
     def delete_client_by_id(request, client_id):
+        if not check_permissions_by_user(request.user, 'CAN_DELETE_CLIENTS'):
+            return
         logger = logging.getLogger(__name__)
-        logger = setup_logger(request, logger)
+        correlation_id = get_correlation_id_from_username(request.user)
+        logger = setup_logger(request, logger, correlation_id)
         logger.info("========== Start deleting client id ==========")
         url = api_settings.DELETE_CLIENT_URL.format(client_id)
         result = ajax_functions._delete_method(request, url, "", logger)

@@ -1,9 +1,9 @@
 from web_admin.restful_methods import RESTfulMethods
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 import logging
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,8 @@ class APIListView(TemplateView, RESTfulMethods):
     response = {}
     
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(APIListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -35,7 +36,8 @@ class AddAPIView(TemplateView, RESTfulMethods):
     data = {}
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AddAPIView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -86,7 +88,8 @@ class ServiceListView(TemplateView, RESTfulMethods):
     response = {}
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ServiceListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

@@ -1,8 +1,8 @@
 from django.conf import settings
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.http import Http404
 from django.views.generic.base import TemplateView
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 
@@ -16,7 +16,8 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(FeeTierListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -48,4 +49,4 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
 
     def _get_fee_tier_list(self, service_command_id):
         url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
-        return self._get_precision_method(url, "fee tier list", logger)
+        return self._get_precision_method(api_path=url, func_description="fee tier list")

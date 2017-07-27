@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Card Type List</h3>
+    </div>
+
+    {% if card_type_update_msg is not None %}
+    <div class="col-xs-12">
+        <div class='alert
+                    {% if "successfully" in card_type_update_msg %}
+                    alert-success
+                    {% else %}
+                    alert-danger
+                    {% endif %}
+                    alert-dismissable' id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ card_type_update_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_card_type_list">
+                <thead>
+                <tr>
+                    <th id="id_clm">ID</th>
+                    <th id="name_clm">Name</th>
+                    <th id="url_create_card_clm">URL-Create Card</th>
+                    <th id="url_get_card_full_detail_clm">URL-Get Card Full Detail</th>
+                    <th id="action_clm">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for card_type in card_type_list %}
+                    <tr>
+                        <td class="col-sm-1">{{ card_type.id }}</td>
+                        <td class="col-sm-2">{{ card_type.name }}</td>
+                        <td class="col-sm-2">{{ card_type.url_create_card }}</td>
+                        <td class="col-sm-2">{{ card_type.url_get_card_detail }}</td>
+                        <td class="col-sm-1">
+                            <div class="btn-group">
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   id="btn_detail"
+                                   href="{% url 'card_type:card_type_detail' card_type.id %}">Detail</a>
+                                <a class="btn btn-outline btn-xs btn-primary"
+                                   id="btn_edit"
+                                   href="{% url 'card_type:card-type-update' card_type.id %}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

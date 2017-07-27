@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
+{% load permissions_filter %}
 {% block content %}
-
 <div class="panel mb25">
     <div class="panel-body">
         {% for message in messages %}
@@ -189,7 +189,6 @@ function changeValue() {
         });
 
     amount.onblur = function(){
-
         num = amount.value;
             if (num != "") {
                 num = parseFloat(num);
@@ -203,6 +202,9 @@ function changeValue() {
                 amount.value = num;
             }
         }
+    amount.onfocus = function(){
+        amount.value = amount.value.replace(/,/g , '');
+    }
 }
 
 $(changeValue);

@@ -2,7 +2,7 @@ import logging
 from django.conf import settings
 from web_admin import api_settings
 from django.views.generic.base import View
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 from web_admin import ajax_functions
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ class DeleteAgentBonus(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
         return super(DeleteAgentBonus, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

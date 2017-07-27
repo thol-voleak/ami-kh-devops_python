@@ -1,9 +1,8 @@
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger, RestFulClient
 
-from django.contrib import messages
-from django.shortcuts import redirect, render
+from braces.views import GroupRequiredMixin
+
 from django.views.generic.base import TemplateView
 
 import logging
@@ -11,12 +10,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleDetailView(TemplateView):
+class RoleDetailView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_VIEW_ROLE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
     template_name = "roles/detail.html"
     logger = logger
 
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleDetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -27,10 +36,9 @@ class RoleDetailView(TemplateView):
         params = {
             'id': role_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
+                                                                           loggers=self.logger, params=params)
         if is_success:
             context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')

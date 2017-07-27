@@ -1,24 +1,31 @@
-import logging
-import requests
-import time
-import datetime
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
+from web_admin import api_settings, setup_logger
+
 from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
-from django.http import HttpResponse
 
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin.utils import setup_logger
-
-# logger = logging.getLogger(__name__)
+import logging
+import requests
+import time
 
 
-class BalanceApi():
+class BalanceApi(GroupRequiredMixin):
+    group_required = "SYS_ADD_COMPANY_BALANCE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def add(request, currency):
         logger = logging.getLogger(__name__)
-        logger = setup_logger(request, logger)
+        correlation_id = get_correlation_id_from_username(request.user)
+        logger = setup_logger(request, logger, correlation_id)
         logger.info('========== Start add currency ==========')
 
         url = settings.DOMAIN_NAMES + api_settings.ADD_CURRENCY_URL.format(currency)
@@ -43,7 +50,7 @@ class BalanceApi():
 
         ajax_code = 0
         message = status.get('message', 'Something went wrong.')
-        if code in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+        if code in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
             logger.info("{} for {} username".format(message, request.user))
             messages.add_message(request, messages.INFO, str('session_is_expired'))
             ajax_code = 1
@@ -64,7 +71,6 @@ class BalanceApi():
 
 
 def refine_data(data):
-
     currencies = data['value'].split(',')
     currencyList = []
 

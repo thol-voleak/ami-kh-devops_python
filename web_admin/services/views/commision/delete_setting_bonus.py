@@ -1,16 +1,17 @@
 import logging
 from django.conf import settings
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.views.generic.base import View
 from web_admin import ajax_functions
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 logger = logging.getLogger(__name__)
 
 class DeleteSettingBonus(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(DeleteSettingBonus, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

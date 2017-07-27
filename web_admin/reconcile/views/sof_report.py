@@ -1,11 +1,12 @@
 import logging
 from datetime import datetime, timedelta
 
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin import api_settings
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
+from authentications.utils import get_correlation_id_from_username
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -16,12 +17,13 @@ IS_SUCCESS = {
 }
 
 
-class SofReport(TemplateView, RESTfulMethods):
+class SofReport(TemplateView, RESTfulReconcileMethods):
     template_name = "reconcile/sof_report_result.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SofReport, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -92,24 +94,32 @@ class SofReport(TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = new_to_created_timestamp
+        try:
+            data, page, status_code = self._search_sof_report(params)
+            if status_code == 500:
+                self.logger.error('Search fail, please try again or contact technical support')
+                context.update({'sof_report_update_msg': 'Search fail, please try again or contact technical support'})
+            else:
+                context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
+            context.update({'sof_report': data})
 
-        data, page = self._search_sof_report(params)
+        except requests.Timeout as e:
+            logger.error("Search Sof Report Timeout", e)
+            context.update({'sof_report_update_msg': 'Search timeout, please try again or contact technical support'})
 
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
+        context.update({'is_on_us': on_off_us_id,
+                        'source_of_fund': source_of_fund_id,
+                        'sof_code': sof_code,
+                        'currency_id': currency_id,
+                        'currencies': currencies,
+                        'reconcile_status_id': reconcile_status_id,
+                        'reconcile_payment_type_id': reconcile_payment_type_id,
+                        'from_created_timestamp': from_created_timestamp,
+                        'to_created_timestamp': to_created_timestamp
+                        })
 
-        context =  {'is_on_us' : on_off_us_id,
-                    'source_of_fund':source_of_fund_id,
-                    'sof_code': sof_code,
-                    'currency_id': currency_id,
-                    'currencies': currencies,
-                    'reconcile_status_id': reconcile_status_id,
-                    'reconcile_payment_type_id': reconcile_payment_type_id,
-                    'from_created_timestamp': from_created_timestamp,
-                    'to_created_timestamp': to_created_timestamp,
-                    'sof_report': data,
-                    'paginator': page,
-                    'page_range': calculate_page_range_from_page_info(page)}
         if sof_file_id is not None:
             context.update({'sof_file_id': sof_file_id})
 
@@ -129,7 +139,7 @@ class SofReport(TemplateView, RESTfulMethods):
         )
         self.logger.info("data={}".format(response_json.get('data')))
         self.logger.info('========== Finish Searching Sof Report ==========')
-        return response_json.get('data'), response_json.get('page')
+        return response_json.get('data'), response_json.get('page'), response_json.get("status_code")
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')

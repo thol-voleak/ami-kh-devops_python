@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     'agents',
     'customers',
     'cards',
+    'card_type',
     'cash_sofs',
     'bank_sofs',
 
@@ -95,7 +95,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
+                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,10 +104,16 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
-            ],
+            ]
         },
     },
 ]
+
+OPTIONS = {
+    'libraries': {
+        'myapp_tags': 'authentications.templatetags.permissions_filter',
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -161,7 +167,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | ACM | AppLog | ami-admin-portal | %(thread)d | %(IPAddress)s | %(name)s | ami-admin-portal | %(message)s",
+            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-admin-portal | %(correlationId)s | %(thread)d  | %(IPAddress)s | %(name)s | %(message)s",
             'datefmt': "%d/%m/%Y %H:%M:%S"
         }
     },
@@ -225,6 +231,11 @@ LOGGING = {
             'propagate': True,
         },
         'cards': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'card_type': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

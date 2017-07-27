@@ -6,10 +6,14 @@
     <div class="panel-heading border mb15">
         <h3>Service Detail</h3>
     </div>
-    {% if add_service_group_msg is not None %}
+    {% if add_service_msg is not None %}
     <div class="col-xs-12">
         <div class='alert
+                    {%if "successfully" in add_service_msg%}
                     alert-success
+                    {%else%}
+                    alert-danger
+                    {%endif%}
                     alert-dismissable' id="msg-update-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ add_service_msg }}</strong>

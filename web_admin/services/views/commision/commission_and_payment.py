@@ -2,7 +2,7 @@ import logging
 from web_admin.api_settings import SEARCH_AGENT
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView, View
 from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CommissionAndPaymentView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -149,7 +150,8 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PaymentAndFeeStructureView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -300,7 +302,8 @@ class BalanceDistributionsUpdate(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(BalanceDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -331,7 +334,8 @@ class BonusDistributionsUpdate(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(BonusDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -361,7 +365,8 @@ class AgentBonusDistributionsUpdate(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentBonusDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -392,7 +397,8 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SettingBonusView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -541,7 +547,8 @@ class PaymentAndFeeStructureDetailView(View):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PaymentAndFeeStructureDetailView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
@@ -558,7 +565,8 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentFeeView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -716,7 +724,8 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentBonusDistributions, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):

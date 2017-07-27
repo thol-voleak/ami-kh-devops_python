@@ -1,28 +1,36 @@
+from braces.views import GroupRequiredMixin
+
 from agents.views import AgentAPIService
-from web_admin import api_settings
 
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
-from web_admin.utils import setup_logger
-from web_admin.restful_methods import RESTfulMethods
-from web_admin import api_settings
-
-
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
 
 import logging
 
-
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
-class AgentDelete(TemplateView, AgentAPIService):
+class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
+    group_required = "CAN_DELETE_AGENT"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/delete.html"
-    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    get_agent_identity_url = api_settings.GET_AGENT_IDENTITY_URL
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentDelete, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -57,7 +65,6 @@ class AgentDelete(TemplateView, AgentAPIService):
         context, status = self.get_agent_detail(agent_id)
         agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
         currencies, status_get_currency = self.get_currencies(agent_id)
-
         context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
         if status and status_get_agent_identity and status_get_currency:
             agent_type_name, status = self.get_agent_type_name(context['agent']['agent_type_id'])

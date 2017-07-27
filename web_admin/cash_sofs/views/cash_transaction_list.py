@@ -1,10 +1,13 @@
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import setup_logger
 from web_admin.api_settings import CASH_TRANSACTIONS_URL
 from web_admin.restful_methods import RESTfulMethods
+
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin.utils import setup_logger
-
 from datetime import datetime
+from braces.views import GroupRequiredMixin
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,12 +18,22 @@ IS_SUCCESS = {
 }
 
 
-class CashTransactionView(TemplateView, RESTfulMethods):
+class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_SEARCH_CASH_TXN"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "cash_transaction.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CashTransactionView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

@@ -5,6 +5,16 @@
     <div class="panel-heading border">
         <h3>Delete Bank Source Of Fund</h3>
     </div>
+    {% for message in messages %}
+      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="msg-update-client">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+              <strong>{{ message }}</strong>
+            </div>
+        </div>
+      {%endif%}
+    {%endfor%}
 
      <div class="panel-body">
         <div class="row no-margin">
@@ -77,14 +87,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Connection Timeout</label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control" id="txt_connection_timeout" name="connection_timeout" value="{{ bank.connection_timeout }}" readonly />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Read Timeout</label>
+                        <label class="col-sm-2 control-label">Read Timeout (millisec.)</label>
                         <div class="col-sm-4">
                             <input type="number" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ bank.read_timeout }}" readonly />
                         </div>
@@ -127,11 +130,11 @@
                      </div>
                    <div class="pull-right">
                         <a href="{% url 'bank_sofs:bank_sofs_list' %}">
-                            <input id="bank_btn_cancel" class="btn text-left mb15 btn-small" type="button"
+                            <input id="btn_cancel" class="btn text-left mb15 btn-small" type="button"
                                    value="Cancel"/>
                         </a>
                         <a>
-                            <input id="bank_btn_yes" class="btn btn-success text-left mb15 btn-small" type="submit"
+                            <input id="btn_yes" class="btn btn-success text-left mb15 btn-small" type="submit"
                                    value="Yes"/>
                         </a>
                     </div>

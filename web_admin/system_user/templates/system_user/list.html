@@ -1,42 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
+
 {% block content %}
 <div class="panel mb30">
     <div class="panel-heading border mb15">
         <h3>System Users</h3>
     </div>
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Username</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
-                </div>
-                <label class="col-sm-1 control-label">Email</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
-                </div>
-                <div class="col-xs-1">
-                    <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search">
-                    </a>
-                </div>
+
+
+    {% for message in messages %}
+        <div class="col-xs-12">
+            <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
             </div>
-        </form>
-    <div class="pull-right mr15 text-right">
-        <a href="{% url 'system_user:create-system-user' %}">
-            <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                   value="Add"/>
-        </a>
-    </div>
-{% for message in messages %}
-    <div class="col-xs-12">
-        <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message|capfirst }}</strong>
         </div>
-    </div>
- {% endfor %}
+     {% endfor %}
 
     {% if del_msg is not None %}
         <div class="col-xs-12">
@@ -70,6 +50,35 @@
 
 
     <div class="panel-body">
+        {% if request.user|has_permission_name:"SYS_SEARCH_SYSTEM_USER"%}
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
+            {% csrf_token %}
+            <div class="col-sm-12  form-group">
+                <label class="col-sm-1">Username</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
+                </div>
+                <label class="col-sm-1">Email</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
+                </div>
+                <div class="col-xs-1">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search">
+                    </a>
+                </div>
+
+            </div>
+        </form>
+        {% endif %}
+        {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'system_user:create-system-user' %}">
+                <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                       value="Add"/>
+            </a>
+        </div>
+        {% endif %}
         <div class="table-responsive" id=system_user_table>
             <table class="table table-bordered table-striped mb0">
                 <thead>
@@ -99,43 +108,52 @@
                         <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             <div id="client_btn_group_{{ system_user.id }}">
-                                {% if systemuser.is_deleted %}
-                                {% else %}
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-info mb5"
-                                       role="button"
-                                       id="system_user_btn_detail"
-                                       href="{% url 'system_user:system-user-detail' systemuser.id %}">
-                                        <span class="small">Detail</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-primary mb5"
-                                       role="button"
-                                       id="system_user_btn_edit"
-                                       href="{% url 'system_user:system-user-edit' systemuser.id %}">
-                                        <span class="small">Edit</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-danger mb5"
-                                       role="button"
-                                       id="system_user_btn_delete"
-                                       href="{% url 'system_user:delete-system-user' systemuser.id %}">
-                                        <span class="small">Delete</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-primary mb5"
-                                       role="button"
-                                       id="btn_system_user_change_password"
-                                       href="{% url 'system_user:system-user-change-password' systemuser.id %}">
-                                        <span class="small">ChangePassword</span>
-                                    </a>
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-success mb5"
-                                       role="button"
-                                       id="btn_system_user_change_role"
-                                       href="{% url 'system_user:system_user_role_management' systemuser.id %}">
-                                        <span class="small">ChangeRole</span>
-                                    </a>
+                                {% if systemuser.is_deleted == False %}
+                                    {% if systemuser.is_permission_detail %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-info mb5"
+                                           role="button"
+                                           id="system_user_btn_detail"
+                                           href="{% url 'system_user:system-user-detail' systemuser.id %}">
+                                            <span class="small">Detail</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if systemuser.is_permission_edit %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary mb5"
+                                           role="button"
+                                           id="system_user_btn_edit"
+                                           href="{% url 'system_user:system-user-edit' systemuser.id %}">
+                                            <span class="small">Edit</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if systemuser.is_permission_delete %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger mb5"
+                                           role="button"
+                                           id="system_user_btn_delete"
+                                           href="{% url 'system_user:delete-system-user' systemuser.id %}">
+                                            <span class="small">Delete</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if systemuser.is_permission_change_pwd %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-primary mb5"
+                                           role="button"
+                                           id="btn_system_user_change_password"
+                                           href="{% url 'system_user:system-user-change-password' systemuser.id %}">
+                                            <span class="small">ChangePassword</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if systemuser.is_permission_change_role %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-success mb5"
+                                           role="button"
+                                           id="btn_system_user_change_role"
+                                           href="{% url 'system_user:system_user_role_management' systemuser.id %}">
+                                            <span class="small">ChangeRole</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </td>

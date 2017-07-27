@@ -1,6 +1,6 @@
 from services.views.spi import SpiApi
-from web_admin import api_settings
-from web_admin.utils import setup_logger
+from web_admin import api_settings, setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 from django.contrib import messages
 from django.http import Http404
@@ -14,12 +14,13 @@ logger = logging.getLogger(__name__)
 
 class SPIUpdate(TemplateView, SpiApi):
     template_name = 'services/spi/update.html'
-    get_call_method_url = 'api-gateway/payment/v1/spi-url-call-methods'
+    get_call_method_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-call-methods'
 
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SPIUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

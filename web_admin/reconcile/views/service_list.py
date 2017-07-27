@@ -4,16 +4,17 @@ import logging
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 
-from web_admin import api_settings
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
+from authentications.utils import get_correlation_id_from_username
 
 logger = logging.getLogger(__name__)
 
-class ServiceList(TemplateView, RESTfulMethods):
+class ServiceList(TemplateView, RESTfulReconcileMethods):
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ServiceList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -29,5 +30,8 @@ class ServiceList(TemplateView, RESTfulMethods):
         else:
             url = api_settings.GET_SERVICE_URL.format(serviceGroupId=service_group_id)
         service_list = self._get_method(url, "Get services list", logger, True)
+        status = service_list[1]
+        if status is not True:
+            logger.error("Get Services List Error")
         self.logger.info('========== Finish Getting Services List ==========')
         return service_list

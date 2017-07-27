@@ -5,32 +5,47 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
-from web_admin.api_settings import GET_AGENT_BALANCE_BY_CURRENCY
+from web_admin.api_settings import GET_REPORT_AGENT_BALANCE
 from web_admin.api_settings import COMPANY_BALANCE_HISTORY
 from web_admin.api_settings import COMPANY_BALANCE_ADD
-from web_admin.api_settings import GET_AGET_BALANCE
-from web_admin import api_settings
-from web_admin.utils import setup_logger
+from web_admin.api_settings import GET_AGENT_BALANCE
+from web_admin import api_settings, setup_logger
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from authentications.apps import PermissionDeniedException
+from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)
 
 
-class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
+class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethods):
+    group_required = "SYS_VIEW_COMPANY_BALANCE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
     template_name = "company_balance.html"
     company_agent_id = 1
+    company_agent_user_type = 2
     logger = logger
 
-    def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
-        return super(CompanyBalanceView, self).dispatch(request, *args, **kwargs)
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
+    def dispatch(self, request, *args, **kwargs):
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(CompanyBalanceView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name,
                       self._build_context(request)
-                       )
+                      )
 
     def post(self, request, *args, **kwargs):
+        if not check_permissions_by_user(request.user, 'SYS_ADD_COMPANY_BALANCE'):
+            raise PermissionDeniedException()
+
         new_company_balance = request.POST.get('new_company_balance')
         amount = request.POST.get('adding_balance')
         string_amount = amount
@@ -62,19 +77,17 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             context['selected_currency'] = currency
             return render(request, self.template_name, context)
 
-
     def _get_total_initial_company_balance(self, currency):
-        url = GET_AGENT_BALANCE_BY_CURRENCY.format(
-            agent_id=self.company_agent_id,
-            currency=currency)
+        url = GET_REPORT_AGENT_BALANCE
+        body = {'user_id':self.company_agent_id, 'currency':currency, 'user_type': 2}
         func_description = "Getting total initial balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
                                                currency, )
-        return self._get_method(api_path=url,
+        return self._post_method(api_path=url,
                                 func_description=func_description,
                                 logger=logger,
-                                is_getting_list=False)
+                                params=body)
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
@@ -92,18 +105,18 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _add_company_balance(self, currency, body):
         url = COMPANY_BALANCE_ADD + currency
-        return self._post_method(api_path=url,
-                                          func_description="company balance by user",
-                                          logger=logger,
-                                          params=body)
+        return self._put_method(api_path=url,
+                                 func_description="add company balance",
+                                 logger=logger,
+                                 params=body)
 
-
-    def _get_currency_choices_by_agent(self, agent_id):
-        url = GET_AGET_BALANCE.format(agent_id)
-        data, success = self._get_method(api_path=url,
+    def _get_currency_choices_by_agent(self, agent_id, company_agent_user_type):
+        url = GET_AGENT_BALANCE
+        body = {'user_id': agent_id, 'user_type': company_agent_user_type}
+        data, success = self._post_method(api_path=url,
                                          func_description="currency list by agent",
                                          logger=logger,
-                                         is_getting_list=True)
+                                         params = body)
         if success:
             currency_list = [i['currency'] for i in data]
             return currency_list, True
@@ -118,7 +131,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                                          logger=logger,
                                          is_getting_list=False)
         if success:
-            value = data.get('value','')
+            value = data.get('value', '')
             if isinstance(value, str):
                 currency_list = map(lambda x: x.split('|'), value.split(','))
             else:
@@ -130,7 +143,7 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
 
     def _build_context(self, request):
         default_decimal = 1
-        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id)
+        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id, self.company_agent_user_type)
         if not success_currency:
             messages.add_message(
                 request,
@@ -164,6 +177,8 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
                 message=totalData
             )
             totalData = {}
+        else:
+            totalData = totalData[0]
 
         data, success_balance = self._get_company_balance_history(currency)
         if success_balance:
@@ -177,8 +192,9 @@ class CompanyBalanceView(TemplateView, GetChoicesMixin, RESTfulMethods):
             data = []
 
         return {'objects': list(data),
-                       'currency_list': currency_list,
-                       'decimal': decimal,
-                       'total_balance': totalData}
+                'currency_list': currency_list,
+                'decimal': decimal,
+                'total_balance': totalData}
+
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='authentications:login')

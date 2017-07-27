@@ -1,6 +1,7 @@
-from authentications.utils import get_auth_header
-from web_admin import api_settings
-from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
+from web_admin import setup_logger, RestFulClient, api_settings
+
+from braces.views import GroupRequiredMixin
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
@@ -12,12 +13,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class PermissionCreate(TemplateView):
+class PermissionCreate(GroupRequiredMixin, TemplateView):
+    group_required = "SYS_CREATE_PERMISSION_ENTITIES"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "permissions/create.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PermissionCreate, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -36,9 +47,9 @@ class PermissionCreate(TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(self.request,
-                                                                           api_settings.CREATE_PERMISSION_PATH,
-                                                                           self._get_headers(), logger, params)
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_PERMISSION_PATH,
+                                                                           loggers=self.logger,
+                                                                           headers=self._get_headers(), params=params)
         if is_success:
             messages.add_message(
                 request,
@@ -47,8 +58,8 @@ class PermissionCreate(TemplateView):
             )
             self.logger.info('========== End creating permission ==========')
             return redirect('authentications:permissions_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (
-                        status_code == 'invalid_access_token'):
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
         else:

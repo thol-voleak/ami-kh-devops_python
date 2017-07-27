@@ -10,7 +10,11 @@ History:
 '''
 
 import logging
-from web_admin import api_settings
+
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
 from datetime import datetime
 from django.shortcuts import redirect, render
 from web_admin.mixins import GetChoicesMixin
@@ -19,14 +23,14 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import encrypt_text_agent, setup_logger
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
-        data, success = self._get_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+        data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
-                                         logger=logger,
-                                         is_getting_list=True)
+                                         logger=logger)
         newdata = [i for i in data if not i['is_deleted']]
         return newdata
 
@@ -47,12 +51,22 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
         return result
 
 
-class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
+class AgentRegistration(GroupRequiredMixin, GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
+    group_required = "CAN_PERFORM_AGENT_REGISTRATION"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/registration.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentRegistration, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *arg, **kwargs):
@@ -285,10 +299,11 @@ class AgentRegistration(GetChoicesMixin, AgentTypeAndCurrenciesDropDownList):
     def _create_agent_balance(self, request, agent_id):
 
         currency = request.POST.get('currency')
-        sof_type = "cash"  # TODO: Hard code for Sof_Type
-        body = {}
+        # sof_type = "cash"  # TODO: Hard code for Sof_Type
+        body = {'currency': currency}
+        api_path = api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id)
 
-        data, success = self._post_method(api_path=api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id, sof_type=sof_type, currency=currency),
+        data, success = self._post_method(api_path=api_path,
                                           func_description="Agent Balance",
                                           logger=logger, params=body)
         return data, success

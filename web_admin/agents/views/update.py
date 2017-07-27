@@ -1,29 +1,39 @@
+from braces.views import GroupRequiredMixin
+
 from agents.views import AgentAPIService
 
 import logging
 
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
-from django.conf import settings
-from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from datetime import datetime
 from django.utils import dateparse
 from django.http import HttpResponseRedirect
 
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 
-class AgentUpdate(TemplateView, AgentAPIService):
+class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
+    group_required = "CAN_EDIT_AGENT_DETAILS"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "agents/update.html"
-    get_agent_identity_url = "api-gateway/agent/v1/agents/{agent_id}/identities"
+    get_agent_identity_url = api_settings.GET_AGENT_IDENTITY_URL
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentUpdate, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -31,7 +41,7 @@ class AgentUpdate(TemplateView, AgentAPIService):
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
-        agent_types_list, agent_type_status = self.get_agent_types()
+        agent_types_list, agent_type_status = self.get_agent_types(agent_id)
         currencies, get_currency_status = self.get_currencies(agent_id)
         agent_profile = self.get_agent_profile(agent_id)
 

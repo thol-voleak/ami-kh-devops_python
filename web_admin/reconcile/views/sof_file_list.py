@@ -1,11 +1,13 @@
 import logging
 
 from datetime import datetime, timedelta
+
+import requests
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from web_admin import api_settings
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods_reconcile import RESTfulReconcileMethods
+from authentications.utils import get_correlation_id_from_username
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -16,12 +18,13 @@ IS_SUCCESS = {
 }
 
 
-class SofFileList(TemplateView, RESTfulMethods):
+class SofFileList(TemplateView, RESTfulReconcileMethods):
     template_name = "reconcile/sof_file_list.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SofFileList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -67,17 +70,27 @@ class SofFileList(TemplateView, RESTfulMethods):
             converted_end_date = converted_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = converted_end_date
 
-        data, page = self._search_file_list(params)
+        context = {}
+        try:
+            data, page, status_code = self._search_file_list(params)
+            if status_code == 500:
+                self.logger.error('Search fail, please try again or contact technical support')
+                context.update({'sof_file_list_error_msg': 'Search fail, please try again or contact technical support'})
+            else:
+                context.update({'file_list': data, 'paginator': page,
+                                'page_range': calculate_page_range_from_page_info(page)})
+
+        except requests.Timeout:
+            self.logger.error('Search SOF file list request timeout')
+            context.update(
+                {'sof_file_list_error_msg': 'Search timeout, please try again or contact technical support'})
 
         currencies, success = self._get_currency_choices()
-        context = {'currencies': currencies,
-                   'file_list': data,
-                   'start_date': start_date,
-                   'end_date': end_date,
-                   'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page)}
+        context.update({'currencies': currencies,
+                        'start_date': start_date,
+                        'end_date': end_date})
         context.update(params)
-        self.logger.info("========== Finish searching system user ==========")
+        self.logger.info("========== Finish search sof file list ==========")
         return render(request, self.template_name, context)
 
     def _search_file_list(self, params):
@@ -93,7 +106,7 @@ class SofFileList(TemplateView, RESTfulMethods):
         )
         self.logger.info("data={}".format(response_json.get('data')))
         self.logger.info('========== Finish Searching SOF File List ==========')
-        return response_json.get('data'), response_json.get('page')
+        return response_json.get('data'), response_json.get('page'), response_json.get("status_code")
 
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')

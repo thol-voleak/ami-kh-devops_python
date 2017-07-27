@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
 
 {% block content %}
-
     <div class="panel mb25">
         <div class="panel-heading border">
             <h3>Service Groups</h3>
@@ -15,6 +15,7 @@
                 </div>
             </div>
         {% endfor %}
+        {% if request.user|has_permission_name:"CAN_ADD_SERVICE_GROUP"%}
         <div class="pull-right mr15 text-right">
             <a href="{% url 'service_group:add_service_group' %}">
                 <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15"
@@ -22,6 +23,7 @@
                        value="Add"/>
             </a>
         </div>
+        {% endif %}
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0">
@@ -48,7 +50,7 @@
                             <td class="col-sm-2">
                                 {% if not service_group.is_deleted %}
                                 <div id="service_group_btn_group">
-                                    <div class="btn-group">
+                                        {% if service_group.is_permission_detail %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-info"
                                            role="button"
@@ -56,7 +58,8 @@
                                            href="{% url 'service_group:service_group_detail' service_group.service_group_id %}">
                                             <span class="small">Detail</span>
                                         </a>
-
+                                        {% endif %}
+                                        {% if service_group.is_permission_edit %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-primary"
                                            role="button"
@@ -64,6 +67,8 @@
                                            href="{% url 'service_group:service_group_update' service_group.service_group_id %}">
                                             <span class="small">Edit</span>
                                         </a>
+                                        {% endif %}
+                                        {% if service_group.is_permission_delete %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger"
                                            role="button"
@@ -71,7 +76,7 @@
                                            href="{% url 'service_group:service_group_delete' service_group.service_group_id %}">
                                             <span class="small">Delete</span>
                                         </a>
-                                    </div>
+                                        {% endif %}
                                 {% endif %}
                                 </div>
                             </td>

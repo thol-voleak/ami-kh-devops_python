@@ -1,26 +1,40 @@
-import logging
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import setup_logger
+from web_admin.api_settings import SEARCH_AGENT
+from web_admin.restful_methods import RESTfulMethods
 
 from datetime import datetime
-from django.views.generic.base import TemplateView
-from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
-from web_admin.api_settings import SEARCH_AGENT
-from web_admin.utils import setup_logger
+from django.views.generic.base import TemplateView
 
+import logging
 
 logger = logging.getLogger(__name__)
+logging.captureWarnings(True)
 
 STATUS = {
     1: 'Active',
 }
 
-class ListView(TemplateView, RESTfulMethods):
+
+class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_MANAGE_AGENT_REGISTRATION"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = 'agents/list.html'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -116,6 +130,15 @@ class ListView(TemplateView, RESTfulMethods):
             logger=logger,
             params=params
         )
+
+        is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
+        is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
+
+        for i in data:
+            i['is_permission_view'] = is_permission_view
+            i['is_permission_edit'] = is_permission_edit
+            i['is_permission_delete'] = is_permission_delete
 
         self.logger.info('========== Finished searching agent ==========')
         return data

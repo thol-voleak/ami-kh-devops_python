@@ -1,7 +1,8 @@
 from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from web_admin import api_settings
-from web_admin.utils import setup_logger
+from web_admin import setup_logger, RestFulClient
+from authentications.utils import get_auth_header as get_header
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
@@ -15,18 +16,22 @@ import logging
 def login_user(request):
     next_request = None
     logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    logger = setup_logger(request, logger, request.user)
     if request.POST:
         logger.info("========== Start login from web page ==========")
         username = request.POST['username']
         password = request.POST['password']
 
         user = authenticate(request=request, username=username, password=password)
-
         if user is not None:
-            # TODO: set authentication user is unique from db
-            request.session['correlation_id'] = user.authentications_set.all()[0].correlation_id or ''
             login(request, user)
+            permissions = get_permission_from_backend(user, logger)
+
+            if permissions is not None:
+                authens = Authentications.objects.get(user=user)
+                authens.permissions = permissions['permissions']
+                authens.save()
+
             next_request = request.POST.get('next') or 'web:web-index'
             return redirect(next_request)
 
@@ -36,9 +41,20 @@ def login_user(request):
     return render(request, "authentications/login.html", {'next': next_request})
 
 
+def get_permission_from_backend(username, logger):
+    headers = get_header(username)
+    url = api_settings.GET_PERMISSION_PATH
+    is_success, status_code, data = RestFulClient.get(url=url, headers=headers, loggers=logger)
+    if is_success:
+        if data is None or data == "":
+            return None
+        logger.info("Permissions is [{}]".format(len(data)))
+        return data
+
+
 def logout_user(request):
     logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger)
+    logger = setup_logger(request, logger, request.user)
     logger.info('========== Start to logout ==========')
     url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username

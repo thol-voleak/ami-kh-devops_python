@@ -1,8 +1,9 @@
-from authentications.utils import get_auth_header
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
 from web_admin import setup_logger
 from .system_user_client import SystemUserClient
-
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -12,12 +13,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView):
+class ListView(GroupRequiredMixin, TemplateView):
+    group_required = "SYS_MANAGE_SYSTEM_USER"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/list.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -40,13 +51,26 @@ class ListView(TemplateView):
         if email:
             params['email'] = email
 
-        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(), logger, username, email, None)
-
+        status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
+                                                                                self.logger, username, email, None)
         if (status_code == "access_token_expire") or \
-                (status_code == 'access_token_not_found') or \
+                (status_code == 'authentication_fail') or \
                 (status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
+
+        is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_SYSTEM_USER')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_SYSTEM_USER')
+        is_permission_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_SYSTEM_USER')
+        is_permission_change_pwd = check_permissions_by_user(self.request.user, 'SYS_CHANGE_SYSTEM_USER_PASSWORD')
+        is_permission_change_role = check_permissions_by_user(self.request.user, 'CAN_CHANGE_ROLE_FOR_USER')
+
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
+            i['is_permission_edit'] = is_permission_edit
+            i['is_permission_delete'] = is_permission_delete
+            i['is_permission_change_pwd'] = is_permission_change_pwd
+            i['is_permission_change_role'] = is_permission_change_role
 
         context['data'] = data
         context['username'] = username

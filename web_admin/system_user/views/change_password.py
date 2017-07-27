@@ -1,7 +1,9 @@
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
-from django.conf import settings
-from web_admin import api_settings
+from web_admin import api_settings, setup_logger
 import logging
 from django.contrib import messages
 from web_admin.restful_methods import RESTfulMethods
@@ -9,12 +11,23 @@ from web_admin.utils import encrypt_text, setup_logger
 
 logger = logging.getLogger(__name__)
 
-class SystemUserChangePassword(TemplateView, RESTfulMethods):
+
+class SystemUserChangePassword(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_CHANGE_SYSTEM_USER_PASSWORD"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "system_user/system_user_change_password.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SystemUserChangePassword, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -29,8 +42,8 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
             }
             context = {'system_user_info': system_user_info}
             return context
-
-        except:
+        except Exception as ex:
+            self.logger.info(ex)
             context = {'system_user_info': {}}
             return context
 
@@ -42,7 +55,6 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
         params = {"password": encrypt_text(password)}
         data, success = self._put_method(api_path=url,
                                          func_description="password",
-                                         logger=logger,
                                          params=params)
         self.logger.info('========== Finish changing system user password ==========')
         if success:
@@ -51,7 +63,3 @@ class SystemUserChangePassword(TemplateView, RESTfulMethods):
         else:
             messages.add_message(request, messages.ERROR, 'Invalid request')
             return redirect('system_user:system-user-change-password', systemUserId=system_user_id)
-
-
-
-        

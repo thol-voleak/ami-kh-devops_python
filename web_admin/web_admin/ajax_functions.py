@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
 from authentications.utils import get_auth_header
-from web_admin.utils import setup_logger
+
 import logging
 
 
@@ -27,9 +27,9 @@ def _delete_method(request, api_path, func_description, logger, params=None):
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 
@@ -41,7 +41,7 @@ def _delete_method(request, api_path, func_description, logger, params=None):
     return JsonResponse({"status": code, "msg": message})
 
 
-def _post_method(request, api_path, func_description, logger, params={}):
+def _post_method(request, api_path, func_description, logger, params={}, timeout=None):
     if 'http' in api_path:
         url = api_path
     else:
@@ -51,10 +51,11 @@ def _post_method(request, api_path, func_description, logger, params={}):
     logger.info('API-Path: {path}'.format(path=api_path))
 
     start = time.time()
-    response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT)
+    try:
+        response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT, timeout=timeout)
+    except requests.exceptions.Timeout:
+        return JsonResponse({'status': 'timeout'})
     done = time.time()
-
-
 
     logger.info('Response_code: {}'.format(response.status_code))
     logger.info('Response_content: {}'.format(response.text))
@@ -64,9 +65,9 @@ def _post_method(request, api_path, func_description, logger, params={}):
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 
@@ -75,7 +76,7 @@ def _post_method(request, api_path, func_description, logger, params={}):
     else:
         code = 3
 
-    return JsonResponse({"status": code, "msg": message, "data":  response_json.get('data', {})})
+    return JsonResponse({"status": code, "msg": message, "data": response_json.get('data', {})})
 
 
 def _put_method(request, api_path, func_description, logger, params={}):
@@ -99,9 +100,9 @@ def _put_method(request, api_path, func_description, logger, params={}):
 
     code = 0
     message = status.get('message', 'Something went wrong.')
-    if status['code'] in ['access_token_expire', 'access_token_not_found', 'invalid_access_token']:
+    if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
         logger.info("{} for {} username".format(message, request.user))
-        messages.add_message(request, messages.INFO, str('session_is_expired'))
+        messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
         code = 1
         return JsonResponse({"status": code, "msg": message})
 
@@ -111,4 +112,3 @@ def _put_method(request, api_path, func_description, logger, params={}):
         code = 3
 
     return JsonResponse({"status": code, "msg": message})
-

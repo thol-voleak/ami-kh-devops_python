@@ -1,22 +1,34 @@
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
 from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from braces.views import GroupRequiredMixin
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class BankSOFTransaction(TemplateView, RESTfulMethods):
+class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_SEARCH_BANK_TXN"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "sof/bank_transaction.html"
-    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/v1/banks/transactions"
+    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks/transactions"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(BankSOFTransaction, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -63,7 +75,7 @@ class BankSOFTransaction(TemplateView, RESTfulMethods):
         if order_id is not '' and order_id is not None:
             body['order_id'] = order_id
         if status is not '' and status is not None:
-            body['status_id'] = int(status)
+            body['status_id'] = [int(status)]
         if type is not '' and type is not None:
             body['action_id'] = int(type)
         if from_created_timestamp is not '' and to_created_timestamp is not None:

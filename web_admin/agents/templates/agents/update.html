@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load permissions_filter %}
 {% block body_stylesheet %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
@@ -455,10 +455,11 @@
                         <a>
                             <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
                         </a>
-
-                        <a href="{% url 'agents:agent_delete' agent_profile.id %}">
-                            <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
-                        </a>      
+                        {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                            <a href="{% url 'agents:agent_delete' agent_profile.id %}">
+                                <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                            </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>

@@ -1,33 +1,44 @@
-import logging
-from web_admin import api_settings
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import api_settings, setup_logger
+from web_admin.restful_methods import RESTfulMethods
+from .system_user_client import SystemUserClient
+
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from django.contrib import messages
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.utils import setup_logger
-from .system_user_client import SystemUserClient
+
+import logging
+
 logger = logging.getLogger(__name__)
 
-'''
-Author: Unknown
-History:
-# 2017-05-18 (Steve Le)
-- Refactored code following RESTfulMethods standard.
-'''
-class DeleteView(TemplateView, RESTfulMethods):
+
+class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_DELETE_SYSTEM_USER"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "system_user/delete.html"
+    logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = super(DeleteView, self).get_context_data(**kwargs)
         system_user_id = context['system_user_id']
 
-        status_code, status_message, data = SystemUserClient.search_system_user(self.request, self._get_headers(), logger, None, None, system_user_id)
-
+        status_code, status_message, data = SystemUserClient.search_system_user(headers=self._get_headers(),
+                                                                                logger=self.logger,
+                                                                                user_id=system_user_id)
         context = {
             'system_user_info': data[0]
         }
@@ -44,8 +55,7 @@ class DeleteView(TemplateView, RESTfulMethods):
         # Do Request
         data, status = self._delete_method(
             api_path=api_path,
-            func_description="System User Delete",
-            logger=logger
+            func_description="System User Delete"
         )
         self.logger.info('========== Finish deleting system user ==========')
         if status:

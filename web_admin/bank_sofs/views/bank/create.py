@@ -1,29 +1,49 @@
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 
-from web_admin.utils import setup_logger
+from django.shortcuts import redirect, render
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
+from braces.views import GroupRequiredMixin
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
+class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "SYS_ADD_BANK"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     template_name = "bank/create.html"
-    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/v1/banks"
+    url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/admin/banks"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start create bank sofs ==========')
-        currencies = self._get_currencies_list()
+        currencies, success = self._get_currencies_list()
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                currencies
+            )
+            currencies = []
         context = {'currencies': currencies}
         self.logger.info('========== Finished create bank sofs ==========')
         return context
@@ -77,6 +97,23 @@ class CreateView(TemplateView, RESTfulMethods):
                 'Add bank successfully'
             )
             return redirect('bank_sofs:bank_sofs_list')
+        else:
+            self.logger.info('========== Finished creating bank profile ==========')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                data
+            )
+            currencies, success = self._get_currencies_list()
+            if not success:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    currencies
+                )
+                currencies = []
+            context = {'currencies': currencies, 'bank_info': params}
+            return render(request, self.template_name, context)
 
     def _get_currencies_list(self):
         url = GET_ALL_CURRENCY_URL
@@ -87,6 +124,6 @@ class CreateView(TemplateView, RESTfulMethods):
         if success:
             value = data.get('value', '')
             currencies = [i.split('|') for i in value.split(',')]
+            return currencies, success
         else:
-            currencies = []
-        return currencies
+            return data, success

@@ -38,14 +38,17 @@ def encrypt_text_agent(input_text):
     return cipher_text.decode('utf-8')
 
 
-def setup_logger(request, logger):
-    if 'HTTP_X_FORWARDED_FOR' in request.META:
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        # logger.info("Found HTTP_X_FORWARDED_FOR header with value [{}]".format(x_forwarded_for))
-        client_ip = x_forwarded_for.split(',')[0].strip()
+def setup_logger(request, logger, correlation_id):
+    if request is not None:
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            client_ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            client_ip = request.META.get('REMOTE_ADDR')
     else:
-        client_ip = request.META.get('REMOTE_ADDR')
-    return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip})
+        client_ip = ''
+
+    return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip, 'correlationId': correlation_id})
 
 
 def calculate_page_range_from_page_info(pageInfo):

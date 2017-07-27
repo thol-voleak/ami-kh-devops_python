@@ -1,5 +1,5 @@
 from services.views.spi import SpiApi
-from web_admin.utils import setup_logger
+from authentications.utils import get_correlation_id_from_username
 
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -7,18 +7,21 @@ from django.shortcuts import redirect
 
 import logging
 
+from web_admin import setup_logger,api_settings
+
 logger = logging.getLogger(__name__)
 
 
 class SPIUrlConfigurationDelete(TemplateView, SpiApi):
     template_name = 'services/spi_url_configuration/delete.html'
-    get_config_type_url = 'api-gateway/payment/v1/spi-url-configuration-types'
-    spi_url_configuration = 'api-gateway/payment/v1/spi-url-configurations/{spiUrlConfigurationId}'
+    get_config_type_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configuration-types'
+    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/admin/spi-url-configurations/{spiUrlConfigurationId}'
 
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SPIUrlConfigurationDelete, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

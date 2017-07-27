@@ -1,6 +1,9 @@
-from authentications.utils import get_auth_header
+from braces.views import GroupRequiredMixin
+
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
+
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
@@ -8,15 +11,26 @@ from django.views.generic.base import TemplateView
 
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
-class RoleCreate(TemplateView):
+class RoleCreate(GroupRequiredMixin, TemplateView):
     template_name = "roles/create.html"
     logger = logger
 
+    group_required = "CAN_CREATE_ROLE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleCreate, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -35,9 +49,10 @@ class RoleCreate(TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(self.request,
-                                                                           api_settings.CREATE_ROLE_PATH,
-                                                                           self._get_headers(), logger, params)
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_ROLE_PATH,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=params)
         if is_success:
             messages.add_message(
                 request,

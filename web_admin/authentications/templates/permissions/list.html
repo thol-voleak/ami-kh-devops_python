@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load permissions_filter %}
+
 {% block content %}
 
 <div class="col-md-12">
@@ -46,6 +48,7 @@
                             <td>{{ permission.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ permission.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
+                                {% if request.user|has_permission_name:"SYS_VIEW_PERMISSION_ENTITIES"%}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
@@ -53,6 +56,8 @@
                                        href="{% url 'authentications:permission_detail' permission.id %}">
                                         <span class="small">Detail</span>
                                     </a>
+                                {% endif %}
+                                {% if request.user|has_permission_name:"SYS_EDIT_PERMISSION_ENTITIES"%}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-info mb5"
                                        role="button"
@@ -60,6 +65,8 @@
                                        href="{% url 'authentications:edit_permission' permission.id %}">
                                         <span class="small">Edit</span>
                                     </a>
+                                {% endif %}
+                                {% if request.user|has_permission_name:"SYS_DELETE_PERMISSION_ENTITIES"%}
                                 <a type="button"
                                        class="btn btn-outline btn-xs btn-danger mb5"
                                        role="button"
@@ -67,7 +74,7 @@
                                        href="{% url 'authentications:delete_permission' permission.id %}">
                                         <span class="small">Delete</span>
                                     </a>
-
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

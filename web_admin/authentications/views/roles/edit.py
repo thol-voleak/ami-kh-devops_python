@@ -1,7 +1,9 @@
-from authentications.utils import get_auth_header
+from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
+
+from braces.views import GroupRequiredMixin
 
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -12,12 +14,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class RoleEditView(TemplateView):
+class RoleEditView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_EDIT_ROLE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
     template_name = "roles/edit.html"
     logger = logger
 
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def dispatch(self, request, *args, **kwargs):
-        self.logger = setup_logger(self.request, logger)
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RoleEditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -28,10 +40,10 @@ class RoleEditView(TemplateView):
         params = {
             'id': role_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(request=self.request,
-                                                                           url=api_settings.ROLE_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.ROLE_LIST,
                                                                            headers=self._get_headers(),
-                                                                           logger=logger, params=params)
+                                                                           loggers=self.logger,
+                                                                           params=params)
         if is_success:
             context['role'] = data[0]
             self.logger.info('========== End get role entity ==========')
@@ -51,8 +63,9 @@ class RoleEditView(TemplateView):
         }
 
         url = api_settings.ROLE_UPDATE_PATH.format(role_id=role_id)
-        is_success, status_code, status_message, data = RestFulClient.put(self.request, url, self._get_headers(),
-                                                                          logger, params)
+        is_success, status_code, status_message, data = RestFulClient.put(url,
+                                                                          self._get_headers(),
+                                                                          self.logger, params)
         if is_success:
             messages.add_message(
                 request,
@@ -61,7 +74,8 @@ class RoleEditView(TemplateView):
             )
             self.logger.info('========== End update role entity ==========')
             return redirect('authentications:role_list')
-        elif (status_code == "access_token_expire") or (status_code == 'access_token_not_found') or (status_code == 'invalid_access_token'):
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
             logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
 
