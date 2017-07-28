@@ -76,7 +76,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         url = CREATE_COMPANY_BALANCE
         data, success = self._post_method(api_path=url,
                                           func_description="create company balance",
-                                          params=param )
+                                          params=param)
         if success:
             return redirect('balances:initial_company_balance')
         else:
@@ -94,7 +94,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 )
                 currencies = []
 
-            agent_balance_list, success = self._get_agent_balances(self.company_agent_id,self.company_agent_user_type)
+            agent_balance_list, success = self._get_agent_balances(self.company_agent_id, self.company_agent_user_type)
             if not success:
                 messages.add_message(
                     self.request,
@@ -116,13 +116,15 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                          func_description="currency list from backend",
                                          is_getting_list=True)
         if success:
-            value = data.get('value', '')
-            currency_list = [i.split('|') for i in value.split(',')]
-            return currency_list, True
-        else:
-            return data, False
+            value = data.get('value', None)
+            if value is not None:
+                currency_list = [i.split('|') for i in value.split(',')]
+                return currency_list, True
+            else:
+                return [], True
+        return data, False
 
     def _get_agent_balances(self, agent_id, agent_type_id):
         url = GET_AGENT_BALANCE
-        body = {'user_id' : agent_id, 'user_type':agent_type_id}
-        return self._post_method(api_path=url,func_description="agent balances",params=body)
+        body = {'user_id': agent_id, 'user_type': agent_type_id}
+        return self._post_method(api_path=url, func_description="agent balances", params=body)

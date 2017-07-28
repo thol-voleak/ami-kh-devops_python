@@ -79,15 +79,15 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
 
     def _get_total_initial_company_balance(self, currency):
         url = GET_REPORT_AGENT_BALANCE
-        body = {'user_id':self.company_agent_id, 'currency':currency, 'user_type': 2}
+        body = {'user_id': self.company_agent_id, 'currency': currency, 'user_type': 2}
         func_description = "Getting total initial balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
                                                currency, )
         return self._post_method(api_path=url,
-                                func_description=func_description,
-                                logger=logger,
-                                params=body)
+                                 func_description=func_description,
+                                 logger=logger,
+                                 params=body)
 
     def _get_new_company_balance(self, data):
         def calculate_balance_after_change(x):
@@ -106,17 +106,17 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
     def _add_company_balance(self, currency, body):
         url = COMPANY_BALANCE_ADD + currency
         return self._put_method(api_path=url,
-                                 func_description="add company balance",
-                                 logger=logger,
-                                 params=body)
+                                func_description="add company balance",
+                                logger=logger,
+                                params=body)
 
     def _get_currency_choices_by_agent(self, agent_id, company_agent_user_type):
         url = GET_AGENT_BALANCE
         body = {'user_id': agent_id, 'user_type': company_agent_user_type}
         data, success = self._post_method(api_path=url,
-                                         func_description="currency list by agent",
-                                         logger=logger,
-                                         params = body)
+                                          func_description="currency list by agent",
+                                          logger=logger,
+                                          params=body)
         if success:
             currency_list = [i['currency'] for i in data]
             return currency_list, True
@@ -143,7 +143,8 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
 
     def _build_context(self, request):
         default_decimal = 1
-        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id, self.company_agent_user_type)
+        currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id,
+                                                                                 self.company_agent_user_type)
         if not success_currency:
             messages.add_message(
                 request,
@@ -166,7 +167,10 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
             currency = request.GET.get('currency', currency_list[0][0])
             decimal = list(filter(lambda x: x[0] == currency, currency_list))[0][1]
         else:
-            currency, decimal = '', default_decimal
+            return {'objects': [],
+                    'currency_list': [],
+                    'decimal': None,
+                    'total_balance': None}
 
         totalData, success_total_balance = self._get_total_initial_company_balance(currency)
 
