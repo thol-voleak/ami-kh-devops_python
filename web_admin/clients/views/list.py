@@ -29,17 +29,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_context_data(self, **kwargs):
         self.logger.info("========== Start Getting client list ==========")
         data = self.get_clients_list()
-
-        permissions = {}
-        permissions['is_perm_client_create'] = check_permissions_by_user(self.request.user, "CAN_CREATE_CLIENTS")
-        permissions['is_perm_client_update'] = check_permissions_by_user(self.request.user, "CAN_UPDATE_CLIENTS")
-        permissions['is_perm_client_generate'] = check_permissions_by_user(self.request.user, "CAN_REGENERATE_CLIENTS")
-        permissions['is_perm_client_delete'] = check_permissions_by_user(self.request.user, "CAN_DELETE_CLIENTS")
-        permissions['is_perm_client_suspend'] = check_permissions_by_user(self.request.user, "CAN_SUSPEND_CLIENTS")
-        permissions['is_perm_client_change_scope'] = check_permissions_by_user(self.request.user, "CAN_CHANGE_SCOPES_CLIENTS")
-
         result = {'data': data,
-                  'permissions': permissions,
+                  'permissions':  self._get_has_permissions_for_client(),
                   'msg': self.request.session.pop('client_update_msg', None),
                   'add_client_msg': self.request.session.pop('add_client_msg', None)}
         self.logger.info("========== Finish Getting client list ==========")
@@ -52,3 +43,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             return data
         else:
             return []
+
+    def _get_has_permissions_for_client(self):
+        self.logger.info("Start check permissions for client page.")
+        permissions = {
+            'is_perm_client_create': check_permissions_by_user(self.request.user, "CAN_CREATE_CLIENTS"),
+            'is_perm_client_update': check_permissions_by_user(self.request.user, "CAN_UPDATE_CLIENTS"),
+            'is_perm_client_generate': check_permissions_by_user(self.request.user, "CAN_REGENERATE_CLIENTS"),
+            'is_perm_client_delete': check_permissions_by_user(self.request.user, "CAN_DELETE_CLIENTS"),
+            'is_perm_client_suspend': check_permissions_by_user(self.request.user, "CAN_SUSPEND_CLIENTS"),
+            'is_perm_client_change_scope': check_permissions_by_user(self.request.user, "CAN_CHANGE_SCOPES_CLIENTS")
+        }
+        return permissions

@@ -63,7 +63,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
     def insert_scopes(self, url, scopes):
         if not scopes:
             return True
-        params = {"scopes":scopes}
+        params = {"scopes": scopes}
 
         data, success = self._post_method(url, 'Client Scopes', logger, params)
         return success
@@ -84,7 +84,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
 
         self.request.session['client_scopes'] = client_scopes
 
-        all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes,client_scopes)
+        all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes, client_scopes)
         context['all_scopes'] = all_scopes
         self.logger.info("========== Finish Getting client scopes ==========")
         return context
@@ -105,7 +105,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
             return data.get('scopes', [])
         return []
 
-    def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes ):
+    def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes):
         client_scopes_id = [x['id'] for x in client_scopes]
         for x in all_scopes:
             if x['id'] in client_scopes_id:
