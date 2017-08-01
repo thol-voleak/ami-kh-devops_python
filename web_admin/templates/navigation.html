@@ -263,8 +263,10 @@
                 </ul>
             </li>
             {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_RECONCILE"%}
             <li class="menu-accordion {% if 'reconcile' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Reconcile</span> </a>
+                {% if request.user|has_permission_name:"CAN_MANAGE_PARTNER_RECONCILE"%}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'partner' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Partner</span> </a>
@@ -278,6 +280,7 @@
                         </ul>
                     </li>
                 </ul>
+                {% endif %}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'sof' in request.path %}open{% endif %}">
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source of fund</span> </a>
@@ -292,6 +295,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
             <li>
                 {% if user.is_authenticated %}
                 <a href="{% url 'authentications:logout' %}">
