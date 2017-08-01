@@ -4,6 +4,7 @@ from web_admin import setup_logger, RestFulClient, api_settings
 
 from braces.views import GroupRequiredMixin
 
+from django.contrib import messages
 from django.views.generic.base import TemplateView
 
 import logging
@@ -38,11 +39,15 @@ class PermissionList(GroupRequiredMixin, TemplateView):
             self.logger.info("Permissions have [{}] permissions in database".format(len(data)))
             context['permissions'] = data
         else:
-            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                        status_code == 'invalid_access_token'):
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 logger.info("{} for {} username".format(status_message, self.request.user))
                 raise InvalidAccessToken(status_message)
-
+            else:
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    status_message
+                )
         return context
 
     def _get_headers(self):
