@@ -21,15 +21,17 @@ class RestFulClient:
             processing_time = end_time - start_time
             http_status_code = response.status_code
             loggers.info(
-                'Get {path} result with [{http_status_code}] HTTP status code. Processing time: [{processing_time}]'.format(
-                    path=url, http_status_code=http_status_code, processing_time=processing_time))
+                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
+                                                                                     http_status_code=http_status_code))
+            loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
-                loggers.info('Status code: [{status_code}]. Status message: [{status_message}]'
-                             .format(status_code=status_code, status_message=status_message))
+                loggers.info('Status code: [{status_code}].'.format(status_code=status_code))
+                loggers.info('Status message: [{status_message}].'.format(status_message=status_message))
+
                 data = response_json.get('data', '')
                 is_success = (http_status_code == 200) and (status_code == "success")
             except Exception as e:
@@ -53,15 +55,16 @@ class RestFulClient:
             processing_time = end_time - start_time
             http_status_code = response.status_code
             loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code. Processing time: [{processing_time}]'
-                .format(path=url, http_status_code=http_status_code, processing_time=processing_time))
+                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
+                                                                                     http_status_code=http_status_code))
+            loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
-                loggers.info('Status code: [{status_code}]. Status message: [{status_message}]'
-                             .format(status_code=status_code, status_message=status_message))
+                loggers.info('Status code: [{status_code}].'.format(status_code=status_code))
+                loggers.info('Status message: [{status_message}].'.format(status_message=status_message))
 
                 data = response_json.get('data', '')
 
@@ -87,15 +90,16 @@ class RestFulClient:
             end_time = time.time()
             processing_time = end_time - start_time
             loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code. Processing time: [{processing_time}]'.format(
-                    path=url, http_status_code=http_status_code, processing_time=processing_time))
+                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
+                                                                                     http_status_code=http_status_code))
+            loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
-                loggers.info('Status code: [{status_code}]. Status message: [{status_message}]'
-                             .format(status_code=status_code, status_message=status_message))
+                loggers.info('Status code: [{status_code}].'.format(status_code=status_code))
+                loggers.info('Status message: [{status_message}].'.format(status_message=status_message))
 
                 data = response_json.get('data', '')
                 is_success = (http_status_code == 200) and (status_code == "success")
@@ -121,15 +125,16 @@ class RestFulClient:
             processing_time = end_time - start_time
             http_status_code = response.status_code
             loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code. Processing time: [{processing_time}]'
-                .format(path=url, http_status_code=http_status_code, processing_time=processing_time))
+                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
+                                                                                     http_status_code=http_status_code))
+            loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
-                loggers.info('Status code: [{status_code}]. Status message: [{status_message}]'
-                             .format(status_code=status_code, status_message=status_message))
+                loggers.info('Status code: [{status_code}].'.format(status_code=status_code))
+                loggers.info('Status message: [{status_message}].'.format(status_message=status_message))
 
                 is_success = (http_status_code == 200) and (status_code == "success")
             except Exception as e:
