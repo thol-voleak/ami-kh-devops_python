@@ -38,6 +38,7 @@ class SystemUserCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "username": None,
             "firstname": None,
             "lastname": None,
+            "mobile_number": None,
             "email": None,
             "password": None,
         }
@@ -60,6 +61,7 @@ class SystemUserCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "username": request.POST.get('username'),
             "firstname": request.POST.get('firstname'),
             "lastname": request.POST.get('lastname'),
+            "mobile_number": request.POST.get('mobile_number'),
             "email": request.POST.get('email'),
             "password": encrypt_text(request.POST.get('password')),
         }

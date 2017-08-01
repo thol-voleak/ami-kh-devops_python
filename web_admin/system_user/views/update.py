@@ -38,7 +38,6 @@ class SystemUserUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
                                                                                 self.logger, None, None, system_user_id)
-
         context = {
             'system_user_info': data[0],
             'msg': self.request.session.pop('system_user_update_msg', None)
@@ -56,12 +55,14 @@ class SystemUserUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
         username = request.POST.get('username_input')
         firstname = request.POST.get('firstname_input')
         lastname = request.POST.get('lastname_input')
+        mobile = request.POST.get('mobile_number_input')
         email = request.POST.get('email_input')
 
         params = {
             "username": username,
             "firstname": firstname,
             "lastname": lastname,
+            "mobile_number": mobile,
             "email": email
         }
 
