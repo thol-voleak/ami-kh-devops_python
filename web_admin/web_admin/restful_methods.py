@@ -10,7 +10,7 @@ from authentications.apps import InvalidAccessToken
 
 
 class RESTfulMethods(GetHeaderMixin):
-    def _get_method(self, api_path, func_description=None, logger=None, is_getting_list=False, params={}):
+    def _get_method(self, api_path, func_description=None, logger=None, is_getting_list=False, params={}, timeout=None):
         """
         :param api_path: 
         :param func_description: 
@@ -25,56 +25,63 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = settings.DOMAIN_NAMES + api_path
 
-        self.logger.info('API-Path: {path}'.format(path=url))
-        start_time = time.time()
-        response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
-        end_time = time.time()
-
-        self.logger.info("Response_code: {}".format(response.status_code))
-        self.logger.info("Response_time: {}".format(end_time - start_time))
-
-        response_json = response.json()
-        response_json['status_code'] = response.status_code
+        if timeout is None:
+            timeout = settings.GLOBAL_TIMEOUT
 
         try:
-            status = response_json.get('status', {})
-            code = status.get('code', '')
-        except Exception as e:
-            self.logger.error(e)
-            raise Exception(response.content)
+            self.logger.info('API-Path: {path}'.format(path=url))
+            start_time = time.time()
+            response = requests.get(url, headers=self._get_headers(), verify=settings.CERT, timeout=timeout)
+            end_time = time.time()
 
-        self.logger.info("Status code [{}] and message [{}]".format(status, code))
-        if response.status_code == 200 and code == "success":
-            if is_getting_list:
-                default_data = []
-            else:
-                default_data = {}
-            data = response_json.get('data', default_data)
+            self.logger.info("Response_code: {}".format(response.status_code))
+            self.logger.info("Response_time: {}".format(end_time - start_time))
 
-            if len(params) > 0:
-                self.logger.info("Params: {} ".format(params))
+            response_json = response.json()
+            response_json['status_code'] = response.status_code
 
-            self.logger.info('Response_code: {}'.format(response.status_code))
-            if is_getting_list:
-                self.logger.info('Response_content_count: {}'.format(len(data)))
-            else:
-                self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Response_time: {}'.format(end_time - start_time))
-
-            result = data, True
-        else:
-            message = status.get('message', '')
-            if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token', 'authentication_fail']:
-                self.logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
-            if message:
-                result = message, False
-            else:
+            try:
+                status = response_json.get('status', {})
+                code = status.get('code', '')
+            except Exception as e:
+                self.logger.error(e)
                 raise Exception(response.content)
+
+            self.logger.info("Status code [{}] and message [{}]".format(status, code))
+            if response.status_code == 200 and code == "success":
+                if is_getting_list:
+                    default_data = []
+                else:
+                    default_data = {}
+                data = response_json.get('data', default_data)
+
+                if len(params) > 0:
+                    self.logger.info("Params: {} ".format(params))
+
+                self.logger.info('Response_code: {}'.format(response.status_code))
+                if is_getting_list:
+                    self.logger.info('Response_content_count: {}'.format(len(data)))
+                else:
+                    self.logger.info('Response_content: {}'.format(response.text))
+                self.logger.info('Response_time: {}'.format(end_time - start_time))
+
+                result = data, True
+            else:
+                message = status.get('message', '')
+                if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
+                            'authentication_fail']:
+                    self.logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
+        except requests.exceptions.Timeout:
+            result = 'timeout', False
 
         return result
 
-    def _put_method(self, api_path, func_description, logger=None, params={}):
+    def _put_method(self, api_path, func_description, logger=None, params={}, timeout=None):
         """
         :param api_path: the API path
         :param func_description: the description of method, used for logging
@@ -88,42 +95,51 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = settings.DOMAIN_NAMES + api_path
 
+        if timeout is None:
+            timeout = settings.GLOBAL_TIMEOUT
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
-
-        start_date = time.time()
-        response = requests.put(url, headers=self._get_headers(), json=params, verify=settings.CERT)
-        done = time.time()
-
-        # Filter sensitive data
-        self._filter_sensitive_fields(params=params)
-        self.logger.info("Params: {} ".format(params))
-        self.logger.info('Response_code: {}'.format(response.status_code))
-        self.logger.info('Response_content: {}'.format(response.text))
-        self.logger.info('Response_time: {}'.format(done - start_date))
-
         try:
-            response_json = response.json()
-            status = response_json.get('status', {})
-            code = status.get('code', '')
-        except Exception as e:
-            self.logger.error(e)
-            raise Exception(response.content)
+            start_date = time.time()
+            response = requests.put(url, headers=self._get_headers(), json=params, verify=settings.CERT,
+                                    timeout=timeout)
+            done = time.time()
 
-        if code == "success":
-            result = response_json.get('data', {}), True
-        else:
-            message = status.get('message', '')
-            if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token', 'authentication_fail']:
-                self.logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
+            # Filter sensitive data
+            self._filter_sensitive_fields(params=params)
+            self.logger.info("Params: {} ".format(params))
+            self.logger.info('Response_code: {}'.format(response.status_code))
+            self.logger.info('Response_content: {}'.format(response.text))
+            self.logger.info('Response_time: {}'.format(done - start_date))
 
-            if message:
-                result = message, False
-            else:
+            try:
+                response_json = response.json()
+                status = response_json.get('status', {})
+                code = status.get('code', '')
+            except Exception as e:
+                self.logger.error(e)
                 raise Exception(response.content)
+
+            if code == "success":
+                result = response_json.get('data', {}), True
+            else:
+                message = status.get('message', '')
+                if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
+                            'authentication_fail']:
+                    self.logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
+        except requests.exceptions.Timeout:
+            result = 'timeout', False
+
         return result
 
-    def _post_method(self, api_path, func_description=None, logger=None, params={}, only_return_data=True):
+    def _post_method(self, api_path, func_description=None, logger=None, params={}, only_return_data=True,
+                     timeout=None):
         """
         :param api_path: 
         :param func_description: 
@@ -137,89 +153,104 @@ class RESTfulMethods(GetHeaderMixin):
         else:
             url = settings.DOMAIN_NAMES + api_path
 
+        if timeout is None:
+            timeout = settings.GLOBAL_TIMEOUT
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
-
-        start_time = time.time()
-        response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT)
-        end_time = time.time()
-
-        # Filter sensitive data
-        self._filter_sensitive_fields(params=params)
-
-        self.logger.info("Params: {} ".format(params))
-        self.logger.info("Response_code: {}".format(response.status_code))
-
-        response_json = response.json()
-
-        self.logger.info("Response_time: {}".format(end_time - start_time))
-        response_json['status_code'] = response.status_code
-
         try:
-            status = response_json.get('status', {})
-            code = status.get('code', '')
-        except Exception as e:
-            self.logger.error(e)
-            raise Exception(response.content)
+            start_time = time.time()
+            response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT,
+                                     timeout=timeout)
+            end_time = time.time()
 
-        if code == "success":
-            data = response_json.get('data', {})
-            if isinstance(data, list):
-                self.logger.info("Response_content_count: {}".format(len(data)))
-            else:
-                self.logger.info("Response_content: {}".format(response.content))
-            if only_return_data:
-                result = data, True
-            else:
-                result = response_json, True
-        else:
-            self.logger.info("Response_content: {}".format(response.text))
-            message = status.get('message', '')
-            if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token', 'authentication_fail']:
-                self.logger.info("{} for {} username".format(message, self.request.user))
-                raise InvalidAccessToken(message)
+            # Filter sensitive data
+            self._filter_sensitive_fields(params=params)
 
-            if message:
-                result = message, False
-            else:
+            self.logger.info("Params: {} ".format(params))
+            self.logger.info("Response_code: {}".format(response.status_code))
+
+            response_json = response.json()
+
+            self.logger.info("Response_time: {}".format(end_time - start_time))
+            response_json['status_code'] = response.status_code
+
+            try:
+                status = response_json.get('status', {})
+                code = status.get('code', '')
+            except Exception as e:
+                self.logger.error(e)
                 raise Exception(response.content)
+
+            if code == "success":
+                data = response_json.get('data', {})
+                if isinstance(data, list):
+                    self.logger.info("Response_content_count: {}".format(len(data)))
+                else:
+                    self.logger.info("Response_content: {}".format(response.content))
+                if only_return_data:
+                    result = data, True
+                else:
+                    result = response_json, True
+            else:
+                self.logger.info("Response_content: {}".format(response.text))
+                message = status.get('message', '')
+                if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
+                            'authentication_fail']:
+                    self.logger.info("{} for {} username".format(message, self.request.user))
+                    raise InvalidAccessToken(message)
+
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
+        except requests.exceptions.Timeout:
+            result = 'timeout', False
 
         return result
 
-    def _delete_method(self, api_path, func_description, logger=None, params={}):
+    def _delete_method(self, api_path, func_description, logger=None, params={}, timeout=None):
 
         if 'http' in api_path:
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
 
+        if timeout is None:
+            timeout = settings.GLOBAL_TIMEOUT
+
         self.logger.info('API-Path: {path}'.format(path=api_path))
-
-        start_time = time.time()
-        response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT)
-        end_time = time.time()
-
-        self.logger.info("Response_code: {}".format(response.status_code))
-        self.logger.info("Response_content: {}".format(response.content))
-        self.logger.info("Response_time: {}".format(end_time - start_time))
-
-        response_json = response.json()
         try:
-            status = response_json.get('status', {})
-            code = status.get('code', '')
-        except Exception as e:
-            self.logger.error(e)
-            raise Exception(response.content)
+            start_time = time.time()
+            response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT,
+                                       timeout=timeout)
+            end_time = time.time()
 
-        if code == "success":
-            result = response_json.get('data', {}), True
-        else:
-            message = status.get('message', '')
-            if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token', 'authentication_fail']:
-                raise InvalidAccessToken(message)
-            if message:
-                result = message, False
-            else:
+            self.logger.info("Response_code: {}".format(response.status_code))
+            self.logger.info("Response_content: {}".format(response.content))
+            self.logger.info("Response_time: {}".format(end_time - start_time))
+
+            response_json = response.json()
+            try:
+                status = response_json.get('status', {})
+                code = status.get('code', '')
+            except Exception as e:
+                self.logger.error(e)
                 raise Exception(response.content)
+
+            if code == "success":
+                result = response_json.get('data', {}), True
+            else:
+                message = status.get('message', '')
+                if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
+                            'authentication_fail']:
+                    raise InvalidAccessToken(message)
+                if message:
+                    result = message, False
+                else:
+                    raise Exception(response.content)
+        except requests.exceptions.Timeout:
+            result = 'timeout', False
+
         return result
 
     def _get_precision_method(self, api_path, func_description, logger=None, is_getting_list=False, params={}):
