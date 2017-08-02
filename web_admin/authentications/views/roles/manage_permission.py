@@ -63,6 +63,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
             self.logger.info("Got [{}] permission in database".format(len(data_permissions)))
             context['permissions'] = data_permissions
             context['role_permissions'] = data_role_perm
+            context['messages'] = self.request.session.pop('msg', None)
 
         self.logger.info('========== End get permission entities of role ==========')
         return context
@@ -109,11 +110,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
         if len(params_to_insert['permissions']) > 0:
             is_success_add = self._add_role_permission(role_id, params_to_insert)
 
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            'Updated data successfully'
-        )
+        request.session['msg'] = 'Updated data successfully'
         self.logger.info('========== End update permission entities of role ==========')
         return redirect('authentications:role_manage_permission', role_id=role_id)
 

@@ -10,7 +10,7 @@
     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
         <div class="col-xs-12">
-            <div class="alert alert-success alert-dismissable" id="msg-roles">
+            <div class="alert alert-success alert-dismissable" id="msg-update-permissions">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <strong>{{ message }}</strong>
             </div>
@@ -29,19 +29,9 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                {% for message in messages %}
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissable" id="msg-update-permissions">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message|capfirst }}</strong>
-                    </div>
-                </div>
-                {% endfor %}
                 <form class="form-horizontal" role="form" method="post"
                       action="{% url 'authentications:role_manage_permission' role_id %}">
                     {% csrf_token %}
-
-
                     <div class="col-lg-12">
                         <div class="table-responsive">
                             <div class="pull-right">
