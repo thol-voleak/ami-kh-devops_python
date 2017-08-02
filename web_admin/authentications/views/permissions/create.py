@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
+from authentications.views.permissions_client import PermissionsClient
 from web_admin import setup_logger, RestFulClient, api_settings
 
 from braces.views import GroupRequiredMixin
@@ -47,9 +48,9 @@ class PermissionCreate(GroupRequiredMixin, TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_PERMISSION_PATH,
-                                                                           loggers=self.logger,
-                                                                           headers=self._get_headers(), params=params)
+        is_success, status_code, status_message, data = PermissionsClient.create_permission(headers=self._get_headers(),
+                                                                                            params=params,
+                                                                                            logger=self.logger)
         if is_success:
             messages.add_message(
                 request,
@@ -58,11 +59,12 @@ class PermissionCreate(GroupRequiredMixin, TemplateView):
             )
             self.logger.info('========== End creating permission ==========')
             return redirect('authentications:permissions_list')
-        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                    status_code == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message, self.request.user))
-            raise InvalidAccessToken(status_message)
         else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                status_message
+            )
             return render(request, self.template_name)
 
     def _get_headers(self):
