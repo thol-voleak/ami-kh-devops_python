@@ -100,9 +100,11 @@
                         <a href="{% url 'service_group:service_group_list' %}"> <span>Service Groups</span> </a>
                     </li>
                     {% endif %}
+                    {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE" %}
                     <li class="class={% if url_name == 'services_list' %} active{% endif %}">
                         <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
                     </li>
+                    {% endif %}
 
                 </ul>
             </li>
