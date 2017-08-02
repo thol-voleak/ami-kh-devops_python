@@ -45,7 +45,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
             loggers=self.logger, params=params)
         if (status_code_role_perm == "access_token_expire") or (status_code_role_perm == 'authentication_fail') or (
                     status_code_role_perm == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message_role_perm, self.request.user))
+            self.logger.info("{} for {} username".format(status_message_role_perm, self.request.user))
             raise InvalidAccessToken(status_message_role_perm)
 
         role_permission_id = []
@@ -130,7 +130,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
 
         if (status_code_delete == "access_token_expire") or (status_code_delete == 'authentication_fail') or (
                     status_code_delete == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message_delete, self.request.user))
+            self.logger.info("{} for {} username".format(status_message_delete, self.request.user))
             raise InvalidAccessToken(status_message_delete)
         return is_success_delete
 
@@ -145,7 +145,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
                                                                            params=params_to_insert)
         if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message, self.request.user))
+            self.logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
         return is_success
 
@@ -158,7 +158,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
             if (status_code_permissions == "access_token_expire") or (
                         status_code_permissions == 'authentication_fail') or (
                         status_code_permissions == 'invalid_access_token'):
-                logger.info("{} for {} username".format(status_message_permissions, self.request.user))
+                self.logger.info("{} for {} username".format(status_message_permissions, self.request.user))
                 raise InvalidAccessToken(status_message_permissions)
 
             if is_success_permissions:

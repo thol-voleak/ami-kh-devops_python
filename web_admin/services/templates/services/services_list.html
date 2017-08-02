@@ -8,11 +8,13 @@
         <h3>Services</h3>
     </div>
 
+    {% if permissions.CAN_ADD_SERVICE %}
     <div class="pull-right mr15 text-right">
         <a href="{% url 'services:service_create' %}">
             <input id="btn_add" class="btn btn-success btn-block mb15" type="button" value="Add"/>
         </a>
     </div>
+    {% endif %}
 
     {% for message in messages %}
     <div class="col-xs-12">
@@ -60,6 +62,7 @@
                         {% if not services.is_deleted %}
                         <div id="service_btn_group">
                             <div class="btn-group">
+                                {% if permissions.CAN_VIEW_SERVICE %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"
                                    role="button"
@@ -67,6 +70,8 @@
                                    href="{% url 'services:service_detail' services.service_id %}">
                                     <span class="small">Detail</span>
                                 </a>
+                                {% endif %}
+                                {% if permissions.CAN_EDIT_SERVICE %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
@@ -74,6 +79,8 @@
                                    href="{% url 'services:update_service' services.service_id %}">
                                     <span class="small">Edit</span>
                                 </a>
+                                {% endif %}
+                                {% if permissions.CAN_EDIT_COMMAND_SERVICE %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
@@ -81,6 +88,8 @@
                                    href="{% url 'services:command_list' services.service_id %}">
                                     <span class="small">Command</span>
                                 </a>
+                                {% endif %}
+                                {% if permissions.CAN_DELETE_SERVICE %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-danger"
                                    role="button"
@@ -88,6 +97,7 @@
                                    href="{% url 'services:delete_service' services.service_id %}">
                                     <span class="small">Delete</span>
                                 </a>
+                                {% endif %}
                             </div>
                         </div>
                         {% endif %}

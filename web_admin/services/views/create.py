@@ -4,17 +4,25 @@ from django.contrib import messages
 from multiprocessing.pool import ThreadPool
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
-from web_admin import ajax_functions
 import logging
-import json
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
+class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "services/service_create.html"
     logger = logger
+
+    group_required = "CAN_ADD_SERVICE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
