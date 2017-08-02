@@ -91,7 +91,7 @@
                 {% endif %}
             </li>
             {% endif %}
-
+            {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP" or request.user|has_permission_name:"CAN_MANAGE_SERVICE"%}
             <li class="menu-accordion class={% if 'services' in request.path or 'service-group' in request.path %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
                 <ul class="sub-menu">
@@ -108,6 +108,7 @@
 
                 </ul>
             </li>
+            {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
                 <li class="menu-accordion {% if 'agent' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
