@@ -43,7 +43,7 @@ class PermissionsClient:
                 logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
 
-        if len(data) > 0:
+        if is_success and len(data) > 0:
             permission_detail = data[0]
 
         return is_success, status_code, status_message, permission_detail
@@ -62,3 +62,15 @@ class PermissionsClient:
                 raise InvalidAccessToken(status_message)
 
         return is_success, status_code, status_message, data
+
+    @classmethod
+    def delete_permission(cls, id, headers, logger):
+        url = api_settings.PERMISSION_DETAIL_PATH.format(permission_id=id)
+        is_success, status_code, status_message = RestFulClient.delete(url=url, headers=headers, loggers=logger)
+
+        if not is_success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
+
+        return is_success, status_code, status_message

@@ -1,6 +1,7 @@
 from braces.views import GroupRequiredMixin
 
 from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
+from authentications.views.roles_client import RolesClient
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
 
@@ -49,10 +50,10 @@ class RoleCreate(GroupRequiredMixin, TemplateView):
             'is_page_level': True
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.CREATE_ROLE_PATH,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           params=params)
+        is_success, status_code, status_message, data = RolesClient.create_role(
+            headers=self._get_headers(), params=params, logger=self.logger
+        )
+
         if is_success:
             messages.add_message(
                 request,
@@ -62,6 +63,12 @@ class RoleCreate(GroupRequiredMixin, TemplateView):
             self.logger.info('========== End creating role ==========')
             return redirect('authentications:role_list')
         else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                status_message
+            )
+            self.logger.error('========== End creating role got error [{}] =========='.format(status_message))
             return render(request, self.template_name)
 
     def _get_headers(self):

@@ -35,7 +35,8 @@ class PermissionList(GroupRequiredMixin, TemplateView):
         context = super(PermissionList, self).get_context_data(**kwargs)
 
         is_success, status_code, status_message, permissions = PermissionsClient.get_permissions(
-            headers=self._get_headers(), params={}, logger=self.logger)
+            headers=self._get_headers(), params={}, logger=self.logger
+        )
 
         if is_success:
             page_permissions_list = self._check_permission_list_page()
@@ -43,11 +44,7 @@ class PermissionList(GroupRequiredMixin, TemplateView):
             context['permissions'] = permissions
             context['page_permissions_list'] = page_permissions_list
         else:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                status_message
-            )
+            messages.error(self.request, status_message)
         return context
 
     def _get_headers(self):

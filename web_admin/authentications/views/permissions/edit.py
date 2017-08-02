@@ -48,13 +48,9 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
 
         if is_success:
             context['permission'] = permission_detail
-            self.logger.info('========== End get permission entity ==========')
         else:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                status_message
-            )
+            messages.error(self.request, status_message)
+        self.logger.info('========== End get permission entity ==========')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -75,17 +71,9 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
         )
 
         if is_success:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Updated data successfully'
-            )
+            messages.success(self.request, 'Updated data successfully')
         else:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                status_message
-            )
+            messages.error(self.request, status_message)
         self.logger.info('========== End update permission entity ==========')
         return redirect('authentications:permissions_list')
 

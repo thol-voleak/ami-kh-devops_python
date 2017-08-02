@@ -44,16 +44,13 @@ class PermissionDetailView(GroupRequiredMixin, TemplateView):
 
         self.logger.info("Searching permission with [{}] id".format(permission_id))
         is_success, status_code, status_message, permission_detail = PermissionsClient.get_permission_detail(
-            headers=self._get_headers(), params=params, logger=self.logger)
+            headers=self._get_headers(), params=params, logger=self.logger
+        )
 
         if is_success:
             context['permission'] = permission_detail
         else:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                status_message
-            )
+            messages.error(self.request, status_message)
         self.logger.info('========== End get permission entity ==========')
         return context
 

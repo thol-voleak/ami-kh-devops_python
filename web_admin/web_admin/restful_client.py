@@ -54,10 +54,12 @@ class RestFulClient:
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
-            loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
-                                                                                     http_status_code=http_status_code))
+
+            loggers.info('Get {path} result with {http_status_code} HTTP status code.'.format(
+                path=url, http_status_code=http_status_code)
+            )
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
+
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
