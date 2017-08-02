@@ -45,7 +45,7 @@ class ManagePermissionView(GroupRequiredMixin, TemplateView):
             loggers=self.logger, params=params)
         if (status_code_role_perm == "access_token_expire") or (status_code_role_perm == 'authentication_fail') or (
                     status_code_role_perm == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message_role_perm, self.request.user))
+            self.logger.info("{} for {} username".format(status_message_role_perm, self.request.user))
             raise InvalidAccessToken(status_message_role_perm)
 
         role_permission_id = []
