@@ -61,8 +61,6 @@ def _post_method(request, api_path, func_description, logger, params={}, timeout
 
     start = time.time()
     try:
-        import ipdb;
-        ipdb.set_trace()
         response = requests.post(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT,
                                  timeout=timeout)
     except requests.exceptions.Timeout:

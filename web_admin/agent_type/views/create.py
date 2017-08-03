@@ -54,11 +54,7 @@ class AgentTypeCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                           func_description="Agent Type",
                                           logger=logger, params=params)
         if success:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Added data successfully'
-            )
+            messages.success(request, 'Added data successfully')
             self.logger.info('========== Finished creating agent type ==========')
             return redirect('agent_type:agent-type-list')
         else:
