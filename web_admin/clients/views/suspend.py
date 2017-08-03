@@ -24,14 +24,5 @@ def suspend(request, client_id):
     }
 
     result = ajax_functions._put_method(request, url, "", logger, params)
-    response = result.getvalue()
-    json_data = json.loads(response.decode('utf-8'))
-
-    if (json_data['status'] == 2):
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            message='Suspended data successfully'
-        )
     logger.info('========== Finish suspending client ==========')
     return result
