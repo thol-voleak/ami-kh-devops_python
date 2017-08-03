@@ -40,7 +40,7 @@
     {% endif %}
     {% if add_client_msg is not None %}
     <div class="col-xs-12 mb5">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class="alert alert-success alert-dismissable" id="msg-add-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ add_client_msg }}</strong>
         </div>
@@ -167,7 +167,14 @@
 	    $('#alert-client').addClass("alert-danger");
 	    //$("#alert-client").prop("hidden", false);
 	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
         $("#alert-client").show();
+
+
 
 	    $("html, body").animate({scrollTop: 0}, "slow");
 	}
@@ -178,6 +185,11 @@
 	    $('#alert-client').addClass("alert-success");
 	    //$("#alert-client").prop("hidden", false);
 	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
 	    $("#alert-client").show();
 	    $("html, body").animate({scrollTop: 0}, "slow");
 	}
