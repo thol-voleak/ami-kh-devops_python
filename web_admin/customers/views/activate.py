@@ -20,15 +20,5 @@ def activate(request, customer_id):
         'is_suspended': 'false',
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
-    response = result.getvalue()
-    json_data = json.loads(response)
-
-    if (json_data['status'] == 2):
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            message='Activated data successfully'
-        )
-
     logger.info('========== Finish activating customer ==========')
     return result

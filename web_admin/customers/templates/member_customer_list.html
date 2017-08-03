@@ -23,6 +23,13 @@
     </div>
     {% endfor %}
 
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="get"
               action="{% url 'customers:customer-list' %}">
@@ -148,11 +155,13 @@
                         {% if not customer.is_suspended %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
-                                    onclick="suspend('{{ customer.id }}')">Suspend</button>
+                                    data-customer-id='{{ customer.id }}'
+                                    onclick="doSuspendOrActivate(this)">Suspend</button>
                         {% else %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
-                                    onclick="activate('{{ customer.id }}')">Activate</button>
+                                    data-customer-id='{{ customer.id }}'
+                                    onclick="doSuspendOrActivate(this)">Activate</button>
                         {% endif %}
                     {% endif %}
                     </td>
@@ -167,14 +176,36 @@
 
 <script>
     function showErrorMessage(msg) {
-        console.log('showErrorMessage: ' + msg);
-        $("#alert-error-msg").text(msg);
-        $("#alert-error").prop("hidden", false);
-        $("#alert-error").fadeIn(1000);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-success");
+	    $('#alert-client').addClass("alert-danger");
+	    $("#msg-add-service").prop("hidden", true);
+	    //$("#alert-client").prop("style", "display: block;");
+        $("#alert-client").show();
 
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-danger");
+	    $('#alert-client').addClass("alert-success");
+	    $("#msg-add-service").prop("hidden", true);
+	    //$("#alert-client").prop("style", "display: block;");
+	    $("#alert-client").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function doSuspendOrActivate(e) {
+            var title = e.innerText;
+            if (title === 'Activate') {
+                activate(e);
+            } else {
+                suspend(e);
+            }
     }
-    function suspend(customer_id) {
+
+    function suspend(e) {
         swal({
                 title: "Are you sure you want to suspend?",
                 type: "warning",
@@ -188,8 +219,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(customer_id)
-                    var url = '/admin-portal/customers/suspend/' + customer_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -201,21 +233,25 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "Activate";
+                                e.disabled = true;
+                                e.disabled = false;
+                                showSuccessMessage('Suspended data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error suspending the customer ID' + customer_id + msg)
+                            console.log('Error suspending the customer ID' + customer_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
             });
     }
 
-    function activate(customer_id) {
+    function activate(e) {
         swal({
                 title: "Are you sure you want to activate?",
                 type: "warning",
@@ -229,8 +265,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(customer_id)
-                    var url = '/admin-portal/customers/activate/' + customer_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -243,14 +280,18 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "Suspend";
+                                e.disabled = true;
+                                e.disabled = false;
+                                showSuccessMessage('Activated data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error activating the customer ID' + customer_id + msg)
+                            console.log('Error activating the customer ID' + customer_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
