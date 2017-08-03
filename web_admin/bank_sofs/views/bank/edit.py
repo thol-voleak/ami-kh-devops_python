@@ -113,15 +113,22 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             )
             return redirect('bank_sofs:bank_sofs_list')
         else:
-            self.logger.info('========== Finished update bank profile ==========')
-            messages.add_message(
-                request,
-                messages.ERROR,
-                data
-            )
+            if data == 'timeout':
+                messages.error(request, "Timeout updating configuration, please try again or contact technical support")
+            else:
+                messages.error(request, data)
             params['id'] = bank_id
-            currencies = self._get_currencies_list()
-            context = {'bank': params, 'currencies': currencies}
+
+            is_success, status_code, data = BanksClient.get_currencies_list(
+                header=self._get_headers(), logger=self.logger
+            )
+
+            if not is_success:
+                messages.error(request, data)
+                data = []
+
+            context = {'bank': params, 'currencies': data}
+            self.logger.info('========== Finished update bank profile ==========')
             return render(request, self.template_name, context)
 
     def _get_headers(self):

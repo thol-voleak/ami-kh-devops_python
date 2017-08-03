@@ -15,14 +15,13 @@ class RestFulClient:
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
         try:
+            loggers.info('Get path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.get(url, headers=headers, verify=settings.CERT, timeout=timeout)
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
-            loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
-                                                                                     http_status_code=http_status_code))
+            loggers.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
@@ -49,15 +48,13 @@ class RestFulClient:
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
         try:
+            loggers.info('Get path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.post(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
-
-            loggers.info('Get {path} result with {http_status_code} HTTP status code.'.format(
-                path=url, http_status_code=http_status_code)
-            )
+            loggers.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             try:

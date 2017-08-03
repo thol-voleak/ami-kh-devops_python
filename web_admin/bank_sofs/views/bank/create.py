@@ -93,7 +93,10 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             return redirect('bank_sofs:bank_sofs_list')
         else:
             self.logger.info('========== Finished creating bank profile got error [{}] =========='.format(status_message))
-            messages.error(request, status_message)
+            if data == 'timeout':
+                messages.error(request, "Timeout updating configuration, please try again or contact technical support")
+            else:
+                messages.error(request, data)
 
             is_success, status_code, data = BanksClient.get_currencies_list(
                 header=self._get_headers(), logger=self.logger
