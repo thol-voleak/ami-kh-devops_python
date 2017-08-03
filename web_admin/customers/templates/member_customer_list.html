@@ -242,6 +242,8 @@
                                 e.innerHTML = "Activate";
                                 e.disabled = true;
                                 e.disabled = false;
+                                var status = e.parentNode.previousElementSibling;
+                                status.innerHTML = "Suspended";
                                 showSuccessMessage('Suspended data successfully');
                             } else {
                                 // Failed
@@ -289,6 +291,8 @@
                                 e.innerHTML = "Suspend";
                                 e.disabled = true;
                                 e.disabled = false;
+                                var status = e.parentNode.previousElementSibling;
+                                status.innerHTML = "Active";
                                 showSuccessMessage('Activated data successfully');
                             } else {
                                 // Failed
