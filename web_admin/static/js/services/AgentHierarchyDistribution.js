@@ -2,45 +2,45 @@ function startEdittingTableRow(tr) {
     resetDataTableRow(tr);
 
     $(tr).find("span").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("select").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("input").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("div.Normal").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("div.Editting").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 }
 
 function endEdittingTableRow(tr) {
     $(tr).find("span").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("select").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("input").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("div.Normal").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("div.Editting").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 }
 
@@ -106,7 +106,7 @@ function tapOnSave(e) {
 }
 
 function validateForm(nRow) {
-    var text_input = document.getElementById('txt_agent_hier_fee_rate_edit');
+    var text_input = nRow.getElementById('txt_agent_hier_fee_rate_edit');
     var jqInputs = $('input', nRow);
     var rate_value = jqInputs[0].value;//2
     var text_element = jqInputs[0];//2
@@ -165,7 +165,7 @@ function saveAgentHierarchyDistribution(nRow) {
     var token = csrf_token;
 
     var ActorType = $(jqSelects[1]).find(":selected").html();
-    var specificId = document.getElementById("txt_agent_hier_fee_specific_id_edit");
+    var specificId = nRow.getElementById("txt_agent_hier_fee_specific_id_edit");
 
     //Validate Input Value specific_actor_id
     if(ActorType == 'Specific ID' && jqSelects[2].value == "") {
