@@ -8,12 +8,22 @@
     </div>
 
     {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-update-scope">
+        <div class='alert alert-success alert-dismissable' id="msg-update-scope">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ message|capfirst }}</strong>
         </div>
     </div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-update-scope">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+    {% endif %}
     {% endfor %}
 
     <div class="panel-body">
