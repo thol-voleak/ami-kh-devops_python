@@ -96,7 +96,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             if data == 'timeout':
                 messages.error(request, "Timeout updating configuration, please try again or contact technical support")
             else:
-                messages.error(request, data)
+                messages.error(request, status_message)
 
             is_success, status_code, data = BanksClient.get_currencies_list(
                 header=self._get_headers(), logger=self.logger
