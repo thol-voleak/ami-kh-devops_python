@@ -2,45 +2,45 @@ function startEdittingTableRow(tr) {
     resetDataTableRow(tr);
 
     $(tr).find("span").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("select").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("input").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("div.Normal").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("div.Editting").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 }
 
 function endEdittingTableRow(tr) {
     $(tr).find("span").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("select").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("input").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 
     $(tr).find("div.Normal").each(function () {
-        $(this).prop("style", "display: block;");
+        $(this).show();
     });
 
     $(tr).find("div.Editting").each(function () {
-        $(this).prop("style", "display: none;");
+        $(this).hide();
     });
 }
 
