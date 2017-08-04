@@ -183,7 +183,7 @@ class RESTfulMethods(GetHeaderMixin):
 
             if code == "success":
                 data = response_json.get('data', {})
-                if isinstance(data, list):
+                if isinstance(data, list) and len(data) > 1:
                     self.logger.info("Response_content_count: {}".format(len(data)))
                 else:
                     self.logger.info("Response_content: {}".format(response.content))
