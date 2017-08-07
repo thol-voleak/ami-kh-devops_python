@@ -121,7 +121,7 @@ class RESTfulMethods(GetHeaderMixin):
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
-
+            self.logger.info("Status code [{}] and message [{}]".format(status, code))
             if code == "success":
                 result = response_json.get('data', {}), True
             else:
@@ -182,7 +182,7 @@ class RESTfulMethods(GetHeaderMixin):
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
-
+            self.logger.info("Status code [{}] and message [{}]".format(status, code))
             if code == "success":
                 data = response_json.get('data', {})
                 if isinstance(data, list) and len(data) > 1:
@@ -240,6 +240,7 @@ class RESTfulMethods(GetHeaderMixin):
                 self.logger.error(e)
                 raise Exception(response.content)
 
+            self.logger.info("Status code [{}] and message [{}]".format(status, code))
             if code == "success":
                 result = response_json.get('data', {}), True
             else:
@@ -287,7 +288,7 @@ class RESTfulMethods(GetHeaderMixin):
         except Exception as e:
             self.logger.error(e)
             raise Exception(response.content)
-
+        self.logger.info("Status code [{}] and message [{}]".format(status, code))
         if response.status_code == 200 and code == "success":
             if is_getting_list:
                 default_data = []
