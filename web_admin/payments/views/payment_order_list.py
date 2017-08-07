@@ -53,12 +53,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
 
-        self.logger.info('order_id: {}'.format(order_id))
-        self.logger.info('service_name: {}'.format(service_name))
-        self.logger.info('payer_user_id: {}'.format(payer_user_id))
-        self.logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
-        self.logger.info('payee_user_id: {}'.format(payee_user_id))
-        self.logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
+        # self.logger.info('order_id: {}'.format(order_id))
+        # self.logger.info('service_name: {}'.format(service_name))
+        # self.logger.info('payer_user_id: {}'.format(payer_user_id))
+        # self.logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
+        # self.logger.info('payee_user_id: {}'.format(payee_user_id))
+        # self.logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
 
         body = {}
         if order_id:
@@ -73,6 +73,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['payee_user_id'] = payee_user_id
         if payee_user_type_id.isdigit() and payee_user_type_id != '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
+
 
         data, status = self.get_payment_order_list(body)
         if data:
