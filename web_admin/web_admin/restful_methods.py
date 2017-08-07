@@ -29,13 +29,17 @@ class RESTfulMethods(GetHeaderMixin):
             timeout = settings.GLOBAL_TIMEOUT
 
         try:
+            if len(params) > 0:
+                self.logger.info("Params: {} ".format(params))
             self.logger.info('API-Path: {path}'.format(path=url))
             start_time = time.time()
             response = requests.get(url, headers=self._get_headers(), verify=settings.CERT, timeout=timeout)
             end_time = time.time()
+            processing_time = end_time - start_time
+            http_status_code = response.status_code
 
-            self.logger.info("Response_code: {}".format(response.status_code))
-            self.logger.info("Response_time: {}".format(end_time - start_time))
+            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
+            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             response_json = response.json()
             response_json['status_code'] = response.status_code
@@ -55,10 +59,7 @@ class RESTfulMethods(GetHeaderMixin):
                     default_data = {}
                 data = response_json.get('data', default_data)
 
-                if len(params) > 0:
-                    self.logger.info("Params: {} ".format(params))
-
-                self.logger.info('Response_code: {}'.format(response.status_code))
+                self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
                 if is_getting_list:
                     self.logger.info('Response_content_count: {}'.format(len(data)))
                 else:
@@ -97,20 +98,21 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-
+        self._filter_sensitive_fields(params=params)
+        self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
             start_date = time.time()
             response = requests.put(url, headers=self._get_headers(), json=params, verify=settings.CERT,
                                     timeout=timeout)
             done = time.time()
-
+            processing_time = done - start_date
+            http_status_code = response.status_code
             # Filter sensitive data
-            self._filter_sensitive_fields(params=params)
-            self.logger.info("Params: {} ".format(params))
-            self.logger.info('Response_code: {}'.format(response.status_code))
+            
+            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Response_time: {}'.format(done - start_date))
+            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             try:
                 response_json = response.json()
@@ -155,23 +157,23 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-
+        self._filter_sensitive_fields(params=params)
+        self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
             start_time = time.time()
             response = requests.post(url, headers=self._get_headers(), json=params, verify=settings.CERT,
                                      timeout=timeout)
             end_time = time.time()
-
+            processing_time = end_time - start_time
+            http_status_code = response.status_code
             # Filter sensitive data
-            self._filter_sensitive_fields(params=params)
+            
 
-            self.logger.info("Params: {} ".format(params))
-            self.logger.info("Response_code: {}".format(response.status_code))
+            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
 
             response_json = response.json()
-
-            self.logger.info("Response_time: {}".format(end_time - start_time))
+            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             response_json['status_code'] = response.status_code
 
             try:
@@ -224,10 +226,11 @@ class RESTfulMethods(GetHeaderMixin):
             response = requests.delete(url, headers=self._get_headers(), json=params, verify=settings.CERT,
                                        timeout=timeout)
             end_time = time.time()
-
-            self.logger.info("Response_code: {}".format(response.status_code))
+            processing_time = end_time - start_time
+            http_status_code = response.status_code
+            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             self.logger.info("Response_content: {}".format(response.content))
-            self.logger.info("Response_time: {}".format(end_time - start_time))
+            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             response_json = response.json()
             try:
@@ -267,11 +270,15 @@ class RESTfulMethods(GetHeaderMixin):
             url = api_path
         else:
             url = settings.DOMAIN_NAMES + api_path
-
+            
+        if len(params) > 0:
+            self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=url))
         start_date = time.time()
         response = requests.get(url, headers=self._get_headers(), verify=settings.CERT)
         done = time.time()
+        http_status_code = response.status_code
+        processing_time = done - start_date
 
         try:
             response_json = json.loads(response.text, parse_float=Decimal)
@@ -288,16 +295,12 @@ class RESTfulMethods(GetHeaderMixin):
                 default_data = {}
             data = response_json.get('data', default_data)
 
-            if len(params) > 0:
-                self.logger.info("Params: {} ".format(params))
-            self.logger.info('Response_code: {}'.format(response.status_code))
-
+            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             if is_getting_list:
                 self.logger.info('Response_content_count: {}'.format(len(data)))
             else:
                 self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Response_time: {}'.format(done - start_date))
-
+            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             result = data, True
         else:
             message = status.get('message', '')
