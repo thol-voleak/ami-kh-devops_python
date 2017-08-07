@@ -98,7 +98,7 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-        self._filter_sensitive_fields(params=params)
+        
         self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
@@ -109,7 +109,7 @@ class RESTfulMethods(GetHeaderMixin):
             processing_time = done - start_date
             http_status_code = response.status_code
             # Filter sensitive data
-            
+            self._filter_sensitive_fields(params=params)
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             self.logger.info('Response_content: {}'.format(response.text))
             self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
@@ -157,7 +157,7 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-        self._filter_sensitive_fields(params=params)
+        
         self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
@@ -168,7 +168,7 @@ class RESTfulMethods(GetHeaderMixin):
             processing_time = end_time - start_time
             http_status_code = response.status_code
             # Filter sensitive data
-            
+            self._filter_sensitive_fields(params=params)
 
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
 
