@@ -53,12 +53,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
 
-        # self.logger.info('order_id: {}'.format(order_id))
-        # self.logger.info('service_name: {}'.format(service_name))
-        # self.logger.info('payer_user_id: {}'.format(payer_user_id))
-        # self.logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
-        # self.logger.info('payee_user_id: {}'.format(payee_user_id))
-        # self.logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
 
         body = {}
         if order_id:
