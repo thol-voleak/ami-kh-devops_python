@@ -31,20 +31,24 @@ class ListView(GroupRequiredMixin, TemplateView):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        context = {
-            'data': [],
-            'created_msg': self.request.session.pop('system_user_create_msg', None),
-            'del_msg': self.request.session.pop('system_user_delete_msg', None),
-            'pw_msg': self.request.session.pop('system_user_change_password_msg', None)
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request, **kwargs):
+    def get(self, request, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            'data': [],
+            'created_msg': self.request.session.pop('system_user_create_msg',
+                                                    None),
+            'del_msg': self.request.session.pop('system_user_delete_msg',
+                                                None),
+            'pw_msg': self.request.session.pop(
+                'system_user_change_password_msg', None)
+        })
+
+        if not request.GET.get('search'):
+            return render(request, self.template_name)
+
         self.logger.info("========== Start searching system user ==========")
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username = request.GET.get('username')
+        email = request.GET.get('email')
         params = {}
         if username:
             params['username'] = username
