@@ -47,24 +47,25 @@ class RESTfulMethods(GetHeaderMixin):
             try:
                 status = response_json.get('status', {})
                 code = status.get('code', '')
+                message = status.get('message', '')
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
 
-            self.logger.info("Status code [{}] and message [{}]".format(status, code))
+            self.logger.info("Status code [{}] and message [{}]".format(code, message))
             if response.status_code == 200 and code == "success":
                 if is_getting_list:
-                    default_data = []
+                    default_type = []
                 else:
-                    default_data = {}
-                data = response_json.get('data', default_data)
+                    default_type = {}
+                data = response_json.get('data', default_type)
 
-                self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
+                # self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
                 if is_getting_list:
                     self.logger.info('Response_content_count: {}'.format(len(data)))
                 else:
-                    self.logger.info('Response_content: {}'.format(response.text))
-                self.logger.info('Response_time: {}'.format(end_time - start_time))
+                    self.logger.info('Response_content: {}'.format(data))
+                # self.logger.info('Response_time: {}'.format(end_time - start_time))
 
                 result = data, True
             else:
@@ -98,7 +99,7 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-        self._filter_sensitive_fields(params=params)
+        
         self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
@@ -109,21 +110,23 @@ class RESTfulMethods(GetHeaderMixin):
             processing_time = done - start_date
             http_status_code = response.status_code
             # Filter sensitive data
-            
+            self._filter_sensitive_fields(params=params)
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
-            self.logger.info('Response_content: {}'.format(response.text))
+            
             self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             try:
                 response_json = response.json()
                 status = response_json.get('status', {})
                 code = status.get('code', '')
+                message = status.get('message', '')
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
-
+            self.logger.info("Status code [{}] and message [{}]".format(code, message))
             if code == "success":
                 result = response_json.get('data', {}), True
+                self.logger.info('Response_content: {}'.format(result[0]))
             else:
                 message = status.get('message', '')
                 if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
@@ -157,7 +160,7 @@ class RESTfulMethods(GetHeaderMixin):
 
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
-        self._filter_sensitive_fields(params=params)
+        
         self.logger.info("Params: {} ".format(params))
         self.logger.info('API-Path: {path}'.format(path=api_path))
         try:
@@ -168,7 +171,7 @@ class RESTfulMethods(GetHeaderMixin):
             processing_time = end_time - start_time
             http_status_code = response.status_code
             # Filter sensitive data
-            
+            self._filter_sensitive_fields(params=params)
 
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
 
@@ -179,16 +182,17 @@ class RESTfulMethods(GetHeaderMixin):
             try:
                 status = response_json.get('status', {})
                 code = status.get('code', '')
+                message = status.get('message', '')
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
-
+            self.logger.info("Status code [{}] and message [{}]".format(code, message))
             if code == "success":
                 data = response_json.get('data', {})
                 if isinstance(data, list) and len(data) > 1:
                     self.logger.info("Response_content_count: {}".format(len(data)))
                 else:
-                    self.logger.info("Response_content: {}".format(response.content))
+                    self.logger.info("Response_content: {}".format(data))
                 if only_return_data:
                     result = data, True
                 else:
@@ -229,19 +233,21 @@ class RESTfulMethods(GetHeaderMixin):
             processing_time = end_time - start_time
             http_status_code = response.status_code
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
-            self.logger.info("Response_content: {}".format(response.content))
             self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             response_json = response.json()
             try:
                 status = response_json.get('status', {})
                 code = status.get('code', '')
+                message = status.get('message', '')
             except Exception as e:
                 self.logger.error(e)
                 raise Exception(response.content)
 
+            self.logger.info("Status code [{}] and message [{}]".format(code, message))
             if code == "success":
                 result = response_json.get('data', {}), True
+                self.logger.info("Response_content: {}".format(result[0]))
             else:
                 message = status.get('message', '')
                 if code in ["access_token_expire", 'authentication_fail', 'invalid_access_token',
@@ -279,28 +285,27 @@ class RESTfulMethods(GetHeaderMixin):
         done = time.time()
         http_status_code = response.status_code
         processing_time = done - start_date
-
+        self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
+        self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
         try:
             response_json = json.loads(response.text, parse_float=Decimal)
             status = response_json.get('status', {})
             code = status.get('code', '')
+            message = status.get('message', '')
         except Exception as e:
             self.logger.error(e)
             raise Exception(response.content)
-
+        self.logger.info("Status code [{}] and message [{}]".format(code, message))
         if response.status_code == 200 and code == "success":
             if is_getting_list:
-                default_data = []
+                default_type = []
             else:
-                default_data = {}
-            data = response_json.get('data', default_data)
-
-            self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
+                default_type = {}
+            data = response_json.get('data', default_type)
             if is_getting_list:
                 self.logger.info('Response_content_count: {}'.format(len(data)))
             else:
-                self.logger.info('Response_content: {}'.format(response.text))
-            self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
+                self.logger.info('Response_content: {}'.format(data))
             result = data, True
         else:
             message = status.get('message', '')
