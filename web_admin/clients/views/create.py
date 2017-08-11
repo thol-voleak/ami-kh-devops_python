@@ -75,7 +75,7 @@ class ClientCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         self.logger.info("========== Finish Creating client ==========")
         if success:
-            self.request.session['add_client_msg'] = "Added data successfully"
+            self.request.session['add_client_msg'] = "Added client successfully"
             return redirect('clients:client-list')
         else:
             client_info = {
