@@ -1,16 +1,18 @@
-from authentications.utils import get_correlation_id_from_username
-from web_admin.api_settings import SEARCH_CARD_TYPE
-from web_admin.restful_methods import RESTfulMethods
-from web_admin import setup_logger
+import logging
 
+from django.conf import settings
 from django.views.generic.base import TemplateView
 
-import logging
+from authentications.utils import get_correlation_id_from_username
+from web_admin import setup_logger
+from web_admin.api_settings import SEARCH_CARD_TYPE
+from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.restful_client import RestFulClient
 
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView, RESTfulMethods):
+class ListView(GetHeaderMixin, TemplateView):
     template_name = "card_type/card_types_list.html"
     logger = logger
 
@@ -30,7 +32,8 @@ class ListView(TemplateView, RESTfulMethods):
         return result
 
     def get_card_types_list(self):
-        data, success = self._post_method(api_path=SEARCH_CARD_TYPE,
-                                         func_description="Card Type List",
-                                         logger=logger)
+        is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
         return data
