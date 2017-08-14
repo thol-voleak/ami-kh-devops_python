@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             {% for d in fee %}
-                <tr role="row" id="agent-hierarchy-distribution-{{ d.agent_fee_distribution_id }}"
+                <tr role="row" id="agent-hierarchy-distribution"
                     data-url="{% url "services:agent_fee_update" d.agent_fee_distribution_id %}"
                     data-id="{{ d.agent_fee_distribution_id }}"
                     data-fee_tier_id="{{ d.fee_tier_id }}">
@@ -58,7 +58,7 @@
                     </td>
                     <td>
                         <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
-                        <select class="form-control" id="ddl_agent_hier_fee_specific_id_edit-{{ d.agent_fee_distribution_id }}"
+                        <select class="form-control" id="ddl_agent_hier_fee_specific_id_edit"
                                    name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onchange="changeSpecificIdTypeRelativeAdd(this)">
                             <option value="">  </option>
                             {% for item in specific_ids %}
@@ -69,7 +69,7 @@
                     </td>
                     <td>
                         <span>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</span>
-                        <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit-{{ d.agent_fee_distribution_id }}" style="display: none;" onchange="changeSOFTypeRelativeAdd(this)">
+                        <select class="form-control" name="sof_type_id" id="ddl_agent_hier_fee_src_fund_edit" style="display: none;" onchange="changeSOFTypeRelativeAdd(this)">
                         {% for sof_type in choices.sof_types %}
                             {% if sof_type.sof_type_id == d.sof_type_id %}
                                 <option value="{{ sof_type.sof_type }}" selected data-sof_type_id="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
@@ -82,7 +82,7 @@
                     </td>
                     <td>
                         <span>{{ d.specific_sof|default_if_none:'' }}</span>
-                        <select class="form-control" id="ddl_agent_hier_fee_spec_src_fund_edit-{{ d.agent_fee_distribution_id }}"
+                        <select class="form-control" id="ddl_agent_hier_fee_spec_src_fund_edit"
                                 name="specific_sof" value="{{ d.specific_sof|default_if_none:'' }}" style="display: none;"></select>
 
 
