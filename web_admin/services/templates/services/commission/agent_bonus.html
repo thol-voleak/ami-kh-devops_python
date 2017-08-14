@@ -31,7 +31,7 @@
                 data-fee_tier_id="{{ d.fee_tier_id }}">
                     <td>
                         <span>{{ d.action_type|default_if_none:'' }}</span>
-                        <select class="form-control" name="action_type" id="ddl_agent_bonus_edit" style="display: none;">
+                        <select class="form-control" name="action_type" id="ddl_bonus_dc_edit" style="display: none;">
                                 {% for action_type in choices.action_types %}
                                     {% if action_type.action_type == d.action_type %}
                                         <option value="{{ action_type.action_type }}" selected>{{ action_type.action_type }}</option>
@@ -57,7 +57,7 @@
                     </td>
                     <td>
                         <span>{{ d.specific_actor_id|default_if_none:'' }}</span>
-                        <select class="form-control" id="ddl_bonus_specific_id_edit-{{ d.agent_fee_distribution_id }}"
+                        <select class="form-control" id="ddl_bonus_specific_id_edit{{ d.agent_fee_distribution_id }}"
                                    name="specific_actor_id" value="{{ d.specific_actor_id|default_if_none:'' }}" style="display: none;" onchange="changeSpecificIdTypeRelativeAdd(this)">
                             <option value="">  </option>
                             {% for item in specific_ids %}
