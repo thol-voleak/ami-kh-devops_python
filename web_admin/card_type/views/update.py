@@ -1,11 +1,11 @@
 from authentications.utils import get_correlation_id_from_username
-from web_admin.api_settings import SEARCH_CARD_TYPE
-from web_admin.api_settings import UPDATE_CARD_TYPE
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import SEARCH_CARD_TYPE, UPDATE_CARD_TYPE
+from web_admin.restful_client import RestFulClient
 from web_admin import setup_logger
 from django.http import HttpResponseRedirect
-
-from django.shortcuts import redirect, render
+from web_admin.get_header_mixins import GetHeaderMixin
+from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 
 import logging
@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CardTypeUpdateForm(TemplateView, RESTfulMethods):
+class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
     template_name = "card_type/card_type_update.html"
     logger = logger
 
@@ -53,11 +53,9 @@ class CardTypeUpdateForm(TemplateView, RESTfulMethods):
             'create_card_endpoint_host': url_create_card,
             'card_detail_endpoint_host': url_get_card_detail
         }
-        data, success = self._put_method(api_path=UPDATE_CARD_TYPE.format(card_type_id=card_type_id),
-                                         func_description="Update Card Type",
-                                         logger=logger, params=params)
 
-        if success:
+        is_success, status_code, status_message, data = RestFulClient.put(url=UPDATE_CARD_TYPE.format(card_type_id=card_type_id), headers=self._get_headers(), params=params, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
+        if is_success:
             previous_page = request.POST.get('previous_page')
             request.session['card_type_update_msg'] = 'Updated card type successfully'
             self.logger.info('========== Finished updating Card type ==========')
@@ -66,10 +64,7 @@ class CardTypeUpdateForm(TemplateView, RESTfulMethods):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_card_type_detail(self, card_type_id):
-        data, success = self._post_method(api_path=SEARCH_CARD_TYPE,
-                                          func_description="Card Type detail",
-                                          params={'id': card_type_id},
-                                          logger=logger)
+        is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE, headers=self._get_headers(), params={'id': card_type_id}, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
         timeout_create_card_in_second = int(data[0]['timeout_create_card']) / 1000
         timeout_get_card_detail_in_second = int(data[0]['timeout_get_card_detail']) / 1000
         data[0].update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
