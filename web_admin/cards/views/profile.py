@@ -1,11 +1,11 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.api_settings import CARD_LIST_PATH
 
 from django.shortcuts import render
+from django.conf import settings
 from django.views.generic.base import TemplateView
+from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
+from web_admin import api_settings, setup_logger, RestFulClient
 
 import logging
 
@@ -17,7 +17,7 @@ IS_STOP = {
 }
 
 
-class ProfileView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
     group_required = "CAN_SEARCH_CARD_PROFILE"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -76,8 +76,13 @@ class ProfileView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, 'profile.html', context)
 
     def get_card_list(self, body):
-        url = CARD_LIST_PATH
-        data, success = self._post_method(url, "card list", logger, body)
+        api_path = api_settings.CARD_LIST_PATH
+
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
         if isinstance(data, list):
             return data
         else:
