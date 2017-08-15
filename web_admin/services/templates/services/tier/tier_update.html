@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_fee_amount">Fee Amount *</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.fee_amount|default_if_none:'0' }}" type="text"
+                            <input value="{{ update_tier.fee_amount|default_if_none:'' }}" type="text"
                                    class="form-control" name="fee_amount" id="txt_fee_amount"
                                    onchange="onChangesAmount('txt_fee_amount');"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
