@@ -1,7 +1,7 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
-from web_admin.restful_methods import RESTfulMethods
-from web_admin.api_settings import CARD_HISTORY_PATH
+from web_admin import setup_logger, api_settings
+from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.restful_client import RestFulClient
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -17,7 +17,7 @@ IS_SUCCESS = {
 }
 
 
-class HistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
     group_required = "CAN_SEARCH_CARD_HISTORY"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -78,8 +78,8 @@ class HistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, 'history.html', context)
 
     def get_card_history_list(self, body):
-        url = CARD_HISTORY_PATH
-        data, success = self._post_method(url, "card history list", logger, body)
+        url = api_settings.CARD_HISTORY_PATH
+        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(), params=body, loggers=self.logger)
         if isinstance(data, list):
             return data
         else:
