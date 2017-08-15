@@ -44,7 +44,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
 
-
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
         #agents = self._get_agents()
@@ -173,8 +172,6 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
-
-
 
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
@@ -423,8 +420,6 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
 
-
-
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
 
@@ -593,8 +588,6 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
 
-
-
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
 
@@ -694,6 +687,8 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
             "is_deleted": 0
         }
 
+        # import pdb;
+        # pdb.set_trace()
 
         if post_data['actor_type'] != 'Specific ID':
             post_data['specific_actor_id'] = ''
@@ -751,8 +746,6 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
 
         agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
         total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
-
-
 
         fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
@@ -855,12 +848,9 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
             "sof_type_id": data.get("sof_type_id"),
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
-            "rate": data.get("add_rate"),
+            "rate": data.get("rate"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
-
-        # import pdb;
-        # pdb.set_trace()
 
         response, status = self._post_method(api_path=url,
                                    func_description="Add Agent Hierarchy Distribution Bonus",

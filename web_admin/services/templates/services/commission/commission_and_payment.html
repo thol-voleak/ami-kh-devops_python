@@ -332,7 +332,7 @@
             </form>
 
             {% include "services/commission/agent_hierrachy_distribution_fee.html" %}
-            {% include "services/commission/agent_bonus.html" %}
+            {% include "services/commission/agent_hierarchy_distribution_bonus.html" %}
 
         </div>
     </div>
@@ -439,7 +439,7 @@
             }
         }
 
-        function ddl_fee_amount_edit_changed(element) {
+        function ddl_agent_hier_fee_amount_edit_changed(element) {
             var value = element.value;
             var children = $(element).parent().next().children();
             var text_element = children[1];
@@ -604,8 +604,8 @@
 
 
         function changeSpecificActorTypeRelativeAdd(actorType) {
-            specificActorId = $(actorType).parent().next().find("#ddl_specific_id");//ddl_agent_hier_fee_specific_id
-            specificSoFId = $(actorType).parent().next().next().next().find("#ddl_spec_src_fund_add");
+            specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id");//ddl_agent_hier_fee_specific_id
+            specificSoFId = $(actorType).parent().next().next().next().find("#ddl_agent_hier_fee_spec_src_fund_add");
 
             if ($(actorType).find(":selected").html() == "Specific ID") {
                 $(specificActorId).prop('disabled', false);
@@ -769,7 +769,7 @@
             // onInlineSetupDataTable('tbl_agent_hier_fee', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 4. Bonus Table
-           // onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             $("body").find("th").each(function () {
                  $(this).removeAttr( "style" );

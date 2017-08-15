@@ -98,36 +98,21 @@ function tapOnCancel(e) {
 
 function tapOnSave(e) {
     tr = $(e).parent().parent().parent();
-    tbl = $(e).closest('table');
-    tbl_id = tbl.prop('id');
-
-    var msg = 'Saved data Successfully';
-    if(tbl_id === 'tbl_agent_hier_fee') {
-        msg = 'Updated Agent Hierarchy Distribution - Fee successfully';
-    } else if(tbl_id === 'tbl_bonus') {
-        msg = 'Updated Agent Hierrachy Distribution - Bonus Successfully';
-    }
 
     if(validateForm(tr)) {
         // Post data to server:
-        saveDataToServer(tr, msg);
+        saveAgentHierarchyDistribution(tr);
     }
 }
 
 function validateForm(nRow) {
-    //var text_input = document.getElementById('txt_agent_hier_fee_rate_edit');
-    var x1 = nRow.children();
-    var x2 = x1[6];
-    var text_input = x2.children[1];
+    var text_input = document.getElementById('txt_agent_hier_fee_rate_edit');
     var jqInputs = $('input', nRow);
     var rate_value = jqInputs[0].value;//2
     var text_element = jqInputs[0];//2
 
     var jqSelects = $('select', nRow);
     var select_value = $(jqSelects[5]).find(":selected").html();
-
-
-
 
     if((select_value.indexOf("Rate") !== -1) || (select_value.indexOf("rate") !== -1)) {
         // exist
@@ -136,8 +121,8 @@ function validateForm(nRow) {
         if(!rate_value) {
             text_element.style.borderColor = '#0ac2ff';//"#e4e4e4";
             text_input.setCustomValidity('Pleased fill in this field');
-            var btn = $(nRow).closest('table').parent().next().find("input");
-            btn[0].click();
+            var btn = document.getElementById("btn_agent_hier_fee_add");
+            btn.click();
             return false;
         }
     }
@@ -148,18 +133,20 @@ function validateForm(nRow) {
         var specific_id = $(jqSelects[2]);
         var sof = $(jqSelects[4]);
         if(!specific_id.val() || !sof.val()) {
-            var btn = $(nRow).closest('table').parent().next().find("input");
-            btn[0].click();
+            var btn = document.getElementById("btn_agent_hier_fee_add");
+            btn.click();
             return false;
         }
 
     }
 
+
     return true;
+
 
 }
 
-function saveDataToServer(nRow, msg) {
+function saveAgentHierarchyDistribution(nRow) {
     var jqInputs = $('input', nRow);
     var jqSelects = $('select', nRow);
     var url = $(nRow).data('url');
@@ -178,11 +165,14 @@ function saveDataToServer(nRow, msg) {
     var token = csrf_token;
 
     var ActorType = $(jqSelects[1]).find(":selected").html();
+    var specificId = document.getElementById("txt_agent_hier_fee_specific_id_edit");
 
     //Validate Input Value specific_actor_id
     if(ActorType == 'Specific ID' && jqSelects[2].value == "") {
         startEdittingTableRow(nRow);
-
+        // $(tr).find("input").each(function () {
+        //     $(this).prop("style", "border-color: red;");
+        // });
         $(jqSelects[2]).prop("style", "border-color: red;");
         addErrorMessage("Please input Specific ID");
 
@@ -190,7 +180,9 @@ function saveDataToServer(nRow, msg) {
     //Validate Input Value specific_sof
     else if(ActorType == 'Specific ID' && jqSelects[4].value == "") {
         startEdittingTableRow(nRow);
-
+        // $(tr).find("input").each(function () {
+        //     $(this).prop("style", "border-color: red;");
+        // });
         $(jqSelects[4]).prop("style", "border-color: red;");
         addErrorMessage("Please input Specific Source of Fund");
     }
@@ -214,7 +206,7 @@ function saveDataToServer(nRow, msg) {
                     console.log('Saved row data');
                     updateSpanTableRow(nRow);
                     endEdittingTableRow(nRow);
-                    addMessage(msg);
+                    addMessage("Updated Agent Hierarchy Distribution - Fee successfully");
                 } else {
                     console.log('Error adding row data');
                     addErrorMessage(response.msg);
@@ -227,4 +219,3 @@ function saveDataToServer(nRow, msg) {
         });
     }
 }
-
