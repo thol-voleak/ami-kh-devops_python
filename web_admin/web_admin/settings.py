@@ -167,8 +167,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "%(asctime)s.%(msecs)03d | %(levelname)s | AMI | AppLog | ami-admin-portal | %(correlationId)s | %(thread)d  | %(IPAddress)s | %(name)s | %(message)s",
-            'datefmt': "%d/%m/%Y %H:%M:%S"
+            'format': "%(asctime)s,%(msecs)03d | %(levelname)s | AMI | AppLog | ami-admin-portal | %(correlationId)s | %(thread)d  | %(IPAddress)s | %(name)s | %(message)s",
+            'datefmt': "%Y-%m-%dT%H:%M:%S"
         }
     },
     'handlers': {
