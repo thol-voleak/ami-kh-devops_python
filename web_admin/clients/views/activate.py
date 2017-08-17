@@ -20,15 +20,5 @@ def activate(request, client_id):
         'status': 'active',
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
-    response = result.getvalue()
-    json_data = json.loads(response)
-
-    if (json_data['status'] == 2):
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            message='Activated data successfully'
-        )
     logger.info('========== Finish activating client ==========')
     return result
-

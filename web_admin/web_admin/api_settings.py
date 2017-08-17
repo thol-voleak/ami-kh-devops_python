@@ -171,3 +171,7 @@ GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/se
 # card type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
 UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
+
+# bank profile
+CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
+GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"

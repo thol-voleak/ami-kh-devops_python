@@ -29,6 +29,7 @@
                 <table class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
+                        <th id="lbl_id">ID</th>
                         <th id="lbl_name">Name</th>
                         <th id="lbl_description">Description</th>
                         <th id="lbl_created_date">Created Date</th>
@@ -39,6 +40,11 @@
                     <tbody>
                     {% for service_group in data %}
                         <tr>
+                            {% if service_group.is_deleted %}
+                                <td class="col-sm-3"><del>{{ service_group.service_group_id|default_if_none:'' }}</del></td>
+                            {% else %}
+                                <td class="col-sm-3">{{ service_group.service_group_id|default_if_none:'' }}</td>
+                            {% endif %}
                             {% if service_group.is_deleted %}
                                 <td class="col-sm-3"><del>{{ service_group.service_group_name|default_if_none:'' }}</del></td>
                             {% else %}

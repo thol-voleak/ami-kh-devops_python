@@ -22,6 +22,6 @@ def reset_password(request, customer_id, identity_id):
     logger.info('========== Start reset password==========')
     url = settings.DOMAIN_NAMES + api_settings.RESET_IDENTITY_PASSWORD.format(customer_id, identity_id)
     params = {}
-    result = ajax_functions._post_method(request, url, "", logger, params, timeout=settings.RESET_PASSWORD_TIMEOUT)
+    result = ajax_functions._post_method(request, url, "", logger, params, timeout=settings.GLOBAL_TIMEOUT)
     logger.info('========== Finish reset password ==========')
     return result

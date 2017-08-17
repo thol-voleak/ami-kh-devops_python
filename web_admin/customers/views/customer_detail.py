@@ -31,7 +31,6 @@ class CustomerDetailView(TemplateView, RESTfulMethods):
         
     def get_member_detail(self, customer_id):
         url = api_settings.MEMBER_CUSTOMER_PATH
-        self.logger.info('API-Path: {}/{};'.format(url, customer_id))
         body = {
             'id': customer_id
         }

@@ -23,6 +23,13 @@
     </div>
     {% endfor %}
 
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="get"
               action="{% url 'customers:customer-list' %}">
@@ -34,13 +41,74 @@
 
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Mobile Number</label>
+                    <label class="col-sm-4 control-label">ID</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control input-rounded" name="search" id="txt_mobile_number"/>
+                        <input type="text" class="form-control input-rounded" 
+                               name="customer_id" id="txt_id"
+                               value="{{ customer_id | default_if_none:'' }}"/>
                     </div>
                 </div>
-
-                <input id="btn_search" class="btn btn-success text-left mb15" type="submit" value="Search"/>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">Unique Reference</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-rounded" 
+                               name="unique_reference" id="txt_unique_reference"
+                               value="{{ unique_reference | default_if_none:'' }}"/>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">KYC Status</label>
+                    <div class="col-sm-8">
+                        <select type="text" class="form-control" name="kyc_status" id="ddl_kyc_status">
+                            <option value=''{% if kyc_status == '' %}selected="selected"{% endif %}>-</option>
+                            <option value=1 {% if kyc_status == '1' %}selected="selected"{% endif %}>True</option>
+                            <option value=0 {% if kyc_status == '0' %}selected="selected"{% endif %}>False</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">Citizen Card ID</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control " 
+                               name="citizen_card_id" id="txt_citizen_card_id"
+                               value="{{ citizen_card_id | default_if_none:'' }}"/>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">Email</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control " 
+                               name="email" id="txt_email"
+                               value="{{ email | default_if_none:'' }}"/>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">Mobile Number</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control input-rounded" 
+                               name="mobile_number" id="txt_mobile_number"
+                               value="{{ mobile_number | default_if_none:'' }}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Created Date: From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control "
+                               name="from_created_timestamp"
+                               value="{{ from_created_timestamp|default_if_none:'' }}"
+                               id="dtp_from">
+                    </div>
+                    <label class="col-sm-1 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type= "date" class="form-control "
+                               name="to_created_timestamp"
+                               value="{{ to_created_timestamp|default_if_none:'' }}"
+                               id="dtp_to">
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
+                    </div>
+                </div>
                 <label class="pull-right" id="txt_total">{{ search_count }}</label>
                 <label class="pull-right" >Total Customers found:&nbsp;</label>
             </div>
@@ -53,8 +121,11 @@
                     <th id="customer_id">ID</th>
                     <th id="first_name">Firstname</th>
                     <th id="last_name">Lastname</th>
-                    <th id="kyc">KYC status</th>
+                    <th id="citizen_card_id">Citizen Card ID</th>
                     <th id="mobile_number">Mobile Number</th>
+                    <th id="email">Email Address</th>
+                    <th id="unique_reference">Unique Reference</th>
+                    <th id="kyc">KYC status</th>
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
                     <th id="modified_date">Status</th>
@@ -66,13 +137,16 @@
                 {% if not customer.is_deleted %}
                 <tr>
                     <td class="col-sm-1">{{ customer.id }}</td>
-                    <td class="col-sm-3">{{ customer.firstname|default_if_none:'' }}</td>
-                    <td class="col-sm-3">{{ customer.lastname|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.firstname|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.lastname|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.citizen_card_id|default_if_none:'' }}</td>
                     <td class="col-sm-1 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ customer.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ customer.last_updated_timestamp|default_if_none:'' }}</td> 
-                    <td class="col-sm-2">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
+                    <td class="col-sm-1">{{ customer.email|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.unique_reference|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                     <td class="col-sm-3">
                     {% if customer.is_permission_detail%}
                         <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
@@ -87,11 +161,13 @@
                         {% if not customer.is_suspended %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
-                                    onclick="suspend('{{ customer.id }}')">Suspend</button>
+                                    data-customer-id='{{ customer.id }}'
+                                    onclick="doSuspendOrActivate(this)">Suspend</button>
                         {% else %}
                             <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
-                                    onclick="activate('{{ customer.id }}')">Activate</button>
+                                    data-customer-id='{{ customer.id }}'
+                                    onclick="doSuspendOrActivate(this)">Activate</button>
                         {% endif %}
                     {% endif %}
                     </td>
@@ -106,14 +182,36 @@
 
 <script>
     function showErrorMessage(msg) {
-        console.log('showErrorMessage: ' + msg);
-        $("#alert-error-msg").text(msg);
-        $("#alert-error").prop("hidden", false);
-        $("#alert-error").fadeIn(1000);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-success");
+	    $('#alert-client').addClass("alert-danger");
+	    $("#msg-add-service").prop("hidden", true);
+	    //$("#alert-client").prop("style", "display: block;");
+        $("#alert-client").show();
 
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-danger");
+	    $('#alert-client').addClass("alert-success");
+	    $("#msg-add-service").prop("hidden", true);
+	    //$("#alert-client").prop("style", "display: block;");
+	    $("#alert-client").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function doSuspendOrActivate(e) {
+            var title = e.innerText;
+            if (title === 'Activate') {
+                activate(e);
+            } else {
+                suspend(e);
+            }
     }
-    function suspend(customer_id) {
+
+    function suspend(e) {
         swal({
                 title: "Are you sure you want to suspend?",
                 type: "warning",
@@ -127,8 +225,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(customer_id)
-                    var url = '/admin-portal/customers/suspend/' + customer_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -140,21 +239,27 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "Activate";
+                                e.disabled = true;
+                                e.disabled = false;
+                                var status = e.parentNode.previousElementSibling;
+                                status.innerHTML = "Suspended";
+                                showSuccessMessage('Suspended data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error suspending the customer ID' + customer_id + msg)
+                            console.log('Error suspending the customer ID' + customer_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
             });
     }
 
-    function activate(customer_id) {
+    function activate(e) {
         swal({
                 title: "Are you sure you want to activate?",
                 type: "warning",
@@ -168,8 +273,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(customer_id)
-                    var url = '/admin-portal/customers/activate/' + customer_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -182,19 +288,38 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "Suspend";
+                                e.disabled = true;
+                                e.disabled = false;
+                                var status = e.parentNode.previousElementSibling;
+                                status.innerHTML = "Active";
+                                showSuccessMessage('Activated data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error activating the customer ID' + customer_id + msg)
+                            console.log('Error activating the customer ID' + customer_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
             });
     }
+// var checkdate = function(){
+//     today = new Date().toLocaleString('en-GB').split(',')[0];
+//     document.getElementById('dtp_to').value = today;
+//     document.getElementById('dtp_to').setAttribute('type', 'date');
+//     month = parseInt(today.split('/')[1], 10) - 1;
+//     year = today.split('/')[2];
+//     if(month == 0) { month = 12; year = parseInt(year) -1 ; }
+//     else if (0 < month < 10) { month = '0' + month;}
+//     new_day = today.split('/')[0] + '/' + month + '/' + year;
+//     document.getElementById('dtp_from').value = new_day;
+//     document.getElementById('dtp_from').setAttribute('type', 'date');
+// }
+// checkdate();
 
 
 </script>

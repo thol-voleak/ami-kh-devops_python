@@ -1,4 +1,7 @@
+from django.contrib import messages
+
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from bank_sofs.views.banks_client import BanksClient
 from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
 
@@ -22,7 +25,7 @@ class DetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "bank/detail.html"
-    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks"
+    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/" + api_settings.API_VERSION + "/banks"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -34,20 +37,19 @@ class DetailsView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start get bank detail ==========')
         context = super(DetailsView, self).get_context_data(**kwargs)
         bank_id = context['bank_id']
-        self.logger.info("Get bank detail with [{}] bank Id".format(bank_id))
-        bank = self._get_bank_details(bank_id)
-        context = {'bank': bank}
-        self.logger.info('========== Finished get bank detail ==========')
-        return context
 
-    def _get_bank_details(self, bank_id):
+        self.logger.info("Get bank detail with [{}] bank Id".format(bank_id))
         params = {
             'id': bank_id
         }
-        data, success = self._post_method(self.get_bank_sof_detail_url,
-                                          "bank detail from backend",
-                                          logger,
-                                          params=params)
 
-        if success:
-            return data[0]
+        is_success, status_code, status_message, bank_detail = BanksClient.get_bank_details(
+            params=params, headers=self._get_headers(), logger=self.logger
+        )
+
+        if not is_success:
+            messages.error(self.request, status_message)
+
+        context = {'bank': bank_detail}
+        self.logger.info('========== Finished get bank detail ==========')
+        return context

@@ -6,6 +6,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from django.contrib import messages
 import json
 
+
 # logger = logging.getLogger(__name__)
 
 
@@ -21,15 +22,7 @@ def suspend(request, client_id):
     params = {
         'status': 'suspend',
     }
-    result = ajax_functions._put_method(request, url, "", logger, params)
-    response = result.getvalue()
-    json_data = json.loads(response)
 
-    if (json_data['status'] == 2):
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            message='Suspended data successfully'
-        )
+    result = ajax_functions._put_method(request, url, "", logger, params)
     logger.info('========== Finish suspending client ==========')
     return result

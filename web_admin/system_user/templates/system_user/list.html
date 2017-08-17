@@ -51,8 +51,7 @@
 
     <div class="panel-body">
         {% if request.user|has_permission_name:"SYS_SEARCH_SYSTEM_USER"%}
-        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'system_user:system-user-list' %}">
-            {% csrf_token %}
+        <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'system_user:system-user-list' %}">
             <div class="col-sm-12  form-group">
                 <label class="col-sm-1">Username</label>
                 <div class="col-sm-2">
@@ -64,7 +63,7 @@
                 </div>
                 <div class="col-xs-1">
                     <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
                     </a>
                 </div>
 

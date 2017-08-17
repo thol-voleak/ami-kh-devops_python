@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
+from authentications.views.permissions_client import PermissionsClient
 from web_admin import setup_logger, RestFulClient, api_settings
 from authentications.apps import InvalidAccessToken
 
@@ -35,24 +36,21 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
         self.logger.info('========== Start get permission entity ==========')
         context = super(PermissionEditView, self).get_context_data(**kwargs)
         permission_id = context['permission_id']
+
         params = {
             'id': int(permission_id)
         }
-        url = api_settings.PERMISSION_LIST.format(permission_id=permission_id)
         self.logger.info("Searching permission with [{}] id".format(permission_id))
 
-        is_success, status_code, status_message, data = RestFulClient.post(url=url,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           params=params)
+        is_success, status_code, status_message, permission_detail = PermissionsClient.get_permission_detail(
+            headers=self._get_headers(), params=params, logger=self.logger
+        )
+
         if is_success:
-            context['permission'] = data[0]
-            self.logger.info('========== End get permission entity ==========')
+            context['permission'] = permission_detail
         else:
-            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                        status_code == 'invalid_access_token'):
-                logger.info("{} for {} username".format(status_message, self.request.user))
-                raise InvalidAccessToken(status_message)
+            messages.error(self.request, status_message)
+        self.logger.info('========== End get permission entity ==========')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -68,23 +66,15 @@ class PermissionEditView(GroupRequiredMixin, TemplateView):
             'is_page_level': True
         }
 
-        url = api_settings.PERMISSION_DETAIL_PATH.format(permission_id=permission_id)
-        is_success, status_code, status_message, data = RestFulClient.put(url=url,
-                                                                          headers=self._get_headers(),
-                                                                          loggers=self.logger,
-                                                                          params=params)
+        is_success, status_code, status_message, data = PermissionsClient.update_permission(
+            permission_id=permission_id, headers=self._get_headers(), params=params, logger=self.logger
+        )
+
         if is_success:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Updated data successfully'
-            )
-            self.logger.info('========== End update permission entity ==========')
+            messages.success(self.request, 'Updated data successfully')
         else:
-            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                        status_code == 'invalid_access_token'):
-                logger.info("{} for {} username".format(status_message, self.request.user))
-                raise InvalidAccessToken(status_message)
+            messages.error(self.request, status_message)
+        self.logger.info('========== End update permission entity ==========')
         return redirect('authentications:permissions_list')
 
     def _get_headers(self):

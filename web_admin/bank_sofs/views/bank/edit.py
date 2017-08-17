@@ -1,4 +1,5 @@
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
+from bank_sofs.views.banks_client import BanksClient
 from web_admin import setup_logger, api_settings
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
 from web_admin.restful_methods import RESTfulMethods
@@ -25,8 +26,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "bank/edit.html"
-    get_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks"
-    update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/"+api_settings.API_VERSION+"/admin/banks/{id}"
+    update_bank_sof_detail_url = settings.DOMAIN_NAMES + "api-gateway/sof-bank/" + api_settings.API_VERSION + "/admin/banks/{id}"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -38,10 +38,27 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start get bank sofs ==========')
         context = super(EditView, self).get_context_data(**kwargs)
         bank_id = context['bank_id']
-        bank = self._get_bank_details(bank_id)
-        currencies = self._get_currencies_list()
-        self.logger.info(bank)
-        context = {'bank': bank, 'currencies': currencies}
+
+        params = {
+            'id': bank_id
+        }
+
+        is_success, status_code, status_message, bank_detail = BanksClient.get_bank_details(
+            params=params, headers=self._get_headers(), logger=self.logger
+        )
+
+        is_success_currencies, status_code_currencies, currencies = BanksClient.get_currencies_list(
+            header=self._get_headers(), logger=self.logger
+        )
+
+        if not is_success:
+            messages.error(self.request, status_message)
+
+        if not is_success_currencies:
+            messages.error(self.request, currencies)
+            currencies = []
+
+        context = {'bank': bank_detail, 'currencies': currencies}
         self.logger.info('========== Finished get bank sofs ==========')
         return context
 
@@ -96,37 +113,25 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             )
             return redirect('bank_sofs:bank_sofs_list')
         else:
-            self.logger.info('========== Finished update bank profile ==========')
-            messages.add_message(
-                request,
-                messages.ERROR,
-                data
-            )
+            if data == 'timeout':
+                messages.error(request, "Timeout updating configuration, please try again or contact technical support")
+            else:
+                messages.error(request, data)
             params['id'] = bank_id
-            currencies = self._get_currencies_list()
-            context = {'bank': params, 'currencies': currencies}
+
+            is_success, status_code, data = BanksClient.get_currencies_list(
+                header=self._get_headers(), logger=self.logger
+            )
+
+            if not is_success:
+                messages.error(request, data)
+                data = []
+
+            context = {'bank': params, 'currencies': data}
+            self.logger.info('========== Finished update bank profile ==========')
             return render(request, self.template_name, context)
 
-    def _get_currencies_list(self):
-        url = GET_ALL_CURRENCY_URL
-        data, success = self._get_method(api_path=url,
-                                         func_description="currency list from backend",
-                                         logger=logger,
-                                         is_getting_list=True)
-        if success:
-            value = data.get('value', '')
-            currencies = [i.split('|') for i in value.split(',')]
-        else:
-            currencies = []
-        return currencies
-
-    def _get_bank_details(self, bank_id):
-        params = {
-            'id': bank_id
-        }
-        data, success = self._post_method(self.get_bank_sof_detail_url,
-                                          "bank detail from backend",
-                                          logger,
-                                          params=params)
-        if success:
-            return data[0]
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+        return self._headers

@@ -40,25 +40,20 @@
     {% endif %}
     {% if add_client_msg is not None %}
     <div class="col-xs-12 mb5">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+        <div class="alert alert-success alert-dismissable" id="msg-add-client">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
             <strong>{{ add_client_msg }}</strong>
         </div>
     </div>
     {% endif %}
     <div class="col-xs-12 mb5">
-        <div class="alert alert-success alert-dismissable" hidden id="alert-success-client">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
             <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <strong id="alert-success-msg"></strong>
+            <strong id="alert-msg"></strong>
         </div>
     </div>
-    <div class="col-xs-12 mb5">
-        <div class="alert alert-danger alert-dismissable" hidden id="alert-error">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <strong id="alert-error-msg"></strong>
-        </div>
-    </div>
-    <div class="panel-body">
+
+    <div class="panel-body" >
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0">
                 <thead>
@@ -125,15 +120,17 @@
                             class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                             id="client-btn-status-{{ client.client_id }}"
                             data-url="{% url 'clients:suspend-client' client.client_id %}"
-                            onClick="suspend('{{ client.client_id }}')">
+                            data-client-id='{{ client.client_id }}'
+                            onClick="doSuspendOrActivate(this)">
                             <span class="small">Suspend</span>
                             </button>
                             {% else %}
                             <button type="button" {{ client.is_deleted|yesno:'disable=true, disable=false' }}
-                            class="btn btn-info btn-outline mb5 btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
+                            class="btn btn-primary btn-outline mb5 btn-xs {{ client.is_deleted|yesno:"hidden,no-hidden" }}"
                             id="client-btn-status-{{ client.client_id }}"
                             data-url="{% url 'clients:activate-client' client.client_id %}"
-                            onClick="activate('{{ client.client_id }}')">
+                            data-client-id='{{ client.client_id }}'
+                            onClick="doSuspendOrActivate(this)">
                             <span class="small">Activate</span>
                             </button>
                             {% endif %}
@@ -159,15 +156,44 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
-    function showErrorMessage(msg) {
-        console.log('showErrorMessage: ' + msg);
-        $("#alert-error-msg").text(msg);
-        $("#alert-error").prop("hidden", false);
-        $("#alert-error").fadeIn(1000);
-        $("html, body").animate({scrollTop: 0}, "slow");
 
-    }
+    function showErrorMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-success");
+	    $('#alert-client').addClass("alert-danger");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+
+
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-danger");
+	    $('#alert-client').addClass("alert-success");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+	    $("#alert-client").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
     function regenerate(client_id) {
 
         swal({
@@ -195,19 +221,15 @@
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success
-                                $("#alert-success-msg").text('Client secret was generated for ' + client_id + ' client ID')
-                                $("#alert-success-client").show();
-                                setTimeout(function () {
-                                    location.reload(true);
-                                }, 10000);
-
+                                showSuccessMessage('Client secret was generated for ' + client_id + ' client ID');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
-                        error: function () {
-                            console.log('error')
+                        error: function (msg) {
+                            console.log('error');
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
@@ -244,21 +266,30 @@
                         } else if (response.status == 2) {
                             // success
                             $("#client-btn-delete-" + client_id).hide();
-                            $("#alert-success-msg").text('Deleted data successfully')
-                            $("#alert-success-client").show();
+                            showSuccessMessage('Deleted data successfully');
                             $("#" + "row-" + client_id).remove();
                         } else {
                             // Failed
                             showErrorMessage(response.msg);
                         }
                     },
-                    error: function (response) {
+                    error: function (msg) {
+                        showErrorMessage(JSON.stringify(msg));
                     }
                 });
             });
     }
 
-    function suspend(client_id) {
+    function doSuspendOrActivate(e) {
+            var title = e.innerText;
+            if (title === 'Activate') {
+                activate(e);
+            } else {
+                suspend(e);
+            }
+    }
+
+    function suspend(e) {
         swal({
                 title: "Are you sure you want to suspend?",
                 type: "warning",
@@ -272,8 +303,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(client_id)
-                    var url = '/admin-portal/clients/suspend/' + client_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var client_id = e.getAttribute('data-client-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -285,21 +317,25 @@
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "<span class='small'>Activate</span>";
+                                e.disabled = true;
+                                e.disabled = false;
+                                showSuccessMessage('Suspended data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error suspending the client id' + client_id + msg)
+                            console.log('Error suspending the client id' + client_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
             });
     }
 
-    function activate(client_id) {
+    function activate(e) {
         swal({
                 title: "Are you sure you want to activate?",
                 type: "warning",
@@ -313,8 +349,9 @@
             function (isConfirm) {
                 if (isConfirm) {
                     console.log(client_id)
-                    var url = '/admin-portal/clients/activate/' + client_id + '/';
+                    var url = e.getAttribute('data-url');
                     console.log(url)
+                    var client_id = e.getAttribute('data-client-id');
                     $.ajax({
                         url: url,
                         type: "GET",
@@ -326,14 +363,18 @@
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success
-                                location.reload(true)
+                                e.innerHTML = "<span class='small'>Suspend</span>";
+                                e.disabled = true;
+                                e.disabled = false;
+                                showSuccessMessage('Activated data successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
                             }
                         },
                         error: function (msg) {
-                            console.log('Error activating the client id' + client_id + msg)
+                            console.log('Error activating the client id' + client_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
                         }
                     });
                 }
@@ -342,9 +383,4 @@
 
 
 </script>
-{% endblock %}
-
-{% block body_js %}
-{{ block.super }}
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 {% endblock %}

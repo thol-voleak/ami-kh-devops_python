@@ -3,13 +3,24 @@ from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from web_admin import api_settings, setup_logger
 from django.shortcuts import redirect
-from authentications.utils import get_correlation_id_from_username, get_auth_header
+from authentications.utils import get_auth_header
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from braces.views import GroupRequiredMixin
 logger = logging.getLogger(__name__)
 
 
-class ListCommandView(TemplateView, RESTfulMethods):
+class ListCommandView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "services/command/command_list.html"
     logger = logger
+
+    group_required = "CAN_EDIT_COMMAND_SERVICE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

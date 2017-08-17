@@ -2,9 +2,29 @@
 {% load static %}
 {% block content %}
 <div class="panel mb25">
-        <div class="panel-heading border mb15">
-            <h3>Manage Permission Entities</h3>
-        </div>
+    <div class="panel-heading border mb15">
+        <h3>Manage Permission Entities</h3>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-success">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-error">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
 
     <div class="panel-body">
 

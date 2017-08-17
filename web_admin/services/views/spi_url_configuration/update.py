@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
     template_name = 'services/spi_url_configuration/update.html'
-    get_config_type_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-configuration-types'
-    spi_url_configuration = 'api-gateway/payment/'+api_settings.API_VERSION+'/admin/spi-url-configurations/{spiUrlConfigurationId}'
+    get_config_type_url = 'api-gateway/payment/' + api_settings.API_VERSION + '/spi-url-configuration-types'
+    spi_url_configuration = 'api-gateway/payment/' + api_settings.API_VERSION + '/admin/spi-url-configurations/{spiUrlConfigurationId}'
 
     logger = logger
 
@@ -81,47 +81,35 @@ class SPIUrlConfigurationUpdate(TemplateView, SpiApi):
         self.logger.info("spi url configuration types {}".format(data))
         self.logger.info("========== Finish updating SPI configuration url ==========")
         if status:
-            type_msg = messages.SUCCESS
-            text_msg = 'Updated data successfully'
-            messages.add_message(
-                request,
-                type_msg,
-                text_msg
-            )
+            messages.success(request, 'Updated data successfully')
             return redirect('services:spi_configuration_list',
                             service_command_id=service_command_id,
                             service_id=service_id,
                             command_id=command_id,
                             spiUrlId=spi_url_id)
         else:
-            type_msg = messages.ERROR
-            text_msg = data
-            messages.add_message(
-                request,
-                type_msg,
-                text_msg
-            )
-
+            messages.error(request, data)
             context = super(SPIUrlConfigurationUpdate, self).get_context_data(**kwargs)
-
-            context['service_command_id'] =  kwargs.get('service_command_id')
+            context['service_command_id'] = kwargs.get('service_command_id')
             context['service_id'] = kwargs.get('service_id')
             context['command_id'] = kwargs.get('command_id')
             context['spi_url_id'] = kwargs.get('spi_url_id')
             context['spi_url_config_id'] = spi_url_config_id = kwargs.get('spi_url_config_id')
 
-            context['configuration_type_list'], none = self._get_method(self.get_config_type_url, "Get all spi url configuration types", logger)
+            context['configuration_type_list'], none = self._get_method(
+                self.get_config_type_url, "Get all spi url configuration types", logger
+            )
 
             context['configuration_detail'] = {
-                "spi_url_configuration_id":spi_url_config_id,
-                "spi_url_configuration_type" : request.POST.get('spi_url_configuration_type'),
-                "url" : request.POST.get('spi_url_configuration_value'),
-                "connection_timeout" : request.POST.get('connection_timeout', ''),
-                "read_timeout" : request.POST.get('read_timeout', ''),
-                "max_retry" : request.POST.get('max_retry', ''),
-                "retry_delay_millisecond" : request.POST.get('retry_delay_millisecond', ''),
-                "expire_in_minute" : request.POST.get('expire_in_minute', ''),
-                "created_timestamp" : request.POST.get('created_timestamp', ''),
+                "spi_url_configuration_id": spi_url_config_id,
+                "spi_url_configuration_type": request.POST.get('spi_url_configuration_type'),
+                "url": request.POST.get('spi_url_configuration_value'),
+                "connection_timeout": request.POST.get('connection_timeout', ''),
+                "read_timeout": request.POST.get('read_timeout', ''),
+                "max_retry": request.POST.get('max_retry', ''),
+                "retry_delay_millisecond": request.POST.get('retry_delay_millisecond', ''),
+                "expire_in_minute": request.POST.get('expire_in_minute', ''),
+                "created_timestamp": request.POST.get('created_timestamp', ''),
                 "last_updated_timestamp": request.POST.get('last_updated_timestamp', ''),
             }
 

@@ -1,5 +1,8 @@
+from django.contrib import messages
+
 from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
+from authentications.views.permissions_client import PermissionsClient
 from web_admin import setup_logger, RestFulClient, api_settings
 
 from braces.views import GroupRequiredMixin
@@ -33,23 +36,22 @@ class PermissionDetailView(GroupRequiredMixin, TemplateView):
         self.logger.info('========== Start get permission entity ==========')
         context = super(PermissionDetailView, self).get_context_data(**kwargs)
         permission_id = context['permission_id']
+
         self.logger.info("Searching permission with [{}] id".format(permission_id))
         params = {
             'id': int(permission_id)
         }
+
         self.logger.info("Searching permission with [{}] id".format(permission_id))
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.PERMISSION_LIST,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           params=params)
+        is_success, status_code, status_message, permission_detail = PermissionsClient.get_permission_detail(
+            headers=self._get_headers(), params=params, logger=self.logger
+        )
+
         if is_success:
-            context['permission'] = data[0]
-            self.logger.info('========== End get permission entity ==========')
+            context['permission'] = permission_detail
         else:
-            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                        status_code == 'invalid_access_token'):
-                logger.info("{} for {} username".format(status_message, self.request.user))
-                raise InvalidAccessToken(status_message)
+            messages.error(self.request, status_message)
+        self.logger.info('========== End get permission entity ==========')
         return context
 
     def _get_headers(self):

@@ -50,8 +50,8 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
 
         url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
 
-        delete_success = self.delete_scopes(url, scopes_to_delete)
-        insert_success = self.insert_scopes(url, scopes_to_insert)
+        msg1, delete_success = self.delete_scopes(url, scopes_to_delete)
+        msg2, insert_success = self.insert_scopes(url, scopes_to_insert)
 
         if delete_success and insert_success:
             messages.add_message(
@@ -59,21 +59,24 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
                 messages.SUCCESS,
                 'Updated data successfully'
             )
+        elif 'timeout' in (msg1, msg2):
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Timeout. Please check list of scope and save again'
+            )
 
     def insert_scopes(self, url, scopes):
         if not scopes:
-            return True
-        params = {"scopes":scopes}
-
-        data, success = self._post_method(url, 'Client Scopes', logger, params)
-        return success
+            return '', True
+        params = {"scopes": scopes}
+        return self._post_method(url, 'Client Scopes', logger, params)
 
     def delete_scopes(self, url, scopes):
         if not scopes:
-            return True
+            return '', True
         params = {"scopes": scopes}
-        data, success = self._delete_method(url, 'Client Scopes', logger, params)
-        return success
+        return self._delete_method(url, 'Client Scopes', logger, params)
 
     def get_context_data(self, **kwargs):
         self.logger.info("========== Start Getting client scopes ==========")
@@ -84,7 +87,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
 
         self.request.session['client_scopes'] = client_scopes
 
-        all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes,client_scopes)
+        all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes, client_scopes)
         context['all_scopes'] = all_scopes
         self.logger.info("========== Finish Getting client scopes ==========")
         return context
@@ -105,7 +108,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
             return data.get('scopes', [])
         return []
 
-    def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes ):
+    def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes):
         client_scopes_id = [x['id'] for x in client_scopes]
         for x in all_scopes:
             if x['id'] in client_scopes_id:

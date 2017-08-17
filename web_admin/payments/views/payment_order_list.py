@@ -7,7 +7,6 @@ from web_admin.restful_methods import RESTfulMethods
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,6 +16,14 @@ IS_SUCCESS = {
     False: 'Failed',
 }
 
+STATUS_ORDER = {
+    -1: 'FAIL',
+     0: 'CREATED',
+     1: 'LOCKING',
+     2: 'EXECUTED',
+     3: 'ROLLED_BACK',
+     4: 'TIME_OUT',
+}
 
 class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "payments/payment_order.html"
@@ -46,12 +53,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
 
-        self.logger.info('order_id: {}'.format(order_id))
-        self.logger.info('service_name: {}'.format(service_name))
-        self.logger.info('payer_user_id: {}'.format(payer_user_id))
-        self.logger.info('payer_user_type_id: {}'.format(payer_user_type_id))
-        self.logger.info('payee_user_id: {}'.format(payee_user_id))
-        self.logger.info('payee_user_type_id: {}'.format(payee_user_type_id))
 
         body = {}
         if order_id:
@@ -67,13 +68,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if payee_user_type_id.isdigit() and payee_user_type_id != '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
 
+
         data, status = self.get_payment_order_list(body)
         if data:
             result_data = self.format_data(data)
         else:
             result_data = data
 
-        context = {'order_list': result_data,
+        context = {'order_list': self.refine_data(result_data),
                    'order_id': order_id,
                    'service_name': service_name,
                    'payer_user_id': payer_user_id,
@@ -91,4 +93,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def format_data(self, data):
         for i in data:
             i['is_stopped'] = IS_SUCCESS.get(i.get('is_stopped'))
+        return data
+
+    def refine_data(self, data):
+        for item in data:
+            item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
         return data

@@ -32,11 +32,12 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start get bank list ==========')
         data, success = self._post_method(self.url, "get bank list", logger)
 
+        permissions = {}
+        permissions['is_permision_detail'] = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_BANK')
+        permissions['is_permision_edit'] = check_permissions_by_user(self.request.user, 'SYS_EDIT_BANK')
+        permissions['is_permision_delete'] = check_permissions_by_user(self.request.user, 'SYS_DELETE_BANK')
+
         if success:
+            result = {'data': data, 'permissions': permissions}
             self.logger.info('========== Finished get get bank list ==========')
-            for i in data:
-                i['is_permision_detail'] = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_BANK')
-                i['is_permision_edit'] = check_permissions_by_user(self.request.user, 'SYS_EDIT_BANK')
-                i['is_permision_delete'] = check_permissions_by_user(self.request.user, 'SYS_DELETE_BANK')
-            result = {'data': data}
             return result

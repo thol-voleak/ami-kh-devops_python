@@ -123,7 +123,8 @@
                 <tr>
                     <th id="id_clm">Order ID/Detail Txn ID</th>
                     <th id="ext_transaction_id_clm">External Transaction ID</th>
-                    <th id="transaction_id_clm"> Transaction ID for Reconcile</th>
+                    <th id="equ_order_id_from_partner_clm">Equator Order ID from Partner</th>
+                    <th id="ext_transaction_id_from_partner_clm"> External Transaction ID from Partner</th>
                     <th id="is_us_on_clm">ON US/OFF US</th>
                     <th id="payment_type_clm">Payment type</th>
                     <th id="payment_type_partner_clm">Payment type from partner</th>
@@ -138,6 +139,7 @@
                         <tr>
                             <td class="col-sm-2">{{ report.detail_trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.ext_trans_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ report.trans_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ report.authorized_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if report.sof_file.is_on_us is True %} ON US {% elif report.sof_file.is_on_us is False %} OFF US {% endif %}</td>
                             <td class="col-sm-2">{{ report.payment_type|default_if_none:'' }}</td>

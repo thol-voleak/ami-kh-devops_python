@@ -2,15 +2,15 @@ import logging
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
+from django.conf import settings
 from authentications.utils import get_correlation_id_from_username
-from web_admin import api_settings, setup_logger
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin import api_settings, setup_logger, RestFulClient
 
 logger = logging.getLogger(__name__)
 
 
-class CardTypeDetail(TemplateView, RESTfulMethods):
+class CardTypeDetail(GetHeaderMixin, TemplateView):
     template_name = "card_type/card_type_detail.html"
     logger = logger
 
@@ -41,16 +41,15 @@ class CardTypeDetail(TemplateView, RESTfulMethods):
         self.logger.info('========== Start Get Card Type Detail ==========')
         api_path = api_settings.SEARCH_CARD_TYPE
 
-        response_json, success = self._post_method(
-            api_path=api_path,
-            func_description="Search Card Type",
-            logger=logger,
-            params=params,
-            only_return_data=False
-        )
-        self.logger.info("data={}".format(response_json.get('data')))
+        is_success, status_code, status_message, data = RestFulClient.post(url= api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=params,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        self.logger.info("data=[{}]".format(data))
         try:
-            card_type_detail = response_json.get('data')[0]
+            card_type_detail = data[0]
             timeout_create_card_in_second = int(card_type_detail['timeout_create_card']) / 1000
             timeout_get_card_detail_in_second = int(card_type_detail['timeout_get_card_detail']) / 1000
             card_type_detail.update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
