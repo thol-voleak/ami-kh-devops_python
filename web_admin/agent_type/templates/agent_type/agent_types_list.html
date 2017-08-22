@@ -7,26 +7,16 @@
     <div class="panel-heading border mb15">
         <h3>Agent Type List</h3>
     </div>
-
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-        <div class="col-xs-12">
-            <div class="alert alert-success alert-dismissable" id="msg-update-client">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message }}</strong>
+    {% for msg in msgs.values %}
+        {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
             </div>
-        </div>
         {% endif %}
     {% endfor %}
-
-    {% if del_msg is not None %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="alert-success-agent-type">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ del_msg }}</strong>
-        </div>
-    </div>
-    {% endif %}
 
     <div class="panel-body">
         {% if request.user|has_permission_name:"CAN_CREATE_AGENT_TYPE"%}

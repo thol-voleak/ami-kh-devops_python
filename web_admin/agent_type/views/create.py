@@ -6,7 +6,6 @@ from web_admin import setup_logger
 from braces.views import GroupRequiredMixin
 
 from django.conf import settings
-from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 
@@ -54,7 +53,7 @@ class AgentTypeCreate(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                           func_description="Agent Type",
                                           logger=logger, params=params)
         if success:
-            messages.success(request, 'Added data successfully')
+            request.session['agent_type_create_msg'] = 'Added data successfully'
             self.logger.info('========== Finished creating agent type ==========')
             return redirect('agent_type:agent-type-list')
         else:
