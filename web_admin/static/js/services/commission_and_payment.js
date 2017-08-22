@@ -299,7 +299,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         // success
@@ -361,7 +361,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         console.log('Saved row data');
@@ -421,7 +421,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         console.log('Saved row data');
@@ -489,7 +489,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         console.log('Saved row data');

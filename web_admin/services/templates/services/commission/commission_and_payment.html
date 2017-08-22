@@ -367,7 +367,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         //clear list
@@ -408,7 +408,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#balance-distribution-' + distributionId).remove();
@@ -470,7 +470,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#bonus-distribution-' + bonus_distributions_id).remove();
@@ -498,7 +498,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
@@ -525,7 +525,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
@@ -697,7 +697,7 @@
                 success: function (response) {
                     if(response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if(response.status == 2) {
                         // success
