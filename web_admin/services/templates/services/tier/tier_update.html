@@ -60,7 +60,6 @@
                         <label class="col-sm-2 control-label">Condition</label>
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_condition" name="condition" required>
-                                <option value="">-</option>
                                 {% for item in conditions %}
                                     {% if item.fee_tier_condition == update_tier.fee_tier_condition %}
                                         <option value="{{ item.fee_tier_condition }}" selected="selected">
