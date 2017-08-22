@@ -127,6 +127,7 @@ function validateForm(nRow) {
         }
     }
     text_element.style.borderColor = "transparent";
+    text_element.style.borderColor = '';
 
     var actor = $(jqSelects[1]).find(":selected").html();
     if(actor == 'Specific ID') {
