@@ -67,10 +67,14 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
         currencies, status_get_currency = self.get_currencies(agent_id)
         if status and status_get_agent_identity and status_get_currency:
             agent_type_name, status = self.get_agent_type_name(context['agent']['agent_type_id'])
-            if status:
+            if status and status_get_agent_identity and status_get_currency:
+                if len(agent_identity['agent_identities']) > 0:
+                    context.update({
+                        'status_get_agent_identity': agent_identity['agent_identities'][0],
+                    })
+
                 context.update({
                     'agent_type_name': agent_type_name,
-                    'status_get_agent_identity': agent_identity['agent_identities'][0],
                     'currencies': currencies
                 })
             else:
