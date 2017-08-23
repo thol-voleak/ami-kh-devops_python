@@ -62,13 +62,11 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
-            self.logger.info('========== Finished showing Agent Detail page ==========')
-            return context
         except Exception as ex:
             logging.info(ex)
             context = {'agent': {}}
-            self.logger.info('========== Finished showing Agent Detail page ==========')
-            return context
+        self.logger.info('========== Finished showing Agent Detail page ==========')
+        return context
 
     def _get_currencies(self, agent_id):
         self.logger.info("Get currency for [{}] agent Id".format(agent_id))

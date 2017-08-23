@@ -177,12 +177,11 @@ class AgentRegistration(GroupRequiredMixin, GetChoicesMixin, AgentTypeAndCurrenc
 
         ####### Fail case agent identity ############
         agent_balance, success = self._create_agent_balance(request, agent_id)
+        self.logger.info('========== Finished creating agent ==========')
         if success:
             request.session['agent_registration_msg'] = 'Added agent successfully'
-            self.logger.info('========== Finished creating agent ==========')
             return redirect('agents:agent_detail', agent_id=agent_id)
         else:
-            self.logger.info('========== Finished creating agent ==========')
             return render(request, self.template_name, context)
 
     def _create_agent_profile(self, request):
