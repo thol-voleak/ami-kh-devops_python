@@ -164,7 +164,9 @@ class AgentRegistration(GroupRequiredMixin, GetChoicesMixin, AgentTypeAndCurrenc
             'currencies': currencies,
             'profile': profile,
             'identity': identity,
-            'msg': agent_profile_reponse
+            'msgs': {
+                'get_msg': agent_profile_reponse,
+            }
         }
         agent_id = ''
         if success:

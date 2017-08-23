@@ -40,7 +40,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start showing Agent List page ==========')
         context = {
-            'agent_update_msg': self.request.session.pop('agent_update_msg', None)
+            'msgs':{
+                'update_msg': self.request.session.pop('agent_update_msg', None),
+                'del_msg': self.request.session.pop('agent_delete_msg', None)
+            }
         }
 
         # Set first load default time for Context

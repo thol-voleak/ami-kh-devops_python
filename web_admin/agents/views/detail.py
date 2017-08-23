@@ -40,7 +40,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
             currencies, status_get_currency = self._get_currencies(agent_id)
 
-            context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
+            context['msgs'].update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
 
             if status and status_get_agent_identity and status_get_currency:
 
@@ -91,7 +91,10 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = {
             'agent': data[0],
             'agent_id': agent_id,
-            'msg': self.request.session.pop('agent_registration_msg', None)
+            'msgs': {
+                'get_msg': self.request.session.pop('agent_registration_msg', None),
+                'del_msg': self.request.session.pop('agent_delete_msg', None)
+            }
         }
         return context, success
 
