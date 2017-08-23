@@ -73,7 +73,7 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
                         'status_get_agent_identity': agent_identity['agent_identities'][0],
                     })
 
-                context.upd1ate({
+                context.update({
                     'agent_type_name': agent_type_name,
                     'currencies': currencies
                 })
