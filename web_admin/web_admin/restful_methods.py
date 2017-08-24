@@ -8,7 +8,6 @@ from web_admin.utils import setup_logger
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
-
 class RESTfulMethods(GetHeaderMixin):
     def _get_method(self, api_path, func_description=None, logger=None, is_getting_list=False, params={}, timeout=None):
         """
