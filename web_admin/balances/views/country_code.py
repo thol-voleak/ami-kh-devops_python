@@ -32,7 +32,7 @@ class CountryCode(TemplateView, RESTfulMethods):
                                          func_description="global configurations",
                                          logger=logger,
                                          is_getting_list=True)
-        if success:
+        if data.get('country',''):
             context = {'country_code': data['country']}
         else:
             context = {'country_code': None}
