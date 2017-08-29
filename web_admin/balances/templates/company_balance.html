@@ -145,7 +145,7 @@ function changeValue() {
     var $company_balance = $('#txt_company_balance_hidden');
     $amount.on('input', function() {
         var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
-        value ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
+        (value || value === 0) ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
         : $new_balance.val($company_balance.val());
     });
 
