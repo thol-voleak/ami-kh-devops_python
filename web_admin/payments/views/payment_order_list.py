@@ -75,13 +75,19 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         else:
             result_data = data
 
-        context = {'order_list': self.refine_data(result_data),
+        order_list = self.refine_data(result_data)
+        count = 0
+        if len(order_list):
+            count = len(order_list)
+        context = {'order_list': order_list,
                    'order_id': order_id,
                    'service_name': service_name,
                    'payer_user_id': payer_user_id,
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
-                   'payee_user_type_id':payee_user_type_id}
+                   'payee_user_type_id':payee_user_type_id,
+                   'search_count': count}
+
         self.logger.info('========== Finished searching payment order ==========')
 
         return render(request, self.template_name, context)
@@ -99,3 +105,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         for item in data:
             item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
         return data
+
+    def get_context_data(self, **kwargs):
+        return {'search_count': 0}
+        
