@@ -2,7 +2,7 @@ from braces.views import GroupRequiredMixin
 
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
-from web_admin.api_settings import PAYMENT_URL
+from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
 
 from django.shortcuts import render
@@ -43,6 +43,13 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(PaymentOrderView, self).dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start render payment order ==========')
+        context = super(PaymentOrderView, self).get_context_data(**kwargs)
+        data = self.get_services_list()
+        context['data'] = data
+        return render(request, self.template_name, context)
+
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start searching payment order ==========')
 
@@ -52,7 +59,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payer_user_type_id = request.POST.get('payer_user_type_id')
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
-
+        service_list = self.get_services_list()
 
         body = {}
         if order_id:
@@ -82,6 +89,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = {'order_list': order_list,
                    'order_id': order_id,
                    'service_name': service_name,
+                   'data': service_list,
                    'payer_user_id': payer_user_id,
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
@@ -108,4 +116,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         return {'search_count': 0}
+
+    def get_services_list(self):
+        url = SERVICE_LIST_URL
+        data, success = self._get_method(api_path=url, func_description="service list", is_getting_list=True)
+        return data
         
