@@ -17,7 +17,7 @@
                 </div>
                 <label class="col-sm-1 control-label">Service Name</label>
                 <div class="col-sm-2">
-                    <select class="form-control" id="txt_service_name" name="service_name" >
+                    <select class="form-control" id="ddl_service" name="service_name" >
                         <option value="" selected="selected">-</option>
                         {% for service in data %}
                             {%if service.service_name == service_name%}
