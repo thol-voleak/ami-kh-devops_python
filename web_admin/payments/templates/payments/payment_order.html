@@ -17,7 +17,16 @@
                 </div>
                 <label class="col-sm-1 control-label">Service Name</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="service_name" id="txt_service_name" value="{{ service_name }}">
+                    <select class="form-control" id="txt_service_name" name="service_name" >
+                        <option value="" selected="selected">-</option>
+                        {% for service in data %}
+                            {%if service.service_name == service_name%}
+                            <option value="{{service_name }}" selected>{{service_name }}</option>
+                            {% else %}
+                            <option value="{{service.service_name }}">{{service.service_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div class="form-group">
