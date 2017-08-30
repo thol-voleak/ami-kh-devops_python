@@ -64,7 +64,13 @@
                     <!--</p>-->
                 </li>
             </ul>
-
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                <li>
+                    <span class="navbar-text">
+                        {% include 'version.html' %}
+                    </span>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-right hidden-xs">
                 {% if user.is_authenticated %}
                 <li>
@@ -78,11 +84,6 @@
             {% endblock %}
         </div>
     </div>
-    <footer class="content-footer">
-        <div class="pull-right">
-            {% include 'version.html' %}
-        </div>
-    </footer>
 </div>
 {% endblock %}
 {% block body_js %}
