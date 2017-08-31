@@ -8,7 +8,7 @@ from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 import logging
-
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
 IS_SUCCESS = {
@@ -72,6 +72,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payer_user_type_id = request.POST.get('payer_user_type_id')
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
+        from_created_timestamp = request.POST.get('from_created_timestamp')
+        to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
         ext_transaction_id = request.POST.get('ext_transaction_id')
         status_id = request.POST.get('status_id')
@@ -95,7 +97,19 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if status_id:
             body['status_id'] = [int(status_id)]
 
-        data, status = self.get_payment_order_list(body)
+        if from_created_timestamp is not '' and to_created_timestamp is not None:
+            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from'] = new_from_created_timestamp
+
+        if to_created_timestamp is not '' and to_created_timestamp is not None:
+            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to'] = new_to_created_timestamp
+
+        data, status = self.get_payment_order_list(body=body)
+
         if data:
             result_data = self.format_data(data)
         else:
@@ -126,6 +140,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'search_count': count,
                    'ext_transaction_id': ext_transaction_id,
                    'status_list': status_list,
+                   'date_from': from_created_timestamp,
+                   'date_to': to_created_timestamp,
                    }
 
         if status_id:
