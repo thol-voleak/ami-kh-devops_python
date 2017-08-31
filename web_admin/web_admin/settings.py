@@ -109,6 +109,12 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 OPTIONS = {
     'libraries': {
         'myapp_tags': 'authentications.templatetags.permissions_filter',
