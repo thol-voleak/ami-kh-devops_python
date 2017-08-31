@@ -7,6 +7,7 @@ from authentications.utils import get_auth_header as get_header
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.conf import settings
+from django.core.cache import cache
 
 import time
 import requests
@@ -28,6 +29,7 @@ def login_user(request):
             permissions = get_permission_from_backend(user, logger)
 
             if permissions is not None:
+                cache.set(username, [i['name'] for i in permissions['permissions']], 60000)
                 authens = Authentications.objects.get(user=user)
                 authens.permissions = permissions['permissions']
                 authens.save()
@@ -64,6 +66,7 @@ def logout_user(request):
         headers = get_auth_header(request.user)
     except Exception as e:
         logger.error(e)
+        cache.delete(username)
         logout(request)
         logger.info('========== Finished to logout ==========')
         return redirect('authentications:login')
@@ -81,6 +84,8 @@ def logout_user(request):
         if auth is not None:
             logger.info('username {} deleting current session info'.format(username))
             auth.delete()
+
+    cache.delete(username)
     logout(request)
     logger.info("username {} was logged out".format(username, request.user))
     logger.info('========== Finished to logout ==========')
