@@ -47,7 +47,20 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start render payment order ==========')
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
         data = self.get_services_list()
+        status_list = [
+            {"id": -1, "name": "FAIL"},
+            {"id": 0, "name": "CREATED"},
+            {"id": 1, "name": "LOCKING"},
+            {"id": 2, "name": "EXECUTED"},
+            {"id": 3, "name": "ROLLED_BACK"},
+            {"id": 4, "name": "TIME_OUT"},
+        ]
+
         context['data'] = data
+        context['search_count'] = 0
+        context['status_list'] = status_list
+        context['status_id'] = ''
+
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -60,6 +73,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
         service_list = self.get_services_list()
+        ext_transaction_id = request.POST.get('ext_transaction_id')
+        status_id = request.POST.get('status_id')
 
         body = {}
         if order_id:
@@ -75,6 +90,10 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if payee_user_type_id.isdigit() and payee_user_type_id != '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
 
+        if ext_transaction_id:
+            body['ext_transaction_id'] = ext_transaction_id
+        if status_id:
+            body['status_id'] = [int(status_id)]
 
         data, status = self.get_payment_order_list(body)
         if data:
@@ -86,6 +105,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         count = 0
         if len(order_list):
             count = len(order_list)
+
+        status_list = [
+            {"id": -1, "name": "FAIL"},
+            {"id": 0, "name": "CREATED"},
+            {"id": 1, "name": "LOCKING"},
+            {"id": 2, "name": "EXECUTED"},
+            {"id": 3, "name": "ROLLED_BACK"},
+            {"id": 4, "name": "TIME_OUT"},
+        ]
+
         context = {'order_list': order_list,
                    'order_id': order_id,
                    'service_name': service_name,
@@ -94,7 +123,13 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
                    'payee_user_type_id':payee_user_type_id,
-                   'search_count': count}
+                   'search_count': count,
+                   'ext_transaction_id': ext_transaction_id,
+                   'status_list': status_list,
+                   }
+
+        if status_id:
+            context['status_id'] = int(status_id)
 
         self.logger.info('========== Finished searching payment order ==========')
 
@@ -114,8 +149,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
         return data
 
-    def get_context_data(self, **kwargs):
-        return {'search_count': 0}
 
     def get_services_list(self):
         url = SERVICE_LIST_URL
