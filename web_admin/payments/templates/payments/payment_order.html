@@ -11,17 +11,17 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-1 control-label">Order ID</label>
+                <label class="col-sm-2 control-label">Order ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Ext Transaction ID</label>
+                <label class="col-sm-2 control-label">Ext Transaction ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-1 control-label">Service Name</label>
+                <label class="col-sm-2 control-label">Service Name</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="ddl_service" name="service_name" >
                         <option value="" selected="selected">-</option>
@@ -34,7 +34,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <label class="col-sm-1 control-label">Status</label>
+                <label class="col-sm-2 control-label">Status</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="ddl_status" name="status_id" >
                         <option value="" selected="selected">All</option>
@@ -50,11 +50,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-1 control-label">Payer User ID</label>
+                <label class="col-sm-2 control-label">Payer User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payer_user_id" id="txt_payer_user_id" value="{{ payer_user_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Payer User Type</label>
+                <label class="col-sm-2 control-label">Payer User Type</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_payer_user_type" name="payer_user_type_id">
                         <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
@@ -64,11 +64,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-1 control-label">Payee User ID</label>
+                <label class="col-sm-2 control-label">Payee User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payee_user_id" id="txt_payee_user_id" value="{{ payee_user_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Payee User Type</label>
+                <label class="col-sm-2 control-label">Payee User Type</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_payee_user_type" name="payee_user_type_id">
                         <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
@@ -78,14 +78,14 @@
                 </div>
             </div>
             <div class="form-group">
-                    <label class="col-sm-1 control-label">From</label>
+                    <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="from_created_timestamp"
                                value="{{ date_from|default_if_none:'' }}"
                                id="dtp_from_date">
                     </div>
-                    <label class="col-sm-1 control-label">To</label>
+                    <label class="col-sm-2 control-label">To</label>
                     <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="to_created_timestamp"
