@@ -1,4 +1,4 @@
-from authentications.utils import get_auth_header
+from django.conf import settings
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from web_admin import api_settings, setup_logger
@@ -82,7 +82,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
 
         url = api_settings.ADMIN_UPDATE_CUSTOMER.format(customer_id)
-        data, success = self._put_method(url, "", logger, body)
+        data, success = self._put_method(url, "", logger, body, settings.GLOBAL_TIMEOUT)
 
         if success:
             self.logger.info('========== Finish updating Member Customer ==========')
