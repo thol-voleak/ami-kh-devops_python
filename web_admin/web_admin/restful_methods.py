@@ -108,6 +108,7 @@ class RESTfulMethods(GetHeaderMixin):
             done = time.time()
             processing_time = done - start_date
             http_status_code = response.status_code
+
             # Filter sensitive data
             self._filter_sensitive_fields(params=params)
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))

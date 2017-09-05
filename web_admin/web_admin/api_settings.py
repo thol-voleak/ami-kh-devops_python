@@ -160,6 +160,7 @@ CUSTOMER_IDENTITIES_LIST = 'api-gateway/report/'+API_VERSION+'/customers/identit
 SUSPEND_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
 ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
 RESET_IDENTITY_PASSWORD = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/identities/{}/passwords/temporary'
+ADMIN_UPDATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'

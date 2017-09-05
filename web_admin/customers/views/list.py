@@ -101,15 +101,17 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                               func_description="search member customer",
                                               logger=logger,
                                               params=params)
-            is_permision_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_DETAIL_MEMBER_CUSTOMER_PROFILE')
-            is_permision_sof_bank = check_permissions_by_user(self.request.user, 'CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE')
-            is_permision_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_IDENTITY_CUSTOMER')
-            is_permision_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_CUSTOMER')
+            is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_DETAIL_MEMBER_CUSTOMER_PROFILE')
+            is_permission_update = check_permissions_by_user(self.request.user,'CAN_EDIT_MEMBER_CUSTOMER_PROFILE')
+            is_permission_sof_bank = check_permissions_by_user(self.request.user, 'CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE')
+            is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_IDENTITY_CUSTOMER')
+            is_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_CUSTOMER')
             for i in data:
-                i['is_permission_detail'] = is_permision_detail
-                i['is_permission_sof_bank'] = is_permision_sof_bank
-                i['is_permission_identity'] = is_permision_identity
-                i['is_permission_suspend'] = is_permision_suspend
+                i['is_permission_detail'] = is_permission_detail
+                i['is_permission_update'] = is_permission_update
+                i['is_permission_sof_bank'] = is_permission_sof_bank
+                i['is_permission_identity'] = is_permission_identity
+                i['is_permission_suspend'] = is_permission_suspend
 
         context['search_count'] = len(data)
         context['data'] = data
