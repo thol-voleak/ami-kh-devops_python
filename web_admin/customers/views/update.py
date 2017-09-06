@@ -84,27 +84,6 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         url = api_settings.ADMIN_UPDATE_CUSTOMER.format(customer_id)
         data, success = self._put_method(url, "", logger, body, settings.GLOBAL_TIMEOUT)
 
-        if success:
-            self.logger.info('========== Finish updating Member Customer ==========')
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Updated profile successfully'
-            )
-            return redirect('customers:customer_detail', customerId=customer_id)
-        elif data == 'timeout':
-            messages.add_message(
-                request,
-                messages.ERROR,
-                message='Update customer profile timeout. Please try again or contact admin'
-            )
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                message=data
-            )
-
         body['created_timestamp'] = request.POST.get('created_timestamp')
         body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
         body['id'] = customer_id
@@ -112,6 +91,26 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'customer_info': body,
             'customer_id': customer_id
         }
+
+        if success:
+            self.logger.info('========== Finish updating Member Customer ==========')
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Updated profile successfully'
+            )
+        elif data == 'timeout':
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message='Update customer profile timeout. Please try again or contact admin.'
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message="Update customer profile fail. Please try again or contact admin."
+            )
         return render(request, self.template_name, context)
 
 
