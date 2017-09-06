@@ -92,6 +92,12 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'Updated profile successfully'
             )
             return redirect('customers:customer_detail', customerId=customer_id)
+        elif data == 'timeout':
+            messages.add_message(
+                request,
+                messages.ERROR,
+                message='Update customer profile timeout. Please try again or contact admin'
+            )
         else:
             messages.add_message(
                 request,
@@ -99,14 +105,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 message=data
             )
 
-            body['created_timestamp'] = request.POST.get('created_timestamp')
-            body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
-            body['id'] = customer_id
-            context = {
-                'customer_info': body,
-                'customer_id': customer_id
-            }
-            return render(request, self.template_name, context)
+        body['created_timestamp'] = request.POST.get('created_timestamp')
+        body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
+        body['id'] = customer_id
+        context = {
+            'customer_info': body,
+            'customer_id': customer_id
+        }
+        return render(request, self.template_name, context)
 
 
     def get_member_detail(self, customer_id):
