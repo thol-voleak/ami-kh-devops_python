@@ -103,6 +103,10 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.SUCCESS,
                 'Updated profile successfully'
             )
+            data = self.get_member_detail(customer_id=customer_id)
+            data['customer_id'] = customer_id
+            return render(request, self.template_name, data)
+
         elif data == 'timeout':
             messages.add_message(
                 request,
