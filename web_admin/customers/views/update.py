@@ -87,6 +87,10 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body['created_timestamp'] = request.POST.get('created_timestamp')
         body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
         body['id'] = customer_id
+        body['date_of_birth'] = date_of_birth.split('T')[0] if date_of_birth else ''
+        body['citizen_card_date_of_issue'] = citizen_card_date_of_issue.split('T')[0] if citizen_card_date_of_issue else ''
+        body['passport_date_of_issue'] = passport_date_of_issue.split('T')[0] if passport_date_of_issue else ''
+
         context = {
             'customer_info': body,
             'customer_id': customer_id
