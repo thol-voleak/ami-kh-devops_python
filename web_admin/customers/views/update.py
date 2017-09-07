@@ -64,37 +64,25 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         date_of_birth = request.POST.get('date_of_birth')
         if date_of_birth:
-            date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-            date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['date_of_birth'] = date_of_birth
+            date_of_birth2 = datetime.strptime(date_of_birth, "%Y-%m-%d")
+            date_of_birth2 = date_of_birth2.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['date_of_birth'] = date_of_birth2
 
         citizen_card_date_of_issue = request.POST.get('citizen_card_date_of_issue')
         if citizen_card_date_of_issue:
-            citizen_card_date_of_issue = datetime.strptime(citizen_card_date_of_issue, "%Y-%m-%d")
-            citizen_card_date_of_issue = citizen_card_date_of_issue.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['citizen_card_date_of_issue'] = citizen_card_date_of_issue
+            citizen_card_date_of_issue2 = datetime.strptime(citizen_card_date_of_issue, "%Y-%m-%d")
+            citizen_card_date_of_issue2 = citizen_card_date_of_issue2.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['citizen_card_date_of_issue'] = citizen_card_date_of_issue2
 
         passport_date_of_issue = request.POST.get('passport_date_of_issue')
         if passport_date_of_issue:
-            passport_date_of_issue = datetime.strptime(passport_date_of_issue, "%Y-%m-%d")
-            passport_date_of_issue = passport_date_of_issue.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['passport_date_of_issue'] = passport_date_of_issue
+            passport_date_of_issue2 = datetime.strptime(passport_date_of_issue, "%Y-%m-%d")
+            passport_date_of_issue2 = passport_date_of_issue2.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['passport_date_of_issue'] = passport_date_of_issue2
 
 
         url = api_settings.ADMIN_UPDATE_CUSTOMER.format(customer_id)
         data, success = self._put_method(url, "", logger, body, settings.GLOBAL_TIMEOUT)
-
-        body['created_timestamp'] = request.POST.get('created_timestamp')
-        body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
-        body['id'] = customer_id
-        body['date_of_birth'] = date_of_birth.split('T')[0] if date_of_birth else ''
-        body['citizen_card_date_of_issue'] = citizen_card_date_of_issue.split('T')[0] if citizen_card_date_of_issue else ''
-        body['passport_date_of_issue'] = passport_date_of_issue.split('T')[0] if passport_date_of_issue else ''
-
-        context = {
-            'customer_info': body,
-            'customer_id': customer_id
-        }
 
         if success:
             self.logger.info('========== Finish updating Member Customer ==========')
@@ -119,6 +107,18 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.ERROR,
                 message="Update customer profile fail. Please try again or contact admin."
             )
+
+        body['created_timestamp'] = request.POST.get('created_timestamp')
+        body['last_updated_timestamp'] = request.POST.get('last_updated_timestamp')
+        body['id'] = customer_id
+        body['date_of_birth'] = date_of_birth
+        body['citizen_card_date_of_issue'] = citizen_card_date_of_issue
+        body['passport_date_of_issue'] = passport_date_of_issue
+
+        context = {
+            'customer_info': body,
+            'customer_id': customer_id
+        }
         return render(request, self.template_name, context)
 
 
