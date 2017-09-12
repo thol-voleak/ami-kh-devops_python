@@ -125,6 +125,7 @@
                     <th id="mobile_number">Mobile Number</th>
                     <th id="email">Email Address</th>
                     <th id="unique_reference">Unique Reference</th>
+                    <th id="device_id">Device ID</th>
                     <th id="kyc">KYC status</th>
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
@@ -143,6 +144,7 @@
                     <td class="col-sm-1 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.email|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.unique_reference|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.device_id|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
