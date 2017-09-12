@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'^admin-portal/centralize-configuration/', include('centralize_configuration.urls')),
     url(r'^admin-portal/bank/', include('bank_sofs.urls')),
     url(r'^admin-portal/reconcile/', include('reconcile.urls')),
+    url(r'^admin-portal/card_designs/', include('card_design.urls')),
 ]
