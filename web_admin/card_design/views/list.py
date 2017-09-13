@@ -25,7 +25,7 @@ class CardDesignList(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start get card design list ==========')
         context = super(CardDesignList, self).get_context_data(**kwargs)
-        data = self.get_card_design()
+        data, is_success = self.get_card_design()
         context['data'] = data
 
         return render(request, self.template_name, context)
@@ -35,4 +35,9 @@ class CardDesignList(TemplateView, GetHeaderMixin):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-        return data
+        if not is_success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
+
+        return data, is_success
