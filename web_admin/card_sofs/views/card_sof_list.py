@@ -1,6 +1,4 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger, api_settings
-from web_admin.restful_methods import RESTfulMethods
 
 from datetime import datetime
 from django.conf import settings
@@ -8,12 +6,16 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
 
+from authentications.apps import InvalidAccessToken
+from web_admin import api_settings, setup_logger, RestFulClient
+from web_admin.get_header_mixins import GetHeaderMixin
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_SEARCH_CARD_SOF_CREATION"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -24,13 +26,13 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "sof/card_sof.html"
-    search_card_sof = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/cards/sofs"
+    search_card_sof_path = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/cards/sofs"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(BankSOFView, self).dispatch(request, *args, **kwargs)
+        return super(CardSOFView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start search history card SOF ==========')
@@ -83,5 +85,12 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def _get_card_sof_list(self, body):
-        return self._post_method(self.search_card_sof, 'Cash Source of Fund List', logger, body)
-
+        is_success, status_code, status_message, data = RestFulClient.post(url=self.search_card_sof_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
+        if not is_success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
+        return data, is_success
