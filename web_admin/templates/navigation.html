@@ -193,7 +193,7 @@
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_CARD"%}
-                <li class="menu-accordion {% if 'card' in request.path %}open{% endif %}">
+                <li class="menu-accordion {% if 'cards' in request.path or 'card-type' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
                 {% if request.user|has_permission_name:"CAN_SEARCH_CARD_PROFILE"%}
                     <ul class="sub-menu">
@@ -252,6 +252,16 @@
                     </li>
                      <li class="{% if url_name == 'bank_sofs_transaction' %}active{% endif %}">
                         <a id="bank_transaction" href="{% url 'bank_sofs:bank_sofs_transaction' %}"> <span>Transaction</span> </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_CARD_SOF"%}
+            <li id="card_sof_menu" class="menu-accordion {% if 'card_sofs/sofs' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Source Of Fund</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'card_sof' %}active{% endif %}">
+                        <a id="card_sof_list" href="{% url 'card_sofs:card_sof' %}"> <span>Source of Fund</span> </a>
                     </li>
                 </ul>
             </li>
