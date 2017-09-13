@@ -60,6 +60,7 @@
                 </div>
             </form>
 
+            {% if request.user|has_permission_name:"SYS_ADD_CARD_DESIGN"%}
             </div>
                 <div class="pull-right mr15 text-right">
                 <a href="{% url 'bank_sofs:bank_sofs_create' %}">
@@ -67,6 +68,7 @@
                            value="Add"/>
                 </a>
             </div>
+            {% endif %}
             <div class="no-more-tables">
                 <table id='tbl_card_design' class="table table-bordered table-striped mb0">
                     <thead>
@@ -88,18 +90,22 @@
                             <td>{{ i.card_design.card_type.name|default_if_none:'' }}</td>
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td class="col-sm-2">
+                                {% if request.user|has_permission_name:"SYS_EDIT_CARD_DESIGN"%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
                                     id="btn_edit}">
                                     <span class="small">Edit</span>
                                 </a>
+                                {%endif%}
+                                {% if request.user|has_permission_name:"SYS_VIEW_DETAIL_CARD_DESIGN"%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"
                                     id="btn_detail">
                                     <span class="small">Detail</span>
                                 </a>
+                                {%endif%}
                             </td>
                         </tr>
                     {% endfor %}
