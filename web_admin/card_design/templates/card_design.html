@@ -63,7 +63,7 @@
             {% if request.user|has_permission_name:"SYS_ADD_CARD_DESIGN"%}
             </div>
                 <div class="pull-right mr15 text-right">
-                <a href="{% url 'bank_sofs:bank_sofs_create' %}">
+                <a href="{% url 'card_design:create_card_design' %}">
                     <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                            value="Add"/>
                 </a>
