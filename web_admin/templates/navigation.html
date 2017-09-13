@@ -267,7 +267,7 @@
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
-                <li class="menu-accordion {% if 'bank' in request.path %}{% if 'management' in request.path or 'detail' in request.path or 'edit' in request.path or 'create' in request.path or 'delete' in request.path %}open{% endif %}{% endif %}">
+                <li class="menu-accordion {% if 'bank' in request.path or 'card_designs' in request.path or 'card_provider' in request.path or 'management' in request.path or 'detail' in request.path or 'edit' in request.path or 'create' in request.path or 'delete' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
@@ -281,11 +281,13 @@
                     </li>
                 </ul>
                 {% endif %}
+                {% if request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'card_provider' %}active{% endif %}">
                         <a href="{% url 'card_provider:card_provider' %}"> <span>Manage Card Provider</span> </a>
                     </li>
                 </ul>
+                {%endif%}
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_RECONCILE"%}

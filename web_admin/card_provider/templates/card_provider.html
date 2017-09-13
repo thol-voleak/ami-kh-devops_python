@@ -37,7 +37,7 @@
 
                 </div>
             </form>
-
+            {% if request.user|has_permission_name:"SYS_ADD_PROVIDER"%}
             </div>
                 <div class="pull-right mr15 text-right">
                 <a href="{% url 'card_provider:card_provider' %}">
@@ -45,6 +45,7 @@
                            value="Add"/>
                 </a>
             </div>
+            {%endif%}
             <div class="no-more-tables">
                 <table id='tbl_provider' class="table table-bordered table-striped mb0">
                     <thead>
@@ -57,6 +58,7 @@
                     </tr>
                     </thead>
                     <tbody>
+                    {% if request.user|has_permission_name:"SYS_VIEW_LIST_PROVIDER"%}
                     {% for i in data %}
                         <tr>
                             <td>{{ i.card_design.provider.name|default_if_none:'' }}</td>
@@ -64,21 +66,26 @@
                             <td>{{ i.card_design.provider.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.card_design.provider.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
+                                {% if request.user|has_permission_name:"SYS_EDIT_PROVIDER"%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
                                     id="btn_edit}">
                                     <span class="small">Edit</span>
                                 </a>
+                                {%endif%}
+                                {% if request.user|has_permission_name:"SYS_VIEW_DETAIL_PROVIDER"%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"
                                     id="btn_detail">
                                     <span class="small">Detail</span>
                                 </a>
+                                {%endif%}
                             </td>
                         </tr>
                     {% endfor %}
+                    {%endif%}
                     </tbody>
                 </table>
             </div>

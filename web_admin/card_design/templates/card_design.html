@@ -82,6 +82,7 @@
                     </tr>
                     </thead>
                     <tbody>
+                    {% if request.user|has_permission_name:"SYS_VIEW_LIST_CARD_DESIGN"%}
                     {% for i in data %}
                         <tr>
                             <td>{{ i.card_design.pan_pattern|default_if_none:'' }}</td>
@@ -109,6 +110,7 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    {%endif%}
                     </tbody>
                 </table>
             </div>
