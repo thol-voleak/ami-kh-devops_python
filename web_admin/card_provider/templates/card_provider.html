@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Provider List</h3>
+
+
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'card_provider:card_provider' %}">
+                {% csrf_token %}
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Provider Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control input-rounded" name="username" id="txt_provider_name" value="{{ provider_name }}"/>
+                    </div>
+                    <div class="col-xs-1">
+                        <a href="{% url 'card_provider:card_provider' %}">
+                            <input id="btn_search" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+
+            </div>
+                <div class="pull-right mr15 text-right">
+                <a href="{% url 'card_provider:card_provider' %}">
+                    <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
+                           value="Add"/>
+                </a>
+            </div>
+            <div class="no-more-tables">
+                <table id='tbl_provider' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_card_design_number">Provider Name</th>
+                        <th id="ddl_card_design_name">Provider ID</th>
+                        <th id="ddl_provider">Create Date</th>
+                        <th id="ddl_card_type">Modified Date</th>
+                        <th class="col-sm-2" id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td>{{ i.card_design.provider.name|default_if_none:'' }}</td>
+                            <td>{{ i.card_design.provider.id|default_if_none:'' }}</td>
+                            <td>{{ i.card_design.provider.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.card_design.provider.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                <a type="button"
+                                    class="btn btn-outline btn-xs btn-primary"
+                                    role="button"
+                                    id="btn_edit}">
+                                    <span class="small">Edit</span>
+                                </a>
+                                <a type="button"
+                                    class="btn btn-outline btn-xs btn-info"
+                                    role="button"
+                                    id="btn_detail">
+                                    <span class="small">Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
