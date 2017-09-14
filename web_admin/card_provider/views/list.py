@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class CardProviderList(TemplateView, GetHeaderMixin):
 
     template_name = "card_provider.html"
-    url = "api-gateway/report/"+api_settings.API_VERSION+"/cards/sofs/providers"
+    url = api_settings.SEARCH_CARD_PROVIDER
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
