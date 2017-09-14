@@ -66,7 +66,7 @@
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
-                                {% if request.user|has_permission_name:"SYS_EDIT_PROVIDER"%}
+                                {% if i.is_permission_edit %}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
@@ -74,7 +74,7 @@
                                     <span class="small">Edit</span>
                                 </a>
                                 {%endif%}
-                                {% if request.user|has_permission_name:"SYS_VIEW_DETAIL_PROVIDER"%}
+                                {% if i.is_permission_detail%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"

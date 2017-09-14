@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class CardDesignList(TemplateView, GetHeaderMixin):
 
     template_name = "card_design.html"
-    group_required = "SYS_MANAGE_CARD DESIGN"
+    group_required = "SYS_MANAGE_CARD_DESIGN"
     url = api_settings.SEARCH_CARD_DESIGN
     logger = logger
 
@@ -23,6 +23,11 @@ class CardDesignList(TemplateView, GetHeaderMixin):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CardDesignList, self).dispatch(request, *args, **kwargs)
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start get card design list ==========')
@@ -52,6 +57,13 @@ class CardDesignList(TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
+        
+        is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_CARD_DESIGN')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
+
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
+            i['is_permission_edit'] = is_permission_edit
 
         context.update({
             'data': data,
@@ -60,7 +72,6 @@ class CardDesignList(TemplateView, GetHeaderMixin):
             'provider': provider,
             'currency': currency,
         })
-        print(data)
         self.logger.info('========== Finish get card design list ==========')
 
         return render(request, self.template_name, context)
