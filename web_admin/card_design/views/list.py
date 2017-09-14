@@ -6,6 +6,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import render
 import logging
+from authentications.apps import InvalidAccessToken
 
 
 logger = logging.getLogger(__name__)
