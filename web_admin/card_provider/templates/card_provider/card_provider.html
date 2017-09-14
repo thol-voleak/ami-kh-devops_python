@@ -40,7 +40,7 @@
             {% if request.user|has_permission_name:"SYS_ADD_PROVIDER"%}
             </div>
                 <div class="pull-right mr15 text-right">
-                <a href="{% url 'card_provider:card_provider' %}">
+                <a href="{% url 'card_provider:create' %}">
                     <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                            value="Add"/>
                 </a>

@@ -179,6 +179,7 @@ UPDATE_CARED_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{p
 GET_DETAIL_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}'
 SEARCH_CARD_DESIGN = 'api-gateway/report/'+API_VERSION+'/cards/sofs/card-designs'
 SEARCH_CARD_PROVIDER ='api-gateway/report/'+API_VERSION+'/cards/sofs/providers'
+CREATE_CARD_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers'
 CREATE_CARD_DESIGN = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs'
 CARD_DESIGN_DETAIL = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
 CARD_TYPE_LIST = 'api-gateway/sof-card/'+API_VERSION+'/admin/card-types'

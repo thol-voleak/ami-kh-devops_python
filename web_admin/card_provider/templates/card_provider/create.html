@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Create Provider Profile</h3>
+        </div>
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'card_provider:create' %}">
+                {% csrf_token %}
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Provider Name *</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control input-rounded" name="provider_name" id="txt_provider_name" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="pull-right">
+                        <a href="{% url 'card_provider:card_provider' %}">
+                            <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                        </a>
+                        <a>
+                            <input id="btn_add" class="btn btn-success" type="submit" value="Add">
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
