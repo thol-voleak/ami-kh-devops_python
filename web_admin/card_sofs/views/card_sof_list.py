@@ -91,6 +91,6 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            params=body)
         if not is_success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                logger.info("{}".format(status_message))
+                self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
         return data, is_success
