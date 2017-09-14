@@ -23,6 +23,11 @@ class CardProviderList(TemplateView, GetHeaderMixin):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CardProviderList, self).dispatch(request, *args, **kwargs)
 
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start get card provider list ==========')
         context = super(CardProviderList, self).get_context_data(**kwargs)
@@ -39,6 +44,13 @@ class CardProviderList(TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
+
+        is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_PROVIDER')
+        is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_PROVIDER')
+
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
+            i['is_permission_edit'] = is_permission_edit
 
         context.update({
             'data': data,
