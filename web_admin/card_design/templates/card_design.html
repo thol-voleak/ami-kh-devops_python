@@ -103,7 +103,8 @@
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"
-                                    id="btn_detail">
+                                    id="btn_detail"
+                                    href="{% url 'card_design:card_design_detail' i.id i.provider.id %}">
                                     <span class="small">Detail</span>
                                 </a>
                                 {%endif%}

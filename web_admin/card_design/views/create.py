@@ -5,7 +5,7 @@ from web_admin import api_settings, setup_logger
 import logging
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
-from web_admin.api_settings import SEARCH_CARD_TYPE, SEARCH_CARD_PROVIDER, GET_ALL_CURRENCY_URL, CREATE_CARD_DESIGN
+from web_admin.api_settings import SEARCH_CARD_PROVIDER, GET_ALL_CURRENCY_URL
 from web_admin.restful_client import RestFulClient
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
