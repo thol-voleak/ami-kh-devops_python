@@ -50,6 +50,8 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         pan_pattern = request.POST.get('pan_pattern')
         card_type_id = request.POST.get('card_type')
         currency = request.POST.get('currency')
+        pre_sof_order_url = request.POST.get('pre_sof_order_url')
+        pre_sof_order_read_timeout = request.POST.get('pre_sof_order_read_timeout')
         pre_link_url = request.POST.get('pre_link_url')
         pre_link_read_timeout = request.POST.get('pre_link_read_timeout')
         link_url = request.POST.get('link_url')
@@ -73,6 +75,7 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "is_active": True,
             "currency": currency,
             "pan_pattern": pan_pattern,
+            "pre_sof_order_url": pre_sof_order_url,
             "pre_link_url": pre_link_url,
             "link_url": link_url,
             "un_link_url": un_link_url,
@@ -82,6 +85,9 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "cancel_url": cancel_url,
         }
 
+
+        if pre_sof_order_read_timeout:
+            body['pre_sof_order_read_timeout'] = int(pre_sof_order_read_timeout)
         if pre_link_read_timeout:
             body['pre_link_read_timeout'] = int(pre_link_read_timeout)
         if link_read_timeout:
@@ -144,21 +150,18 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return is_success, data
 
     def get_card_types_list(self):
-        is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           timeout=settings.GLOBAL_TIMEOUT)
-        if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+        url = api_settings.CARD_TYPE_LIST
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+        if is_success:
+            if data is None or data == "":
+                data = []
+        else:
             data = []
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
 
         return data
 

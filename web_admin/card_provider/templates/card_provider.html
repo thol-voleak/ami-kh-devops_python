@@ -27,7 +27,7 @@
                 <div class="col-sm-12  form-group">
                     <label class="col-sm-2">Provider Name</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control input-rounded" name="username" id="txt_provider_name" value="{{ provider_name }}"/>
+                        <input type="text" class="form-control input-rounded" name="provider_name" id="txt_provider_name" value="{{ provider_name }}"/>
                     </div>
                     <div class="col-xs-1">
                         <a href="{% url 'card_provider:card_provider' %}">
@@ -61,10 +61,10 @@
                     {% if request.user|has_permission_name:"SYS_VIEW_LIST_PROVIDER"%}
                     {% for i in data %}
                         <tr>
-                            <td>{{ i.card_design.provider.name|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.provider.id|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.provider.created_timestamp|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.provider.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.id|default_if_none:'' }}</td>
+                            <td>{{ i.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 {% if request.user|has_permission_name:"SYS_EDIT_PROVIDER"%}
                                 <a type="button"

@@ -54,7 +54,7 @@
                     </div>
                      <div class="col-xs-1">
                         <a href="{% url 'card_design:card_designs' %}">
-                            <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
+                            <input id="btn_search" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
                         </a>
                     </div>
                 </div>
@@ -85,17 +85,17 @@
                     {% if request.user|has_permission_name:"SYS_VIEW_LIST_CARD_DESIGN"%}
                     {% for i in data %}
                         <tr>
-                            <td>{{ i.card_design.pan_pattern|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.name|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.provider.name|default_if_none:'' }}</td>
-                            <td>{{ i.card_design.card_type.name|default_if_none:'' }}</td>
+                            <td>{{ i.pan_pattern|default_if_none:'' }}</td>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.provider.name|default_if_none:'' }}</td>
+                            <td>{{ i.card_type.name|default_if_none:'' }}</td>
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 {% if request.user|has_permission_name:"SYS_EDIT_CARD_DESIGN"%}
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
-                                    id="btn_edit}">
+                                    id="btn_edit">
                                     <span class="small">Edit</span>
                                 </a>
                                 {%endif%}
