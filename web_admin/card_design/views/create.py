@@ -144,21 +144,18 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return is_success, data
 
     def get_card_types_list(self):
-        is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           timeout=settings.GLOBAL_TIMEOUT)
-        if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+        url = api_settings.CARD_TYPE_LIST
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+        if is_success:
+            if data is None or data == "":
+                data = []
+        else:
             data = []
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
 
         return data
 
