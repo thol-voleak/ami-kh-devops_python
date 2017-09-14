@@ -275,18 +275,18 @@
                     </li>
                 </ul>
                 {% if request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN"%}
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'card_designs' %}active{% endif %}">
-                        <a href="{% url 'card_design:card_designs' %}"> <span>Manage Card Design</span> </a>
-                    </li>
-                </ul>
+                    <ul class="sub-menu">
+                        <li class="{% if url_name == 'card_designs' %}active{% endif %}">
+                            <a href="{% url 'card_design:card_designs' %}"> <span>Manage Card Design</span> </a>
+                        </li>
+                    </ul>
                 {% endif %}
                 {% if request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'card_provider' %}active{% endif %}">
-                        <a href="{% url 'card_provider:card_provider' %}"> <span>Manage Card Provider</span> </a>
-                    </li>
-                </ul>
+                    <ul class="sub-menu">
+                        <li class="{% if url_name == 'card_provider' %}active{% endif %}">
+                            <a href="{% url 'card_provider:card_provider' %}"> <span>Manage Card Provider</span> </a>
+                        </li>
+                    </ul>
                 {%endif%}
             </li>
             {% endif %}
