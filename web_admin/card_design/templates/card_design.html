@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Manage Card Design</h3>
+
+
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" 
+            action="{% url 'card_design:card_designs' %}">
+
+            {% csrf_token %}
+            
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Card Design Name</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="card_design_name" 
+                        id="txt_card_design_name" value="{{ card_design_name }}"/>
+                    </div>
+
+                </div>
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Card Type</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="card_type" id="ddl_card_type" value="{{ card_type }}">
+                    </div>
+                </div>
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Provider</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="provider" id="ddl_provider" value="{{ provider }}">
+                    </div>
+                </div>
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Currency</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-rounded" name="currency" id="ddl_currency" value="{{ currency }}">
+                    </div>
+                     <div class="col-xs-1">
+                        <a href="{% url 'card_design:card_designs' %}">
+                            <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            {% if request.user|has_permission_name:"SYS_ADD_CARD_DESIGN"%}
+            </div>
+                <div class="pull-right mr15 text-right">
+                <a href="{% url 'card_design:create_card_design' %}">
+                    <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
+                           value="Add"/>
+                </a>
+            </div>
+            {% endif %}
+            <div class="no-more-tables">
+                <table id='tbl_card_design' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_card_design_number">Card Design Number</th>
+                        <th id="ddl_card_design_name">Card Design Name</th>
+                        <th id="ddl_provider">Provider</th>
+                        <th id="ddl_card_type">Card Type</th>
+                        <th id="ddl_currency">Currency</th>
+                        <th class="col-sm-2" id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if request.user|has_permission_name:"SYS_VIEW_LIST_CARD_DESIGN"%}
+                    {% for i in data %}
+                        <tr>
+                            <td>{{ i.pan_pattern|default_if_none:'' }}</td>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.provider.name|default_if_none:'' }}</td>
+                            <td>{{ i.card_type.name|default_if_none:'' }}</td>
+                            <td>{{ i.currency|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                {% if request.user|has_permission_name:"SYS_EDIT_CARD_DESIGN"%}
+                                <a type="button"
+                                    class="btn btn-outline btn-xs btn-primary"
+                                    role="button"
+                                    id="btn_edit}">
+                                    <span class="small">Edit</span>
+                                </a>
+                                {%endif%}
+                                {% if request.user|has_permission_name:"SYS_VIEW_DETAIL_CARD_DESIGN"%}
+                                <a type="button"
+                                    class="btn btn-outline btn-xs btn-info"
+                                    role="button"
+                                    id="btn_detail">
+                                    <span class="small">Detail</span>
+                                </a>
+                                {%endif%}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {%endif%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -57,6 +57,9 @@ INSTALLED_APPS = [
     'api_management',
     'centralize_configuration',
     'reconcile',
+    'card_design',
+    'card_provider',
+    'card_sofs',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -95,7 +98,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'reconcile', 'permissions')],
+                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider','reconcile', 'permissions', 'card_sofs')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -276,6 +279,22 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'card_design': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'card_provider': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'card_sofs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
         }
+
     }
 }

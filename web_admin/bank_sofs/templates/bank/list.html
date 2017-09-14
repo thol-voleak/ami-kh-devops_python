@@ -8,14 +8,14 @@
         <div class="panel-heading border mb15">
             <h3>Bank List</h3>
         </div>
-        {% if request.user|has_permission_name:"SYS_ADD_BANK"%}
-            <div class="pull-right mr15 text-right">
+        {# {% if request.user|has_permission_name:"s"%} #}
+        <div class="pull-right mr15 text-right">
             <a href="{% url 'bank_sofs:bank_sofs_create' %}">
                 <input id="bank_sofs_btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                        value="Add"/>
             </a>
         </div>
-        {% endif %}
+        {# {% endif %} #}
 
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
