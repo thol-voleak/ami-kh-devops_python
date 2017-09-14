@@ -177,6 +177,8 @@ UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{c
 SEARCH_CARD_PROVIDER ='api-gateway/report/'+API_VERSION+'/cards/sofs/providers'
 CREATE_CARD_DESIGN = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs'
 CARD_DESIGN_DETAIL = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
+CARD_TYPE_LIST = 'api-gateway/sof-card/'+API_VERSION+'/admin/card-types'
+
 
 # bank profile
 CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
