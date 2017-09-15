@@ -95,7 +95,8 @@
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
-                                    id="btn_edit">
+                                    id="btn_edit"
+                                    href="{% url 'card_design:card_design_update' i.provider.id i.id %}">
                                     <span class="small">Edit</span>
                                 </a>
                                 {%endif%}
@@ -104,7 +105,7 @@
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"
                                     id="btn_detail"
-                                    href="{% url 'card_design:card_design_detail' i.id i.provider.id %}">
+                                    href="{% url 'card_design:card_design_detail' i.provider.id i.id %}">
                                     <span class="small">Detail</span>
                                 </a>
                                 {%endif%}

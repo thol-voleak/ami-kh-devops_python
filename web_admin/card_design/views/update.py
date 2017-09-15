@@ -14,11 +14,11 @@ from web_admin.get_header_mixins import GetHeaderMixin
 logger = logging.getLogger(__name__)
 
 
-class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    template_name = "card_design/create.html"
+class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+    template_name = "card_design/update.html"
     logger = logger
 
-    group_required = "SYS_ADD_CARD_DESIGN"
+    group_required = "SYS_EDIT_CARD_DESIGN"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -30,22 +30,32 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(CreateView, self).dispatch(request, *args, **kwargs)
+        return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        card_id = context['card_id']
+        provider_id = context['provider_id']
+        body = self._get_card_design_detail(provider_id, card_id)
+
         currencies = self._get_currencies_list()
         providers = self._search_card_providers()
         card_type_list = self.get_card_types_list()
         context = {
             "currencies": currencies,
             "providers": providers,
-            "card_type_list": card_type_list
+            "card_type_list": card_type_list,
+            "body": body,
+            "provider_id": provider_id,
+            "card_id": card_id
 
         }
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start creating card design ==========')
+        self.logger.info('========== Start updating card design ==========')
+        card_id = kwargs['card_id']
+        provider_id = kwargs['provider_id']
         name = request.POST.get('name')
         pan_pattern = request.POST.get('pan_pattern')
         card_type_id = request.POST.get('card_type')
@@ -83,6 +93,7 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "credit_url": credit_url,
             "check_status_url": check_status_url,
             "cancel_url": cancel_url,
+            "provider_id": int(provider)
         }
 
 
@@ -103,21 +114,20 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
 
+        url = api_settings.CARD_DESIGN_UPDATE.format(provider_id=provider, card_id=card_id)
+        success, data = self._update_card_design(url, body)
 
-        url = api_settings.CREATE_CARD_DESIGN.format(provider_id=provider)
-        success, data = self._create_card_design(url, body)
-
-        self.logger.info('========== Finish creating card design ==========')
+        self.logger.info('========== Finish updating card design ==========')
 
         if success:
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Add Card Design successfully'
+                'Update card design successfully'
             )
             return redirect('card_design:card_designs')
         else:
-            body['provider'] = int(provider)
+            body["provider"] = {"id": int(provider)}
             currencies = self._get_currencies_list()
             providers = self._search_card_providers()
             card_type_list = self.get_card_types_list()
@@ -125,14 +135,15 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 "currencies": currencies,
                 "providers": providers,
                 "card_type_list": card_type_list,
-                "body": body
+                "body": body,
+                "provider_id": provider_id,
+                "card_id": card_id
 
             }
-
             return render(request, self.template_name, context)
 
-    def _create_card_design(self, url, params):
-        is_success, status_code, status_message, data = RestFulClient.post(url=url,
+    def _update_card_design(self, url, params):
+        is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            loggers=self.logger, headers=self._get_headers(),
                                                                            params=params)
         if not is_success:
@@ -203,3 +214,24 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 return []
         else:
             return []
+
+    def _get_card_design_detail(self, provider_id, card_id):
+        url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+        if is_success:
+            if data is None or data == "":
+                data = {}
+            self.logger.info("Card design detail is [{}]".format(data))
+        else:
+            status_message = "Something went wrong"
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
+            else:
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    status_message
+                )
+            data = {}
+        return data

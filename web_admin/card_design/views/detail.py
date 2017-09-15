@@ -1,4 +1,5 @@
 from django.views.generic.base import TemplateView
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
@@ -11,10 +12,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    template_name = "detail.html"
+    template_name = "card_design/detail.html"
     logger=logger
 
-    group_required = "SYS_VIEW_DETAIL_CARD DESIGN"
+    group_required = "SYS_VIEW_DETAIL_CARD_DESIGN"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -36,6 +37,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return self._get_card_design_detail(provider_id, card_id)
 
     def _get_card_design_detail(self, provider_id, card_id):
+        is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
         url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
@@ -54,6 +56,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     status_message
                 )
             data = {}
-        return {"body": data}
+        return {"body": data,
+                "is_permission_edit": is_permission_edit}
 
 
