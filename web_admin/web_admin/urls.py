@@ -43,5 +43,5 @@ urlpatterns = [
     url(r'^admin-portal/reconcile/', include('reconcile.urls')),
     url(r'^admin-portal/card_designs/', include('card_design.urls')),
     url(r'^admin-portal/card_provider/', include('card_provider.urls')),
-    url(r'^admin-portal/card_sofs/', include('card_sofs.urls'))
+    url(r'^admin-portal/card-sofs/', include('card_sofs.urls'))
 ]
