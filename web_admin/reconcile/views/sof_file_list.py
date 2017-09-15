@@ -84,7 +84,8 @@ class SofFileList(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
             converted_end_date = converted_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             params['to_last_updated_timestamp'] = converted_end_date
 
-        context = {}
+        context = {'source_of_fund_list': self.source_of_fund_list,
+                   'source_of_fund': source_of_fund}
         try:
             data, page, status_code = self._search_file_list(params)
             if status_code == 500:
