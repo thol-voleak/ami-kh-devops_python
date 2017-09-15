@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Devices Blocked from Registration</h3>
+        </div>
+        <label class="pull-right" id="tbl_total">{{ total_devices }}</label>
+        <label class="pull-right" >Total Count:&nbsp;</label>
+        <div class="panel-body">
+            <div class="no-more-tables">
+                <table id='tbl_blocked_devices' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ticket_id">Ticket ID</th>
+                        <th id="device_id">Device ID</th>
+                        <th id="start_block">Start Block</th>
+                        <th id="end_block">End Block</th>
+                        <th id="event_name">Event</th>
+                        <th id="description">Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for device in devices %}
+                        <tr>
+                            <td>{{ device.ticket_id|default_if_none:'' }}</td>
+                            <td>{{ device.device_id|default_if_none:'' }}</td>
+                            <td>{{ device.start_block_timestamp|default_if_none:'' }}</td>
+                            <td>{{ device.end_block_timestamp|default_if_none:'' }}</td>
+                            <td>{{ device.event_name|default_if_none:'' }}</td>
+                            <td>{{ device.description|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

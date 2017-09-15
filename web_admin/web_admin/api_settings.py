@@ -150,6 +150,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 
 # Member Customer
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
+BLOCKED_DEVICES_LIST = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 
