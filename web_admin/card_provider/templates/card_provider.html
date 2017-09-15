@@ -70,7 +70,7 @@
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-primary"
                                     role="button"
-                                    id="btn_edit}">
+                                    id="btn_edit">
                                     <span class="small">Edit</span>
                                 </a>
                                 {%endif%}
@@ -78,7 +78,8 @@
                                 <a type="button"
                                     class="btn btn-outline btn-xs btn-info"
                                     role="button"
-                                    id="btn_detail">
+                                    id="btn_detail"
+                                    href="{% url 'card_provider:detail_card_provider' i.id %}">
                                     <span class="small">Detail</span>
                                 </a>
                                 {%endif%}

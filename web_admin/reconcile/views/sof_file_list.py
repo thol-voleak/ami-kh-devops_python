@@ -26,6 +26,7 @@ class SofFileList(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
     group_required = "CAN_GET_FILE_LIST_SOF_RECONCILE"
     login_url = 'web:permission_denied'
     raise_exception = False
+    source_of_fund_list = [{'value': 'bank', 'label': 'Bank'}, {'value': 'card', 'label': 'Card'}]
 
     def check_membership(self, permission):
         self.logger.info(
@@ -38,10 +39,13 @@ class SofFileList(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
         return super(SofFileList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        source_of_fund = 'bank'
         currencies, success = self._get_currency_choices()
         default_end_date = datetime.today().strftime("%Y-%m-%d")
         default_start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
-        return render(request, self.template_name, {'currencies': currencies,
+        return render(request, self.template_name, {'source_of_fund_list': self.source_of_fund_list,
+                                                    'source_of_fund': source_of_fund,
+                                                    'currencies': currencies,
                                                     'start_date': default_start_date,
                                                     'end_date': default_end_date})
 

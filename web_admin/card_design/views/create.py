@@ -18,7 +18,7 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "create.html"
     logger = logger
 
-    group_required = "SYS_ADD_CARD DESIGN"
+    group_required = "SYS_ADD_CARD_DESIGN"
     login_url = 'web:permission_denied'
     raise_exception = False
 
