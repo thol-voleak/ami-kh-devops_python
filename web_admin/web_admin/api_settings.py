@@ -175,6 +175,7 @@ SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
 UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
 
 # Card Design
+UPDATE_CARED_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}'
 GET_DETAIL_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}'
 SEARCH_CARD_DESIGN = 'api-gateway/report/'+API_VERSION+'/cards/sofs/card-designs'
 SEARCH_CARD_PROVIDER ='api-gateway/report/'+API_VERSION+'/cards/sofs/providers'

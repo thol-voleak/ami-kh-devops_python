@@ -2,21 +2,22 @@
 {% load static %}
 
 {% block content %}
-    {% csrf_token %}
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3>Provider Detail</h3>
+            <h3>Edit Provider Profile</h3>
         </div>
 
         <div class="panel-body">
             <div class="row no-margin">
                 <div class="col-lg-12">
-                    <form id="submit-form" class="form-horizontal" role="form" method="post">
+                    <form id="submit-form" class="form-horizontal" role="form" method="POST"
+                    action='{% url "card_provider:update_card_provider" data.id %}'>
+                        {% csrf_token %}
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Provider ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="txt_provider_id"
+                                       id="txt_provider_id" name="provider_id" 
                                        value="{{ data.id | default_if_none:'' }}" readonly>
                             </div>
                         </div>
@@ -24,8 +25,8 @@
                             <label class="col-sm-2 control-label">Provider Name</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
-                                       id="txt_provider_name"
-                                       value="{{ data.name | default_if_none:'' }}" readonly>
+                                       id="txt_provider_name" name="provider_name" 
+                                       value="{{ data.name | default_if_none:'' }}" >
                             </div>
                         </div>
                         <div class="pull-right">
@@ -33,11 +34,9 @@
                                 <input id="btn_cancel" class="btn text-left mb15" type="button"
                                        value="Cancel"/>
                             </a>
-                            {% if is_permission_edit%}
-                        	<a href="{% url 'card_provider:card_provider' %}">
-                                <input id="btn_edit" class="btn btn-success text-left mb15" 
-                                type="button" value="Edit"/>
-                            {%endif%}
+                        	<a>
+                                <input id="btn_save" class="btn btn-success text-left mb15" 
+                                type="submit" value="Save"/>
                             </a>
                         </div>
                     </form>

@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class CardProviderList(TemplateView, GetHeaderMixin):
 
-    template_name = "card_provider.html"
+    template_name = "card_provider/card_provider.html"
     url = api_settings.SEARCH_CARD_PROVIDER
     logger = logger
 

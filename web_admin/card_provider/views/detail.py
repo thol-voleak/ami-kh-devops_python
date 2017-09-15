@@ -23,7 +23,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
         return check_permissions_by_user(self.request.user, permission[0])
 
-    template_name = "detail.html"
+    template_name = "card_provider/detail.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
