@@ -6,17 +6,19 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import render
 import logging
+from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
 
 
 logger = logging.getLogger(__name__)
 
 
-class CardDesignList(TemplateView, GetHeaderMixin):
+class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "card_design/card_design.html"
-    group_required = "SYS_MANAGE_CARD_DESIGN"
+    group_required = "SYS_VIEW_LIST_CARD_DESIGN"
     url = api_settings.SEARCH_CARD_DESIGN
+    login_url = 'web:permission_denied'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
