@@ -78,6 +78,22 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">Creation Client ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="creation_client_id"
+                           value="{{ creation_client_id|default_if_none:'' }}"
+                           id="txt_creation_client_id">
+                </div>
+                <label class="col-sm-2 control-label">Execution Client ID</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="execution_client_id"
+                           value="{{ execution_client_id|default_if_none:'' }}"
+                           id="txt_execution_client_id">
+                </div>
+            </div>
+            <div class="form-group">
                     <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"

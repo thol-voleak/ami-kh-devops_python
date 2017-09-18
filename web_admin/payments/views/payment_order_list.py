@@ -77,6 +77,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         service_list = self.get_services_list()
         ext_transaction_id = request.POST.get('ext_transaction_id')
         status_id = request.POST.get('status_id')
+        creation_client_id = request.POST.get('creation_client_id')
+        execution_client_id = request.POST.get('execution_client_id')
 
         body = {}
         if order_id:
@@ -96,6 +98,11 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['ext_transaction_id'] = ext_transaction_id
         if status_id:
             body['status_id'] = [int(status_id)]
+
+        if creation_client_id:
+            body['created_client_id'] = creation_client_id
+        if execution_client_id:
+            body['executed_client_id'] = execution_client_id
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -138,6 +145,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'payee_user_id': payee_user_id,
                    'payee_user_type_id':payee_user_type_id,
                    'search_count': count,
+                   'creation_client_id': creation_client_id,
+                   'execution_client_id': execution_client_id,
                    'ext_transaction_id': ext_transaction_id,
                    'status_list': status_list,
                    'date_from': from_created_timestamp,
