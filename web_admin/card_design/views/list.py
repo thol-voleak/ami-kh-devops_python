@@ -6,17 +6,19 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import render
 import logging
+from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
 
 
 logger = logging.getLogger(__name__)
 
 
-class CardDesignList(TemplateView, GetHeaderMixin):
+class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "card_design/card_design.html"
-    group_required = "SYS_MANAGE_CARD_DESIGN"
+    group_required = "SYS_VIEW_LIST_CARD_DESIGN"
     url = api_settings.SEARCH_CARD_DESIGN
+    login_url = 'web:permission_denied'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -47,6 +49,8 @@ class CardDesignList(TemplateView, GetHeaderMixin):
         if currency:
             params['currency'] = currency
 
+        self.logger.info('Params: {}'.format(params))
+
         is_success, status_code, status_message, data = RestFulClient.post(url=self.url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -57,6 +61,8 @@ class CardDesignList(TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
+
+        self.logger.info('Response_content: {}'.format(len(data)))
         
         is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_CARD_DESIGN')
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')

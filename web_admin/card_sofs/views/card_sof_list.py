@@ -73,6 +73,7 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['to_created_timestamp'] = new_to_created_timestamp
 
         responses, success = self._get_card_sof_list(body=body)
+        self.logger.info('Response_content_count: {}'.format(len(responses)))
         body['from_created_timestamp'] = from_created_timestamp
         body['to_created_timestamp'] = to_created_timestamp
 

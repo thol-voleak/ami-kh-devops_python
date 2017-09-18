@@ -58,7 +58,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% if request.user|has_permission_name:"SYS_VIEW_LIST_PROVIDER"%}
                     {% for i in data %}
                         <tr>
                             <td>{{ i.name|default_if_none:'' }}</td>
@@ -87,7 +86,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    {%endif%}
                     </tbody>
                 </table>
             </div>
