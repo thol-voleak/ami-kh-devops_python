@@ -124,6 +124,7 @@ class SofReport(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
         context.update({'is_on_us': on_off_us_id,
+                        'source_of_fund_list': self.source_of_fund_list,
                         'source_of_fund': source_of_fund_id,
                         'sof_code': sof_code,
                         'currency_id': currency_id,
