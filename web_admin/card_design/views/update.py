@@ -114,6 +114,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
 
+        self.logger.info('Params: {}'.format(body))
         url = api_settings.CARD_DESIGN_UPDATE.format(provider_id=provider, card_id=card_id)
         success, data = self._update_card_design(url, body)
 
