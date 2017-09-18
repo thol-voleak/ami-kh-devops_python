@@ -264,7 +264,7 @@
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_CARD_SOF"%}
-            <li id="card_sof_menu" class="menu-accordion {% if 'card_sofs/sofs' in request.path %}open{% endif %}">
+            <li id="card_sof_menu" class="menu-accordion {% if 'card-sofs/sofs' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Source Of Fund</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'card_sof' %}active{% endif %}">
@@ -275,7 +275,7 @@
             {% endif %}
             
             {% if request.user|has_permission_name:"SYS_MANAGE_BANK" or request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN" or request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
-                <li class="menu-accordion {% if 'bank' in request.path or 'card_designs' in request.path or 'card_provider' in request.path or 'management' in request.path or 'detail' in request.path or 'edit' in request.path or 'create' in request.path or 'delete' in request.path %}open{% endif %}">
+                <li class="menu-accordion {% if 'bank' in request.path or 'card-designs' in request.path or 'card-provider' in request.path or 'management' in request.path or 'detail' in request.path or 'edit' in request.path or 'create' in request.path or 'delete' in request.path %}open{% endif %}">
                     <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
                     {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
                     <ul class="sub-menu">

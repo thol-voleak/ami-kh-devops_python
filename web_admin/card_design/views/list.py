@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class CardDesignList(TemplateView, GetHeaderMixin):
 
-    template_name = "card_design.html"
+    template_name = "card_design/card_design.html"
     group_required = "SYS_MANAGE_CARD_DESIGN"
     url = api_settings.SEARCH_CARD_DESIGN
     logger = logger

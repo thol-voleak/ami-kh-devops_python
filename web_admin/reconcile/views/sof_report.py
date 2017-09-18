@@ -25,6 +25,7 @@ class SofReport(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
     group_required = "CAN_GET_RECONCILE_REPORT_SOF_RECONCILE"
     login_url = 'web:permission_denied'
     raise_exception = False
+    source_of_fund_list = [{'value': 'bank', 'label': 'Bank'}, {'value': 'card', 'label': 'Card'}]
 
     def check_membership(self, permission):
         self.logger.info(
@@ -37,13 +38,16 @@ class SofReport(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
         return super(SofReport, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        source_of_fund = 'bank'
         currencies, success = self._get_currency_choices()
 
         # Set first load default date
         default_end_date = datetime.today().strftime("%Y-%m-%d")
         default_start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-        context = {'from_created_timestamp': default_start_date,
+        context = {'source_of_fund_list': self.source_of_fund_list,
+                   'source_of_fund': source_of_fund,
+                   'from_created_timestamp': default_start_date,
                    'to_created_timestamp': default_end_date,
                    'currencies': currencies}
 
