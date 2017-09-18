@@ -148,7 +148,9 @@
                     <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
+                    <td class="col-sm-1" span id="customer_status_{{customer.id}}">
+                        {% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}
+                    </td>
                     <td class="col-sm-1"><span id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</span></td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
@@ -301,8 +303,7 @@
                                 e.innerHTML = "Activate";
                                 e.disabled = true;
                                 e.disabled = false;
-                                var status = e.parentNode.previousElementSibling;
-                                status.innerHTML = "Suspended";
+                                $('#customer_status_'+customer_id).text("Suspended");
                                 showSuccessMessage('Suspended data successfully');
                             } else {
                                 // Failed
@@ -352,8 +353,7 @@
                                 e.innerHTML = "Suspend";
                                 e.disabled = true;
                                 e.disabled = false;
-                                var status = e.parentNode.previousElementSibling;
-                                status.innerHTML = "Active";
+                                $('#customer_status_'+customer_id).text("Active");
                                 showSuccessMessage('Activated data successfully');
                             } else {
                                 // Failed
