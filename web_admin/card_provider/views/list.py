@@ -40,6 +40,7 @@ class CardProviderList(TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT,
                                                                            params=params)
+        self.logger.info('Response_content_count: {}'.format(len(data)))
         if not is_success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
