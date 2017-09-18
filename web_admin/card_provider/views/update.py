@@ -68,6 +68,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'name': provider_name
         }
 
+        self.logger.info('Params: {}'.format(params))
+
         is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,

@@ -47,6 +47,8 @@ class CardDesignList(TemplateView, GetHeaderMixin):
         if currency:
             params['currency'] = currency
 
+        self.logger.info('Params: {}'.format(params))
+
         is_success, status_code, status_message, data = RestFulClient.post(url=self.url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -57,6 +59,8 @@ class CardDesignList(TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
+
+        self.logger.info('Response_content: {}'.format(len(data)))
         
         is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_CARD_DESIGN')
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
