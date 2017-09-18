@@ -63,7 +63,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url  = UPDATE_CARED_PROVIDER.format(provider_id=provider_id)
 
         provider_name = request.POST.get('provider_name')
-        print(provider_name)
+
         params = {
             'name': provider_name
         }
@@ -79,5 +79,10 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 raise InvalidAccessToken(status_message)
 
         self.logger.info('========== Finish update provider detail ==========')
-        messages.add_message(request, messages.SUCCESS, 'Update provider successfully')
-        return redirect('card_provider:card_provider')
+
+        data = {'id': provider_id, 'name': provider_name}
+        context.update({
+            'data': data,
+            'msg': 'Update provider successfully'
+        })
+        return render(request, self.template_name, context)
