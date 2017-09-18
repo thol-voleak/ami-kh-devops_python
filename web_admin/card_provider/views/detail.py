@@ -40,7 +40,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = GET_DETAIL_PROVIDER.format(provider_id=provider_id)
 
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
-
+        self.logger.info('Response_content: {}'.format(data))
         if is_success:
             if data is None or data == "":
                 data = []

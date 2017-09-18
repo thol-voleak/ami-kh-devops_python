@@ -41,7 +41,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = GET_DETAIL_PROVIDER.format(provider_id=provider_id)
 
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
-
+        self.logger.info('Response_content: {}'.format(data))
         if is_success:
             if data is None or data == "":
                 data = []
@@ -63,7 +63,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url  = UPDATE_CARED_PROVIDER.format(provider_id=provider_id)
 
         provider_name = request.POST.get('provider_name')
-        print(provider_name)
+
         params = {
             'name': provider_name
         }
@@ -73,12 +73,16 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT,
                                                                            params=params)
-
         if not is_success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
 
         self.logger.info('========== Finish update provider detail ==========')
-        messages.add_message(request, messages.SUCCESS, 'Update provider successfully')
-        return redirect('card_provider:card_provider')
+
+        data = {'id': provider_id, 'name': provider_name}
+        context.update({
+            'data': data,
+            'msg': 'Update provider successfully'
+        })
+        return render(request, self.template_name, context)

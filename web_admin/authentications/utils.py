@@ -4,7 +4,6 @@ from authentications.apps import InvalidAccessToken
 from authentications.models import Authentications
 from django import template
 from django.conf import settings
-from django.core.cache import cache
 
 import logging
 
@@ -54,15 +53,9 @@ def get_correlation_id_from_username(user):
 
 
 def check_permissions_by_user(user, permission):
-    if cache.get(user.username):
-        if permission in cache.get(user.username):
-            return True
-        else:
-            return False
-    else:
-        try:
-            authens = Authentications.objects.get(user=user)
-            permissions = authens.permissions
-            return True if permission in [x['name'] for x in permissions] else False
-        except Exception as e:
-            return False
+    try:
+        authens = Authentications.objects.get(user=user)
+        permissions = authens.permissions
+        return True if permission in [x['name'] for x in permissions] else False
+    except Exception as ex:
+        return False

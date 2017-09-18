@@ -130,12 +130,12 @@
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
                     <th id="status">Status</th>
+                    <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for customer in data %}
-                {% if not customer.is_deleted %}
                 <tr>
                     <td class="col-sm-1">{{ customer.id }}</td>
                     <td class="col-sm-1">{{ customer.firstname|default_if_none:'' }}</td>
@@ -149,6 +149,7 @@
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
+                    <td class="col-sm-1"><span id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</span></td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
                     {% if customer.is_permission_detail%}
@@ -159,7 +160,7 @@
                         <button id="btn_edit" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
                     {% endif %}
-
+                    {% if customer.is_deleted is not True %}
                     <button type="button"
                         id="customer-btn-delete-{{ customer.id }}"
                         data-url="{% url 'customers:delete-customer' customer.id %}"
@@ -168,6 +169,7 @@
                         class="btn btn-danger mb5 btn-outline btn-xs">
                         <span class="small">Delete</span>
                     </button>
+                    {% endif %}
 
                     {% if customer.is_permission_sof_bank%}
                         <button id="btn_sof_list" class="btn mb5 btn-outline btn-xs btn-primary"
@@ -193,7 +195,6 @@
                         </div>
                     </td>
                 </tr>
-                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
@@ -254,7 +255,8 @@
                         success: function (response) {
                             if(response.status == 2) {
                                 // success
-                                $('#action-customer-' + customer_id).remove();
+                                $('#customer-btn-delete-' + customer_id).remove();
+                                $('#is_deleted_'+ customer_id).text("Yes");
                                 showSuccessMessage('Customer has been deleted successfully');
                             } else {
                                 // Failed

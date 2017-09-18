@@ -43,6 +43,7 @@ class CardProviderCreate(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if not provider_name:
             return render(request, self.template_name)
         params['name'] = provider_name
+        self.logger.info('Params: {}'.format(params))
         success, status_code, status_message, data = RestFulClient.post(url=self.url,
                                                                         headers=self._get_headers(),
                                                                         loggers=self.logger,

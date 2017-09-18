@@ -9,7 +9,6 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.core.cache import cache
 from web_admin import setup_logger, RestFulClient
 import requests
 import logging
@@ -40,7 +39,6 @@ class InvalidAccessTokenException(object):
                 request, messages.ERROR,
                 'Your login credentials have expired. Please login again.'
             )
-            cache.delete(request.user.username)
             logout(request)
             return HttpResponseRedirect(request.path)
         if type(exception) == PermissionDeniedException:

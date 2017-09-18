@@ -182,7 +182,7 @@
                     </li>
                     {% endif %}
                     {% if request.user|has_permission_name:"CAN_MANAGE_BLOCKED_DEVICES"%}
-                    <li id="bloked_devices" class="{% if url_name == 'blocked-devices' %}active{% endif %}">
+                    <li id="blocked_devices" class="{% if url_name == 'blocked-devices' %}active{% endif %}">
                         <a href="{% url 'customers:blocked-devices' %}"><span>Blocked Devices</span></a>
                     </li>
                     {% endif %}
