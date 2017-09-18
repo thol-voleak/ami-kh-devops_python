@@ -43,7 +43,7 @@
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">ID</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control input-rounded" 
+                        <input type="text" class="form-control input-rounded"
                                name="customer_id" id="txt_id"
                                value="{{ customer_id | default_if_none:'' }}"/>
                     </div>
@@ -51,7 +51,7 @@
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">Unique Reference</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control input-rounded" 
+                        <input type="text" class="form-control input-rounded"
                                name="unique_reference" id="txt_unique_reference"
                                value="{{ unique_reference | default_if_none:'' }}"/>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">Citizen Card ID</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control " 
+                        <input type="text" class="form-control "
                                name="citizen_card_id" id="txt_citizen_card_id"
                                value="{{ citizen_card_id | default_if_none:'' }}"/>
                     </div>
@@ -77,7 +77,7 @@
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">Email</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control " 
+                        <input type="text" class="form-control "
                                name="email" id="txt_email"
                                value="{{ email | default_if_none:'' }}"/>
                     </div>
@@ -85,7 +85,7 @@
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">Mobile Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control input-rounded" 
+                        <input type="text" class="form-control input-rounded"
                                name="mobile_number" id="txt_mobile_number"
                                value="{{ mobile_number | default_if_none:'' }}"/>
                     </div>
@@ -129,7 +129,7 @@
                     <th id="kyc">KYC status</th>
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
-                    <th id="modified_date">Status</th>
+                    <th id="status">Status</th>
                     <th id="action">Action</th>
                 </tr>
                 </thead>
@@ -150,31 +150,47 @@
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                     <td class="col-sm-3">
+                        <div id="action-customer-{{customer.id}}">
                     {% if customer.is_permission_detail%}
-                        <button id="btn_detail" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
+                        <button id="btn_detail" class="btn mb5 btn-outline btn-xs btn-primary"
+                                onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
                     {% endif %}
                     {% if customer.is_permission_update%}
-                        <button id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
+                        <button id="btn_edit" class="btn mb5 btn-outline btn-xs btn-primary"
+                                onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
                     {% endif %}
+
+                    <button type="button"
+                        id="customer-btn-delete-{{ customer.id }}"
+                        data-url="{% url 'customers:delete-customer' customer.id %}"
+                        onclick="delete_customer(this)"
+                        data-customer-id='{{ customer.id }}'
+                        class="btn btn-danger mb5 btn-outline btn-xs">
+                        <span class="small">Delete</span>
+                    </button>
+
                     {% if customer.is_permission_sof_bank%}
-                        <button id="btn_sof_list" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
+                        <button id="btn_sof_list" class="btn mb5 btn-outline btn-xs btn-primary"
+                                onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
                     {% endif %}
                     {% if customer.is_permission_identity%}
-                        <button id="btn_identities" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
+                        <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
+                                onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
                     {% endif %}
                     {% if customer.is_permission_suspend%}
                         {% if not customer.is_suspended %}
-                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
+                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Suspend</button>
                         {% else %}
-                            <button id="btn_status" class="btn btn-outline btn-xs btn-danger"
+                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Activate</button>
                         {% endif %}
                     {% endif %}
+                        </div>
                     </td>
                 </tr>
                 {% endif %}
@@ -216,6 +232,44 @@
             }
     }
 
+    function delete_customer(e) {
+        swal({
+                title: "Are you sure you want to delete?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    var url = e.getAttribute('data-url');
+                    var customer_id = e.getAttribute('data-customer-id');
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+                        success: function (response) {
+                            if(response.status == 2) {
+                                // success
+                                $('#action-customer-' + customer_id).remove();
+                                showSuccessMessage('Customer has been deleted successfully');
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error suspending the customer ID' + customer_id + msg);
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+    }
+
     function suspend(e) {
         swal({
                 title: "Are you sure you want to suspend?",
@@ -229,9 +283,7 @@
             },
             function (isConfirm) {
                 if (isConfirm) {
-                    console.log(customer_id)
                     var url = e.getAttribute('data-url');
-                    console.log(url)
                     var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
@@ -277,14 +329,16 @@
             },
             function (isConfirm) {
                 if (isConfirm) {
-                    console.log(customer_id)
                     var url = e.getAttribute('data-url');
                     console.log(url)
                     var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
                         url: url,
-                        type: "GET",
-                        data: {},
+                        type: "POST",
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
                         success: function (response) {
                             if(response.status == 1) {
                                 // Logout

@@ -5,8 +5,6 @@ from django.http import JsonResponse
 from django.conf import settings
 from authentications.utils import get_auth_header
 
-import logging
-
 
 def _delete_method(request, api_path, func_description, logger, params=None, timeout=None):
     if 'http' in api_path:
