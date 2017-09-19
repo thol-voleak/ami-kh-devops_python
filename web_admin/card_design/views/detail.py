@@ -45,15 +45,14 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 data = {}
             self.logger.info("Card design detail is [{}]".format(data))
         else:
-            status_message = "Something went wrong"
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             else:
                 messages.add_message(
                     self.request,
                     messages.ERROR,
-                    status_message
+                    "Something went wrong"
                 )
             data = {}
         return {"body": data,

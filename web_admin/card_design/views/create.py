@@ -155,6 +155,9 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if data is None or data == "":
                 data = []
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
@@ -191,6 +194,9 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 data = []
             self.logger.info("Currency List is [{}]".format(len(data)))
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
 
         if len(data) > 0:

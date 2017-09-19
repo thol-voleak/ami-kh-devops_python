@@ -169,6 +169,9 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if data is None or data == "":
                 data = []
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
@@ -205,6 +208,9 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 data = []
             self.logger.info("Currency List is [{}]".format(len(data)))
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
 
         if len(data) > 0:
@@ -225,15 +231,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 data = {}
             self.logger.info("Card design detail is [{}]".format(data))
         else:
-            status_message = "Something went wrong"
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             else:
                 messages.add_message(
                     self.request,
                     messages.ERROR,
-                    status_message
+                    "Something went wrong"
                 )
             data = {}
         return data

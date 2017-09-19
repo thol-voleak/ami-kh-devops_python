@@ -112,6 +112,9 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if data is None or data == "":
                 data = []
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
@@ -151,6 +154,9 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if data is None or data == "":
                 data = []
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
         self.logger.info('Response_content_count: {}'.format(len(data)))
         self.logger.info('========== Finish get currency list ==========')
