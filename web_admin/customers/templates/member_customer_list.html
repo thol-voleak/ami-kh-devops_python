@@ -162,7 +162,7 @@
                     {% endif %}
                     {% if customer.is_deleted is not True %}
                     <button type="button"
-                        id="customer-btn-delete-{{ customer.id }}"
+                        id="btn-delete-{{ customer.id }}"
                         data-url="{% url 'customers:delete-customer' customer.id %}"
                         onclick="delete_customer(this)"
                         data-customer-id='{{ customer.id }}'
@@ -259,7 +259,7 @@
                                 window.location.replace(url);
                             } else if(response.status == 2) {
                                 // success
-                                $('#customer-btn-delete-' + customer_id).remove();
+                                $('#btn-delete-' + customer_id).remove();
                                 $('#is_deleted_'+ customer_id).text("Yes");
                                 $('#id_'+ customer_id).css('text-decoration', 'line-through');
                                 $('#firstname_'+ customer_id).css('text-decoration', 'line-through');
