@@ -61,7 +61,25 @@ class CardSOFTransaction(TemplateView, RESTfulMethods):
 
     def createSearchBody(self, from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type):
         body = {}
-
+        if sof_id is not '' and sof_id is not None:
+            body['sof_id'] = int(sof_id)
+        if order_id is not '' and order_id is not None:
+            body['order_id'] = order_id
+        if status is not '' and status is not None:
+            body['status_id'] = [int(status)]
+        if type is not '' and type is not None:
+            body['action_id'] = int(type)
+        if from_created_timestamp is not '' and to_created_timestamp is not None:
+            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_from_created_timestamp
+            self.logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
+        if to_created_timestamp is not '' and to_created_timestamp is not None:
+            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_created_timestamp'] = new_to_created_timestamp
+            self.logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
         return body
     def _get_card_sof_transaction(self, body):
         return self._post_method(self.search_card_transaction, 'Card Source of Fund List', logger, body)
