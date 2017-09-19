@@ -105,6 +105,7 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def get_card_types_list(self):
+        self.logger.info('========== Start get card type list ==========')
         url = api_settings.CARD_TYPE_LIST
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
@@ -117,10 +118,12 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Something went wrong"
             )
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get card type list ==========')
         return data
 
     def _search_card_providers(self):
+        self.logger.info('========== Start get card provider list ==========')
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_PROVIDER,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -136,19 +139,21 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     status_message
                 )
             data = []
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get card provider list ==========')
         return data
 
     def _get_currencies_list(self):
+        self.logger.info('========== Start get currency list ==========')
         url = GET_ALL_CURRENCY_URL
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
             if data is None or data == "":
                 data = []
-            self.logger.info("Currency List is [{}]".format(len(data)))
         else:
             data = []
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get currency list ==========')
         if len(data) > 0:
             value = data.get('value', None)
             if value is not None:
