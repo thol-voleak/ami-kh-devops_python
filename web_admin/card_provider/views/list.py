@@ -6,17 +6,19 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import render
 import logging
+from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
 
 
 logger = logging.getLogger(__name__)
 
 
-class CardProviderList(TemplateView, GetHeaderMixin):
-
+class CardProviderList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+    group_required = "SYS_VIEW_LIST_PROVIDER"
     template_name = "card_provider/card_provider.html"
     url = api_settings.SEARCH_CARD_PROVIDER
     logger = logger
+    login_url = 'web:permission_denied'
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -35,6 +37,7 @@ class CardProviderList(TemplateView, GetHeaderMixin):
         params = {}
         if provider_name:
             params['name'] = provider_name
+        self.logger.info('Params: {}'.format(params))
         is_success, status_code, status_message, data = RestFulClient.post(url=self.url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,

@@ -85,7 +85,6 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "cancel_url": cancel_url,
         }
 
-
         if pre_sof_order_read_timeout:
             body['pre_sof_order_read_timeout'] = int(pre_sof_order_read_timeout)
         if pre_link_read_timeout:
@@ -103,8 +102,8 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
 
-
         url = api_settings.CREATE_CARD_DESIGN.format(provider_id=provider)
+        self.logger.info('Params: {}'.format(body))
         success, data = self._create_card_design(url, body)
 
         self.logger.info('========== Finish creating card design ==========')

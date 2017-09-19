@@ -68,6 +68,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'name': provider_name
         }
 
+        self.logger.info('Params: {}'.format(params))
+
         is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -80,9 +82,5 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         self.logger.info('========== Finish update provider detail ==========')
 
-        data = {'id': provider_id, 'name': provider_name}
-        context.update({
-            'data': data,
-            'msg': 'Update provider successfully'
-        })
-        return render(request, self.template_name, context)
+        messages.add_message(request, messages.SUCCESS, 'Update provider successfully')
+        return redirect('card_provider:card_provider')
