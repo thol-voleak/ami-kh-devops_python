@@ -27,7 +27,7 @@ class CardSOFTransaction(TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search card sof transaction history ==========')
-        self.logger.info(self.search_bank_transaction)
+        self.logger.info(self.search_card_transaction)
 
 
         sof_id = request.POST.get('sof_id')
@@ -64,4 +64,4 @@ class CardSOFTransaction(TemplateView, RESTfulMethods):
 
         return body
     def _get_card_sof_transaction(self, body):
-        return self._post_method(self.search_bank_transaction, 'Card Source of Fund List', logger, body)
+        return self._post_method(self.search_card_transaction, 'Card Source of Fund List', logger, body)
