@@ -41,6 +41,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         currencies = self._get_currencies_list()
         providers = self._search_card_providers()
         card_type_list = self.get_card_types_list()
+        body["card_type_id"] = body["card_type"]["id"]
         context = {
             "currencies": currencies,
             "providers": providers,
