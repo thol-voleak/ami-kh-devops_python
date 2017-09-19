@@ -62,7 +62,7 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
 
-        self.logger.info('Response_content: {}'.format(len(data)))
+        self.logger.info('Response_content_count: {}'.format(len(data)))
         
         is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_CARD_DESIGN')
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
