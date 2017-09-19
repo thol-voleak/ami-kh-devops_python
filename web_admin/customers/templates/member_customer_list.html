@@ -253,7 +253,11 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            if(response.status == 2) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
                                 // success
                                 $('#customer-btn-delete-' + customer_id).remove();
                                 $('#is_deleted_'+ customer_id).text("Yes");
