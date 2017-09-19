@@ -148,7 +148,7 @@
                     <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-1" span id="customer_status_{{customer.id}}">
+                    <td class="col-sm-1" id="customer_status_{{customer.id}}">
                         {% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}
                     </td>
                     <td class="col-sm-1"><span id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</span></td>
