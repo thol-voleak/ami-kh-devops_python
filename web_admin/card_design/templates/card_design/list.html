@@ -22,7 +22,7 @@
 
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="post" 
+            <form id="submit-form" class="form-horizontal" role="form" method="POST"
             action="{% url 'card_design:card_designs' %}">
 
             {% csrf_token %}
@@ -38,19 +38,46 @@
                 <div class="col-sm-12  form-group">
                     <label class="col-sm-2">Card Type</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="card_type" id="ddl_card_type" value="{{ card_type }}">
+                        <select class="form-control" id="ddl_card_type" name="card_type" >
+                            <option value="" selected="selected">All</option>
+                            {% for item in card_type_list %}
+                                {% if item.id == card_type %}
+                                    <option value="{{item.id}}" selected>{{item.name}}</option>
+                                {% else %}
+                                    <option value="{{item.id}}">{{item.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="col-sm-12  form-group">
                     <label class="col-sm-2">Provider</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="provider" id="ddl_provider" value="{{ provider }}">
+                        <select class="form-control" id="ddl_provider" name="provider" >
+                            <option value="" selected="selected">All</option>
+                            {% for item in providers %}
+                                {% if item.name == provider %}
+                                    <option value="{{item.name}}" selected>{{item.name}}</option>
+                                {% else %}
+                                    <option value="{{item.name}}">{{item.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="col-sm-12  form-group">
                     <label class="col-sm-2">Currency</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control input-rounded" name="currency" id="ddl_currency" value="{{ currency }}">
+                        <select class="form-control" id="ddl_currency" name="currency">
+                            <option value="" selected="selected">All</option>
+                            {% for item in currencies %}
+                                {% if item.0 == currency %}
+                                    <option value="{{ item.0 }}" selected>{{ item.0 }}</option>
+                                {% else %}
+                                    <option value="{{ item.0 }}">{{ item.0 }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                      <div class="col-xs-1">
                         <a href="{% url 'card_design:card_designs' %}">

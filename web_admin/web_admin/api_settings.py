@@ -189,3 +189,8 @@ CARD_DESIGN_UPDATE = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{prov
 # bank profile
 CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
 GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
+
+
+#fraud consultant
+GET_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION + '/admin/blacklist/cards'
+DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/blacklist/cards/{card_id}'

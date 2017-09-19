@@ -27,8 +27,8 @@
             <tbody>
             {% for key, values in configurations.items %}
             <tr>
-                <td class="col-sm-1">{{ key|default_if_none:'' }}</td>
-                <td class="col-sm-2"><code>{{ values|safe }}</code></td>
+                <td class="col-sm-1">{{ key|default_if_none:'' | safe}}</td>
+                <td class="col-sm-2"><code>{{ values }}</code></td>
                 <td class="col-sm-2">
                     {% if is_permission_scope_attr %}
                         <a type="button" class="btn btn-outline btn-xs btn-primary"
