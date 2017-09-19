@@ -92,16 +92,13 @@ class CardDesignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'card_design_name': card_design_name,
             'currency': currency,
             "currencies": currencies,
+            "provider": provider,
             "providers": providers,
             "card_type_list": card_type_list,
             }
 
         if card_type:
-            context['card_type_id'] = int(card_type)
-        if provider:
-            context['provider'] = int(provider)
-        if currency:
-            context['currency'] = currency
+            context['card_type'] = int(card_type)
 
         self.logger.info('========== Finish get card design list ==========')
 
