@@ -221,6 +221,12 @@
                         <a href="{% url 'card_type:card-type-list' %}"> <span>Card Type List</span> </a>
                     </li>
                 </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'card_freeze_list' %}active{% endif %}">
+                        <a href="{% url 'cards:card_freeze_list' %}"> <span>Freeze cards list</span> </a>
+                    </li>
+                </ul>
+
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
@@ -269,6 +275,9 @@
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'card_sof' %}active{% endif %}">
                         <a id="card_sof_list" href="{% url 'card_sofs:card_sof' %}"> <span>Source of Fund</span> </a>
+                    </li>
+                    <li class="{% if url_name == 'card_sofs_transaction' %}active{% endif %}">
+                        <a id="card_sofs_transaction" href="{% url 'card_sofs:card_sofs_transaction' %}"> <span>Transaction</span> </a>
                     </li>
                 </ul>
             </li>

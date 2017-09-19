@@ -137,19 +137,19 @@
                 <tbody>
                 {% for customer in data %}
                 <tr>
-                    <td class="col-sm-1">{{ customer.id }}</td>
-                    <td class="col-sm-1">{{ customer.firstname|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.lastname|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.citizen_card_id|default_if_none:'' }}</td>
-                    <td class="col-sm-1 text-center">{{ customer.mobile_number|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.email|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.unique_reference|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ customer.device_id|default_if_none:'' }}</td>
+                    <td class="col-sm-1" id="id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.id }}{% else %}<del>{{ customer.id }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="firstname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.firstname|default_if_none:'' }}{% else %}<del>{{ customer.firstname|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="lastname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.lastname|default_if_none:'' }}{% else %}<del>{{ customer.lastname|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="citizen_card_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.citizen_card_id|default_if_none:'' }}{% else %}<del>{{ customer.citizen_card_id|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1 text-center" id="mobile_number_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.mobile_number|default_if_none:'' }}{% else %}<del>{{ customer.mobile_number|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="email_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.email|default_if_none:'' }}{% else %}<del>{{ customer.email|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="unique_reference_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.unique_reference|default_if_none:'' }}{% else %}<del>{{ customer.unique_reference|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="device_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.device_id|default_if_none:'' }}{% else %}<del>{{ customer.device_id|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1" id="customer_status_{{customer.id}}">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
-                    <td class="col-sm-1"><span id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</span></td>
+                    <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
                     {% if customer.is_permission_detail%}
@@ -162,7 +162,7 @@
                     {% endif %}
                     {% if customer.is_deleted is not True %}
                     <button type="button"
-                        id="customer-btn-delete-{{ customer.id }}"
+                        id="btn-delete-{{ customer.id }}"
                         data-url="{% url 'customers:delete-customer' customer.id %}"
                         onclick="delete_customer(this)"
                         data-customer-id='{{ customer.id }}'
@@ -253,10 +253,22 @@
                         type: "POST",
                         data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
                         success: function (response) {
-                            if(response.status == 2) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
                                 // success
-                                $('#customer-btn-delete-' + customer_id).remove();
+                                $('#btn-delete-' + customer_id).remove();
                                 $('#is_deleted_'+ customer_id).text("Yes");
+                                $('#id_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#firstname_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#lastname_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#citizen_card_id_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#mobile_number_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#email_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#unique_reference_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#device_id_'+ customer_id).css('text-decoration', 'line-through');
                                 showSuccessMessage('Customer has been deleted successfully');
                             } else {
                                 // Failed
