@@ -39,7 +39,7 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger)
 
         if is_success:
-            self.logger.info("Have [{}] blocked devices in database".format(len(data)))
+            self.logger.info("Response_content_count:{}".format(len(data)))
             context['devices'] = data
             context['total_devices'] = len(data)
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (

@@ -6,7 +6,7 @@ from .views.customer_identities import CustomerIdentitiesListView
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from .views.suspend import suspend
-from .views.activate import activate
+from .views.api_customers import activate, delete_customer
 from .views.reset_identity_password import reset_password
 from .views.blocked_devices import BlockedDevicesList
 
@@ -22,6 +22,8 @@ urlpatterns = [
         name="suspend-customer"),
     url(r'^activate/(?P<customer_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'),
         name="activate-customer"),
+url(r'^delete/(?P<customer_id>[0-9A-Za-z]+)', login_required(delete_customer, login_url='authentications:login'),
+        name="delete-customer"),
     url(r'^(?P<customer_id>[0-9A-Za-z]+)/identities/(?P<identity_id>[0-9A-Za-z]+)/$', login_required(reset_password, login_url='authentications:login'), name="reset-identity-password"),
     url(r'^blocked_devices', login_required(BlockedDevicesList.as_view(), login_url='authentications:login'),
         name="blocked-devices"),
