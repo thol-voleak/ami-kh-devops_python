@@ -3,6 +3,9 @@ from authentications.apps import InvalidAccessToken
 class API_Logger:
     @classmethod
     def get_logging(self, loggers=None, params={}, response=[], status_code=""):
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            raise InvalidAccessToken("")
+
         # Filter sensitive data
         params = API_Logger._filter_sensitive_fields(params=params)
 
@@ -10,17 +13,18 @@ class API_Logger:
             loggers.info("Params: {} ".format(params))
 
         response = response or []
-        count = len(response)
-        if (type(response) is list) and (count > 1):
-            loggers.info('Response_content_count: {}'.format(count))
+
+        if (type(response) is list) and (len(response) > 1):
+            loggers.info('Response_content_count: {}'.format(len(response)))
         else:
             loggers.info('Response_content: {}'.format(response))
 
-        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            raise InvalidAccessToken("")
 
     @classmethod
     def put_logging(self, loggers=None, params={}, response={}, status_code=""):
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            raise InvalidAccessToken("")
+
         # Filter sensitive data
         params = API_Logger._filter_sensitive_fields(params=params)
 
@@ -29,17 +33,17 @@ class API_Logger:
 
         response = response or {}
 
-        count = len(response)
-        if (type(response) is list) and (count > 1):
-            loggers.info('Response_content_count: {}'.format(count))
+        if (type(response) is list) and (len(response) > 1):
+            loggers.info('Response_content_count: {}'.format(len(response)))
         else:
             loggers.info('Response_content: {}'.format(response))
 
-        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            raise InvalidAccessToken("")
 
     @classmethod
     def post_logging(self, loggers=None, params={}, response={}, status_code=""):
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            raise InvalidAccessToken("")
+
         # Filter sensitive data
         params = API_Logger._filter_sensitive_fields(params=params)
 
@@ -47,17 +51,17 @@ class API_Logger:
             loggers.info("Params: {} ".format(params))
 
         response = response or {}
-        count = len(response)
-        if (type(response) is list) and (count > 1):
-            loggers.info('Response_content_count: {}'.format(count))
+        if (type(response) is list) and (len(response) > 1):
+            loggers.info('Response_content_count: {}'.format(len(response)))
         else:
             loggers.info('Response_content: {}'.format(response))
 
-        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            raise InvalidAccessToken("")
 
     @classmethod
     def delete_logging(self, loggers=None, params={}, response={}, status_code=""):
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            raise InvalidAccessToken("")
+
         # Filter sensitive data
         params = API_Logger._filter_sensitive_fields(params=params)
 
@@ -65,14 +69,11 @@ class API_Logger:
             loggers.info("Params: {} ".format(params))
 
         response = response or {}
-        count = len(response)
-        if (type(response) is list) and (count > 1):
-            loggers.info('Response_content_count: {}'.format(count))
+        if (type(response) is list) and (len(response) > 1):
+            loggers.info('Response_content_count: {}'.format(len(response)))
         else:
             loggers.info('Response_content: {}'.format(response))
 
-        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            raise InvalidAccessToken("")
 
     @staticmethod
     def _filter_sensitive_fields(params={}):
