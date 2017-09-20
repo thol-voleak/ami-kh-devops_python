@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "SYS_VIEW_DETAIL_PROVIDER"
+    group_required = "SYS_EDIT_PROVIDER"
     login_url = 'web:permission_denied'
     raise_exception = False
 
