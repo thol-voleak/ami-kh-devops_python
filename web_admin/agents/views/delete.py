@@ -54,8 +54,9 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
             else:
                 redirect('agents:agent-list')
         else:
-            # TODO: add more message in fail case.
-            return redirect('agents:agent_delete', agent_id=agent_id)
+            request.session['agent_message'] = 'Delete agent fail. Please try again or contact support.'
+            request.session['agent_redirect_from_delete'] = True
+            return redirect('agents:agent-list')
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Delete Agent page ==========')

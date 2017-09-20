@@ -1,12 +1,10 @@
 from django.views.generic.base import TemplateView
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
 from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
-from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
 import logging
 

@@ -46,19 +46,50 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             }
         }
 
-        # Set first load default time for Context
         from_created_timestamp = datetime.now()
-        from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
-        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
-
         to_created_timestamp = datetime.now()
-        to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+        unique_reference = None
+        email = None
+        primary_mobile_number = None
+        kyc_status = None
+
+        redirect_from_delete =  self.request.session.pop('agent_redirect_from_delete', None)
+        if redirect_from_delete:
+            unique_reference = self.request.session.pop('agent_unique_reference', None)
+            email = self.request.session.pop('agent_email', None)
+            primary_mobile_number = self.request.session.pop('agent_primary_mobile_number', None)
+            kyc_status = self.request.session.pop('agent_kyc_status', None)
+            from_created_timestamp = datetime.strptime(request.session['agent_from'], "%Y-%m-%dT%H:%M:%SZ")
+            to_created_timestamp = datetime.strptime(request.session['agent_to'], "%Y-%m-%dT%H:%M:%SZ")
+            context.update({'msgs':{'delete_failed_msg': self.request.session.pop('agent_message', None)}})
+        else:
+            # Set first load default time for Context
+            from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
+            to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+
+        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
         new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # Build Body
         body = {}
+        if unique_reference:
+            body.update({'unique_reference' : unique_reference})
+        if email:
+            body.update({'email' : email})
+        if primary_mobile_number:
+            body.update({'primary_mobile_number' : primary_mobile_number})
+        if kyc_status:
+            if kyc_status and isinstance(kyc_status, str):
+                if kyc_status.lower() == "true":
+                    body.update({'kyc_status': True})
+                else:
+                    body.update({'kyc_status': False})
 
-        context.update(body)
+        context.update({'unique_reference': unique_reference,
+                        'email': email,
+                        'primary_mobile_number': primary_mobile_number,
+                        'kyc_status': kyc_status})
+
         body['from_created_timestamp'] = new_from_created_timestamp
         new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
         context['from_created_timestamp'] = new_from_created_timestamp
@@ -70,6 +101,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         # Get Data
         data = self._get_agents(params=body)
         context['data'] = data
+
+        self.update_session(request, None, unique_reference, email, primary_mobile_number, kyc_status,
+                            from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"), False)
 
         self.logger.info('========== Finished showing Agent List page ==========')
         return render(request, self.template_name, context)
@@ -121,6 +156,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data = self._get_agents(params=body)
         context['data'] = data
 
+        self.update_session(request, None, unique_reference, email,
+                            primary_mobile_number, kyc_status,
+                            new_from_created_timestamp,
+                            new_to_created_timestamp, False)
         return render(request, self.template_name, context)
 
     def _get_agents(self, params):
@@ -145,3 +184,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         self.logger.info('========== Finished searching agent ==========')
         return data
+
+    def update_session(self, request, message=None, unique_reference=None, email=None, primary_mobile_number=None,
+                       kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False):
+        request.session['agent_message'] = message
+        request.session['agent_unique_reference'] = unique_reference
+        request.session['agent_email'] = email
+        request.session['agent_primary_mobile_number'] = primary_mobile_number
+        request.session['agent_kyc_status'] = kyc
+        request.session['agent_from'] = from_created_timestamp
+        request.session['agent_to'] = to_created_timestamp
+        request.session['agent_redirect_from_delete'] = redirect_from_delete
+
