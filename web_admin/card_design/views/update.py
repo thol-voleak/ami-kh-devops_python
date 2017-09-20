@@ -10,6 +10,7 @@ from web_admin.restful_client import RestFulClient
 from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.api_logger import API_Logger
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +116,6 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
 
-        self.logger.info('Params: {}'.format(body))
         url = api_settings.CARD_DESIGN_UPDATE.format(provider_id=provider, card_id=card_id)
         success, data = self._update_card_design(url, body)
 
@@ -148,16 +148,16 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            loggers=self.logger, headers=self._get_headers(),
                                                                            params=params)
+
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data,
+                               status_code=status_code)
+
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
             data = {}
 
         return is_success, data
@@ -165,13 +165,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get_card_types_list(self):
         url = api_settings.CARD_TYPE_LIST
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+
         if is_success:
             if data is None or data == "":
                 data = []
         else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
@@ -186,16 +187,16 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
             data = []
 
         return data
@@ -206,12 +207,11 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if is_success:
             if data is None or data == "":
                 data = []
-            self.logger.info("Currency List is [{}]".format(len(data)))
         else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             data = []
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
 
         if len(data) > 0:
             value = data.get('value', None)
@@ -226,19 +226,18 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def _get_card_design_detail(self, provider_id, card_id):
         url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+
         if is_success:
             if data is None or data == "":
                 data = {}
-            self.logger.info("Card design detail is [{}]".format(data))
         else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "Something went wrong"
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
             data = {}
         return data

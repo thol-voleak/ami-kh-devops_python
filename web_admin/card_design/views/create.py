@@ -8,8 +8,8 @@ from braces.views import GroupRequiredMixin
 from web_admin.api_settings import SEARCH_CARD_PROVIDER, GET_ALL_CURRENCY_URL
 from web_admin.restful_client import RestFulClient
 from django.conf import settings
-from authentications.apps import InvalidAccessToken
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.api_logger import API_Logger
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +103,6 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['cancel_read_timeout'] = int(cancel_read_timeout)
 
         url = api_settings.CREATE_CARD_DESIGN.format(provider_id=provider)
-        self.logger.info('Params: {}'.format(body))
         success, data = self._create_card_design(url, body)
 
         self.logger.info('========== Finish creating card design ==========')
@@ -134,16 +133,15 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            loggers=self.logger, headers=self._get_headers(),
                                                                            params=params)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+                               status_code=status_code)
+
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
             data = {}
 
         return is_success, data
@@ -151,13 +149,14 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get_card_types_list(self):
         url = api_settings.CARD_TYPE_LIST
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+
         if is_success:
             if data is None or data == "":
                 data = []
         else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
@@ -172,16 +171,16 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
             data = []
 
         return data
@@ -189,15 +188,15 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def _get_currencies_list(self):
         url = GET_ALL_CURRENCY_URL
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+
         if is_success:
             if data is None or data == "":
                 data = []
-            self.logger.info("Currency List is [{}]".format(len(data)))
         else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             data = []
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
 
         if len(data) > 0:
             value = data.get('value', None)
