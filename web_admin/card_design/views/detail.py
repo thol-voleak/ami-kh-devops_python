@@ -37,6 +37,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return self._get_card_design_detail(provider_id, card_id)
 
     def _get_card_design_detail(self, provider_id, card_id):
+        self.logger.info('========== Start get card design detail ==========')
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
         url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
@@ -55,6 +56,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     "Something went wrong"
                 )
             data = {}
+        self.logger.info('========== Finish get card design detail ==========')
         return {"body": data,
                 "is_permission_edit": is_permission_edit}
 

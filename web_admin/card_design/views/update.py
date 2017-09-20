@@ -163,6 +163,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return is_success, data
 
     def get_card_types_list(self):
+        self.logger.info('========== Start get card type list ==========')
         url = api_settings.CARD_TYPE_LIST
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
@@ -178,10 +179,12 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Something went wrong"
             )
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get card type list ==========')
         return data
 
     def _search_card_providers(self):
+        self.logger.info('========== Start get card provider list ==========')
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_PROVIDER,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -197,10 +200,12 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     status_message
                 )
             data = []
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get card provider list ==========')
         return data
 
     def _get_currencies_list(self):
+        self.logger.info('========== Start get currency list ==========')
         url = GET_ALL_CURRENCY_URL
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
@@ -212,7 +217,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 self.logger.info("{}".format(data))
                 raise InvalidAccessToken(data)
             data = []
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        self.logger.info('========== Finish get currency list ==========')
         if len(data) > 0:
             value = data.get('value', None)
             if value is not None:
@@ -224,6 +230,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             return []
 
     def _get_card_design_detail(self, provider_id, card_id):
+        self.logger.info('========== Start get card design detail ==========')
         url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
@@ -241,4 +248,5 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     "Something went wrong"
                 )
             data = {}
+        self.logger.info('========== Finish get card design detail ==========')
         return data
