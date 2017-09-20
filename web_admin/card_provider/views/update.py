@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "SYS_VIEW_DETAIL_PROVIDER"
+    group_required = "SYS_EDIT_PROVIDER"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -33,7 +33,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start update provider detail ==========')
+        self.logger.info('========== Start get provider detail ==========')
         context = super(UpdateView, self).get_context_data(**kwargs)
 
         provider_id = context['provider_id']
@@ -53,9 +53,11 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 "Something went wrong"
             )
         context['data'] = data
+        self.logger.info('========== Start finish provider detail ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start update provider detail ==========')
         context = super(UpdateView, self).get_context_data(**kwargs)
 
         provider_id = context['provider_id']
@@ -67,7 +69,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         params = {
             'name': provider_name
         }
-
+        
         self.logger.info('Params: {}'.format(params))
 
         is_success, status_code, status_message, data = RestFulClient.put(url=url,

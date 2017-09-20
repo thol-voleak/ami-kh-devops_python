@@ -1,12 +1,11 @@
 from django.views.generic.base import TemplateView
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
 from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
-from authentications.apps import InvalidAccessToken
+from web_admin.api_logger import API_Logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,25 +36,26 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return self._get_card_design_detail(provider_id, card_id)
 
     def _get_card_design_detail(self, provider_id, card_id):
+        self.logger.info('========== Start getting card design detail ==========')
+
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_CARD_DESIGN')
         url = api_settings.CARD_DESIGN_DETAIL.format(provider_id=provider_id, card_id=card_id)
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         if is_success:
             if data is None or data == "":
                 data = {}
-            self.logger.info("Card design detail is [{}]".format(data))
         else:
-            status_message = "Something went wrong"
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-            else:
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    status_message
-                )
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
             data = {}
+
+        self.logger.info('========== Finish getting card design detail ==========')
         return {"body": data,
                 "is_permission_edit": is_permission_edit}
 

@@ -46,7 +46,7 @@ class RoleList(GroupRequiredMixin, TemplateView):
             context['permissions'] = permissions
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
-            logger.info("{} for {} username".format(status_message, self.request.user))
+            self.logger.info("{} for {} username".format(status_message, self.request.user))
             raise InvalidAccessToken(status_message)
         return context
 

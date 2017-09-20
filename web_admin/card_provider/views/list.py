@@ -43,12 +43,11 @@ class CardProviderList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT,
                                                                            params=params)
-        self.logger.info('Response_content_count: {}'.format(len(data)))
         if not is_success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
-
+        self.logger.info('Response_content_count: {}'.format(len(data)))
         is_permission_detail = check_permissions_by_user(self.request.user, 'SYS_VIEW_DETAIL_PROVIDER')
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_PROVIDER')
 

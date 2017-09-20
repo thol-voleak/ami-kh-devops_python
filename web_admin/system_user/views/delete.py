@@ -62,4 +62,4 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             messages.add_message(request, messages.SUCCESS, 'Deleted data successfully')
             return redirect('system_user:system-user-list')
         else:
-            logger.info("Error deleting system user {}".format(system_user_id))
+            self.logger.info("Error deleting system user {}".format(system_user_id))
