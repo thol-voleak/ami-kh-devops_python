@@ -125,7 +125,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Update card design successfully'
+                'Update Card Design successfully'
             )
             return redirect('card_design:card_designs')
         else:
