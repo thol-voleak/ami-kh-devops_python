@@ -41,17 +41,21 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = GET_DETAIL_PROVIDER.format(provider_id=provider_id)
 
         is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
-        self.logger.info('Response_content: {}'.format(data))
+
         if is_success:
             if data is None or data == "":
                 data = []
         else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             data = []
             messages.add_message(
                 self.request,
                 messages.ERROR,
                 "Something went wrong"
             )
+        self.logger.info('Response_content: {}'.format(data))
         is_permission_edit = check_permissions_by_user(self.request.user, 'SYS_EDIT_PROVIDER')
         context['is_permission_edit'] = is_permission_edit
         context['data'] = data
