@@ -193,4 +193,4 @@ GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
 
 #fraud consultant
 SEARCH_FREEZE_CARD_PATH = 'api-gateway/report/' + API_VERSION + '/frozen-cards'
-DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/blacklist/cards/{card_id}'
+DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin/blacklist/cards/{card_id}'

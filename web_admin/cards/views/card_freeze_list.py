@@ -51,7 +51,11 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         context = super(CardFreezeList, self).get_context_data(**kwargs)
         freeze_card_id = context['id']
         url = api_settings.DELETE_FREEZE_CARD_PATH.format(card_id=freeze_card_id)
-        result = ajax_functions._delete_method(request, url, "Delete freeze card", self.logger, params=None, timeout=None)
+        result = ajax_functions._delete_method(request, url, "Delete freeze card", logger=self.logger, params=None, timeout=None)
+
+        self.logger.info("{} - json data".format(result))
+
+        self.logger.info("{}=========".format(result.content))
         messages.add_message(
             request,
             messages.SUCCESS,
