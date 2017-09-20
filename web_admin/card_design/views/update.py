@@ -179,7 +179,6 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Something went wrong"
             )
-        self.logger.info('Response_content_count: {}'.format(len(data)))
         self.logger.info('========== Finish get card type list ==========')
         return data
 
@@ -200,7 +199,6 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
-        self.logger.info('Response_content_count: {}'.format(len(data)))
         self.logger.info('========== Finish get card provider list ==========')
         return data
 
@@ -214,19 +212,17 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         else:
             data = []
 
-        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
-                               status_code=status_code)
-
-        self.logger.info('========== Finish get currency list ==========')
+        result = []
         if len(data) > 0:
             value = data.get('value', None)
             if value is not None:
-                currency_list = [i.split('|') for i in value.split(',')]
-                return currency_list
-            else:
-                return []
-        else:
-            return []
+                result = [i.split('|') for i in value.split(',')]
+
+        API_Logger.get_logging(loggers=self.logger, params={}, response=result,
+                               status_code=status_code)
+        self.logger.info('========== Finish get currency list ==========')
+
+        return result
 
     def _get_card_design_detail(self, provider_id, card_id):
         self.logger.info('========== Start get card design detail ==========')
