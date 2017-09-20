@@ -69,13 +69,13 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['from_created_timestamp'] = new_from_created_timestamp
-            logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
+            self.logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
         if to_created_timestamp is not '' and to_created_timestamp is not None:
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
-            logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
+            self.logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
 
         self.logger.info("keyword for search is [{}]".format(body))
 
