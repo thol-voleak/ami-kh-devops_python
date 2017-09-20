@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CardSOFTransaction(TemplateView, RESTfulMethods):
+class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_SEARCH_CARD_TXN"
     login_url = 'web:permission_denied'
     raise_exception = False
