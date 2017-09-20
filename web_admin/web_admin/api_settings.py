@@ -150,7 +150,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 
 # Member Customer
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
-BLOCKED_DEVICES_LIST = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/blocked-devices'
+BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 
@@ -192,5 +192,5 @@ GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
 
 
 #fraud consultant
-GET_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION + '/admin/blacklist/cards'
+SEARCH_FREEZE_CARD_PATH = 'api-gateway/report/' + API_VERSION + '/frozen-cards'
 DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/blacklist/cards/{card_id}'

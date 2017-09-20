@@ -34,9 +34,11 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Blocked Devices page ==========')
         context = super(BlockedDevicesList, self).get_context_data(**kwargs)
-        is_success, status_code, data = RestFulClient.get(url=api_settings.BLOCKED_DEVICES_LIST,
+        param = {}
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BLOCKED_DEVICES_LIST,
                                                                            headers=self._get_headers(),
-                                                                           loggers=self.logger)
+                                                                           loggers=self.logger,
+                                                                           params=param)
 
         if is_success:
             self.logger.info("Response_content_count:{}".format(len(data)))

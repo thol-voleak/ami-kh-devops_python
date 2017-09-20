@@ -61,8 +61,9 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         return result
 
     def get_freeze_card_list(self):
-        url = api_settings.GET_FREEZE_CARD_PATH
-        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+        url = api_settings.SEARCH_FREEZE_CARD_PATH
+        params = {}
+        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(), loggers=self.logger, params=params)
         if isinstance(data, list):
             return data
         else:
