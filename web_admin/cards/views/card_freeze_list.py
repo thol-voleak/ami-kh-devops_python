@@ -1,3 +1,4 @@
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, api_settings
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -16,6 +17,12 @@ IS_SUCCESS = {
     True: 'Success',
     False: 'Failed',
 }
+
+
+def _format_data(data):
+    for i in data:
+        i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
+    return data
 
 
 class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
@@ -40,7 +47,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         self.logger.info('========== Start get freeze card ==========')
 
         data = self.get_freeze_card_list()
-        result_data = self.format_data(data)
+        result_data = _format_data(data)
         context = {'data': result_data}
 
         self.logger.info('========== End get freeze card ==========')
@@ -51,7 +58,13 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         context = super(CardFreezeList, self).get_context_data(**kwargs)
         freeze_card_id = context['id']
         url = api_settings.DELETE_FREEZE_CARD_PATH.format(card_id=freeze_card_id)
-        result = ajax_functions._delete_method(request, url, "Delete freeze card", logger=self.logger, params=None, timeout=None)
+
+        result = ajax_functions._delete_method(request=request,
+                                               api_path=url,
+                                               func_description="Delete freeze card",
+                                               logger=self.logger,
+                                               params=None,
+                                               timeout=None)
 
         self.logger.info("{} - json data".format(result))
 
@@ -67,13 +80,13 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
     def get_freeze_card_list(self):
         url = api_settings.SEARCH_FREEZE_CARD_PATH
         params = {}
-        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(), loggers=self.logger, params=params)
-        if isinstance(data, list):
-            return data
-        else:
-            return []
-
-    def format_data(self, data):
-        for i in data:
-            i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
-        return data
+        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
+                                                                           loggers=self.logger, params=params)
+        if is_success:
+            if isinstance(data, list):
+                return data
+            else:
+                return []
+        elif status_code in ["access_token_expire", "authentication_fail", "invalid_access_token"]:
+            self.logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
