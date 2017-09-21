@@ -42,11 +42,11 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Total Initial Balance:</label>
                 <div class="col-sm-4">
-                    <input value="{{ total_balance.balance|floatformat:decimal|intcomma|default:'0.00' }}" type="text" class="form-control" name="total_initital_balance" id="txt_total_initital_balance" disabled />
+                    <input value="{{ total_balance|floatformat:decimal|intcomma|default:'0.00' }}" type="text" class="form-control" name="total_initital_balance" id="txt_total_initital_balance" disabled />
                 </div>
                 <label class="col-sm-2 control-label">Company Balance:</label>
                 <div class="col-sm-4">
-                    <input value="{{ objects.0.balance_after_change|floatformat:decimal|intcomma|default:'0' }}" type="text" class="form-control" name="company_balance" id="txt_company_balance" disabled />
+                    <input value="{{ company_balance.balance|floatformat:decimal|intcomma|default:'0' }}" type="text" class="form-control" name="company_balance" id="txt_company_balance" disabled />
                 </div>
             </div>
             <div class="form-group">
@@ -64,8 +64,6 @@
                     <button id='btn_submit' type="submit" class="btn btn-success" style="display: none;"></button>
                     <button id="btn_cancel" class="btn text-left mb15" type="reset">Cancel</button>
                     <button id="btn_confirm" class="btn btn-success text-left mb15" type="button" onclick="validateFormData(this)">Confirm</button>
-                    <!-- Mapping raw hidden value -->
-                    <input value="{{ objects.0.balance_after_change|default:0 }}" type="hidden" id="txt_company_balance_hidden" />
                 </div>
             </div>
         </form>
@@ -73,7 +71,7 @@
             <h3>Company Balance List</h3>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
+            <table class="table table-bordered table-striped mb0" id="tbl_company_balance">
                 <thead>
                 <tr>
                     <th id="lbl_adding_balance">Adding Balance</th>
@@ -142,10 +140,10 @@ function changeValue() {
     var $amount = $('#' + balance_amount);
     var amount = document.getElementById(balance_amount);
     var $new_balance = $('#txt_new_company_balance');
-    var $company_balance = $('#txt_company_balance_hidden');
+    var $company_balance = $('#txt_company_balance');
     $amount.on('input', function() {
         var value = parseFloat(toNumber($company_balance.val())) + parseFloat(toNumber($amount.val()));
-        value ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
+        (value || value === 0) ? $new_balance.val(numberWithCommas(value.toFixed({{ decimal }})))
         : $new_balance.val($company_balance.val());
     });
 

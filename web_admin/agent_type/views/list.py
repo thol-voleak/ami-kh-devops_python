@@ -35,7 +35,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data = self.get_agent_types_list()
         result = {
             'data': data,
-            'del_msg': self.request.session.pop('agent_type_delete_msg', None)
+            'msgs': {
+                'del_msg': self.request.session.pop('agent_type_delete_msg', None),
+                'cre_msg': self.request.session.pop('agent_type_create_msg', None)
+            }
         }
         self.logger.info('========== Finished showing Agent Type List page ==========')
         return result

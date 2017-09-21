@@ -52,7 +52,7 @@ class BalanceApi(GroupRequiredMixin):
         message = status.get('message', 'Something went wrong.')
         if code in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
             logger.info("{} for {} username".format(message, request.user))
-            messages.add_message(request, messages.INFO, str('session_is_expired'))
+            messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
             ajax_code = 1
             logger.info('========== Finish add currency ==========')
             return JsonResponse({"status": ajax_code, "msg": message})

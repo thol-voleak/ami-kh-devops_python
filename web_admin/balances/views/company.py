@@ -77,10 +77,10 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
             context['selected_currency'] = currency
             return render(request, self.template_name, context)
 
-    def _get_total_initial_company_balance(self, currency):
+    def _get_company_balance(self, currency):
         url = GET_REPORT_AGENT_BALANCE
         body = {'user_id': self.company_agent_id, 'currency': currency, 'user_type': 2}
-        func_description = "Getting total initial balance by username: {} \
+        func_description = "Getting balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
                                                currency, )
@@ -141,6 +141,9 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
             result = data, False
         return result
 
+    def sum_balance(self, balance_lst):
+        return sum([balance['changed_amount'] for balance in balance_lst])
+
     def _build_context(self, request):
         default_decimal = 1
         currency_choices, success_currency = self._get_currency_choices_by_agent(self.company_agent_id,
@@ -170,9 +173,10 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
             return {'objects': [],
                     'currency_list': [],
                     'decimal': None,
+                    'company_balance': None,
                     'total_balance': None}
 
-        totalData, success_total_balance = self._get_total_initial_company_balance(currency)
+        totalData, success_total_balance = self._get_company_balance(currency)
 
         if not success_total_balance:
             messages.add_message(
@@ -194,11 +198,14 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
                 message=data
             )
             data = []
-
-        return {'objects': list(data),
-                'currency_list': currency_list,
-                'decimal': decimal,
-                'total_balance': totalData}
+        objs = list(data)
+        return {
+            'objects': objs,
+            'currency_list': currency_list,
+            'decimal': decimal,
+            'company_balance': totalData,
+            'total_balance': self.sum_balance(objs)
+        }
 
 
 company_balance = login_required(CompanyBalanceView.as_view(), login_url='authentications:login')

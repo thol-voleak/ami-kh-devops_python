@@ -1,4 +1,4 @@
-API_VERSION = 'v1.0'
+API_VERSION = 'v1.1'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -150,6 +150,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 
 # Member Customer
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
+BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 
@@ -160,6 +161,8 @@ CUSTOMER_IDENTITIES_LIST = 'api-gateway/report/'+API_VERSION+'/customers/identit
 SUSPEND_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
 ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
 RESET_IDENTITY_PASSWORD = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/identities/{}/passwords/temporary'
+ADMIN_UPDATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
+ADMIN_DELETE_CUSTOMER_URL = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'
@@ -172,6 +175,22 @@ GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/se
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
 UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
 
+# Card Design
+UPDATE_CARED_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}'
+GET_DETAIL_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}'
+SEARCH_CARD_DESIGN = 'api-gateway/report/'+API_VERSION+'/cards/sofs/card-designs'
+SEARCH_CARD_PROVIDER ='api-gateway/report/'+API_VERSION+'/cards/sofs/providers'
+CREATE_CARD_PROVIDER = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers'
+CREATE_CARD_DESIGN = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs'
+CARD_DESIGN_DETAIL = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
+CARD_TYPE_LIST = 'api-gateway/sof-card/'+API_VERSION+'/admin/card-types'
+CARD_DESIGN_UPDATE = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
+
 # bank profile
 CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
 GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
+
+
+#fraud consultant
+SEARCH_FREEZE_CARD_PATH = 'api-gateway/report/' + API_VERSION + '/frozen-cards'
+DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin/blacklist/cards/{card_id}'

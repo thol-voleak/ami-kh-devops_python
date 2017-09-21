@@ -8,7 +8,6 @@ from web_admin.utils import setup_logger
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 
-
 class RESTfulMethods(GetHeaderMixin):
     def _get_method(self, api_path, func_description=None, logger=None, is_getting_list=False, params={}, timeout=None):
         """
@@ -109,6 +108,7 @@ class RESTfulMethods(GetHeaderMixin):
             done = time.time()
             processing_time = done - start_date
             http_status_code = response.status_code
+
             # Filter sensitive data
             self._filter_sensitive_fields(params=params)
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))

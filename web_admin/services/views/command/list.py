@@ -91,4 +91,7 @@ class ListCommandView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def _get_commands_dd_list(self):
         url = api_settings.COMMAND_LIST_URL
         data, success = self._get_method(url, "command list", logger, True)
-        return data
+        if success:
+            return [item for item in data if item['command_name'] not in ['Cancel Refund', 'Refund', 'Settlement', 'Cancel refund']]
+        else:
+            return []

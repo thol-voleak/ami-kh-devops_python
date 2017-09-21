@@ -48,14 +48,15 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
                 if "update" in previous_page:
                     previous_page = previous_page.replace('update/', '', 1)
 
-                request.session['agent_update_msg'] = 'Deleted data successfully'
+                request.session['agent_delete_msg'] = 'Deleted data successfully'
 
                 return HttpResponseRedirect(previous_page)
             else:
                 redirect('agents:agent-list')
         else:
-            # TODO: add more message in fail case.
-            return redirect('agents:agent_delete', agent_id=agent_id)
+            request.session['agent_message'] = 'Delete agent fail. Please try again or contact support.'
+            request.session['agent_redirect_from_delete'] = True
+            return redirect('agents:agent-list')
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Delete Agent page ==========')
@@ -65,22 +66,23 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
         context, status = self.get_agent_detail(agent_id)
         agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
         currencies, status_get_currency = self.get_currencies(agent_id)
-        context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
         if status and status_get_agent_identity and status_get_currency:
             agent_type_name, status = self.get_agent_type_name(context['agent']['agent_type_id'])
             if status:
+                if len(agent_identity['agent_identities']) > 0:
+                    context.update({
+                        'status_get_agent_identity': agent_identity['agent_identities'][0],
+                    })
+
                 context.update({
                     'agent_type_name': agent_type_name,
-                    'status_get_agent_identity': agent_identity['agent_identities'][0],
                     'currencies': currencies
                 })
             else:
                 context.update({
                     'agent_type_name': context.agent.agent_type_id
                 })
-            self.logger.info('========== Finished showing Delete Agent page ==========')
-            return context
         else:
             context = {'agent': {}}
-            self.logger.info('========== Finished showing Delete Agent page ==========')
-            return context
+        self.logger.info('========== Finished showing Delete Agent page ==========')
+        return context

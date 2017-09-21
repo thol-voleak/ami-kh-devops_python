@@ -63,12 +63,6 @@ class AddView(TemplateView, RESTfulMethods):
         bonus_type = request.POST.get('bonus_type', '')
         bonus_amount = request.POST.get('bonus_amount', '')
 
-        if not bonus_type:
-            bonus_type = 'NON'
-
-        if not fee_type:
-            fee_type = 'NON'
-
         if condition_amount:
             condition_amount = condition_amount.replace(',', '')
 

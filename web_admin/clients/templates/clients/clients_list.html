@@ -217,7 +217,7 @@
                         success: function (response) {
                             if (response.status == 1) {
                                 // Logout
-                                var url = window.location.origin + "/admin-portal/logout/";
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success
@@ -249,7 +249,6 @@
             },
             function () {
                 var url = $("#client-btn-delete-" + client_id).data("url");
-                console.log(url);
                 $.ajax({
                     url: url,
                     type: "POST",
@@ -261,7 +260,7 @@
                         console.log(response);
                         if (response.status == 1) {
                             // Logout
-                            var url = window.location.origin + "/admin-portal/logout/";
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                             window.location.replace(url);
                         } else if (response.status == 2) {
                             // success
@@ -313,7 +312,7 @@
                         success: function (response) {
                             if (response.status == 1) {
                                 // Logout
-                                var url = window.location.origin + "/admin-portal/logout/";
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success
@@ -359,7 +358,7 @@
                         success: function (response) {
                             if (response.status == 1) {
                                 // Logout
-                                var url = window.location.origin + "/admin-portal/logout/";
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                                 window.location.replace(url);
                             } else if (response.status == 2) {
                                 // success

@@ -40,7 +40,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             agent_identity, status_get_agent_identity = self._get_agent_identity(agent_id)
             currencies, status_get_currency = self._get_currencies(agent_id)
 
-            context.update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
+            context['msgs'].update({'agent_update_msg': self.request.session.pop('agent_update_msg', None)})
 
             if status and status_get_agent_identity and status_get_currency:
 
@@ -62,13 +62,11 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
-            self.logger.info('========== Finished showing Agent Detail page ==========')
-            return context
         except Exception as ex:
             logging.info(ex)
             context = {'agent': {}}
-            self.logger.info('========== Finished showing Agent Detail page ==========')
-            return context
+        self.logger.info('========== Finished showing Agent Detail page ==========')
+        return context
 
     def _get_currencies(self, agent_id):
         self.logger.info("Get currency for [{}] agent Id".format(agent_id))
@@ -91,7 +89,10 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = {
             'agent': data[0],
             'agent_id': agent_id,
-            'msg': self.request.session.pop('agent_registration_msg', None)
+            'msgs': {
+                'get_msg': self.request.session.pop('agent_registration_msg', None),
+                'del_msg': self.request.session.pop('agent_delete_msg', None)
+            }
         }
         return context, success
 

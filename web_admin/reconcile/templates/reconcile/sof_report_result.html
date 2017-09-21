@@ -42,7 +42,9 @@
                 <label class="col-sm-2 control-label">Source of fund</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_source_of_fund" name="source_of_fund_id">
-                        <option value="bank">Bank</option>
+                          {% for item in source_of_fund_list %}
+                        <option value="{{ item.value }}"{% if item.value == source_of_fund %}selected="selected"{% endif %}>{{ item.label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>

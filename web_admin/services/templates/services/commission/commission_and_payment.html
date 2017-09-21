@@ -67,7 +67,7 @@
                 </div>
             </div>
             <br/>
-            <div class="form-inline">
+            <div class="form-inline" hidden>
                 <label class="col-sm-2 control-label">Bonus:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -210,16 +210,21 @@
                         <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
                                value="Add"/>
                     </a>
+                    <br/>
+                    <br/>
+                    <a href="{% url 'services:fee_tier_list' service_id=service_id command_id=command_id service_command_id=service_command_id %}">
+                        <input id="btn_back" class="btn" type="button" value="Back"/>
+                    </a>
                 </div>
             </form>
 
-            <div class="panel-heading">
+            <div class="panel-heading" hidden>
                 <h4>III. Setting Bonus</h4>
             </div>
 
             <form method="POST" class="form-horizontal" role="form"
                   action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}"
-                  id="Setting_Bonus_Form">
+                  id="Setting_Bonus_Form" hidden>
 
                 {% csrf_token %}
                 <div class="form-group table-responsive row">
@@ -331,15 +336,15 @@
                 </div>
             </form>
 
-            {% include "services/commission/agent_hierrachy_distribution_fee.html" %}
-            {% include "services/commission/agent_hierarchy_distribution_bonus.html" %}
+{#            {% include "services/commission/agent_hierrachy_distribution_fee.html" %}#}
+{#            {% include "services/commission/agent_hierarchy_distribution_bonus.html" %}#}
 
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
-    <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>
+{#    <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>#}
     <script>
         var csrf_token = "{{ csrf_token }}";
         function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
@@ -367,7 +372,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         //clear list
@@ -408,7 +413,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#balance-distribution-' + distributionId).remove();
@@ -470,7 +475,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#bonus-distribution-' + bonus_distributions_id).remove();
@@ -498,7 +503,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#agent-hierarchy-distribution-' + agent_fee_id).remove();
@@ -525,7 +530,7 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         $('#agent-bonus-distribution-' + agent_bonus_distribution_id).remove();
@@ -697,7 +702,7 @@
                 success: function (response) {
                     if(response.status == 1) {
                         // Logout
-                        var url = window.location.origin + "/admin-portal/logout/";
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if(response.status == 2) {
                         // success
@@ -746,9 +751,9 @@
 
         // Edit row features
         $(document).ready(function () {
-            var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
-            changeSpecificActorTypeRelativeAdd(ddl_agent_hier_fee_actor);
-            ddl_agent_hier_fee_amount_changed();
+            //var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
+            //changeSpecificActorTypeRelativeAdd(ddl_agent_hier_fee_actor);
+            //ddl_agent_hier_fee_amount_changed();
 
             // Build up master data from Server
             var m_action_types = {{ choices.action_types|safe }};
@@ -763,13 +768,13 @@
             onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 2. Setting Bonus Table
-            onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            //onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 3. Agent Fee Table
             // onInlineSetupDataTable('tbl_agent_hier_fee', m_action_types, m_actor_types, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             // 4. Bonus Table
-            onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            //onInlineSetupDataTable('tbl_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 
             $("body").find("th").each(function () {
                  $(this).removeAttr( "style" );

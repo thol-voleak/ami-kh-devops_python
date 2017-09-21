@@ -11,21 +11,50 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-1 control-label">Order ID</label>
+                <label class="col-sm-2 control-label">Order ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Service Name</label>
+                <label class="col-sm-2 control-label">Ext Transaction ID</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="service_name" id="txt_service_name" value="{{ service_name }}">
+                    <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-1 control-label">Payer User ID</label>
+                <label class="col-sm-2 control-label">Service Name</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_service" name="service_name" >
+                        <option value="" selected="selected">-</option>
+                        {% for service in data %}
+                            {%if service.service_name == service_name%}
+                            <option value="{{service_name }}" selected>{{service_name }}</option>
+                            {% else %}
+                            <option value="{{service.service_name }}">{{service.service_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status_id" >
+                        <option value="" selected="selected">All</option>
+
+                        {% for item in status_list %}
+                           {% if item.id == status_id %}
+                            <option value="{{item.id}}" selected>{{item.name}}</option>
+                            {% else %}
+                            <option value="{{item.id}}">{{item.name}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Payer User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payer_user_id" id="txt_payer_user_id" value="{{ payer_user_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Payer User Type</label>
+                <label class="col-sm-2 control-label">Payer User Type</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_payer_user_type" name="payer_user_type_id">
                         <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
@@ -35,11 +64,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-1 control-label">Payee User ID</label>
+                <label class="col-sm-2 control-label">Payee User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payee_user_id" id="txt_payee_user_id" value="{{ payee_user_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Payee User Type</label>
+                <label class="col-sm-2 control-label">Payee User Type</label>
                 <div class="col-xs-2">
                     <select class="form-control" id="ddl_payee_user_type" name="payee_user_type_id">
                         <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
@@ -47,10 +76,45 @@
                         <option value=2 {% if payee_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
                     </select>
                 </div>
-                <div class="col-xs-1">
-                    <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search">
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Creation Client ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="creation_client_id"
+                           value="{{ creation_client_id|default_if_none:'' }}"
+                           id="txt_creation_client_id">
+                </div>
+                <label class="col-sm-2 control-label">Execution Client ID</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="execution_client_id"
+                           value="{{ execution_client_id|default_if_none:'' }}"
+                           id="txt_execution_client_id">
                 </div>
             </div>
+            <div class="form-group">
+                    <label class="col-sm-2 control-label">From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="from_created_timestamp"
+                               value="{{ date_from|default_if_none:'' }}"
+                               id="dtp_from_date">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-xs-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="to_created_timestamp"
+                               value="{{ date_to|default_if_none:'' }}"
+                               id="dtp_to_date">
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                    </div>
+                </div>
+            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+            <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_order_list">
@@ -71,6 +135,8 @@
                     <th id="free">Fee</th>
                     <th id="bonus">Bonus</th>
                     <th id="user">Ext Transaction ID</th>
+                    <th id="user">Creation Client ID</th>
+                    <th id="user">Execution Client ID</th>
                 </tr>
                 </thead>
                 <tbody id="table_body">
@@ -91,6 +157,8 @@
                             <td class="col-sm-2">{{ order.fee }}</td>
                             <td class="col-sm-2">{{ order.bonus }}</td>
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
+                            <td class="col-sm-2">{{ order.created_client_id }}</td>
+                            <td class="col-sm-2">{{ order.executed_client_id }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

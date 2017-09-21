@@ -64,7 +64,13 @@
                     <!--</p>-->
                 </li>
             </ul>
-
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                <li>
+                    <span class="navbar-text">
+                        {% include 'version.html' %}
+                    </span>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-right hidden-xs">
                 {% if user.is_authenticated %}
                 <li>
@@ -78,14 +84,12 @@
             {% endblock %}
         </div>
     </div>
-
-    <!--<footer class="content-footer">-->
-    <!--</footer>-->
 </div>
 {% endblock %}
 {% block body_js %}
 <script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
 <script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
 <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>

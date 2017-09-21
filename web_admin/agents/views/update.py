@@ -186,10 +186,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
                                          func_description="Agent",
                                          logger=logger, params=data)
+        self.logger.info('========== Finished updating agent ==========')
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
-            self.logger.info('========== Finished updating agent ==========')
             return HttpResponseRedirect(previous_page)
-        self.logger.info('========== Finished updating agent ==========')
         return redirect(request.META['HTTP_REFERER'])

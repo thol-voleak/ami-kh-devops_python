@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Provider List</h3>
+
+
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'card_provider:card_provider' %}">
+                {% csrf_token %}
+                <div class="col-sm-12  form-group">
+                    <label class="col-sm-2">Provider Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control input-rounded" name="provider_name" id="txt_provider_name" value="{{ provider_name }}"/>
+                    </div>
+                    <div class="col-xs-1">
+                        <a href="{% url 'card_provider:card_provider' %}">
+                            <input id="btn_search" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+            {% if request.user|has_permission_name:"SYS_ADD_PROVIDER"%}
+            </div>
+                <div class="pull-right mr15 text-right">
+                <a href="{% url 'card_provider:create' %}">
+                    <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
+                           value="Add"/>
+                </a>
+            </div>
+            {%endif%}
+            <div class="no-more-tables">
+                <table id='tbl_provider' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_provider_name">Provider Name</th>
+                        <th id="ddl_provider_id">Provider ID</th>
+                        <th id="ddl_create_date">Create Date</th>
+                        <th id="ddl_modified_date">Modified Date</th>
+                        <th class="col-sm-2" id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.id|default_if_none:'' }}</td>
+                            <td>{{ i.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                {% if i.is_permission_edit %}
+                                    <a type="button"
+                                        class="btn btn-outline btn-xs btn-primary"
+                                        role="button"
+                                        id="btn_edit"
+                                        href="{% url 'card_provider:update_card_provider' i.id %}">
+                                        <span class="small">Edit</span>
+                                    </a>
+                                {%endif%}
+                                {% if i.is_permission_detail%}
+                                    <a type="button"
+                                        class="btn btn-outline btn-xs btn-info"
+                                        role="button"
+                                        id="btn_detail"
+                                        href="{% url 'card_provider:detail_card_provider' i.id %}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                {%endif%}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

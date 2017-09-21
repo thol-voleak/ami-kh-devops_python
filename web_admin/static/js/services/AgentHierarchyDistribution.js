@@ -127,6 +127,7 @@ function validateForm(nRow) {
         }
     }
     text_element.style.borderColor = "transparent";
+    text_element.style.borderColor = '';
 
     var actor = $(jqSelects[1]).find(":selected").html();
     if(actor == 'Specific ID') {
@@ -200,7 +201,7 @@ function saveAgentHierarchyDistribution(nRow) {
 
                 if (response.status == 1) {
                     // Logout
-                    var url = window.location.origin + "/admin-portal/logout/";
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                     window.location.replace(url);
                 } else if (response.status == 2) {
                     console.log('Saved row data');

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Edit Card Design</h3>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-roles">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="col-xs-12">
+        <div class="alert alert-danger" hidden id="msg-update-failed">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="{% url 'card_design:card_design_update' provider_id card_id%}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Card Design Number *</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="pan_pattern" id="txt_card_number" 
+                                   value="{{ body.pan_pattern|default_if_none:'' }}" readonly required min="0" max="999999" maxlength = "6"
+                            oninput="maxLengthCheck(this)"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Card Design Name</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="name" id="txt_card_name" 
+                                   value="{{ body.name|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Provider</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="ddl_provider" name="provider" >
+                                {% for item in providers %}
+                                {% if item.id == body.provider.id %}
+                                        <option value="{{item.id}}" selected>{{item.name}}
+                                    </option>
+                                    {% else %}
+                                        <option value="{{item.id}}">{{item.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Card Type</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="ddl_card_type" name="card_type" >
+                                {% for item in card_type_list %}
+                                {% if item.id == body.card_type_id %}
+                                        <option value="{{item.id}}" selected>{{item.name}}
+                                    </option>
+                                    {% else %}
+                                        <option value="{{item.id}}">{{item.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Currency</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="ddl_currency" name="currency" >
+                                {% for currency in currencies %}
+                            {% if currency.0 == body.currency %}
+                            <option value="{{ currency.0 }}" selected>{{ currency.0 }}</option>
+                            {% else %}
+                            <option value="{{ currency.0 }}">{{ currency.0 }}</option>
+                            {% endif %}
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Pre-sof Order Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="pre_sof_order_url" id="txt_pre_sof_order_url"
+                                   value="{{ body.pre_sof_order_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Pre-sof Order Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="pre_sof_order_read_timeout" id="txt_pre_sof_order_read_timeout"
+                                   value="{{ body.pre_sof_order_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Pre-link Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="pre_link_url" id="txt_pre_link_url" 
+                                   value="{{ body.pre_link_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Pre-link Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="pre_link_read_timeout" id="txt_pre_link_timeout" 
+                                   value="{{ body.pre_link_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Link Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="link_url" id="txt_link_url" 
+                                   value="{{ body.link_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Link Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="link_read_timeout" id="txt_link_timeout" 
+                                   value="{{ body.link_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Un-link Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="un_link_url" id="txt_un_link_url" 
+                                   value="{{ body.un_link_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Un-link Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="un_link_read_timeout" id="txt_un_link_timeout" 
+                                   value="{{ body.un_link_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Debit Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="debit_url" id="txt_debit_url" 
+                                   value="{{ body.debit_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Debit Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="debit_read_timeout" id="txt_debit_timeout" 
+                                   value="{{ body.debit_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Credit Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="credit_url" id="txt_credit_url" 
+                                   value="{{ body.credit_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Credit Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="credit_read_timeout" id="txt_credit_timeout" 
+                                   value="{{ body.credit_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Check Status Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="check_status_url" id="txt_check_status_url" 
+                                   value="{{ body.check_status_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Check Status Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="check_status_read_timeout" id="txt_check_status_timeout" 
+                                   value="{{ body.check_status_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Cancel Url</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="cancel_url" id="txt_cancel_url" 
+                                   value="{{ body.cancel_url|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Cancel Read Timeout</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" name="cancel_read_timeout" id="txt_cancel_timeout" 
+                                   value="{{ body.cancel_read_timeout|default_if_none:'' }}"/>
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <a href="{% url 'card_design:card_designs' %}">
+                            <input id="btn_cancel" class="btn text-left mb10" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <a href="#">
+                            <input id="btn_save" role="button" class="btn btn-success text-left mb10" type="submit" value="Save"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+  function maxLengthCheck(object)
+  {
+    if (object.value.length > object.maxLength)
+      object.value = object.value.slice(0, object.maxLength)
+  }
+</script>
+{% endblock %}
