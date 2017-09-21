@@ -53,25 +53,47 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         primary_mobile_number = None
         kyc_status = None
 
+        # Build Body
+        body = {}
         redirect_from_delete =  self.request.session.pop('agent_redirect_from_delete', None)
         if redirect_from_delete:
             unique_reference = self.request.session.pop('agent_unique_reference', None)
             email = self.request.session.pop('agent_email', None)
             primary_mobile_number = self.request.session.pop('agent_primary_mobile_number', None)
             kyc_status = self.request.session.pop('agent_kyc_status', None)
-            from_created_timestamp = datetime.strptime(request.session['agent_from'], "%Y-%m-%dT%H:%M:%SZ")
-            to_created_timestamp = datetime.strptime(request.session['agent_to'], "%Y-%m-%dT%H:%M:%SZ")
+            if request.session['agent_from'] != '':
+                from_created_timestamp = datetime.strptime(request.session['agent_from'], "%Y-%m-%dT%H:%M:%SZ")
+                new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+                body['from_created_timestamp'] = new_from_created_timestamp
+                new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
+                context['from_created_timestamp'] = new_from_created_timestamp
+            else:
+                context['from_created_timestamp'] = ''
+            if request.session['agent_to'] != '':
+                to_created_timestamp = datetime.strptime(request.session['agent_to'], "%Y-%m-%dT%H:%M:%SZ")
+                new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+                body['to_created_timestamp'] = new_to_created_timestamp
+                new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+                context['to_created_timestamp'] = new_to_created_timestamp
+            else:
+                context['to_created_timestamp'] = ''
+
             context.update({'msgs':{'delete_failed_msg': self.request.session.pop('agent_message', None)}})
         else:
             # Set first load default time for Context
             from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
             to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+            new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+            body['from_created_timestamp'] = new_from_created_timestamp
+            new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
+            context['from_created_timestamp'] = new_from_created_timestamp
 
-        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
-        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+            body['to_created_timestamp'] = new_to_created_timestamp
+            new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+            context['to_created_timestamp'] = new_to_created_timestamp
 
-        # Build Body
-        body = {}
+
         if unique_reference:
             body.update({'unique_reference' : unique_reference})
         if email:
@@ -89,14 +111,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         'email': email,
                         'primary_mobile_number': primary_mobile_number,
                         'kyc_status': kyc_status})
-
-        body['from_created_timestamp'] = new_from_created_timestamp
-        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
-        context['from_created_timestamp'] = new_from_created_timestamp
-
-        body['to_created_timestamp'] = new_to_created_timestamp
-        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
-        context['to_created_timestamp'] = new_to_created_timestamp
 
         # Get Data
         data = self._get_agents(params=body)
@@ -139,12 +153,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         context.update(body)
 
+        new_from_created_timestamp = ''
         if from_created_timestamp is not '':
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['from_created_timestamp'] = new_from_created_timestamp
             context['from_created_timestamp'] = from_created_timestamp
 
+        new_to_created_timestamp = ''
         if to_created_timestamp is not '':
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
