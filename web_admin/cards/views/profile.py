@@ -69,7 +69,8 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
                    'card_identifier': card_identifier,
                    'card_token': card_token,
                    'user_id': user_id,
-                   'user_type': user_type
+                   'user_type': user_type,
+                   'search_count': len(data),
                    }
 
         self.logger.info('========== End search card ==========')
@@ -83,7 +84,9 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
                                                                            loggers=self.logger,
                                                                            params=body,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+
         if isinstance(data, list):
+            self.logger.info('Response_content_count: {}'.format(len(data)))
             return data
         else:
             return []
