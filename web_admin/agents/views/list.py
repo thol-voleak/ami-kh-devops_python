@@ -115,6 +115,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         # Get Data
         data = self._get_agents(params=body)
         context['data'] = data
+        context['search_count'] = len(data)
 
         self.update_session(request, None, unique_reference, email, primary_mobile_number, kyc_status,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -171,6 +172,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         # Get Data
         data = self._get_agents(params=body)
         context['data'] = data
+        context['search_count'] = len(data)
 
         self.update_session(request, None, unique_reference, email,
                             primary_mobile_number, kyc_status,
