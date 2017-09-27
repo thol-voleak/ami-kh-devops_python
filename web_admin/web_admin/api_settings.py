@@ -60,6 +60,7 @@ CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-u
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}'
 CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}/passwords'
+CHANGE_PASSWD = 'api-gateway/system-user/'+API_VERSION+'/system-users/passwords'
 
 # Payment
 PAYMENT_URL = 'api-gateway/report/'+API_VERSION+'/payments/orders'
