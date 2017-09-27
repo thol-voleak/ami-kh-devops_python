@@ -1037,18 +1037,18 @@ blockquote p {
   color: #f6eaea;
 }
 .main-panel > .header .nav > li > a {
-  color: #616161;
+  color: #ffffff;
 }
 .main-panel > .header .nav > li > a:hover,
 .main-panel > .header .nav > li > a:focus {
-  background-color: #f8f8f8;
-  color: #474747;
+  background-color: #bd000a;
+  color: #ffffff;
 }
 .main-panel > .header .nav .open > a,
 .main-panel > .header .nav .open > a:hover,
 .main-panel > .header .nav .open > a:focus {
-  background-color: #f8f8f8;
-  color: #474747;
+  background-color: #bd000a;
+  color: #ffffff;
 }
 .main-panel > .header .hamburger-icon span {
   background: #616161;
