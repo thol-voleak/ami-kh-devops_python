@@ -24,11 +24,11 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User ID</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="user_id" value="{{ user_id|default_if_none:'' }}">
+                        <input type="text" class="form-control input-rounded" id="txt_user_id" name="user_id" value="{{ user_id|default_if_none:'' }}">
                     </div>
                     <label class="col-sm-2 control-label">User Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="user_type">
+                        <select class="form-control" id="ddl_user_type" name="user_type">
                             <option value=0 {% if user_type == '0' %}selected="selected"{% endif %}>All</option>
                             <option value=1 {% if user_type == '1' %}selected="selected"{% endif %}>Customer</option>
                             <option value=2 {% if user_type == '2' %}selected="selected"{% endif %}>Agent</option>
