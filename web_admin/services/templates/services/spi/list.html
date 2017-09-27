@@ -68,19 +68,19 @@
                     <input type="number" class="form-control" id="txt_read_timeout" name="read_timeout" required = "required" />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="retry_delay">
                 <label class="col-sm-2 control-label">Retry Delay (millisec.) *</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_retry_delay" name="retry_delay" required = "required" />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="expire_in_minutes">
                 <label class="col-sm-2 control-label">Expire in Minute *</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_expire_in_minute" name="expire_in_minute" required = "required" />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="max_retry">
                 <label class="col-sm-2 control-label">Max Retry *</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="txt_max_retry" name="max_retry" required = "required" />
@@ -138,5 +138,44 @@
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+var $url_type = $('#ddl_spi_url_type');
+var $call_method = $('#ddl_spi_url_call_method');
+function showRelateConfig(){
+    if ($call_method.val() == 'synchronous') {
+            $("#retry_delay").fadeOut(500);
+            $("#expire_in_minutes").fadeOut(500);
+            $("#max_retry").fadeOut(500);
+            $("#txt_retry_delay").attr('disabled', 'disabled');
+            $("#txt_expire_in_minute").attr('disabled', 'disabled');
+            $("#txt_max_retry").attr('disabled', 'disabled');
+        }
+        else if ($call_method.val() == 'asynchronous'){
+            $("#retry_delay").fadeIn(500);
+            $("#expire_in_minutes").fadeIn(500);
+            $("#max_retry").fadeIn(500);
+            $("#txt_retry_delay").prop("disabled", false);
+            $("#txt_expire_in_minute").prop("disabled", false);
+            $("#txt_max_retry").prop("disabled", false);
+        }
+}
+function changeType(){
+    $url_type.change(function(){
+        if ($url_type.val() =='Notification'){
+            $call_method.val('synchronous');
+            showRelateConfig();
+        }
+        else if ($url_type.val() != 'Notification'){
+            $call_method.val('asynchronous');
+            showRelateConfig();
 
+       }
+    })
+}
+$(changeType);
+$call_method.change(function() {
+        showRelateConfig();
+    });
+</script>
 {% endblock %}
