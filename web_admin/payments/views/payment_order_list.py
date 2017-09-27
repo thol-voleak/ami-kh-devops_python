@@ -116,6 +116,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['to'] = new_to_created_timestamp
 
         data, status = self.get_payment_order_list(body=body)
+        for i in data:
+            if i['currency'] == 'VND':
+                i['amount'] = int(i['amount'])
 
         if data:
             result_data = self.format_data(data)
