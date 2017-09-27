@@ -55,6 +55,10 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['currency'] = currency
 
         data = self.get_cash_sof_list(body)
+        for i in data:
+            if i['currency'] == 'VND':
+                i['balance'] = int(i['balance'])
+                
         if data is not None:
             result_data = self.format_data(data)
         else:
