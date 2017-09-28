@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-{% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading border">
         <h3>Change Password</h3>
@@ -37,18 +36,6 @@
                         <div class="col-sm-8">
                             <input type="password" class="form-control input-rounded" name="new_password"
                                    id="txt_new_password" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"></label>
-                        <div class="col-sm-8">
-                            Password format consist of <br>
-                            - At least 1 lower-case letter <br>
-                            - At least 1 upper-case letter <br>
-                            - At least 1 number <br>
-                            - At least 1 specific character (!@#$%^&*()_+) <br>
-                            - At least 8 character length <br>
-                            - Must not duplicate with old password <br>
                         </div>
                     </div>
                     <div class="form-group">
@@ -103,7 +90,7 @@
             confirm_password.setCustomValidity("Confirm New Password must be the same as New Password");
 
         } else if (!re.test(password.value)) {
-            password.setCustomValidity("New Password doesn't meet password criteria");
+            password.setCustomValidity("Password should contains at least lowercase, uppercase letter, number, special character and 8 characters in length");
             confirm_password.setCustomValidity('');
 
         } else {
@@ -119,11 +106,19 @@
     window.onload = function() {
         var success = document.getElementById('txt_success');
         if (success.value === 'True') {
-            redirec = confirm('Password Change Succesfully. Please re-sign in.');
-            if (redirec) {
-                window.location.href = "{% url 'authentications:login' %}"
-            }
+            swal({
+                title: "Password Change Succesfully. Please re-sign in.",
+                type: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+                confirmButtonClass: 'btn btn-success'
+                },
+                function () {
+                    window.location.href = "{% url 'authentications:login' %}"
+                }
+            )
         }
     }
+
 </script>
 {% endblock %}
