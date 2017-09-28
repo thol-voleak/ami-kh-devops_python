@@ -65,5 +65,22 @@ class ChangePasswd(TemplateView, GetHeaderMixin):
                 self.logger.info('========== User finish updating password ==========')
                 return render(request, self.template_name, body)
 
+            if status_code.lower() in ["general_error"]:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    "Password change failed. Please try again or contact support."
+                )
+                body = {
+                    'old_password': old_password,
+                    'new_password': new_password,
+                    "confirm_new_password": request.POST.get('confirm_new_password')
+                }
+
+                self.logger.info('========== User finish updating password ==========')
+                return render(request, self.template_name, body)
+
+
+
         self.logger.info('========== User finish updating password ==========')
         return render(request, self.template_name, context={'update_passwd_success': update_passwd_success})
