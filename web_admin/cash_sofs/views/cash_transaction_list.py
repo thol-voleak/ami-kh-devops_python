@@ -80,9 +80,6 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info("keyword for search is [{}]".format(body))
 
         data = self.get_cash_transaction_list(body)
-        for i in data:
-            if i['sof']['currency'] == 'VND':
-                i['amount'] = int(i['amount'])
         if data is not None:
             result_data = self.format_data(data)
         else:

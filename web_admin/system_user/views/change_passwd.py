@@ -45,10 +45,18 @@ class ChangePasswd(TemplateView, GetHeaderMixin):
             params=body)
         if success:
             update_passwd_success = True
+            self.logger.info('========== User finish updating password ==========')
+            return render(request, self.template_name, context={'update_passwd_success': update_passwd_success})
         else:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(message))
                 raise InvalidAccessToken(message)
+
+            body = {
+                'old_password': old_password,
+                'new_password': new_password,
+                "confirm_new_password": request.POST.get('confirm_new_password')
+            }
 
             if status_code.lower() in ["invalid_request"]:
                 messages.add_message(
@@ -56,14 +64,17 @@ class ChangePasswd(TemplateView, GetHeaderMixin):
                     messages.ERROR,
                     "Password change failed as it not met password criteria or old password didn’t match. Please review and try again."
                 )
-                body = {
-                    'old_password': old_password,
-                    'new_password': new_password,
-                    "confirm_new_password": request.POST.get('confirm_new_password')
-                }
 
                 self.logger.info('========== User finish updating password ==========')
                 return render(request, self.template_name, body)
 
-        self.logger.info('========== User finish updating password ==========')
-        return render(request, self.template_name, context={'update_passwd_success': update_passwd_success})
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Password change failed. Please try again or contact support."
+            )
+
+            self.logger.info('========== User finish updating password ==========')
+            return render(request, self.template_name, body)
+
+

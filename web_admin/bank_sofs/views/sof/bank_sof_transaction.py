@@ -57,9 +57,6 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = self.createSearchBody(from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type)
 
         responses, success = self._get_sof_bank_transaction(body=body)
-        for i in responses:
-            if i['sof']['currency'] == 'VND':
-                i['amount'] = int(i['amount'])
 
         context = {
             'transaction_list': responses,
