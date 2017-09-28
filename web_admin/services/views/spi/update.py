@@ -48,11 +48,11 @@ class SPIUpdate(TemplateView, SpiApi):
             "spi_url_type": spi_type,
             "url": spi_url,
             "spi_url_call_method": spi_url_call_method,
-            "expire_in_minute": '' if expire_in_minute == "" else int(expire_in_minute),
-            "max_retry": '' if max_retry == "" else int(max_retry),
-            "retry_delay_millisecond": '' if retry_delay == "" else int(retry_delay),
-            "read_timeout": '' if read_timeout == "" else int(read_timeout),
-            "connection_timeout": '' if connection_timeout == "" else int(connection_timeout)
+            "expire_in_minute": 0 if expire_in_minute == "" else int(expire_in_minute),
+            "max_retry": 0 if max_retry == "" else int(max_retry),
+            "retry_delay_millisecond": 0 if retry_delay == "" else int(retry_delay),
+            "read_timeout": 0 if read_timeout == "" else int(read_timeout),
+            "connection_timeout": 0 if connection_timeout == "" else int(connection_timeout)
         }
 
         data, success = self.update_spi(spi_url_id, params)
