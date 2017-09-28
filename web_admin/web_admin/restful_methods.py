@@ -175,7 +175,7 @@ class RESTfulMethods(GetHeaderMixin):
 
             self.logger.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
 
-            response_json = response.json()
+            response_json = json.loads(response.text, parse_float=Decimal)
             self.logger.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             response_json['status_code'] = response.status_code
 
