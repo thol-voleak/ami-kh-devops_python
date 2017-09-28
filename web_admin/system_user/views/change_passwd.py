@@ -54,7 +54,7 @@ class ChangePasswd(TemplateView, GetHeaderMixin):
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    "Password change failed as it not met password criteria. Please review and try again."
+                    "Password change failed as it not met password criteria or old password didn’t match. Please review and try again."
                 )
                 body = {
                     'old_password': old_password,
