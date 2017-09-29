@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 class SelfChangePassword(TemplateView, GetHeaderMixin):
     template_name = "system_user/self_change_password.html"
     logger = logger
-
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(SelfChangePassword, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== User go to Change Password page ==========')
         return render(request, self.template_name, context={'update_passwd_success': False})
 
     def post(self, request, *args, **kwargs):
@@ -42,8 +42,9 @@ class SelfChangePassword(TemplateView, GetHeaderMixin):
             loggers=self.logger,
             timeout=settings.GLOBAL_TIMEOUT,
             params=body)
+
+        self.logger.info('========== User finish updating password ==========')
         if success:
-            self.logger.info('========== User finish updating password ==========')
             return render(request, self.template_name, context={'update_passwd_success': True})
         else:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
@@ -63,16 +64,13 @@ class SelfChangePassword(TemplateView, GetHeaderMixin):
                     "Password change failed as it not met password criteria or old password didn’t match. Please review and try again."
                 )
 
-                self.logger.info('========== User finish updating password ==========')
-                return render(request, self.template_name, body)
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    "Password change failed. Please try again or contact support."
+                )
 
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Password change failed. Please try again or contact support."
-            )
-
-            self.logger.info('========== User finish updating password ==========')
             return render(request, self.template_name, body)
 
 
