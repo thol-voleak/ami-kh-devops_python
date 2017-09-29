@@ -118,6 +118,11 @@
 <script>
 var $url_type = $('#ddl_spi_url_type');
 var $call_method = $('#ddl_spi_url_call_method');
+if ($call_method.val()=='synchronous'){
+    $("#retry_delay").hide();
+    $("#expire_in_minutes").hide();
+    $("#max_retry").hide();
+}
 function showRelateConfig(){
     if ($call_method.val() == 'synchronous') {
             $("#retry_delay").fadeOut(500);
@@ -138,11 +143,11 @@ function showRelateConfig(){
 }
 function changeType(){
     $url_type.change(function(){
-        if ($url_type.val() =='Notification'){
+        if ($url_type.val() !='Notification'){
             $call_method.val('synchronous');
             showRelateConfig();
         }
-        else if ($url_type.val() != 'Notification'){
+        else if ($url_type.val() == 'Notification'){
             $call_method.val('asynchronous');
             showRelateConfig();
 
