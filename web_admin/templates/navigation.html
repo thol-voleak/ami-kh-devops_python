@@ -190,7 +190,7 @@
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"SYS_MANAGE_SYSTEM_USER"%}
-            <li class="{% if 'system-user' in request.path %} open{% endif %}">
+            <li class="{% if 'system-user' in request.path and 'system-user/change-password/' not in request.path%} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
                 <ul class="sub-menu">
                     <li id="system_user_menu" class="{% if url_name == 'system-user-list' %}active{% endif %}">
