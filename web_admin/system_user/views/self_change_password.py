@@ -13,21 +13,20 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class ChangePasswd(TemplateView, GetHeaderMixin):
-    template_name = "system_user/change_passwd.html"
+class SelfChangePassword(TemplateView, GetHeaderMixin):
+    template_name = "system_user/self_change_password.html"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(ChangePasswd, self).dispatch(request, *args, **kwargs)
+        return super(SelfChangePassword, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, context={'update_passwd_success': False})
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== User start updating password ==========')
-        update_passwd_success = False
         url = api_settings.CHANGE_PASSWD
         old_password = request.POST.get('old_password')
         new_password = request.POST.get('new_password')
@@ -44,9 +43,8 @@ class ChangePasswd(TemplateView, GetHeaderMixin):
             timeout=settings.GLOBAL_TIMEOUT,
             params=body)
         if success:
-            update_passwd_success = True
             self.logger.info('========== User finish updating password ==========')
-            return render(request, self.template_name, context={'update_passwd_success': update_passwd_success})
+            return render(request, self.template_name, context={'update_passwd_success': True})
         else:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(message))
