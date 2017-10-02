@@ -142,6 +142,9 @@ GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-types'
 AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/agent-fee-distributions'
 AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus-distributions/{agent_bonus_distribution_id}'
 
+#Balance Adjustment
+ORDER_BAL_ADJUST_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/orders/adjustments'
+
 # Agent Bonus Distribution
 AGENT_BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{tf_fee_tier_id}/agent-bonus-distributions'
 AGENT_FEE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/agent-fee-distributions/{agent_fee_distribution_id}'
