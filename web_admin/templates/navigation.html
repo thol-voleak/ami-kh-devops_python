@@ -241,6 +241,18 @@
                 {% endif %}
             </li>
             {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
+            <li class="menu-accordion {% if 'balance-adjustment' in request.path %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Balance Adjustment</span> </a>
+                {% if request.user|has_permission_name:"CAN_SEARCH_PAYMENT_ORDER"%}
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'balance-adjustment/requests' %}active{% endif %}">
+                        <a href="{% url 'balance_adjustment:balance_adjustment_list' %}"> <span>View and Approve Adjustment Requests</span> </a>
+                    </li>
+                </ul>
+                {% endif %}
+            </li>
+            {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_CASH_SOF"%}
                  <li class="menu-accordion {% if 'cash' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>

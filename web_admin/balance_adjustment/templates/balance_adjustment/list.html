@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Balance Adjustment History</h3>
+        </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'card_sofs:card_sof' %}">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">User ID</label>
+                    <div class="col-sm-2">
+                        <input id="txt_user_id" type="number" class="form-control input-rounded" name="user_id" value="{{search_by.user_id}}">
+                    </div>
+                    <label class="col-sm-1 control-label">User Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_user_type" name="user_type_id">
+                            <option value=0 {% if search_by.user_type_id == 0 %}selected="selected"{% endif %}>All</option>
+                            <option value=1 {% if search_by.user_type_id == 1 %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if search_by.user_type_id == 2 %}selected="selected"{% endif %}>Agent</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">Currency</label>
+                    <div class="col-sm-2">
+                        <input id="txt_currency" type="text" class="form-control input-rounded" name="currency" value="{{search_by.currency}}" />
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Created Date From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="from_created_timestamp"
+                               value="{{ search_by.from_created_timestamp|default_if_none:'' }}"
+                               id="dtp_date_from">
+                    </div>
+                    <label class="col-sm-1 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="to_created_timestamp"
+                               value="{{ search_by.to_created_timestamp|default_if_none:'' }}"
+                               id="dtp_date_to">
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_card_sof">
+                    <thead>
+                    <tr>
+                        <th id="id">SOF ID</th>
+                        <th id="user">User (ID)</th>
+                        <th id="provider_name">Provider Name</th>
+                        <th id="card_account_name">Card Account Name</th>
+                        <th id="card_account_number">Card Account Number</th>
+                        <th id="currency">Currency</th>
+                        <th id="status">Status</th>
+                        <th id="created_date">Created Date</th>
+                        <th id="last_modify_date">Last Modify Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sof in card_sof_list %}
+                        <tr>
+                            <td class="col-sm-2">{{ sof.id }}</td>
+                            <td class="col-sm-2">{{ sof.user_type.name }} ({{ sof.user_id }})</td>
+                            <td class="col-sm-2">{{ sof.card_design.provider.name }}</td>
+                            <td class="col-sm-2">{{ sof.card_account_name }}</td>
+                            <td class="col-sm-2">{{ sof.card_account_number }}</td>
+                            <td class="col-sm-2">{{ sof.currency }}</td>
+                            <td class="col-sm-2">{{ sof.is_deleted|yesno:'Unlinked, Linked' }}</td>
+                            <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
