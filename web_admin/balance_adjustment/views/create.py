@@ -85,8 +85,6 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                     "product_ref1": product_reference_1,
                     "product_ref2": product_reference_2,
                     "product_ref3": product_reference_3,
-                    "product_ref4": "Ref4",
-                    "product_ref5": "Ref5"
                 },
                 "payer_user": {
                     "user_id": payer_id,
