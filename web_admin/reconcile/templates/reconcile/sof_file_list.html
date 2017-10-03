@@ -134,7 +134,7 @@
                                             value="{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}"
                                             onclick="redirectToReportPage('{{ file.id }}', '{{ file.is_on_us }}',
                                                     '{{ file.source_of_fund }}', '{{ file.sof_code }}', '{{ file.currency }}',
-                                                    '{{ file.start_data_timestamp }}', '{{ file.end_data_timestamp }}',
+                                                    '{{ file.last_updated_timestamp }}', '{{ file.last_updated_timestamp }}',
                                                     '{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}')">
                                         <u>Result</u>
                                     </button>
