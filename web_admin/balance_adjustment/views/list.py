@@ -1,9 +1,13 @@
 from braces.views import GroupRequiredMixin
 
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
+from web_admin import setup_logger, RestFulClient
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
+from web_admin.api_logger import API_Logger
+
+
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -11,10 +15,6 @@ import logging
 from datetime import datetime
 logger = logging.getLogger(__name__)
 
-IS_SUCCESS = {
-    True: 'Success',
-    False: 'Failed',
-}
 
 STATUS_ORDER = {
     -1: 'FAIL',
@@ -23,15 +23,26 @@ STATUS_ORDER = {
      2: 'EXECUTED',
      3: 'ROLLED_BACK',
      4: 'TIME_OUT',
+     5: 'REJECTED'
 }
 
-class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "balance_adjustment/list.html"
     logger = logger
 
-    group_required = "CAN_SEARCH_PAYMENT_ORDER"
+    group_required = "SYS_BAL_ADJUST_HISTORY"
     login_url = 'web:permission_denied'
     raise_exception = False
+
+    status_list = [
+            {"id": -1, "name": "FAIL"},
+            {"id": 0, "name": "CREATED"},
+            {"id": 1, "name": "LOCKING"},
+            {"id": 2, "name": "EXECUTED"},
+            {"id": 3, "name": "ROLLED_BACK"},
+            {"id": 4, "name": "TIME_OUT"},
+            {"id": 5, "name": "REJECTED"},
+        ]
 
     def check_membership(self, permission):
         self.logger.info(
@@ -44,27 +55,19 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods
         return super(BalanceAdjustmentListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start render payment order ==========')
         context = super(BalanceAdjustmentListView, self).get_context_data(**kwargs)
         data = self.get_services_list()
-        status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
-        ]
-
         context['data'] = data
         context['search_count'] = 0
-        context['status_list'] = status_list
+        context['status_list'] = self.status_list
         context['status_id'] = ''
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start searching payment order ==========')
+        count = 0
+
+        self.logger.info('========== Start searching balance adjustment ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
@@ -72,6 +75,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods
         payer_user_type_id = request.POST.get('payer_user_type_id')
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
+        product_name = request.POST.get('product_name')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
@@ -103,7 +107,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods
             body['payer_sof_type_id'] = int(payer_sof_type_id)
         if payee_sof_type_id.isdigit() and payee_sof_type_id != '0':
             body['payee_sof_type_id'] = int(payee_sof_type_id)
-        
+        if product_name:
+            body['product_name'] = product_name
         if status_id:
             body['status_id'] = [int(status_id)]
 
@@ -122,25 +127,21 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
+        
+        self.logger.info("Params: {} ".format(body))
 
-        data, status = self.get_payment_order_list(body=body)
-
-
-        order_list = self.refine_data(data)
-        count = 0
-        if len(order_list):
-            count = len(order_list)
-
-        status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
-        ]
-
-        context = {'order_list': order_list,
+        is_success, status_code, status_message, data = RestFulClient.post(
+                                                            url=PAYMENT_URL, 
+                                                            headers=self._get_headers(),
+                                                            loggers=self.logger,
+                                                            params=body)
+        
+        if is_success:
+            count = len(data)
+            self.logger.info("Response_content_count:{}".format(count))
+            order_list = self.refine_data(data)
+            
+            context = {'order_list': order_list,
                    'order_id': order_id,
                    'service_name': service_name,
                    'data': service_list,
@@ -153,30 +154,44 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, RESTfulMethods
                    'approved_by_id': approved_by_id,
                    'payer_sof_type_id': payer_sof_type,
                    'payee_sof_type_id': payee_sof_type,
-                   'status_list': status_list,
+                   'status_list': self.status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
+                   'product_name': product_name
                    }
+            if status_id:
+                context['status_id'] = int(status_id)
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+        
 
-        if status_id:
-            context['status_id'] = int(status_id)
-
-        self.logger.info('========== Finished searching payment order ==========')
+        self.logger.info('========== Finished searching Balance Adjustment ==========')
 
         return render(request, self.template_name, context)
 
-    def get_payment_order_list(self, body):
-        response, status = self._post_method(PAYMENT_URL, 'Payment Order List', logger, body)
-        return response, status
-
     def refine_data(self, data):
         for item in data:
-            item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
+            item['status'] = STATUS_ORDER.get(item['status'])
         return data
 
 
     def get_services_list(self):
+        self.logger.info('========== Start Getting services list ==========')
         url = SERVICE_LIST_URL
-        data, success = self._get_method(api_path=url, func_description="service list", is_getting_list=True)
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(),
+                                                            loggers=self.logger)
+        if is_success:
+            self.logger.info("Response_content_count:{}".format(len(data)))
+
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+        self.logger.info('========== Finish Get services list ==========')
+
         return data
+        
+        
         

@@ -3,6 +3,8 @@ from django.conf import settings
 import logging
 import requests
 import time
+import json
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +60,7 @@ class RestFulClient:
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             try:
-                response_json = response.json()
+                response_json = json.loads(response.text, parse_float=Decimal)
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
