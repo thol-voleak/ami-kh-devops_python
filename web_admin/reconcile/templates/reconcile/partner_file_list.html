@@ -152,8 +152,8 @@
                                     <button class="btn btn-outline btn-xs btn-primary"
                                             onclick="redirectToReportPage('{{ file.is_on_us }}',
                                                     '{{ file.service_name }}', '{{ file.agent_id }}',
-                                                    '{{ file.currency }}', '{{ file.start_data_timestamp}}',
-                                                    '{{ file.end_data_timestamp}}',
+                                                    '{{ file.currency }}', '{{ file.last_updated_timestamp}}',
+                                                    '{{ file.last_updated_timestamp}}',
                                                     '{% url 'reconcile:reconcile_partner_report_by_file_id' file.id %}')">
                                         <u>Result</u>
                                     </button>
