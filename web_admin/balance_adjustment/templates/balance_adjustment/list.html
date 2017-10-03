@@ -2,86 +2,189 @@
 {% load static %}
 
 {% block content %}
-    <div class="panel mb25">
-        <div class="panel-heading border">
-            <h3>Balance Adjustment History</h3>
-        </div>
+<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="panel-heading border">
+        <h3>Balance Adjustment History</h3>
+    </div>
 
-        <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'card_sofs:card_sof' %}">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">User ID</label>
-                    <div class="col-sm-2">
-                        <input id="txt_user_id" type="number" class="form-control input-rounded" name="user_id" value="{{search_by.user_id}}">
-                    </div>
-                    <label class="col-sm-1 control-label">User Type</label>
-                    <div class="col-xs-2">
-                        <select class="form-control" id="ddl_user_type" name="user_type_id">
-                            <option value=0 {% if search_by.user_type_id == 0 %}selected="selected"{% endif %}>All</option>
-                            <option value=1 {% if search_by.user_type_id == 1 %}selected="selected"{% endif %}>Customer</option>
-                            <option value=2 {% if search_by.user_type_id == 2 %}selected="selected"{% endif %}>Agent</option>
-                        </select>
-                    </div>
-                    <label class="col-sm-2 control-label">Currency</label>
-                    <div class="col-sm-2">
-                        <input id="txt_currency" type="text" class="form-control input-rounded" name="currency" value="{{search_by.currency}}" />
-                    </div>
-
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Created Date From</label>
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'balance_adjustment:balance_adjustment_list' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                    <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="from_created_timestamp"
-                               value="{{ search_by.from_created_timestamp|default_if_none:'' }}"
-                               id="dtp_date_from">
+                               value="{{ date_from|default_if_none:'' }}"
+                               id="dtp_from_date">
                     </div>
-                    <label class="col-sm-1 control-label">To</label>
-                    <div class="col-sm-2">
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="to_created_timestamp"
-                               value="{{ search_by.to_created_timestamp|default_if_none:'' }}"
-                               id="dtp_date_to">
-                    </div>
-                    <div class="col-xs-1">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
-                               value="Search">
+                               value="{{ date_to|default_if_none:'' }}"
+                               id="dtp_to_date">
                     </div>
                 </div>
-            </form>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0" id="tbl_card_sof">
-                    <thead>
-                    <tr>
-                        <th id="id">SOF ID</th>
-                        <th id="user">User (ID)</th>
-                        <th id="provider_name">Provider Name</th>
-                        <th id="card_account_name">Card Account Name</th>
-                        <th id="card_account_number">Card Account Number</th>
-                        <th id="currency">Currency</th>
-                        <th id="status">Status</th>
-                        <th id="created_date">Created Date</th>
-                        <th id="last_modify_date">Last Modify Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for sof in card_sof_list %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Requested By</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="requested_by_id"
+                           value="{{ requested_by_id|default_if_none:'' }}"
+                           id="txt_requested_by">
+                </div>
+                <label class="col-sm-2 control-label">Approved By</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="approved_by_id"
+                           value="{{ approved_by_id|default_if_none:'' }}"
+                           id="txt_approved_rejected_by">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Service Name</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_service" name="service_name" >
+                        <option value="" selected="selected">-</option>
+                        {% for service in data %}
+                            {%if service.service_name == service_name%}
+                            <option value="{{service_name }}" selected>{{service_name }}</option>
+                            {% else %}
+                            <option value="{{service.service_name }}">{{service.service_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status_id" >
+                        <option value="" selected="selected">All</option>
+
+                        {% for item in status_list %}
+                           {% if item.id == status_id %}
+                            <option value="{{item.id}}" selected>{{item.name}}</option>
+                            {% else %}
+                            <option value="{{item.id}}">{{item.name}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Order ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
+                </div>
+                <label class="col-sm-2 control-label">Reference ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Payer ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="payer_user_id" id="txt_payer_user_id" value="{{ payer_user_id }}">
+                </div>
+                <label class="col-sm-2 control-label">Payee ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="payee_user_id" id="txt_payee_user_id" value="{{ payee_user_id }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Payer Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payer_user_type" name="payer_user_type_id">
+                        <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payer_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                        <option value=2 {% if payer_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Payee Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payee_user_type" name="payee_user_type_id">
+                        <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payee_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                        <option value=2 {% if payee_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Payer Source of Fund Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payer_sof_type" name="payer_sof_type_id">
+                        <option value=0 {% if payer_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payer_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
+                        <option value=2 {% if payer_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Payee Source of Fund Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_payee_sof_type" name="payee_sof_type_id">
+                        <option value=0 {% if payee_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        <option value=1 {% if payee_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
+                        <option value=2 {% if payee_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-1">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+            </div>
+            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+            <label class="pull-right" >Total Orders found:&nbsp;</label>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_order_list">
+                <thead>
+                <tr>
+                    <th id="id">Order ID</th>
+                    <th id="id">Ref. Order ID</th>
+                    <th id="amount">Amount</th>
+                    <th id="currency">Currency</th>
+                    <th id="payer_id">Payer ID</th>
+                    <th id="payer_id">Payer Type</th>
+                    <th id="payer_id">Payer SoF Type</th>
+                    <th id="payee_id">Payee ID</th>
+                    <th id="payee_id">Payee Type</th>
+                    <th id="payee_id">Payee SoF Type</th>
+                    <th id="status">Status</th>
+                    <th id="service_name">Request Date</th>
+                    <th id="command">Requester</th>                   
+                    <th id="balance">Adjustment Details</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                    {% for order in order_list %}
                         <tr>
-                            <td class="col-sm-2">{{ sof.id }}</td>
-                            <td class="col-sm-2">{{ sof.user_type.name }} ({{ sof.user_id }})</td>
-                            <td class="col-sm-2">{{ sof.card_design.provider.name }}</td>
-                            <td class="col-sm-2">{{ sof.card_account_name }}</td>
-                            <td class="col-sm-2">{{ sof.card_account_number }}</td>
-                            <td class="col-sm-2">{{ sof.currency }}</td>
-                            <td class="col-sm-2">{{ sof.is_deleted|yesno:'Unlinked, Linked' }}</td>
-                            <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.order_id }}</td>
+                            <td class="col-sm-2">{{ order.ref_order_id|default_if_none:""}}</td>
+                            <td class="col-sm-2">{{ order.amount }}</td>
+                            <td class="col-sm-2">{{ order.currency }}</td>
+                            <td class="col-sm-2">{{ order.payer.user_id }}</td>
+                            <td class="col-sm-2">{{ order.payer.user_type_name }}</td>
+                            <td class="col-sm-2">{% if order.payer.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{{ order.payee.user_id }}</td>
+                            <td class="col-sm-2">{{ order.payee.user_type_name }}</td>
+                            <td class="col-sm-2">{% if order.payee.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{{ order.status }}</td>
+                            <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
+                            <td class="col-sm-2">{{ order.payment_method.name }}</td>
+                            <td class="col-sm-3">
+                            <button type="button" id="btn_detail" class="btn mb5 btn-outline btn-xs btn-primary"><span class="small">Detail</span></button>
+                            </td>
                         </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
-
+    <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
+        </div>
+    </div>
+</div>
 {% endblock %}
