@@ -180,7 +180,13 @@
                             <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
                             <td class="col-sm-2">{{ order.payment_method.name }}</td>
                             <td class="col-sm-3">
-                            <button type="button" id="btn_detail" class="btn mb5 btn-outline btn-xs btn-primary"><span class="small">Detail</span></button>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="btn_detail"
+                                   href="{% url 'balance_adjustment:balance_adjustment_detail' order.order_id %}">
+                                    <span class="small">Detail</span>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

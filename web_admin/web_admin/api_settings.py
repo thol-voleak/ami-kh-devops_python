@@ -144,6 +144,7 @@ AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus
 
 #Balance Adjustment
 ORDER_BAL_ADJUST_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/orders/adjustments'
+APPROVE_BAL_ADJUST_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/orders/{order_id}'
 
 # Agent Bonus Distribution
 AGENT_BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{tf_fee_tier_id}/agent-bonus-distributions'
