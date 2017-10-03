@@ -5,6 +5,7 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
 
+from django.contrib import messages
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -112,7 +113,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         }
 
         self.logger.info('Params: {}'.format(params))
-        context = {
+        context.update({
             'agent_id': agent_id,
             'initiator_source_of_fund_id': initiator_source_of_fund_id,
             'product_reference_1': product_reference_1,
@@ -127,7 +128,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             'amount': amount,
             'service_name': service_name,
             'product_name': product_name,
-        }
+        })
         success, status_code, message, data = RestFulClient.post(
             url=self.path,
             headers=self._get_headers(),
@@ -141,6 +142,8 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 raise InvalidAccessToken(message)
             else:
                 return (request, self.template_name, context)
+
+        messages.success(request, 'The adjustment is created successfully')
         return redirect('balance_adjustment:balance_adjustment_list')
 
     def get_services_list(self):
