@@ -6,7 +6,16 @@
         <div class="panel-heading border">
             <h3>Balance Adjustment Execute</h3>
         </div>
-
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-roles">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% endfor %}
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'balance_adjustment:balance_adjustment_create' %}">
                 <div class="form-group">
