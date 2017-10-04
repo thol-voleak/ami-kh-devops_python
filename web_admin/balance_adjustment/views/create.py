@@ -150,14 +150,20 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                     messages.ERROR,
                     message
                 )
-            else:
-                messages.add_message (
+            elif status_code.lower() in ["general_error"]:
+                messages.add_message(
                     request,
                     messages.ERROR,
                     "Other error, please contact system administrator"
                 )
+            else:
+                messages.add_message (
+                    request,
+                    messages.ERROR,
+                    message
+                )
 
-            return render(request, self.template_name, context)
+            return render(request, self.template_name, context) #
 
     def get_services_list(self):
         url = api_settings.SERVICE_LIST_URL
