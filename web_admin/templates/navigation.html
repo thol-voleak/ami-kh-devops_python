@@ -352,7 +352,7 @@
                 {% endif %}
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
+            {% if request.user|has_permission_name:"SYS_BAL_ADJUST_REQUEST" or request.user|has_permission_name:"SYS_BAL_ADJUST_HISTORY"%}
             <li class="menu-accordion {% if 'balance-adjustment' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Balance Adjustment</span> </a>
                 <ul class="sub-menu">
