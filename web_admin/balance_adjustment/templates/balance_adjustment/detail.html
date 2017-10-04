@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Additional Details</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Initiator Type</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_initiator_type" name="initiator_type"
+                                   value="{{ order.initiator.user_type_name | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SoF Type</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_sof_type" name="sof_type"
+                                   value=" {% if order.initiator.sof_type_id == '1' %}Bank{% else %}Cash{% endif %} "
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Agent ID</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_agent_id" name="agent_id"
+                                   value="{{ order.initiator.user_id | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Product Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_product_name" name="product_name"
+                                   value="{{ order.product.name | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Product Reference 1</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_product_reference_1" name="product_reference_1"
+                                   value="{{ order.product.ref1 | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Product Reference 2</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_product_reference_2" name="product_reference_2"
+                                   value="{{ order.product.ref2 | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Product Reference 3</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded"
+                                   id="txt_product_reference_3" name="product_reference_3"
+                                   value="{{ order.product.ref3 | default_if_none:'' }}"
+                                   readonly>
+                        </div>
+                    </div>
+
+                    {% if order.status == 0 and permissions.SYS_BAL_ADJUST_APPROVE %}
+                    <div class="pull-left">
+                        <a href="{% url 'balance_adjustment:balance_adjustment_approve' order.order_id %}">
+                            <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve"/>
+                        </a>
+                        <a href="{% url 'balance_adjustment:balance_adjustment_approve' order.order_id %}">
+                            <input id="btn_reject" class="btn btn-danger" type="submit" name="submit" value="Reject">
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class="pull-right">
+                        <a href="{% url 'balance_adjustment:balance_adjustment_list' %}">
+                            <input id="btn_back" class="btn" type="button" value="Back"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
