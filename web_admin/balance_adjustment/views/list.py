@@ -137,7 +137,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                                                             params=body)
         
         if is_success:
-            print("data is : {}".format(data))
             count = len(data)
             self.logger.info("Response_content_count:{}".format(count))
             order_list = self.refine_data(data)
