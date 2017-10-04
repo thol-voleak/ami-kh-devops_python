@@ -54,7 +54,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Service Name</label>
                 <div class="col-sm-2">
-                    <select class="form-control" id="ddl_service" name="service_name" >
+                    <select class="form-control" id="ddl_service_name" name="service_name" >
                         <option value="" selected="selected">All</option>
                         {% for service in data %}
                             {%if service.service_name == service_name%}
@@ -102,7 +102,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Payer Type</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payer_user_type" name="payer_user_type_id">
+                    <select class="form-control" id="ddl_payer_type" name="payer_user_type_id">
                         <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payer_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                         <option value=2 {% if payer_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
@@ -110,7 +110,7 @@
                 </div>
                 <label class="col-sm-3 control-label">Payee Type</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payee_user_type" name="payee_user_type_id">
+                    <select class="form-control" id="ddl_payee_type" name="payee_user_type_id">
                         <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payee_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                         <option value=2 {% if payee_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>

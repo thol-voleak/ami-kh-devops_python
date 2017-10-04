@@ -20,7 +20,7 @@ STATUS_ORDER = {
     -1: 'FAIL',
      0: 'CREATED',
      1: 'LOCKING',
-     2: 'EXECUTED',
+     2: 'APPROVED',
      3: 'ROLLED_BACK',
      4: 'TIME_OUT',
      5: 'REJECTED'
