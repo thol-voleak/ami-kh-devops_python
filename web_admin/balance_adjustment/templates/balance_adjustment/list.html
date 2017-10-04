@@ -43,7 +43,7 @@
                            value="{{ requested_by_id|default_if_none:'' }}"
                            id="txt_requested_by">
                 </div>
-                <label class="col-sm-3 control-label">Approved By</label>
+                <label class="col-sm-3 control-label">Approved/Rejected By</label>
                 <div class="col-xs-2">
                     <input type="text" class="form-control input-rounded"
                            name="approved_by_id"
@@ -135,7 +135,7 @@
                     </select>
                 </div>
                 <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search"
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
                 </div>
             </div>
@@ -144,7 +144,7 @@
             <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0" id="tbl_order_list">
+            <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
                 <thead>
                 <tr>
                     <th id="id">Order ID</th>
