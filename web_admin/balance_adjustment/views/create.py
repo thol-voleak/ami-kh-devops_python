@@ -144,13 +144,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             services = self.get_services_list()
             context.update({'services': services})
 
-            if status_code.lower() in ["payment_not_allow"]:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    message
-                )
-            elif status_code.lower() in ["general_error"]:
+            if status_code.lower() in ["general_error"]:
                 messages.add_message(
                     request,
                     messages.ERROR,
