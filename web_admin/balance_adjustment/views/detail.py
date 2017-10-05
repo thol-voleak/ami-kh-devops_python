@@ -57,13 +57,14 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         return context
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start Approve/Reject balance adjustment order ==========')
+
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         order_id = context['OrderId']
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(order_id=order_id)
 
         button = request.POST.get('submit')
         if button == 'Approve':
+            self.logger.info('========== Start Approve balance adjustment order ==========')
             is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -71,18 +72,25 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
 
             API_Logger.post_logging(loggers=self.logger, params={}, response=data,
                                    status_code=status_code)
+            if is_success:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    'Approve Balance Adjustment Order successfully'
+                )
+            self.logger.info('========== Finish Approve balance adjustment order ==========')
         elif button == 'Reject':
+            self.logger.info('========== Start Reject balance adjustment order ==========')
             is_success, status_code, status_message = RestFulClient.delete(url=url,
                                                                                headers=self._get_headers(),
                                                                                loggers=self.logger,
                                                                                params={})
             API_Logger.delete_logging(loggers=self.logger, params={}, response={},status_code=status_code)
-
-        if is_success:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Approve/Reject Balance Adjustment Order successfully'
-            )
-        self.logger.info('========== Finish Approve/Reject balance adjustment order ==========')
+            if is_success:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    ' Balance Adjustment Order successfully'
+                )
+            self.logger.info('========== Finish Reject balance adjustment order ==========')
         return redirect('balance_adjustment:balance_adjustment_list')
