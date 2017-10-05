@@ -76,7 +76,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    'Approve Balance Adjustment Order successfully'
+                    'Payment is approved successfully'
                 )
             self.logger.info('========== Finish Approve balance adjustment order ==========')
         elif button == 'Reject':
@@ -90,7 +90,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    'Reject Balance Adjustment Order successfully'
+                    'Payment is rejected successfully'
                 )
             self.logger.info('========== Finish Reject balance adjustment order ==========')
         return redirect('balance_adjustment:balance_adjustment_list')
