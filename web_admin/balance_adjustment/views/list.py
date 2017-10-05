@@ -79,8 +79,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
-        payer_sof_type = request.POST.get('payer_sof_type')
-        payee_sof_type = request.POST.get('payee_sof_type')
         status_id = request.POST.get('status_id')
         requested_by_id = request.POST.get('requested_by_id')
         approved_by_id = request.POST.get('approved_by_id')
@@ -116,6 +114,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['requested_by_id'] = requested_by_id
         if approved_by_id:
             body['approved_by_id'] = approved_by_id
+        
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -152,8 +151,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                    'search_count': count,
                    'requested_by_id': requested_by_id,
                    'approved_by_id': approved_by_id,
-                   'payer_sof_type_id': payer_sof_type,
-                   'payee_sof_type_id': payee_sof_type,
+                   'payer_sof_type_id': payer_sof_type_id,
+                   'payee_sof_type_id': payee_sof_type_id,
                    'status_list': self.status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
