@@ -111,9 +111,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['status_id'] = [int(status_id)]
 
         if requested_by_id:
-            body['requested_by_id'] = requested_by_id
+            body['requester_name'] = requested_by_id
         if approved_by_id:
-            body['approved_by_id'] = approved_by_id
+            body['approver_name'] = approved_by_id
         
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
