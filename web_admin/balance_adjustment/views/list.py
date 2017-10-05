@@ -38,7 +38,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             {"id": -1, "name": "FAIL"},
             {"id": 0, "name": "CREATED"},
             {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
+            {"id": 2, "name": "APPROVED"},
             {"id": 3, "name": "ROLLED_BACK"},
             {"id": 4, "name": "TIME_OUT"},
             {"id": 5, "name": "REJECTED"},

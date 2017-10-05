@@ -120,7 +120,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Payer Source of Fund Type</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payer_sof_type" name="payer_sof_type_id">
+                    <select class="form-control" id="ddl_payer_source_of_fund_type" name="payer_sof_type_id">
                         <option value=0 {% if payer_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payer_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payer_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
@@ -128,7 +128,7 @@
                 </div>
                 <label class="col-sm-3 control-label">Payee Source of Fund Type</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payee_sof_type" name="payee_sof_type_id">
+                    <select class="form-control" id="ddl_payee_source_of_fund_type" name="payee_sof_type_id">
                         <option value=0 {% if payee_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payee_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payee_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
