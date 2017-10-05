@@ -90,7 +90,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    ' Balance Adjustment Order successfully'
+                    'Reject Balance Adjustment Order successfully'
                 )
             self.logger.info('========== Finish Reject balance adjustment order ==========')
         return redirect('balance_adjustment:balance_adjustment_list')
