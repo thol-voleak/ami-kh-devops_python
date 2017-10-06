@@ -34,6 +34,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
     def get(self, request, *args, **kwargs):
         context = super(BalanceAdjustmentCreateView, self).get_context_data(**kwargs)
         services = self.get_services_list()
+        self.update_step_to_service(services)
         context.update({'services': services})
         return render(request, self.template_name, context)
 
@@ -142,6 +143,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             }
 
             services = self.get_services_list()
+            self.update_step_to_service(services)
             context.update({'services': services})
 
             if status_code.lower() in ["general_error"]:
@@ -167,3 +169,25 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 self.logger.info("{}".format('access_token_expire'))
                 raise InvalidAccessToken('access_token_expire')
         return data
+
+    def get_currency_list(self):
+        url = api_settings.GET_ALL_CURRENCY_URL
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if not success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format('access_token_expire'))
+                raise InvalidAccessToken('access_token_expire')
+        return data
+
+    def update_step_to_service(self, services):
+        currencies = self.get_currency_list().get('value')
+        for service in services:
+            currency = service['currency']
+            decimal = int(currencies.split(currency + '|')[1].split(',')[0])
+            if decimal == 1:
+                step = '0.1'
+            elif decimal > 1:
+                step = '0.' + '0'*(decimal-1) + '1'
+            else:
+                step = '1'
+            service['step'] = step
