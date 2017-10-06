@@ -20,14 +20,14 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'balance_adjustment:balance_adjustment_list' %}">
             {% csrf_token %}
             <div class="form-group">
-                    <label class="col-sm-3 control-label">From</label>
+                    <label class="col-sm-3 control-label">Request Date: From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="from_created_timestamp"
                                value="{{ date_from|default_if_none:'' }}"
                                id="dtp_from">
                     </div>
-                    <label class="col-sm-3 control-label">To</label>
+                    <label class="col-sm-3 control-label">Request Date: To</label>
                     <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="to_created_timestamp"
@@ -148,40 +148,40 @@
                 <thead>
                 <tr>
                     <th id="id">Order ID</th>
-                    <th id="id">Product Name</th>
-                    <th id="amount">Amount</th>
+                    <th id="amount">Transaction Amount</th>
                     <th id="currency">Currency</th>
                     <th id="payer_id">Payer ID</th>
-                    <th id="payer_id">Payer Type</th>
-                    <th id="payer_id">Payer SoF Type</th>
+                    <th id="payer_type">Payer Type</th>
+                    <th id="payer_sof_type">Payer SoF Type</th>
                     <th id="payee_id">Payee ID</th>
-                    <th id="payee_id">Payee Type</th>
-                    <th id="payee_id">Payee SoF Type</th>
+                    <th id="payee_type">Payee Type</th>
+                    <th id="payee_sof_type">Payee SoF Type</th>
                     <th id="status">Status</th>
-                    <th id="service_name">Request Date</th>
-                    <th id="command">Requester</th>                   
-                    <th id="balance">Adjustment Details</th>
+                    <th id="request_date">Request Date</th>
+                    <th id="requester">Requester</th>
+                    <th id="approved_rejected_by">Approved/Rejected by</th>
+                    <th id="adjustment_detail">Adjustment Details</th>
                 </tr>
                 </thead>
                 <tbody id="table_body">
                     {% for order in order_list %}
                         <tr>
-                            <td class="col-sm-2">{{ order.order_id }}</td>
-                            <td class="col-sm-2">{{ order.product.name|default_if_none:""}}</td>
-                            <td class="col-sm-2">{{ order.amount }}</td>
-                            <td class="col-sm-2">{{ order.currency }}</td>
-                            <td class="col-sm-2">{{ order.payer.user_id }}</td>
-                            <td class="col-sm-2">{{ order.payer.user_type_name }}</td>
+                            <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.currency|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payer.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payer.user_type_name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if order.payer.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
-                            <td class="col-sm-2">{{ order.payee.user_id }}</td>
-                            <td class="col-sm-2">{{ order.payee.user_type_name }}</td>
+                            <td class="col-sm-2">{{ order.payee.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payee.user_type_name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if order.payee.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
-                            <td class="col-sm-2">{{ order.status }}</td>
-                            <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
-                            <td class="col-sm-2">{{ order.payment_method.name }}</td>
+                            <td class="col-sm-2">{{ order.status|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.product.ref4|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.product.ref5|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
-                                   class="btn btn-outline btn-xs btn-primary"
+                                   class="btn btn-outline btn-xs btn-info"
                                    role="button"
                                    id="btn_detail"
                                    href="{% url 'balance_adjustment:balance_adjustment_detail' order.order_id %}">
