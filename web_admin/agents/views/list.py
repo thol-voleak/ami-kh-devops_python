@@ -113,9 +113,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         'kyc_status': kyc_status})
 
         # Get Data
-        data = self._get_agents(params=body)
-        context['data'] = data
-        context['search_count'] = len(data)
+        data, success = self._get_agents(params=body)
+        if not success:
+            if data == 'timeout':
+                context.update({'msgs': {'get_list_timeout': 'Search timeout, please try again'}})
+                context['search_count'] = 0
+        else:
+            context['data'] = data
+            context['search_count'] = len(data)
 
         self.update_session(request, None, unique_reference, email, primary_mobile_number, kyc_status,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -173,9 +178,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['to_created_timestamp'] = to_created_timestamp
 
         # Get Data
-        data = self._get_agents(params=body)
-        context['data'] = data
-        context['search_count'] = len(data)
+        data, success = self._get_agents(params=body)
+        if not success:
+            if data == 'timeout':
+                context.update({'msgs': {
+                    'get_list_timeout': 'Search timeout, please try again'}})
+                context['search_count'] = 0
+        else:
+            context['data'] = data
+            context['search_count'] = len(data)
 
         self.update_session(request, None, unique_reference, email,
                             primary_mobile_number, kyc_status,
@@ -187,24 +198,24 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching agent ==========')
 
         api_path = SEARCH_AGENT
-        data, status = self._post_method(
+        data, success = self._post_method(
             api_path=api_path,
             func_description="Search Agent",
             logger=logger,
             params=params
         )
+        if success:
+            is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
+            is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
+            is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
 
-        is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
-        is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
-        is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
-
-        for i in data:
-            i['is_permission_view'] = is_permission_view
-            i['is_permission_edit'] = is_permission_edit
-            i['is_permission_delete'] = is_permission_delete
+            for i in data:
+                i['is_permission_view'] = is_permission_view
+                i['is_permission_edit'] = is_permission_edit
+                i['is_permission_delete'] = is_permission_delete
 
         self.logger.info('========== Finished searching agent ==========')
-        return data
+        return data, success
 
     def update_session(self, request, message=None, unique_reference=None, email=None, primary_mobile_number=None,
                        kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False):

@@ -7,6 +7,12 @@
     <div class="panel-heading border mb15">
         <h3>Agent List</h3>
     </div>
+    <div class="col-xs-12">
+        <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+            <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
     <!--If success return green notification and return red notification if message is failed-->
     {% for msg in msgs.values %}
         {% if msg is not None %}
@@ -24,7 +30,7 @@
             </div>
         {% endif %}
     {% endfor %}
-    <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}">
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" >
         {% csrf_token %}
         <div class="form-group">
             <label class="col-sm-2 control-label">ID</label>
@@ -159,4 +165,25 @@
         </div>
     </div>
 </div>
+
+<script>
+function showErrorMessage(msg) {
+    $("#alert-msg").text(msg)
+    $("#msg-error").fadeIn(700);
+}
+
+function validateForm() {
+    var from = document.getElementById("dtp_from");
+    var to = document.getElementById("dtp_to");
+
+    var fromDate = new Date(from.value);
+    var toDate = new Date(to.value);
+
+    if (fromDate && toDate && (fromDate >= toDate)) {
+        showErrorMessage('Create date from should be < To')
+        return false;
+    }
+}
+</script>
+
 {% endblock %}
