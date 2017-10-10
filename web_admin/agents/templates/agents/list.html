@@ -30,7 +30,7 @@
             </div>
         {% endif %}
     {% endfor %}
-    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" onsubmit="return validateForm()">
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" >
         {% csrf_token %}
         <div class="form-group">
             <label class="col-sm-2 control-label">Unique Reference</label>
