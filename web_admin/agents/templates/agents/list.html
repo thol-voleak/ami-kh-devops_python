@@ -168,7 +168,7 @@ function validateForm() {
     var fromDate = new Date(from.value);
     var toDate = new Date(to.value);
 
-    if (fromDate && toDate && (fromDate >= toDate)) {
+    if (fromDate && toDate && (fromDate > toDate)) {
         showErrorMessage('Create date from should be < To')
         return false;
     }
