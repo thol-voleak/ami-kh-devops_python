@@ -27,39 +27,48 @@
     <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}">
         {% csrf_token %}
         <div class="form-group">
-            <label class="col-sm-2 control-label">Unique Reference</label>
-            <div class="col-sm-5">
+            <label class="col-sm-2 control-label">ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="agent_id"
+                        id="txt_agent_id"
+                        value="{{ id|default_if_none:'' }}">
+            </div>
+            <label class="col-sm-1 control-label">Unique Reference</label>
+            <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="unique_reference"
                        id="txt_unique_reference"
                        value="{{ unique_reference|default_if_none:'' }}">
             </div>
-
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-5">
-                <input type="text" class="form-control input-rounded" name="email"
-                       id="txt_email"
-                       value="{{ email|default_if_none:'' }}">
+            <label class="col-sm-2 control-label">KYC Status</label>
+            <div class="col-sm-2">
+                <!-- <input type="text" class="form-control input-rounded" name="kyc_status"
+                        id="txt_kyc_status"
+                        value="{{ kyc_status|default_if_none:'' }}"> -->
+                <select class="form-control" id="ddl_kyc_status" name="kyc_status">
+                        <option value='' {%if kyc_status == None%}selected="selected"{%endif%}>-</option>
+                        <option value='True'{%if kyc_status == True%}selected="selected"{%endif%}>True</option>
+                        <option value='False' {%if kyc_status == False%}selected="selected"{%endif%}>False</option>
+                </select>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Primary Mobile Number</label>
-            <div class="col-sm-5">
+            <label class="col-sm-1 control-label">Primary Mobile Number</label>
+            <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="primary_mobile_number"
                        id="txt_primary_mobile_number"
                        value="{{ primary_mobile_number|default_if_none:'' }}">
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">KYC</label>
-            <div class="col-sm-5">
-                <input type="text" class="form-control input-rounded" name="kyc_status"
-                       id="txt_kyc_status"
-                       value="{{ kyc_status|default_if_none:'' }}">
+            <label class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="email"
+                       id="txt_email"
+                       value="{{ email|default_if_none:'' }}">
             </div>
         </div>
+
         <div class="form-group">
             <!--<label class="col-sm-1 control-label">Created Date</label>-->
             <label class="col-sm-2 control-label">Created Date: From</label>
@@ -69,7 +78,7 @@
                        value="{{ from_created_timestamp|default_if_none:'' }}"
                        id="dtp_from">
             </div>
-            <label class="col-sm-1 control-label">: To</label>
+            <label class="col-sm-1 control-label">To</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="to_created_timestamp"
@@ -90,10 +99,11 @@
                 <thead>
                 <tr>
                     <th id="agent_type">Agent ID</th>
-                    <th id="last_name">Last Name</th>
-                    <th id="first_name">First Name</th>
+                    <th id="last_name">First Name</th>
+                    <th id="first_name">Last Name</th>
                     <th id="phone">Phone</th>
                     <th id="email">Email</th>
+                    <th id="unique_reference">Unique Reference</th>
                     <th id="kyc">KYC</th>
                     <th id="created_at">Created Date</th>
                     <th id="modified_at">Modified Date</th>
@@ -107,17 +117,18 @@
                     <tr>
                         {% if agent.is_deleted %}
                             <td class="col-sm-1"><del>{{ agent.id }}</del></td>
-                            <td class="col-sm-3"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
-                            <td class="col-sm-5"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-3"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-5"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.primary_mobile_number|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.email|default_if_none:'' }}</del></td>
                         {% else %}
                             <td class="col-sm-1">{{ agent.id }}</td>
-                            <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
-                            <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
+                            <td class="col-sm-3">{{ agent.firstname|default_if_none:'' }}</td>
+                            <td class="col-sm-5">{{ agent.lastname|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.email|default_if_none:'' }}</td>
                         {% endif %}
+                        <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>

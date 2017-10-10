@@ -127,6 +127,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
 
         # Get params
+        agent_id = request.POST.get('agent_id')
         unique_reference = request.POST.get('unique_reference')
         email = request.POST.get('email')
         primary_mobile_number = request.POST.get('primary_mobile_number')
@@ -137,6 +138,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         # Build Body
         context = {}
         body = {}
+        if agent_id:
+            body['id'] = int(agent_id)
         if unique_reference:
             body['unique_reference'] = unique_reference
         if email:
