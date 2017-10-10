@@ -30,7 +30,7 @@
             </div>
         {% endif %}
     {% endfor %}
-    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" >
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" onsubmit="return validateForm()">
         {% csrf_token %}
         <div class="form-group">
             <label class="col-sm-2 control-label">Unique Reference</label>
@@ -168,7 +168,7 @@ function validateForm() {
     var fromDate = new Date(from.value);
     var toDate = new Date(to.value);
 
-    if (fromDate && toDate && (fromDate >= toDate)) {
+    if (fromDate && toDate && (fromDate > toDate)) {
         showErrorMessage('Create date from should be < To')
         return false;
     }
