@@ -151,7 +151,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'status_list': status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
-                   }
+                   'permissions': self._get_has_permissions(),}
 
         if status_id:
             context['status_id'] = int(status_id)
@@ -179,4 +179,11 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         url = SERVICE_LIST_URL
         data, success = self._get_method(api_path=url, func_description="service list", is_getting_list=True)
         return data
-        
+
+    def _get_has_permissions(self):
+        self.logger.info("Start check permissions for payment order page.")
+        permissions = {
+            'is_perm_order_detail': check_permissions_by_user(
+                self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
+        }
+        return permissions
