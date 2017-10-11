@@ -108,10 +108,12 @@
                                value="{{ date_to|default_if_none:'' }}"
                                id="dtp_to_date">
                     </div>
+                    {% if permissions.is_perm_order_search %}
                     <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search"
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
                     </div>
+                    {% endif %}
                 </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>

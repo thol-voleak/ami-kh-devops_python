@@ -232,13 +232,11 @@
             {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
             <li class="menu-accordion {% if 'payment' in request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Payment</span> </a>
-                {% if request.user|has_permission_name:"CAN_SEARCH_PAYMENT_ORDER"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'order' %}active{% endif %}">
                         <a href="{% url 'payments:payment_order' %}"> <span>Order</span> </a>
                     </li>
                 </ul>
-                {% endif %}
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_CASH_SOF"%}

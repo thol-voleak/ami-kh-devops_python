@@ -29,7 +29,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "payments/payment_order.html"
     logger = logger
 
-    group_required = "CAN_SEARCH_PAYMENT_ORDER"
+    group_required = "CAN_MANAGE_PAYMENT"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -60,6 +60,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['search_count'] = 0
         context['status_list'] = status_list
         context['status_id'] = ''
+        context['permissions'] = self._get_has_permissions()
 
         return render(request, self.template_name, context)
 
@@ -151,7 +152,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'status_list': status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
-                   'permissions': self._get_has_permissions(),}
+                   'permissions': self._get_has_permissions(),
+        }
 
         if status_id:
             context['status_id'] = int(status_id)
@@ -183,7 +185,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def _get_has_permissions(self):
         self.logger.info("Start check permissions for payment order page.")
         permissions = {
-            'is_perm_order_detail': check_permissions_by_user(
-                self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
+            'is_perm_order_detail': check_permissions_by_user(self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
+            'is_perm_order_search': check_permissions_by_user(self.request.user, "CAN_SEARCH_PAYMENT_ORDER"),
         }
         return permissions
