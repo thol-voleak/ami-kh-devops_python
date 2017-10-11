@@ -137,6 +137,7 @@
                     <th id="user">Ext Transaction ID</th>
                     <th id="user">Creation Client ID</th>
                     <th id="user">Execution Client ID</th>
+                    <th id="user">Action</th>
                 </tr>
                 </thead>
                 <tbody id="table_body">
@@ -159,6 +160,13 @@
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
                             <td class="col-sm-2">{{ order.created_client_id }}</td>
                             <td class="col-sm-2">{{ order.executed_client_id }}</td>
+                            <td class="col-sm-2">
+                                {% if permissions.is_perm_order_detail %}
+                                <a class="btn btn-primary mb5 btn-outline btn-xs" id="btn_detail" href="{% url 'payments:order_detail' order.order_id %}">
+                                    Detail
+                                </a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
