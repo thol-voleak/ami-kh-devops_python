@@ -39,7 +39,7 @@
                         id="txt_agent_id"
                         value="{{ id|default_if_none:'' }}">
             </div>
-            <label class="col-sm-1 control-label">Unique Reference</label>
+            <label class="col-sm-2 control-label">Unique Reference</label>
             <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="unique_reference"
                        id="txt_unique_reference"
@@ -59,12 +59,7 @@
                         <option value='False' {%if kyc_status == False%}selected="selected"{%endif%}>False</option>
                 </select>
             </div>
-            <label class="col-sm-1 control-label">Primary Mobile Number</label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control input-rounded" name="primary_mobile_number"
-                       id="txt_primary_mobile_number"
-                       value="{{ primary_mobile_number|default_if_none:'' }}">
-            </div>
+
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">Email</label>
@@ -72,6 +67,12 @@
                 <input type="text" class="form-control input-rounded" name="email"
                        id="txt_email"
                        value="{{ email|default_if_none:'' }}">
+            </div>
+            <label class="col-sm-2 control-label">Mobile Number</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="primary_mobile_number"
+                       id="txt_primary_mobile_number"
+                       value="{{ primary_mobile_number|default_if_none:'' }}">
             </div>
         </div>
 
@@ -84,7 +85,7 @@
                        value="{{ from_created_timestamp|default_if_none:'' }}"
                        id="dtp_from">
             </div>
-            <label class="col-sm-1 control-label">To</label>
+            <label class="col-sm-2 control-label">To</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="to_created_timestamp"
@@ -104,11 +105,12 @@
             <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
                 <thead>
                 <tr>
-                    <th id="agent_type">Agent ID</th>
+                    <th id="agent_id">ID</th>
                     <th id="last_name">First Name</th>
                     <th id="first_name">Last Name</th>
-                    <th id="phone">Phone</th>
-                    <th id="email">Email</th>
+                    <th id="primary_identify_id">Primary Identify ID</th>
+                    <th id="mobile_number">Mobile Number</th>
+                    <th id="email">Email Address</th>
                     <th id="unique_reference">Unique Reference</th>
                     <th id="kyc">KYC</th>
                     <th id="created_at">Created Date</th>
@@ -125,12 +127,14 @@
                             <td class="col-sm-1"><del>{{ agent.id }}</del></td>
                             <td class="col-sm-3"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
                             <td class="col-sm-5"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-5"><del>{{ agent.primary_identify_id|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.primary_mobile_number|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.email|default_if_none:'' }}</del></td>
                         {% else %}
                             <td class="col-sm-1">{{ agent.id }}</td>
                             <td class="col-sm-3">{{ agent.firstname|default_if_none:'' }}</td>
                             <td class="col-sm-5">{{ agent.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-5">{{ agent.primary_identify_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.email|default_if_none:'' }}</td>
                         {% endif %}
