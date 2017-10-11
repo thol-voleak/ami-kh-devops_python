@@ -154,6 +154,7 @@
                             {% if agent.is_permission_delete %}
                                 <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
                             {% endif %}
+                            
                         </td>
                     </tr>
                 {% endfor %}
@@ -184,7 +185,7 @@ function validateForm() {
     var toDate = new Date(to.value);
 
     if (fromDate && toDate && (fromDate > toDate)) {
-        showErrorMessage('Create date from should be < To')
+        showErrorMessage('Create date From should be <= To')
         return false;
     }
 }
