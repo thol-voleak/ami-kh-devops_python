@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Agent Identities</h3>
+    </div>
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Agent ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control"
+                       id="txt_agent_id"
+                       value="{{ agent_id | default_if_none:'' }}" readonly>
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_identities">
+                <thead>
+                <tr>
+                    <th id="id">ID</th>
+                    <th id="identify">Identity</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for identity in data %}
+                    {% if not identity.is_deleted %}
+                        <tr>
+                            <td class="col-sm-1">{{ identity.id }}</td>
+                            <td class="col-sm-3">{{ identity.username|default_if_none:'' }}</td>
+                            <td class="col-sm-3">
+                                {% if identity.is_permision_reset_password%}
+                                    <div class="btn-group">
+                                    <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
+                                            data-url="">ResetPassword</button>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <br/>
+
+        <div class="pull-right">
+            <a href="{% url 'agents:agent-list' %}">
+                <input id="btn_cancel" class="btn text-left mb15" type="button"
+                       value="Cancel"/>
+            </a>
+        </div>
+    </div>
+    </div>
+{% endblock %}

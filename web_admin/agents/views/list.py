@@ -208,11 +208,13 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
             is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
             is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
+            is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_IDENTITIES')
 
             for i in data:
                 i['is_permission_view'] = is_permission_view
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
+                i['is_permission_identity'] = is_permission_identity
 
         self.logger.info('========== Finished searching agent ==========')
         return data, success
