@@ -129,7 +129,7 @@
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
                          <li class="class={% if url_name == 'agent-list' %} active{% endif %}">
-                        <a href="{% url 'agents:agent-list' %}"> <span>Agent List</span> </a>
+                        <a href="{% url 'agents:agent-list' %}"> <span>Agent Profile</span> </a>
                     </li>
                     {% endif %}
                 </ul>
