@@ -92,9 +92,11 @@
                        value="{{ to_created_timestamp|default_if_none:'' }}"
                        id="dtp_to">
             </div>
+            {% if is_permission_search %}
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
+            {% endif %}
         </div>
         <label class="pull-right" id="lbl_total">{{ search_count }}</label>
         <label class="pull-right" >Total:&nbsp;</label>
@@ -115,7 +117,7 @@
                     <th id="kyc">KYC</th>
                     <th id="created_at">Created Date</th>
                     <th id="modified_at">Modified Date</th>
-                    <th id="status">Status</th>
+                    <th id="status">Is suspended</th>
                     <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
@@ -142,7 +144,7 @@
                         <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{% if not agent.is_suspended %}Active{% else %}Suspended{% endif %}</td>
+                        <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
                         <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
                         <td class="col-sm-3">
                             {% if agent.is_permission_view %}
