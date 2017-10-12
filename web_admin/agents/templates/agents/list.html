@@ -142,7 +142,7 @@
                         <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.status|default_if_none:'' }}</td>
+                        <td class="col-sm-2">{% if not agent.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                         <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
                         <td class="col-sm-3">
                             {% if agent.is_permission_view %}
