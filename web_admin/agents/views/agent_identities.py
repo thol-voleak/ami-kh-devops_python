@@ -39,7 +39,7 @@ class AgentIdentitiesView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(AgentIdentitiesView, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
         agent_identities = self._get_agent_identities(agent_id)
-        is_permision_reset_password = check_permissions_by_user(request.user, 'CAN_RESET_AGENT_PASSWORD')
+        is_permision_reset_password = check_permissions_by_user(request.user, 'CAN_RESETPASSWORD_AGENT')
         for i in agent_identities:
             i['is_permision_reset_password'] = is_permision_reset_password
 

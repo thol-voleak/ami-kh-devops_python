@@ -53,6 +53,7 @@ GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
+AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
 # System User
 GET_PROFILE_SYSTEM_USER_PATH = 'api-gateway/system-user/'+API_VERSION+'/system-users/'
 SEARCH_SYSTEM_USER = 'api-gateway/report/'+API_VERSION+'/system-users'
