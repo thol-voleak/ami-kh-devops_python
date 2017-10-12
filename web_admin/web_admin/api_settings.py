@@ -51,6 +51,8 @@ AGENT_DELETE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}/sofs/types/cash'
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
+AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
+
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
