@@ -117,6 +117,6 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             messages.add_message(
                 self.request,
                 messages.ERROR,
-                status_message
+                "Got error and can't add new smartcard"
             )
         return is_success
