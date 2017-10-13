@@ -113,6 +113,12 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.SUCCESS,
                 'Add agent smartcard successfully'
             )
+        elif status_message == 'timeout':
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Can not add SmartCard for this user, please try again or contact technical support"
+            )
         else:
             messages.add_message(
                 self.request,
