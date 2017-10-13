@@ -8,6 +8,24 @@
         <h3>Agent SmartCard</h3>
     </div>
 
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-roles">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="msg-roles">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
     <div id="ajax-messages">
         {% if msg is not None %}
             <div class="col-xs-12">

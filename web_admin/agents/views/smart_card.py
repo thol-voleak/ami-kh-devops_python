@@ -107,7 +107,13 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
                                 status_code=status_code)
 
-        if not is_success:
+        if is_success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                'Add agent smartcard successfully'
+            )
+        else:
             messages.add_message(
                 self.request,
                 messages.ERROR,
