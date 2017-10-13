@@ -44,13 +44,13 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post">
+                <form class="form-horizontal" role="form" method="post" action="">
                     {% csrf_token %}
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Number *</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="number" id="txt_number" required/>
+                            <input type="number" class="form-control" name="number" id="txt_number" required/>
                         </div>
                     </div>
 
@@ -65,9 +65,12 @@
                             <a href="{% url 'agents:agent-list' %}">
                                 <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
                             </a>
+
+                            {% if permissions.is_perm_add_smart_card %}
                             <a href="#">
                                 <input id="btn_add" class="btn btn-success" type="submit" value="Add">
                             </a>
+                            {% endif %}
                         </div>
                     </div>
 
