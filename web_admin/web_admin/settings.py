@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'card_type',
     'cash_sofs',
     'bank_sofs',
-
+    'bank',
     'payments',
     'api_management',
     'centralize_configuration',
@@ -115,7 +115,7 @@ TEMPLATES = [
 
 OPTIONS = {
     'libraries': {
-        'myapp_tags': 'authentications.templatetags.permissions_filter',
+        'myapp_tags': 'authentications.templatetags',
     },
 }
 
@@ -263,7 +263,11 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
-
+        },
+        'bank': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
         },
         'payments': {
             'handlers': ['console'],

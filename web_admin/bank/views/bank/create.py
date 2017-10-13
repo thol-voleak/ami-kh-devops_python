@@ -1,6 +1,6 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
 from authentications.views.roles_client import RolesClient
-from bank_sofs.views.banks_client import BanksClient
+from bank.views.banks_client import BanksClient
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
@@ -90,7 +90,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if is_success:
             self.logger.info('========== Finished creating bank profile ==========')
             messages.success(request, 'Add bank successfully')
-            return redirect('bank_sofs:bank_sofs_list')
+            return redirect('bank:bank_sofs_list')
         else:
             self.logger.info('========== Finished creating bank profile got error [{}] =========='.format(status_message))
             if data == 'timeout':
