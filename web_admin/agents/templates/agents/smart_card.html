@@ -18,9 +18,9 @@
         </div>
         {% else %}
         <div class="col-xs-12">
-            <div class="alert alert-danger alert-dismissable" id="msg-roles">
+            <div class='alert alert-danger alert-dismissable' id="msg-error">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message }}</strong>
+                <strong>{{ message|capfirst }}</strong>
             </div>
         </div>
         {% endif %}
@@ -68,14 +68,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Number *</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" name="number" id="txt_number" required/>
+                            <input type="number" class="form-control" name="number" id="txt_number" required value="{{ params.card_number|default_if_none:'' }}"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Serial</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="serial" id="txt_serial"/>
+                            <input type="text" class="form-control" name="serial" id="txt_serial" value="{{ params.card_serial|default_if_none:'' }}"/>
                         </div>
                     </div>
                     <div class="form-group">
