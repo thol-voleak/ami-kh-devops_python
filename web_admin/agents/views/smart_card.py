@@ -77,7 +77,6 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context = {
                 "smartcards": agent_smartcard,
                 'permissions': permissions,
-                "params": params,
                 "agent_id": agent_id
             }
             return render(request, self.template_name, context)
@@ -151,10 +150,5 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.ERROR,
                 status_message
             )
-        else:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                "Got error and can't add new smartcard"
-            )
+
         return is_success
