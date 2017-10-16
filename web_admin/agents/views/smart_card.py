@@ -77,7 +77,8 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context = {
                 "smartcards": agent_smartcard,
                 'permissions': permissions,
-                "params": params
+                "params": params,
+                "agent_id": agent_id
             }
             return render(request, self.template_name, context)
 
