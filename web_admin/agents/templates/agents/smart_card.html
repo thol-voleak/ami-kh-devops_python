@@ -120,7 +120,7 @@
                                             <td>{{ smartcard.last_updated_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-1">
                                                 {% if permissions.is_perm_del_smart_card %}
-                                                <button id="btn_delete_{{ smartcard.id }}" onclick="deleteSmartCard('{{ smartcard.id }}')" data-url="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
+                                                <button id="btn_delete_{{ smartcard.id }}" onclick="deleteSmartCard('{{ smartcard.id }}', '{{ smartcard.card_number }}')" data-url="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
                                                         type='button' class="btn btn-outline mb5 btn-xs btn-danger {{ smartcard.is_deleted|yesno:"hidden,no-hidden" }}">Delete</button>
                                                 {% endif %}
                                             </td>
@@ -161,9 +161,9 @@ function showSuccessMessage(msg) {
 
 }
 
-function deleteSmartCard(id) {
+function deleteSmartCard(id, num) {
     swal({
-            title: 'Are you sure you want to delete SmartCard number "' + id + '"?',
+            title: 'Are you sure you want to delete SmartCard number "' + num + '"?',
             text: "",
             type: "warning",
             showCancelButton: true,
@@ -181,7 +181,14 @@ function deleteSmartCard(id) {
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                 },
                 success: function (response) {
-                    if (response.status == 2) {
+                    if (response.status === 1) {
+                        // Logout
+                        var url1 = window.location.href;
+                        var url2 = window.location.origin;
+                        var url_original = url1.replace(url2, "");
+                        var url3 = window.location.origin + "/admin-portal/authentications/login/" + "?next=" + url_original;
+                        window.location.replace(url3);
+                    } else if (response.status === 2) {
                         // success
                         window.location.replace(url);
                     } else if(response.status == 'timeout') {
