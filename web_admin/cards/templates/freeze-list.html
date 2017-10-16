@@ -22,15 +22,13 @@
             <table class="table table-bordered table-striped mb0" id="tbl_card_history">
                 <thead>
                 <tr>
-                    <th id="id">ID</th>
                     <th id="ticket_id">Ticket ID</th>
-                    <th id="event_name">Event Name</th>
-                    <th id="card_token">Card Token</th>
+                    <th id="rule_action_id">Rule Action ID</th>
+                    <th id="Event">Event</th>
+                    <th id="Card Id">Card ID</th>
                     <th id="description">Description</th>
-                    <th id="user_id">User ID</th>
-                    <th id="user_type">User Type</th>
-                    <th id="start_freeze_time">Start freeze time</th>
-                    <th id="end_freeze_time">End freeze time</th>
+                    <th id="start_active_ticket_time">Start freeze time</th>
+                    <th id="end_active_ticket_time">End freeze time</th>
                     <th id="created_timestamp">Created date</th>
                     <th id="last_updated_timestamp">Last update date</th>
                     <th id="is_deleted">Deleted</th>
@@ -39,16 +37,15 @@
                 </thead>
                 <tbody>
                 {% for freezeCard in data %}
-                           <tr id="row-{{ freezeCard.id }}">
-                            <td class="col-sm-1">{{ freezeCard.id }}</td>
+                    {% if freezeCard.action == 'unstop card' %}
+                           <tr id="row-{{ freezeCard.ticket_id }}">
                             <td class="col-sm-1">{{ freezeCard.ticket_id }}</td>
-                            <td class="col-sm-1">{{ freezeCard.event_name}}</td>
-                            <td class="col-sm-1">{{ freezeCard.card_token}}</td>
+                            <td class="col-sm-1">{{ freezeCard.rule_action_id }}</td>
+                            <td class="col-sm-1">{{ freezeCard.action}}</td>
+                            <td class="col-sm-1">{{ freezeCard.card_id}}</td>
                             <td class="col-sm-1">{{ freezeCard.description}}</td>
-                            <td class="col-sm-1">{{ freezeCard.user_id}}</td>
-                            <td class="col-sm-1">{{ freezeCard.user_type}}</td>
-                            <td class="col-sm-1">{{ freezeCard.start_freeze_timestamp}}</td>
-                            <td class="col-sm-1">{{ freezeCard.end_freeze_timestamp}}</td>
+                            <td class="col-sm-1">{{ freezeCard.start_active_ticket_timestamp}}</td>
+                            <td class="col-sm-1">{{ freezeCard.end_active_ticket_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.created_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.last_updated_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.is_deleted}}</td>
@@ -56,16 +53,15 @@
                                 {% if not freezeCard.is_deleted %}
                                     <button type="button"
                             class="btn btn-danger mb5 btn-outline btn-xs"
-                            id="freeze-card-btn-delete-{{ freezeCard.id }}"
-                            data-url="{% url 'cards:delete_card_freeze' freezeCard.id %}"
-                            onclick="unFreezeCard('{{ freezeCard.id }}')">
+                            id="freeze-card-btn-delete-{{ freezeCard.ticket_id }}"
+                            data-url="{% url 'cards:delete_card_freeze' freezeCard.ticket_id %}"
+                            onclick="unFreezeCard('{{ freezeCard.ticket_id }}')">
                             <span class="small">UnFreeze</span>
                             </button>
                                 {% endif %}
-
                            </td>
-
                         </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
