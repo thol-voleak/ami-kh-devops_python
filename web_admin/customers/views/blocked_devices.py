@@ -35,7 +35,7 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start showing Blocked Devices page ==========')
         context = super(BlockedDevicesList, self).get_context_data(**kwargs)
         param = {}
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BLOCKED_DEVICES_LIST,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_TICKET,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=param)
@@ -43,7 +43,11 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if is_success:
             self.logger.info("Response_content_count:{}".format(len(data)))
             context['devices'] = data
-            context['total_devices'] = len(data)
+            device_count = 0
+            for ticket in data:
+                if ticket['action'] == 'register customer':
+                    device_count += 1
+            context['total_devices'] = device_count
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{}".format(data))

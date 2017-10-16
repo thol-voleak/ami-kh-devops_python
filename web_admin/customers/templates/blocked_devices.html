@@ -16,23 +16,27 @@
                     <thead>
                     <tr>
                         <th id="ticket_id">Ticket ID</th>
+                        <th id="rule_action_id">Rule Action ID</th>
                         <th id="device_id">Device ID</th>
                         <th id="start_block">Start Block</th>
                         <th id="end_block">End Block</th>
-                        <th id="event_name">Event</th>
+                        <th id="action">Event</th>
                         <th id="description">Description</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for device in devices %}
+                        {% if device.action == "register customer" %}
                         <tr>
                             <td>{{ device.ticket_id|default_if_none:'' }}</td>
+                            <td>{{ device.rule_action_id|default_if_none:'' }}</td>
                             <td>{{ device.device_id|default_if_none:'' }}</td>
-                            <td>{{ device.start_block_timestamp|default_if_none:'' }}</td>
-                            <td>{{ device.end_block_timestamp|default_if_none:'' }}</td>
-                            <td>{{ device.event_name|default_if_none:'' }}</td>
+                            <td>{{ device.start_active_ticket_timestamp|default_if_none:'' }}</td>
+                            <td>{{ device.end_active_ticket_timestamp|default_if_none:'' }}</td>
+                            <td>{{ device.action|default_if_none:'' }}</td>
                             <td>{{ device.description|default_if_none:'' }}</td>
                         </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
