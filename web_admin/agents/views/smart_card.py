@@ -1,14 +1,15 @@
 from braces.views import GroupRequiredMixin
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
+from web_admin import setup_logger, ajax_functions
 from django.contrib import messages
-from web_admin.api_settings import AGENT_SMARTCARD_PATH, ADD_AGENT_SMART_CARD_PATH
+from web_admin.api_settings import AGENT_SMARTCARD_PATH, ADD_AGENT_SMART_CARD_PATH, DELETE_AGENT_SMART_CARD_PATH
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from web_admin.api_logger import API_Logger
 from django.conf import settings
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -46,6 +47,7 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = {
             "smartcards": agent_smartcard,
             'permissions': permissions,
+            'agent_id': agent_id
         }
         self.logger.info('========== Finished getting agent smartcard ==========')
         return render(request, self.template_name, context)
@@ -75,6 +77,26 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'permissions': permissions,
             }
             return render(request, self.template_name, context)
+
+    def delete(self, request, *args, **kwargs):
+        if not check_permissions_by_user(request.user, 'CAN_DELETE_AGENT_SMARTCARD'):
+            return render(request, 'web/permission-denied.html')
+
+        context = super(SmartCardView, self).get_context_data(**kwargs)
+        self.logger.info("========== Start delete smartcard ==========")
+        agent_id = context.get('agent_id')
+        smartcard_id = context.get('smartcard_id')
+
+        url = DELETE_AGENT_SMART_CARD_PATH.format(agent_id, smartcard_id)
+        result = ajax_functions._delete_method(request, url, "", self.logger)
+        self.logger.info('========== Finish delete smartcard ==========')
+        if json.loads(result.content)['status'] == 2:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                'Delete agent smartcard successfully'
+            )
+        return result
 
     def _get_agent_smartcard(self, agent_id):
         params = {"agent_id": agent_id}

@@ -53,6 +53,7 @@ GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
 AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
 ADD_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards'
+DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards/{}'
 
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
