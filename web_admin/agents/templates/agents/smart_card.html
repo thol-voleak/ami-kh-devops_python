@@ -8,6 +8,11 @@
         <h3>Agent SmartCard</h3>
     </div>
 
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
+
     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
         <div class="col-xs-12">
@@ -68,7 +73,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Number *</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" name="number" id="txt_number" required value="{{ params.card_number|default_if_none:'' }}"/>
+                            <input type="text" class="form-control" name="number" id="txt_number" required value="{{ params.card_number|default_if_none:'' }}"/>
                         </div>
                     </div>
 
@@ -134,6 +139,26 @@
 
 <script>
 
+function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-success");
+        $('#msg-update-success').addClass("alert-danger");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+    }
+
+function showSuccessMessage(msg) {
+
+    $("#alert-msg").text(msg)
+    $('#msg-update-success').removeClass("alert-danger");
+    $('#msg-update-success').addClass("alert-success");
+    $("#msg-update-success").prop("hidden", false);
+    $("#msg-update-success").fadeIn(1000);
+
+}
+
 function deleteSmartCard(id) {
     swal({
             title: 'Are you sure you want to delete SmartCard number "' + id + '"?',
@@ -154,10 +179,13 @@ function deleteSmartCard(id) {
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                 },
                 success: function (response) {
-                if (response.status == 2) {
+                    if (response.status == 2) {
                         // success
                         window.location.replace(url);
-                }}
+                    } else if(response.status == 'timeout') {
+                         showErrorMessage("Got error and can't delete smartcard");
+                    }
+                }
             });
         });
 }
