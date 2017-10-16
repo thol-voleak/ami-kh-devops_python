@@ -186,7 +186,12 @@ function deleteSmartCard(id) {
                         window.location.replace(url);
                     } else if(response.status == 'timeout') {
                          showErrorMessage("Got error and can't delete smartcard");
+                    } else {
+                        showErrorMessage("Got error and can't delete smartcard");
                     }
+                },
+                error: function (err) {
+                    showErrorMessage("Got error and can't delete smartcard");
                 }
             });
         });
