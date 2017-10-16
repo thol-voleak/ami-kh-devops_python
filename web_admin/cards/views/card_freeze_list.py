@@ -57,7 +57,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         self.logger.info('========== Start delete freeze card ==========')
         context = super(CardFreezeList, self).get_context_data(**kwargs)
         freeze_card_id = context['id']
-        url = api_settings.DELETE_FREEZE_CARD_PATH.format(card_id=freeze_card_id)
+        url = api_settings.DELETE_FREEZE_CARD_PATH.format(ticket_id=freeze_card_id)
 
         result = ajax_functions._delete_method(request=request,
                                                api_path=url,
@@ -78,7 +78,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         return result
 
     def get_freeze_card_list(self):
-        url = api_settings.SEARCH_FREEZE_CARD_PATH
+        url = api_settings.SEARCH_TICKET
         params = {}
         is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
                                                                            loggers=self.logger, params=params)

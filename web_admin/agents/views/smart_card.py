@@ -42,6 +42,7 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         permissions = {
             'is_perm_add_smart_card': check_permissions_by_user(self.request.user, "CAN_ADD_AGENT_SMARTCARD"),
+            'is_perm_del_smart_card': check_permissions_by_user(self.request.user, "CAN_DELETE_AGENT_SMARTCARD"),
         }
 
         context = {
@@ -71,11 +72,13 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             agent_smartcard = self._get_agent_smartcard(agent_id)
             permissions = {
                 'is_perm_add_smart_card': check_permissions_by_user(self.request.user, "CAN_ADD_AGENT_SMARTCARD"),
+                'is_perm_del_smart_card': check_permissions_by_user(self.request.user, "CAN_DELETE_AGENT_SMARTCARD"),
             }
             context = {
                 "smartcards": agent_smartcard,
                 'permissions': permissions,
-                "params": params
+                "params": params,
+                "agent_id": agent_id
             }
             return render(request, self.template_name, context)
 
