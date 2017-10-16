@@ -8,6 +8,11 @@
         <h3>Agent SmartCard</h3>
     </div>
 
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
+
     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
         <div class="col-xs-12">
@@ -68,7 +73,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Number *</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" name="number" id="txt_number" required value="{{ params.card_number|default_if_none:'' }}"/>
+                            <input type="text" class="form-control" name="number" id="txt_number" required value="{{ params.card_number|default_if_none:'' }}"/>
                         </div>
                     </div>
 
@@ -114,7 +119,10 @@
                                             <td>{{ smartcard.created_timestamp|default_if_none:'' }}</td>
                                             <td>{{ smartcard.last_updated_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-1">
-                                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ smartcard.is_deleted|yesno:"hidden,no-hidden" }}">Delete</button>
+                                                {% if permissions.is_perm_del_smart_card %}
+                                                <button id="btn_delete_{{ smartcard.id }}" onclick="deleteSmartCard('{{ smartcard.id }}', '{{ smartcard.card_number }}')" data-url="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
+                                                        type='button' class="btn btn-outline mb5 btn-xs btn-danger {{ smartcard.is_deleted|yesno:"hidden,no-hidden" }}">Delete</button>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -127,4 +135,74 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+function showErrorMessage(msg) {
+        console.log('showErrorMessage: ' + msg);
+
+        $("#alert-msg").text(msg)
+        $('#msg-update-success').removeClass("alert-success");
+        $('#msg-update-success').addClass("alert-danger");
+        $("#msg-update-success").prop("hidden", false);
+        $("#msg-update-success").fadeIn(1000);
+    }
+
+function showSuccessMessage(msg) {
+
+    $("#alert-msg").text(msg)
+    $('#msg-update-success').removeClass("alert-danger");
+    $('#msg-update-success').addClass("alert-success");
+    $("#msg-update-success").prop("hidden", false);
+    $("#msg-update-success").fadeIn(1000);
+
+}
+
+function deleteSmartCard(id, num) {
+    swal({
+            title: 'Are you sure you want to delete SmartCard number "' + num + '"?',
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            closeOnConfirm: true
+        },
+        function () {
+            var url = $("#btn_delete_" + id).data("url");
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.status === 1) {
+                        // Logout
+                        var url1 = window.location.href;
+                        var url2 = window.location.origin;
+                        var url_original = url1.replace(url2, "");
+                        var url3 = window.location.origin + "/admin-portal/authentications/login/" + "?next=" + url_original;
+                        window.location.replace(url3);
+                    } else if (response.status === 2) {
+                        // success
+                        window.location.replace(url);
+                    } else if(response.status == 'timeout') {
+                         showErrorMessage("Got error and can't delete smartcard");
+                    } else {
+                        showErrorMessage("Got error and can't delete smartcard");
+                    }
+                },
+                error: function (err) {
+                    showErrorMessage("Got error and can't delete smartcard");
+                }
+            });
+        });
+}
+
+</script>
 {% endblock %}

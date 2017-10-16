@@ -340,12 +340,12 @@
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Partner</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_PARTNER_RECONCILE"%}
-                            <li class="{% if url_name == 'reconcile_partner_file_list' %}active{% endif %}">
+                            <li class="{% if 'partner/file-list' in request.path %}active{% endif %}">
                                 <a href="{% url 'reconcile:reconcile_partner_file_list' %}"> <span>File List</span> </a>
                             </li>
                             {% endif %}
                             {% if request.user|has_permission_name:"CAN_GET_RECONCILE_REPORT_PARTNER_RECONCILE"%}
-                            <li class="{% if url_name == 'reconcile_partner_report' %}active{% endif %}">
+                            <li class="{% if 'partner/report' in request.path %}active{% endif %}">
                                 <a href="{% url 'reconcile:reconcile_partner_report' %}"> <span>Reconcile Report</span> </a>
                             </li>
                             {% endif %}
@@ -359,12 +359,12 @@
                         <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source of fund</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_SOF_RECONCILE"%}
-                            <li class="{% if url_name == 'reconcile_sof_file_list' %}active{% endif %}">
+                            <li class="{% if 'sof/file-list' in request.path %}active{% endif %}">
                                 <a href="{% url 'reconcile:reconcile_sof_file_list' %}"> <span>File List</span> </a>
                             </li>
                             {% endif %}
                             {% if request.user|has_permission_name:"CAN_GET_RECONCILE_REPORT_SOF_RECONCILE"%}
-                            <li class="{% if url_name == 'reconcile_sof_report' %}active{% endif %}">
+                            <li class="{% if 'sof/report' in request.path %}active{% endif %}">
                                 <a href="{% url 'reconcile:reconcile_sof_report' %}"> <span>Reconcile Report</span> </a>
                             </li>
                             {% endif %}
@@ -380,7 +380,7 @@
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Balance Adjustment</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"SYS_BAL_ADJUST_HISTORY"%}
-                    <li class="{% if url_name == 'balance_adjustment_list' %}active{% endif %}">
+                    <li class="{% if url_name == 'balance_adjustment_list' or url_name == 'balance_adjustment_detail' %}active{% endif %}">
                         <a href="{% url 'balance_adjustment:balance_adjustment_list' %}"> <span>View and Approve Adjustment Requests</span> </a>
                     </li>
                     {% endif %}
