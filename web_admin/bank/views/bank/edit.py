@@ -1,7 +1,6 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
-from bank_sofs.views.banks_client import BanksClient
+from bank.views.banks_client import BanksClient
 from web_admin import setup_logger, api_settings
-from web_admin.api_settings import GET_ALL_CURRENCY_URL
 from web_admin.restful_methods import RESTfulMethods
 
 from django.conf import settings
@@ -111,7 +110,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.SUCCESS,
                 'Update bank successfully'
             )
-            return redirect('bank_sofs:bank_sofs_list')
+            return redirect('bank:bank_sofs_list')
         else:
             if data == 'timeout':
                 messages.error(request, "Timeout updating configuration, please try again or contact technical support")

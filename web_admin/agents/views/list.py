@@ -20,7 +20,7 @@ STATUS = {
 
 
 class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
-    group_required = "CAN_MANAGE_AGENT_REGISTRATION"
+    group_required = "CAN_VIEW_AGENT_LIST"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -110,7 +110,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context.update({'unique_reference': unique_reference,
                         'email': email,
                         'primary_mobile_number': primary_mobile_number,
-                        'kyc_status': kyc_status})
+                        'kyc_status': kyc_status,
+                        'is_permission_search': check_permissions_by_user(self.request.user,"CAN_SEARCH_AGENT")
+                        })
 
         # Get Data
         data, success = self._get_agents(params=body)
@@ -187,7 +189,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         else:
             context['data'] = data
             context['search_count'] = len(data)
-
+        context['is_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
         self.update_session(request, None, unique_reference, email,
                             primary_mobile_number, kyc_status,
                             new_from_created_timestamp,

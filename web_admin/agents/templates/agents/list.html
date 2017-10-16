@@ -92,9 +92,11 @@
                        value="{{ to_created_timestamp|default_if_none:'' }}"
                        id="dtp_to">
             </div>
+            {% if is_permission_search %}
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
+            {% endif %}
         </div>
         <label class="pull-right" id="lbl_total">{{ search_count }}</label>
         <label class="pull-right" >Total:&nbsp;</label>
@@ -115,7 +117,7 @@
                     <th id="kyc">KYC</th>
                     <th id="created_at">Created Date</th>
                     <th id="modified_at">Modified Date</th>
-                    <th id="status">Status</th>
+                    <th id="status">Is suspended</th>
                     <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
@@ -130,6 +132,13 @@
                             <td class="col-sm-5"><del>{{ agent.primary_identify_id|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.primary_mobile_number|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.email|default_if_none:'' }}</del></td>
+                            <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-3"></td>
                         {% else %}
                             <td class="col-sm-1">{{ agent.id }}</td>
                             <td class="col-sm-3">{{ agent.firstname|default_if_none:'' }}</td>
@@ -137,33 +146,32 @@
                             <td class="col-sm-5">{{ agent.primary_identify_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.email|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-3">
+                                {% if agent.is_permission_view %}
+                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
+                                {% endif %}
+                                {% if agent.is_permission_edit %}
+                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
+                                {% endif %}
+                                {% if agent.is_permission_delete %}
+                                    <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger " onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
+                                {% endif %}
+                                {% if agent.is_permission_identity %}
+                                    <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
+                                {% endif %}
+                                {% if agent.is_permission_smartcard %}
+                                    <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
+                                {% endif %}
+                            </td>
                         {% endif %}
-                        <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{% if not agent.is_suspended %}Active{% else %}Suspended{% endif %}</td>
-                        <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
-                        <td class="col-sm-3">
-                            {% if agent.is_permission_view %}
-                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
-                            {% endif %}
-                            {% if agent.is_permission_edit %}
-                                <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
-                            {% endif %}
-                            {% if agent.is_permission_delete %}
-                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
-                            {% endif %}
-                            {% if agent.is_permission_identity %}
-                                <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
-                                        onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
-                            {% endif %}
-                            {% if agent.is_permission_smartcard %}
-                                <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
-                                        onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
-                            {% endif %}
-
-                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

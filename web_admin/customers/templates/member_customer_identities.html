@@ -51,7 +51,7 @@
                                     <div class="btn-group">
                                     <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
                                             data-url="{% url 'customers:reset-identity-password' customer_id identity.id %}"
-                                            onClick="reset()">ResetPassword</button>
+                                            onClick="reset(this)">ResetPassword</button>
                                     </div>
                                 {% endif %}
                             </td>
@@ -94,7 +94,7 @@
 
     }
 
-    function reset() {
+    function reset(e) {
         swal({
                 title: "Confirm password reset",
                 type: "warning",
@@ -110,7 +110,7 @@
                     url1 = window.location.href;
                     url2 = window.location.origin;
                     var url_original = url1.replace(url2, "");
-                    var url = $("#btn_reset_password").data("url");
+                    var url = e.getAttribute('data-url');
                     $.ajax({
                         url: url,
                         type: "GET",
