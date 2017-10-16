@@ -120,11 +120,11 @@ class SmartCardView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.ERROR,
                 "Can not add SmartCard for this user, please try again or contact technical support"
             )
-        elif status_code == 'invalid_request':
+        elif status_message == "Invalid agent smartcard":
             messages.add_message(
                 self.request,
                 messages.ERROR,
-                "Invalid agent smartcard"
+                status_message
             )
         else:
             messages.add_message(
