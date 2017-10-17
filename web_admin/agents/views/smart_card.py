@@ -89,7 +89,7 @@ class SmartCardView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            timeout=settings.GLOBAL_TIMEOUT)
 
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
-                                status_code=status_code)
+                                status_code=status_code, is_getting_list=True)
 
         if not is_success:
             messages.add_message(
