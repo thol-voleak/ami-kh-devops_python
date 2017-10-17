@@ -64,7 +64,7 @@ class SmartCardDelete(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             messages.add_message(
                 self.request,
                 messages.ERROR,
-                "Got error and can't delete smartcard"
+                "Got error and can not delete smartcard"
             )
 
         return redirect('agents:agent-smartcard', agent_id=agent_id)
