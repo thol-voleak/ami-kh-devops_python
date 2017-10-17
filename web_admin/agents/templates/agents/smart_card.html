@@ -112,19 +112,21 @@
                                 </thead>
                                     <tbody>
                                     {% for smartcard in smartcards %}
-                                        <tr>
-                                            <td>{{ smartcard.id|default_if_none:'' }}</td>
-                                            <td>{{ smartcard.card_number|default_if_none:'' }}</td>
-                                            <td>{{ smartcard.card_serial|default_if_none:'' }}</td>
-                                            <td>{{ smartcard.created_timestamp|default_if_none:'' }}</td>
-                                            <td>{{ smartcard.last_updated_timestamp|default_if_none:'' }}</td>
-                                            <td class="col-sm-1">
-                                                {% if permissions.is_perm_del_smart_card %}
-                                                <button id="btn_delete" onclick="deleteSmartCard(this.value, '{{ smartcard.card_number }}')" value="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
-                                                        type='button' class="btn btn-outline mb5 btn-xs btn-danger {{ smartcard.is_deleted|yesno:"hidden,no-hidden" }}">Delete</button>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
+                                        {% if not smartcard.is_deleted %}
+                                            <tr>
+                                                <td>{{ smartcard.id|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.card_number|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.card_serial|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.created_timestamp|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.last_updated_timestamp|default_if_none:'' }}</td>
+                                                <td class="col-sm-1">
+                                                    {% if permissions.is_perm_del_smart_card %}
+                                                    <button id="btn_delete" onclick="deleteSmartCard(this.value, '{{ smartcard.card_number }}')" value="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
+                                                            type='button' class="btn btn-outline mb5 btn-xs btn-danger">Delete</button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
                                     {% endfor %}
                                     </tbody>
                             </table>
