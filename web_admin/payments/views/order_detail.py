@@ -13,6 +13,25 @@ from authentications.utils import check_permissions_by_user, get_correlation_id_
 
 logger = logging.getLogger(__name__)
 
+STATUS_ORDER = {
+    -1: 'FAIL',
+     0: 'CREATED',
+     1: 'LOCKING',
+     2: 'EXECUTED',
+     3: 'ROLLED_BACK',
+     4: 'TIME_OUT',
+}
+
+IS_DELETED = {
+    True: 'Yes',
+    False: 'No',
+}
+
+SOF_TYPE = {
+    1: 'Bank',
+    2: 'Cash',
+    3: 'Card'
+}
 
 class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "payments/order_detail.html"
@@ -51,6 +70,12 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Something went wrong"
             )
+        if data:
+            data['status'] = STATUS_ORDER.get(data['status'], 'UN_KNOWN')
+            data['is_deleted'] = IS_DELETED.get(data.get('is_deleted'))
+            data['initiator_user']['sof_type_id'] = SOF_TYPE.get(data['initiator_user']['sof_type_id'])
+            data['payer_user']['sof_type_id'] = SOF_TYPE.get(data['payer_user']['sof_type_id'])
+            data['payee_user']['sof_type_id'] = SOF_TYPE.get(data['payee_user']['sof_type_id'])
         context['data'] = data
         self.logger.info('Response_content: {}'.format(data))
         self.logger.info('========== End getting order detail ==========')
