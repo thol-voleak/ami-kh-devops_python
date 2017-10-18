@@ -142,6 +142,6 @@ class RestFulClient:
                 loggers.error(e)
                 raise Exception(response)
         except requests.exceptions.Timeout:
-            is_success, status_code, data = False, 'Timeout', 'timeout'
+            is_success, status_code, status_message = False, 'Timeout', 'timeout'
 
         return is_success, status_code, status_message
