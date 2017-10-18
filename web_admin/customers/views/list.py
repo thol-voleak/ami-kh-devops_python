@@ -6,13 +6,18 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from datetime import datetime , timedelta
 from braces.views import GroupRequiredMixin
+from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.restful_client import RestFulClient
+from authentications.apps import InvalidAccessToken
+
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_SEARCH_CUSTOMER"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -32,6 +37,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         params = {}
+        customers = {}
+        is_success = False
+        status_code = ''
+        url = api_settings.MEMBER_CUSTOMER_PATH
         context = super(ListView, self).get_context_data(**kwargs)
         #set default date
         to_created_timestamp = datetime.now()
@@ -53,7 +62,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
 
         self.logger.info('========== Start searching Customer ==========')
-        url = api_settings.MEMBER_CUSTOMER_PATH
+        opening_page_index = request.GET.get('current_page_index')
         customer_id = request.GET.get('customer_id')
         unique_reference = request.GET.get('unique_reference')
         kyc_status = request.GET.get('kyc_status')
@@ -65,8 +74,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if customer_id is None and unique_reference is None \
            and kyc_status is None and citizen_card_id is None \
            and email is None and mobile_number is None:
-           data = {}
+           customers = {}
         else:
+            params['paging'] = True
+            params['page_index'] = int(opening_page_index)
             if customer_id:
                 params['id'] = customer_id
                 context['customer_id'] = customer_id
@@ -97,24 +108,38 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
                 params['to_created_timestamp'] = new_to_created_timestamp
                 context['to_created_timestamp'] = to_created_timestamp
-            data, success = self._post_method(api_path= url,
-                                              func_description="search member customer",
-                                              logger=logger,
-                                              params=params)
+            is_success, status_code, status_message, data = RestFulClient.post(
+                                                    url= url,
+                                                    headers=self._get_headers(),
+                                                    loggers=self.logger,
+                                                    params=params)
+        if is_success:
+            customers = data['customers']
+            page = data['page']
+            count = len(customers)
+            self.logger.info("Response_content_count:{}".format(count))
+
             is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_DETAIL_MEMBER_CUSTOMER_PROFILE')
             is_permission_update = check_permissions_by_user(self.request.user,'CAN_EDIT_MEMBER_CUSTOMER_PROFILE')
             is_permission_sof_bank = check_permissions_by_user(self.request.user, 'CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE')
             is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_IDENTITY_CUSTOMER')
             is_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_CUSTOMER')
-            for i in data:
+            for i in data['customers']:
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_update'] = is_permission_update
                 i['is_permission_sof_bank'] = is_permission_sof_bank
                 i['is_permission_identity'] = is_permission_identity
                 i['is_permission_suspend'] = is_permission_suspend
 
-        context['search_count'] = len(data)
-        context['data'] = data
+            context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+
+
+        context['data'] = customers
+            
         self.logger.info('========== Finished searching Customer ==========')
         return render(request, 'member_customer_list.html', context)
 
