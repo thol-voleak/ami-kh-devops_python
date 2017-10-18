@@ -113,6 +113,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                     headers=self._get_headers(),
                                                     loggers=self.logger,
                                                     params=params)
+            self.logger.info("Params: {} ".format(params))
         if is_success:
             customers = data['customers']
             page = data['page']
