@@ -110,10 +110,8 @@
                         <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
                     </div>
                 </div>
-                {% if paginator %}
-                <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
+                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                 <label class="pull-right" >Total Customers found:&nbsp;</label>
-                {% endif %}
             </div>
         </form>
 

@@ -75,6 +75,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
            and kyc_status is None and citizen_card_id is None \
            and email is None and mobile_number is None:
            customers = {}
+           context['search_count'] = 0
         else:
             params['paging'] = True
             params['page_index'] = int(opening_page_index)
@@ -133,6 +134,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 i['is_permission_suspend'] = is_permission_suspend
 
             context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
+            context['search_count'] = page['total_elements']
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{}".format(data))
