@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 {% if paginator %}
-                <label class="col-sm-12" style="text-align:right"><b>(Total {{ paginator.total_elements }})</b></label>
+                <label id ="lbl_total" class="col-sm-12" style="text-align:right"><b>Total Customers found:{{ paginator.total_elements }}</b></label>
                 {% endif %}
             </div>
         </form>
