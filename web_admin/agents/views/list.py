@@ -1,14 +1,14 @@
 from braces.views import GroupRequiredMixin
-
+from web_admin.utils import calculate_page_range_from_page_info
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import SEARCH_AGENT
 from web_admin.restful_methods import RESTfulMethods
-
 from datetime import datetime
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
+from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         # Build Body
         body = {}
+        body['paging'] = True
+        body['page_index'] = 1
         redirect_from_delete =  self.request.session.pop('agent_redirect_from_delete', None)
         if redirect_from_delete:
             unique_reference = self.request.session.pop('agent_unique_reference', None)
@@ -121,8 +123,12 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update({'msgs': {'get_list_timeout': 'Search timeout, please try again'}})
                 context['search_count'] = 0
         else:
-            context['data'] = data
-            context['search_count'] = len(data)
+            agents_list = data.get("agents", [])
+
+            page = data.get("page", {})
+            context.update(
+                {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page)})
 
         self.update_session(request, None, unique_reference, email, primary_mobile_number, kyc_status,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -132,7 +138,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
+        if not check_permissions_by_user(request.user, 'CAN_SEARCH_AGENT'):
+            return render(request, 'web/permission-denied.html')
         # Get params
         agent_id = request.POST.get('agent_id')
         unique_reference = request.POST.get('unique_reference')
@@ -141,10 +148,13 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         kyc_status = request.POST.get('kyc_status')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
+        opening_page_index = request.POST.get('current_page_index')
 
         # Build Body
         context = {}
         body = {}
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
         if agent_id:
             body['id'] = int(agent_id)
         if unique_reference:
@@ -187,8 +197,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     'get_list_timeout': 'Search timeout, please try again'}})
                 context['search_count'] = 0
         else:
-            context['data'] = data
-            context['search_count'] = len(data)
+            agents_list = data.get("agents", [])
+            page = data.get("page", {})
+            context.update(
+                {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
         context['is_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
         self.update_session(request, None, unique_reference, email,
                             primary_mobile_number, kyc_status,
@@ -200,20 +212,24 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching agent ==========')
 
         api_path = SEARCH_AGENT
-        data, success = self._post_method(
-            api_path=api_path,
-            func_description="Search Agent",
-            logger=logger,
-            params=params
-        )
+        success, status_code, status_message, data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data.get('agents', []),
+                                status_code=status_code, is_getting_list=True)
+
         if success:
             is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
             is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
             is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
             is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_IDENTITIES')
             is_permission_smartcard = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SMARTCARD')
-
-            for i in data:
+            agents = data.get('agents', [])
+            for i in agents:
                 i['is_permission_view'] = is_permission_view
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
