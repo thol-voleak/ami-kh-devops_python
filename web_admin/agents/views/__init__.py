@@ -27,6 +27,7 @@ class AgentAPIService(RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                           func_description="Agent detail",
                                           logger=logger, params=body)
+        data = data.get('agents', [])
         context = {
             'agent': data[0],
             'agent_id': agent_id,
