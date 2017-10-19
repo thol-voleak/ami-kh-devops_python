@@ -24,5 +24,5 @@ class GetCommandNameAndServiceNameMixin(RESTfulMethods):
     def _get_specific_ids(self):
         data, success = self._post_method(api_settings.AGENT_LIST_PATH, 'Specific IDs', logger)
         if success:
-            return [i.get('id') for i in data if not i.get('is_deleted')]
+            return [i.get('id') for i in data['agents'] if not i.get('is_deleted')]
         return data
