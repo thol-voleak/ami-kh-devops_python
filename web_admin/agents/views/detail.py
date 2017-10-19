@@ -86,8 +86,10 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                           func_description="Agent detail",
                                           logger=logger, params=body)
+        agents_list = data.get('agents', [])
+
         context = {
-            'agent': data[0],
+            'agent': agents_list[0],
             'agent_id': agent_id,
             'msgs': {
                 'get_msg': self.request.session.pop('agent_registration_msg', None),
