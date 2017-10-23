@@ -59,6 +59,7 @@
                         <th id="expiry_date">Expiry Date</th>
                         <th id="is_stopped">Is Stopped</th>
                         <th id="created_date">Created Date</th>
+                        <th id="action">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,6 +75,15 @@
                             <td class="col-sm-2">{{ card.expiry_date|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.is_stopped|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-3">
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-primary"
+                                   role="button"
+                                   id="btn_freeze"
+                                   href="">
+                                    <span class="small">Freeze</span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
