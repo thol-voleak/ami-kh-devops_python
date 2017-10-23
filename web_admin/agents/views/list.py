@@ -117,9 +117,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         })
 
         # Get Data
-        data, success = self._get_agents(params=body)
+        data, success, status_message = self._get_agents(params=body)
         if not success:
-            if data == 'timeout':
+            if status_message == 'timeout':
                 context.update({'msgs': {'get_list_timeout': 'Search timeout, please try again'}})
                 context['search_count'] = 0
         else:
@@ -190,9 +190,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['to_created_timestamp'] = to_created_timestamp
 
         # Get Data
-        data, success = self._get_agents(params=body)
+        data, success, status_message = self._get_agents(params=body)
         if not success:
-            if data == 'timeout':
+            if status_message == 'timeout':
                 context.update({'msgs': {
                     'get_list_timeout': 'Search timeout, please try again'}})
                 context['search_count'] = 0
@@ -237,7 +237,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 i['is_permission_smartcard'] = is_permission_smartcard
 
         self.logger.info('========== Finished searching agent ==========')
-        return data, success
+        return data, success, status_message
 
     def update_session(self, request, message=None, unique_reference=None, email=None, primary_mobile_number=None,
                        kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False):
