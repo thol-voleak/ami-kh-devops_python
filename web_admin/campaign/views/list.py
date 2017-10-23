@@ -35,7 +35,6 @@ class CamPaignList(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         data = self.get_campaigns()
-        print(data)
         context = {
             'data': data
         }

@@ -28,7 +28,7 @@
             {% csrf_token %}
             
             <div class="no-more-tables">
-                <table id='tbl_card_design' class="table table-bordered table-striped mb0">
+                <table id='tbl_campaign' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
                         <th id="ddl_card_design_number">Campaign ID</th>
@@ -39,7 +39,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% if request.user|has_permission_name:"SYS_VIEW_LIST_CARD_DESIGN"%}
+                    {# {% if request.user|has_permissixn_xname:"SYS_VIEW_LIST_CARD_DESIGN"%} #}
                     {% for i in data %}
                         <tr>
                             <td>{{ i.id|default_if_none:'' }}</td>
@@ -49,7 +49,7 @@
                             <td class="col-sm-2">
                                 <!-- Rounded switch -->
                                 <label class="switch switch-sm">
-                                  <input type="checkbox" checked>
+                                  <input type="checkbox" id="tog_status" {%if i.is_active %}checked{%endif%}>
                                   <span class="slider round">
                                       <i class="handle"></i>
                                   </span>
@@ -57,7 +57,7 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    {%endif%}
+                    {# {%endif%} #}
                     </tbody>
                 </table>
             </div>
