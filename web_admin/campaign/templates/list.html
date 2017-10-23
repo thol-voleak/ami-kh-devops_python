@@ -39,7 +39,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {# {% if request.user|has_permissixn_xname:"SYS_VIEW_LIST_CARD_DESIGN"%} #}
                     {% for i in data %}
                         <tr>
                             <td>{{ i.id|default_if_none:'' }}</td>
@@ -57,7 +56,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    {# {%endif%} #}
                     </tbody>
                 </table>
             </div>

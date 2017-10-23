@@ -15,11 +15,10 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class CamPaignList(TemplateView, GetHeaderMixin):
+class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "list.html"
-    group_required = "SYS_VIEW_LIST_CARD_DESIGN"
-    url = api_settings.SEARCH_CARD_DESIGN
+    group_required = "CAN_VIEW_CAMPAIGNS"
     login_url = 'web:permission_denied'
     logger = logger
 
