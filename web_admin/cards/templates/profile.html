@@ -76,6 +76,7 @@
                             <td class="col-sm-2">{{ card.is_stopped|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-3">
+                                {% if permissions.CAN_FREEZE_CARD %}
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-primary"
                                    role="button"
@@ -83,6 +84,7 @@
                                    href="">
                                     <span class="small">Freeze</span>
                                 </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

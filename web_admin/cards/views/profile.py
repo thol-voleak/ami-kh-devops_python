@@ -65,12 +65,16 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
         else:
             result_data = data
 
+        permissions = {}
+        permissions['CAN_FREEZE_CARD'] = check_permissions_by_user(self.request.user, 'CAN_FREEZE_CARD')
+
         context = {'data': result_data,
                    'card_identifier': card_identifier,
                    'card_token': card_token,
                    'user_id': user_id,
                    'user_type': user_type,
                    'search_count': len(data),
+                   'permissions': permissions
                    }
 
         self.logger.info('========== End search card ==========')
