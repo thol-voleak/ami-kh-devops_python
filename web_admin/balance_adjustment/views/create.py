@@ -3,7 +3,6 @@ import ast
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
-from django.contrib import messages
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -43,10 +42,8 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         self.logger.info('========== Start create order balance adjustment ==========')
         agent_id = request.POST.get('agent_id')
         initiator_source_of_fund_id = request.POST.get('initiator_source_of_fund_id')
-        product_name = request.POST.get('product_name')
-        product_reference_1 = request.POST.get('product_reference_1')
-        product_reference_2 = request.POST.get('product_reference_2')
-        product_reference_3 = request.POST.get('product_reference_3')
+        ref_order_id = request.POST.get('ref_order_id')
+        reason = request.POST.get('reason_for_adjustment')
         payer_id = request.POST.get('payer_id')
         payer_type = request.POST.get('payer_type')
         payer_source_of_fund_id = request.POST.get('payer_source_of_fund_id')
@@ -58,54 +55,43 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         service = ast.literal_eval(service)
         service_name = service['service_name']
         service_id = service['service_id']
-        currency = service['currency']
+        user_type = {'customer': 1, 'agent': 2}
 
         params = {
+            "product_service_id": service_id,
+            "reference_order_id": ref_order_id,
+            "reason": reason,
             "initiator": {
                 "user_id": agent_id,
-                "user_type": "agent",
-                "ref": None,
+                "user_type": {
+                    'id': 2,   # always be agent
+                },
                 "sof": {
                     "id": initiator_source_of_fund_id,
-                    "type_id": 2,
-                    "currency":""
+                    "type_id": 2                    # always be cash
                 }
             },
-            "order_create_request": {
-                "ext_transaction_id": "",
-                "product_service": {
-                    "id": service_id,
-                    "name": service_name,
-                    "currency": currency
+            "payer_user": {
+                "user_id": payer_id,
+                "user_type": {
+                    'id': user_type[payer_type]
                 },
-                "product": {
-                    "product_name": product_name,
-                    "product_ref1": product_reference_1,
-                    "product_ref2": product_reference_2,
-                    "product_ref3": product_reference_3,
+                "sof": {
+                    "id": payer_source_of_fund_id,
+                    "type_id": 2                    # always be cash
+                }
+            },
+            "payee_user": {
+                "user_id": payee_id,
+                "user_type": {
+                    'id': user_type[payee_type]
                 },
-                "payer_user": {
-                    "user_id": payer_id,
-                    "user_type": payer_type,
-                    "ref": None,
-                    "sof": {
-                        "id": payer_source_of_fund_id,
-                        "type_id": 2,
-                        "currency":""
-                    }
-                },
-                "payee_user": {
-                    "user_id": payee_id,
-                    "user_type": payee_type,
-                    "ref": None,
-                    "sof": {
-                        "id": payee_source_of_fund_id,
-                        "type_id": 2,
-                        "currency":""
-                    }
-                },
-                "amount": amount
-            }
+                "sof": {
+                    "id": payee_source_of_fund_id,
+                    "type_id": 2                    # always be cash
+                }
+            },
+            "amount": amount
         }
 
         self.logger.info('Params: {}'.format(params))
@@ -128,9 +114,8 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             context = {
                 'agent_id': agent_id,
                 'initiator_source_of_fund_id': initiator_source_of_fund_id,
-                'product_reference_1': product_reference_1,
-                'product_reference_2': product_reference_2,
-                'product_reference_3': product_reference_3,
+                'ref_order_id': ref_order_id,
+                'reason_for_adjustment': reason,
                 'payer_id': payer_id,
                 'payer_type': payer_type,
                 'payer_source_of_fund_id': payer_source_of_fund_id,
@@ -139,7 +124,6 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 'payee_source_of_fund_id': payee_source_of_fund_id,
                 'amount': request.POST.get('amount'),
                 'service_name': service_name,
-                'product_name': product_name,
             }
 
             services = self.get_services_list()
