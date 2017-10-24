@@ -57,7 +57,8 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         return context
 
     def post(self, request, *args, **kwargs):
-
+        context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
+        order_id = context['OrderId']
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
@@ -72,13 +73,21 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
 
             API_Logger.post_logging(loggers=self.logger, params={}, response=data,
                                    status_code=status_code)
+            self.logger.info('========== Finish Approve balance adjustment order ==========')
             if is_success:
                 messages.add_message(
                     request,
                     messages.SUCCESS,
                     'Payment is approved successfully'
                 )
-            self.logger.info('========== Finish Approve balance adjustment order ==========')
+                return redirect('balance_adjustment:balance_adjustment_list')
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    status_message
+                )
+                return redirect('balance_adjustment:balance_adjustment_detail', OrderId=order_id)
         elif button == 'Reject':
             self.logger.info('========== Start Reject balance adjustment order ==========')
             is_success, status_code, status_message = RestFulClient.delete(url=url,
@@ -86,11 +95,21 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                                                                                loggers=self.logger,
                                                                                params=body)
             API_Logger.delete_logging(loggers=self.logger, params={}, response={},status_code=status_code)
+
+            self.logger.info('========== Finish Reject balance adjustment order ==========')
             if is_success:
                 messages.add_message(
                     request,
                     messages.SUCCESS,
                     'Payment is rejected successfully'
                 )
-            self.logger.info('========== Finish Reject balance adjustment order ==========')
-        return redirect('balance_adjustment:balance_adjustment_list')
+                return redirect('balance_adjustment:balance_adjustment_list')
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    status_message
+                )
+                return redirect('balance_adjustment:balance_adjustment_detail', OrderId=order_id)
+
+
