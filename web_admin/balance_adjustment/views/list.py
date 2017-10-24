@@ -2,7 +2,7 @@ from braces.views import GroupRequiredMixin
 
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, RestFulClient
-from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
+from web_admin.api_settings import BALANCE_ADJUSTMENT_PATH, SERVICE_LIST_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
@@ -87,7 +87,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
 
 
         body = {}
-        body['payment_method_name'] = 'Adjustment payment'
         if order_id:
             body['order_id'] = order_id
         if service_name:
@@ -130,7 +129,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         self.logger.info("Params: {} ".format(body))
 
         is_success, status_code, status_message, data = RestFulClient.post(
-                                                            url=PAYMENT_URL, 
+                                                            url=BALANCE_ADJUSTMENT_PATH,
                                                             headers=self._get_headers(),
                                                             loggers=self.logger,
                                                             params=body)
