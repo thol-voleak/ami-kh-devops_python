@@ -22,8 +22,8 @@
                 <form id="submit-form" class="form-horizontal" role="form" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Initiator Type</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Initiator Type</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_initiator_type" name="initiator_type"
                                    value="{{ order.initiator_user_type.name | default_if_none:'' }}"
@@ -31,8 +31,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">SoF Type</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">SoF Type</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_sof_type" name="sof_type"
                                    value="{% if order.initiator_sof_type_id == '1' %}Bank{% else %}Cash{% endif %}"
@@ -40,8 +40,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Agent ID</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Agent ID</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_agent_id" name="agent_id"
                                    value="{{ order.initiator_user_id | default_if_none:'' }}"
@@ -49,8 +49,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Ref Order ID</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Ref Order ID</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_ref_order_id" name="ref_order_id"
                                    value="{{ order.reference_order_id | default_if_none:'' }}"
@@ -58,8 +58,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Reason for Adjustment</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Reason for Adjustment</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_reason_for_adjustment" name="reason_for_adjustment"
                                    value="{{ order.reason_for_adjustment | default_if_none:'' }}"
@@ -67,8 +67,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Reason for Approval or Reject</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Reason for Approval or Reject</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_reason_for_approval_or_reject" name="reason_for_approval_or_reject"
                                    value="{{ order.reason_for_approve_or_reject | default_if_none:'' }}"
