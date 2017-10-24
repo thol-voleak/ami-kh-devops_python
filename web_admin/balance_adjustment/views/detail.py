@@ -38,7 +38,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         order_id = context['OrderId']
         body = {'order_id':order_id}
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.PAYMENT_URL,
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
@@ -58,9 +58,9 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
 
     def post(self, request, *args, **kwargs):
 
-        context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
-        order_id = context['OrderId']
-        url = api_settings.APPROVE_BAL_ADJUST_PATH.format(order_id=order_id)
+        reference_id = request.POST.get('reference_id')
+        url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
+        body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
         button = request.POST.get('submit')
         if button == 'Approve':
@@ -68,7 +68,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
-                                                                           params={})
+                                                                           params=body)
 
             API_Logger.post_logging(loggers=self.logger, params={}, response=data,
                                    status_code=status_code)
@@ -84,7 +84,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             is_success, status_code, status_message = RestFulClient.delete(url=url,
                                                                                headers=self._get_headers(),
                                                                                loggers=self.logger,
-                                                                               params={})
+                                                                               params=body)
             API_Logger.delete_logging(loggers=self.logger, params={}, response={},status_code=status_code)
             if is_success:
                 messages.add_message(
