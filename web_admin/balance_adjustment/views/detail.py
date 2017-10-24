@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.views.generic.base import TemplateView
-
+from django.shortcuts import render
 from authentications.apps import InvalidAccessToken
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.api_logger import API_Logger
@@ -52,6 +52,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
         context = {'order': data[0],
+                   'allow_actions': True,
                    'permissions': permissions}
         self.logger.info('========== Finish getting balance adjustment detail ==========')
         return context
@@ -87,7 +88,8 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                     messages.ERROR,
                     status_message
                 )
-                return redirect('balance_adjustment:balance_adjustment_detail', OrderId=order_id)
+                context = self._get_failed_context(order_id)
+                return render(request, self.template_name, context)
         elif button == 'Reject':
             self.logger.info('========== Start Reject balance adjustment order ==========')
             is_success, status_code, status_message = RestFulClient.delete(url=url,
@@ -110,6 +112,26 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                     messages.ERROR,
                     status_message
                 )
-                return redirect('balance_adjustment:balance_adjustment_detail', OrderId=order_id)
+                context = self._get_failed_context(order_id)
+                return render(request, self.template_name, context)
 
 
+    def _get_failed_context(self, order_id):
+        body = {'order_id': order_id}
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
+        if not is_success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        permissions = {}
+        permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
+
+        context = {'order': data[0],
+                   'allow_actions': False,
+                   'permissions': permissions}
+        return context
