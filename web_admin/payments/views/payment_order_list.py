@@ -124,6 +124,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             result_data = data
 
         order_list = self.refine_data(result_data)
+        order_list = order_list.get("orders", [])
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -167,12 +168,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return response, status
 
     def format_data(self, data):
-        for i in data:
+        for i in data['orders']:
             i['is_stopped'] = IS_SUCCESS.get(i.get('is_stopped'))
         return data
 
     def refine_data(self, data):
-        for item in data:
+        for item in data['orders']:
             item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
         return data
 
