@@ -374,6 +374,8 @@
                 {% endif %}
             </li>
             {% endif %}
+
+<!--
             {% if request.user|has_permission_name:"SYS_BAL_ADJUST_REQUEST" or request.user|has_permission_name:"SYS_BAL_ADJUST_HISTORY"%}
             {% check_valid_url url_name 'balance_adjustment' as is_adj_url %}
             <li class="menu-accordion {% if is_adj_url %}open{% endif %}">
@@ -392,6 +394,7 @@
                 </ul>
             </li>
             {% endif %}
+-->
 
             {% if request.user|has_permission_name:"CAN_VIEW_CAMPAIGNS"%}
             {% check_valid_url url_name 'campaign' as is_campaign_url %}
