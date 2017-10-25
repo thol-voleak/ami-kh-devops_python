@@ -60,6 +60,7 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             result_data = self.format_data(data)
         else:
             result_data = data
+        result_data = data.get('cash_sofs', [])
 
         context = {'sof_list': result_data,
                    'user_id': user_id,
@@ -70,10 +71,11 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def get_cash_sof_list(self, body):
+        body['paging'] = False
         response, status = self._post_method(CASH_SOFS_URL, 'Cash Source of Fund List', logger, body)
         return response
 
     def format_data(self, data):
-        for i in data:
+        for i in data['cash_sofs']:
             i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
         return data
