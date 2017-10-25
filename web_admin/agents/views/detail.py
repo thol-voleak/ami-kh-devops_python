@@ -79,7 +79,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.GET_REPORT_AGENT_BALANCE, params=params)
         currencies_str = ''
         data = data['cash_sofs']
-        if success:
+        if success and data:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 
         return currencies_str, success
