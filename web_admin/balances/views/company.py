@@ -79,7 +79,13 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
 
     def _get_company_balance(self, currency):
         url = GET_REPORT_AGENT_BALANCE
-        body = {'user_id': self.company_agent_id, 'currency': currency, 'user_type': 2}
+        body = {
+            'user_id': self.company_agent_id,
+            'currency': currency,
+            'user_type': 2,
+            "paging": False,
+            "page_index": -1
+        }
         func_description = "Getting balance by username: {} \
         ,agent id: {} and currency: {}".format(self.request.user.username,
                                                self.company_agent_id,
