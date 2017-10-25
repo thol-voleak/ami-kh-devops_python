@@ -1,5 +1,5 @@
 from braces.views import GroupRequiredMixin
-
+from web_admin.utils import calculate_page_range_from_page_info
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
@@ -80,8 +80,10 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         status_id = request.POST.get('status_id')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
-
+        opening_page_index = request.POST.get('current_page_index')
         body = {}
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id
         if service_name:
@@ -124,7 +126,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             result_data = data
 
         order_list = self.refine_data(result_data)
-        order_list = order_list.get("orders", [])
+        orders = order_list.get("orders", [])
+        page = order_list.get("page", {})
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -138,7 +141,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
 
-        context = {'order_list': order_list,
+        context = {'order_list': orders,
                    'order_id': order_id,
                    'service_name': service_name,
                    'data': service_list,
@@ -146,7 +149,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'payer_user_type_id':payer_user_type_id,
                    'payee_user_id': payee_user_id,
                    'payee_user_type_id':payee_user_type_id,
-                   'search_count': count,
+                   'search_count': page.get('total_elements', 0),
                    'creation_client_id': creation_client_id,
                    'execution_client_id': execution_client_id,
                    'ext_transaction_id': ext_transaction_id,
@@ -154,6 +157,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
                    'permissions': self._get_has_permissions(),
+                   'paginator': page,
+                   'page_range': calculate_page_range_from_page_info(page),
         }
 
         if status_id:
