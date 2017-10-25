@@ -6,7 +6,9 @@ from web_admin.restful_methods import RESTfulMethods
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
-
+from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.api_logger import API_Logger
+from web_admin.restful_client import RestFulClient
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,12 +37,13 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CashSOFView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search cash source of fund ==========')
 
-        user_id = request.GET.get('user_id')
-        user_type_id = request.GET.get('user_type_id')
-        currency = request.GET.get('currency')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
+        currency = request.POST.get('currency')
+        opening_page_index = request.POST.get('current_page_index')
 
         self.logger.info('user_id: {}'.format(user_id))
         self.logger.info('user_type_id: {}'.format(user_type_id))
@@ -54,24 +57,29 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if currency is not '':
             body['currency'] = currency
 
-        data = self.get_cash_sof_list(body)
+        data = self.get_cash_sof_list(body,opening_page_index)
                 
         if data is not None:
             result_data = self.format_data(data)
         else:
             result_data = data
         result_data = data.get('cash_sofs', [])
+        page = data.get("page", {})
 
         context = {'sof_list': result_data,
                    'user_id': user_id,
                    'user_type_id': user_type_id,
-                   'currency': currency
-                   }
+                   'currency': currency,
+                   'search_count': page.get('total_elements', 0),
+                   'paginator': page,
+                   'page_range': calculate_page_range_from_page_info(page)
+                    }
         self.logger.info('========== End search cash source of fund ==========')
         return render(request, self.template_name, context)
 
-    def get_cash_sof_list(self, body):
-        body['paging'] = False
+    def get_cash_sof_list(self, body,opening_page_index):
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
         response, status = self._post_method(CASH_SOFS_URL, 'Cash Source of Fund List', logger, body)
         return response
 
