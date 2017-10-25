@@ -52,69 +52,87 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
         context = {'order': data[0],
-                   'allow_actions': True,
+                   'disable_action': False,
                    'permissions': permissions}
         self.logger.info('========== Finish getting balance adjustment detail ==========')
         return context
 
     def post(self, request, *args, **kwargs):
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
+        button = request.POST.get('submit')
+        if button == 'Approve':
+            return self._do_approval(context, request)
+        elif button == 'Reject':
+            return self._do_reject(context, request)
+
+    def _do_approval(self, context, request):
         order_id = context['OrderId']
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
+        #url = 'http://localhost:4393/general_error_approval'
+
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
-        button = request.POST.get('submit')
-        if button == 'Approve':
-            self.logger.info('========== Start Approve balance adjustment order ==========')
-            is_success, status_code, status_message, data = RestFulClient.post(url=url,
+        self.logger.info('========== Start Approve balance adjustment order ==========')
+        is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
 
-            API_Logger.post_logging(loggers=self.logger, params={}, response=data,
-                                   status_code=status_code)
-            self.logger.info('========== Finish Approve balance adjustment order ==========')
-            if is_success:
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    'Payment is approved successfully'
-                )
-                return redirect('balance_adjustment:balance_adjustment_list')
-            else:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    status_message
-                )
-                context = self._get_failed_context(order_id)
-                return render(request, self.template_name, context)
-        elif button == 'Reject':
-            self.logger.info('========== Start Reject balance adjustment order ==========')
-            is_success, status_code, status_message = RestFulClient.delete(url=url,
-                                                                               headers=self._get_headers(),
-                                                                               loggers=self.logger,
-                                                                               params=body)
-            API_Logger.delete_logging(loggers=self.logger, params={}, response={},status_code=status_code)
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+                                status_code=status_code)
+        self.logger.info('========== Finish Approve balance adjustment order ==========')
+        if is_success:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Payment is approved successfully'
+            )
+            return redirect('balance_adjustment:balance_adjustment_list')
+        elif status_code.lower() in ["general_error"]:
+            error_msg = 'Other error, please contact system administrator'
+            return self._handle_error(error_msg, order_id)
+        else:
+            return self._handle_error(status_message, order_id)
 
-            self.logger.info('========== Finish Reject balance adjustment order ==========')
-            if is_success:
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    'Payment is rejected successfully'
-                )
-                return redirect('balance_adjustment:balance_adjustment_list')
-            else:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    status_message
-                )
-                context = self._get_failed_context(order_id)
-                return render(request, self.template_name, context)
 
+    def _do_reject(self, context, request):
+        order_id = context['OrderId']
+        reference_id = request.POST.get('reference_id')
+        url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
+        #url = 'http://localhost:43938/general_error_reject'
+
+        body = {'reason': request.POST.get('reason_for_approval_or_reject')}
+
+        self.logger.info('========== Start Reject balance adjustment order ==========')
+        is_success, status_code, status_message = RestFulClient.delete(url=url,
+                                                                       headers=self._get_headers(),
+                                                                       loggers=self.logger,
+                                                                       params=body)
+        API_Logger.delete_logging(loggers=self.logger, params={}, response={}, status_code=status_code)
+
+        self.logger.info('========== Finish Reject balance adjustment order ==========')
+        if is_success:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Payment is rejected successfully'
+            )
+            return redirect('balance_adjustment:balance_adjustment_list')
+        elif status_code.lower() in ["general_error"]:
+            error_msg = 'Other error, please contact system administrator'
+            return self._handle_error(error_msg, order_id)
+        else:
+            return self._handle_error(status_message, order_id)
+
+    def _handle_error(self, message, order_id):
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            message
+        )
+        context = self._get_failed_context(order_id)
+        return render(self.request, self.template_name, context)
 
     def _get_failed_context(self, order_id):
         body = {'order_id': order_id}
@@ -132,6 +150,6 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
         context = {'order': data[0],
-                   'allow_actions': False,
+                   'disable_action': True,
                    'permissions': permissions}
         return context
