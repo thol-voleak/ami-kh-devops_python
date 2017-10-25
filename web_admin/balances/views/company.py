@@ -118,13 +118,13 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
 
     def _get_currency_choices_by_agent(self, agent_id, company_agent_user_type):
         url = GET_AGENT_BALANCE
-        body = {'user_id': agent_id, 'user_type': company_agent_user_type}
+        body = {'user_id': agent_id, 'user_type': company_agent_user_type, 'paging':False}
         data, success = self._post_method(api_path=url,
                                           func_description="currency list by agent",
                                           logger=logger,
                                           params=body)
         if success:
-            currency_list = [i['currency'] for i in data]
+            currency_list = [i['currency'] for i in data['cash_sofs']]
             return currency_list, True
         else:
             return data, True
@@ -192,7 +192,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, GetChoicesMixin, REST
             )
             totalData = {}
         else:
-            totalData = totalData[0]
+            totalData = totalData['cash_sofs'][0]
 
         data, success_balance = self._get_company_balance_history(currency)
         if success_balance:
