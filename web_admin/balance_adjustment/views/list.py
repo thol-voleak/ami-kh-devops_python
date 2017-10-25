@@ -17,13 +17,15 @@ logger = logging.getLogger(__name__)
 
 
 STATUS_ORDER = {
-    -1: 'FAIL',
-     0: 'CREATED',
-     1: 'LOCKING',
-     2: 'APPROVED',
-     3: 'ROLLED_BACK',
-     4: 'TIME_OUT',
-     5: 'REJECTED'
+     1: 'CREATING',
+     2: 'CREATE_FAIL',
+     3: 'CREATED',
+     4: 'APPROVING',
+     5: 'APPROVE_FAIL',
+     6: 'APPROVED',
+     7: 'REJECTING',
+     8: 'REJECT_FAIL',
+     9: 'REJECTED'
 }
 
 class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
@@ -35,13 +37,15 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
     raise_exception = False
 
     status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "APPROVED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
-            {"id": 5, "name": "REJECTED"},
+            {"id": 1, "name": "CREATING"},
+            {"id": 2, "name": "CREATE_FAIL"},
+            {"id": 3, "name": "CREATED"},
+            {"id": 4, "name": "APPROVING"},
+            {"id": 5, "name": "APPROVE_FAIL"},
+            {"id": 6, "name": "APPROVED"},
+            {"id": 7, "name": "REJECTING"},
+            {"id": 8, "name": "REJECT_FAIL"},
+            {"id": 9, "name": "REJECTED"},
         ]
 
     def check_membership(self, permission):
@@ -70,7 +74,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         self.logger.info('========== Start searching balance adjustment ==========')
 
         order_id = request.POST.get('order_id')
-        service_name = request.POST.get('service_name')
+        service_id = request.POST.get('service_name')
         payer_user_id = request.POST.get('payer_user_id')
         payer_user_type_id = request.POST.get('payer_user_type_id')
         payee_user_id = request.POST.get('payee_user_id')
@@ -89,8 +93,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         body = {}
         if order_id:
             body['order_id'] = order_id
-        if service_name:
-            body['service_name'] = service_name
+        if service_id:
+            body['product_service_id'] = service_id
         if payer_user_id:
             body['payer_user_id'] = payer_user_id
         if payer_user_type_id.isdigit() and payer_user_type_id != '0':
@@ -107,7 +111,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         if product_name:
             body['product_name'] = product_name
         if status_id:
-            body['status_id'] = [int(status_id)]
+            body['status'] = status_id
 
         if requested_by_id:
             body['requester_name'] = requested_by_id
@@ -141,7 +145,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             
             context = {'order_list': order_list,
                    'order_id': order_id,
-                   'service_name': service_name,
+                   'service_id': service_id,
                    'data': service_list,
                    'payer_user_id': payer_user_id,
                    'payer_user_type_id':payer_user_type_id,
@@ -189,7 +193,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             raise InvalidAccessToken(data)
         self.logger.info('========== Finish Get services list ==========')
 
-        return data
+        return data    
         
         
         
