@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "list.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_MANAGE_SOF_RECONCILE"
     login_url = 'web:permission_denied'
     logger = logger
 
@@ -53,4 +53,4 @@ class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             data = []
         self.logger.info('Response_content_count: {}'.format(len(data)))
         self.logger.info('========== Finish get campaigns list ==========')
-        return data[::-1]
+        return data
