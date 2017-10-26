@@ -37,8 +37,9 @@
                         </select>
 
                     </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-4">
-                        <input id="search_btn" class="btn btn-success btn-large" type="submit"
+                        <input id="btn_search" class="btn btn-success btn-large" type="submit"
                                value="Search">
                     </div>
                 </div>
@@ -79,6 +80,7 @@
                 </tbody>
             </table>
         </div>
+        {% include "pagination.html" %}
     </div>
 </div>
 
