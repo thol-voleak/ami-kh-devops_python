@@ -4,7 +4,8 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 import logging
@@ -118,7 +119,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
 
-        data, status = self.get_payment_order_list(body=body)
+        data = self.get_payment_order_list(body=body)
 
         if data:
             result_data = self.format_data(data)
@@ -128,6 +129,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         order_list = self.refine_data(result_data)
         orders = order_list.get("orders", [])
         page = order_list.get("page", {})
+        self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -169,8 +171,22 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def get_payment_order_list(self, body):
-        response, status = self._post_method(PAYMENT_URL, 'Payment Order List', logger, body)
-        return response, status
+        is_success, status_code, status_message, data = RestFulClient.post(url=PAYMENT_URL,
+                                                                           headers=self._get_headers(), 
+                                                                           loggers=self.logger, 
+                                                                           params=body)
+
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data['orders'],
+                                status_code=status_code, is_getting_list=True)
+
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            data = []
+        return data
 
     def format_data(self, data):
         for i in data['orders']:
