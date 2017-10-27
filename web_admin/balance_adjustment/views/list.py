@@ -110,13 +110,13 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from'] = new_from_created_timestamp
+            body['created_timestamp_from'] = new_from_created_timestamp
 
         if to_created_timestamp is not '' and to_created_timestamp is not None:
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to'] = new_to_created_timestamp
+            body['created_timestamp_to'] = new_to_created_timestamp
         
         self.logger.info("Params: {} ".format(body))
 
