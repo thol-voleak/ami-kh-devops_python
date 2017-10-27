@@ -26,7 +26,7 @@
                         <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_initiator_type" name="initiator_type"
-                                   value="{{ order.initiator_user_type.name | default_if_none:'' }}"
+                                   value="{{ order.initiator.user_type.name | default_if_none:'' }}"
                                    readonly>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                         <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_agent_id" name="agent_id"
-                                   value="{{ order.initiator_user_id | default_if_none:'' }}"
+                                   value="{{ order.initiator.user_id | default_if_none:'' }}"
                                    readonly>
                         </div>
                     </div>
@@ -72,17 +72,18 @@
                             <input type="text" class="form-control input-rounded"
                                    id="txt_reason_for_approval_or_reject" name="reason_for_approval_or_reject"
                                    value="{{ order.reason_for_approve_or_reject | default_if_none:'' }}"
-                                    {% if order.status != 3 %} readonly {% endif %}
+                                    {% if order.status.name != "CREATED" %} readonly {% endif %}
                             >
                         </div>
                     </div>
 
                     <input id="reference_id" type="hidden" name="reference_id" value="{{ order.reference_id | default_if_none:'' }}">
-                    {% if order.status == 3 and permissions.SYS_BAL_ADJUST_APPROVE %}
+
                     <div class="pull-right">
                         <a href="{% url 'balance_adjustment:balance_adjustment_list' %}">
                             <input id="btn_back" class="btn" type="button" value="Back"/>
                         </a>
+                        {% if order.status.name == "CREATED" and permissions.SYS_BAL_ADJUST_APPROVE %}
                         <a>
                             {% if disable_action %}
                                 <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve" disabled/>
@@ -98,7 +99,7 @@
                             <input id="btn_reject" class="btn btn-danger" type="submit" name="submit" value="Reject">
                             {% endif %}
                         </a>
-                    {% endif %}
+                        {% endif %}
 
                     </div>
                 </form>
