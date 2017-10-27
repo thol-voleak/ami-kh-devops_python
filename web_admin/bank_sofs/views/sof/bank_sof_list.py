@@ -39,11 +39,11 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search history card ==========')
 
-        user_id = request.GET.get('user_id')
-        user_type_id = request.GET.get('user_type_id')
-        currency = request.GET.get('currency')
-        from_created_timestamp = request.GET.get('from_created_timestamp')
-        to_created_timestamp = request.GET.get('to_created_timestamp')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
+        currency = request.POST.get('currency')
+        from_created_timestamp = request.POST.get('from_created_timestamp')
+        to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
         # self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
