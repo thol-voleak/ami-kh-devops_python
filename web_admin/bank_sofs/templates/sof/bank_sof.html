@@ -13,11 +13,11 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="user_id" value="{{search_by.user_id}}">
+                        <input type="number" class="form-control input-rounded" id="txt_user_id" name="user_id" value="{{search_by.user_id}}">
                     </div>
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="user_type_id">
+                        <select class="form-control" id="user_type_ddl" name="user_type_id" id="ddl_user_type">
                             <option value=0 {% if search_by.user_type_id == 0 %}selected="selected"{% endif %}>All</option>
                             <option value=1 {% if search_by.user_type_id == 1 %}selected="selected"{% endif %}>Customer</option>
                             <option value=2 {% if search_by.user_type_id == 2 %}selected="selected"{% endif %}>Agent</option>
@@ -25,7 +25,7 @@
                     </div>
                     <label class="col-sm-2 control-label">Currency</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="currency" value="{{search_by.currency}}" />
+                        <input type="text" class="form-control input-rounded" name="currency" value="{{search_by.currency}}" id="txt_currency"/>
                     </div>
 
                 </div>
