@@ -209,7 +209,7 @@ DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
 
 #Market CamPaigns
-GET_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/campaigns'
-UPDATE_CAMPAIGNS = '/rule-engine/'+API_VERSION+'/admin/campaigns/{campaign_id}'
+GET_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules'
+UPDATE_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 
 

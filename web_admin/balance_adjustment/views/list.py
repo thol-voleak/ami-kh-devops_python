@@ -16,17 +16,6 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
-STATUS_ORDER = {
-     1: 'CREATING',
-     2: 'CREATE_FAIL',
-     3: 'CREATED',
-     4: 'APPROVING',
-     5: 'APPROVE_FAIL',
-     6: 'APPROVED',
-     7: 'REJECTING',
-     8: 'REJECT_FAIL',
-     9: 'REJECTED'
-}
 
 class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "balance_adjustment/list.html"
@@ -79,7 +68,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         payer_user_type_id = request.POST.get('payer_user_type_id')
         payee_user_id = request.POST.get('payee_user_id')
         payee_user_type_id = request.POST.get('payee_user_type_id')
-        product_name = request.POST.get('product_name')
+        ref_order_id = request.POST.get('ref_order_id')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
@@ -95,6 +84,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['order_id'] = order_id
         if service_id:
             body['product_service_id'] = service_id
+            service_id = int(service_id)
         if payer_user_id:
             body['payer_user_id'] = payer_user_id
         if payer_user_type_id.isdigit() and payer_user_type_id != '0':
@@ -103,20 +93,18 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['payee_user_id'] = payee_user_id
         if payee_user_type_id.isdigit() and payee_user_type_id != '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
-        
         if payer_sof_type_id.isdigit() and payer_sof_type_id != '0':
             body['payer_sof_type_id'] = int(payer_sof_type_id)
         if payee_sof_type_id.isdigit() and payee_sof_type_id != '0':
             body['payee_sof_type_id'] = int(payee_sof_type_id)
-        if product_name:
-            body['product_name'] = product_name
+        if ref_order_id:
+            body['reference_order_id'] = ref_order_id
         if status_id:
             body['status'] = status_id
-
         if requested_by_id:
-            body['requester_name'] = requested_by_id
+            body['created_user_id'] = requested_by_id
         if approved_by_id:
-            body['approver_name'] = approved_by_id
+            body['approved_user_id'] = approved_by_id
         
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
@@ -141,9 +129,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         if is_success:
             count = len(data)
             self.logger.info("Response_content_count:{}".format(count))
-            order_list = self.refine_data(data)
             
-            context = {'order_list': order_list,
+            context = {'order_list': data,
                    'order_id': order_id,
                    'service_id': service_id,
                    'data': service_list,
@@ -159,7 +146,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                    'status_list': self.status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
-                   'product_name': product_name
+                   'ref_order_id': ref_order_id
                    }
             if status_id:
                 context['status_id'] = int(status_id)
@@ -173,10 +160,10 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
 
         return render(request, self.template_name, context)
 
-    def refine_data(self, data):
-        for item in data:
-            item['status'] = STATUS_ORDER.get(item['status'])
-        return data
+    # def refine_data(self, data):
+    #     for item in data:
+    #         item['status'] = STATUS_ORDER.get(item['status'])
+    #     return data
 
 
     def get_services_list(self):

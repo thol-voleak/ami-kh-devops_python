@@ -84,9 +84,9 @@
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
                 </div>
-                <label class="col-sm-3 control-label">Product Name</label>
+                <label class="col-sm-3 control-label">Ref Order ID</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="product_name" id="txt_product_name" value="{{ product_name }}">
+                    <input type="text" class="form-control input-rounded" name="ref_order_id" id="txt_ref_order_id" value="{{ ref_order_id }}">
                 </div>
             </div>
             <div class="form-group">
@@ -149,7 +149,7 @@
                 <tr>
                     <th id="id">Order ID</th>
                     <th id="amount">Transaction Amount</th>
-                    <th id="currency">Currency</th>
+                    <th id="currency">Service ID</th>
                     <th id="payer_id">Payer ID</th>
                     <th id="payer_type">Payer Type</th>
                     <th id="payer_sof_type">Payer SoF Type</th>
@@ -168,23 +168,23 @@
                         <tr>
                             <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.currency|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.payer.user_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.payer.user_type_name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payer.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
-                            <td class="col-sm-2">{{ order.payee.user_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.payee.user_type_name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payee.sof_type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
-                            <td class="col-sm-2">{{ order.status|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.product.ref4|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.product.ref5|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.product_service_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payer_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payer_user.user_type.name|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{% if order.payer_user.sof.type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{{ order.payee_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.payee_user.user_type.name|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{% if order.payee_user.sof.type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{{ order.status.name|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.approved_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"
                                    role="button"
                                    id="btn_detail"
-                                   href="{% url 'balance_adjustment:balance_adjustment_detail' order.order_id %}">
+                                   href="{% url 'balance_adjustment:balance_adjustment_detail' order.reference_id %}">
                                     <span class="small">Detail</span>
                                 </a>
                             </td>

@@ -73,6 +73,7 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
                 cards_list = self.format_data(cards_list)
 
             page = data.get("page", {})
+            self.logger.info("Page: {}".format(page))
             context.update(
                 {'search_count': page.get('total_elements', 0),
                  'data': cards_list,
