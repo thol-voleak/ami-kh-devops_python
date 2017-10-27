@@ -1,11 +1,12 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import CASH_SOFS_URL
-from web_admin.restful_methods import RESTfulMethods
 
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
+
+from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.api_logger import API_Logger
 from web_admin.restful_client import RestFulClient
@@ -19,7 +20,7 @@ IS_SUCCESS = {
 }
 
 
-class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_SEARCH_CASH_SOF_CREATION"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -60,9 +61,7 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data = self.get_cash_sof_list(body,opening_page_index)
                 
         if data is not None:
-            result_data = self.format_data(data)
-        else:
-            result_data = data
+            data = self.format_data(data)
         result_data = data.get('cash_sofs', [])
         page = data.get("page", {})
 
@@ -80,8 +79,17 @@ class CashSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_cash_sof_list(self, body,opening_page_index):
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
-        response, status = self._post_method(CASH_SOFS_URL, 'Cash Source of Fund List', logger, body)
-        return response
+        success, status_code, status_message, data = RestFulClient.post(url=CASH_SOFS_URL, headers=self._get_headers(),
+                                                                        params=body, loggers=self.logger)
+        data = data or {}
+        API_Logger.post_logging(
+            loggers=self.logger,
+            params=body,
+            response=data.get('cash_sofs', []),
+            status_code=status_code,
+            is_getting_list=True
+        )
+        return data
 
     def format_data(self, data):
         for i in data['cash_sofs']:
