@@ -36,8 +36,8 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start getting balance adjustment detail ==========')
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
-        order_id = context['OrderId']
-        body = {'order_id':order_id}
+        reference_id = context['ReferenceId']
+        body = {'reference_id':reference_id}
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -61,12 +61,11 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         button = request.POST.get('submit')
         if button == 'Approve':
-            return self._do_approval(context, request)
+            return self._do_approval(request)
         elif button == 'Reject':
-            return self._do_reject(context, request)
+            return self._do_reject(request)
 
-    def _do_approval(self, context, request):
-        order_id = context['OrderId']
+    def _do_approval(self, request):
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
         #url = 'http://localhost:4393/general_error_approval'
@@ -91,13 +90,12 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             return redirect('balance_adjustment:balance_adjustment_list')
         elif status_code.lower() in ["general_error"]:
             error_msg = 'Other error, please contact system administrator'
-            return self._handle_error(error_msg, order_id)
+            return self._handle_error(error_msg, reference_id)
         else:
-            return self._handle_error(status_message, order_id)
+            return self._handle_error(status_message, reference_id)
 
 
-    def _do_reject(self, context, request):
-        order_id = context['OrderId']
+    def _do_reject(self, request):
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
         #url = 'http://localhost:43938/general_error_reject'
@@ -121,21 +119,21 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             return redirect('balance_adjustment:balance_adjustment_list')
         elif status_code.lower() in ["general_error"]:
             error_msg = 'Other error, please contact system administrator'
-            return self._handle_error(error_msg, order_id)
+            return self._handle_error(error_msg, reference_id)
         else:
-            return self._handle_error(status_message, order_id)
+            return self._handle_error(status_message, reference_id)
 
-    def _handle_error(self, message, order_id):
+    def _handle_error(self, message, reference_id):
         messages.add_message(
             self.request,
             messages.ERROR,
             message
         )
-        context = self._get_failed_context(order_id)
+        context = self._get_failed_context(reference_id)
         return render(self.request, self.template_name, context)
 
-    def _get_failed_context(self, order_id):
-        body = {'order_id': order_id}
+    def _get_failed_context(self, reference_id):
+        body = {'reference_id': reference_id}
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
