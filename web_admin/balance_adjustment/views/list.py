@@ -94,9 +94,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         if payee_user_type_id.isdigit() and payee_user_type_id != '0':
             body['payee_user_type_id'] = int(payee_user_type_id)
         if payer_sof_type_id.isdigit() and payer_sof_type_id != '0':
-            body['payer_sof_type_id'] = int(payer_sof_type_id)
+            body['payer_user_sof_type_id'] = int(payer_sof_type_id)
         if payee_sof_type_id.isdigit() and payee_sof_type_id != '0':
-            body['payee_sof_type_id'] = int(payee_sof_type_id)
+            body['payee_user_sof_type_id'] = int(payee_sof_type_id)
         if ref_order_id:
             body['reference_order_id'] = ref_order_id
         if status_id:
@@ -126,11 +126,11 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             loggers=self.logger,
             params=body
         )
-        self.logger.info('========== Finished searching Balance Adjustment ==========')
         if is_success:
             count = len(data)
             self.logger.info("Response_content_count:{}".format(count))
-            
+            self.logger.info('========== Finished searching Balance Adjustment ==========')
+
             context = {'order_list': data,
                    'order_id': order_id,
                    'service_id': service_id,
