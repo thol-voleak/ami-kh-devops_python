@@ -1,5 +1,5 @@
 from braces.views import GroupRequiredMixin
-
+from django.contrib import messages
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, RestFulClient
 from web_admin.api_settings import BALANCE_ADJUSTMENT_PATH, SERVICE_LIST_URL
@@ -9,7 +9,7 @@ from web_admin.api_logger import API_Logger
 
 
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 import logging
 from datetime import datetime
@@ -121,11 +121,12 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         self.logger.info("Params: {} ".format(body))
 
         is_success, status_code, status_message, data = RestFulClient.post(
-                                                            url=BALANCE_ADJUSTMENT_PATH,
-                                                            headers=self._get_headers(),
-                                                            loggers=self.logger,
-                                                            params=body)
-        
+            url=BALANCE_ADJUSTMENT_PATH,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=body
+        )
+        self.logger.info('========== Finished searching Balance Adjustment ==========')
         if is_success:
             count = len(data)
             self.logger.info("Response_content_count:{}".format(count))
@@ -150,15 +151,13 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                    }
             if status_id:
                 context['status_id'] = int(status_id)
-        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                    status_code == 'invalid_access_token'):
+            return render(request, self.template_name, context)
+        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(data))
             raise InvalidAccessToken(data)
-        
-
-        self.logger.info('========== Finished searching Balance Adjustment ==========')
-
-        return render(request, self.template_name, context)
+        elif status_message == 'timeout':
+            messages.add_message(request, messages.ERROR, 'Request timed-out, please try again or contact system administrator')
+            return redirect('balance_adjustment:balance_adjustment_list')
 
     # def refine_data(self, data):
     #     for item in data:
