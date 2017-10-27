@@ -1,13 +1,13 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.api_logger import API_Logger
 from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
-
+from web_admin.utils import calculate_page_range_from_page_info
+from web_admin import api_settings, setup_logger, RestFulClient
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,25 +33,28 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(BankSOFView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        context = {"search_count": 0}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search history card ==========')
 
-        search = request.GET.get('search')
-        if search is None:
-            return render(request, self.template_name)
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
+        currency = request.POST.get('currency')
+        from_created_timestamp = request.POST.get('from_created_timestamp')
+        to_created_timestamp = request.POST.get('to_created_timestamp')
+        opening_page_index = request.POST.get('current_page_index')
 
-        user_id = request.GET.get('user_id')
-        user_type_id = request.GET.get('user_type_id')
-        currency = request.GET.get('currency')
-        from_created_timestamp = request.GET.get('from_created_timestamp')
-        to_created_timestamp = request.GET.get('to_created_timestamp')
-
-        self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
-        self.logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
-        self.logger.info('Search key "currency" is [{}]'.format(currency))
-        self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
+        # self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
+        # self.logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
+        # self.logger.info('Search key "currency" is [{}]'.format(currency))
+        # self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
+        # self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
 
         body = {}
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0' and user_type_id is not None:
@@ -70,18 +73,47 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
 
-        responses, success = self._get_bank_sof_list(body=body)
+        context = {}
+        data, success, status_message = self._get_bank_sof_list(body=body)
         body['from_created_timestamp'] = from_created_timestamp
         body['to_created_timestamp'] = to_created_timestamp
-
-        context = {
-            'bank_sof_list': responses,
-            'search_by': body
-        }
+        if success:
+            cards_list = data.get("bank_sofs", [])
+            page = data.get("page", {})
+            self.logger.info("Page: {}".format(page))
+            context.update(
+                {'search_count': page.get('total_elements', 0),
+                 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page),
+                 #'user_id': user_id,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp,
+                 'bank_sof_list': cards_list,
+                 'search_by': body
+                 }
+            )
+        else:
+            context.update(
+                {'search_count': 0,
+                 'paginator': {},
+                 # 'user_id': user_id,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp,
+                 'bank_sof_list': [],
+                 'search_by': body
+                 }
+            )
 
         self.logger.info('========== End search history card ==========')
         return render(request, self.template_name, context)
 
     def _get_bank_sof_list(self, body):
-        return self._post_method(self.search_banks_sof, 'Cash Source of Fund List', logger, body)
+        success, status_code, status_message, data = RestFulClient.post(url=self.search_banks_sof,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body)
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('bank_sofs', []),
+                                status_code=status_code, is_getting_list=True)
+        return data, success, status_message
 
