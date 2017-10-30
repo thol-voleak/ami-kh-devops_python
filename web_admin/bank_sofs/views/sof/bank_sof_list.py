@@ -37,7 +37,7 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start search history card ==========')
+        self.logger.info('========== Start searching bank SOF ==========')
 
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
@@ -45,12 +45,6 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
-
-        # self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
-        # self.logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
-        # self.logger.info('Search key "currency" is [{}]'.format(currency))
-        # self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        # self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
 
         body = {}
         body['paging'] = True
@@ -104,7 +98,7 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  }
             )
 
-        self.logger.info('========== End search history card ==========')
+        self.logger.info('========== End searching bank SOF ==========')
         return render(request, self.template_name, context)
 
     def _get_bank_sof_list(self, body):
