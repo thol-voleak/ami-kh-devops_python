@@ -44,11 +44,6 @@ class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         user_id = request.GET.get('user_id')
         user_type_id = request.GET.get('user_type_id')
 
-        self.logger.info('trans_id: {}'.format(trans_id))
-        self.logger.info('card_id: {}'.format(card_id))
-        self.logger.info('user_id: {}'.format(user_id))
-        self.logger.info('user_type_id: {}'.format(user_type_id))
-
         if (trans_id, card_id, user_id, user_type_id) == (None, None, None, None):
             result_data = {}
             page = {'total_pages': 1, 'current_page': 1}
