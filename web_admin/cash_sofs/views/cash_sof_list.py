@@ -46,10 +46,6 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         currency = request.POST.get('currency')
         opening_page_index = request.POST.get('current_page_index')
 
-        self.logger.info('user_id: {}'.format(user_id))
-        self.logger.info('user_type_id: {}'.format(user_type_id))
-        self.logger.info('currency: {}'.format(currency))
-
         body = {}
         if user_id is not '':
             body['user_id'] = user_id
@@ -64,7 +60,7 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             data = self.format_data(data)
         result_data = data.get('cash_sofs', [])
         page = data.get("page", {})
-
+        self.logger.info('Page: {}'.format(page))
         context = {'sof_list': result_data,
                    'user_id': user_id,
                    'user_type_id': user_type_id,
@@ -89,6 +85,7 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             status_code=status_code,
             is_getting_list=True
         )
+
         return data
 
     def format_data(self, data):
