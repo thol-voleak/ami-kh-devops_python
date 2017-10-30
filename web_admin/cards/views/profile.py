@@ -40,18 +40,13 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start search card ==========')
+        self.logger.info('========== Start search card profile ==========')
 
         card_identifier = request.POST.get('card_identifier')
         card_token = request.POST.get('card_token')
         user_id = request.POST.get('user_id')
         user_type = request.POST.get('user_type')
         opening_page_index = request.POST.get('current_page_index')
-
-        self.logger.info('card_identifier: {}'.format(card_identifier))
-        self.logger.info('card_token: {}'.format(card_token))
-        self.logger.info('user_id: {}'.format(user_id))
-        self.logger.info('user_type: {}'.format(user_type))
 
         body = {}
         body['paging'] = True
@@ -94,7 +89,7 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
                  'user_id': user_id,
                  'user_type': user_type, }
             )
-        self.logger.info('========== End search card ==========')
+        self.logger.info('========== End search card profile ==========')
         return render(request, self.template_name, context)
 
     def get_card_list(self, body):
@@ -109,7 +104,7 @@ class ProfileView(GroupRequiredMixin, GetHeaderMixin, TemplateView):
                                                                            timeout=settings.GLOBAL_TIMEOUT)
 
         data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params={}, response=data.get('cards', []),
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('cards', []),
                                 status_code=status_code, is_getting_list=True)
 
         return data, success, status_message
