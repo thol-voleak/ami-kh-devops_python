@@ -66,7 +66,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start searching payment order ==========')
+        # self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
@@ -119,6 +119,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
 
+        self.logger.info('========== Start searching payment order ==========')
         data = self.get_payment_order_list(body=body)
 
         if data:
