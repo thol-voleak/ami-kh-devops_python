@@ -68,7 +68,6 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     def _do_approval(self, request):
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
-        #url = 'http://localhost:4393/general_error_approval'
 
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
@@ -91,6 +90,13 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         elif status_code.lower() in ["general_error"]:
             error_msg = 'Other error, please contact system administrator'
             return self._handle_error(error_msg, reference_id)
+        elif status_message == 'timeout':
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Request timed-out, please try again or contact system administrator'
+            )
+            return redirect('balance_adjustment:balance_adjustment_detail', ReferenceId=reference_id)
         else:
             return self._handle_error(status_message, reference_id)
 
