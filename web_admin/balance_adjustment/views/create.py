@@ -136,6 +136,12 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                     messages.ERROR,
                     "Other error, please contact system administrator"
                 )
+            elif message == 'timeout':
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    "Request timed-out, please try again or contact system administrator"
+                )
             else:
                 messages.add_message (
                     request,
