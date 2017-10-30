@@ -60,6 +60,7 @@ class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
 
             data = self.get_card_history_list(body)
             page = data.get("page", {})
+            self.logger.info('Page: {}'.format(page))
             data = data.get('card_histories', [])
             if data is not None:
                 result_data = self.format_data(data)
