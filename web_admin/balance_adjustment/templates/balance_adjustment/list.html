@@ -183,7 +183,7 @@
                             <td class="col-sm-2">{{ order.payee_user.user_type.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{% if order.payee_user.sof.type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
                             <td class="col-sm-2">{{ order.status.name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.approved_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-3">
