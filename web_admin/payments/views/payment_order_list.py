@@ -129,7 +129,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         order_list = self.refine_data(result_data)
         orders = order_list.get("orders", [])
         page = order_list.get("page", {})
-        self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
+        self.logger.info('Page : {}'.format(page))
+        # print(page)
+        # self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
         count = 0
         if len(order_list):
             count = len(order_list)
