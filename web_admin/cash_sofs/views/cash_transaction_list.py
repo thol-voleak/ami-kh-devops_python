@@ -49,11 +49,6 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         status_id = request.POST.get('status_id')
         opening_page_index = request.POST.get('current_page_index')
 
-        # self.logger.info('sof_id: {}'.format(sof_id))
-        # self.logger.info('order_id: {}'.format(order_id))
-        # self.logger.info('action_id: {}'.format(action_id))
-        # self.logger.info('status_id: {}'.format(status_id))
-
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
 

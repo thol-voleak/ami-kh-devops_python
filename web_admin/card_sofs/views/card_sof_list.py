@@ -47,12 +47,6 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
-        # self.logger.info('Search key "user_id is" is [{}]'.format(user_id))
-        # self.logger.info('Search key "user_type_id" is [{}]'.format(user_type_id))
-        # self.logger.info('Search key "currency" is [{}]'.format(currency))
-        # self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        # self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
-
         body = {}
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
