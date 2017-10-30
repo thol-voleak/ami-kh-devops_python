@@ -1,12 +1,13 @@
-from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.api_logger import API_Logger
 from datetime import datetime
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
+from web_admin.utils import calculate_page_range_from_page_info
+from web_admin import api_settings, setup_logger, RestFulClient
 import logging
 
 logger = logging.getLogger(__name__)
@@ -32,40 +33,56 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(BankSOFTransaction, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start search bank transaction history ==========')
-        self.logger.info(self.search_bank_transaction)
-        search = request.GET.get('search')
-        if search is None:
-            self.logger.info("Search is none")
-            return render(request, self.template_name)
+        context = {"search_count": 0}
+        return render(request, self.template_name, context)
 
-        sof_id = request.GET.get('sof_id')
-        order_id = request.GET.get('order_id')
-        status = request.GET.get('status')
-        type = request.GET.get('type')
-        from_created_timestamp = request.GET.get('from_created_timestamp')
-        to_created_timestamp = request.GET.get('to_created_timestamp')
+    def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start searching bank SOF transaction  ==========')
 
-        self.logger.info('Search key "sof_id is" is [{}]'.format(sof_id))
-        self.logger.info('Search key "order_id" is [{}]'.format(order_id))
-        self.logger.info('Search key "type" is [{}]'.format(type))
-        self.logger.info('Search key "status" is [{}]'.format(status))
-        self.logger.info('Search key "from_created_timestamp" is [{}]'.format(from_created_timestamp))
-        self.logger.info('Search key "to_created_timestamp" is [{}]'.format(to_created_timestamp))
-
+        sof_id = request.POST.get('sof_id')
+        order_id = request.POST.get('order_id')
+        status = request.POST.get('status')
+        type = request.POST.get('type')
+        from_created_timestamp = request.POST.get('from_created_timestamp')
+        to_created_timestamp = request.POST.get('to_created_timestamp')
+        opening_page_index = request.POST.get('current_page_index')
 
         body = self.createSearchBody(from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type)
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
 
-        responses, success = self._get_sof_bank_transaction(body=body)
+        context = {}
+        data, success, status_message = self._get_sof_bank_transaction(body=body)
+        body['from_created_timestamp'] = from_created_timestamp
+        body['to_created_timestamp'] = to_created_timestamp
+        if success:
+            cards_list = data.get("bank_sof_transactions", [])
+            page = data.get("page", {})
+            self.logger.info("Page: {}".format(page))
+            context.update(
+                {'search_count': page.get('total_elements', 0),
+                 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page),
+                 #'user_id': user_id,
+                 'transaction_list': cards_list,
+                 'search_by': body,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp
+                 }
+            )
+        else:
+            context.update(
+                {'search_count': 0,
+                 'paginator': {},
+                 # 'user_id': user_id,
+                 'transaction_list': [],
+                 'search_by': body,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp
+                 }
+            )
 
-        context = {
-            'transaction_list': responses,
-            'search_by': body,
-            'from_created_timestamp': from_created_timestamp,
-            'to_created_timestamp': to_created_timestamp
-        }
-
-        self.logger.info('========== Start search bank transaction history ==========')
+        self.logger.info('========== Start searching bank SOF transaction ==========')
         return render(request, self.template_name, context)
 
     def createSearchBody(self, from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type):
@@ -82,13 +99,19 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['from_created_timestamp'] = new_from_created_timestamp
-            self.logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
         if to_created_timestamp is not '' and to_created_timestamp is not None:
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
-            self.logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
         return body
+
     def _get_sof_bank_transaction(self, body):
-        return self._post_method(self.search_bank_transaction, 'Cash Source of Fund List', logger, body)
+        success, status_code, status_message, data = RestFulClient.post(url=self.search_bank_transaction,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body)
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('bank_sof_transactions', []),
+                                status_code=status_code, is_getting_list=True)
+        return data, success, status_message
