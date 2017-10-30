@@ -129,7 +129,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         order_list = self.refine_data(result_data)
         orders = order_list.get("orders", [])
         page = order_list.get("page", {})
-        self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
+        self.logger.info('Page : {}'.format(page))
+        # print(page)
+        # self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -200,12 +202,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
 
     def get_services_list(self):
+        self.logger.info("========== Start get service list for payment order page ==========")
         url = SERVICE_LIST_URL
-        data, success = self._get_method(api_path=url, func_description="service list", is_getting_list=True)
+        data, success = self._get_method(api_path=url, logger=self.logger,func_description="service list", is_getting_list=True)
+        self.logger.info("========== End get service list for payment order page ==========")
         return data
 
     def _get_has_permissions(self):
-        self.logger.info("Start check permissions for payment order page.")
+        # self.logger.info("Start check permissions for payment order page.")
         permissions = {
             'is_perm_order_detail': check_permissions_by_user(self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
             'is_perm_order_search': check_permissions_by_user(self.request.user, "CAN_SEARCH_PAYMENT_ORDER"),

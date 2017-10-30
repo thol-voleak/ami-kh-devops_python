@@ -159,7 +159,7 @@
                 window.location.replace(url);
             } else if (response.status == 2) {
                 // success
-                showSuccessMessage(campaign_id +' ' + 'is now active' );
+                showSuccessMessage('Campaign id'+ ' '+ campaign_id +' ' + 'is now active' );
             } else {
                 // Failed
                 showErrorMessage(response.msg);
@@ -190,7 +190,7 @@
                 window.location.replace(url);
             } else if (response.status == 2) {
                 // success
-                showSuccessMessage(campaign_id + ' '+ 'is now inactive');
+                showSuccessMessage('Campaign id'+ ' '+ campaign_id + ' '+ 'is now inactive');
             } else {
                 // Failed
                 showErrorMessage('Error inactive the campaign');
