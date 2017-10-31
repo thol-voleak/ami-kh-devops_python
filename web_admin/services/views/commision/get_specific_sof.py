@@ -29,6 +29,8 @@ class GetSpecificSOF(View, GetHeaderMixin):
         if sof_type == '2':
             path = api_settings.CASH_SOFS_URL
             params['user_type'] = int(sof_type)
+            params['paging'] = False
+            params['page_index'] = -1
             is_success, status_code, status_message, data = RestFulClient.post(
                                                             url=path,
                                                             headers=self._get_headers(),
@@ -36,8 +38,8 @@ class GetSpecificSOF(View, GetHeaderMixin):
                                                             params=params)
             msg = status_message or ''
             if status_code in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
-                logger.info("{} for {} username".format(msg, request.user))
-                msg.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
+                self.logger.info("{} for {} username".format(msg, request.user))
+                messages.add_message(request, messages.INFO, str('Your login credentials have expired. Please login again.'))
                 code = 1
                 response = JsonResponse({"status": code, "msg": msg})
 

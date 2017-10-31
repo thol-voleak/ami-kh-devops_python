@@ -60,8 +60,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
     def post(self, request, *args, **kwargs):
         count = 0
 
-        self.logger.info('========== Start searching balance adjustment ==========')
-
         order_id = request.POST.get('order_id')
         service_id = request.POST.get('service_name')
         payer_user_id = request.POST.get('payer_user_id')
@@ -72,6 +70,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
+
         status_id = request.POST.get('status_id')
         requested_by_id = request.POST.get('requested_by_id')
         approved_by_id = request.POST.get('approved_by_id')
@@ -118,6 +117,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['created_timestamp_to'] = new_to_created_timestamp
         
+        self.logger.info('========== Start searching balance adjustment ==========')
         self.logger.info("Params: {} ".format(body))
 
         is_success, status_code, status_message, data = RestFulClient.post(

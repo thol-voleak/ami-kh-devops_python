@@ -131,6 +131,7 @@
                         <option value=0 {% if payer_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payer_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payer_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
+                        <option value=3 {% if payer_sof_type_id == '3' %}selected="selected"{% endif %}>Card</option>
                     </select>
                 </div>
                 <label class="col-sm-3 control-label">Payee Source of Fund Type</label>
@@ -139,6 +140,7 @@
                         <option value=0 {% if payee_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payee_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payee_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
+                        <option value=3 {% if payee_sof_type_id == '3' %}selected="selected"{% endif %}>Card</option>
                     </select>
                 </div>
                 <div class="col-xs-1">
@@ -156,7 +158,7 @@
                 <tr>
                     <th id="id">Order ID</th>
                     <th id="amount">Transaction Amount</th>
-                    <th id="currency">Service ID</th>
+                    <th id="service_id">Service ID</th>
                     <th id="payer_id">Payer ID</th>
                     <th id="payer_type">Payer Type</th>
                     <th id="payer_sof_type">Payer SoF Type</th>
@@ -178,10 +180,10 @@
                             <td class="col-sm-2">{{ order.product_service_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_type.name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payer_user.sof.type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{% if order.payer_user.sof.type_id == 1 %}Bank{% elif order.payer_user.sof.type_id == 2 %}Cash{% elif order.payer_user.sof.type_id == 3 %}Card{% endif %}</td>
                             <td class="col-sm-2">{{ order.payee_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payee_user.user_type.name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payee_user.sof.type_id == '1' %}Bank{% else %}Cash{% endif %}</td>
+                            <td class="col-sm-2">{% if order.payee_user.sof.type_id == 1 %}Bank{% elif order.payee_user.sof.type_id == 2 %}Cash{% elif order.payee_user.sof.type_id == 3 %}Card{% endif %}</td>
                             <td class="col-sm-2">{{ order.status.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
