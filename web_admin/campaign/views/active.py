@@ -21,5 +21,5 @@ def active(request, campaign_id):
         'is_active': True,
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
-    logger.info('========== Finish active client ==========')
+    logger.info('========== Finish active campaign ==========')
     return result
