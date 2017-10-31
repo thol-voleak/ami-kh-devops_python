@@ -83,21 +83,12 @@
                         <a href="{% url 'balance_adjustment:balance_adjustment_list' %}">
                             <input id="btn_back" class="btn" type="button" value="Back"/>
                         </a>
-                        {% if order.status.name == "CREATED" and permissions.SYS_BAL_ADJUST_APPROVE %}
+                        {% if order.status.name == "CREATED" and permissions.SYS_BAL_ADJUST_APPROVE and show_buttons%}
                         <a>
-                            {% if disable_action %}
-                                <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve" disabled/>
-                            {% else %}
-                            <a href="{% url 'balance_adjustment:balance_adjustment_approve' order.order_id %}">
-                                <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve"/>
-                            {% endif %}
+                            <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve"/>
                         </a>
                         <a>
-                            {% if disable_action %}
-                            <input id="btn_reject" class="btn btn-danger" type="submit" name="submit" value="Reject" disabled>
-                            {% else %}
                             <input id="btn_reject" class="btn btn-danger" type="submit" name="submit" value="Reject">
-                            {% endif %}
                         </a>
                         {% endif %}
 

@@ -52,7 +52,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
         context = {'order': data[0],
-                   'disable_action': False,
+                   'show_buttons': True,
                    'permissions': permissions}
         self.logger.info('========== Finish getting balance adjustment detail ==========')
         return context
@@ -159,6 +159,6 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
         context = {'order': data[0],
-                   'disable_action': True,
+                   'show_buttons': False,
                    'permissions': permissions}
         return context
