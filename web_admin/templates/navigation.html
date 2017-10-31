@@ -396,7 +396,7 @@
             {% if request.user|has_permission_name:"CAN_VIEW_CAMPAIGNS"%}
             {% check_valid_url url_name 'campaign' as is_campaign_url %}
             <li class="menu-accordion {% if is_campaign_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-cubes"></i> <span>Campaign</span> </a>
+                <a href="javascript:;"> <i class="fa fa-cubes"></i> <span>Campaigns</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'campaign'%}active{% endif %}">
                         <a href="{% url 'campaign:campaign' %}"> 
