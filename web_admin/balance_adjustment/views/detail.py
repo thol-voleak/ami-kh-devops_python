@@ -39,7 +39,11 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         reference_id = context['ReferenceId']
         body = {'reference_id':reference_id}
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
+        url = api_settings.BALANCE_ADJUSTMENT_PATH
+        #url = 'http://localhost:43931/additional_detail' # status: REJECT_FAIL
+        #url = 'http://localhost:43932/additional_detail'  # status: APPROVE_FAIL
+        #url = 'http://localhost:43933/additional_detail'  # status: Created
+        is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
@@ -111,7 +115,6 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
         #url = 'http://localhost:43938/general_error_reject'
-        #url = 'http://localhost:43934/general_error_reject' # server return Reject_Fail
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
         is_success, status_code, status_message = RestFulClient.delete(url=url,

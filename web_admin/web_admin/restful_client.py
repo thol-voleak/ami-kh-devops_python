@@ -53,6 +53,10 @@ class RestFulClient:
             loggers.info('POST path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.post(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
+
+            # import pdb;
+            # pdb.set_trace()
+
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
