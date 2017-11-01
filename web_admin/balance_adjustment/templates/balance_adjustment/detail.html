@@ -83,7 +83,7 @@
                         <a href="{% url 'balance_adjustment:balance_adjustment_list' %}">
                             <input id="btn_back" class="btn" type="button" value="Back"/>
                         </a>
-                        {% if order.status.name == "CREATED" and permissions.SYS_BAL_ADJUST_APPROVE and show_buttons%}
+                        {% if order.status.name == "CREATED" and permissions.SYS_BAL_ADJUST_APPROVE %}
                         <a>
                             <input id="btn_approve" class="btn btn-success" type="submit" name="submit" value="Approve"/>
                         </a>
