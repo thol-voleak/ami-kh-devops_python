@@ -19,6 +19,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     logger=logger
 
     group_required = "SYS_BAL_ADJUST_HISTORY"
+    button_permission = "SYS_BAL_ADJUST_APPROVE"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -60,6 +61,8 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     def post(self, request, *args, **kwargs):
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         button = request.POST.get('submit')
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, self.button_permission))
         if button == 'Approve':
             return self._do_approval(request)
         elif button == 'Reject':
@@ -77,7 +80,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                                                                            loggers=self.logger,
                                                                            params=body)
 
-        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
                                 status_code=status_code)
         self.logger.info('========== Finish Approve balance adjustment order ==========')
         if is_success:
@@ -111,7 +114,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
                                                                        headers=self._get_headers(),
                                                                        loggers=self.logger,
                                                                        params=body)
-        API_Logger.delete_logging(loggers=self.logger, params={}, response={}, status_code=status_code)
+        API_Logger.delete_logging(loggers=self.logger, params=body, response={}, status_code=status_code)
 
         self.logger.info('========== Finish Reject balance adjustment order ==========')
         if is_success:
