@@ -7,6 +7,7 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from django.shortcuts import render
+from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 import logging
 from datetime import datetime
@@ -201,16 +202,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             item['status'] = STATUS_ORDER.get(item['status'], 'UN_KNOWN')
         return data
 
-
     def get_services_list(self):
-        self.logger.info("========== Start get service list for payment order page ==========")
         url = SERVICE_LIST_URL
-        data, success = self._get_method(api_path=url, logger=self.logger,func_description="service list", is_getting_list=True)
-        self.logger.info("========== End get service list for payment order page ==========")
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if not success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format('access_token_expire'))
+                raise InvalidAccessToken('access_token_expire')
         return data
 
     def _get_has_permissions(self):
-        # self.logger.info("Start check permissions for payment order page.")
         permissions = {
             'is_perm_order_detail': check_permissions_by_user(self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
             'is_perm_order_search': check_permissions_by_user(self.request.user, "CAN_SEARCH_PAYMENT_ORDER"),
