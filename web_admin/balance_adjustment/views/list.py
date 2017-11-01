@@ -126,10 +126,10 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             loggers=self.logger,
             params=body
         )
+        self.logger.info('========== Finished searching Balance Adjustment ==========')
         if is_success:
             count = len(data)
             self.logger.info("Response_content_count:{}".format(count))
-            self.logger.info('========== Finished searching Balance Adjustment ==========')
 
             context = {'order_list': data,
                    'order_id': order_id,

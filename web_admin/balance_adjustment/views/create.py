@@ -8,6 +8,7 @@ from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
 import logging
+from web_admin.api_logger import API_Logger
 
 logger = logging.getLogger(__name__)
 
@@ -94,14 +95,13 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             "amount": amount
         }
 
-        self.logger.info('Params: {}'.format(params))
-
         success, status_code, message, data = RestFulClient.post(
             url=self.path,
             headers=self._get_headers(),
             loggers=self.logger,
             params=params)
 
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create order balance adjustment ==========')
         if success:
             messages.success(request, 'The adjustment is created successfully')
