@@ -134,6 +134,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             page = data['page']
             count = len(balance_adjustment_reference)
             self.logger.info("Response_content_count:{}".format(count))
+            self.logger.info("Page:{}".format(page))
 
             context = {'order_list': balance_adjustment_reference,
                    'order_id': order_id,
