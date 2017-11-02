@@ -19,6 +19,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     logger=logger
 
     group_required = "SYS_BAL_ADJUST_HISTORY"
+    button_permission = "SYS_BAL_ADJUST_APPROVE"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -38,7 +39,11 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         reference_id = context['ReferenceId']
         body = {'reference_id':reference_id}
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
+        url = api_settings.BALANCE_ADJUSTMENT_PATH
+        #url = 'http://localhost:43931/additional_detail' # status: REJECT_FAIL
+        #url = 'http://localhost:43932/additional_detail'  # status: APPROVE_FAIL
+        #url = 'http://localhost:43933/additional_detail'  # status: Created
+        is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
@@ -60,24 +65,28 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
     def post(self, request, *args, **kwargs):
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         button = request.POST.get('submit')
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, self.button_permission))
         if button == 'Approve':
             return self._do_approval(request)
         elif button == 'Reject':
             return self._do_reject(request)
 
     def _do_approval(self, request):
+        self.logger.info('========== Start Approve balance adjustment order ==========')
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
+        #url = 'http://localhost:4393/general_error_approval'
 
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
-        self.logger.info('========== Start Approve balance adjustment order ==========')
+
         is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
 
-        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
                                 status_code=status_code)
         self.logger.info('========== Finish Approve balance adjustment order ==========')
         if is_success:
@@ -102,16 +111,17 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
 
 
     def _do_reject(self, request):
+        self.logger.info('========== Start Reject balance adjustment order ==========')
         reference_id = request.POST.get('reference_id')
         url = api_settings.APPROVE_BAL_ADJUST_PATH.format(reference_id=reference_id)
+        #url = 'http://localhost:43938/general_error_reject'
         body = {'reason': request.POST.get('reason_for_approval_or_reject')}
 
-        self.logger.info('========== Start Reject balance adjustment order ==========')
         is_success, status_code, status_message = RestFulClient.delete(url=url,
                                                                        headers=self._get_headers(),
                                                                        loggers=self.logger,
                                                                        params=body)
-        API_Logger.delete_logging(loggers=self.logger, params={}, response={}, status_code=status_code)
+        API_Logger.delete_logging(loggers=self.logger, params=body, response={}, status_code=status_code)
 
         self.logger.info('========== Finish Reject balance adjustment order ==========')
         if is_success:
@@ -140,25 +150,4 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             messages.ERROR,
             message
         )
-        context = self._get_failed_context(reference_id)
-        return render(self.request, self.template_name, context)
-
-    def _get_failed_context(self, reference_id):
-        body = {'reference_id': reference_id}
-        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_ADJUSTMENT_PATH,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           params=body)
-        if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(status_message))
-                raise InvalidAccessToken(status_message)
-        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
-                               status_code=status_code)
-        permissions = {}
-        permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
-
-        context = {'order': data[0],
-                   'show_buttons': False,
-                   'permissions': permissions}
-        return context
+        return redirect(self.request.META['HTTP_REFERER'])
