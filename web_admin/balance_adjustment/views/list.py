@@ -6,6 +6,7 @@ from web_admin.api_settings import BALANCE_ADJUSTMENT_PATH, SERVICE_LIST_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
+from web_admin.utils import calculate_page_range_from_page_info
 
 
 
@@ -61,6 +62,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         count = 0
 
         order_id = request.POST.get('order_id')
+        opening_page_index = request.POST.get('current_page_index')
         service_id = request.POST.get('service_name')
         payer_user_id = request.POST.get('payer_user_id')
         payer_user_type_id = request.POST.get('payer_user_type_id')
@@ -79,6 +81,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
 
 
         body = {}
+        body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id
         if service_id:
@@ -126,12 +129,13 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             loggers=self.logger,
             params=body
         )
-        self.logger.info('========== Finished searching Balance Adjustment ==========')
         if is_success:
-            count = len(data)
+            balance_adjustment_reference = data['balance_adjustment_reference']
+            page = data['page']
+            count = len(balance_adjustment_reference)
             self.logger.info("Response_content_count:{}".format(count))
 
-            context = {'order_list': data,
+            context = {'order_list': balance_adjustment_reference,
                    'order_id': order_id,
                    'service_id': service_id,
                    'data': service_list,
@@ -147,10 +151,14 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                    'status_list': self.status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
-                   'ref_order_id': ref_order_id
+                   'ref_order_id': ref_order_id,
+                   'paginator': page,
+                   'page_range': calculate_page_range_from_page_info(page),
+                   'search_count': page['total_elements']
                    }
             if status_id:
                 context['status_id'] = int(status_id)
+            self.logger.info('========== Finished searching Balance Adjustment ==========')
             return render(request, self.template_name, context)
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(data))
