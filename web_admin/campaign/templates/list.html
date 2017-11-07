@@ -51,11 +51,10 @@
                 <table id='tbl_campaign' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
-                        <th id="lbl_campaign_id">Campaign ID</th>
-                        <th id="lbl_campaign_name">Campaign Name</th>
-                        <th id="lbl_campaign_description">Campaign Description</th>
-                        <th id="lbl_campaign_start_date">Start Date</th>
-                        <th id="lbl_campaign_end_date">End Date</th>
+                        <th id="ddl_campaign_id">Campaign ID</th>
+                        <th id="ddl_campaign_name">Campaign Name</th>
+                        <th id="ddl_start_date">Start Date</th>
+                        <th id="ddl_end_date">End Date</th>
                         <th class="col-sm-2" id="status">Status</th>
                     </tr>
                     </thead>
@@ -72,7 +71,6 @@
                             {%endif%}
                             </td>
                             <td>{{ i.name|default_if_none:'' }}</td>
-                            <td>{{ i.description|default_if_none:'' }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
