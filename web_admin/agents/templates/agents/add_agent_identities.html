@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Add Agent Identities</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group col-md-12">
+            <label class="col-sm-2 control-label">User Name *</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="txt_user_name" required>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label class="col-sm-2 control-label">Manual Password</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="txt_manual_password" required>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <div class="pull-right">
+                <a href="{% url 'agents:agent-list' %}">
+                    <input id="btn_cancel" class="btn text-left mb15" type="button"
+                           value="Cancel"/>
+                </a>
+                <a href="{% url 'agents:agent-list' %}">
+                    <input id="btn_add" class="btn btn-success text-left mb15" type="button"
+                           value="Add"/>
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
