@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .views.list import CamPaignList
 from .views.active import active
 from .views.inactive import inactive
+from .views.detail import CamPaignDetail
 
 
 app_name = 'campaign'
@@ -13,5 +14,7 @@ urlpatterns = [
         name="inactive-campaign"),
     url(r'^active/(?P<campaign_id>[0-9A-Za-z]+)/$', login_required(active, login_url='authentications:login'),
         name="activate-campaign"),
+    url(r'^detail/(?P<campaign_id>[0-9A-Za-z]+)/$', login_required(CamPaignDetail.as_view(), login_url='authentications:login'),
+        name="campaign_detail"),
 ]
 
