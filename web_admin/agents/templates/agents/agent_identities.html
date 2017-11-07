@@ -29,10 +29,12 @@
                        value="{{ agent_id | default_if_none:'' }}" readonly>
             </div>
         </div>
-
-        <br/>
-        <br/>
-
+        <div class="pull-right">
+            <a href="{% url 'agents:add_agent_identity' agent_id %}">
+                <input id="btn_add" class="btn btn-success mb15" type="button"
+                           value="Add"/>
+            </a>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_identities">
                 <thead>
