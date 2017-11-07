@@ -41,7 +41,6 @@ class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
                 raise InvalidAccessToken('access_token_expire')
-        print(data)
         context.update({
             'data': data
         })
