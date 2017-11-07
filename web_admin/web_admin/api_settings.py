@@ -212,5 +212,6 @@ GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
 #Market CamPaigns
 GET_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules'
 UPDATE_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
+GET_CAMPAIGNS_DETAIL= 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 
 

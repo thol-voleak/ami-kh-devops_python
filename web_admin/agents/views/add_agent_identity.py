@@ -16,7 +16,7 @@ logging.captureWarnings(True)
 
 
 class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
-    group_required = "CAN_VIEW_AGENT_IDENTITIES"
+    group_required = "CAN_ADD_AGENT_IDENTITIES"
     login_url = 'web:permission_denied'
     raise_exception = False
 

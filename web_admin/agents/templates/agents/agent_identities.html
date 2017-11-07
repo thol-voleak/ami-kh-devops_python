@@ -1,153 +1,157 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+{% load permissions_filter %}
 
     <div class="panel mb25">
-    <div class="panel-heading border mb15">
-        <h3>Agent Identities</h3>
-    </div>
-    <div class="alert alert-success" id="msg-update-success" hidden>
+        <div class="panel-heading border mb15">
+            <h3>Agent Identities</h3>
+        </div>
+        <div class="alert alert-success" id="msg-update-success" hidden>
             <button type="button" class="close" onclick="$('.alert').hide()">×</button>
             <strong id="alert-msg"></strong>
     </div>
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-        <div class="col-xs-12">
-            <div class='alert alert-success alert-dismissable' id="msg-success">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message|capfirst }}</strong>
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="col-xs-12">
+                    <div class='alert alert-success alert-dismissable' id="msg-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-xs-12">
+                    <div class='alert alert-danger alert-dismissable' id="msg-error">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Agent ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control"
+                           id="txt_agent_id"
+                           value="{{ agent_id | default_if_none:'' }}" readonly>
+                </div>
+                {% if request.user|has_permission_name:"CAN_ADD_AGENT_IDENTITIES"%}
+                <div class="pull-right">
+                    <a href="{% url 'agents:add_agent_identity' agent_id %}">
+                        <input id="btn_add" class="btn btn-success mb15" type="button"
+                               value="Add"/>
+                    </a>
+                </div>
+                {% endif %}
             </div>
-        </div>
-        {% endif %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-        <div class="col-xs-12">
-            <div class='alert alert-danger alert-dismissable' id="msg-error">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message|capfirst }}</strong>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_identities">
+                    <thead>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="identify">Identity</th>
+                        <th id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for identity in data %}
+                        {% if not identity.is_deleted %}
+                            <tr>
+                                <td class="col-sm-1">{{ identity.id }}</td>
+                                <td class="col-sm-3">{{ identity.username|default_if_none:'' }}</td>
+                                <td class="col-sm-3">
+                                    {% if identity.is_permision_reset_password %}
+                                        <div class="btn-group">
+                                            <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
+                                                    data-url="{% url 'agents:reset-identity-password' agent_id identity.id %}"
+                                                    onClick="reset(this)">ResetPassword
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </div>
-        {% endif %}
-    {% endfor %}
-    <div class="panel-body">
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Agent ID</label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control"
-                       id="txt_agent_id"
-                       value="{{ agent_id | default_if_none:'' }}" readonly>
-            </div>
-        </div>
-        <div class="pull-right">
-            <a href="{% url 'agents:add_agent_identity' agent_id %}">
-                <input id="btn_add" class="btn btn-success mb15" type="button"
-                           value="Add"/>
-            </a>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0" id="tbl_identities">
-                <thead>
-                <tr>
-                    <th id="id">ID</th>
-                    <th id="identify">Identity</th>
-                    <th id="action">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for identity in data %}
-                    {% if not identity.is_deleted %}
-                        <tr>
-                            <td class="col-sm-1">{{ identity.id }}</td>
-                            <td class="col-sm-3">{{ identity.username|default_if_none:'' }}</td>
-                            <td class="col-sm-3">
-                                {% if identity.is_permision_reset_password%}
-                                    <div class="btn-group">
-                                    <button id="btn_reset_password" class="btn btn-outline btn-xs btn-primary"
-                                            data-url="{% url 'agents:reset-identity-password' agent_id identity.id %}"
-                                            onClick="reset(this)">ResetPassword</button>
-                                    </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
 
-        <br/>
+            <br/>
 
-        <div class="pull-right">
-            <a href="{% url 'agents:agent-list' %}">
-                <input id="btn_cancel" class="btn text-left mb15" type="button"
-                       value="Cancel"/>
-            </a>
+            <div class="pull-right">
+                <a href="{% url 'agents:agent-list' %}">
+                    <input id="btn_cancel" class="btn text-left mb15" type="button"
+                           value="Cancel"/>
+                </a>
+            </div>
         </div>
-    </div>
     </div>
 
     <script>
 
-    function showErrorMessage(msg) {
-        console.log('showErrorMessage: ' + msg);
+        function showErrorMessage(msg) {
+            console.log('showErrorMessage: ' + msg);
 
-        $("#alert-msg").text(msg)
-        $('#msg-update-success').removeClass("alert-success");
-        $('#msg-update-success').addClass("alert-danger");
-        $("#msg-update-success").prop("hidden", false);
-        $("#msg-update-success").fadeIn(1000);
-    }
+            $("#alert-msg").text(msg)
+            $('#msg-update-success').removeClass("alert-success");
+            $('#msg-update-success').addClass("alert-danger");
+            $("#msg-update-success").prop("hidden", false);
+            $("#msg-update-success").fadeIn(1000);
+        }
 
-    function showSuccessMessage(msg) {
+        function showSuccessMessage(msg) {
 
-        $("#alert-msg").text(msg)
-        $('#msg-update-success').removeClass("alert-danger");
-        $('#msg-update-success').addClass("alert-success");
-        $("#msg-update-success").prop("hidden", false);
-        $("#msg-update-success").fadeIn(1000);
+            $("#alert-msg").text(msg)
+            $('#msg-update-success').removeClass("alert-danger");
+            $('#msg-update-success').addClass("alert-success");
+            $("#msg-update-success").prop("hidden", false);
+            $("#msg-update-success").fadeIn(1000);
 
-    }
+        }
 
-    function reset(e) {
-        swal({
-                title: "Confirm password reset",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
-                    url1 = window.location.href;
-                    url2 = window.location.origin;
-                    var url_original = url1.replace(url2, "");
-                    var url = e.getAttribute('data-url');
-                    $.ajax({
-                        url: url,
-                        type: "GET",
-                        data: {},
-                        success: function (response) {
-                            if(response.status == 1) {
-                                // Logout
-                                var url = window.location.origin + "/admin-portal/authentications/login/" + "?next=" + url_original;
-                                window.location.replace(url);
-                            } else if(response.status == 2) {
-                                // success
-                                showSuccessMessage('Password reset successfully');
-                            } else {
-                                // Failed
+        function reset(e) {
+            swal({
+                    title: "Confirm password reset",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        url1 = window.location.href;
+                        url2 = window.location.origin;
+                        var url_original = url1.replace(url2, "");
+                        var url = e.getAttribute('data-url');
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            data: {},
+                            success: function (response) {
+                                if (response.status == 1) {
+                                    // Logout
+                                    var url = window.location.origin + "/admin-portal/authentications/login/" + "?next=" + url_original;
+                                    window.location.replace(url);
+                                } else if (response.status == 2) {
+                                    // success
+                                    showSuccessMessage('Password reset successfully');
+                                } else {
+                                    // Failed
+                                    showErrorMessage('Password cannot be reset for this user, please try again or contact technical support.');
+                                }
+                            },
+                            error: function (err) {
                                 showErrorMessage('Password cannot be reset for this user, please try again or contact technical support.');
                             }
-                        },
-                        error: function (err) {
-                            showErrorMessage('Password cannot be reset for this user, please try again or contact technical support.');
-                        }
-                    });
-                }
-            });
-    }
+                        });
+                    }
+                });
+        }
 
-</script>
+    </script>
 {% endblock %}

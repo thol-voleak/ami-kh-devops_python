@@ -67,26 +67,36 @@
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 <!-- Rounded switch -->
-                                <label class="switch switch-sm">
-                                    {%if i.is_active%}
-                                    <input type="checkbox"
-                                           onClick="doActiveOrInactive(this)"
-                                           data-campaign-id='{{i.id}}' 
-                                           id="tog_status" checked>
-                                    <span class="slider round">
-                                        <i class="handle"></i>
-                                    </span>
-                                    {%else%}
-                                    <input type="checkbox"
-                                           onClick="doActiveOrInactive(this)"
-                                           data-campaign-id='{{i.id}}' 
-                                           id="tog_status">
-                                    <span class="slider round">
-                                        <i class="handle"></i>
-                                    </span>
-                                    {%endif%}
-
-                                </label>
+                                <div class="input-group">
+                                    <label class="switch switch-sm">
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               id="tog_status" checked>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <a type="button"
+                                        class="btn btn-outline btn-xs btn-info"
+                                        role="button"
+                                        id="btn_detail"
+                                        href="{% url 'campaign:campaign_detail' i.id%}">
+                                        <span class="small">Detail</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

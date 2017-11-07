@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Agent SOF Cash</h3>
+    </div>
+
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="get">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id">
+                        <option value="" >All</option>
+                        {% for choice_currency in currencies %}
+                            <option value="{{ choice_currency.0 }}" {% if choice_currency.0 == currency_id %}selected="selected"{% endif %}>{{ choice_currency.0 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-xs-2 pull-right ">
+                    {#                    <a href="{% url 'services:_add_agent_sof_cash' agent_id=agent_id %}">#}
+                    <a class="pull-right">
+                        <input id="btn_add" class="btn btn-success" type="button" value="Add"/>
+                    </a>
+                    {#                    </a>#}
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_sof_cash">
+                <thead>
+                <tr>
+                    <th id="SOF_ID">SOF ID</th>
+                    <th id="currency">Currency</th>
+                    <th id="created_date">Created Date</th>
+                    <th id="modified_date">Modified Date</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cash_sof in data.cash_sofs %}
+                <tr>
+                    <td class="col-sm-1">{{ cash_sof.id }}</td>
+                    <td class="col-sm-1">{{ cash_sof.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.action|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

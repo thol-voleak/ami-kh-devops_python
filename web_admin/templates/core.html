@@ -1,0 +1,105 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>Operation Web</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    {% block body_stylesheet %}
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/urban.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/urban.skins.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {% endblock %}
+</head>
+
+<body>
+{% block body_content %}
+
+<div class="app layout-fixed-header">
+
+    <!--sidebar-panel-->
+    {% include 'navigation.html' %}
+
+    <!-- content panel -->
+    <div class="main-panel">
+        <!-- top header -->
+        <header class="header navbar">
+
+            <div class="brand visible-xs">
+                <!-- toggle offscreen menu -->
+                <div class="toggle-offscreen">
+                    <a href="#" class="hamburger-icon visible-xs" data-toggle="offscreen" data-move="ltr">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </a>
+                </div>
+                <!-- /toggle offscreen menu -->
+                <!-- logo -->
+                <div class="brand-logo">
+                    <!--<img src="images/logo-dark.png" height="15" alt="">-->
+                </div>
+                <!-- /logo -->
+                <!-- toggle chat sidebar small screen-->
+                <div class="toggle-chat">
+                    <a href="javascript:;" class="hamburger-icon v2 visible-xs" data-toggle="layout-chat-open">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </a>
+                </div>
+                <!-- /toggle chat sidebar small screen-->
+            </div>
+
+            <ul class="nav navbar-nav hidden-xs">
+                <li>
+                    <!--<p class="navbar-text">-->
+                    <!--Native Form Elements-->
+                    <!--</p>-->
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                <li>
+                    <span class="navbar-text">
+                        {% include 'version.html' %}
+                    </span>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                {% if user.is_authenticated %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span id="nav-username">username: {{ user.username }}</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'system_user:self_change_password' %}">Change Password</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </header>
+        <div class="main-content" style="background-color: white;">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+{% endblock %}
+</body>
+
+</html>
