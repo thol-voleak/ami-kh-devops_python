@@ -1,15 +1,14 @@
 from braces.views import GroupRequiredMixin
 
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
+from web_admin.utils import encrypt_text_agent, setup_logger
 from django.contrib import messages
-from web_admin.api_settings import GET_AGENT_IDENTITY_URL
+from web_admin.api_settings import AGENT_ADD_IDENTITY_PATH
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from web_admin.api_logger import API_Logger
-from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,4 +35,40 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== User go to Add Agent Identity page ==========')
-        return render(request, self.template_name)
+        context = super(AddAgentIdentities, self).get_context_data(**kwargs)
+        agent_id = kwargs.get('agent_id')
+        context['agent_id'] = agent_id
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        context = super(AddAgentIdentities, self).get_context_data(**kwargs)
+        agent_id = context['agent_id']
+        self.logger.info('========== Start adding agent identity ==========')
+        username = request.POST.get('user_name')
+        params = {'username': username}
+        manual_password = request.POST.get('manual_password')
+
+        if manual_password:
+            params['password'] = encrypt_text_agent(manual_password)
+        else:
+            params['password'] = ''
+            params['auto_generate_password'] = True
+
+        success, status_code, message, data = RestFulClient.post(
+            url=AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id),
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params
+        )
+        self.logger.info('========== Finish adding agent identity ==========')
+
+        API_Logger.post_logging(loggers=self.logger,
+                                params=params,
+                                response=data,
+                                status_code=status_code)
+
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             'Agent Identity created successfully')
+
+        return redirect('agents:agent_identities', agent_id=agent_id)
