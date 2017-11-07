@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "detail.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
 
