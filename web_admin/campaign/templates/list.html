@@ -42,6 +42,14 @@
     </div>
 
         <div class="panel-body">
+            {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
+            <div class="pull-right">
+                <!--<a href="{% url 'campaign:add_campaign' %}">-->
+
+                    <input id="agent_type_btn_add" class="btn btn-success btn-block btn-md mb15" type="button"
+                           value="+  Add New Campaign"/>
+            </div>
+            {% endif %}
             <form id="submit-form" class="form-horizontal" role="form" method="POST"
             action="{% url 'campaign:campaign' %}">
 
