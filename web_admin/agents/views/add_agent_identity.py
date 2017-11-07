@@ -54,8 +54,10 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             params['password'] = ''
             params['auto_generate_password'] = True
 
+        # url = AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id);
+        url = 'http://localhost:4892/timeout';
         success, status_code, message, data = RestFulClient.post(
-            url=AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id),
+            url=url,
             headers=self._get_headers(),
             loggers=self.logger,
             params=params
