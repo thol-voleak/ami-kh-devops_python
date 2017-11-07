@@ -96,17 +96,6 @@
                                         {%endif%}
                                     </label>
                                 </div>
-                                {%if i.is_permission_detail%}
-                                <div class="input-group">
-                                    <a type="button"
-                                        class="btn btn-outline btn-xs btn-info"
-                                        role="button"
-                                        id="btn_detail"
-                                        href="{% url 'campaign:campaign_detail' i.id%}">
-                                        <span class="small">Detail</span>
-                                    </a>
-                                </div>
-                                {%endif%}
                             </td>
                         </tr>
                     {% endfor %}
