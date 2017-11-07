@@ -175,6 +175,10 @@
                                     <button id="btn_sofcash" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofcash' agent.id %}'">SOF Cash</button>
                                 {% endif %}
+                             {% if agent.is_permission_sofbank %}
+                                    <button id="btn_sofbank" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent-sofbank' agent.id %}'">SOF Bank</button>
+                                {% endif %}
                             </td>
                         {% endif %}
                     </tr>
