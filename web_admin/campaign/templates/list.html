@@ -62,7 +62,7 @@
                     {% for i in data %}
                         <tr>
                             <td>
-                            {%if not i.is_permission_detail%}
+                            {%if i.is_permission_detail%}
                                 <a id="{{ i.id }}" class="text-info" href="{% url 'campaign:campaign_detail' i.id %}">
                                 {{ i.id|default_if_none:'' }}
                                 </a>
