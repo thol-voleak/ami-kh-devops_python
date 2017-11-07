@@ -1,4 +1,6 @@
 from braces.views import GroupRequiredMixin
+
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from django.contrib import messages
@@ -57,9 +59,9 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 status_code=status_code, is_getting_list=True)
 
         if not is_success:
-            # if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            #     self.logger.info("{}".format(data))
-            #     raise InvalidAccessToken(data)
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -71,7 +73,6 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def _get_currency_choices(self):
         self.logger.info('========== Start Getting Currency Choices ==========')
         url = GET_ALL_CURRENCY_URL
-        # data, success = RestFulClient.get(url, "currency choice", logger)
         is_success, status_code, data = RestFulClient.get(url, loggers=self.logger, headers=self._get_headers(), timeout=settings.GLOBAL_TIMEOUT)
 
         if is_success:
