@@ -172,11 +172,11 @@
                                             onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
                                 {% endif %}
                                 {% if agent.is_permission_sofcash %}
-                                    <button id="btn_sofcash" class="btn mb5 btn-outline btn-xs btn-primary"
+                                    <button id="btn_sof_cash" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofcash' agent.id %}'">SOF Cash</button>
                                 {% endif %}
                              {% if agent.is_permission_sofbank %}
-                                    <button id="btn_sofbank" class="btn mb5 btn-outline btn-xs btn-primary"
+                                    <button id="btn_sof_bank" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofbank' agent.id %}'">SOF Bank</button>
                                 {% endif %}
                             </td>
