@@ -58,7 +58,8 @@
                     <thead>
                     <tr>
                         <th id="id">SOF ID</th>
-                        <th id="user">User (ID)</th>
+                        <th id="user">User Type</th>
+                        <th id="user">User ID</th>
                         <th id="provider_name">Provider Name</th>
                         <th id="card_account_name">Card Account Name</th>
                         <th id="card_account_number">Card Account Number</th>
@@ -72,7 +73,8 @@
                     {% for sof in card_sof_list %}
                         <tr>
                             <td class="col-sm-2">{{ sof.id }}</td>
-                            <td class="col-sm-2">{{ sof.user_type.name }} ({{ sof.user_id }})</td>
+                            <td class="col-sm-2">{{ sof.user_type.name }}</td>
+                            <td class="col-sm-2">{{ sof.user_id }}</td>
                             <td class="col-sm-2">{{ sof.card_design.provider.name }}</td>
                             <td class="col-sm-2">{{ sof.card_account_name }}</td>
                             <td class="col-sm-2">{{ sof.card_account_number }}</td>
