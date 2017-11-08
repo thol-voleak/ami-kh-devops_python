@@ -13,7 +13,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "SYS_BAL_ADJUST_REQUEST"
+    group_required = "CAN_CREATE_CAMPAIGN"
     login_url = 'web:permission_denied'
     raise_exception = False
 

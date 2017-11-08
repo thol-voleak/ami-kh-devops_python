@@ -6,7 +6,17 @@
 <div class="col-md-12">
     <div class="panel mb25">
         <div class="panel-heading border mb15">
-            <h3>Campaign List</h3>
+           <div>
+                <div class="pull-left"><h3>Campaign List</h3></div>
+                {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN"%}
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'campaign:create_campaign' %}">
+                        <input id="btn_add_campaign" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Campaign"/>
+                    </a>
+                </div>
+                {% endif %}
+               <div class="clearfix"></div>
+           </div>
 
     {% for message in messages %}
     <div class="col-xs-12">
