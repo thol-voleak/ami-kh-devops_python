@@ -4,6 +4,7 @@ from .views.list import CamPaignList
 from .views.active import active
 from .views.inactive import inactive
 from .views.detail import CamPaignDetail
+from .views.create import CreateCampaignView
 
 
 app_name = 'campaign'
@@ -16,5 +17,7 @@ urlpatterns = [
         name="activate-campaign"),
     url(r'^detail/(?P<campaign_id>[0-9A-Za-z]+)/$', login_required(CamPaignDetail.as_view(), login_url='authentications:login'),
         name="campaign_detail"),
+    url(r'^campaign/create$', login_required(CreateCampaignView.as_view(), login_url='authentications:login'),
+        name="create_campaign"),
 ]
 
