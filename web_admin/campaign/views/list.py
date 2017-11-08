@@ -34,6 +34,9 @@ class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         data = self.get_campaigns()
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_CAMPAIGN_DETAILS')
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
         context = {
             'data': data
         }

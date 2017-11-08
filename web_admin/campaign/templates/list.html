@@ -69,13 +69,18 @@
                     <tbody>
                     {% for i in data %}
                         <tr>
-                            <td>{{ i.id|default_if_none:'' }}</td>
+                            <td>
+                            {%if i.is_permission_detail%}
+                                <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="{% url 'campaign:campaign_detail' i.id %}">{{ i.id|default_if_none:'' }}</a>
+                            {%else%}
+                            {{ i.id|default_if_none:'' }}
+                            {%endif%}
+                            </td>
                             <td>{{ i.name|default_if_none:'' }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 <!-- Rounded switch -->
-                                <div class="input-group">
                                     <label class="switch switch-sm">
                                         {%if i.is_active%}
                                         <input type="checkbox"
@@ -95,16 +100,6 @@
                                         </span>
                                         {%endif%}
                                     </label>
-                                </div>
-                                <div class="input-group">
-                                    <a type="button"
-                                        class="btn btn-outline btn-xs btn-info"
-                                        role="button"
-                                        id="btn_detail"
-                                        href="{% url 'campaign:campaign_detail' i.id%}">
-                                        <span class="small">Detail</span>
-                                    </a>
-                                </div>
                             </td>
                         </tr>
                     {% endfor %}

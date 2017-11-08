@@ -229,6 +229,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_IDENTITIES')
             is_permission_smartcard = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SMARTCARD')
             is_permission_sofcash = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFCASH')
+            is_permission_sofbank = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFBANK')
             agents = data.get('agents', [])
             for i in agents:
                 i['is_permission_view'] = is_permission_view
@@ -237,6 +238,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 i['is_permission_identity'] = is_permission_identity
                 i['is_permission_smartcard'] = is_permission_smartcard
                 i['is_permission_sofcash'] = is_permission_sofcash
+                i['is_permission_sofbank'] = is_permission_sofbank
 
         self.logger.info('========== Finished searching agent ==========')
         return data, success, status_message

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "detail.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
 
@@ -41,7 +41,6 @@ class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
                 raise InvalidAccessToken('access_token_expire')
-        print(data)
         context.update({
             'data': data
         })
