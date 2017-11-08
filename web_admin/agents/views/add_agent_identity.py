@@ -39,6 +39,7 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(AddAgentIdentities, self).get_context_data(**kwargs)
         agent_id = kwargs.get('agent_id')
         context['agent_id'] = agent_id
+        context['params'] = {}
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
@@ -55,35 +56,44 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             params['password'] = ''
             params['auto_generate_password'] = True
 
-        url = AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id);
-        # url = 'http://localhost:4892/timeout';
-        success, status_code, status_message, data = RestFulClient.post(
-            url=url,
-            headers=self._get_headers(),
-            loggers=self.logger,
-            params=params
-        )
-        self.logger.info('========== Finish adding agent identity ==========')
+        success, message = self._add_agent_identity(agent_id, params)
 
-        API_Logger.post_logging(loggers=self.logger,
-                                params=params,
-                                response=data,
-                                status_code=status_code)
+        self.logger.info('========== Finish adding agent identity ==========')
 
         if success:
             messages.add_message(request,
-                             messages.SUCCESS,
-                             'Agent Identity created successfully')
+                                 messages.SUCCESS,
+                                 'Agent Identity created successfully')
+            return redirect('agents:agent_identities', agent_id=agent_id)
 
-        elif status_message == 'timeout':
+        elif message == 'timeout':
             messages.add_message(request, messages.ERROR,
                                  'Transaction Timeout : Cannot add identities, please try again or contact technical support')
-            context['username'] = username
-            if manual_password:
-                context['manual_password'] = manual_password
-            else:
-                context['manual_password'] = ''
-                context['auto_generate_password'] = True
+            params['password'] = manual_password
+            context['agent_id'] = agent_id
+            context['params'] = params
+            return render(request, self.template_name, context=context)
+        else:
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 message)
+            params['password'] = manual_password
+            context['agent_id'] = agent_id
+            context['params'] = params
             return render(request, self.template_name, context=context)
 
-        return redirect('agents:agent_identities', agent_id=agent_id)
+    def _add_agent_identity(self, agent_id, body):
+        url = AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id)
+        # url = 'http://localhost:4892/timeout'
+        success, status_code, message, data = RestFulClient.post(
+            url=url,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=body
+        )
+
+        API_Logger.post_logging(loggers=self.logger,
+                                params=body,
+                                response=data,
+                                status_code=status_code)
+        return success, message
