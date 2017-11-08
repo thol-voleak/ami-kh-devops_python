@@ -7,26 +7,33 @@
         <div class="pull-left">
         <p class="bold" style="margin-bottom:0;">
             <label size="2"><strong>Campaign ID:</strong></label>
-            <span style="text-transform: uppercase">{{data.id}}</span>
+            <span id="lbl_campaign_id" style="text-transform: uppercase">{{data.id}}</span>
         </p>
         <p class="bold">
             <label size="2"><strong>Campaign Name:</strong></label>
-            <span style="text-transform: uppercase">{{data.name}}</span>
+            <span id="lbl_campaign_name">{{data.name}}</span>
         </p>
-        </div>
-        <div class="panel-controls">
-            <a href="#" class="panel-collapse" panel-control-collapse>
-                <i class="glyphicon glyphicon-edit" style="color: #616a6b;"></i>
-            </a>
         </div>
     </div>
     <div class="panel-body" style="margin-top: -20px;">
-        <p>Campaign Description: {{data.description}}</p>
+        <p>
+            <label>Campaign Description:</label>
+            <span id="lbl_campaign_description">{{data.description}}</span>
+        </p>
         <p style="margin-bottom:0; ,">
             <label size="2">Start Date: </label>
-            <span>{{data.created_timestamp}}</span>
+            <span id="lbl_campaign_start_date">{{data.created_timestamp}}</span>
         </p>
-        <p><font size="2">End Date: {{data.last_updated_timestamp}}</font></p>
+        <p><font size="2">End Date: </font>
+        <label>End Date:</label>
+        <span id="lbl_campaign_end_date">{{data.last_updated_timestamp}}</span>
+        </p>
     </div>
+</div>
+<div class="pull-right">
+    <a href="{% url 'campaign:campaign' %}">
+    <input id="btn_dismiss" class="btn text-left mb15" type="button"
+               value="Dismiss"/>
+    </a>
 </div>
 {% endblock %}
