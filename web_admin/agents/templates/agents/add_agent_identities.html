@@ -6,6 +6,16 @@
     <div class="panel-heading border mb15">
         <h3>Add Agent Identities</h3>
     </div>
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    alert-danger
+                    alert-dismissable' id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post"
               action="{{ request.path }}">
@@ -13,19 +23,20 @@
             <div class="form-group col-md-12">
                 <label class="col-sm-2 control-label">User Name *</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="txt_user_name" name="user_name" required>
+                    <input type="text" class="form-control" id="txt_user_name" name="user_name" value = "{{ username }}" required>
                 </div>
             </div>
             <div class="form-group col-md-12">
                 <label class="col-sm-2 control-label" id="lbl_manual_password">Manual Password *</label>
                 <div class="col-sm-6">
-                    <input type="password" class="form-control" id="txt_manual_password" name="manual_password" required>
+                    <input type="password" class="form-control" id="txt_manual_password" name="manual_password" value = "{{ manual_password }}" required>
                 </div>
             </div>
             <div class="form-group col-md-12">
                 <label class="col-sm-2 control-label">System Password</label>
                 <div class="col-sm-6">
-                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="change_status()">
+                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="change_status()"
+                        {%if auto_generate_password%} checked {%endif%}>
                 </div>
             </div>
             <div class="form-group col-md-12">

@@ -1,5 +1,6 @@
 from braces.views import GroupRequiredMixin
 
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.utils import encrypt_text_agent, setup_logger
 from django.contrib import messages
@@ -55,8 +56,8 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             params['auto_generate_password'] = True
 
         url = AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id);
-        # url = 'http://localhost:4892/timeout';
-        success, status_code, message, data = RestFulClient.post(
+        url = 'http://localhost:4892/timeout';
+        success, status_code, status_message, data = RestFulClient.post(
             url=url,
             headers=self._get_headers(),
             loggers=self.logger,
@@ -69,8 +70,22 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                 response=data,
                                 status_code=status_code)
 
-        messages.add_message(request,
+        if success:
+            messages.add_message(request,
                              messages.SUCCESS,
                              'Agent Identity created successfully')
+        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+        elif status_message == 'timeout':
+            messages.add_message(request, messages.ERROR,
+                                 'Transaction Timeout : Cannot add identities, please try again or contact technical support')
+            context['username'] = username
+            if manual_password:
+                context['manual_password'] = manual_password
+            else:
+                context['manual_password'] = ''
+                context['auto_generate_password'] = True
+            return render(request, self.template_name, context=context)
 
         return redirect('agents:agent_identities', agent_id=agent_id)
