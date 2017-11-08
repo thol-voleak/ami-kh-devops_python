@@ -63,7 +63,7 @@
                         <tr>
                             <td>
                             {%if i.is_permission_detail%}
-                                <a id="{{ i.id }}" class="text-info" href="{% url 'campaign:campaign_detail' i.id %}">
+                                <a id="campaign-{{ i.id }}" class="text-info" href="{% url 'campaign:campaign_detail' i.id %}">
                                 {{ i.id|default_if_none:'' }}
                                 </a>
                             {%else%}
@@ -75,7 +75,6 @@
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">
                                 <!-- Rounded switch -->
-                                <div class="input-group">
                                     <label class="switch switch-sm">
                                         {%if i.is_active%}
                                         <input type="checkbox"
@@ -95,7 +94,6 @@
                                         </span>
                                         {%endif%}
                                     </label>
-                                </div>
                             </td>
                         </tr>
                     {% endfor %}
