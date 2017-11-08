@@ -5,6 +5,7 @@ from .views.active import active
 from .views.inactive import inactive
 from .views.create import CreateCampaignView
 from .views.detail import CampaignDetail
+from .views.add_mechanic import AddMechanic
 
 
 app_name = 'campaign'
@@ -19,5 +20,7 @@ urlpatterns = [
         name="campaign_detail"),
     url(r'^campaign/create$', login_required(CreateCampaignView.as_view(), login_url='authentications:login'),
         name="create_campaign"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/add_mechanic$', login_required(AddMechanic.as_view(), login_url='authentications:login'),
+        name="add_mechanic")
 ]
 

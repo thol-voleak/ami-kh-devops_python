@@ -17,7 +17,7 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     login_url = 'web:permission_denied'
     raise_exception = False
 
-    template_name = "create.html"
+    template_name = "campaign/create.html"
     path = api_settings.CREATE_CAMPAIGN
     logger = logger
 
