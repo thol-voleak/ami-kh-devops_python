@@ -15,9 +15,9 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+class CampaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
-    template_name = "list.html"
+    template_name = "campaign/list.html"
     group_required = "CAN_VIEW_CAMPAIGNS"
     login_url = 'web:permission_denied'
     logger = logger
@@ -25,7 +25,7 @@ class CamPaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(CamPaignList, self).dispatch(request, *args, **kwargs)
+        return super(CampaignList, self).dispatch(request, *args, **kwargs)
 
     def check_membership(self, permission):
         self.logger.info(

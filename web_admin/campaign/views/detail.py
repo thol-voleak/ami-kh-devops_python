@@ -15,9 +15,9 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
-    template_name = "detail.html"
+    template_name = "campaign/detail.html"
     group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
@@ -25,7 +25,7 @@ class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(CamPaignDetail, self).dispatch(request, *args, **kwargs)
+        return super(CampaignDetail, self).dispatch(request, *args, **kwargs)
 
     def check_membership(self, permission):
         self.logger.info(
@@ -33,7 +33,7 @@ class CamPaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
-        context = super(CamPaignDetail, self).get_context_data(**kwargs)
+        context = super(CampaignDetail, self).get_context_data(**kwargs)
         campaign_id = context['campaign_id']
         url = settings.DOMAIN_NAMES + GET_CAMPAIGNS_DETAIL.format(bak_rule_id=campaign_id)
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
