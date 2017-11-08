@@ -56,7 +56,7 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             params['auto_generate_password'] = True
 
         url = AGENT_ADD_IDENTITY_PATH.format(agent_id=agent_id);
-        url = 'http://localhost:4892/timeout';
+        # url = 'http://localhost:4892/timeout';
         success, status_code, status_message, data = RestFulClient.post(
             url=url,
             headers=self._get_headers(),
@@ -74,9 +74,7 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             messages.add_message(request,
                              messages.SUCCESS,
                              'Agent Identity created successfully')
-        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            self.logger.info("{}".format(data))
-            raise InvalidAccessToken(data)
+
         elif status_message == 'timeout':
             messages.add_message(request, messages.ERROR,
                                  'Transaction Timeout : Cannot add identities, please try again or contact technical support')
