@@ -36,6 +36,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         services = self.get_services_list()
         self.update_step_to_service(services)
         context.update({'services': services})
+        context.update({'currency': self.get_currency_list().get('value')})
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +52,10 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         payee_id = request.POST.get('payee_id')
         payee_type = request.POST.get('payee_type')
         payee_source_of_fund_id = request.POST.get('payee_source_of_fund_id')
-        amount = float(request.POST.get('amount'))
+        amountstr = request.POST.get('amount')
+        if isinstance(amountstr, str):
+            amountstr = amountstr.replace(',', '')
+        amount = float(amountstr)
         service = request.POST.get('service_name')
         service = ast.literal_eval(service)
         service_name = service['service_name']
@@ -124,6 +128,7 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 'payee_source_of_fund_id': payee_source_of_fund_id,
                 'amount': request.POST.get('amount'),
                 'service_name': service_name,
+                'currency': self.get_currency_list().get('value'),
             }
 
             services = self.get_services_list()
