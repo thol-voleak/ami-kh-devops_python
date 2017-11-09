@@ -183,7 +183,7 @@ SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/sof
 SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/partners/results'
 GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{service_group_id}/services'
 
-# card type
+# Card Type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
 UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
 
@@ -198,7 +198,7 @@ CARD_DESIGN_DETAIL = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{prov
 CARD_TYPE_LIST = 'api-gateway/sof-card/'+API_VERSION+'/admin/card-types'
 CARD_DESIGN_UPDATE = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
 
-# bank profile
+# Bank Profile
 CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
 GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
 
@@ -209,12 +209,13 @@ DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
 
-#Market CamPaigns
+#Market Campaign
 GET_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules'
 UPDATE_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 GET_CAMPAIGNS_DETAIL= 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 CREATE_CAMPAIGN = 'rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/report'
 GET_MECHANIC_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
+CREATE_MECHANIC = 'rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
 
 

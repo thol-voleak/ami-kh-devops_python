@@ -21,12 +21,12 @@
             <div class="row no-margin">
                 <div class="col-lg-12">
                     <form id="submit-form" class="form-horizontal" role="form" method="post"
-                          action="{% url 'agent_type:create-agent-type' %}">
+                          action="{{ request.path }}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Trigger</label>
                             <div class="col-xs-2">
-                                <select class="form-control" id="trigger" name="Trigger">
+                                <select class="form-control" id="ddl_trigger" name="trigger">
                                     <option value= "register_customer">Customer Registration</option>
                                     <option value= "executed_order">Customer Payment</option>
                                 </select>
@@ -36,34 +36,34 @@
                             <label class="col-sm-2 control-label">Request Date:</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control input-rounded"
-                                       name="start_date"
+                                       name="dtp_start_date"
                                        value="{{ start_date|default_if_none:'' }}"
-                                       id="dtp_from">
+                                       id="dtp_start_date">
                             </div>
                             <div class="col-xs-2">
                                 <input type=time min=00:00 max=23:59 step=60 value="00:01"
-                                       id="time_start" name="start_time">
+                                       id="dtp_start_time" name="dtp_start_time">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Request Date:</label>
                             <div class="col-xs-2">
                                 <input type="date" class="form-control input-rounded"
-                                       name="end_date"
+                                       name="dtp_end_date"
                                        value="{{ end_date|default_if_none:'' }}"
-                                       id="dtp_to">
+                                       id="dtp_end_date">
                             </div>
                             <div class="col-xs-2">
                                 <input type=time min=9:00 max=23:59 step=60 value="00:01"
-                                       id="time_end" name="end_time">
+                                       id="dtp_end_time" name="dtp_end_time">
                             </div>
                         </div>
 
                         <div class="pull-right">
-                                <input id="agent_type_btn_add" class="btn btn-success text-left mb15" type="submit"
+                                <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
                                        value="Add Mechanic"/>
                              <br/>
-                            <a href="{% url 'agent_type:agent-type-list' %}">Dismiss</a>
+                            <a href="{% url 'campaign:campaign_detail' campaign_id %}">Dismiss</a>
                         </div>
                     </form>
                 </div>
