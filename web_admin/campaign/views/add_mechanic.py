@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
+    group_required = "CAN_CREATE_MECHANIC"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -27,10 +27,6 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "campaign/add_mechanic.html"
     logger = logger
-
-    permission_required = "auth.change_user"
-    login_url = settings.LOGIN_URL
-    raise_exception = False
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

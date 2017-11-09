@@ -1,4 +1,5 @@
 {% extends "core.html" %}
+{% load permissions_filter %}
 
 {% block content %}
 {% for message in messages %}
@@ -78,14 +79,14 @@
     {%endfor%}
 {% endif %}
 
-{#    {% if request.user|has_permission_name:"CAN_CREATE_MECHANIC"%}#}
+{% if request.user|has_permission_name:"CAN_CREATE_MECHANIC" %}
         <div class="pull-left">
             <a href="{% url 'campaign:add_mechanic' campaign_id %}">
-                <input id="btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
+                <input id="btn_add_mechanic" class="btn btn-success btn-block btn-sm mb15" type="button"
                        value="Add More Mechanic"/>
             </a>
         </div>
-{#        {% endif %}#}
+{% endif %}
 
 <div class="pull-right">
     <a href="{% url 'campaign:campaign' %}">
