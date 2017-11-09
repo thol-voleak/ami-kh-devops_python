@@ -42,8 +42,8 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start create campaign ==========')
         name = request.POST.get('name')
         description = request.POST.get('description')
-        start_date = request.POST.get('dtp_from')
-        end_date = request.POST.get('dtp_to')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
         start_hour = int(start_time[0:2])
@@ -51,20 +51,20 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         end_hour = int(end_time[0:2])
         end_minute = int(end_time[-2:])
         if start_date:
-            start_date = datetime.strftime(start_date, "%Y-%m-%d")
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
         else:
-            start_date = datetime.now()
+            start_date_obj = datetime.now()
         
-        start_date = start_date.replace(hour=start_hour, minute=start_minute, second=0)
-        start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        start_date_obj = start_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
+        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        if end_date:
-            end_date = datetime.strftime(end_date, "%Y-%m-%d")
+        if end_time:
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
         else:
-            end_date = datetime.now()
-
-        end_date = end_date.replace(hour=end_hour, minute= end_minute, second=0)
-        end_date = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            end_date_obj = datetime.now()
+        
+        end_date_obj = end_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
+        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
         params = {
