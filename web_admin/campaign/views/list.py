@@ -65,6 +65,9 @@ class CampaignList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
 
         data = self._search_for_campaigns(body)
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_CAMPAIGN_DETAILS')
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
         #data = self.format_data(data)
         status_list = self._get_status_list()
         context = {
