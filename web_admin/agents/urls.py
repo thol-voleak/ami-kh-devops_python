@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/identities/add/$', login_required(AddAgentIdentities.as_view(), login_url='authentications:login'), name="add_agent_identity"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/identities/(?P<identity_id>[0-9A-Za-z]+)/$', login_required(reset_password, login_url='authentications:login'), name="reset-identity-password"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/smardcards/$', login_required(SmartCardView.as_view(), login_url='authentications:login'), name="agent-smartcard"),
-    url(r'^(?P<agent_id>[0-9A-Za-z]+)/sofs/cashs/$', login_required(SOFCashView.as_view(), login_url='authentications:login'), name="agent-sofcash"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/sofs/cash/$', login_required(SOFCashView.as_view(), login_url='authentications:login'), name="agent-sofcash"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/sofs/banks/$', login_required(SOFBankView.as_view(), login_url='authentications:login'), name="agent-sofbank"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/smardcards/(?P<smartcard_id>[0-9A-Za-z]+)$', login_required(SmartCardDelete.as_view(), login_url='authentications:login'), name="delete_agent_smartcard"),
 ]
