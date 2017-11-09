@@ -46,14 +46,32 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         end_date = request.POST.get('dtp_to')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
-        print("start date is ;{}".format(start_date))
-        print("end date is ;{}".format(end_date))
-        print("start time is ;{}".format(start_time))
-        print("end time is ;{}".format(end_time))
+        start_hour = int(start_time[0:2])
+        start_minute = int(start_time[-2:])
+        end_hour = int(end_time[0:2])
+        end_minute = int(end_time[-2:])
+        if start_date:
+            start_date = datetime.strftime(start_date, "%Y-%m-%d")
+        else:
+            start_date = datetime.now()
+        
+        start_date = start_date.replace(hour=start_hour, minute=start_minute, second=0)
+        start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        if end_date:
+            end_date = datetime.strftime(end_date, "%Y-%m-%d")
+        else:
+            end_date = datetime.now()
+
+        end_date = end_date.replace(hour=end_hour, minute= end_minute, second=0)
+        end_date = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
 
         params = {
             "name":name,
             "description":description,
+            "start_active_timestamp":start_date,
+            "end_active_timestamp":end_date
         }
         self.logger.info("param is : {}".format(params))
 
@@ -63,11 +81,11 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             loggers=self.logger,
             params=params)
 
-        # API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+        #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create capmpaign ==========')
         if success:
             messages.success(request, 'The campaign is created successfully')
-            return redirect('campaign:campaign')
+            return redirect('campaign:campaign_detail', campaign_id=data['id'])
         else:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(message))
@@ -75,9 +93,9 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
             context = {
                 'name': name,
-                'description': description
-                #'start_time': start_time,
-                #'end_time': end_time
+                'description': description,
+                'start_time': start_time,
+                'end_time': end_time
             }
 
             if status_code.lower() in ["general_error"]:

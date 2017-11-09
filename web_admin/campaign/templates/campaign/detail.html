@@ -1,6 +1,23 @@
 {% extends "core.html" %}
 
 {% block content %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="col-xs-12">
+        <div class="alert alert-danger alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% endif %}
+{% endfor %}
 <h3>Campaign Details</h3>
 <div class="panel panel-primary " style="background-color: #ecf0f1;">
     <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
