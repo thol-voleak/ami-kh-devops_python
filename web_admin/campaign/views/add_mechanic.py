@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_CREATE_MECHANIC"
+    group_required = "CAN_CREATE_CAMPAIGN"
     login_url = 'web:permission_denied'
     raise_exception = False
 

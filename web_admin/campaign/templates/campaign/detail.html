@@ -79,7 +79,7 @@
     {%endfor%}
 {% endif %}
 
-{% if request.user|has_permission_name:"CAN_CREATE_MECHANIC" %}
+{% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
         <div class="pull-left">
             <a href="{% url 'campaign:add_mechanic' campaign_id %}">
                 <input id="btn_add_mechanic" class="btn btn-success btn-block btn-sm mb15" type="button"
