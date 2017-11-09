@@ -215,5 +215,6 @@ UPDATE_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 GET_CAMPAIGNS_DETAIL= 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
 CREATE_CAMPAIGN = 'rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/report'
+GET_MECHANIC_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
 
 

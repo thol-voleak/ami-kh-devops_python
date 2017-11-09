@@ -47,6 +47,37 @@
         </p>
     </div>
 </div>
+
+{%if len_mechanic != 0 %}
+    {% for i in mechanic %}
+        <h3 id="lbl_mechanic_{{i.count}}">Mechanic {{i.count}} Information</h3>   
+        <div class="panel panel-primary " style="background-color: #ecf0f1;" id="div_mechanic_{{i.count}}">
+            <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
+                <div class="pull-left">
+                <p class="bold" style="margin-bottom:0;">
+                    <label size="2" id="lbl_mechanic_id"><strong>Mechanic ID:</strong></label>
+                    <span id="lbl_campaign_id" style="text-transform: uppercase">{{i.id}}</span>
+                </p>
+                <p class="bold">
+                    <label size="2" id="lbl_mechanic_event_name"><strong>Mechanic Event Name:</strong></label>
+                    <span id="lbl_campaign_name">{{i.event_name}}</span>
+                </p>
+                </div>
+            </div>
+            <div class="panel-body" style="margin-top: -20px;">
+                <p style="margin-bottom:0; ,">
+                    <label size="2">Start Date: </label>
+                    <span id="lbl_mechanic_start_date">{{i.start_timestamp}}</span>
+                </p>
+                <p><font size="2"></font>
+                <label>End Date:</label>
+                <span id="lbl_mechanic_end_date">{{i.end_timestamp}}</span>
+                </p>
+            </div>
+        </div>
+    {%endfor%}
+{% endif %}
+
 {#    {% if request.user|has_permission_name:"CAN_CREATE_MECHANIC"%}#}
         <div class="pull-left">
             <a href="{% url 'campaign:add_mechanic' campaign_id %}">
