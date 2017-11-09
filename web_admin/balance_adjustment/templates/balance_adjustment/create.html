@@ -223,12 +223,12 @@ function changeAmount() {
             if (num != "") {
                 num = parseFloat(num);
                 num = num.toFixed(deci);
-                if(num.indexOf(".") >=1){
-                num1 = num.substring(0, num.indexOf("."));
-                num2 = num.substring(num.indexOf(".")+1 );
-                num1 = num1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                num = num1 + '.' + num2;
-                else {num = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");}
+                if(num.indexOf(".") >=1) {
+                    num1 = num.substring(0, num.indexOf("."));
+                    num2 = num.substring(num.indexOf(".") + 1);
+                    num1 = num1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    num = num1 + '.' + num2;
+                }else {num = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");}
                 amount.value = num;
             }
         }
