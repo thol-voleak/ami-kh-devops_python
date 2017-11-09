@@ -32,7 +32,7 @@
                     <td class="col-sm-2">{{ sof.bank.name|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ sof.bank_account_name|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ sof.bank_account_number|default_if_none:'' }}</td>
-                    <td class="col-sm-1 text-center">{{ sof.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ sof.currency|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ sof.is_deleted|yesno:"Unlinked,Linked" }}</td>
                     <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>

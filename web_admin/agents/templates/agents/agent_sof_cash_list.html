@@ -45,7 +45,7 @@
                 {% for cash_sof in data.cash_sofs %}
                 <tr>
                     <td class="col-sm-1">{{ cash_sof.id }}</td>
-                    <td class="col-sm-1 text-center">{{ cash_sof.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ cash_sof.currency|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ cash_sof.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ cash_sof.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ cash_sof.action|default_if_none:'' }}</td>
