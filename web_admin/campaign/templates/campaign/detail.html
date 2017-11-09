@@ -51,17 +51,17 @@
 
 {%if len_mechanic != 0 %}
     {% for i in mechanic %}
-        <h3 id="lbl_mechanic_{{i.count}}">Mechanic {{i.count}} Information</h3>   
+        <h3 id="lbl_mechanic_{{i.count}}" ><font size="4">Mechanic {{i.count}} Information</font></h3>   
         <div class="panel panel-primary " style="background-color: #ecf0f1;" id="div_mechanic_{{i.count}}">
             <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
                 <div class="pull-left">
                 <p class="bold" style="margin-bottom:0;">
-                    <label size="2" id="lbl_mechanic_id"><strong>Mechanic ID:</strong></label>
-                    <span id="lbl_campaign_id" style="text-transform: uppercase">{{i.id}}</span>
+                    <label size="2"><strong>Mechanic ID:</strong></label>
+                    <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                 </p>
                 <p class="bold">
-                    <label size="2" id="lbl_mechanic_event_name"><strong>Mechanic Event Name:</strong></label>
-                    <span id="lbl_campaign_name">{{i.event_name}}</span>
+                    <label size="2"><strong>Mechanic Event Name:</strong></label>
+                    <span id="lbl_mechanic_event_name">{{i.event_name}}</span>
                 </p>
                 </div>
             </div>
