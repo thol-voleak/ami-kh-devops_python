@@ -26,7 +26,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Trigger</label>
                             <div class="col-xs-2">
-                                <select class="form-control" id="ddl_trigger" name="trigger">
+                                <select class="form-control" id="ddl_trigger" name="trigger" required>
                                     <option value= "register_customer">Customer Registration</option>
                                     <option value= "executed_order">Customer Payment</option>
                                 </select>
@@ -38,7 +38,7 @@
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_start_date"
                                        value="{{ start_date|default_if_none:'' }}"
-                                       id="dtp_start_date">
+                                       id="dtp_start_date" required>
                             </div>
                             <div class="col-xs-2">
                                 <input type=time min=00:00 max=23:59 step=60 value="00:01"
@@ -51,7 +51,7 @@
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_end_date"
                                        value="{{ end_date|default_if_none:'' }}"
-                                       id="dtp_end_date">
+                                       id="dtp_end_date" required>
                             </div>
                             <div class="col-xs-2">
                                 <input type=time min=9:00 max=23:59 step=60 value="00:01"
