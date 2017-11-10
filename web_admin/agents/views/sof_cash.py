@@ -6,6 +6,7 @@ from web_admin import setup_logger
 from django.contrib import messages
 from web_admin.api_settings import GET_REPORT_AGENT_BALANCE
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
+from web_admin.api_settings import CREATE_AGENT_BALANCE_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
 from django.shortcuts import render, redirect
@@ -44,24 +45,43 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         agent_sof_cash = self._get_agent_sof_cash(agent_id)
         currencies, success = self._get_currency_choices()
         self.logger.info('currencies: {}'.format(currencies))
+
+        permissions = {
+            'is_permission_add_sofcash': check_permissions_by_user(self.request.user, "CAN_ADD_AGENT_SOFCASH"),
+        }
         context = {
             "data": agent_sof_cash,
             'agent_id': agent_id,
-            'currencies': currencies
+            'currencies': currencies,
+            'permissions': permissions
         }
         self.logger.info('========== Finished getting agent sof cash ==========')
         return render(request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+        if not check_permissions_by_user(request.user, 'CAN_ADD_AGENT_SOFCASH'):
+            return render(request, 'web/permission-denied.html')
+
+        self.logger.info('========== Start adding agent sof cash ==========')
+        context = super(SOFCashView, self).get_context_data(**kwargs)
+        agent_id = context['agent_id']
+        params = {
+            "currency": request.POST.get('currency_id'),
+            "user_id": agent_id,
+            "user_type_id": 2,
+        }
+        self._add_agent_sof_cash(params)
+        self.logger.info('========== Finished adding agent sof cash ==========')
+
+        return redirect('agents:agent-sofcash', agent_id=agent_id)
+
     def _get_agent_sof_cash(self, agent_id):
         params = {"user_id": agent_id}
         is_success, status_code, status_message, data = RestFulClient.post(url=GET_REPORT_AGENT_BALANCE, params=params, loggers=self.logger, headers=self._get_headers(), timeout=settings.GLOBAL_TIMEOUT)
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data['cash_sofs'],
                                 status_code=status_code, is_getting_list=True)
 
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -86,3 +106,27 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             result = [], False
         self.logger.info('========== Finish Getting Currency Choices ==========')
         return result
+
+    def _add_agent_sof_cash(self, params):
+        is_success, status_code, status_message, data = RestFulClient.post(url=CREATE_AGENT_BALANCE_URL,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=params,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
+
+        if is_success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                'New currency added as cash SOF'
+            )
+        else :
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+        return is_success

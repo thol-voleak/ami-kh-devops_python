@@ -74,9 +74,10 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['params'] = params
             return render(request, self.template_name, context=context)
         else:
+            msg = "Cannot add identities for agent - " + message
             messages.add_message(request,
                                  messages.ERROR,
-                                 message)
+                                 msg)
             params['password'] = manual_password
             context['agent_id'] = agent_id
             context['params'] = params
