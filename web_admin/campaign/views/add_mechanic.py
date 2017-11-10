@@ -78,17 +78,13 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if str_start_date:
             start_date = datetime.strptime(str_start_date, "%Y-%m-%d")
-        else:
-            start_date = current_date
-        start_date = start_date.replace(hour=start_hour, minute=start_minute, second=0)
+            start_date = start_date.replace(hour=start_hour, minute=start_minute, second=0)
 
         if str_end_date:
             end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
-        else:
-            end_date = current_date
-        end_date = end_date.replace(hour=end_hour, minute=end_minute, second=0)
+            end_date = end_date.replace(hour=end_hour, minute=end_minute, second=0)
 
-        if start_date > end_date or start_date < current_date or end_date < current_date:
+        if start_date is None or start_time is None or end_date is None or end_time is None or start_date > end_date or start_date < current_date or end_date < current_date:
             context['error_msg'] = 'Start date or time cannot be after end date and time. Date and Time cannot be in the past'
             context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
             context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
