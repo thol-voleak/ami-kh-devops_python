@@ -4,7 +4,7 @@ from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from django.contrib import messages
-from web_admin.api_settings import BANK_SOFS_URL
+from web_admin.api_settings import LIST_BANK_SOFS_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
 from django.shortcuts import render, redirect
@@ -50,7 +50,7 @@ class SOFBankView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _get_agent_sof_bank(self, agent_id):
         params = {"user_id": agent_id}
-        is_success, status_code, status_message, data = RestFulClient.post(url=BANK_SOFS_URL, params=params,
+        is_success, status_code, status_message, data = RestFulClient.post(url=LIST_BANK_SOFS_URL, params=params,
                                                                            loggers=self.logger,
                                                                            headers=self._get_headers(),
                                                                            timeout=settings.GLOBAL_TIMEOUT)
@@ -58,9 +58,6 @@ class SOFBankView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 status_code=status_code, is_getting_list=True)
 
         if not is_success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             messages.add_message(
                 self.request,
                 messages.ERROR,

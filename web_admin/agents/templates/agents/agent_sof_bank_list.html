@@ -2,46 +2,62 @@
 {% load static %}
 {% block content %}
 
-<div class="panel mb25">
-    <div class="panel-heading border">
-        <h3>Agent SOF Bank</h3>
-    </div>
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Agent SOF Bank</h3>
+        </div>
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissable" id="msg-roles">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message }}</strong>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-xs-12">
+                    <div class='alert alert-danger alert-dismissable' id="msg-error">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="get">
+            </form>
 
-    <div class="panel-body">
-        <form id="submit-form" class="form-horizontal" role="form" method="get">
-        </form>
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0" id="tbl_agent_sof_bank">
-                <thead>
-                <tr>
-                    <th id="SOF_ID">SOF ID</th>
-                    <th id="bank_name">Bank Name</th>
-                    <th id="bank_account_name">Bank Account Name</th>
-                    <th id="bank_account_number">Bank Account Number</th>
-                    <th id="currency">Currency</th>
-                    <th id="status">Status</th>
-                    <th id="linked_date">Linked Date</th>
-                    <th id="last_modify_date">Last Modify Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for sof in data %}
-                <tr>
-                    <td class="col-sm-1">{{ sof.id }}</td>
-                    <td class="col-sm-2">{{ sof.bank.name|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ sof.bank_account_name|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ sof.bank_account_number|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ sof.currency|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ sof.is_deleted|yesno:"Unlinked,Linked" }}</td>
-                    <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_agent_sof_bank">
+                    <thead>
+                    <tr>
+                        <th id="SOF_ID">SOF ID</th>
+                        <th id="bank_name">Bank Name</th>
+                        <th id="bank_account_name">Bank Account Name</th>
+                        <th id="bank_account_number">Bank Account Number</th>
+                        <th id="currency">Currency</th>
+                        <th id="status">Status</th>
+                        <th id="linked_date">Linked Date</th>
+                        <th id="last_modify_date">Last Modify Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sof in data %}
+                        <tr>
+                            <td class="col-sm-1">{{ sof.id }}</td>
+                            <td class="col-sm-2">{{ sof.bank.name|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ sof.bank_account_name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ sof.bank_account_number|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ sof.currency|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ sof.is_deleted|yesno:"Unlinked,Linked" }}</td>
+                            <td class="col-sm-2">{{ sof.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ sof.last_updated_timestamp|default_if_none:'' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}
