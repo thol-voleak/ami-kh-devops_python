@@ -126,6 +126,12 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.SUCCESS,
                 'New currency added as cash SOF'
             )
+        elif status_message == 'timeout':
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Transaction Timeout : Cannot add SOF Cash, please try again or contact technical support"
+            )
         else :
             messages.add_message(
                 self.request,
