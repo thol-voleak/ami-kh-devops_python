@@ -6,6 +6,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import render
 import logging
+from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_DETAILS, GET_CONDITION_LIST
@@ -59,6 +60,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + GET_MECHANIC_LIST.format(bak_rule_id=campaign_id)
         self.logger.info('========== Start get mechanic list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         if not success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
@@ -68,6 +71,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get_detail_campaign(self, campaign_id):
         url = settings.DOMAIN_NAMES + GET_CAMPAIGNS_DETAIL.format(bak_rule_id=campaign_id)
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         if not success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
