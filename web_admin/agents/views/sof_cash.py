@@ -95,6 +95,9 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = GET_ALL_CURRENCY_URL
         is_success, status_code, data = RestFulClient.get(url, loggers=self.logger, headers=self._get_headers(), timeout=settings.GLOBAL_TIMEOUT)
 
+        API_Logger.post_logging(loggers=self.logger, response=data,
+                                status_code=status_code, is_getting_list=True)
+
         if is_success:
             value = data.get('value', '')
             if isinstance(value, str):
