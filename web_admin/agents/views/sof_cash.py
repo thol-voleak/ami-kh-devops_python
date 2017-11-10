@@ -132,6 +132,12 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Transaction Timeout : Cannot add SOF Cash, please try again or contact technical support"
             )
+        elif status_message == 'Invalid SOF information' and status_code == 'invalid_request':
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Cannot add SOF Cash - '" + status_message + "'"
+            )
         else :
             messages.add_message(
                 self.request,
