@@ -219,5 +219,5 @@ GET_MECHANIC_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mecha
 CREATE_MECHANIC = 'rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
 GET_CONDITION_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/${bak_rule_id}/mechanics/${bak_mechanic_id}/conditions'
 GET_CONDITION_DETAILS = 'rule-engine/'+API_VERSION+'/admin/rules/${bak_rule_id}/mechanics/${bak_mechanic_id}/conditions/${bak_condition_id}'
-
+DELETE_MECHANIC_URL = 'api-gateway/rule-engine/' + API_VERSION + '/admin/rules/{campaign_id}/mechanics/{mechanic_id}'
 

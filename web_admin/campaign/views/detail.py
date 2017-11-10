@@ -39,11 +39,15 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data = self.get_detail_campaign(campaign_id)
         mechanic = self.get_mechanic_list(campaign_id)
         count = 0
+        active_mechanic_count = 0
         for i in mechanic:
+            if not i['is_deleted'] :
+                active_mechanic_count += 1
             count += 1
             i['count'] = count
         context.update({
             'data': data,
+            'active_mechanic_count': active_mechanic_count,
             'mechanic': mechanic,
             'len_mechanic': len(mechanic)
         })
