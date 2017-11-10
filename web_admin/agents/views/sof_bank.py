@@ -54,7 +54,8 @@ class SOFBankView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            headers=self._get_headers(),
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data["bank_sofs"] if is_success else data,
                                 status_code=status_code, is_getting_list=True)
 
         if not is_success:
