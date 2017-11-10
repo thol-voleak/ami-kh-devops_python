@@ -63,7 +63,7 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         else:
             end_date_obj = datetime.now()
         
-        end_date_obj = end_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
+        end_date_obj = end_date_obj.replace(hour=end_hour, minute=end_minute, second=0)
         end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
