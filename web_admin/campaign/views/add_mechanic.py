@@ -67,31 +67,39 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         str_start_date = request.POST.get('dtp_start_date')
         str_end_date = request.POST.get('dtp_end_date')
         start_time = request.POST.get('dtp_start_time')
-        end_time = request.POST.get('dtp_start_time')
+        end_time = request.POST.get('dtp_end_time')
+
         start_hour = int(start_time[0:2])
         start_minute = int(start_time[-2:])
         end_hour = int(end_time[0:2])
         end_minute = int(end_time[-2:])
+
+        current_date = datetime.now()
+
         if str_start_date:
             start_date = datetime.strptime(str_start_date, "%Y-%m-%d")
         else:
-            start_date = datetime.now()
-
+            start_date = current_date
         start_date = start_date.replace(hour=start_hour, minute=start_minute, second=0)
-        start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         if str_end_date:
             end_date = datetime.strptime(str_end_date, "%Y-%m-%d")
         else:
-            end_date = datetime.now()
-
+            end_date = current_date
         end_date = end_date.replace(hour=end_hour, minute=end_minute, second=0)
-        end_date = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
+        if start_date > end_date or start_date < current_date or end_date < current_date:
+            context['error_msg'] = 'Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
+            context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
+            return render(request, self.template_name, context)
+
+        param_start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        param_end_date = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         params = {
             "event_name": request.POST.get('trigger'),
-            "start_timestamp": start_date,
-            "end_timestamp": end_date
+            "start_timestamp": param_start_date,
+            "end_timestamp": param_end_date
         }
 
         success, status_code, message, data = RestFulClient.post(
@@ -103,9 +111,13 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         self.logger.info('========== Finish adding Mechanic ==========')
-        if not success:
-            return
-        messages.success(request, 'A mechanic is created successfully')
+        if success:
+            messages.success(request, 'A mechanic is created successfully')
+        else:
+            context['error_msg'] = message
+            context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
+            context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
+            return render(request, self.template_name, context)
 
         self.logger.info('========== Start adding Condition ==========')
         mechanic_id = data['id']
@@ -136,6 +148,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if success:
             return redirect('campaign:campaign_detail',campaign_id=campaign_id)
 
+
     def create_condition(self, campaign_id, mechanic_id, params):
         success, status_code, message, data = RestFulClient.post(
             url=CREATE_CONDITION.format(rule_id=campaign_id, mechanic_id=mechanic_id),
@@ -157,3 +170,4 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         return success, data, message
+

@@ -97,21 +97,19 @@
     {%endfor%}
 {% endif %}
 
-{% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
-        <div class="pull-left">
+    <div class="form-group pull-right">
+        <a href="{% url 'campaign:campaign' %}">
+            <input id="btn_dismiss" class="btn text-left mb15" type="button"
+                   value="Dismiss"/>
+        </a>
+        {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
             <a href="{% url 'campaign:add_mechanic' campaign_id %}">
-                <input id="btn_add_mechanic" class="btn btn-success btn-block btn-sm mb15" type="button"
+                <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
                        value="Add More Mechanic"/>
             </a>
-        </div>
-{% endif %}
+        {% endif %}
 
-<div class="pull-right">
-    <a href="{% url 'campaign:campaign' %}">
-    <input id="btn_dismiss" class="btn text-left mb15" type="button"
-               value="Dismiss"/>
-    </a>
-</div>
+    </div>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
 <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -184,4 +182,5 @@
         });
     };
 </script>
+
 {% endblock %}
