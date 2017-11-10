@@ -217,5 +217,7 @@ CREATE_CAMPAIGN = 'rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_CAMPAIGNS = 'rule-engine/'+API_VERSION+'/admin/rules/report'
 GET_MECHANIC_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
 CREATE_MECHANIC = 'rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
+GET_CONDITION_LIST = 'rule-engine/'+API_VERSION+'/admin/rules/${bak_rule_id}/mechanics/${bak_mechanic_id}/conditions'
+GET_CONDITION_DETAILS = 'rule-engine/'+API_VERSION+'/admin/rules/${bak_rule_id}/mechanics/${bak_mechanic_id}/conditions/${bak_condition_id}'
 
 
