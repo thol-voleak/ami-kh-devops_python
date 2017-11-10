@@ -59,6 +59,53 @@
                             </div>
                         </div>
 
+                        <div class="panel-heading">
+                            <h5><b>Set Condition</b></h5>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Condition type</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_condition_type" name="condition_type">
+                                    <option value= "event_detail">Event Detail</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Detail Name</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_detail_name" name="detail_name">
+                                    {% for name in detail_names %}
+                                        <option value= "{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Key Value Type</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                    {% for type in key_value_types %}
+                                        <option value= "{{ type }}">{{ type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Operator</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                    {% for oper in operations %}
+                                        <option value= "{{ oper }}">{{ oper }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Key Value *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
+                            </div>
+                        </div>
                         <div class="form-group pull-right">
                             <a href="{% url 'campaign:campaign_detail' campaign_id %}">
                                 <input id="btn_dismiss" class="btn text-left mb15" type="button"
@@ -66,13 +113,69 @@
                             </a>
                             <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
                                    value="Add Mechanic"/>
-
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function getCurrentOps (ddl) {
+            var ops = [];
+            ddl.each(function()
+            {
+                ops.push($(this).val());
+            });
+            return ops
+        }
+
+        function setDDL(ddl, newOps) {
+            ddl.empty();
+            for (var ops in newOps) {
+                ddl.append( $("<option>")
+                    .val(newOps[ops])
+                    .html(newOps[ops])
+                )
+            }
+        }
+
+        function listenKeyValType(type, fullOps, filterOps) {
+            var keyValue = $("#txt_key_value");
+            var operator = $("select#ddl_operator");
+            var currenctOperator = getCurrentOps($("#ddl_operator option"));
+
+            if (type === 'Freetext') {
+                if (JSON.stringify(currenctOperator) !== JSON.stringify(filterOps)) {
+                    setDDL(operator, filterOps);
+                }
+                keyValue.attr('type', 'text');
+            } else {
+                if (JSON.stringify(currenctOperator) !== JSON.stringify(fullOps)) {
+                    setDDL(operator, fullOps);
+                }
+                if (type === 'Numeric') {
+                    keyValue.attr('type', 'number');
+                } else if (type === 'Timestamp') {
+                    keyValue.attr('type', 'datetime-local');
+                }
+            }
+        }
+
+        function listenOperator(type, operation, fullOps, filterOps) {
+            var keyValueType = $("select#ddl_key_value_type");
+            var currenctKVType = getCurrentOps($("#ddl_key_value_type option"));
+
+            if (operation.includes(type)) {
+                if (JSON.stringify(currenctKVType) !== JSON.stringify(fullOps)) {
+                    setDDL(keyValueType, fullOps);
+                }
+            } else {
+                if (JSON.stringify(currenctKVType) !== JSON.stringify(filterOps)) {
+                    setDDL(keyValueType, filterOps);
+                }
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block body_js %}
