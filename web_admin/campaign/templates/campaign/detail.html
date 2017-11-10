@@ -73,7 +73,7 @@
                         <span id="lbl_mechanic_event_name">{{i.event_name}}</span>
                     </p>
                     </div>
-                    {%if active_mechanic_count != 1 %}
+                    {%if data.is_active and active_mechanic_count != 1 %}
                     <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
                             <i onClick="delete_mechanic({{ i.id }})" id="mechanic_id_{{ i.id }}"
                                data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"
