@@ -19,6 +19,8 @@ def inactive(request, campaign_id):
     url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
     params = {
         'is_active': False,
+        'name': request.GET.get("campaign_name"),
+        'description': request.GET.get("campaign_description")
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
     logger.info('========== Finish inactive campaign ==========')

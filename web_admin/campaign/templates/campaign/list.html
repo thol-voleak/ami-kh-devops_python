@@ -126,7 +126,9 @@
                                         {%if i.is_active%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
-                                               data-campaign-id='{{i.id}}' 
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
                                                id="tog_status" checked>
                                         <span class="slider round">
                                             <i class="handle"></i>
@@ -135,6 +137,8 @@
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
                                                data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
                                                id="tog_status">
                                         <span class="slider round">
                                             <i class="handle"></i>
@@ -198,6 +202,8 @@
         // body...
         
         var campaign_id = e.getAttribute('data-campaign-id');
+        var campaign_name = e.getAttribute('data-name');
+        var campaign_description = e.getAttribute('data-description');       
         var url = '/admin-portal/campaign/active/'+ campaign_id;
         console.log(url)
         console.log('chuyen tu inactive thanh active')
@@ -205,7 +211,7 @@
         $.ajax({
             url: url,
             type: "GET",
-            data: {},
+            data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
             success: function (response) {
             if (response.status == 1) {
                 // Logout
@@ -229,6 +235,8 @@
     function inactive(e) {
         // body...
         var campaign_id = e.getAttribute('data-campaign-id');
+        var campaign_name = e.getAttribute('data-name');
+        var campaign_description = e.getAttribute('data-description'); 
         var url = '/admin-portal/campaign/inactive/'+ campaign_id;
         console.log(url)
         console.log('chuyen tu active thanh inactive')
@@ -236,7 +244,7 @@
         $.ajax({
             url: url,
             type: "GET",
-            data: {},
+            data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
             success: function (response) {
             if (response.status == 1) {
                 // Logout
