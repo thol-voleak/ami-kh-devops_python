@@ -87,11 +87,10 @@ class SmartCardView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            params=params,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-        data = self.filter_deleted(data)
 
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
                                 status_code=status_code, is_getting_list=True)
-
+        data = self.filter_deleted(data)
         if not is_success:
             messages.add_message(
                 self.request,
