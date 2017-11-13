@@ -9,7 +9,7 @@ import logging
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
-from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_DETAILS, GET_CONDITION_LIST
+from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST
 from django.contrib import messages
 
 
@@ -46,6 +46,10 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 active_mechanic_count += 1
             count += 1
             i['count'] = count
+            i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
+            for condition in i['condition_list']:
+                condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+
         context.update({
             'data': data,
             'active_mechanic_count': active_mechanic_count,
@@ -62,10 +66,6 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
-        if not success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format('access_token_expire'))
-                raise InvalidAccessToken('access_token_expire')
         return data
 
     def get_detail_campaign(self, campaign_id):
@@ -73,10 +73,20 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
-        if not success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format('access_token_expire'))
-                raise InvalidAccessToken('access_token_expire')
+        return data
+
+    def get_condition_list(self, campaign_id, mechanic_id):
+        url = settings.DOMAIN_NAMES + GET_CONDITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id)
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_comparison_list(self, campaign_id, mechanic_id, condition_id):
+        url = settings.DOMAIN_NAMES + GET_COMPARISON_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_condition_id=condition_id)
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         return data
 
 
