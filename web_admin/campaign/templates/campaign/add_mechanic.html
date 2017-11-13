@@ -24,7 +24,7 @@
                           action="{{ request.path }}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Trigger</label>
+                            <label class="col-sm-3 control-label">Trigger</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="ddl_trigger" name="trigger" required>
                                     <option value="register_customer">Customer Registration</option>
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Start Date *</label>
+                            <label class="col-sm-3 control-label">Start Date *</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_start_date" style="height:40px; border-color: {{ border_color }};"
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">End Date *</label>
+                            <label class="col-sm-3 control-label">End Date *</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_end_date" style="height:40px; border-color: {{ border_color }};"
@@ -69,7 +69,7 @@
                             <h5><b>Set Condition</b></h5>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Condition type</label>
+                            <label class="col-sm-3 control-label">Condition type</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_condition_type" name="condition_type">
                                     <option value= "event_detail">Event Detail</option>
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Detail Name</label>
+                            <label class="col-sm-3 control-label">Detail Name</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_detail_name" name="detail_name">
                                     {% for name in detail_names %}
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Key Value Type</label>
+                            <label class="col-sm-3 control-label">Key Value Type</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
                                     {% for type in key_value_types %}
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Operator</label>
+                            <label class="col-sm-3 control-label">Operator</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
                                     {% for oper in operations %}
@@ -107,11 +107,86 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Key Value *</label>
+                            <label class="col-sm-3 control-label">Key Value *</label>
                             <div class="col-xs-3">
                                 <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
                             </div>
                         </div>
+
+
+                        <div class="panel-heading">
+                            <h5><b>Set Rewards</b></h5>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Reward</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Reward Type</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reward_type" name="reward_type">
+                                    <option value= "fixed_cashback">Fixed Cashback</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Amount</label>
+                            <div class="col-xs-3">
+                                <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reward_type" name="reward_type">
+                                    <option value= "customer">Customer</option>
+                                    <option value= "agent">Agent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Give Rewards to</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reward_to" name="reward_to">
+                                    <option value= "payer_user_id">Actor that paid for transaction</option>
+                                    <option value= "initiator_user_id">Actor that created the transaction</option>
+                                    <option value= "payee_user_id">Actor that received transaction</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Recipient SOF</label>
+                            <div class="col-xs-3">
+                                <input id="txt_recipient_sof" class="form-control input-rounded" name="recipient_sof" type="text" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Product Service ID</label>
+                            <div class="col-xs-3">
+                                <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Payer ID</label>
+                            <div class="col-xs-3">
+                                <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Payer SOF ID</label>
+                            <div class="col-xs-3">
+                                <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text">
+                            </div>
+                        </div>
+
                         <div class="form-group pull-right">
                             <a href="{% url 'campaign:campaign_detail' campaign_id %}">
                                 <input id="btn_dismiss" class="btn text-left mb15" type="button"
