@@ -93,28 +93,28 @@
                     {%for condition in i.condition_list%}
                         <p style="margin-bottom:0; ,">
                             <label size="2"><strong>Condition Id:</strong></label>
-                            <span id="lbl_trigger"><strong>{{condition.id}}</strong></span>
+                            <span id="lbl_condition_id"><strong>{{condition.id}}</strong></span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label size="2">Condition Type:</label>
-                            <span id="lbl_trigger">{{condition.filter_type}}</span>
+                            <span id="lbl_condition_type">{{condition.filter_type}}</span>
                         </p>
                         {%for comparison in condition.comparison_list%}
                             <p style="margin-bottom:0; margin-left: 10px;">
                                 <label size="2"><strong>Comparison Id:</strong></label>
-                                <span id="lbl_trigger"><strong>{{comparison.id}}</strong></span>
+                                <span id="lbl_comparison_id"><strong>{{comparison.id}}</strong></span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 30px;">
                                 <label size="2">Detail Name:</label>
-                                <span id="lbl_trigger">{{comparison.key_name}}</span>
+                                <span id="lbl_comparison_key_name">{{comparison.key_name}}</span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 30px;">
                                 <label size="2">Key Value Type:</label>
-                                <span id="lbl_trigger">{{comparison.key_value_type}}</span>
+                                <span id="lbl_comparison_key_value_type">{{comparison.key_value_type}}</span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 30px;">
                                 <label size="2" >Operator</label>
-                                <span id="lbl_trigger">
+                                <span id="lbl_operator">
                                 {%if comparison.operator == '=' %}
                                 <span>Equal</span>
                                 {%elif comparison.operator == '>' %}
@@ -126,7 +126,7 @@
                             </p>
                             <p style="margin-bottom:0; margin-left: 30px;">
                                 <label size="2">Key Value</label>
-                                <span id="lbl_trigger">{{comparison.key_value}}</span>
+                                <span id="lbl_comparison_key_value">{{comparison.key_value}}</span>
                             </p>
                         {%endfor%}
                     {%endfor%}
