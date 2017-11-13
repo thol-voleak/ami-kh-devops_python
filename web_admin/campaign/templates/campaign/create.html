@@ -43,14 +43,14 @@
                             <div class="col-sm-2">
                                 <input type="date" class="form-control input-rounded"
                                        name="start_date" required
-                                       style="height:40px; background-color: {{ background_color| default_if_none:'' }};"
+                                       style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                        value="{{ start_date|default_if_none:'' }}"
                                        id="dtp_start_date">
                             </div>
                             <div class="col-sm-2">
                                     <input class="form-control input-rounded"
                                            type=time min=00:00 max=23:59 step=60 value="00:01" required
-                                           style="height:40px; background-color: {{ background_color| default_if_none:'' }};"
+                                           style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                            id="dtp_start_time" name="start_time">
                             </div>
                         </div>
@@ -59,14 +59,14 @@
                             <div class="col-sm-2">
                                 <input type="date" class="form-control input-rounded"
                                        name="end_date"  required
-                                       style="height:40px; background-color: {{ background_color| default_if_none:'' }};"
+                                       style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                        value="{{ end_date|default_if_none:'' }}"
                                        id="dtp_end_date">
                             </div>
                             <div class="col-sm-2" >
                                 <input class="form-control input-rounded"
                                        type=time min=9:00 max=23:59 step=60 value="00:01" required
-                                       style="height:40px; background-color: {{ background_color| default_if_none:'' }};"
+                                       style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                        id="dtp_end_time" name="end_time">
                             </div>
                         </div>
