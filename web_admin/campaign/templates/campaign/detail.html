@@ -68,10 +68,6 @@
                         <label size="2"><strong>Mechanic ID:</strong></label>
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
-                    <p class="bold">
-                        <label size="2"><strong>Mechanic Event Name:</strong></label>
-                        <span id="lbl_mechanic_event_name">{{i.event_name}}</span>
-                    </p>
                     </div>
                     {%if data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
                     <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
@@ -82,6 +78,10 @@
                     {% endif %}
                 </div>
                 <div class="panel-body" style="margin-top: -20px;">
+                    <p style="margin-bottom:0; ,">
+                        <label size="2">Trigger:</label>
+                        <span id="lbl_trigger">{{i.event_name}}</span>
+                    </p>
                     <p style="margin-bottom:0; ,">
                         <label size="2">Start Date: </label>
                         <span id="lbl_mechanic_start_date">{{i.start_timestamp}}</span>
