@@ -127,19 +127,21 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 'New currency added as cash SOF'
             )
         elif status_message == 'timeout':
-            self._push_error_message("Transaction Timeout : Cannot add SOF Cash, please try again or contact technical support")
+            message = "Transaction Timeout : Cannot add SOF Cash, please try again or contact technical support"
+            self._add_error_message(message)
         elif status_message == 'Invalid agent information' and status_code == 'invalid_request':
-            self._push_error_message("Cannot add SOF Cash - '" + status_message + "'")
+            self._add_error_message("Cannot add SOF Cash - '" + status_message + "'")
         elif status_message == 'Invalid SOF information' and status_code == 'invalid_request':
-            self._push_error_message("Cannot add SOF Cash - '" + status_message + "'")
+            self._add_error_message("Cannot add SOF Cash - '" + status_message + "'")
         else :
-            self._push_error_message("Cannot add SOF Cash - '" + status_message + "'")
+            self._add_error_message("Cannot add SOF Cash - '" + status_message + "'")
 
         return is_success
 
-    def _push_error_message(self, status_message):
-        messages.adpwd_message(
+    def _add_error_message(self, message):
+        messages.add_message(
             self.request,
             messages.ERROR,
-            status_message
+            message
         )
+
