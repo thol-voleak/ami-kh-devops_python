@@ -46,26 +46,30 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         end_date = request.POST.get('end_date')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
+        required_fields = [name, start_date, end_date, start_time, end_time]
+        body ={
+            'name':name,
+            'start_date':start_date,
+            'end_date':end_date,
+            'start_time':start_time,
+            'end_time':end_time,
+            'description':description
+        }
+        if "" in required_fields or len(required_fields)<5:
+            body['error_msg'] = 'Start date and end date cannot be empty'
+            context.update(body)
+            return render(request, self.template_name, context)
+
+        start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         start_hour = int(start_time[0:2])
         start_minute = int(start_time[-2:])
         end_hour = int(end_time[0:2])
         end_minute = int(end_time[-2:])
-        if start_date:
-            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
-        else:
-            start_date_obj = datetime.now()
-        
         start_date_obj = start_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
-        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-        if end_time:
-            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-        else:
-            end_date_obj = datetime.now()
-        
         end_date_obj = end_date_obj.replace(hour=end_hour, minute=end_minute, second=0)
-        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
-
 
         params = {
             "name":name,
@@ -75,7 +79,7 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         self.logger.info("param is : {}".format(params))
 
-        success, status_code, message, data = RestFulClient.post(
+        success, status_code, status_message, data = RestFulClient.post(
             url=self.path,
             headers=self._get_headers(),
             loggers=self.logger,
@@ -86,35 +90,11 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if success:
             messages.success(request, 'The campaign is created successfully')
             return redirect('campaign:campaign_detail', campaign_id=data['id'])
-        else:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format(message))
-                raise InvalidAccessToken(message)
-
-            context = {
-                'name': name,
-                'description': description,
-                'start_time': start_time,
-                'end_time': end_time
-            }
-
-            if status_code.lower() in ["general_error"]:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    "Other error, please contact system administrator"
-                )
-            elif message == 'timeout':
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    "Request timed-out, please try again or contact system administrator"
-                )
-            else:
-                messages.add_message (
-                    request,
-                    messages.ERROR,
-                    message
-                )
-
-            return render(request, self.template_name, context) #
+        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info("{}".format(status_message))
+            raise InvalidAccessToken(status_message)
+        elif status_message == 'Invalid date time':
+            body['error_msg'] = 'Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            body['background_color'] = "antiquewhite"
+            context.update(body)
+            return render(request, self.template_name,context )
