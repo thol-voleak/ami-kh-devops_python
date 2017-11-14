@@ -56,8 +56,8 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'description':description
         }
         if "" in required_fields or len(required_fields)<5:
-            body['error_msg'] = 'Start Date and End Date cannot be empty'
-            body['border_color'] = "indianred"
+            body['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            body['border_color'] = "red"
             context.update(body)
             return render(request, self.template_name, context)
 
@@ -96,6 +96,6 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             raise InvalidAccessToken(status_message)
         elif status_message == 'Invalid date time':
             body['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
-            body['border_color'] = "indianred"
+            body['border_color'] = "red"
             context.update(body)
             return render(request, self.template_name,context )
