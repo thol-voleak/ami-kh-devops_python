@@ -68,51 +68,64 @@
                         <div class="panel-heading">
                             <h5><b>Set Condition</b></h5>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Condition type</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_condition_type" name="condition_type">
-                                    <option value= "event_detail">Event Detail</option>
-                                </select>
+                        <div id="condition-group">
+                            <div id="condition">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Condition type</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_condition_type" name="condition_type">
+                                            <option value= "event_detail">Event Detail</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Detail Name</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_detail_name" name="detail_name">
+                                            {% for name in detail_names %}
+                                                <option value= "{{ name }}">{{ name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Key Value Type</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                            {% for type in key_value_types %}
+                                                <option value= "{{ type }}">{{ type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Operator</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                            {% for oper in operations %}
+                                                <option value= "{{ oper }}">{{ oper }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Key Value *</label>
+                                    <div class="col-xs-3">
+                                        <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
+                                    </div>
+                                </div>
+                            <br>
                             </div>
                         </div>
+                        <input type="hidden" name="condition_counter" id="txt_condition_counter">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Detail Name</label>
+                            <label class="col-sm-3 control-label"></label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_detail_name" name="detail_name">
-                                    {% for name in detail_names %}
-                                        <option value= "{{ name }}">{{ name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <button type="button" class="btn btn-primary btn-block" id="btn_add_condition" onclick="addCondition()">
+                                  <span class="glyphicon glyphicon-plus"></span> Add Condition
+                                </button>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Key Value Type</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
-                                    {% for type in key_value_types %}
-                                        <option value= "{{ type }}">{{ type }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Operator</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
-                                    {% for oper in operations %}
-                                        <option value= "{{ oper }}">{{ oper }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Key Value *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
-                            </div>
-                        </div>
-
 
                         <div class="panel-heading">
                             <h5><b>Set Rewards</b></h5>
@@ -203,7 +216,7 @@
     <script>
         function getCurrentOps (ddl) {
             var ops = [];
-            ddl.each(function()
+            ddl.find('option').each(function()
             {
                 ops.push($(this).val());
             });
@@ -220,18 +233,18 @@
             }
         }
 
-        function listenKeyValType(type, fullOps, filterOps) {
-            var keyValue = $("#txt_key_value");
-            var operator = $("select#ddl_operator");
-            var currenctOperator = getCurrentOps($("#ddl_operator option"));
-
+        function listenKeyValType(ele, type, fullOps, filterOps) {
+            var keyValue = $(ele).parent().parent().nextAll('div').find('input');
+            var operator = $(ele).parent().parent().next('div').find('select');
+            var currentOperator = getCurrentOps(operator);
+            keyValue.val('');
             if (type === 'Freetext') {
-                if (JSON.stringify(currenctOperator) !== JSON.stringify(filterOps)) {
+                if (JSON.stringify(currentOperator) !== JSON.stringify(filterOps)) {
                     setDDL(operator, filterOps);
                 }
                 keyValue.attr('type', 'text');
             } else {
-                if (JSON.stringify(currenctOperator) !== JSON.stringify(fullOps)) {
+                if (JSON.stringify(currentOperator) !== JSON.stringify(fullOps)) {
                     setDDL(operator, fullOps);
                 }
                 if (type === 'Numeric') {
@@ -242,19 +255,55 @@
             }
         }
 
-        function listenOperator(type, operation, fullOps, filterOps) {
-            var keyValueType = $("select#ddl_key_value_type");
-            var currenctKVType = getCurrentOps($("#ddl_key_value_type option"));
-
+        function listenOperator(ele, type, operation, fullOps, filterOps) {
+            var keyValueType = $(ele).parent().parent().prev('div').find('select');
+            var keyValue = $(ele).parent().parent().next('div').find('input');
+            var currentKVType = getCurrentOps(keyValueType);
             if (operation.includes(type)) {
-                if (JSON.stringify(currenctKVType) !== JSON.stringify(fullOps)) {
+                if (JSON.stringify(currentKVType) !== JSON.stringify(fullOps)) {
                     setDDL(keyValueType, fullOps);
+                    keyValue.attr('type', 'number');
+                    keyValue.val('');
                 }
             } else {
-                if (JSON.stringify(currenctKVType) !== JSON.stringify(filterOps)) {
+                if (JSON.stringify(currentKVType) !== JSON.stringify(filterOps)) {
                     setDDL(keyValueType, filterOps);
+                    keyValue.attr('type', 'number');
+                    keyValue.val('');
                 }
             }
+        }
+
+        var _counter = 1;
+        function addCondition() {
+            _counter++;
+            var oClone = document.getElementById("condition").cloneNode(true);
+            var inputEle = oClone.getElementsByTagName("input");
+            inputEle[0].type = 'text';
+            inputEle[0].value = '';
+            inputEle[0].name += (_counter + "");
+            var ddlEle = oClone.getElementsByTagName("select");
+            for (var i = 0; i < ddlEle.length; i++) {
+                ddlEle[i].name += (_counter + "");
+            }
+
+            oClone.id += (_counter + "");
+            var div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = '<label class="col-sm-3 control-label"><b>AND</b></label>\
+                             <div class="col-xs-6 pull-right">\
+                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\
+                                  <span class="glyphicon glyphicon-trash"></span> \
+                                </button>\
+                             </div>';
+            oClone.insertBefore(div, oClone.firstChild);
+            document.getElementById("condition-group").appendChild(oClone);
+            $("#txt_condition_counter").val(_counter);
+        }
+
+        function removeCondition(id) {
+            var element = document.getElementById(id);
+            element.parentNode.removeChild(element);
         }
     </script>
 {% endblock %}
