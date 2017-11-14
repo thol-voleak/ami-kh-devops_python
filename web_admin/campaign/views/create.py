@@ -62,15 +62,15 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             return render(request, self.template_name, context)
 
         start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
-        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         start_hour = int(start_time[0:2])
         start_minute = int(start_time[-2:])
         end_hour = int(end_time[0:2])
         end_minute = int(end_time[-2:])
         start_date_obj = start_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
+        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         end_date_obj = end_date_obj.replace(hour=end_hour, minute=end_minute, second=0)
+        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         params = {
             "name":name,
