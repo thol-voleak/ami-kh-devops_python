@@ -70,7 +70,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         input_end_time = request.POST.get('dtp_end_time')
 
         if input_start_date is "" or input_end_date is "" or input_start_time is "" or input_end_time is "":
-            context['error_msg'] = 'Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            context['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
             context['border_color'] = 'red'
             operations = ["Less Than", "More Than", "Equal to", "Not Equal to", "Less than or Equal to",
                           "More than or equal to"]
@@ -110,7 +110,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         current_date = datetime.now()
 
         if start_date > end_date or start_date < current_date or end_date < current_date:
-            context['error_msg'] = 'Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            context['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
             context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
             context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
             context['border_color'] = 'red'
