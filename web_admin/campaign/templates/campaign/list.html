@@ -123,6 +123,7 @@
                             <td class="col-sm-2">
                                 <!-- Rounded switch -->
                                     <label class="switch switch-sm">
+                                    {%if i.is_permission_update_status %}
                                         {%if i.is_active%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
@@ -144,6 +145,30 @@
                                             <i class="handle"></i>
                                         </span>
                                         {%endif%}
+                                    {%else%}
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled checked>
+                                        <span class="slider round" style="background-color: #e4e4e4; -webkit-box-shadow: #e4e4e4 0px 0px 0px 21px inset; box-shadow: #e4e4e4 0px 0px 0px 21px inset;
+                                        border-color: #e4e4e4;">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    {%endif%}
                                     </label>
                             </td>
                         </tr>

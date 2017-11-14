@@ -109,27 +109,61 @@
                                 <span id="lbl_comparison_key_value_type">{{comparison.key_value_type}}</span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2" >Operator</label>
+                                <label size="2" >Operator:</label>
                                 <span id="lbl_operator">
                                 {%if comparison.operator == '=' %}
                                 <span>Equal</span>
                                 {%elif comparison.operator == '>' %}
                                 <span>More Than</span>
+                                {%elif comparison.operator == '>=' %}
+                                <span>More Than or Equal</span>
                                 {%elif comparison.operator == '<' %}
                                 <span>Less Than</span>
+                                {%elif comparison.operator == '<=' %}
+                                <span>Less Than or Equal</span>
+                                {%elif comparison.operator == '!=' %}
+                                <span>Not Equal</span>
                                 {%endif%}
                                 </span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Key Value</label>
+                                <label size="2">Key Value:</label>
                                 <span id="lbl_comparison_key_value">{{comparison.key_value}}</span>
                             </p>
                         {%endfor%}
                     {%endfor%}
+                    {% if i.reward is not None %}
+                        <br>
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Reward</strong></label>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label>Give Reward to : </label>
+                            <span id="lbl_give_reward_to">
+                                {% if i.reward.reward_to == '@@user_id@@' %}Actor who registered
+                                {% elif i.reward.reward_to == '@@payer_user_id@@' %}Actor that paid for the transaction
+                                {% elif i.reward.reward_to == '@@payee_user_id@@' %}Actor that received the transaction
+                                {% elif i.reward.reward_to == '@@initial_user_id@@' %}Actor that created the transaction{% endif %}
+                            </span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label size="2"> Reward Recipient should be : </label>
+                            <span id="lbl_reward_recipient">{{i.reward.recipient}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Reward Type:</label>
+                                <span id="lbl_amount">{{i.reward.reward_type}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Amount:</label>
+                                <span id="lbl_amount">{{i.reward.amount}}</span>
+                        </p>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% endif %}
+
     {%endfor%}
 {% endif %}
 
@@ -151,31 +185,6 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 
-    function showErrorMessage(msg) {
-	    $("#alert-msg").text(msg);
-	    $('#alert-client').removeClass("alert-success");
-	    $('#alert-client').addClass("alert-danger");
-
-        $("#alert-client").show();
-	    $("html, body").animate({scrollTop: 0}, "slow");
-	}
-
-	function showSuccessMessage(msg) {
-	    $("#alert-msg").text(msg);
-	    $('#alert-client').removeClass("alert-danger");
-	    $('#alert-client').addClass("alert-success");
-
-	    $("#alert-client").show();
-	    $("html, body").animate({scrollTop: 0}, "slow");
-	}
-
-	var checkOneMechanic = function() {
-        if($('.delete-mechanic-button').length > 1 ) {
-            return;
-        }
-        $('.delete-mechanic-button')[0].remove();
-    };
-
     var delete_mechanic = function(mechanicId) {
         swal({
             title: "Delete campaign mechanic?",
@@ -188,33 +197,7 @@
         },
         function () {
             var url = $("#mechanic_" + mechanicId + " #btn_delete").data("url");
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function (response) {
-                    console.log(response);
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        // success
-                        showSuccessMessage('Mechanic Deleted');
-                        $("#mechanic_" + mechanicId).remove();
-                         checkOneMechanic();
-                    } else {
-                        // Failed
-                        showErrorMessage(response.msg);
-                    }
-                },
-                error: function (msg) {
-                    showErrorMessage(JSON.stringify(msg));
-                }
-            });
+            window.location.replace(url);
         });
     };
 </script>

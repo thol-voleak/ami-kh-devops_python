@@ -56,21 +56,21 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'description':description
         }
         if "" in required_fields or len(required_fields)<5:
-            body['error_msg'] = 'Start Date and End Date cannot be empty'
-            body['border_color'] = "indianred"
+            body['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
+            body['border_color'] = "red"
             context.update(body)
             return render(request, self.template_name, context)
 
         start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
-        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         start_hour = int(start_time[0:2])
         start_minute = int(start_time[-2:])
         end_hour = int(end_time[0:2])
         end_minute = int(end_time[-2:])
         start_date_obj = start_date_obj.replace(hour=start_hour, minute=start_minute, second=0)
+        start_date = start_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         end_date_obj = end_date_obj.replace(hour=end_hour, minute=end_minute, second=0)
+        end_date = end_date_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         params = {
             "name":name,
@@ -89,13 +89,13 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create capmpaign ==========')
         if success:
-            messages.success(request, 'The campaign is created successfully')
+            messages.success(request, 'Added campaign successfully')
             return redirect('campaign:campaign_detail', campaign_id=data['id'])
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(status_message))
             raise InvalidAccessToken(status_message)
         elif status_message == 'Invalid date time':
             body['error_msg'] = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
-            body['border_color'] = "indianred"
+            body['border_color'] = "red"
             context.update(body)
             return render(request, self.template_name,context )

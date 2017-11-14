@@ -9,7 +9,7 @@ import logging
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
-from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL
+from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST
 from django.contrib import messages
 
 
@@ -42,14 +42,28 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         count = 0
         active_mechanic_count = 0
         for i in mechanic:
-            if not i['is_deleted'] :
+            reward = {}
+            if not i['is_deleted']:
+                i['reward'] = None
                 active_mechanic_count += 1
-            count += 1
-            i['count'] = count
-            i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
-            for condition in i['condition_list']:
-                condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
-                condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+                action = self.get_rewards_list(campaign_id, i['id'])
+                if len(action) > 0:
+                    action = action[0]
+                    reward['reward_type'] = action['action_type']['name']
+                    for j in action['action_data']:
+                        if j['key_name'] == 'payee_user.user_id':
+                            reward['reward_to'] = j['key_value']
+                        if j['key_name'] == 'payee_user.user_type':
+                            reward['recipient'] = j['key_value']
+                        if j['key_name'] == 'amount':
+                            reward['amount'] = j['key_value']
+                if reward != {}:
+                    i['reward'] = reward
+                i['count'] = active_mechanic_count
+                i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
+                for condition in i['condition_list']:
+                    condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
+                    condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
 
         context.update({
             'data': data,
@@ -92,6 +106,13 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get_condition_detail(self, campaign_id, mechanic_id, condition_id):
         url = settings.DOMAIN_NAMES + GET_CONDITION_DETAIL.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_condition_id=condition_id)
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_rewards_list(self, campaign_id, mechanic_id):
+        url = settings.DOMAIN_NAMES + GET_REWARD_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id)
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
