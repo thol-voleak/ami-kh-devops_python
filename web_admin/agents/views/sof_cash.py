@@ -76,7 +76,10 @@ class SOFCashView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return redirect('agents:agent-sofcash', agent_id=agent_id)
 
     def _get_agent_sof_cash(self, agent_id):
-        params = {"user_id": agent_id}
+        params = {
+                  "user_id": agent_id,
+                  "user_type": 2
+                  }
         is_success, status_code, status_message, data = RestFulClient.post(url=GET_REPORT_AGENT_BALANCE, params=params, loggers=self.logger, headers=self._get_headers(), timeout=settings.GLOBAL_TIMEOUT)
         API_Logger.post_logging(loggers=self.logger, params=params, response=data["cash_sofs"] if is_success else data,
                                 status_code=status_code, is_getting_list=True)
