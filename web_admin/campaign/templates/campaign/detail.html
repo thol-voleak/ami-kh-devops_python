@@ -109,19 +109,25 @@
                                 <span id="lbl_comparison_key_value_type">{{comparison.key_value_type}}</span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2" >Operator</label>
+                                <label size="2" >Operator:</label>
                                 <span id="lbl_operator">
                                 {%if comparison.operator == '=' %}
                                 <span>Equal</span>
                                 {%elif comparison.operator == '>' %}
                                 <span>More Than</span>
+                                {%elif comparison.operator == '>=' %}
+                                <span>More Than or Equal</span>
                                 {%elif comparison.operator == '<' %}
-                                <span>Less Than</span>
+                                <span>Less Than or Equal</span>
+                                {%elif comparison.operator == '<=' %}
+                                <span>Less Than or Equal</span>
+                                {%elif comparison.operator == '!=' %}
+                                <span>Not Equal</span>
                                 {%endif%}
                                 </span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Key Value</label>
+                                <label size="2">Key Value:</label>
                                 <span id="lbl_comparison_key_value">{{comparison.key_value}}</span>
                             </p>
                         {%endfor%}
