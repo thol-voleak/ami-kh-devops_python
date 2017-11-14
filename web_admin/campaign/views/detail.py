@@ -31,6 +31,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def check_membership(self, permission):
         self.logger.info(
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, 'CAN_DELETE_MECHANIC'))
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
