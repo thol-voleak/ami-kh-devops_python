@@ -26,7 +26,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Trigger</label>
                             <div class="col-sm-2">
-                                <select class="form-control" id="ddl_trigger" name="trigger" required>
+                                <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
                                     <option value="register_customer">Customer Registration</option>
                                     <option value="executed_order">Customer Payment</option>
                                 </select>
@@ -152,16 +152,14 @@
                             <label class="col-sm-3 control-label">Give Rewards to</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_to" name="reward_to">
-                                    <option value= "payer_user_id">Actor that paid for transaction</option>
-                                    <option value= "initiator_user_id">Actor that created the transaction</option>
-                                    <option value= "payee_user_id">Actor that received transaction</option>
+                                    <option value= "@@user_id@@">Actor who registered</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Recipient SOF</label>
+                        <div class="form-group" id="lbl_paid_amount" hidden>
+                            <label class="col-sm-3 control-label">Paid Amount</label>
                             <div class="col-xs-3">
-                                <input id="txt_recipient_sof" class="form-control input-rounded" name="recipient_sof" type="text" disabled>
+                                <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
                             </div>
                         </div>
 
@@ -254,6 +252,35 @@
                 if (JSON.stringify(currenctKVType) !== JSON.stringify(filterOps)) {
                     setDDL(keyValueType, filterOps);
                 }
+            }
+        }
+
+        function listenTrigger() {
+            var ddl_reward_to = $("#ddl_reward_to");
+            var triggerValue = $("#ddl_trigger").val();
+
+            if (triggerValue === 'register_customer') {
+                $("#lbl_paid_amount").prop('hidden',true);
+                ddl_reward_to.empty();
+                ddl_reward_to.append( $("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+            } else {
+                $("#lbl_paid_amount").prop('hidden',false);
+                 ddl_reward_to.empty();
+                 ddl_reward_to.append( $("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for transaction")
+                )
+                 ddl_reward_to.append( $("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                 ddl_reward_to.append( $("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received transaction")
+                )
             }
         }
     </script>

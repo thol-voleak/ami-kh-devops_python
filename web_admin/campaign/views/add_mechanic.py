@@ -1,7 +1,9 @@
+import string
+
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
-from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON
+from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD
 from web_admin import setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
@@ -114,6 +116,31 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
             context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
             context['border_color'] = 'red'
+            operations = ["Less Than", "More Than", "Equal to", "Not Equal to", "Less than or Equal to",
+                          "More than or equal to"]
+            freetext_ops = ["Equal to", "Not Equal to"]
+            key_value_types = ["Numeric", "Freetext", "Timestamp"]
+            filter_ops = ["Equal to", "Not Equal to"]
+            filter_key_value_types = ["Numeric", "Timestamp"]
+            detail_names = ["id", "event_name", "created_timestamp", "user_id", "user_type", "device_id",
+                            "device_description", "event_timestamp", "order_id", "ext_transaction_id",
+                            "payment_method_name", "payment_method_ref", "service_id", "service_name", "command_id",
+                            "command_name", "service_command_id", "initiator_user_id", "initiator_user_type",
+                            "initiator_sof_id", "initiator_sof_type_id", "payer_user_id", "payer_user_type",
+                            "payer_user_ref_type", "payer_user_ref_value", "payer_sof_id", "payer_sof_type_id",
+                            "payee_user_id", "payee_user_type", "payee_user_ref_type", "payee_user_ref_value",
+                            "payee_sof_id", "payee_sof_type_id", "currency", "ref_order_id", "amount", "fee", "bonus",
+                            "settlement_amount", "product_name", "product_ref1", "product_ref2", "product_ref3",
+                            "product_ref4", "product_ref5", "state", "status", "notification_status", "is_deleted",
+                            "order_created_timestamp", "order_last_updated_timestamp", "created_client_id",
+                            "executed_client_id"]
+
+            context['operations'] = operations
+            context['key_value_types'] = key_value_types
+            context['detail_names'] = detail_names
+            context['freetext_ops'] = freetext_ops
+            context['filter_ops'] = filter_ops
+            context['filter_key_value_types'] = filter_key_value_types
             return render(request, self.template_name, context)
 
         param_start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -166,6 +193,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             context['filter_key_value_types']= filter_key_value_types
             return render(request, self.template_name, context)
 
+        # add condition
         self.logger.info('========== Start adding Condition ==========')
         mechanic_id = data['id']
         params = {'filter_type': request.POST.get('condition_type')}
@@ -192,6 +220,63 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
         self.logger.info('========== Finish adding Comparison ==========')
+
+        # add reward
+        self.logger.info('========== Start adding Reward ==========')
+        params = {
+            'action_type_id':1,
+            'data':[
+                {
+                    'key_name':'product_service_id',
+                    'key_value': request.POST.get('product_service_id'),
+                    'key_value_type':'numeric'
+                },
+                {
+                    'key_name': 'payer_user.user_id',
+                    'key_value': request.POST.get('payer_id'),
+                    'key_value_type': 'numeric'
+                },
+                {
+                    'key_name': 'payer_user.user_type',
+                    'key_value': 'agent',
+                    'key_value_type': 'text'
+                },
+                {
+                    'key_name': 'payer_user.sof.id',
+                    'key_value': request.POST.get('payer_sof_id'),
+                    'key_value_type': 'numeric'
+                },
+                {
+                    'key_name': 'payer_user.sof.type_id',
+                    'key_value': '2',
+                    'key_value_type': 'numeric'
+                },
+                {
+                    'key_name': 'payee_user.user_id',
+                    'key_value': request.POST.get('reward_to'),
+                    'key_value_type': 'numeric'
+                },
+                {
+                    'key_name': 'payee_user.user_type',
+                    'key_value': request.POST.get('reward_type'),
+                    'key_value_type': 'text'
+                },
+                {
+                    'key_name': 'amount',
+                    'key_value': request.POST.get('amount'),
+                    'key_value_type': 'numeric'
+                }
+            ]
+        }
+        if request.POST.get('reward_to') != '@@user_id@@' :
+            params['data'].append({
+                        'key_name': 'paid_amount',
+                        'key_value': "@@amount@@",
+                        'key_value_type': "numeric"
+                    })
+        success, data, message = self.create_reward(campaign_id, mechanic_id, params)
+        self.logger.info('========== Finish adding Reward ==========')
+
         if success:
             return redirect('campaign:campaign_detail',campaign_id=campaign_id)
 
@@ -210,6 +295,17 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def create_comparison(self, campaign_id, mechanic_id, condition_id, params):
         success, status_code, message, data = RestFulClient.post(
             url=CREATE_COMPARISON.format(rule_id=campaign_id, mechanic_id=mechanic_id, condition_id=condition_id),
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params)
+
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+
+        return success, data, message
+
+    def create_reward(self, campaign_id, mechanic_id, params):
+        success, status_code, message, data = RestFulClient.post(
+            url=CREATE_REWARD.format(rule_id=campaign_id, mechanic_id=mechanic_id),
             headers=self._get_headers(),
             loggers=self.logger,
             params=params)
