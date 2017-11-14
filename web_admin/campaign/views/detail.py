@@ -59,11 +59,15 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                             reward['amount'] = j['key_value']
                 if reward != {}:
                     i['reward'] = reward
-                i['count'] = active_mechanic_count
-                i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
-                for condition in i['condition_list']:
-                    condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
-                    condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+            count += 1
+            i['count'] = count
+            i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
+            for condition in i['condition_list']:
+                condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
+                condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+                self.logger.info('========== Finish get comparison list ==========')
+                self.logger.info('========== Finish get condition detail ==========')
+            self.logger.info('========== Finish get condition list ==========')
 
         context.update({
             'data': data,
@@ -92,6 +96,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get_condition_list(self, campaign_id, mechanic_id):
         url = settings.DOMAIN_NAMES + GET_CONDITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id)
+        self.logger.info('========== Start get condition list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
@@ -99,6 +104,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get_comparison_list(self, campaign_id, mechanic_id, condition_id):
         url = settings.DOMAIN_NAMES + GET_COMPARISON_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_condition_id=condition_id)
+        self.logger.info('========== Start get comparison list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
@@ -106,6 +112,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get_condition_detail(self, campaign_id, mechanic_id, condition_id):
         url = settings.DOMAIN_NAMES + GET_CONDITION_DETAIL.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_condition_id=condition_id)
+        self.logger.info('========== Start get condition detail ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
