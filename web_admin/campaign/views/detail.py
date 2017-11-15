@@ -59,15 +59,14 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                             reward['amount'] = j['key_value']
                 if reward != {}:
                     i['reward'] = reward
-            count += 1
-            i['count'] = count
-            i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
-            for condition in i['condition_list']:
-                condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
-                condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
-                self.logger.info('========== Finish get comparison list ==========')
-                self.logger.info('========== Finish get condition detail ==========')
-            self.logger.info('========== Finish get condition list ==========')
+                i['count'] = active_mechanic_count
+                i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
+                for condition in i['condition_list']:
+                    condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
+                    condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+                    self.logger.info('========== Finish get comparison list ==========')
+                    self.logger.info('========== Finish get condition detail ==========')
+                self.logger.info('========== Finish get condition list ==========')
 
         context.update({
             'data': data,
