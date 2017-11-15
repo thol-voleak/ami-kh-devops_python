@@ -59,6 +59,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
                     self.logger.info('========== Finish get comparison list ==========')
                     self.logger.info('========== Finish get condition detail ==========')
+                self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
                 if len(action) > 0:
                     action = action[0]
@@ -74,7 +75,6 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
-                self.logger.info('========== Finish get condition list ==========')
 
         context.update({
             'data': data,
