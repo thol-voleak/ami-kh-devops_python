@@ -1,18 +1,17 @@
 from braces.views import GroupRequiredMixin
 
-from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from django.contrib import messages
 from web_admin.api_settings import LIST_BANK_SOFS_URL
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.global_constants import UserType
 from web_admin.restful_client import RestFulClient
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.api_logger import API_Logger
 from django.conf import settings
 import logging
-
 
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
@@ -43,13 +42,17 @@ class SOFBankView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data = self._get_agent_sof_bank(agent_id)
         context = {
             "data": data["bank_sofs"],
-            'agent_id': agent_id,
+            'agent_id': agent_id
         }
         self.logger.info('========== Finished getting agent sof bank ==========')
         return render(request, self.template_name, context)
 
     def _get_agent_sof_bank(self, agent_id):
-        params = {"user_id": agent_id}
+        params = {
+            "user_id": agent_id,
+            "user_type_id": UserType.AGENT.value
+        }
+
         is_success, status_code, status_message, data = RestFulClient.post(url=LIST_BANK_SOFS_URL, params=params,
                                                                            loggers=self.logger,
                                                                            headers=self._get_headers(),
@@ -66,6 +69,3 @@ class SOFBankView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
             data = []
         return data
-
-
-

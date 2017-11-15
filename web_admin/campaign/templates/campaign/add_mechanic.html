@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Give Rewards to</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_give_reward_to" name="reward_to">
+                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to">
                                     <option value= "@@user_id@@">Actor who registered</option>
                                 </select>
                             </div>
@@ -180,21 +180,21 @@
                             <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Product Service ID</label>
+                            <label class="col-sm-3 control-label">Product Service ID *</label>
                             <div class="col-xs-3">
-                                <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text">
+                                <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Payer ID</label>
+                            <label class="col-sm-3 control-label">Payer ID *</label>
                             <div class="col-xs-3">
-                                <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text">
+                                <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Payer SOF ID</label>
+                            <label class="col-sm-3 control-label">Payer SOF ID *</label>
                             <div class="col-xs-3">
-                                <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text">
+                                <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
                             </div>
                         </div>
 
@@ -288,7 +288,7 @@
             oClone.id += (_counter + "");
             var div = document.createElement('div');
             div.className = 'form-group';
-            div.innerHTML = '<label class="col-sm-3 control-label"><b>AND</b></label>';
+            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
 {#                             <div class="col-xs-6 pull-right">\#}
 {#                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\#}
 {#                                  <span class="glyphicon glyphicon-trash"></span> \#}
@@ -305,28 +305,28 @@
         }
 
         function listenTrigger() {
-            var ddl_reward_to = $("#ddl_reward_to");
+            var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
 
             if (triggerValue === 'register_customer') {
                 $("#lbl_paid_amount").prop('hidden', true);
-                ddl_reward_to.empty();
-                ddl_reward_to.append($("<option>")
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
                     .val("@@user_id@@")
                     .html("Actor who registered")
                 )
             } else {
                 $("#lbl_paid_amount").prop('hidden', false);
-                ddl_reward_to.empty();
-                ddl_reward_to.append($("<option>")
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
                     .val("@@payer_user_id@@")
                     .html("Actor that paid for transaction")
                 )
-                ddl_reward_to.append($("<option>")
+                ddl_give_reward_to.append($("<option>")
                     .val("@@initiator_user_id@@")
                     .html("Actor that created the transaction")
                 )
-                ddl_reward_to.append($("<option>")
+                ddl_give_reward_to.append($("<option>")
                     .val("@@payee_user_id@@")
                     .html("Actor that received transaction")
                 )

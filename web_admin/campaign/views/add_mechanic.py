@@ -109,6 +109,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish adding Mechanic ==========')
 
         if not success:
+            message = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
             return self.render_add_page(request, context, message, start_date, end_date)
 
         mechanic_id = data['id']
@@ -187,7 +188,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 },
                 {
                     'key_name': 'payee_user.user_id',
-                    'key_value': request.POST.get('reward_to'),
+                    'key_value': request.POST.get('give_reward_to'),
                     'key_value_type': 'numeric'
                 },
                 {
@@ -202,7 +203,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 }
             ]
         }
-        if request.POST.get('reward_to') != '@@user_id@@' :
+        if request.POST.get('give_reward_to') != '@@user_id@@' :
             params['data'].append({
                         'key_name': 'paid_amount',
                         'key_value': "@@amount@@",
