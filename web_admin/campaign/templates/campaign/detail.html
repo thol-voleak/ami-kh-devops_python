@@ -97,7 +97,8 @@
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label size="2">Condition Type:</label>
-                            <span id="lbl_condition_type">{{condition.condition_detail.filter_type}}</span>
+                            <span id="lbl_condition_type">
+                            {%if condition.condition_detail.filter_type == 'event_detail'%}Event Detail{%endif%}</span>
                         </p>
                         {%for comparison in condition.comparison_list%}
                             <p style="margin-bottom:0; margin-left: 10px;">
