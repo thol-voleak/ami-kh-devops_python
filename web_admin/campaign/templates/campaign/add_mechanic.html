@@ -288,12 +288,12 @@
             oClone.id += (_counter + "");
             var div = document.createElement('div');
             div.className = 'form-group';
-            div.innerHTML = '<label class="col-sm-3 control-label"><b>AND</b></label>\
-                             <div class="col-xs-6 pull-right">\
-                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\
-                                  <span class="glyphicon glyphicon-trash"></span> \
-                                </button>\
-                             </div>';
+            div.innerHTML = '<label class="col-sm-3 control-label"><b>AND</b></label>';
+{#                             <div class="col-xs-6 pull-right">\#}
+{#                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\#}
+{#                                  <span class="glyphicon glyphicon-trash"></span> \#}
+{#                                </button>\#}
+{#                             </div>';#}
             oClone.insertBefore(div, oClone.firstChild);
             document.getElementById("condition-group").appendChild(oClone);
             $("#txt_condition_counter").val(_counter);
