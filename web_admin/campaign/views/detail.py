@@ -26,7 +26,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         '@@user_id@@':'Actor who registered',
         '@@payer_user_id@@':'Actor that paid for the transaction',
         '@@payee_user_id@@':'Actor that received the transaction',
-        '@@initial_user_id@@':'Actor that created the transaction'
+        '@@initiator_user_id@@':'Actor that created the transaction'
     }
 
     def dispatch(self, request, *args, **kwargs):
