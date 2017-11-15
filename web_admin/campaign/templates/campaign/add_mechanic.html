@@ -69,7 +69,7 @@
                             <h5><b>Set Condition</b></h5>
                         </div>
                         <div id="condition-group">
-                            <div id="condition">
+                            <div id="div_condition_1">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Condition type</label>
                                     <div class="col-xs-3">
@@ -275,7 +275,7 @@
         var _counter = 1;
         function addCondition() {
             _counter++;
-            var oClone = document.getElementById("condition").cloneNode(true);
+            var oClone = document.getElementById("div_condition_1").cloneNode(true);
             var inputEle = oClone.getElementsByTagName("input");
             inputEle[0].type = 'text';
             inputEle[0].value = '';
@@ -285,7 +285,7 @@
                 ddlEle[i].name += (_counter + "");
             }
 
-            oClone.id += (_counter + "");
+            oClone.id = "div_condition_" + _counter;
             var div = document.createElement('div');
             div.className = 'form-group';
             div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
