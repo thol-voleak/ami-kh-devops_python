@@ -97,7 +97,7 @@
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label size="2">Condition Type:</label>
-                            <span id="lbl_condition_type">{{condition.condition_detail.filter_type}}</span>
+                            <span id="lbl_condition_type">{%if condition.condition_detail.filter_type == 'event_detail'%}Event Detail{%endif%}</span>
                         </p>
                         {%for comparison in condition.comparison_list%}
                             <p style="margin-bottom:0; margin-left: 10px;">
@@ -112,17 +112,17 @@
                                 <label size="2" >Operator:</label>
                                 <span id="lbl_operator">
                                 {%if comparison.operator == '=' %}
-                                <span>Equal</span>
+                                <span>Equal to</span>
                                 {%elif comparison.operator == '>' %}
                                 <span>More Than</span>
                                 {%elif comparison.operator == '>=' %}
-                                <span>More Than or Equal</span>
+                                <span>More Than or Equal to</span>
                                 {%elif comparison.operator == '<' %}
                                 <span>Less Than</span>
                                 {%elif comparison.operator == '<=' %}
-                                <span>Less Than or Equal</span>
+                                <span>Less Than or Equal to</span>
                                 {%elif comparison.operator == '!=' %}
-                                <span>Not Equal</span>
+                                <span>Not Equal to</span>
                                 {%endif%}
                                 </span>
                             </p>
@@ -139,24 +139,19 @@
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label>Give Reward to:</label>
-                            <span id="lbl_give_reward_to">
-                                {% if i.reward.reward_to == '@@user_id@@' %}Actor who registered
-                                {% elif i.reward.reward_to == '@@payer_user_id@@' %}Actor that paid for the transaction
-                                {% elif i.reward.reward_to == '@@payee_user_id@@' %}Actor that received the transaction
-                                {% elif i.reward.reward_to == '@@initial_user_id@@' %}Actor that created the transaction{% endif %}
-                            </span>
+                            <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label size="2"> Reward Recipient should be:</label>
-                            <span id="lbl_reward_recipient">{{i.reward.recipient}}</span>
+                            <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                                 <label size="2">Reward Type:</label>
-                                <span id="lbl_reward_type">{{i.reward.reward_type}}</span>
+                                <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                                 <label size="2">Amount:</label>
-                                <span id="lbl_amount">{{i.reward.amount}}</span>
+                                <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
                         </p>
                     {% endif %}
                 </div>

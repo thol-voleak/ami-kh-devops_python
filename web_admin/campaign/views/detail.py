@@ -22,6 +22,12 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
+    person = {
+        '@@user_id@@':'Actor who registered',
+        '@@payer_user_id@@':'Actor that paid for the transaction',
+        '@@payee_user_id@@':'Actor that received the transaction',
+        '@@initial_user_id@@':'Actor that created the transaction'
+    }
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -53,13 +59,15 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
                     self.logger.info('========== Finish get comparison list ==========')
                     self.logger.info('========== Finish get condition detail ==========')
+                self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
                 if len(action) > 0:
                     action = action[0]
                     reward['reward_type'] = action['action_type']['name']
                     for j in action['action_data']:
                         if j['key_name'] == 'payee_user.user_id':
-                            reward['reward_to'] = j['key_value']
+                            if j['key_value'] in self.person.keys():
+                                reward['reward_to'] = self.person[j['key_value']]
                         if j['key_name'] == 'payee_user.user_type':
                             reward['recipient'] = j['key_value']
                         if j['key_name'] == 'amount':
@@ -67,7 +75,6 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
-                self.logger.info('========== Finish get condition list ==========')
 
         context.update({
             'data': data,
