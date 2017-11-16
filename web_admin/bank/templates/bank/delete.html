@@ -20,7 +20,7 @@
         <div class="row no-margin">
             <div class="col-sm-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="{% url 'bank_sofs:bank_sofs_delete' bank.id %}">
+                      action="{% url 'bank:bank_sofs_delete' bank.id %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Is Active</label>
@@ -129,7 +129,7 @@
                         </div>
                      </div>
                    <div class="pull-right">
-                        <a href="{% url 'bank_sofs:bank_sofs_list' %}">
+                        <a href="{% url 'bank:bank_sofs_list' %}">
                             <input id="btn_cancel" class="btn text-left mb15 btn-small" type="button"
                                    value="Cancel"/>
                         </a>

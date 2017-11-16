@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Agent SOF Cash</h3>
+    </div>
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
+    <div class="alert alert-danger alert-dismissable mt30" hidden id="currency_dialog_success">
+        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+        <strong id="alert_success_msg"></strong>
+    </div>
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-roles">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="panel-body">
+        <form class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-add-sofcash' agent_id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Currency</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_currency" name="currency_id" required>
+                        <option value="" >-</option>
+                        {% for choice_currency in currencies %}
+                            <option value="{{ choice_currency.0 }}" {% if choice_currency.0 == currency_id %}selected="selected"{% endif %}>{{ choice_currency.0 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if permissions.is_permission_add_sofcash %}
+                    <div class="col-xs-1 pull-right">
+                        <input id="btn_submit" class="btn btn-success" type="submit"
+                               style="display: none">
+                        <input id="btn_add" class="btn btn-success pull-right" onclick="return add()" type="button"
+                               value="Add">
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_agent_sof_cash">
+                <thead>
+                <tr>
+                    <th id="SOF_ID">SOF ID</th>
+                    <th id="currency">Currency</th>
+                    <th id="created_date">Created Date</th>
+                    <th id="modified_date">Modified Date</th>
+                    <th id="action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cash_sof in data.cash_sofs %}
+                <tr>
+                    <td class="col-sm-1">{{ cash_sof.id }}</td>
+                    <td class="col-sm-1">{{ cash_sof.currency|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.created_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.last_updated_timestamp|default_if_none:'' }}</td>
+                    <td class="col-sm-2">{{ cash_sof.action|default_if_none:'' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+    function add() {
+        var currency = document.getElementById("ddl_currency").value;
+        console.log("currency:"+currency);
+        if( currency == "") {
+            $("#alert_success_msg").text('Please select currency')
+            $("#currency_dialog_success").show();
+            return false;
+        }
+        swal({
+              title: "Do you want to add new cash SOF?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    var btn_submit = document.getElementById("btn_submit");
+                    btn_submit.click();
+                } else {
+                    return false;
+                }
+            }
+        );
+    }
+</script>
+{% endblock %}

@@ -40,7 +40,7 @@ class API_Logger:
 
 
     @classmethod
-    def post_logging(self, loggers=None, params={}, response={}, status_code=""):
+    def post_logging(self, loggers=None, params={}, response={}, status_code="", is_getting_list=False):
         if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             raise InvalidAccessToken("")
 
@@ -51,7 +51,7 @@ class API_Logger:
             loggers.info("Params: {} ".format(params))
 
         response = response or {}
-        if (type(response) is list) and (len(response) > 1):
+        if is_getting_list==True:
             loggers.info('Response_content_count: {}'.format(len(response)))
         else:
             loggers.info('Response_content: {}'.format(response))

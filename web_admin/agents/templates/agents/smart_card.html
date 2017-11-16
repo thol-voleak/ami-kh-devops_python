@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Agent SmartCard</h3>
+    </div>
+
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-roles">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <div id="ajax-messages">
+        {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-success
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% if delete_msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-success
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ delete_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% if msg_failed is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-danger
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg_failed }}</strong>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Number *</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" name="number" id="txt_number" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Serial</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" name="serial" id="txt_serial"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pull-right">
+                            <a href="{% url 'agents:agent-list' %}">
+                                <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                            </a>
+
+                            {% if permissions.is_perm_add_smart_card %}
+                            <a href="#">
+                                <input id="btn_add" class="btn btn-success" type="submit" value="Add">
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped mb0" id="tbl_agent_smartcard">
+                                <thead>
+                                    <tr>
+                                        <th id="id">ID</th>
+                                        <th id="number">Number</th>
+                                        <th id="serial">Serial</th>
+                                        <th id="created_date">Created Date</th>
+                                        <th id="modified_date">Modified Date</th>
+                                        <th id="action">Action</th>
+                                    </tr>
+                                </thead>
+                                    <tbody>
+                                    {% for smartcard in smartcards %}
+                                        {% if not smartcard.is_deleted %}
+                                            <tr>
+                                                <td>{{ smartcard.id|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.card_number|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.card_serial|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.created_timestamp|default_if_none:'' }}</td>
+                                                <td>{{ smartcard.last_updated_timestamp|default_if_none:'' }}</td>
+                                                <td class="col-sm-1">
+                                                    {% if permissions.is_perm_del_smart_card %}
+                                                    <button id="btn_delete" onclick="deleteSmartCard(this.value, '{{ smartcard.card_number }}')" value="{% url 'agents:delete_agent_smartcard' agent_id smartcard.id %}"
+                                                            type='button' class="btn btn-outline mb5 btn-xs btn-danger">Delete</button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
+<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+function deleteSmartCard(value, num) {
+    swal({
+            title: 'Are you sure you want to delete SmartCard number "' + num + '"?',
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            closeOnConfirm: true
+        },
+        function () {
+            console.log(value);
+            window.location.replace(value)
+        }
+    );
+}
+</script>
+{% endblock %}

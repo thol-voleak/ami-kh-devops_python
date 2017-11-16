@@ -16,7 +16,7 @@ from authentications.utils import get_correlation_id_from_username
 logger = logging.getLogger(__name__)
 
 
-class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin):
+class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"
     logger = logger
 

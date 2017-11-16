@@ -22,7 +22,7 @@
                         <label class="col-sm-2 control-label">Client Id</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" readonly name="client_id"
-                                   value="{{ client_info.client_id }}">
+                                   value="{{ client_info.client_id }}" id="txt_client_id">
                         </div>
                     </div>
 
@@ -31,7 +31,7 @@
                         <div class="col-sm-8">
 
                             <input type="text" class="form-control" readonly name="client_secret"
-                                   value="{{ client_info.client_secret }}">
+                                   value="{{ client_info.client_secret }}" id="txt_client_secret">
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                         <label class="col-sm-2 control-label">Client name:</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="client_name"
-                                   value="{{ client_info.client_name | default_if_none:'' }}">
+                                   value="{{ client_info.client_name | default_if_none:'' }}" id="txt_client_name">
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
 
                             <input type="text" class="form-control input-rounded" readonly
                                    name="authorized_grant_types"
-                                   value="{{ client_info.authorized_grant_types|default_if_none:'password' }}">
+                                   value="{{ client_info.authorized_grant_types|default_if_none:'password' }}" id="txt_authorized_grant_types">
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
                         <div class="col-sm-8">
 
                             <input type="text" class="form-control input-rounded" name="web_server_redirect_uri"
-                                   value="{{ client_info.web_server_redirect_uri | default_if_none:'' }}">
+                                   value="{{ client_info.web_server_redirect_uri | default_if_none:'' }}" id="txt_web_server_redirect_uri">
                         </div>
                     </div>
                     <div class="form-group">
@@ -66,7 +66,7 @@
                         <div class="col-sm-8">
 
                             <input type="number" class="form-control input-rounded" name="access_token_validity"
-                                   value="{{ client_info.access_token_validity|default_if_none:'3600' }}">
+                                   value="{{ client_info.access_token_validity|default_if_none:'3600' }}" id="txt_access_token_validity">
                         </div>
                     </div>
                     <div class="form-group">
@@ -74,7 +74,15 @@
                         <div class="col-sm-8">
 
                             <input type="number" class="form-control input-rounded" name="refresh_token_validity"
-                                   value="{{ client_info.refresh_token_validity|default_if_none:3600 }}">
+                                   value="{{ client_info.refresh_token_validity|default_if_none:3600 }}" id="txt_refresh_token_validity">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Authorization code validity:</label>
+                        <div class="col-sm-8">
+
+                            <input type="number" class="form-control input-rounded" name="authorization_code_validity"
+                                   value="{{ client_info.authorization_code_validity|default_if_none:3600 }}" id="txt_authorization_code_validity">
                         </div>
                     </div>
                     <div class="pull-right">

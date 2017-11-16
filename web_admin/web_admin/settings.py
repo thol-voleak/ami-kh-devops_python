@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'card_type',
     'cash_sofs',
     'bank_sofs',
-
+    'bank',
     'payments',
     'api_management',
     'centralize_configuration',
@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'card_design',
     'card_provider',
     'card_sofs',
+    'balance_adjustment',
+    'campaign',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -98,7 +100,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider','reconcile', 'permissions', 'card_sofs')],
+                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider','reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,7 +116,7 @@ TEMPLATES = [
 
 OPTIONS = {
     'libraries': {
-        'myapp_tags': 'authentications.templatetags.permissions_filter',
+        'myapp_tags': 'authentications.templatetags',
     },
 }
 
@@ -262,7 +264,11 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
-
+        },
+        'bank': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
         },
         'payments': {
             'handlers': ['console'],
@@ -288,7 +294,16 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'balance_adjustment': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'campaign': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
         }
-
     }
 }

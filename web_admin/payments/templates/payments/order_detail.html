@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block body_stylesheet %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>View Order Detail</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <h5><label class="col-sm-4 control-label"><strong>Order Detail</strong></label></h5>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Order ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="txt_order_id" value="{{ data.order_id | default_if_none:'' }}" class="form-control input-rounded" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">External Transaction ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="username"
+                                       id="txt_external_transaction_id" value="{{ data.ext_transaction_id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Payment Method Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="parent_id"
+                                       id="txt_payment_method_name" value="{{ data.payment_method.payment_method_name | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Payment Reference</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="password"
+                                       id="txt_payment_reference" value="{{ data.payment_method.payment_method_ref | default_if_none:'' }}" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Service Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="grand_parent_id"
+                                       id="txt_service_name" value="{{ data.product_service.name | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Service ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="re_password"
+                                       id="txt_service_id" value="{{ data.product_service.id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Service Command</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_service_command" value="{{ data.product_command.name | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Service Currency</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="re_password"
+                                       id="txt_service_currency" value="{{ data.product_service.currency | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Amount</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_amount" value="{{ data.amount | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Fee</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_fee" value="{{ data.fee | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Bonus</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="re_password"
+                                       id="txt_bonus" value="{{ data.bonus | default_if_none:'' }}" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_status" value="{{ data.status | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Is deleted</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="re_password"
+                                       id="txt_is_deleted" value="{{ data.is_deleted | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Create Time</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="currency"
+                                       id="txt_create_time" value="{{ data.created_timestamp | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Update Time</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="re_password"
+                                       id="txt_update_time" value="{{ data.last_updated_timestamp | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <h5><label class="col-sm-4 control-label"><strong>Stakeholders</strong></label></h5>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"><strong>Initiator</strong></label>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="lastname"
+                                       id="txt_initiator_user_id" value="{{ data.initiator_user.id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="firstname"
+                                       id="txt_initiator_user_type" value="{{ data.initiator_user.type | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 2 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                       id="txt_initiator_source_of_fund_id" value="{{data.initiator_user.sof_id | default_if_none:''}}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="gender"
+                                       id="txt_initiator_source_of_fund_type" value="{{ data.initiator_user.sof_type_id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 3 -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Payer</strong></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="lastname"
+                                       id="txt_payer_user_id" value="{{ data.payer_user.id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="firstname"
+                                       id="txt_payer_user_type" value="{{ data.payer_user.type | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                       id="txt_payer_source_of_fund_id" value="{{data.payer_user.sof_id | default_if_none:''}}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="gender"
+                                       id="txt_payer_source_of_fund_type" value="{{ data.payer_user.sof_type_id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"><strong>Payee</strong></label>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="lastname"
+                                       id="txt_payee_user_id" value="{{ data.payee_user.id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">User Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="firstname"
+                                       id="txt_payee_user_type" value="{{ data.payee_user.type | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund ID</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                       id="txt_payee_source_of_fund_id" value="{{data.payee_user.sof_id | default_if_none:''}}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Source of Fund Type</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="gender"
+                                       id="txt_payee_source_of_fund_type" value="{{ data.payee_user.sof_type_id | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End section 5 - row 4 -->
+                    <!-- Begin section 6 [Product References] -->
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <h5><label class="col-sm-4 control-label"><strong>Product References</strong></label></h5>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 1 -->
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Product Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                       id="txt_product_name" value="{{ data.product.product_name | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <!-- End section 6 - row 2 -->
+
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Product Reference 1</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                           id="txt_product_reference_1" value="{{ data.product.product_ref1 | default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                    <!-- End section 6 - row 3 -->
+
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Product Reference 2</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                           id="txt_product_reference_2" value="{{ data.product.product_ref2 | default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Product Reference 3</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                            id="txt_product_reference_3" value="{{ data.product.product_ref3 | default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                    </div>
+                                            <div class="row">
+                    <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Product Reference 4</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                        id="txt_product_reference_4" value="{{ data.product.product_ref4 | default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Product Reference 5</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_Identify_type"
+                                            id="txt_product_reference_5" value="{{ data.product.product_ref5 | default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <a href="{% url 'payments:payment_order' %}">
+                            <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

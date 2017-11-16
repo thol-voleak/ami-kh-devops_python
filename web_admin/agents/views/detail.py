@@ -72,11 +72,14 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info("Get currency for [{}] agent Id".format(agent_id))
         params = {
             'user_id': agent_id,
-            'user_type': 2
+            'user_type': 2,
+            "paging": False,
+            "page_index": -1
         }
         data, success = self._post_method(api_path=api_settings.GET_REPORT_AGENT_BALANCE, params=params)
         currencies_str = ''
-        if success:
+        data = data['cash_sofs']
+        if success and data:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 
         return currencies_str, success
@@ -86,8 +89,10 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                           func_description="Agent detail",
                                           logger=logger, params=body)
+        agents_list = data.get('agents', [])
+
         context = {
-            'agent': data[0],
+            'agent': agents_list[0],
             'agent_id': agent_id,
             'msgs': {
                 'get_msg': self.request.session.pop('agent_registration_msg', None),
@@ -106,19 +111,6 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'agent_identities': data
         }
         return context, success
-
-    def _get_currencies(self, agent_id):
-        params = {
-            'user_id': agent_id,
-            'user_type': 2
-        }
-
-        data, success = self._post_method(api_path=api_settings.GET_REPORT_AGENT_BALANCE, params=params)
-        currencies_str = ''
-        if success and len(data) > 0:
-            currencies_str = ', '.join([elem["currency"] for elem in data])
-
-        return currencies_str, success
 
     def _get_agent_type_name(self, agent_type_id):
         self.logger.info("Getting agent type list with url [{}]".format(api_settings.AGENT_TYPES_LIST_URL))

@@ -3,6 +3,8 @@ from django.conf import settings
 import logging
 import requests
 import time
+import json
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +17,7 @@ class RestFulClient:
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
         try:
-            loggers.info('Get path: [{path}]'.format(path=url))
+            loggers.info('GET path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.get(url, headers=headers, verify=settings.CERT, timeout=timeout)
             end_time = time.time()
@@ -48,9 +50,13 @@ class RestFulClient:
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
         try:
-            loggers.info('Get path: [{path}]'.format(path=url))
+            loggers.info('POST path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.post(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
+
+            # import pdb;
+            # pdb.set_trace()
+
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
@@ -58,7 +64,7 @@ class RestFulClient:
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
 
             try:
-                response_json = response.json()
+                response_json = json.loads(response.text, parse_float=Decimal)
                 status = response_json.get('status', {})
                 status_code = status.get('code', '')
                 status_message = status.get('message', '')
@@ -83,14 +89,13 @@ class RestFulClient:
         if timeout is None:
             timeout = settings.GLOBAL_TIMEOUT
         try:
+            loggers.info('PUT path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.put(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
             http_status_code = response.status_code
             end_time = time.time()
             processing_time = end_time - start_time
-            loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
-                                                                                     http_status_code=http_status_code))
+            loggers.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
@@ -118,14 +123,13 @@ class RestFulClient:
             timeout = settings.GLOBAL_TIMEOUT
 
         try:
+            loggers.info('DELETE path: [{path}]'.format(path=url))
             start_time = time.time()
             response = requests.delete(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
             end_time = time.time()
             processing_time = end_time - start_time
             http_status_code = response.status_code
-            loggers.info(
-                'Get {path} result with {http_status_code} HTTP status code.'.format(path=url,
-                                                                                     http_status_code=http_status_code))
+            loggers.info('Result is [{http_status_code}] HTTP status code.'.format(http_status_code=http_status_code))
             loggers.info('Processing time: [{processing_time}]'.format(processing_time=processing_time))
             try:
                 response_json = response.json()
@@ -140,6 +144,6 @@ class RestFulClient:
                 loggers.error(e)
                 raise Exception(response)
         except requests.exceptions.Timeout:
-            is_success, status_code, data = False, 'Timeout', 'timeout'
+            is_success, status_code, status_message = False, 'Timeout', 'timeout'
 
         return is_success, status_code, status_message

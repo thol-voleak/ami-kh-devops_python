@@ -56,6 +56,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             agent_balance_list = []
 
         balance_list = []
+        agent_balance_list = agent_balance_list['cash_sofs']
         for item in agent_balance_list:
             balance_list.append(self.getUpdatedItem(item, currencies))
 
@@ -104,6 +105,7 @@ class CompanyBalanceView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 agent_balance_list = []
 
             balance_list = []
+            agent_balance_list = agent_balance_list['cash_sofs']
             for item in agent_balance_list:
                 balance_list.append(self.getUpdatedItem(item, currencies))
 

@@ -135,7 +135,7 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             True: 'Suspended',   # is_suspended == True
             False: 'Active'      # is_suspended == False
         }
-        context = {'customer_info': data[0]}
+        context = {'customer_info': data['customers'][0]}
         is_suspended = context['customer_info'].get('is_suspended')
         context['customer_info']['is_suspended'] = status[is_suspended]
 

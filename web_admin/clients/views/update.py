@@ -68,6 +68,7 @@ class ClientUpdate(TemplateView, RESTfulMethods):
             "authorities": "",
             "access_token_validity": request.POST.get('access_token_validity'),
             "refresh_token_validity": request.POST.get('refresh_token_validity'),
+            "authorization_code_validity": request.POST.get('authorization_code_validity'),
             "additional_information": "",
             "resource_ids": "",
             "autoapprove": ""

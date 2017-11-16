@@ -41,7 +41,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">Source of fund partner name</label>
+                <label class="col-sm-2 control-label">Source of fund partner ID</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="sof_partner_name_id"
                            id="sof_partner_name_id" value="{{ sof_code|default_if_none:'' }}"/>
@@ -109,7 +109,7 @@
                     <th id="file_name_clm">File Name</th>
                     <th id="is_us_on_clm">ON US/OFF US</th>
                     <th id="sof_clm">Source of fund</th>
-                    <th id="sof_partner_name_clm">Source of fund partner name</th>
+                    <th id="sof_partner_name_clm">Source of fund partner ID</th>
                     <th id="currency_clm">Currency</th>
                     <th id="processing_status_clm">Status</th>
                     <th id="reconcile_date_clm">Reconcile Date</th>
@@ -134,7 +134,7 @@
                                             value="{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}"
                                             onclick="redirectToReportPage('{{ file.id }}', '{{ file.is_on_us }}',
                                                     '{{ file.source_of_fund }}', '{{ file.sof_code }}', '{{ file.currency }}',
-                                                    '{{ file.start_data_timestamp }}', '{{ file.end_data_timestamp }}',
+                                                    '{{ file.last_updated_timestamp }}', '{{ file.last_updated_timestamp }}',
                                                     '{% url 'reconcile:reconcile_sof_report_by_file_id' file.id %}')">
                                         <u>Result</u>
                                     </button>

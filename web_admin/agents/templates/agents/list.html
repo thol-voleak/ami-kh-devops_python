@@ -5,7 +5,13 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border mb15">
-        <h3>Agent List</h3>
+        <h3>Agent Profile</h3>
+    </div>
+    <div class="col-xs-12">
+        <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+            <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
     </div>
     <!--If success return green notification and return red notification if message is failed-->
     {% for msg in msgs.values %}
@@ -24,42 +30,52 @@
             </div>
         {% endif %}
     {% endfor %}
-    <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}">
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" onsubmit="return validateForm()">
         {% csrf_token %}
         <div class="form-group">
+            <label class="col-sm-2 control-label">ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="agent_id"
+                        id="txt_agent_id"
+                        value="{{ id|default_if_none:'' }}">
+            </div>
             <label class="col-sm-2 control-label">Unique Reference</label>
-            <div class="col-sm-5">
+            <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="unique_reference"
                        id="txt_unique_reference"
                        value="{{ unique_reference|default_if_none:'' }}">
             </div>
-
         </div>
 
         <div class="form-group">
+            <label class="col-sm-2 control-label">KYC Status</label>
+            <div class="col-sm-2">
+                <!-- <input type="text" class="form-control input-rounded" name="kyc_status"
+                        id="txt_kyc_status"
+                        value="{{ kyc_status|default_if_none:'' }}"> -->
+                <select class="form-control" id="ddl_kyc_status" name="kyc_status">
+                        <option value='' {%if kyc_status == None%}selected="selected"{%endif%}>-</option>
+                        <option value='True'{%if kyc_status == True%}selected="selected"{%endif%}>True</option>
+                        <option value='False' {%if kyc_status == False%}selected="selected"{%endif%}>False</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group">
             <label class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-5">
+            <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="email"
                        id="txt_email"
                        value="{{ email|default_if_none:'' }}">
             </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Primary Mobile Number</label>
-            <div class="col-sm-5">
+            <label class="col-sm-2 control-label">Mobile Number</label>
+            <div class="col-sm-2">
                 <input type="text" class="form-control input-rounded" name="primary_mobile_number"
                        id="txt_primary_mobile_number"
                        value="{{ primary_mobile_number|default_if_none:'' }}">
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">KYC</label>
-            <div class="col-sm-5">
-                <input type="text" class="form-control input-rounded" name="kyc_status"
-                       id="txt_kyc_status"
-                       value="{{ kyc_status|default_if_none:'' }}">
-            </div>
-        </div>
+
         <div class="form-group">
             <!--<label class="col-sm-1 control-label">Created Date</label>-->
             <label class="col-sm-2 control-label">Created Date: From</label>
@@ -69,17 +85,22 @@
                        value="{{ from_created_timestamp|default_if_none:'' }}"
                        id="dtp_from">
             </div>
-            <label class="col-sm-1 control-label">: To</label>
+            <label class="col-sm-2 control-label">To</label>
             <div class="col-sm-2">
                 <input type="date" class="form-control input-rounded"
                        name="to_created_timestamp"
                        value="{{ to_created_timestamp|default_if_none:'' }}"
                        id="dtp_to">
             </div>
+            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+            {% if is_permission_search %}
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
+            {% endif %}
         </div>
+        <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+        <label class="pull-right" >Total:&nbsp;</label>
     </form>
 
     <div class="panel-body">
@@ -87,15 +108,17 @@
             <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
                 <thead>
                 <tr>
-                    <th id="agent_type">Agent ID</th>
-                    <th id="last_name">Last Name</th>
-                    <th id="first_name">First Name</th>
-                    <th id="phone">Phone</th>
-                    <th id="email">Email</th>
+                    <th id="agent_id">ID</th>
+                    <th id="last_name">First Name</th>
+                    <th id="first_name">Last Name</th>
+                    <th id="primary_identify_id">Primary Identify ID</th>
+                    <th id="mobile_number">Mobile Number</th>
+                    <th id="email">Email Address</th>
+                    <th id="unique_reference">Unique Reference</th>
                     <th id="kyc">KYC</th>
                     <th id="created_at">Created Date</th>
                     <th id="modified_at">Modified Date</th>
-                    <th id="status">Status</th>
+                    <th id="status">Is suspended</th>
                     <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
@@ -105,38 +128,65 @@
                     <tr>
                         {% if agent.is_deleted %}
                             <td class="col-sm-1"><del>{{ agent.id }}</del></td>
-                            <td class="col-sm-3"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
-                            <td class="col-sm-5"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-3"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-5"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-5"><del>{{ agent.primary_identify_id|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.primary_mobile_number|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.email|default_if_none:'' }}</del></td>
+                            <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-3"></td>
                         {% else %}
                             <td class="col-sm-1">{{ agent.id }}</td>
-                            <td class="col-sm-3">{{ agent.lastname|default_if_none:'' }}</td>
-                            <td class="col-sm-5">{{ agent.firstname|default_if_none:'' }}</td>
+                            <td class="col-sm-3">{{ agent.firstname|default_if_none:'' }}</td>
+                            <td class="col-sm-5">{{ agent.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-5">{{ agent.primary_identify_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.email|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.unique_reference|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-3">
+                                {% if agent.is_permission_view %}
+                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
+                                {% endif %}
+                                {% if agent.is_permission_edit %}
+                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
+                                {% endif %}
+                                {% if agent.is_permission_delete %}
+                                    <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger " onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
+                                {% endif %}
+                                {% if agent.is_permission_identity %}
+                                    <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
+                                {% endif %}
+                                {% if agent.is_permission_smartcard %}
+                                    <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
+                                {% endif %}
+                                {% if agent.is_permission_sofcash %}
+                                    <button id="btn_sof_cash" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent-sofcash' agent.id %}'">SOF Cash</button>
+                                {% endif %}
+                             {% if agent.is_permission_sofbank %}
+                                    <button id="btn_sof_bank" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent-sofbank' agent.id %}'">SOF Bank</button>
+                                {% endif %}
+                            </td>
                         {% endif %}
-                        <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.status|default_if_none:'' }}</td>
-                        <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
-                        <td class="col-sm-3">
-                            {% if agent.is_permission_view %}
-                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
-                            {% endif %}
-                            {% if agent.is_permission_edit %}
-                                <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
-                            {% endif %}
-                            {% if agent.is_permission_delete %}
-                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
-                            {% endif %}
-                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% include "pagination.html" %}
     </div>
     <div class="loader" style="display:none" id="loader-indicator"></div>
     <div class="col-xs-12" id="search-result-notification" style="display:none">
@@ -146,4 +196,25 @@
         </div>
     </div>
 </div>
+
+<script>
+function showErrorMessage(msg) {
+    $("#alert-msg").text(msg)
+    $("#msg-error").fadeIn(700);
+}
+
+function validateForm() {
+    var from = document.getElementById("dtp_from");
+    var to = document.getElementById("dtp_to");
+
+    var fromDate = new Date(from.value);
+    var toDate = new Date(to.value);
+
+    if (fromDate && toDate && (fromDate > toDate)) {
+        showErrorMessage('Create date From should be <= To')
+        return false;
+    }
+}
+</script>
+
 {% endblock %}

@@ -8,16 +8,16 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cash_sofs:cash_sof' %}">
-                {# {% csrf_token %} #}
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_sof' %}">
+                 {% csrf_token %}
                 <div class="form-group">
                     <label class="col-sm-1 control-label">User ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="user_id">
+                        <input type="number" id='txt_user_id' class="form-control input-rounded" name="user_id" value={{ user_id }}>
                     </div>
                     <label class="col-sm-1 control-label">User Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="user_type_id">
+                        <select class="form-control" id="ddl_user_type" name="user_type_id">
                             <option value=0 {% if user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                             <option value=1 {% if user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                             <option value=2 {% if user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
@@ -25,16 +25,17 @@
                     </div>
                     <label class="col-sm-2 control-label">Currency</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="currency" />
+                        <input type="text" class="form-control input-rounded" id='txt_currency' name="currency"  value={{ currency }}>
                     </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit"
                                value="Search">
                     </div>
                 </div>
             </form>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <table class="table table-bordered table-striped mb0" id="tbl_cash_sof_list">
                     <thead>
                     <tr>
                         <th id="id">SOF ID</th>
@@ -59,7 +60,7 @@
                     </tbody>
                 </table>
             </div>
+            {% include "pagination.html" %}
         </div>
     </div>
-
 {% endblock %}

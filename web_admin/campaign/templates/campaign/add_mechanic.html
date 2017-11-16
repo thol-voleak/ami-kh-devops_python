@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Add Mechanic</h3>
+        </div>
+        {% if error_msg is not none %}
+            <div class="alert alert-danger" id="msg-update-failed">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong id="alert-msg">{{ error_msg|capfirst }}</strong>
+            </div>
+        {% endif %}
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                          action="{{ request.path }}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Trigger</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
+                                    <option value="register_customer">Customer Registration</option>
+                                    <option value="executed_order">Customer Payment</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Start Date *</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_start_date" style="height:40px; border-color: {{ border_color }};"
+                                       value="{{ dtp_start_date|default_if_none:'' }}"
+                                       id="dtp_start_date" required >
+                            </div>
+                            <div class="col-xs-2">
+                                <input  class="form-control input-rounded"
+                                        type=time min=00:00 max=23:59 step=60 value="00:01"
+                                       id="dtp_start_time" name="dtp_start_time"
+                                       value="{{ dtp_start_time|default_if_none:'' }}"
+                                       style="height:40px;border-color: {{ border_color }};" required >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">End Date *</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_end_date" style="height:40px; border-color: {{ border_color }};"
+                                       value="{{ dtp_end_date|default_if_none:'' }}"
+                                       id="dtp_end_date" required>
+                            </div>
+                            <div class="col-xs-2">
+                                <input  class="form-control input-rounded"
+                                        type=time min=00:00 max=23:59 step=60 value="00:01"
+                                       id="dtp_end_time" name="dtp_end_time"
+                                       value="{{ dtp_end_time|default_if_none:'' }}"
+                                        style="height:40px;border-color: {{ border_color }};" required>
+                            </div>
+                        </div>
+
+                        <div class="panel-heading">
+                            <h5><b>Set Condition</b></h5>
+                        </div>
+                        <div id="condition-group">
+                            <div id="div_condition_1">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Condition type</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_condition_type" name="condition_type">
+                                            <option value= "event_detail">Event Detail</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Detail Name</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_detail_name" name="detail_name">
+                                            {% for name in detail_names %}
+                                                <option value= "{{ name }}">{{ name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Key Value Type</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                            {% for type in key_value_types %}
+                                                <option value= "{{ type }}">{{ type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Operator</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                            {% for oper in operations %}
+                                                <option value= "{{ oper }}">{{ oper }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Key Value *</label>
+                                    <div class="col-xs-3">
+                                        <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
+                                    </div>
+                                </div>
+                            <br>
+                            </div>
+                        </div>
+                        <input type="hidden" name="condition_counter" id="txt_condition_counter">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-xs-3">
+                                <button type="button" class="btn btn-primary btn-block" id="btn_add_condition" onclick="addCondition()">
+                                  <span class="glyphicon glyphicon-plus"></span> Add Condition
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="panel-heading">
+                            <h5><b>Set Rewards</b></h5>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Reward</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Reward Type</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reward_type" name="reward_type">
+                                    <option value= "fixed_cashback">Fixed Cashback</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Amount *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reward_recipient" name="reward_type">
+                                    <option value= "customer">Customer</option>
+                                    <option value= "agent">Agent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Give Rewards to</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to">
+                                    <option value= "@@user_id@@">Actor who registered</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="lbl_paid_amount" hidden>
+                            <label class="col-sm-3 control-label">Paid Amount</label>
+                            <div class="col-xs-3">
+                                <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Product Service ID *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Payer ID *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Payer SOF ID *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group pull-right">
+                            <a href="{% url 'campaign:campaign_detail' campaign_id %}">
+                                <input id="btn_dismiss" class="btn text-left mb15" type="button"
+                                       value="Dismiss"/>
+                            </a>
+                             <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
+                                   value="Add Mechanic"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getCurrentOps (ddl) {
+            var ops = [];
+            ddl.find('option').each(function()
+            {
+                ops.push($(this).val());
+            });
+            return ops
+        }
+
+        function setDDL(ddl, newOps) {
+            ddl.empty();
+            for (var ops in newOps) {
+                ddl.append( $("<option>")
+                    .val(newOps[ops])
+                    .html(newOps[ops])
+                )
+            }
+        }
+
+        function listenKeyValType(ele, type, fullOps, filterOps) {
+            var keyValue = $(ele).parent().parent().nextAll('div').find('input');
+            var operator = $(ele).parent().parent().next('div').find('select');
+            var currentOperator = getCurrentOps(operator);
+            keyValue.val('');
+            if (type === 'Freetext') {
+                if (JSON.stringify(currentOperator) !== JSON.stringify(filterOps)) {
+                    setDDL(operator, filterOps);
+                }
+                keyValue.attr('type', 'text');
+            } else {
+                if (JSON.stringify(currentOperator) !== JSON.stringify(fullOps)) {
+                    setDDL(operator, fullOps);
+                }
+                if (type === 'Numeric') {
+                    keyValue.attr('type', 'number');
+                } else if (type === 'Timestamp') {
+                    keyValue.attr('type', 'datetime-local');
+                }
+            }
+        }
+
+        function listenOperator(ele, type, operation, fullOps, filterOps) {
+            var keyValueType = $(ele).parent().parent().prev('div').find('select');
+            var keyValue = $(ele).parent().parent().next('div').find('input');
+            var currentKVType = getCurrentOps(keyValueType);
+            if (operation.includes(type)) {
+                if (JSON.stringify(currentKVType) !== JSON.stringify(fullOps)) {
+                    setDDL(keyValueType, fullOps);
+                    keyValue.attr('type', 'number');
+                    keyValue.val('');
+                }
+            } else {
+                if (JSON.stringify(currentKVType) !== JSON.stringify(filterOps)) {
+                    setDDL(keyValueType, filterOps);
+                    keyValue.attr('type', 'number');
+                    keyValue.val('');
+                }
+            }
+        }
+
+        var _counter = 1;
+        function addCondition() {
+            _counter++;
+            var oClone = document.getElementById("div_condition_1").cloneNode(true);
+            var inputEle = oClone.getElementsByTagName("input");
+            inputEle[0].type = 'text';
+            inputEle[0].value = '';
+            inputEle[0].name += (_counter + "");
+            var ddlEle = oClone.getElementsByTagName("select");
+            for (var i = 0; i < ddlEle.length; i++) {
+                ddlEle[i].name += (_counter + "");
+            }
+
+            oClone.id = "div_condition_" + _counter;
+            var div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
+{#                             <div class="col-xs-6 pull-right">\#}
+{#                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\#}
+{#                                  <span class="glyphicon glyphicon-trash"></span> \#}
+{#                                </button>\#}
+{#                             </div>';#}
+            oClone.insertBefore(div, oClone.firstChild);
+            document.getElementById("condition-group").appendChild(oClone);
+            $("#txt_condition_counter").val(_counter);
+        }
+
+        function removeCondition(id) {
+            var element = document.getElementById(id);
+            element.parentNode.removeChild(element);
+        }
+
+        function listenTrigger() {
+            var ddl_give_reward_to = $("#ddl_give_reward_to");
+            var triggerValue = $("#ddl_trigger").val();
+
+            if (triggerValue === 'register_customer') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+            } else {
+                $("#lbl_paid_amount").prop('hidden', false);
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for the transaction")
+                )
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received the transaction")
+                )
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+{% endblock %}

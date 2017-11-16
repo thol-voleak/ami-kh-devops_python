@@ -108,10 +108,13 @@
                                value="{{ date_to|default_if_none:'' }}"
                                id="dtp_to_date">
                     </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    {% if permissions.is_perm_order_search %}
                     <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search"
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
                     </div>
+                    {% endif %}
                 </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>
@@ -137,6 +140,7 @@
                     <th id="user">Ext Transaction ID</th>
                     <th id="user">Creation Client ID</th>
                     <th id="user">Execution Client ID</th>
+                    <th id="user">Action</th>
                 </tr>
                 </thead>
                 <tbody id="table_body">
@@ -159,11 +163,17 @@
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
                             <td class="col-sm-2">{{ order.created_client_id }}</td>
                             <td class="col-sm-2">{{ order.executed_client_id }}</td>
+                            <td class="col-sm-2">
+                                {% if permissions.is_perm_order_detail %}
+                                    <button id="btn_detail" class="btn btn-info mb5 btn-outline btn-xs" onclick="location.href='{% url 'payments:order_detail' order.order_id %}'">Detail</button>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% include "pagination.html" %}
     </div>
     <div class="loader" style="display:none" id="loader-indicator"></div>
     <div class="col-xs-12" id="search-result-notification" style="display:none">

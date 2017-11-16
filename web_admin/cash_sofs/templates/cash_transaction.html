@@ -8,31 +8,31 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'cash_sofs:cash_transaction' %}">
-                {# {% csrf_token %} #}
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_transaction' %}">
+                {% csrf_token %}
                 <div class="form-group">
                     <label class="col-sm-1 control-label">SOF ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="sof_id" value="{{ sof_id }}">
+                        <input type="number" class="form-control input-rounded" name="sof_id" value="{{ sof_id }}" id="txt_sof_id">
                     </div>
                     <label class="col-sm-2 control-label">ORDER ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="order_id" value="{{ order_id }}"/>
+                        <input type="number" class="form-control input-rounded" name="order_id" value="{{ order_id }}" id="txt_order_id"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-1 control-label">Type</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="user_type_ddl" name="action_id">
+                        <select class="form-control" id="ddl_type" name="action_id">
                             <option value='' {% if action_id == "" %}selected="selected"{% endif %}>All</option>
                             <option value='0' {% if action_id == '0' %}selected="selected"{% endif %}>Initiate</option>
-                            <option value='1' {% if action_id == '2' %}selected="selected"{% endif %}>Debit</option>
-                            <option value='2' {% if action_id == '1' %}selected="selected"{% endif %}>Credit</option>
+                            <option value='2' {% if action_id == '2' %}selected="selected"{% endif %}>Debit</option>
+                            <option value='1' {% if action_id == '1' %}selected="selected"{% endif %}>Credit</option>
                         </select>
                     </div>
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
-                         <select class="form-control" id="status_dropdown" name="status_id">
+                         <select class="form-control" id="ddl_status" name="status_id">
                             <option value='' {% if status_id == '' %}selected="selected"{% endif %}>All</option>
                             <option value='1' {% if status_id == '1' %}selected="selected"{% endif %}>processing</option>
                             <option value='2' {% if status_id == '2' %}selected="selected"{% endif %}>success</option>
@@ -54,17 +54,20 @@
                                value="{{ to_created_timestamp|default_if_none:'' }}"
                                id="dtp_to">
                     </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-1">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit" name="search" value="search">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">
                     </div>
                 </div>
+                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                <label class="pull-right" >Total:&nbsp;</label>
             </form>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0" id="tbl_agent_list">
+                <table class="table table-bordered table-striped mb0" id="tbl_cash_transaction_list">
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="order_detail_id">Oreder Detail ID</th>
+                        <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="balance">Type</th>
                         <th id="currency">Amount</th>
@@ -87,6 +90,7 @@
                     </tbody>
                 </table>
             </div>
+            {% include "pagination.html" %}
         </div>
     </div>
 

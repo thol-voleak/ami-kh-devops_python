@@ -2,10 +2,11 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import setup_logger, api_settings
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
-
+from web_admin.api_logger import API_Logger
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
+from web_admin.utils import calculate_page_range_from_page_info
 
 import logging
 
@@ -43,15 +44,11 @@ class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         user_id = request.GET.get('user_id')
         user_type_id = request.GET.get('user_type_id')
 
-        self.logger.info('trans_id: {}'.format(trans_id))
-        self.logger.info('card_id: {}'.format(card_id))
-        self.logger.info('user_id: {}'.format(user_id))
-        self.logger.info('user_type_id: {}'.format(user_type_id))
-
-        body = {}
-        if trans_id is None and card_id is None and user_id is None and user_type_id is None:
+        if (trans_id, card_id, user_id, user_type_id) == (None, None, None, None):
             result_data = {}
+            page = {'total_pages': 1, 'current_page': 1}
         else:
+            body = {'paging': True, 'page_index': int(request.GET.get('current_page_index'))}
             if trans_id is not '':
                 body['trans_id'] = trans_id
             if card_id is not '':
@@ -62,12 +59,17 @@ class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
                 body['user_type_id'] = int(0 if user_type_id is None else user_type_id)
 
             data = self.get_card_history_list(body)
+            page = data.get("page", {})
+            self.logger.info('Page: {}'.format(page))
+            data = data.get('card_histories', [])
             if data is not None:
                 result_data = self.format_data(data)
             else:
                 result_data = data
 
         context = {'data': result_data,
+                   'paginator': page,
+                   'page_range': calculate_page_range_from_page_info(page),
                    'trans_id': "" if trans_id is None else trans_id,
                    'card_id': str("" if card_id is None else card_id),
                    'user_id': str("" if user_id is None else user_id),
@@ -79,11 +81,19 @@ class HistoryView(GetHeaderMixin, GroupRequiredMixin, TemplateView):
 
     def get_card_history_list(self, body):
         url = api_settings.CARD_HISTORY_PATH
-        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(), params=body, loggers=self.logger)
-        if isinstance(data, list):
+        success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(), params=body, loggers=self.logger)
+        data = data or {}
+        API_Logger.post_logging(
+            loggers=self.logger,
+            params=body,
+            response=data.get('card_histories', []),
+            status_code = status_code,
+            is_getting_list = True
+        )
+        if isinstance(data, dict):
             return data
         else:
-            return []
+            return {}
 
     def format_data(self, data):
         for i in data:

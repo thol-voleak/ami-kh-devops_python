@@ -21,6 +21,9 @@ def _delete_method(request, api_path, func_description, logger, params=None, tim
         response = requests.delete(url, headers=get_auth_header(request.user), json=params, verify=settings.CERT,
                                    timeout=timeout)
     except requests.exceptions.Timeout:
+        done = time.time()
+        logger.info('Request timeout')
+        logger.info('Response_time: {}'.format(done - start))
         return JsonResponse({'status': 'timeout', "msg": "timeout"})
 
     done = time.time()

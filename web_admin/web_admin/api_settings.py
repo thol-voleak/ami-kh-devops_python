@@ -1,4 +1,4 @@
-API_VERSION = 'v1.1'
+API_VERSION = 'v2.0'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -48,11 +48,17 @@ SEARCH_AGENT = 'api-gateway/report/'+API_VERSION+'/agents'
 AGENT_DETAIL_PATH = 'api-gateway/report/'+API_VERSION+'/agents'
 AGENT_REGISTRATION_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents'
 AGENT_DELETE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
-CREATE_AGENT_BALANCE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}/sofs/types/cash'
+CREATE_AGENT_BALANCE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/sofs/cash'
 GET_AGENT_TYPES_PATH = 'api-gateway/report/'+API_VERSION+'/agent-types'
 AGENT_UPDATE_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}'
+AGENT_ADD_IDENTITY_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent_id}/identities'
+AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
+ADD_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards'
+DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards/{}'
+
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
+AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
 # System User
 GET_PROFILE_SYSTEM_USER_PATH = 'api-gateway/system-user/'+API_VERSION+'/system-users/'
 SEARCH_SYSTEM_USER = 'api-gateway/report/'+API_VERSION+'/system-users'
@@ -60,6 +66,7 @@ CREATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-u
 DELETE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}'
 UPDATE_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}'
 CHANGE_PASSWORD_SYSTEM_USER_URL = 'api-gateway/system-user/'+API_VERSION+'/admin/system-users/{}/passwords'
+CHANGE_PASSWD = 'api-gateway/system-user/'+API_VERSION+'/system-users/passwords'
 
 # Payment
 PAYMENT_URL = 'api-gateway/report/'+API_VERSION+'/payments/orders'
@@ -103,12 +110,12 @@ SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
-COMPANY_BALANCE_HISTORY = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/histories/'
+COMPANY_BALANCE_HISTORY = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash/balances/histories/'
 GET_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
-CREATE_COMPANY_BALANCE = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash'
+CREATE_COMPANY_BALANCE = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash'
 CLIENT_SCOPES = 'api-gateway/'+API_VERSION+'/admin/oauth/clients/{client_id}/scopes'
 ALL_SCOPES_LIST_URL = 'api-gateway/'+API_VERSION+'/admin/apis'
-COMPANY_BALANCE_ADD = 'api-gateway/agent/'+API_VERSION+'/admin/companies/sofs/types/cash/balances/'
+COMPANY_BALANCE_ADD = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash/balances/'
 GET_AGENT_BALANCE_BY_CURRENCY = 'api-gateway/agent/'+API_VERSION+'/agents/{agent_id}/balances/{currency}'
 
 GET_REPORT_AGENT_BALANCE = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
@@ -141,6 +148,11 @@ GET_FEE_TYPES_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/fee-types'
 AGENT_FEE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/agent-fee-distributions'
 AGENT_BONUS_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/agent-bonus-distributions/{agent_bonus_distribution_id}'
 
+#Balance Adjustment
+ORDER_BAL_ADJUST_PATH = 'api-gateway/workflow/'+API_VERSION+'/admin/adjustments'
+APPROVE_BAL_ADJUST_PATH = 'api-gateway/workflow/'+API_VERSION+'/admin/adjustments/{reference_id}'
+BALANCE_ADJUSTMENT_PATH = 'api-gateway/report/'+API_VERSION+'/workflows/adjustments'
+
 # Agent Bonus Distribution
 AGENT_BONUS_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{tf_fee_tier_id}/agent-bonus-distributions'
 AGENT_FEE_DISTRIBUTION_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/agent-fee-distributions/{agent_fee_distribution_id}'
@@ -157,6 +169,7 @@ CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 CASH_TRANSACTIONS_URL = 'api-gateway/report/'+API_VERSION+'/cash/transactions'
 CASH_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
 BANK_SOFS_URL = 'report/'+API_VERSION+'/banks/sofs'
+LIST_BANK_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/banks/sofs'
 CUSTOMER_IDENTITIES_LIST = 'api-gateway/report/'+API_VERSION+'/customers/identities'
 SUSPEND_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
 ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
@@ -171,7 +184,7 @@ SEARCH_RECONCILE_SOF_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/sof
 SEARCH_RECONCILE_PARTNER_REPORT = 'api-gateway/report/'+API_VERSION+'/reconciled/partners/results'
 GET_SERVICE_BY_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{service_group_id}/services'
 
-# card type
+# Card Type
 SEARCH_CARD_TYPE = 'api-gateway/report/'+API_VERSION+'/card-types'
 UPDATE_CARD_TYPE = 'api-gateway/prepaid-card/'+API_VERSION+'/admin/card-types/{card_type_id}'
 
@@ -186,10 +199,9 @@ CARD_DESIGN_DETAIL = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{prov
 CARD_TYPE_LIST = 'api-gateway/sof-card/'+API_VERSION+'/admin/card-types'
 CARD_DESIGN_UPDATE = 'api-gateway/sof-card/'+API_VERSION+'/admin/providers/{provider_id}/card-designs/{card_id}'
 
-# bank profile
+# Bank Profile
 CREATE_BANK_PROFILE_PATH = "api-gateway/sof-bank/" + API_VERSION + "/admin/banks"
 GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
-
 
 #fraud consultant
 SEARCH_TICKET = 'api-gateway/report/' + API_VERSION + '/tickets'
@@ -197,3 +209,21 @@ DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin
 
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
+
+#Market Campaign
+GET_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
+UPDATE_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
+GET_CAMPAIGNS_DETAIL= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}'
+CREATE_CAMPAIGN = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
+SEARCH_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/report'
+GET_MECHANIC_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
+CREATE_MECHANIC = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
+GET_CONDITION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions'
+GET_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions'
+GET_CONDITION_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}'
+GET_COMPARISON_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}/comparisons'
+DELETE_MECHANIC_URL = 'api-gateway/rule-engine/' + API_VERSION + '/admin/rules/{campaign_id}/mechanics/{mechanic_id}'
+CREATE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions'
+CREATE_COMPARISON = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/comparisons'
+CREATE_REWARD = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
+

@@ -12,6 +12,7 @@ class AgentAPIService(RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                           func_description="Agent detail",
                                           logger=logger, params=body)
+        data = data.get('agents', [])
         return data[0]
 
     def get_agent_types(self, agent_id):
@@ -26,6 +27,7 @@ class AgentAPIService(RESTfulMethods):
         data, success = self._post_method(api_path=api_settings.AGENT_DETAIL_PATH,
                                           func_description="Agent detail",
                                           logger=logger, params=body)
+        data = data.get('agents', [])
         context = {
             'agent': data[0],
             'agent_id': agent_id,
@@ -48,12 +50,16 @@ class AgentAPIService(RESTfulMethods):
         url = api_settings.GET_REPORT_AGENT_BALANCE
         body = {
                 'user_id': agent_id,
-                'user_type': 2}
+                'user_type': 2,
+                "paging": False,
+                "page_index": -1,
+        }
         data, success = self._post_method(api_path=url,
                                           func_description="currency list by agent",
                                           logger=logger,
                                           params=body)
         currencies_str = ''
+        data = data['cash_sofs']
         if success and len(data) > 0:
             currencies_str = ', '.join([elem["currency"] for elem in data])
 

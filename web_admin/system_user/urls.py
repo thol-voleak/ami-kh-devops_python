@@ -6,6 +6,7 @@ from .views.delete import DeleteView
 from .views.detail import DetailView
 from .views.update import SystemUserUpdateForm
 from .views.change_password import SystemUserChangePassword
+from .views.self_change_password import SelfChangePassword
 from .views.user_role_management import RoleManagementView
 
 
@@ -22,5 +23,7 @@ urlpatterns = [
     url(r'^(?P<systemUserId>[0-9A-Za-z]+)/change-password/$', login_required(SystemUserChangePassword.as_view(), login_url='authentications:login'),
         name="system-user-change-password"),
     url(r'^(?P<system_user_id>[0-9A-Za-z]+)/role-management/$', login_required(RoleManagementView.as_view(), login_url='authentications:login'),
-        name="system_user_role_management")
+        name="system_user_role_management"),
+    url(r'^change-password/$', login_required(SelfChangePassword.as_view(), login_url='authentications:login'),
+        name="self_change_password"),
 ]

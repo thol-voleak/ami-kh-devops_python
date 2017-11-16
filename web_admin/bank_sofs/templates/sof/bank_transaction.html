@@ -8,8 +8,8 @@
         </div>
 
         <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'bank_sofs:bank_sofs_transaction' %}">
-                {# {% csrf_token %} #}
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'bank_sofs:bank_sofs_transaction' %}">
+                {% csrf_token %}
                 <div class="form-group">
                     <label class="col-sm-1 control-label">SOF ID</label>
                     <div class="col-sm-2">
@@ -54,12 +54,13 @@
                                value="{{ to_created_timestamp|default_if_none:'' }}"
                                id="txt_dtp_to">
                     </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-1">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="search">
                     </div>
                 </div>
-
-
+                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                <label class="pull-right" >Total:&nbsp;</label>
             </form>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_bank_transaction_list">
@@ -93,6 +94,7 @@
                     </tbody>
                 </table>
             </div>
+            {% include "pagination.html" %}
         </div>
     </div>
 

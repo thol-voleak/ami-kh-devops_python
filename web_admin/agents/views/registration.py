@@ -26,6 +26,8 @@ logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
 
+
+
 class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
         data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
@@ -301,8 +303,10 @@ class AgentRegistration(GroupRequiredMixin, GetChoicesMixin, AgentTypeAndCurrenc
 
         currency = request.POST.get('currency')
         # sof_type = "cash"  # TODO: Hard code for Sof_Type
-        body = {'currency': currency}
-        api_path = api_settings.CREATE_AGENT_BALANCE_URL.format(agent_id=agent_id)
+        body = {'currency': currency,
+                'user_id': agent_id,
+                'user_type_id': 2}  #TODO: Hard code for agent_type
+        api_path = api_settings.CREATE_AGENT_BALANCE_URL
 
         data, success = self._post_method(api_path=api_path,
                                           func_description="Agent Balance",

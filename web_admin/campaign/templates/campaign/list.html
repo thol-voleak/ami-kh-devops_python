@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+           <div>
+                <div class="pull-left"><h3>Campaign List</h3></div>
+                {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN"%}
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'campaign:create_campaign' %}">
+                        <input id="btn_add_campaign" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Campaign"/>
+                    </a>
+                </div>
+                {% endif %}
+               <div class="clearfix"></div>
+           </div>
+
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    alert-success
+                    alert-dismissable' id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+    {% if msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if add_client_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-add-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ add_client_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'campaign:campaign' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Campaign ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="campaign_id" id="txt_campaign_id" value="{{ campaign_id }}">
+                </div>
+                <label class="col-sm-2 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status" >
+                        {% for item in status_list %}
+                            {%if item.value == selected_status%}
+                            <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                            {% else %}
+                            <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                    <label class="col-sm-2 control-label">Start and End Date</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="dtp_from"
+                               value="{{ start_date|default_if_none:'' }}"
+                               id="dtp_from">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-xs-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="dtp_to"
+                               value="{{ to_date|default_if_none:'' }}"
+                               id="dtp_to">
+                    </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+
+                    <div class="col-xs-1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                    </div>
+                </div>
+        </form>
+            
+            <div class="no-more-tables">
+                <table id='tbl_campaign' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_campaign_id">Campaign ID</th>
+                        <th id="ddl_campaign_name">Campaign Name</th>
+                        <th id="ddl_start_date">Start Date</th>
+                        <th id="ddl_end_date">End Date</th>
+                        <th class="col-sm-2" id="status">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td>
+                            {%if i.is_permission_detail%}
+                                <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="{% url 'campaign:campaign_detail' i.id %}">{{ i.id|default_if_none:'' }}</a>
+                            {%else%}
+                            {{ i.id|default_if_none:'' }}
+                            {%endif%}
+                            </td>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.end_active_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                                <!-- Rounded switch -->
+                                    <label class="switch switch-sm">
+                                    {%if i.is_permission_update_status %}
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" checked>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    {%else%}
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled checked>
+                                        <span class="slider round" style="background-color: #e4e4e4; -webkit-box-shadow: #e4e4e4 0px 0px 0px 21px inset; box-shadow: #e4e4e4 0px 0px 0px 21px inset;
+                                        border-color: #e4e4e4;">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    {%endif%}
+                                    </label>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-success");
+        $('#alert-client').addClass("alert-danger");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+
+
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-danger");
+        $('#alert-client').addClass("alert-success");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+    
+    function doActiveOrInactive(e) {
+        if ($(e).is(':checked')){
+            active(e);
+        }
+        else{
+            inactive(e);
+        }
+
+    }
+
+    function active(e) {
+        // body...
+        
+        var campaign_id = e.getAttribute('data-campaign-id');
+        var campaign_name = e.getAttribute('data-name');
+        var campaign_description = e.getAttribute('data-description');       
+        var url = '/admin-portal/campaign/active/'+ campaign_id;
+        console.log(url)
+        console.log('chuyen tu inactive thanh active')
+        console.log(campaign_id)
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            success: function (response) {
+            if (response.status == 1) {
+                // Logout
+                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                window.location.replace(url);
+            } else if (response.status == 2) {
+                // success
+                showSuccessMessage('Campaign ID'+ ' '+ campaign_id +' ' + 'is now active' );
+            } else {
+                // Failed
+                showErrorMessage(response.msg);
+            }
+            },
+            error: function (msg) {
+            console.log('Error active the campaign' + campaign_id);
+            showErrorMessage(JSON.stringify(msg));
+            }
+        });
+    }
+
+    function inactive(e) {
+        // body...
+        var campaign_id = e.getAttribute('data-campaign-id');
+        var campaign_name = e.getAttribute('data-name');
+        var campaign_description = e.getAttribute('data-description'); 
+        var url = '/admin-portal/campaign/inactive/'+ campaign_id;
+        console.log(url)
+        console.log('chuyen tu active thanh inactive')
+        console.log(campaign_id)
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            success: function (response) {
+            if (response.status == 1) {
+                // Logout
+                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                window.location.replace(url);
+            } else if (response.status == 2) {
+                // success
+                showSuccessMessage('Campaign ID'+ ' '+ campaign_id + ' '+ 'is now inactive');
+            } else {
+                // Failed
+                showErrorMessage('Error inactive the campaign');
+            }
+            },
+            error: function (msg) {
+            console.log('Error inactive the campaign' + campaign_id);
+            showErrorMessage(JSON.stringify(msg));
+            }
+        });
+    }
+</script>
+{% endblock %}

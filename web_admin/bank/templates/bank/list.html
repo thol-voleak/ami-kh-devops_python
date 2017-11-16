@@ -10,7 +10,7 @@
         </div>
         {# {% if request.user|has_permission_name:"s"%} #}
         <div class="pull-right mr15 text-right">
-            <a href="{% url 'bank_sofs:bank_sofs_create' %}">
+            <a href="{% url 'bank:bank_sofs_create' %}">
                 <input id="bank_sofs_btn_add" class="btn btn-success btn-block btn-sm mb15" type="button"
                        value="Add"/>
             </a>
@@ -60,7 +60,7 @@
                                             class="btn btn-outline btn-xs btn-info"
                                             role="button"
                                             id="bank_sof_btn_detail_{{ bank.id }}"
-                                            href="{% url 'bank_sofs:bank_sofs_detail' bank.id %}">
+                                            href="{% url 'bank:bank_sofs_detail' bank.id %}">
                                             <span class="small">Detail</span>
                                         </a>
                                     {% endif %}
@@ -68,7 +68,7 @@
                                         <a type="button"
                                             class="btn btn-outline btn-xs btn-primary"
                                             role="button"
-                                            href="{% url 'bank_sofs:bank_sofs_edit' bank.id %}"
+                                            href="{% url 'bank:bank_sofs_edit' bank.id %}"
                                             id="bank_sof_btn_edit_{{ bank.id }}">
                                             <span class="small">Edit</span>
                                         </a>
@@ -77,7 +77,7 @@
                                         <a type="button"
                                             class="btn btn-outline btn-xs btn-danger"
                                             role="button"
-                                            href="{% url 'bank_sofs:bank_sofs_delete' bank.id %}"
+                                            href="{% url 'bank:bank_sofs_delete' bank.id %}"
                                             id="bank_sof_btn_delete_{{ bank.id }}">
                                             <span class="small">Delete</span>
                                         </a>
