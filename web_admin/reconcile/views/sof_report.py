@@ -93,9 +93,9 @@ class SofReport(GroupRequiredMixin, TemplateView, RESTfulReconcileMethods):
             params['sof_code'] = sof_code
         if currency_id:
             params['currency'] = currency_id
-        if reconcile_status_id >=0:
+        if reconcile_status_id >= 0:
             params['status_id'] = reconcile_status_id
-        if reconcile_payment_type_id != '' and int(reconcile_payment_type_id) >= 0:
+        if reconcile_payment_type_id != '' and reconcile_payment_type_id != "-1":
             params['payment_type'] = reconcile_payment_type_id
 
         if from_created_timestamp is not '':
