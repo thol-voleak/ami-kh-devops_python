@@ -45,7 +45,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
 
-        detail_names = ["id", "event_name", "created_timestamp", "user_id", "user_type", "device_id", "device_description", "event_timestamp", "order_id", "ext_transaction_id", "payment_method_name", "payment_method_ref", "service_id", "service_name", "command_id", "command_name", "service_command_id", "initiator_user_id", "initiator_user_type", "initiator_sof_id", "initiator_sof_type_id", "payer_user_id", "payer_user_type", "payer_user_ref_type", "payer_user_ref_value", "payer_sof_id", "payer_sof_type_id", "payee_user_id", "payee_user_type", "payee_user_ref_type", "payee_user_ref_value", "payee_sof_id", "payee_sof_type_id", "currency", "ref_order_id", "amount", "fee", "bonus", "settlement_amount", "product_name", "product_ref1", "product_ref2", "product_ref3", "product_ref4", "product_ref5", "state", "status", "notification_status", "is_deleted", "order_created_timestamp", "order_last_updated_timestamp", "created_client_id", "executed_client_id"]
+        detail_names = ["id", "event_name", "created_timestamp", "user_id", "user_type", "description", "device_id", "device_description", "event_timestamp", "order_id", "ext_transaction_id", "payment_method_name", "payment_method_ref", "service_id", "service_name", "command_id", "command_name", "service_command_id", "initiator_user_id", "initiator_user_type", "initiator_sof_id", "initiator_sof_type_id", "payer_user_id", "payer_user_type", "payer_user_ref_type", "payer_user_ref_value", "payer_sof_id", "payer_sof_type_id", "payee_user_id", "payee_user_type", "payee_user_ref_type", "payee_user_ref_value", "payee_sof_id", "payee_sof_type_id", "currency", "ref_order_id", "amount", "fee", "bonus", "settlement_amount", "product_name", "product_ref1", "product_ref2", "product_ref3", "product_ref4", "product_ref5", "state", "status", "notification_status", "is_deleted", "order_created_timestamp", "order_last_updated_timestamp", "created_client_id", "executed_client_id"]
 
         ops = {
             'operations': operations,
@@ -251,7 +251,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
         detail_names = ["id", "event_name", "created_timestamp", "user_id",
-                        "user_type", "device_id",
+                        "user_type", "description", "device_id",
                         "device_description", "event_timestamp", "order_id",
                         "ext_transaction_id",
                         "payment_method_name", "payment_method_ref",
