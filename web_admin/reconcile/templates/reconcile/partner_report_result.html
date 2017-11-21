@@ -183,9 +183,10 @@
         {% include "pagination.html" %}
     </div>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript">
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+     <script type="text/javascript">
     ddl_service_group_change = function () {
         console.log("{% url 'reconcile:reconcile_service_list' %}")
         serv_gr_id = $("#ddl_service_group").val()
@@ -244,4 +245,4 @@
         });
     }
 </script>
-{% endblock %}
+{%  endblock %}

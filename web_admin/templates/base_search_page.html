@@ -3,7 +3,6 @@
 
 {% block body_stylesheet %}
 {{ block.super }}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 <!--CSS for loading indicator-->
 <style>
@@ -29,8 +28,13 @@
     100% { transform: rotate(360deg); }
 }
 </style>
+{% endblock %}
 
-<script>
+{% block content %}
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
     function do_search(url, table_body_id, loader_indicator_id, search_result_notification_id, data) {
         var table_body = $("#" + table_body_id);
         var loader_indicator = $("#" + loader_indicator_id);
@@ -60,7 +64,4 @@
         });
     }
 </script>
-{% endblock %}
-
-{% block content %}
-{% endblock %}
+{%  endblock %}

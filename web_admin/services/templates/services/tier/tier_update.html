@@ -167,10 +167,11 @@
         </div>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
-
-
 function forceAmountNumber(any_amount) {
     var deci = {{ decimal }};
     var amount = document.getElementById(any_amount);
@@ -351,7 +352,7 @@ var $ddl_fee_type = $('#ddl_fee_type');
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == ''){  
+if($bonus_type.val() == ''){
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
@@ -469,4 +470,4 @@ txt_bonus_amount.onkeyup = validateBonusValue;
 txt_fee_amount.onkeyup = validateFeeValue;
 condition_amount.onkeyup = validateConditionAmount;
 </script>
-{% endblock %}
+{%  endblock %}

@@ -155,11 +155,10 @@
         </div>
     </div>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
-
 function changeStep(c){
 
   var new_decimal = {{ decimal }} * -1;
@@ -176,8 +175,8 @@ function forceAmountNumber(any_amount) {
         ((event.which < 48 || event.which > 57) &&
         (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            } 
-        
+            }
+
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
             setTimeout(function() {
@@ -193,7 +192,7 @@ function forceAmountNumber(any_amount) {
             event.preventDefault();
             }
         });
-        
+
         any_amt.bind("paste", function(e) {
             var text = e.originalEvent.clipboardData.getData('Text');
             if ($.isNumeric(text)) {
@@ -206,7 +205,7 @@ function forceAmountNumber(any_amount) {
                 e.preventDefault();
                 }
         });
-        
+
     amount.onblur = function(){
         num = amount.value;
         if (num != "") {
@@ -227,7 +226,7 @@ function forceNumber(any_amount, any_type) {
     any_amt = $('#'+any_amount);
 
     $('#' + any_type).change(function() {
-        var e = document.getElementById(any_type);   
+        var e = document.getElementById(any_type);
         if (e.value == '% rate'){
             deci = 3;
             }
@@ -235,7 +234,7 @@ function forceNumber(any_amount, any_type) {
             deci = {{ decimal }};
             }
         else {deci = 0;}
-        });    
+        });
 
     any_amt.keypress(function(event) {
         var $this = $(this);
@@ -243,8 +242,8 @@ function forceNumber(any_amount, any_type) {
         ((event.which < 48 || event.which > 57) &&
         (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            } 
-        
+            }
+
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
             setTimeout(function() {
@@ -260,7 +259,7 @@ function forceNumber(any_amount, any_type) {
             event.preventDefault();
             }
         });
-        
+
         any_amt.bind("paste", function(e) {
             var text = e.originalEvent.clipboardData.getData('Text');
             if ($.isNumeric(text)) {
@@ -273,7 +272,7 @@ function forceNumber(any_amount, any_type) {
                 e.preventDefault();
                 }
         });
-        
+
     amount.onblur = function(){
         num = amount.value;
             if (num != "") {
@@ -340,7 +339,7 @@ var $ddl_fee_type = $('#ddl_fee_type');
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == ''){  
+if($bonus_type.val() == ''){
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
@@ -450,5 +449,4 @@ condition_amount.onkeyup = validateConditionAmount;
 
 
 </script>
-
-{% endblock %}
+{%  endblock %}
