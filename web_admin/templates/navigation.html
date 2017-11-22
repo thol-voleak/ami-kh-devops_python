@@ -337,7 +337,7 @@
                 {% if request.user|has_permission_name:"CAN_MANAGE_PARTNER_RECONCILE"%}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'partner' in request.path %}open{% endif %}">
-                        <a href="javascript:;" id="partner_menu_reconcile"> <i class="fa fa-credit-card"></i> <span>Partner</span> </a>
+                        <a href="javascript:;" id="partner_menu_reconcile"><span>Partner</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_PARTNER_RECONCILE"%}
                             <li class="{% if 'partner/file-list' in request.path %}active{% endif %}">
@@ -356,7 +356,7 @@
                 {% if request.user|has_permission_name:"CAN_MANAGE_SOF_RECONCILE"%}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'reconcile/sof/' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card" id="sof_menu_reconcile"></i> <span>Source of fund</span> </a>
+                        <a href="javascript:;"> <span>Source of fund</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_SOF_RECONCILE"%}
                             <li class="{% if 'sof/file-list' in request.path %}active{% endif %}">
