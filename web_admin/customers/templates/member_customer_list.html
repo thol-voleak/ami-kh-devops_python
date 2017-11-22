@@ -161,17 +161,16 @@
                         <button id="btn_edit" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
                     {% endif %}
-                    {% if customer.is_deleted is not True %}
-                    <button type="button"
-                        id="btn-delete-{{ customer.id }}"
-                        data-url="{% url 'customers:delete-customer' customer.id %}"
-                        onclick="delete_customer(this)"
-                        data-customer-id='{{ customer.id }}'
-                        class="btn btn-danger mb5 btn-outline btn-xs">
-                        <span class="small">Delete</span>
-                    </button>
-                    {% endif %}
-
+                    {% if customer.is_permission_delete and customer.is_deleted is not True%}
+                        <button type="button"
+                            id="btn-delete-{{ customer.id }}"
+                            data-url="{% url 'customers:delete-customer' customer.id %}"
+                            onclick="delete_customer(this)"
+                            data-customer-id='{{ customer.id }}'
+                            class="btn btn-danger mb5 btn-outline btn-xs">
+                            <span class="small">Delete</span>
+                        </button>
+                    {%endif%}
                     {% if customer.is_permission_sof_bank%}
                         <button id="btn_sof_list" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
