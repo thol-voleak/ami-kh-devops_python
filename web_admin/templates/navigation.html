@@ -27,7 +27,7 @@
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES"%}
                     <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Permissions</span> </a>
+                        <a href="javascript:;"><span>Permissions</span> </a>
                         <ul class="sub-menu">
                             <li class="{% if url_name in 'permissions_list,edit_permission,permission_detail,delete_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:permissions_list' %}"> <span>Permission Entities</span> </a>
@@ -43,7 +43,7 @@
 
                     {% if request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
                     <li class="menu-accordion {% if 'roles' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Roles</span> </a>
+                        <a href="javascript:;"><span>Roles</span> </a>
                         <ul class="sub-menu">
                             <li class="{% if url_name in 'role_list,edit_role,delete_role,role_detail,role_manage_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:role_list' %}"> <span>Role Entities</span> </a>
