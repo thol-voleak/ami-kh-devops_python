@@ -46,5 +46,6 @@ urlpatterns = [
     url(r'^admin-portal/card-provider/', include('card_provider.urls')),
     url(r'^admin-portal/card-sofs/', include('card_sofs.urls')),
     url(r'^admin-portal/balance-adjustment/', include('balance_adjustment.urls')),
-    url(r'^admin-portal/campaign/', include('campaign.urls'))
+    url(r'^admin-portal/campaign/', include('campaign.urls')),
+    url(r'^admin-portal/fraud-prevention/', include('fraud_prevention.urls')),
 ]
