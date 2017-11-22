@@ -126,12 +126,14 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             is_permission_sof_bank = check_permissions_by_user(self.request.user, 'CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE')
             is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_IDENTITY_CUSTOMER')
             is_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_CUSTOMER')
+            is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_CUSTOMER')
             for i in data['customers']:
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_update'] = is_permission_update
                 i['is_permission_sof_bank'] = is_permission_sof_bank
                 i['is_permission_identity'] = is_permission_identity
                 i['is_permission_suspend'] = is_permission_suspend
+                i['is_permission_delete'] = is_permission_delete
 
             context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
             context['search_count'] = page['total_elements']
