@@ -165,6 +165,7 @@ MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
+ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{card_id}/status'
 
 CASH_TRANSACTIONS_URL = 'api-gateway/report/'+API_VERSION+'/cash/transactions'
 CASH_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
