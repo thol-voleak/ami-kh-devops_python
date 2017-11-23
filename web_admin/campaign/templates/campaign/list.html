@@ -229,14 +229,17 @@
         var campaign_id = e.getAttribute('data-campaign-id');
         var campaign_name = e.getAttribute('data-name');
         var campaign_description = e.getAttribute('data-description');       
-        var url = '/admin-portal/campaign/active/'+ campaign_id;
+        var url = '/admin-portal/campaign/active/'+ campaign_id+'/';
         console.log(url)
         console.log('chuyen tu inactive thanh active')
         console.log(campaign_id)
         $.ajax({
             url: url,
-            type: "GET",
+            type: "POST",
             data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
             success: function (response) {
             if (response.status == 1) {
                 // Logout
@@ -262,14 +265,17 @@
         var campaign_id = e.getAttribute('data-campaign-id');
         var campaign_name = e.getAttribute('data-name');
         var campaign_description = e.getAttribute('data-description'); 
-        var url = '/admin-portal/campaign/inactive/'+ campaign_id;
+        var url = '/admin-portal/campaign/inactive/'+ campaign_id+'/';
         console.log(url)
         console.log('chuyen tu active thanh inactive')
         console.log(campaign_id)
         $.ajax({
             url: url,
-            type: "GET",
+            type: "POST",
             data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
             success: function (response) {
             if (response.status == 1) {
                 // Logout
