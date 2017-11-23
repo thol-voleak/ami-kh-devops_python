@@ -26,7 +26,7 @@
                     </thead>
                     <tbody>
                     {% for device in devices %}
-                        {% if device.action == "register customer" %}
+                        {% if device.action == "register_customer" %}
                         <tr>
                             <td>{{ device.ticket_id|default_if_none:'' }}</td>
                             <td>{{ device.rule_action_id|default_if_none:'' }}</td>
