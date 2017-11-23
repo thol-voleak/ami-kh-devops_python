@@ -1,7 +1,7 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
-from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD
+from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION
 from web_admin import setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
@@ -210,11 +210,42 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                         'key_value_type': "numeric"
                     })
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
+        action_id = data.get("id", '')
         self.logger.info('========== Finish adding Reward ==========')
+
+        if not success:
+            return self.render_add_page(request, context, message, start_date, end_date)
+
+        # add limitation
+        self.logger.info('========== Start adding Limitation ==========')
+        limit_to = request.POST.get('limit_to')
+        limit_to = int(limit_to)
+        params = {
+            "limit_type": request.POST.get('limitation_type'),
+            "value": limit_to,
+            "filters": [
+                {
+                    'key_name': 'payee_user.user_type',
+                    'key_value': request.POST.get('reward_type'),
+                    'key_value_type': 'text',
+                    "operator": "="
+                },
+                {
+                    'key_name': 'payee_user.user_id',
+                    'key_value': request.POST.get('give_reward_to'),
+                    'key_value_type': 'numeric',
+                    "operator": "="
+                }
+            ]
+        }
+
+        success, data, message = self.create_limitation(campaign_id, mechanic_id, action_id, params)
+
+        self.logger.info('========== Finish adding Limitation ==========')
 
         if success:
             messages.success(request, 'Mechanic Added')
-            return redirect('campaign:campaign_detail',campaign_id=campaign_id)
+            return redirect('campaign:campaign_detail', campaign_id=campaign_id)
 
     def create_condition(self, campaign_id, mechanic_id, params):
         success, status_code, message, data = RestFulClient.post(
@@ -285,6 +316,17 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def create_reward(self, campaign_id, mechanic_id, params):
         success, status_code, message, data = RestFulClient.post(
             url=CREATE_REWARD.format(rule_id=campaign_id, mechanic_id=mechanic_id),
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params)
+
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+
+        return success, data, message
+
+    def create_limitation(self, campaign_id, mechanic_id, action_id, params):
+        success, status_code, message, data = RestFulClient.post(
+            url=CREATE_LIMITATION.format(rule_id=campaign_id, mechanic_id=mechanic_id, action_id=action_id),
             headers=self._get_headers(),
             loggers=self.logger,
             params=params)

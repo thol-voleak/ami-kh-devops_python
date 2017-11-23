@@ -4,6 +4,12 @@
 {% block body_stylesheet %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <style>
+        .recipient-mechanic {
+            position: relative;
+            top: 10px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -155,8 +161,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Reward Recipient should be</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_reward_recipient" name="reward_type">
-                                    <option value= "customer">Customer</option>
+                                <select class="form-control" id="ddl_reward_recipient" name="reward_type" onchange="rewardRecipientShouldBe()">
+                                    <option value= "customer" selected>Customer</option>
                                     <option value= "agent">Agent</option>
                                 </select>
                             </div>
@@ -164,7 +170,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Give Rewards to</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to">
+                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
                                     <option value= "@@user_id@@">Actor who registered</option>
                                 </select>
                             </div>
@@ -198,6 +204,50 @@
                             </div>
                         </div>
 
+                        <div class="panel-heading">
+                            <h5><b>Set Limitations</b></h5>
+                        </div>
+                        <div id="limitation-group">
+                            <div id="div_condition_1">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Limitation Type *</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                                            <option value= "count">Count</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Limit to *</label>
+                                    <div class="col-xs-3">
+                                        <input id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
+
+                                    </div>
+                                    <span class="recipient-mechanic">/recipient/mechanic</span>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
+                                            <option value= "customer">Customer</option>
+                                            <option value= "agent">Agent</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Give Rewards to</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
+                                            <option value= "@@user_id@@">Actor who registered</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            <br>
+                            </div>
+                        </div>
+
                         <div class="form-group pull-right">
                             <a href="{% url 'campaign:campaign_detail' campaign_id %}">
                                 <input id="btn_dismiss" class="btn text-left mb15" type="button"
@@ -212,6 +262,16 @@
         </div>
     </div>
     <script>
+        function rewardRecipientShouldBe() {
+            var e = document.getElementById("ddl_reward_recipient");
+            document.getElementById("ddl_limitation_reward_recipient").selectedIndex = e.selectedIndex;
+        }
+
+        function giveRewardsTo()  {
+            var e = document.getElementById("ddl_give_reward_to");
+            document.getElementById("ddl_limitation_give_reward").selectedIndex = e.selectedIndex;
+        }
+
         function getCurrentOps (ddl) {
             var ops = [];
             ddl.find('option').each(function()
