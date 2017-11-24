@@ -51,7 +51,7 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         start_date += 'T00:00:01Z'
 
         if end_date:
-            end_date += 'T00:00:01Z'
+            end_date += 'T23:59:59Z'
 
         params = {
             "start_active_ticket_timestamp": start_date,
