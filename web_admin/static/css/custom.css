@@ -108,7 +108,7 @@
 }
 
 .loading-img {
-    width: 50px;
+    width: 250px;   
     height: 50px;
     position: absolute;
     z-index: 5000;
@@ -122,4 +122,10 @@
 
 .hide-loading {
     display: none;
+}
+
+.text-loading {
+    margin-left: -67px;
+    color: red;
+    font-weight: bold;
 }

@@ -21,7 +21,10 @@
 {% block body_content %}
 <div id='loading-area' class="hide-loading">
     <div class='back-drop'></div>
-    <div class="loading-img"><img src="{% static 'image/loading.gif' %}" /></div>
+    <div class="loading-img">
+        <img src="{% static 'image/loading.gif' %}" />
+        <div class="text-loading">Updating Campaign Information</div>
+    </div>
 </div>
 <div class="app layout-fixed-header">
 
