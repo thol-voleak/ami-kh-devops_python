@@ -35,14 +35,18 @@ class ActiveCampaign(CampaignDetail):
             actions = self.get_rewards_list(campaign_id, i['id'])
             count_action = 0;
             for action in actions:
+                self.logger.info('========== Start get limittion list ==========')
                 limition = self.get_limition_list(campaign_id, i['id'], action['id'])
+                self.logger.info('========== Finish get limittion list ==========')
                 if len(limition) == 0:
+                    self.logger.info('========== Finish get action list  ==========')
+                    self.logger.info('========== Finish active campaign ==========')
                     return JsonResponse({"status": 3, "msg": 'All campaign rewards needs a limitation before campaign can be activated'})
                 else:
                     count_action += 1
             if count_action == len(actions):
                 count_mechanic += 1
-
+            self.logger.info('========== Finish get action list  ==========')
         if count_mechanic == len(mechanic):
                 url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
                 params = {
@@ -56,7 +60,6 @@ class ActiveCampaign(CampaignDetail):
 
     def get_limition_list(self, campaign_id, mechanic_id, action_id):
         url = settings.DOMAIN_NAMES + GET_LIMITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_action_id=action_id)
-        self.logger.info('========== Start get limittion list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)

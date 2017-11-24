@@ -127,7 +127,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get_rewards_list(self, campaign_id, mechanic_id):
         url = settings.DOMAIN_NAMES + GET_REWARD_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id)
-        self.logger.info('========== Start get action detail ==========')
+        self.logger.info('========== Start get action list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
