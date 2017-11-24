@@ -50,8 +50,8 @@ class ActiveCampaign(CampaignDetail):
                     'name': request.POST.get("campaign_name"),
                     'description': request.POST.get("campaign_description")
                 }
-                result = ajax_functions._put_method(request, url, "", logger, params)
-                logger.info('========== Finish active campaign ==========')
+                result = ajax_functions._put_method(request, url, "", self.logger, params)
+                self.logger.info('========== Finish active campaign ==========')
                 return result
 
     def get_limition_list(self, campaign_id, mechanic_id, action_id):
