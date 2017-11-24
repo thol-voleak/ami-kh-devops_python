@@ -120,7 +120,7 @@
                             <td>{{ i.name|default_if_none:'' }}</td>
                             <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.end_active_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-2">
+                            <td class="col-sm-2" id='toggle-area-{{ i.id }}'>
                                 <!-- Rounded switch -->
                                     <label class="switch switch-sm">
                                     {%if i.is_permission_update_status %}
@@ -233,6 +233,7 @@
         console.log(url)
         console.log('chuyen tu inactive thanh active')
         console.log(campaign_id)
+        $('#loading-area').toggleClass('hide-loading');
         $.ajax({
             url: url,
             type: "POST",
@@ -241,6 +242,7 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
+            $('#loading-area').toggleClass('hide-loading');
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
@@ -250,10 +252,12 @@
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id +' ' + 'is now active' );
             } else {
                 // Failed
+                $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
                 showErrorMessage(response.msg);
             }
             },
             error: function (msg) {
+            $('#loading-area').toggleClass('hide-loading');
             console.log('Error active the campaign' + campaign_id);
             showErrorMessage(JSON.stringify(msg));
             }
