@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block body_stylesheet %}
+{{ block.super }}
+ <style type="text/css">
+      .btn-edit {
+        display: inline-block;
+        position: relative;
+        width: 30px;
+        height: 30px;
+        background-color: transparent;
+      }
+
+      td input {
+      	position: relative;
+        width: 100%;
+      }
+
+      .text-input-on {
+        display: inline-block;
+      }
+
+      .text-input-off {
+        display: none;
+      }
+
+
+      .already-editted-text {
+      	padding-left: 10px;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="panel mb25" id="post-url" data-url="{% url 'campaign:campaign_configuration' %}">
+    <div class="panel-heading border mb15">
+        <h3>Campaign Configuration</h3>
+    </div>
+
+    <!--<div class="col-xs-12 mb5">-->
+        <!--<div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">-->
+            <!--<button type="button" class="close" onclick="$('.alert').hide()">×</button>-->
+            <!--<strong id="alert-msg"></strong>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="col-xs-12">
+        <div class="alert alert-success" hidden id="msg-add-country-code">
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+    <div class="panel-body" >
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-responsive">
+    <thead>
+      <tr>
+        <th>Backend Terms</th>
+        <th>Show on Web</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data %}
+      <tr>
+        <td>{{ item.term | default_if_none:''}}</td>
+        {% if item.description != '' %}
+        <td>
+          <button type="button" class="btn btn-default btn-sm btn-edit" onclick = "tapOnEdit(this);">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+          <input type="text" class="form-control text-input-off" id="xxx" placeholder="Enter Text" name="xxx" onblur="tapOnSave(this);">
+          <span class="already-editted-text">{{ item.description | default_if_none:'' }}</span>
+        </td>
+        {% else %}
+        <td>
+          <button type="button" class="btn btn-default btn-sm btn-edit" style="display: none;" onclick = "tapOnEdit(this);">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+          <input type="text" class="form-control text-input-on" id="xxx" placeholder="Enter Text" name="xxx" onblur="tapOnSave(this);">
+          <span class="already-editted-text" style="display: none;"></span>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function hideMessage() {
+        $("#msg-add-country-code").fadeOut(1000);
+    }
+
+    function showErrorMessage(msg) {
+        $("html, body").animate({scrollTop: 0}, "slow");
+        console.log('showErrorMessage: ' + msg);
+        $("#alert-msg").text(msg)
+        $('#msg-add-country-code').removeClass("alert-success");
+        $('#msg-add-country-code').addClass("alert-danger");
+        $("#msg-add-country-code").prop("hidden", false);
+        $("#msg-add-country-code").fadeIn(1000);
+    }
+
+    function showSuccessMessage(msg) {
+        $("html, body").animate({scrollTop: 0}, "slow");
+        $("#alert-msg").text(msg)
+        $('#msg-add-country-code').removeClass("alert-danger");
+        $('#msg-add-country-code').addClass("alert-success");
+        $("#msg-add-country-code").prop("hidden", false);
+        $("#msg-add-country-code").fadeIn(1000);
+
+        setTimeout(function(){
+            hideMessage();
+        }, 5000);
+    }
+
+    /*function showErrorMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-success");
+	    $('#alert-client').addClass("alert-danger");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+
+
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-danger");
+	    $('#alert-client').addClass("alert-success");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+	    $("#alert-client").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}*/
+
+      var isSaving = false;
+      function startEdittingTableRow(tr) {
+
+          if(isSaving ) {
+            isSaving = false;
+            //tr.stopPropagation();
+            //return;
+          }
+
+           console.log("startEdittingTableRow");
+
+           $(tr).addClass('editting');
+
+           resetDataTableRow(tr);
+
+           var td = $(($(tr).find("td"))[1]);
+           var span = $((td.find("span"))[1]);
+           span.prop("style", "display: none;");
+
+           $(tr).find("button").each(function(){
+              $(this).prop("style", "display: none;");
+           });
+
+           $(tr).find("input").each(function(){
+              $(this).prop("style", "display: inline-block;");
+              $(this).focus();
+           });
+      }
+
+      function endEdittingTableRow(tr) {
+        var td = $(($(tr).find("td"))[1]);
+        var span = $((td.find("span"))[1]);
+        if(span.length) {
+           var currentValue = span.text();
+              if(currentValue) {
+                span.prop("style", "");
+                $(tr).find("input").each(function(){
+                    $(this).removeClass('text-input-on');
+                    $(this).addClass('text-input-off');
+                    $(this).prop("style", "");
+                 });
+                $(tr).find("button").each(function(){
+                   $(this).prop("style", "");
+                 });
+              }
+        }
+
+      }
+
+
+      function updateSpanTableRow(tr) {
+        var td = $(($(tr).find("td"))[1]);
+        var span = $((td.find("span"))[1]);
+        if(span.length) {
+           var input = td.find("input");
+           span.text(input.val());
+        }
+      }
+
+      function resetDataTableRow(tr) {
+        var td = $(($(tr).find("td"))[1]);
+        var span = td.find("span");
+        if(span.length) {
+           var currentValue = span.text();
+           var input = td.find("input");
+           $(input).val(currentValue);
+        }
+      }
+
+      function removeCurrentEdittingsDataTable(tb) {
+          var rows = $(tb).children();
+          for (var i = rows.length; i >= 0; i--) {
+            tr = rows[i];
+            if($(tr).attr('class') === 'editting') {
+                updateSpanTableRow(rows[i]);
+                endEdittingTableRow(rows[i]);
+            }
+
+          };
+      }
+
+      function tapOnEdit(button) {
+          tr = $(button).closest('tr')
+         // removeCurrentEdittingsDataTable(tr.parent());
+          startEdittingTableRow(tr);
+
+
+      }
+
+      function tapOnCancel(button) {
+          tr = $(button).parent().parent().parent();
+          endEdittingTableRow(tr);
+      }
+
+      function tapOnSave(input) {
+          console.log('Saving data...');
+          isSaving = true;
+          //tr = $(button).parent().parent().parent();
+          tr = $(input).closest('tr');
+          // TODO: Post data to server:
+          var data = getDataTableRow(tr);
+          postDataToServer(data);
+
+      }
+
+      function getDataTableRow(tr) {
+        var tds = $(tr).find("td");
+        var term = $(tds[0]).text();
+        var description = $($(tds[1]).find("input")[0]).val();
+        var data = {"term": term,
+                    "description": description
+                    }
+        return data;
+      }
+
+      function postDataToServer(data) {
+            var url = $("#post-url").data("url");
+            console.log("POST URL " + url);
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {"csrfmiddlewaretoken": '{{ csrf_token }}', "term": data["term"], "description": data["description"]},
+                success: function (response) {
+                    if (response.status == 2) {
+                        // success
+                        updateSpanTableRow(tr);
+                        endEdittingTableRow(tr);
+                        showSuccessMessage(response.msg);
+                    } else {
+                        // Failed
+                        showErrorMessage(response.msg);
+                    }
+                },
+                error: function (msg) {
+                    console.log('error');
+                    showErrorMessage(JSON.stringify(msg));
+                }
+            });
+      }
+
+
+
+</script>
+{% endblock %}

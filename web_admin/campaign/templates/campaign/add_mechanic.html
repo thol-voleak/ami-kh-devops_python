@@ -88,8 +88,12 @@
                                     <label class="col-sm-3 control-label">Detail Name</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_detail_name" name="detail_name">
-                                            {% for name in detail_names %}
-                                                <option value= "{{ name }}">{{ name }}</option>
+                                            {% for item in detail_names %}
+                                                {% if item.description != "" %}
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>
+                                                {% else %}
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>
+                                                {% endif %}
                                             {% endfor %}
                                         </select>
                                     </div>
