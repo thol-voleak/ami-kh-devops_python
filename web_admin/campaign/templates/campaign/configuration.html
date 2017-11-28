@@ -38,13 +38,6 @@
     <div class="panel-heading border mb15">
         <h3>Campaign Configuration</h3>
     </div>
-
-    <!--<div class="col-xs-12 mb5">-->
-        <!--<div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">-->
-            <!--<button type="button" class="close" onclick="$('.alert').hide()">×</button>-->
-            <!--<strong id="alert-msg"></strong>-->
-        <!--</div>-->
-    <!--</div>-->
     <div class="col-xs-12">
         <div class="alert alert-success" hidden id="msg-add-country-code">
             <strong id="alert-msg"></strong>
@@ -117,39 +110,6 @@
             hideMessage();
         }, 5000);
     }
-
-    /*function showErrorMessage(msg) {
-	    $("#alert-msg").text(msg)
-	    $('#alert-client').removeClass("alert-success");
-	    $('#alert-client').addClass("alert-danger");
-	    //$("#alert-client").prop("hidden", false);
-	    //$("#alert-client").prop("style", "display: block;");
-
-	    $("#msg-add-client").prop("hidden", true);
-        $("#msg-update-client").prop("hidden", true);
-        $("#msg-add-service").prop("hidden", true);
-
-        $("#alert-client").show();
-
-
-
-	    $("html, body").animate({scrollTop: 0}, "slow");
-	}
-
-	function showSuccessMessage(msg) {
-	    $("#alert-msg").text(msg)
-	    $('#alert-client').removeClass("alert-danger");
-	    $('#alert-client').addClass("alert-success");
-	    //$("#alert-client").prop("hidden", false);
-	    //$("#alert-client").prop("style", "display: block;");
-
-	    $("#msg-add-client").prop("hidden", true);
-        $("#msg-update-client").prop("hidden", true);
-        $("#msg-add-service").prop("hidden", true);
-
-	    $("#alert-client").show();
-	    $("html, body").animate({scrollTop: 0}, "slow");
-	}*/
 
       var isSaving = false;
       function startEdittingTableRow(tr) {
@@ -278,7 +238,7 @@
                         // success
                         updateSpanTableRow(tr);
                         endEdittingTableRow(tr);
-                        showSuccessMessage(response.msg);
+                        //showSuccessMessage(response.msg);
                     } else {
                         // Failed
                         showErrorMessage(response.msg);
