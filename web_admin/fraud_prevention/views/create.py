@@ -64,7 +64,7 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             params['action'] = 'unstop card'
             params['data']['card_id'] = int(key_value) if key_value.isnumeric() else key_value
         elif data_type == 'device_id':
-            params['action'] = 'register_customer'
+            params['action'] = 'register customer'
             params['data']['device_id'] = key_value
 
         success, data, message = self.create_fraud_ticket(params)
