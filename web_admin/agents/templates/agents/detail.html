@@ -722,6 +722,11 @@
                                 <input id="btn_edit" class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Edit"/>
                             </a>
                         {% endif %}
+                        {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                            <a href="{% url 'agents:agent_delete' agent.id %}">
+                                <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                            </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>
