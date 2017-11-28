@@ -6,7 +6,6 @@ from web_admin import setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
 from datetime import datetime
-from django.conf import settings
 from campaign.models import terms_mapping
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
@@ -46,12 +45,15 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
 
-        detail_names = list(terms_mapping.objects.all())
+        all_terms = list(terms_mapping.objects.all())
+        detail_names = self._filter_detail_names(all_terms)
+        trigger = self._filter_trigger(all_terms)
 
         ops = {
             'operations': operations,
             'key_value_types': key_value_types,
             'detail_names': detail_names,
+            'trigger': trigger,
             'freetext_ops': freetext_ops,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
@@ -282,33 +284,15 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
-        detail_names = ["id", "event_name", "created_timestamp", "user_id",
-                        "user_type", "description", "device_id",
-                        "device_description", "event_timestamp", "order_id",
-                        "ext_transaction_id",
-                        "payment_method_name", "payment_method_ref",
-                        "service_id", "service_name", "command_id",
-                        "command_name", "service_command_id",
-                        "initiator_user_id", "initiator_user_type",
-                        "initiator_sof_id", "initiator_sof_type_id",
-                        "payer_user_id", "payer_user_type",
-                        "payer_user_ref_type", "payer_user_ref_value",
-                        "payer_sof_id", "payer_sof_type_id",
-                        "payee_user_id", "payee_user_type",
-                        "payee_user_ref_type", "payee_user_ref_value",
-                        "payee_sof_id", "payee_sof_type_id", "currency",
-                        "ref_order_id", "amount", "fee", "bonus",
-                        "settlement_amount", "product_name", "product_ref1",
-                        "product_ref2", "product_ref3",
-                        "product_ref4", "product_ref5", "state", "status",
-                        "notification_status", "is_deleted",
-                        "order_created_timestamp",
-                        "order_last_updated_timestamp", "created_client_id",
-                        "executed_client_id"]
+
+        all_terms = list(terms_mapping.objects.all())
+        detail_names = self._filter_detail_names(all_terms)
+        trigger = self._filter_trigger(all_terms)
 
         context['operations'] = operations
         context['key_value_types'] = key_value_types
         context['detail_names'] = detail_names
+        context['trigger'] = trigger
         context['freetext_ops'] = freetext_ops
         context['filter_ops'] = filter_ops
         context['filter_key_value_types'] = filter_key_value_types
@@ -335,3 +319,11 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         return success, data, message
+
+    def _filter_detail_names(self, data):
+        filtered = [v for v in data if (v.term != 'register_customer') and (v.term != 'executed_order')]
+        return filtered
+
+    def _filter_trigger(self, data):
+        filtered = [v for v in data if ((v.term == 'register_customer') or (v.term == 'executed_order'))]
+        return filtered

@@ -59,19 +59,19 @@
         <td>{{ item.term | default_if_none:''}}</td>
         {% if item.description != '' %}
         <td>
-          <button type="button" class="btn btn-default btn-sm btn-edit" onclick = "tapOnEdit(this);">
+          <button type="button" class="btn btn-default btn-sm btn-edit" onclick = "tapOnEdit(this);" id="btn_{{ item.term }}">
             <span class="glyphicon glyphicon-pencil"></span>
           </button>
-          <input type="text" class="form-control text-input-off" id="xxx" placeholder="Enter Text" name="xxx" onblur="tapOnSave(this);">
-          <span class="already-editted-text">{{ item.description | default_if_none:'' }}</span>
+          <input type="text" class="form-control text-input-off" id="txt_{{ item.term }}" placeholder="Enter Text"  onblur="tapOnSave(this);">
+          <span class="already-editted-text" id="lbl_{{ item.term }}">{{ item.description | default_if_none:'' }}</span>
         </td>
         {% else %}
         <td>
-          <button type="button" class="btn btn-default btn-sm btn-edit" style="display: none;" onclick = "tapOnEdit(this);">
+          <button type="button" class="btn btn-default btn-sm btn-edit" style="display: none;" onclick = "tapOnEdit(this);" id="btn_{{ item.term }}">
             <span class="glyphicon glyphicon-pencil"></span>
           </button>
-          <input type="text" class="form-control text-input-on" id="xxx" placeholder="Enter Text" name="xxx" onblur="tapOnSave(this);">
-          <span class="already-editted-text" style="display: none;"></span>
+          <input type="text" class="form-control text-input-on" id="txt_{{ item.term }}" placeholder="Enter Text"  onblur="tapOnSave(this);">
+          <span class="already-editted-text" style="display: none;" id="lbl_{{ item.term }}"></span>
         </td>
         {% endif %}
       </tr>

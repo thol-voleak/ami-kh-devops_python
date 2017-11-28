@@ -33,8 +33,13 @@
                             <label class="col-sm-3 control-label">Trigger</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
-                                    <option value="register_customer">Customer Registration</option>
-                                    <option value="executed_order">Customer Payment</option>
+                                    {% for item in trigger %}
+                                        {% if item.description != "" %}
+                                        <option value= "{{ item.term }}">{{ item.description }}</option>
+                                        {% else %}
+                                        <option value= "{{ item.term }}">{{ item.term }}</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
