@@ -496,10 +496,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="checkbox" style="margin-left: 33px;">
-                        <label>
-                          <input type="checkbox" id="toggle-permanent-view" name="is-permanent-same-current">Permanent Address and Current Address are the same</label>
-                    </div>
+
                     <div id="permanent-address-area">
                         <div class="row">
                             <div class="form-group col-md-6">
@@ -737,13 +734,4 @@
 
 {% block body_js %}
 {{ block.super }}
-<script>
-    $('#toggle-permanent-view').change(function() {
-        if($('#toggle-permanent-view').is(':checked')) {
-            $('#permanent-address-area').hide();
-        } else {
-            $('#permanent-address-area').show();
-        }
-    });
-</script>
 {% endblock %}
