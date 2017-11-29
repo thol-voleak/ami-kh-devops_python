@@ -183,7 +183,9 @@
         if (fromDate >= toDate) {
             $("#msg_cre_fraud_success").fadeOut();
             $("#msg_cre_fraud_error").fadeOut();
-            from.valueAsDate = new Date();
+            if (!from.value) {
+                from.valueAsDate = new Date();
+            }
             showErrorMessage('Start date should be less than end date');
             return false;
         }
