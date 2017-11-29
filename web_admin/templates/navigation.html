@@ -404,7 +404,7 @@
                         </a>
                     </li>
                     {% if request.user|has_permission_name:"CAN_EDIT_CAMPAIGN_CONFIGURATION"%}
-                    <li class="{% if url_name == 'campaign'%}active{% endif %}">
+                    <li class="{% if url_name == 'campaign_configuration'%}active{% endif %}">
                         <a href="{% url 'campaign:campaign_configuration' %}" id="campaign_configuration">
                             <span>Campaign Configuration</span>
                         </a>

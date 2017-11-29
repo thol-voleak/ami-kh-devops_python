@@ -376,11 +376,17 @@
         function listenTrigger() {
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
+            var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
 
             if (triggerValue === 'register_customer') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
                     .val("@@user_id@@")
                     .html("Actor who registered")
                 )
@@ -396,6 +402,20 @@
                     .html("Actor that created the transaction")
                 )
                 ddl_give_reward_to.append($("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received the transaction")
+                )
+
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
                     .val("@@payee_user_id@@")
                     .html("Actor that received the transaction")
                 )
