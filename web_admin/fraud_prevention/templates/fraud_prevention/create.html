@@ -161,11 +161,11 @@
 
     function showErrorMessage(msg) {
         $("#alert-msg").text(msg);
-        $("#msg-error").fadeIn(500);
-        $("#msg-error").delay(2000).fadeOut(3000);
+        $("#msg-error").fadeIn();
     }
 
     function validateDate() {
+        $("#msg-error").fadeOut();
         var from = document.getElementById("dtp_start_date");
         var to = document.getElementById("dtp_end_date");
         if (!to.value) {
