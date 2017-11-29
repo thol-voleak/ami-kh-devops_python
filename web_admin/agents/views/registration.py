@@ -311,118 +311,6 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             self.logger.info('========== Finished creating agent ==========')
             return render(request, self.template_name, context)
 
-    # def _create_agent_profile(self, request):
-
-    #     # Prepare for agent registration.
-    #     agent_type_id = request.POST.get('agent_type_id')
-    #     parent_id = request.POST.get('parent_id')
-    #     grand_parent_id = request.POST.get('grand_parent_id')
-    #     firstname = request.POST.get('firstname')
-    #     lastname = request.POST.get('lastname')
-
-    #     date_of_birth = request.POST.get('date_of_birth')
-    #     if date_of_birth != '':
-    #         date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-    #         date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    #     gender = request.POST.get('gender')
-    #     national = request.POST.get('national')
-    #     # Primary Section
-    #     primary_Identify_id = request.POST.get('primary_Identify_id')
-    #     primary_Identify_type = request.POST.get('primary_Identify_type')
-    #     primary_place_of_issue = request.POST.get('primary_place_of_issue')
-
-    #     primary_issue_Date = request.POST.get('primary_issue_date')
-    #     if primary_issue_Date != '':
-    #         primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
-    #         primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
-
-
-    #     primary_expire_Date = request.POST.get('primary_expire_date')
-    #     if primary_expire_Date != '':
-    #         primary_expire_Date = datetime.strptime(primary_expire_Date, "%Y-%m-%d")
-    #         primary_expire_Date = primary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
-    #     # Secondary Section
-    #     secondary_Identify_id = request.POST.get('secondary_Identify_id')
-    #     secondary_Identify_type = request.POST.get('secondary_Identify_type')
-
-    #     secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
-
-    #     secondary_issue_Date = request.POST.get('secondary_issue_date')
-    #     if secondary_issue_Date != '':
-    #         secondary_issue_Date = datetime.strptime(secondary_issue_Date, "%Y-%m-%d")
-    #         secondary_issue_Date = secondary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    #     secondary_expire_Date = request.POST.get('secondary_expire_date')
-    #     if secondary_expire_Date != '':
-    #         secondary_expire_Date = datetime.strptime(secondary_expire_Date, "%Y-%m-%d")
-    #         secondary_expire_Date = secondary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    #     # Contact Info Section
-    #     nationality = request.POST.get('nationality')
-    #     province = request.POST.get('province')
-    #     district = request.POST.get('district')
-    #     commune = request.POST.get('commune')
-    #     address = request.POST.get('address')
-    #     primary_mobile_number = request.POST.get('primary_mobile_number')
-    #     secondary_mobile_number = request.POST.get('secondary_mobile_number')
-    #     tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
-    #     email = request.POST.get('email')
-    #     unique_reference = request.POST.get('unique_reference')
-    #     kyc_status = request.POST.get('kyc_status')
-    #     status = 1  # request.POST.get('status') #TODO: hard fix
-
-    #     profile = {
-    #         'agent_type_id': agent_type_id,
-    #         'parent_id': parent_id,
-    #         'grand_parent_id': grand_parent_id,
-    #         'firstname': firstname,
-    #         'lastname': lastname,
-    #         'date_of_birth': date_of_birth,
-    #         'gender': gender,
-    #         'national': national,
-    #         'primary_Identify_id': primary_Identify_id,
-    #         'primary_Identify_type': primary_Identify_type,
-    #         'primary_place_of_issue': primary_place_of_issue,
-    #         'primary_issue_date': primary_issue_Date,
-    #         'primary_expire_date': primary_expire_Date,
-    #         'secondary_Identify_id': secondary_Identify_id,
-    #         'secondary_Identify_type': secondary_Identify_type,
-    #         'secondary_place_of_issue': secondary_place_of_issue,
-    #         'secondary_issue_date': secondary_issue_Date,
-    #         'secondary_expire_date': secondary_expire_Date,
-    #         'nationality': nationality,
-    #         'province': province,
-    #         'district': district,
-    #         'commune': commune,
-    #         'address': address,
-    #         'primary_mobile_number': primary_mobile_number,
-    #         'secondary_mobile_number': secondary_mobile_number,
-    #         'tertiary_mobile_number': tertiary_mobile_number,
-    #         'email': email,
-    #         'unique_reference': unique_reference,
-    #         'kyc_status': kyc_status,
-    #         'status': status,
-    #     }
-
-    #     username = request.POST.get('username')
-    #     password = request.POST.get('password')
-    #     password = encrypt_text_agent(password)
-
-    #     identity = {
-    #         'username': username,
-    #         'password': password
-    #     }
-
-    #     body = {
-    #         'profile': profile,
-    #         'identity': identity
-    #     }
-
-    #     data, success = self._post_method(api_path=api_settings.AGENT_REGISTRATION_URL,
-    #                                       func_description="Agent Profile",
-    #                                       logger=logger, params=body)
-    #     return data, success
 
     def _create_agent_balance(self, request, agent_id):
 
@@ -433,9 +321,6 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
                 'user_type_id': 2}  #TODO: Hard code for agent_type
         api_path = api_settings.CREATE_AGENT_BALANCE_URL
 
-        # data, success = self._post_method(api_path=api_path,
-        #                                   func_description="Agent Balance",
-        #                                   logger=logger, params=body)
         is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= api_path,
                                                     headers=self._get_headers(),
