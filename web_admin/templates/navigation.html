@@ -414,7 +414,6 @@
             </li>
             {% endif %}
 
-            {% if request.user|has_permission_name:"SYS_MANAGE_SYSTEM_USER"%}
             {% check_valid_url url_name 'fraud_prevention' as is_fp_url %}
             <li class="menu-accordion {% if is_fp_url %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-shield"></i> <span>Fraud Prevention</span> </a>
@@ -426,7 +425,6 @@
                     </li>
                 </ul>
             </li>
-            {% endif %}
 
             <li>
                 {% if user.is_authenticated %}
