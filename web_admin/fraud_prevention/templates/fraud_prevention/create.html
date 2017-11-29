@@ -168,20 +168,22 @@
     function validateDate() {
         var from = document.getElementById("dtp_start_date");
         var to = document.getElementById("dtp_end_date");
-        var toDate = new Date(to.value);
+        if (!to.value) {
+            return true;
+        } else {
+            var toDate = new Date(to.value);
+        }
 
         if (!from.value) {
-            from.valueAsDate = new Date();
-            var fromDate = new Date()
+            var fromDate = new Date();
         } else {
             var fromDate = new Date(from.value);
         }
 
-        if (!toDate) {
-            return true
-        }
-
         if (fromDate >= toDate) {
+            $("#msg_cre_fraud_success").fadeOut();
+            $("#msg_cre_fraud_error").fadeOut();
+            from.valueAsDate = new Date();
             showErrorMessage('Start date should be less than end date');
             return false;
         }
