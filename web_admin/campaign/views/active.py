@@ -27,7 +27,7 @@ class ActiveCampaign(CampaignDetail):
         return super(ActiveCampaign, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, campaign_id):
-        self.logger.info('========== Start active campaign ==========')
+        self.logger.info('========== Start activate campaign ==========')
         url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
         mechanic = self.get_mechanic_list(campaign_id)
         count_mechanic = 0
@@ -40,7 +40,7 @@ class ActiveCampaign(CampaignDetail):
                 self.logger.info('========== Finish get limittion list ==========')
                 if len(limition) == 0:
                     self.logger.info('========== Finish get action list  ==========')
-                    self.logger.info('========== Finish active campaign ==========')
+                    self.logger.info('========== Finish activate campaign ==========')
                     return JsonResponse({"status": 3, "msg": 'All campaign rewards needs a limitation before campaign can be activated'})
                 else:
                     count_action += 1
@@ -55,7 +55,7 @@ class ActiveCampaign(CampaignDetail):
                     'description': request.POST.get("campaign_description")
                 }
                 result = ajax_functions._put_method(request, url, "", self.logger, params)
-                self.logger.info('========== Finish active campaign ==========')
+                self.logger.info('========== Finish activate campaign ==========')
                 return result
 
     def get_limition_list(self, campaign_id, mechanic_id, action_id):
