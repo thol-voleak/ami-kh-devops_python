@@ -13,7 +13,7 @@
     </div>
     {% with request.resolver_match.url_name as url_name %}
     <nav role="navigation">
-        <ul class="nav">
+        <ul class="nav"  id="horizontal-list">
             <li class="class={% if url_name == 'web-index' %} active{% endif %}">
                 <a href="{% url 'web:web-index' %}">
                     <i class="fa fa-home"></i>
