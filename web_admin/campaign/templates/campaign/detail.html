@@ -175,9 +175,9 @@
         {% endif %}
 
     </div>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
 
     var delete_mechanic = function(mechanicId) {
@@ -196,5 +196,4 @@
         });
     };
 </script>
-
 {% endblock %}
