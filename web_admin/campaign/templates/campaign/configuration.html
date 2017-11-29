@@ -122,22 +122,18 @@
 
            console.log("startEdittingTableRow");
 
-           $(tr).addClass('editting');
+           //$(tr).addClass('');
+           tr.className += " editting";
 
            resetDataTableRow(tr);
 
-           var td = $(($(tr).find("td"))[1]);
-           var span = $((td.find("span"))[1]);
-           span.prop("style", "display: none;");
-
-           $(tr).find("button").each(function(){
-              $(this).prop("style", "display: none;");
-           });
-
-           $(tr).find("input").each(function(){
-              $(this).prop("style", "display: inline-block;");
-              $(this).focus();
-           });
+           var td = tr.children[1];
+           var span = td.children[2];
+           span.style.display = "none";
+           var button = td.children[0];
+           button.style.display = "none";
+           var input = td.children[1];
+           input.style.display = "inline-block";
       }
 
       function endEdittingTableRow(tr) {
@@ -171,13 +167,11 @@
       }
 
       function resetDataTableRow(tr) {
-        var td = $(($(tr).find("td"))[1]);
-        var span = td.find("span");
-        if(span.length) {
-           var currentValue = span.text();
-           var input = td.find("input");
-           $(input).val(currentValue);
-        }
+        var td = tr.children[1];
+        var span = td.children[2];
+        var input = td.children[1];
+        var currentValue = span.innerText;
+        input.value = currentValue;
       }
 
       function removeCurrentEdittingsDataTable(tb) {
@@ -193,7 +187,7 @@
       }
 
       function tapOnEdit(button) {
-          tr = $(button).closest('tr')
+          tr = (button.parentNode).parentNode;
          // removeCurrentEdittingsDataTable(tr.parent());
           startEdittingTableRow(tr);
 
@@ -208,9 +202,8 @@
       function tapOnSave(input) {
           console.log('Saving data...');
           isSaving = true;
-          //tr = $(button).parent().parent().parent();
           tr = $(input).closest('tr');
-          // TODO: Post data to server:
+          // Post data to server:
           var data = getDataTableRow(tr);
           postDataToServer(data);
 
