@@ -70,7 +70,10 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         context = {
             'agent_types': agent_types_list,
             'currencies': currencies,
-            'agent_profile': agent_profile
+            'agent_profile': agent_profile,
+            'msgs': {
+                'update_msg_failed': self.request.session.pop('agent_update_msg_failed', None),
+            }
         }
 
         if len(agent_identity['agent_identities']) > 0:
@@ -128,10 +131,10 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
 
         # Contact Info Section
         nationality = request.POST.get('nationality')
-        province = request.POST.get('province')
-        district = request.POST.get('district')
-        commune = request.POST.get('commune')
-        address = request.POST.get('address')
+        province = request.POST.get('current_province')
+        district = request.POST.get('current_district')
+        commune = request.POST.get('current_commune')
+        address = request.POST.get('current_address')
         primary_mobile_number = request.POST.get('primary_mobile_number')
         secondary_mobile_number = request.POST.get('secondary_mobile_number')
         tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
@@ -139,6 +142,52 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         unique_reference = request.POST.get('unique_reference')
         kyc_status = request.POST.get('kyc_status')
         status = 1  # request.POST.get('status') TODO hard fix
+
+        #current address
+        country = request.POST.get('current_country')
+        landmark = request.POST.get('current_land_mark')
+        longitude = request.POST.get('current_longitude')
+        latitude = request.POST.get('current_latitude')
+
+        #permanent address
+        is_current_address_same_permanent_address = request.POST.get('is-permanent-same-current')
+        if is_current_address_same_permanent_address:
+            permanent_address = address
+            permanent_district = district
+            permanent_province = province
+            permanent_commune = commune
+            permanent_country = country
+            permanent_landmark = landmark
+            permanent_longitude = longitude
+            permanent_latitude = latitude
+        else:
+            permanent_address = request.POST.get('permanent_address')
+            permanent_district = request.POST.get('permanent_district')
+            permanent_province = request.POST.get('permanent_province')
+            permanent_commune = request.POST.get('permanent_commune')
+            permanent_country = request.POST.get('permanent_country')
+            permanent_landmark = request.POST.get('permanent_land_mark')
+            permanent_longitude = request.POST.get('permanent_longitude')
+            permanent_latitude = request.POST.get('permanent_latitude')
+
+        # bank section
+        bank = {
+            'name' : request.POST.get('bank_name'),
+            'branch_city' : request.POST.get('bank_branch_city'),
+            'branch_area' : request.POST.get('bank_branch_area'),
+            'account_number' : request.POST.get('bank_account_number')
+        }
+
+        # contract section
+        contract = {
+            'type' : request.POST.get('contract_type'),
+            'sign_date' : request.POST.get('contract_sign_date'),
+            'number' : request.POST.get('contract_number'),
+            'issue_date' : request.POST.get('contract_issue_date'),
+            'extended_type' : request.POST.get('extension_type'),
+            'expired_date' : request.POST.get('contract_expiry_date'),
+            'day_of_period_reconciliation': request.POST.get('notification_alert')
+        }
 
         data = {
             'agent_type_id': agent_type_id,
@@ -171,6 +220,20 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'unique_reference': unique_reference,
             'kyc_status': kyc_status,
             'status': status,
+            'permanent_address': permanent_address,
+            'permanent_district': permanent_district,
+            'permanent_province': permanent_province,
+            'permanent_commune': permanent_commune,
+            'permanent_country': permanent_country,
+            'permanent_landmark': permanent_landmark,
+            'permanent_longitude': permanent_longitude,
+            'permanent_latitude': permanent_latitude,
+            'country': country,
+            'landmark': landmark,
+            'longitude': longitude,
+            'latitude': latitude,
+            'bank': bank,
+            'contract': contract
         }
 
         date_fields = ["date_of_birth", "primary_issue_date", "primary_expire_date", "secondary_issue_date",
@@ -191,4 +254,5 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
             return HttpResponseRedirect(previous_page)
+        request.session['agent_update_msg_failed'] = data
         return redirect(request.META['HTTP_REFERER'])
