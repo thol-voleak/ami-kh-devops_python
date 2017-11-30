@@ -81,6 +81,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         agent_types_list = self._get_agent_types_list()
 
         result = {
+            'permanent_address_check':True,
             'currencies': currencies,
             'agent_types_list': agent_types_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
@@ -94,6 +95,8 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         status = 1  # request.POST.get('status') #TODO: hard fix
         agent_types_list = self._get_agent_types_list()
         currencies = self._get_currencies_dropdown()
+        check_or_not = True
+        date_exist_on_context = {}
 
         # basic info session
         agent_type_id = request.POST.get('agent_type_id')
@@ -113,6 +116,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         if date_of_birth != '':
             new_date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
             date_of_birth = new_date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
+            date_exist_on_context['date_of_birth'] = new_date_of_birth
         gender = request.POST.get('gender')
         national = request.POST.get('national')
         # Personal Details session
@@ -126,11 +130,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         if primary_issue_date != '':
             new_primary_issue_date = datetime.strptime(primary_issue_date, "%Y-%m-%d")
             primary_issue_date = new_primary_issue_date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
+            date_exist_on_context['primary_issue_date'] = new_primary_issue_date
 
         primary_expire_date = request.POST.get('primary_expire_date')
         if primary_expire_date != '':
             new_primary_expire_date = datetime.strptime(primary_expire_date, "%Y-%m-%d")
             primary_expire_date = new_primary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            date_exist_on_context['primary_expire_date'] = new_primary_expire_date
         # Primary Identify session
 
         # Secondary Identity Section
@@ -141,11 +147,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         if secondary_issue_date != '':
             new_secondary_issue_date = datetime.strptime(secondary_issue_date, "%Y-%m-%d")
             secondary_issue_date = new_secondary_issue_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            date_exist_on_context['secondary_issue_date'] = new_secondary_issue_date
 
         secondary_expire_date = request.POST.get('secondary_expire_date')
         if secondary_expire_date != '':
             new_secondary_expire_date = datetime.strptime(secondary_expire_date, "%Y-%m-%d")
             secondary_expire_date = new_secondary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            date_exist_on_context['secondary_expire_date'] = new_secondary_expire_date
         
         kyc_status = request.POST.get('kyc_status')  
         # Secondary Identity Section
@@ -191,6 +199,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             permanent_landmark = request.POST.get('permanent_landmark')
             permanent_longitude = request.POST.get('permanent_longitude')
             permanent_latitude = request.POST.get('permanent_latitude')
+            check_or_not = False
         #permanent address
 
         # bank section
@@ -280,13 +289,10 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             'identity': identity
         }
         self.logger.info("Params: {} ".format(body))
-        profile['date_of_birth'] = new_date_of_birth
-        profile['primary_issue_date'] = new_primary_issue_date
-        profile['primary_expire_date'] = new_primary_expire_date
-        profile['secondary_issue_date'] = new_secondary_issue_date
-        profile['secondary_expire_date'] = new_secondary_expire_date
         context = {
+            'permanent_address_check':check_or_not,
             'agent_types_list': agent_types_list,
+            'context_date':date_exist_on_context,
             'currencies': currencies,
             'agent_profile': profile,
             'identity': identity,
