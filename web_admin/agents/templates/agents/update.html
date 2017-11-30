@@ -763,6 +763,7 @@
    var dtp_birth_date = document.getElementById('dtp_birth_date');
    function VerifyDate(element) {
         var today = new Date();
+        today.setHours(0,0,0,0);
         if (new Date(element.value) >= today) {
             dtp_birth_date.setCustomValidity('Date of birth must be less than today date.');
               return false;
