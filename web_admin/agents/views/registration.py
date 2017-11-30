@@ -283,7 +283,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         context = {
             'agent_types_list': agent_types_list,
             'currencies': currencies,
-            'profile': profile,
+            'agent_profile': profile,
             'identity': identity,
             'context_currency':currency,
             'msgs': {
