@@ -285,6 +285,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             'currencies': currencies,
             'profile': profile,
             'identity': identity,
+            'context_currency':currency,
             'msgs': {
                 'get_msg': status_message,
             }

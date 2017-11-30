@@ -131,7 +131,7 @@
                     <div class="col-sm-8">
                         <select class="form-control" id="ddl_currency" name="currency" required>
                         {% for currency in currencies %}
-                        {% if currency == profile.currency %}
+                        {% if currency == context_currency %}
                                 <option value="{{ currency }}" selected>{{ currency }}
                             </option>
                         {% else %}
