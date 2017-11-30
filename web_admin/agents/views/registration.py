@@ -111,8 +111,8 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         lastname = request.POST.get('lastname')
         date_of_birth = request.POST.get('date_of_birth')
         if date_of_birth != '':
-            date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-            date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')      
+            new_date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
+            date_of_birth = new_date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
         gender = request.POST.get('gender')
         national = request.POST.get('national')
         # Personal Details session
@@ -122,30 +122,30 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         primary_Identify_type = request.POST.get('primary_Identify_type')
         primary_place_of_issue = request.POST.get('primary_place_of_issue')
         
-        primary_issue_Date = request.POST.get('primary_issue_date')
-        if primary_issue_Date != '':
-            primary_issue_Date = datetime.strptime(primary_issue_Date, "%Y-%m-%d")
-            primary_issue_Date = primary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
+        primary_issue_date = request.POST.get('primary_issue_date')
+        if primary_issue_date != '':
+            new_primary_issue_date = datetime.strptime(primary_issue_date, "%Y-%m-%d")
+            primary_issue_date = new_primary_issue_date.strftime('%Y-%m-%dT%H:%M:%SZ')  #1986-01-01T00:00:00Z
 
-        primary_expire_Date = request.POST.get('primary_expire_date')
-        if primary_expire_Date != '':
-            primary_expire_Date = datetime.strptime(primary_expire_Date, "%Y-%m-%d")
-            primary_expire_Date = primary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        primary_expire_date = request.POST.get('primary_expire_date')
+        if primary_expire_date != '':
+            new_primary_expire_date = datetime.strptime(primary_expire_date, "%Y-%m-%d")
+            primary_expire_date = new_primary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         # Primary Identify session
 
         # Secondary Identity Section
         secondary_Identify_id = request.POST.get('secondary_Identify_id')
         secondary_Identify_type = request.POST.get('secondary_Identify_type')
         secondary_place_of_issue = request.POST.get('secondary_place_of_issue')
-        secondary_issue_Date = request.POST.get('secondary_issue_date')
-        if secondary_issue_Date != '':
-            secondary_issue_Date = datetime.strptime(secondary_issue_Date, "%Y-%m-%d")
-            secondary_issue_Date = secondary_issue_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        secondary_issue_date = request.POST.get('secondary_issue_date')
+        if secondary_issue_date != '':
+            new_secondary_issue_date = datetime.strptime(secondary_issue_date, "%Y-%m-%d")
+            secondary_issue_date = new_secondary_issue_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        secondary_expire_Date = request.POST.get('secondary_expire_date')
-        if secondary_expire_Date != '':
-            secondary_expire_Date = datetime.strptime(secondary_expire_Date, "%Y-%m-%d")
-            secondary_expire_Date = secondary_expire_Date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        secondary_expire_date = request.POST.get('secondary_expire_date')
+        if secondary_expire_date != '':
+            new_secondary_expire_date = datetime.strptime(secondary_expire_date, "%Y-%m-%d")
+            secondary_expire_date = new_secondary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         
         kyc_status = request.POST.get('kyc_status')  
         # Secondary Identity Section
@@ -225,13 +225,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             'primary_Identify_id': primary_Identify_id,
             'primary_Identify_type': primary_Identify_type,
             'primary_place_of_issue': primary_place_of_issue,
-            'primary_issue_date': primary_issue_Date,
-            'primary_expire_date': primary_expire_Date,
+            'primary_issue_date': primary_issue_date,
+            'primary_expire_date': primary_expire_date,
             'secondary_Identify_id': secondary_Identify_id,
             'secondary_Identify_type': secondary_Identify_type,
             'secondary_place_of_issue': secondary_place_of_issue,
-            'secondary_issue_date': secondary_issue_Date,
-            'secondary_expire_date': secondary_expire_Date,
+            'secondary_issue_date': secondary_issue_date,
+            'secondary_expire_date': secondary_expire_date,
             'nationality': nationality,
             'province': current_province,
             'district': current_district,
@@ -280,6 +280,11 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             'identity': identity
         }
         self.logger.info("Params: {} ".format(body))
+        profile['date_of_birth'] = new_date_of_birth
+        profile['primary_issue_date'] = new_primary_issue_date
+        profile['primary_expire_date'] = new_primary_expire_date
+        profile['secondary_issue_date'] = new_secondary_issue_date
+        profile['secondary_expire_date'] = new_secondary_expire_date
         context = {
             'agent_types_list': agent_types_list,
             'currencies': currencies,
