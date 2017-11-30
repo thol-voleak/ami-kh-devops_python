@@ -2,6 +2,8 @@ from braces.views import GroupRequiredMixin
 
 from agents.views import AgentAPIService
 
+from web_admin.api_logger import API_Logger
+from web_admin.restful_client import RestFulClient
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
@@ -34,13 +36,22 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
         return super(AgentDelete, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start Deleting Agent ==========')
         context = super(AgentDelete, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
         api_path = api_settings.AGENT_DELETE_URL.format(agent_id=agent_id)
-        context, status = self._delete_method(api_path=api_path, func_description="Agent Delete", logger=logger)
 
-        if status:
+        success, status_code, status_message = RestFulClient.delete(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger)
+
+        API_Logger.delete_logging(loggers=self.logger,
+                                  status_code=status_code)
+
+        self.logger.info('========== Finish Deleting Agent ==========')
+        if success:
             previous_page = request.POST.get('previous_page')
             if previous_page is not None:
 
