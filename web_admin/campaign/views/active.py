@@ -30,7 +30,6 @@ class ActiveCampaign(CampaignDetail):
         self.logger.info('========== Start activate campaign ==========')
         url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
         mechanic = self.get_mechanic_list(campaign_id)
-        count_mechanic = 0
         for i in mechanic:
             if i['is_deleted']:
                 continue
@@ -44,21 +43,16 @@ class ActiveCampaign(CampaignDetail):
                     self.logger.info('========== Finish get action list  ==========')
                     self.logger.info('========== Finish activate campaign ==========')
                     return JsonResponse({"status": 3, "msg": 'All campaign rewards needs a limitation before campaign can be activated'})
-                else:
-                    count_action += 1
-            if count_action == len(actions):
-                count_mechanic += 1
             self.logger.info('========== Finish get action list  ==========')
-        if count_mechanic == len(mechanic):
-                url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
-                params = {
-                    'is_active': True,
-                    'name': request.POST.get("campaign_name"),
-                    'description': request.POST.get("campaign_description")
-                }
-                result = ajax_functions._put_method(request, url, "", self.logger, params)
-                self.logger.info('========== Finish activate campaign ==========')
-                return result
+        url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=campaign_id)
+        params = {
+            'is_active': True,
+            'name': request.POST.get("campaign_name"),
+            'description': request.POST.get("campaign_description")
+        }
+        result = ajax_functions._put_method(request, url, "", self.logger, params)
+        self.logger.info('========== Finish activate campaign ==========')
+        return result
 
     def get_limition_list(self, campaign_id, mechanic_id, action_id):
         url = settings.DOMAIN_NAMES + GET_LIMITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_action_id=action_id)
