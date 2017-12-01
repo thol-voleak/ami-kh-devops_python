@@ -17,10 +17,11 @@ class AgentAPIService(RESTfulMethods):
 
     def get_agent_types(self, agent_id):
         # body = {'id': agent_id}
-        data, success = self._post_method(api_path=api_settings.GET_AGENT_TYPES_PATH,
+        data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
                                          logger=logger)
-        return data, success
+        newdata = [i for i in data if not i['is_deleted']]
+        return newdata, success
 
     def get_agent_detail(self, agent_id):
         body = {'id': agent_id}
