@@ -32,6 +32,8 @@ class ActiveCampaign(CampaignDetail):
         mechanic = self.get_mechanic_list(campaign_id)
         count_mechanic = 0
         for i in mechanic:
+            if i['is_deleted']:
+                continue
             actions = self.get_rewards_list(campaign_id, i['id'])
             count_action = 0;
             for action in actions:
