@@ -427,6 +427,19 @@
                 </ul>
             </li>
             {% endif %}
+            {% if user.is_authenticated %}
+            {% check_valid_url url_name 'rule_configuration' as is_fp_url %}
+            <li class="menu-accordion {% if is_fp_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-history"></i> <span>Rule Configuration</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'rule_configuration'%}active{% endif %}">
+                        <a href="#">
+                            <span>Rule List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
             <li>
                 {% if user.is_authenticated %}
                 <a href="{% url 'authentications:logout' %}">
