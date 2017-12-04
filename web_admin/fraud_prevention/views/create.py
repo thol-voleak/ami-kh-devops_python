@@ -6,6 +6,7 @@ from web_admin import setup_logger, RestFulClient
 from django.shortcuts import redirect, render
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
+from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
@@ -13,10 +14,20 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 logger = logging.getLogger(__name__)
 
 
-class FPCreateView(TemplateView, GetHeaderMixin):
+class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = 'fraud_prevention/create.html'
     logger = logger
+
+    group_required = "CREATE_FRAUD_TICKET"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
     path = CREATE_FRAUD_TICKET
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
