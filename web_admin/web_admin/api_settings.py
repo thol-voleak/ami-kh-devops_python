@@ -233,4 +233,4 @@ GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rul
 # Rule Engine
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/report'
-
+CREATE_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'

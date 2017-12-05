@@ -771,7 +771,7 @@
         var today = new Date();
         today.setHours(0,0,0,0);
         if (new Date(element.value) >= today) {
-            dtp_birth_date.setCustomValidity('Date of birth must be less than today date.');
+            dtp_birth_date.setCustomValidity('Date of birth must be less than current date.');
               return false;
         } else {
              dtp_birth_date.setCustomValidity('');
