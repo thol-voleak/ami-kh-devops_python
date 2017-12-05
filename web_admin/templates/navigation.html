@@ -433,7 +433,7 @@
                 <a href="javascript:;"> <i class="fa fa-history"></i> <span>Rule Configuration</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'rule_configuration'%}active{% endif %}">
-                        <a href="#">
+                        <a href="{% url 'rule_configuration:rule_engine' %}">
                             <span>Rule List</span>
                         </a>
                     </li>
