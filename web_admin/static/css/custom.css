@@ -148,6 +148,7 @@
   content: counter(step);
   counter-increment: step;
   position: absolute;
+  cursor: not-allowed;
   left: 40%;
   z-index: 2;
   width: 30px;
