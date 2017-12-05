@@ -140,6 +140,8 @@
                     <th id="user">Ext Transaction ID</th>
                     <th id="user">Creation Client ID</th>
                     <th id="user">Execution Client ID</th>
+                    <th id="user">Error Code</th>
+                    <th id="user">Error Reason</th>
                     <th id="user">Action</th>
                 </tr>
                 </thead>
@@ -163,6 +165,8 @@
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
                             <td class="col-sm-2">{{ order.created_client_id }}</td>
                             <td class="col-sm-2">{{ order.executed_client_id }}</td>
+                            <td class="col-sm-2">{{ order.error_code }}</td>
+                            <td class="col-sm-2">{{ order.error_message }}</td>
                             <td class="col-sm-2">
                                 {% if permissions.is_perm_order_detail %}
                                     <button id="btn_detail" class="btn btn-info mb5 btn-outline btn-xs" onclick="location.href='{% url 'payments:order_detail' order.order_id %}'">Detail</button>
