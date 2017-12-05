@@ -85,9 +85,6 @@
                     <th id="lbl_group">Amount</th>
                     <th id="lbl_currency">Fee Type</th>
                     <th id="lbl_description">Fee Amount</th>
-                    <th id="lbl_bonus_type">Bonus Type</th>
-                    <th id="lbl_from">From</th>
-                    <th id="lbl_bonus_amount">Bonus Amount</th>
                     <th id="lbl_created_date">Created Date</th>
                     <th id="lbl_modified_date">Modified Date</th>
                     <th id="lbl_action">Action</th>
@@ -102,9 +99,6 @@
                     <td class="col-sm-1"><del>{{ fee_tier.condition_amount|default_if_none:'' }}</del></td>
                     <td class="col-sm-1"><del>{{ fee_tier.fee_type|default_if_none:'' }}</del></td>
                     <td class="col-sm-1"><del>{{ fee_tier.fee_amount|default_if_none:'' }}</del></td>
-                    <td class="col-sm-1"><del>{{ fee_tier.bonus_type|default_if_none:'' }}</del></td>
-                    <td class="col-sm-1"><del>{{ fee_tier.amount_type|default_if_none:'' }}</del></td>
-                    <td class="col-sm-1"><del>{{ fee_tier.bonus_amount|default_if_none:'' }}</del></td>
                     <td class="col-sm-1"><del>{{ fee_tier.created_timestamp|default_if_none:'' }}</del></td>
                     <td class="col-sm-1"><del>{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</del></td>
                     <td class="col-sm-1"></td>
@@ -114,9 +108,6 @@
                     <td class="col-sm-1">{{ fee_tier.condition_amount|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.fee_type|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.fee_amount|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ fee_tier.bonus_type|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ fee_tier.amount_type|default_if_none:'' }}</td>
-                    <td class="col-sm-1">{{ fee_tier.bonus_amount|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ fee_tier.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">
