@@ -132,6 +132,7 @@
 
 .rule-engine-step-bar .progressbar {
   counter-reset: step;
+  margin-top: -13px;
 }
 
 .rule-engine-step-bar .progressbar li {
