@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "rule/list.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_VIEW_RULE_LIST"
     login_url = 'web:permission_denied'
     logger = logger
 
@@ -65,10 +65,10 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
 
         data = self._search_for_rule(body)
-        # is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_CAMPAIGN_DETAILS')
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_RULE_DETAILS  ')
         # is_permission_update_status = check_permissions_by_user(self.request.user, 'CAN_UDATE_CAMPAIGN_STATUS')
-        # for i in data:
-        #     i['is_permission_detail'] = is_permission_detail
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
         #     i['is_permission_update_status'] = is_permission_update_status
         #data = self.format_data(data)
         status_list = self._get_status_list()
@@ -88,8 +88,10 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         data = self.get_rule()
-        # for i in data:
-        #     i['is_permission_detail'] = is_permission_detail
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_RULE_DETAILS  ')
+        
+        for i in data:
+            i['is_permission_detail'] = is_permission_detail
         #     i['is_permission_update_status'] = is_permission_update_status
 
         status_list = self._get_status_list()
