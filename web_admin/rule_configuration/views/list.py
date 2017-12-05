@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
-    template_name = "rule/list.html"
+    template_name = "rule_configuration/list.html"
     group_required = "CAN_VIEW_RULE_LIST"
     login_url = 'web:permission_denied'
     logger = logger
