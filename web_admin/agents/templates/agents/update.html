@@ -733,14 +733,14 @@
                         <a href="{{request.META.HTTP_REFERER}}">
                             <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                         </a>
-                        <a>
-                            <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
-                        </a>
                         {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
                             <a href="{% url 'agents:agent_delete' agent_profile.id %}">
                                 <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
                             </a>
                         {% endif %}
+                        <a>
+                            <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
+                        </a>
                     </div>
                 </form>
             </div>
