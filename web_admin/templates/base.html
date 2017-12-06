@@ -87,7 +87,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'system_user:self_change_password' %}">Change Password</a></li>
-                        <li><a href="{% url 'authentications:logout' %}">Logout</a></li>
+                        <li><a id="top-logout" href="{% url 'authentications:logout' %}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}
