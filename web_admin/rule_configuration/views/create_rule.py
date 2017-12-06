@@ -79,6 +79,7 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "name":name,
             "description":description,
             "start_active_timestamp":start_date,
+            "is_active":False
         }
         if end_date != '':
             params['end_active_timestamp'] = end_date
@@ -94,8 +95,6 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create rule ==========')
         if success:
-            messages.success(request, 'Added rule successfully')
-            #return redirect('rule_configuration:create_rule')
             return redirect('rule_configuration:add_mechanic', rule_id=data['id'])
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(status_message))
