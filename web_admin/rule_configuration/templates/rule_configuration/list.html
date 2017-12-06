@@ -10,7 +10,7 @@
                 <div class="pull-left"><h3>Rule List</h3></div>
                 {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN"%}
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                    <a href="#">
+                    <a href="{% url 'rule_configuration:create_rule' %}">
                         <input id="btn_add_campaign" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Rule"/>
                     </a>
                 </div>

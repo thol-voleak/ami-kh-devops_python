@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-sm-2">
                                     <input class="form-control input-rounded"
-                                           type=time min=00:00 max=23:59 step=60
+                                           type=time min=00:00 max=23:59 step=60 value=00:01 required
                                            style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                            id="dtp_start_time" name="start_time">
                             </div>
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     <div class="form-group pull-right">
-                            <a href="{% url 'rule_configuration:create_rule' %}">
+                            <a href="{% url 'rule_configuration:rule_engine' %}">
                                 <input id="btn_cancel" class="btn text-left mb15" type="button"
                                        value="Cancel"/>
                             </a>

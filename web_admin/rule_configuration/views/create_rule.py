@@ -95,7 +95,8 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish create rule ==========')
         if success:
             messages.success(request, 'Added rule successfully')
-            return redirect('rule_configuration:create_rule')
+            #return redirect('rule_configuration:create_rule')
+            return redirect('rule_configuration:add_mechanic', rule_id=data['id'])
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(status_message))
             raise InvalidAccessToken(status_message)
