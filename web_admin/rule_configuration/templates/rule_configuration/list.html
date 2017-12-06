@@ -78,11 +78,7 @@
                     {% for i in data %}
                         <tr>
                             <td>
-                            {%if i.is_permission_detail%}
-                                <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="#">{{ i.id|default_if_none:'' }}</a>
-                            {%else%}
-                            {{ i.id|default_if_none:'' }}
-                            {%endif%}
+                                <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="{% url 'rule_configuration:rule_detail' i.id %}">{{ i.id|default_if_none:'' }}</a>
                             </td>
                             <td>{{ i.name|default_if_none:'' }}</td>
                             <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
