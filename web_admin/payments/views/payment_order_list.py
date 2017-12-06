@@ -57,10 +57,22 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 3, "name": "ROLLED_BACK"},
             {"id": 4, "name": "TIME_OUT"},
         ]
+        error_list = [
+            {"name": "insufficient_fund"},
+            {"name": "security_code_expired"},
+            {"name": "security_code_failed"},
+            {"name": "invalid_request"},
+            {"name": "payment_not_allow"},
+            {"name": "cancel_order_not_allow"},
+            {"name": "general_error"},
+        ]
+        error_code_id = []
 
         context['data'] = data
         context['search_count'] = 0
         context['status_list'] = status_list
+        context['error_list'] = error_list
+        context['error_code_id'] = error_code_id
         context['status_id'] = ''
         context['permissions'] = self._get_has_permissions()
 
@@ -83,6 +95,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
+        error_code = request.POST.getlist('error_code_id')
+
         body = {}
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
@@ -108,6 +122,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['created_client_id'] = creation_client_id
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
+        if error_code:
+            body['error_code'] = error_code
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -146,6 +162,15 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 3, "name": "ROLLED_BACK"},
             {"id": 4, "name": "TIME_OUT"},
         ]
+        error_list = [
+            {"name": "insufficient_fund"},
+            {"name": "security_code_expired"},
+            {"name": "security_code_failed"},
+            {"name": "invalid_request"},
+            {"name": "payment_not_allow"},
+            {"name": "cancel_order_not_allow"},
+            {"name": "general_error"},
+        ]
 
         context = {'order_list': orders,
                    'order_id': order_id,
@@ -160,6 +185,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'execution_client_id': execution_client_id,
                    'ext_transaction_id': ext_transaction_id,
                    'status_list': status_list,
+                   'error_list': error_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,
                    'permissions': self._get_has_permissions(),
@@ -169,6 +195,11 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         if status_id:
             context['status_id'] = int(status_id)
+        if error_code:
+            context['error_code_id'] = error_code
+            print(context['error_code_id'])
+            for i in error_code:
+                print(i)
 
         self.logger.info('========== Finished searching payment order ==========')
 

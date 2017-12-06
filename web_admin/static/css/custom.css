@@ -198,3 +198,8 @@
 #btn_dismiss, #btn_cancel {
     background-color: #e4e2e2;
 }
+
+
+.select-error-code .chosen-choices{
+  padding: 0 0 0 5px !important;
+}
