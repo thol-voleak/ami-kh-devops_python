@@ -27,12 +27,16 @@
     <br>
     <hr>
     <div class="panel mb25">
-        {% if error_msg is not none %}
-            <div class="alert alert-danger" id="msg-update-failed">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong id="alert-msg">{{ error_msg|capfirst }}</strong>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-roles">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
             </div>
         {% endif %}
+        {% endfor %}
         <div class="panel-body">
             <div class="row no-margin">
                 <div class="col-lg-12">
@@ -43,41 +47,38 @@
                             <label class="col-sm-3 control-label">Trigger</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_trigger" name="trigger"  required>
-                                        <option value= "register_customer">Customer Registration</option>
-                                        <option value= "executed_order">Customer Payment</option>
+                                        <option value= "register_customer" {% if trigger == 'register_customer' %}selected{% endif %}>Customer Registration</option>
+                                        <option value= "executed_order" {% if trigger == 'executed_order' %}selected{% endif %}>Customer Payment</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Start Date</label>
+                            <label class="col-sm-3 control-label">Start Date *</label>
                             <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
-                                       name="dtp_start_date" style="height:40px; border-color: {{ border_color }};"
+                                       name="dtp_start_date"
                                        value="{{ dtp_start_date|default_if_none:'' }}"
-                                       id="dtp_start_date">
+                                       id="dtp_start_date" required>
                             </div>
                             <div class="col-xs-2">
                                 <input  class="form-control input-rounded"
                                         type=time min=00:00 max=23:59 step=60 value="00:01"
                                        id="dtp_start_time" name="dtp_start_time"
-                                       value="{{ dtp_start_time|default_if_none:'' }}"
-                                       style="height:40px;border-color: {{ border_color }};">
+                                       value="{{ dtp_start_time|default_if_none:'' }}" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">End Date</label>
                             <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
-                                       name="dtp_end_date" style="height:40px; border-color: {{ border_color }};"
-                                       value="{{ dtp_end_date|default_if_none:'' }}"
+                                       name="dtp_end_date" value="{{ dtp_end_date|default_if_none:'' }}"
                                        id="dtp_end_date">
                             </div>
                             <div class="col-xs-2">
                                 <input  class="form-control input-rounded"
-                                        type=time min=00:00 max=23:59 step=60 value="00:01"
+                                        type=time min=00:00 max=23:59 step=60
                                        id="dtp_end_time" name="dtp_end_time"
-                                       value="{{ dtp_end_time|default_if_none:'' }}"
-                                        style="height:40px;border-color: {{ border_color }};">
+                                       value="{{ dtp_end_time|default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="form-group pull-right">
