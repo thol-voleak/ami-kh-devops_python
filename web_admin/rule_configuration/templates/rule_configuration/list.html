@@ -11,7 +11,7 @@
                 {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN"%}
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                     <a href="{% url 'rule_configuration:create_rule' %}">
-                        <input id="btn_add_campaign" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Rule"/>
+                        <input id="btn_add_new_rule" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Rule"/>
                     </a>
                 </div>
                 {% endif %}
@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Rule ID</label>
                 <div class="col-sm-2">
-                    <input type="number" class="form-control input-rounded" name="campaign_id" id="txt_campaign_id" value="{{ campaign_id }}">
+                    <input type="number" class="form-control input-rounded" name="campaign_id" id="txt_rule_id" value="{{ campaign_id }}">
                 </div>
                 <label class="col-sm-2 control-label">Status</label>
                 <div class="col-sm-2">
@@ -45,14 +45,14 @@
                         <input type="date" class="form-control input-rounded"
                                name="dtp_from"
                                value="{{ start_date|default_if_none:'' }}"
-                               id="dtp_from">
+                               id="dtp_start_date">
                     </div>
                     <label class="col-sm-2 control-label">To</label>
                     <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="dtp_to"
                                value="{{ to_date|default_if_none:'' }}"
-                               id="dtp_to">
+                               id="dtp_end_date">
                     </div>
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
 
@@ -64,7 +64,7 @@
         </form>
             
             <div class="no-more-tables">
-                <table id='tbl_campaign' class="table table-bordered table-striped mb0">
+                <table id='tbl_rules' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
                         <th id="ddl_campaign_id">Rule ID</th>
