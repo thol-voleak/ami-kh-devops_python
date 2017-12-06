@@ -234,3 +234,5 @@ GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rul
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/report'
 CREATE_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
+GET_RULE_CONDITION_DATA_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/data-types'
+GET_RULE_OPERATION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/operators'

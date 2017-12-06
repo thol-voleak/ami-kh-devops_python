@@ -66,4 +66,4 @@ class AddMechanic(TemplateView, GetHeaderMixin):
                                 response=data, status_code=status_code)
 
         self.logger.info('========== Finish adding Mechanic ==========')
-        return redirect('rule_configuration:add_condition')
+        return redirect('rule_configuration:add_condition', rule_id=rule_id, mechanic_id=data['id'])
