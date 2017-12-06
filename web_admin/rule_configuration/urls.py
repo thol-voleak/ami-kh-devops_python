@@ -5,6 +5,7 @@ from .views.add_condition import AddRuleCondition
 from .views.create_rule import CreateRuleView
 from .views.add_mechanic import AddMechanic
 from .views.detail import RuleDetail
+from .views.add_action import AddRuleAction
 
 
 app_name = 'rule_configuration'
@@ -19,4 +20,7 @@ urlpatterns = [
         name="create_rule"),
     url(r'^detail/(?P<rule_id>[0-9A-Za-z]+)/$', login_required(RuleDetail.as_view(), login_url='authentications:login'),
         name="rule_detail"),
+    url(r'^(?P<rule_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/action/create$',
+        login_required(AddRuleAction.as_view(), login_url='authentications:login'),
+        name="add_action"),
 ]

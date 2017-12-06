@@ -58,13 +58,13 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if not success:
             return self.render_add_condition_page(request, context, message, params)
 
-        if request.POST['add_more_condition']:
+        if 'add_more_condition' in request.POST.keys():
             self.get_page_data(context)
             messages.success(request, 'Condition is successfully created')
             return render(request, self.template_name, context)
 
-        if request.POST['next']:
-            pass
+        if 'next' in request.POST.keys():
+            return redirect('rule_configuration:add_action', rule_id=rule_id, mechanic_id=mechanic_id)
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Add Rule Condition page ==========')
