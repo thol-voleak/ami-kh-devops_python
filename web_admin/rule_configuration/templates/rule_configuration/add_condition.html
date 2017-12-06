@@ -57,7 +57,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Key Value Type</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_key_value" name="key_value_type">
+                                <select class="form-control" id="ddl_key_value_type" name="key_value_type">
                                     {% for type in key_value_types %}
                                         <option value= "{{ type }}" {% if selected_value_type == type %}selected{% endif %}>{{ type }}</option>
                                     {% endfor %}
