@@ -11,7 +11,7 @@ app_name = 'rule_configuration'
 
 urlpatterns = [
     url(r'^$', login_required(RuleList.as_view(), login_url='authentications:login'), name="rule_engine"),
-    url(r'^(?P<rule_id>[0-9A-Za-z]+)/(?P<mechanic_id>[0-9A-Za-z]+)/condition/$', login_required(AddRuleCondition.as_view(), login_url='authentications:login'),
+    url(r'^(?P<rule_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/condition/create$', login_required(AddRuleCondition.as_view(), login_url='authentications:login'),
         name="add_condition"),
     url(r'^(?P<rule_id>[0-9A-Za-z]+)/mechanic/create$', login_required(AddMechanic.as_view(), login_url='authentications:login'),
         name="add_mechanic"),
