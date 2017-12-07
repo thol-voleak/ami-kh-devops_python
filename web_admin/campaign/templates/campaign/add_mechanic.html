@@ -378,7 +378,7 @@
             var triggerValue = $("#ddl_trigger").val();
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
 
-            if (triggerValue === 'register_customer') {
+            if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
