@@ -79,7 +79,7 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "name":name,
             "description":description,
             "start_active_timestamp":start_date,
-            "is_active":False
+            "is_active":True
         }
         if end_date != '':
             params['end_active_timestamp'] = end_date
