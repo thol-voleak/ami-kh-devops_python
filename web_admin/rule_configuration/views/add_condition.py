@@ -128,7 +128,7 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         operations_map = {
             "<": 'Less Than', ">": 'More Than', "=": 'Equal to',
             "!=": 'Not Equal to', "<=": 'Less than or Equal to',
-            ">=": 'More than or equal to'
+            ">=": 'More than or Equal to'
         }
         converted_operators = []
         for operator in operations:

@@ -38,7 +38,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(AddMechanic, self).get_context_data(**kwargs)
         context['dtp_start_date'] = datetime.now().strftime("%Y-%m-%d")
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
-        operations = ["Less Than", "More Than", "Equal to", "Not Equal to", "Less than or Equal to", "More than or equal to"]
+        operations = ["Less Than", "More Than", "Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to"]
 
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
@@ -119,7 +119,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         operations_map = {
             "Less Than": '<', "More Than": '>', "Equal to": '=',
             "Not Equal to": '!=', "Less than or Equal to": '<=',
-            "More than or equal to": '>='
+            "More than or Equal to": '>='
         }
         kv_type_map = {
             "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
@@ -279,7 +279,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
         operations = ["Less Than", "More Than", "Equal to", "Not Equal to",
                       "Less than or Equal to",
-                      "More than or equal to"]
+                      "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
