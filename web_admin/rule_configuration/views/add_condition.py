@@ -42,7 +42,6 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'operator': request.POST['operator']
         }
 
-        self.logger.info('========== Start adding Condition ==========')
         success, data, message = self.create_condition(rule_id, mechanic_id, {'filter_type': request.POST.get('condition_type')})
         self.logger.info('========== Finish adding Condition ==========')
 
