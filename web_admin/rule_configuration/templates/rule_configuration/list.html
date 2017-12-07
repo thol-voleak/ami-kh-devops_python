@@ -18,6 +18,39 @@
                <div class="clearfix"></div>
            </div>
 
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    alert-success
+                    alert-dismissable' id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+    {% if msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if add_client_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-add-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ add_client_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" style="display:none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'rule_configuration:rule_engine' %}">
             {% csrf_token %}
@@ -56,8 +89,12 @@
                     </div>
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
 
+                    <div class="col-xs-1" style='display: none;'>
+                        <input id="btn_submit" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                    </div>
                     <div class="col-xs-1">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search" onclick="searchRule()"
                                value="Search">
                     </div>
                 </div>
@@ -142,4 +179,17 @@
         </div>
     </div>
 </div>
+<script>
+    var searchRule = function() {
+      var startDate = $('#dtp_start_date').val();
+      var endDate = $('#dtp_end_date').val();
+      if(startDate > endDate) {
+        $('#alert-client #alert-msg').text('End Date could not be less than Start Date');
+        $('#alert-client').css('display', 'block');
+        return;
+      }
+      $('#btn_submit').click();
+
+    };
+</script>
 {% endblock %}
