@@ -32,26 +32,26 @@
         <div class="pull-left">
         <p class="bold" style="margin-bottom:0;">
             <label size="2"><strong>Rule ID:</strong></label>
-            <span id="lbl_campaign_id" style="text-transform: uppercase">{{data.id}}</span>
+            <span id="lbl_rule_id" style="text-transform: uppercase">{{data.id}}</span>
         </p>
         <p class="bold">
             <label size="2"><strong>Rule Name:</strong></label>
-            <span id="lbl_campaign_name">{{data.name}}</span>
+            <span id="lbl_rule_name">{{data.name}}</span>
         </p>
         </div>
     </div>
     <div class="panel-body" style="margin-top: -20px;">
         <p>
             <label>Rule Description:</label>
-            <span id="lbl_campaign_description">{{data.description}}</span>
+            <span id="lbl_rule_description">{{data.description}}</span>
         </p>
         <p style="margin-bottom:0; ,">
             <label size="2">Start Date: </label>
-            <span id="lbl_campaign_start_date">{{data.start_active_timestamp}}</span>
+            <span id="lbl_rule_start_date">{{data.start_active_timestamp}}</span>
         </p>
         <p><font size="2"></font>
         <label>End Date:</label>
-        <span id="lbl_campaign_end_date">{{data.end_active_timestamp}}</span>
+        <span id="lbl_rule_end_date">{{data.end_active_timestamp}}</span>
         </p>
     </div>
 </div>
@@ -69,18 +69,18 @@
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
                     </div>
-                    {%if not data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
-                    <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
-                            <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
-                               data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"
-                               class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>
-                    </div>
-                    {% endif %}
+{#                    {%if not data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}#}
+{#                    <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">#}
+{#                            <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"#}
+{#                               data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"#}
+{#                               class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>#}
+{#                    </div>#}
+{#                    {% endif %}#}
                 </div>
                 <div class="panel-body" style="margin-top: -20px;">
                     <p style="margin-bottom:0; ,">
                         <label size="2">Trigger:</label>
-                        <span id="lbl_trigger">{{i.event_name}}</span>
+                        <span id="lbl_mechanic_trigger">{{i.event_name}}</span>
                     </p>
                     <p style="margin-bottom:0; ,">
                         <label size="2">Start Date: </label>
@@ -91,46 +91,48 @@
                     <span id="lbl_mechanic_end_date">{{i.end_timestamp}}</span>
                     </p>
                     {%for condition in i.condition_list%}
-                        <p style="margin-bottom:0; ,">
+                        <div id="div_condition_{{ condition.condition_detail.id }}">
+                            <p style="margin-bottom:0; ,">
                             <label size="2"><strong>Condition Id:</strong></label>
                             <span id="lbl_condition_id"><strong>{{condition.condition_detail.id}}</strong></span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2">Condition Type:</label>
-                            <span id="lbl_condition_type">{%if condition.condition_detail.filter_type == 'event_detail'%}Event Detail{%endif%}</span>
-                        </p>
-                        {%for comparison in condition.comparison_list%}
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Detail Name:</label>
-                                <span id="lbl_comparison_key_name">{{comparison.key_name}}</span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Key Value Type:</label>
-                                <span id="lbl_comparison_key_value_type">{{comparison.key_value_type}}</span>
+                                <label size="2">Condition Type:</label>
+                                <span id="lbl_condition_type">{%if condition.condition_detail.filter_type == 'event_detail'%}Event Detail{%endif%}</span>
                             </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2" >Operator:</label>
-                                <span id="lbl_operator">
-                                {%if comparison.operator == '=' %}
-                                <span>Equal to</span>
-                                {%elif comparison.operator == '>' %}
-                                <span>More Than</span>
-                                {%elif comparison.operator == '>=' %}
-                                <span>More Than or Equal to</span>
-                                {%elif comparison.operator == '<' %}
-                                <span>Less Than</span>
-                                {%elif comparison.operator == '<=' %}
-                                <span>Less Than or Equal to</span>
-                                {%elif comparison.operator == '!=' %}
-                                <span>Not Equal to</span>
-                                {%endif%}
-                                </span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Key Value:</label>
-                                <span id="lbl_comparison_key_value">{{comparison.key_value}}</span>
-                            </p>
-                        {%endfor%}
+                            {%for comparison in condition.comparison_list%}
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Detail Name:</label>
+                                    <span id="lbl_condition_detail_name">{{comparison.key_name}}</span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Key Value Type:</label>
+                                    <span id="lbl_key_value_type">{{comparison.key_value_type}}</span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2" >Operator:</label>
+                                    <span id="lbl_operator">
+                                    {%if comparison.operator == '=' %}
+                                    <span>Equal to</span>
+                                    {%elif comparison.operator == '>' %}
+                                    <span>More Than</span>
+                                    {%elif comparison.operator == '>=' %}
+                                    <span>More Than or Equal to</span>
+                                    {%elif comparison.operator == '<' %}
+                                    <span>Less Than</span>
+                                    {%elif comparison.operator == '<=' %}
+                                    <span>Less Than or Equal to</span>
+                                    {%elif comparison.operator == '!=' %}
+                                    <span>Not Equal to</span>
+                                    {%endif%}
+                                    </span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Key Value:</label>
+                                    <span id="lbl_key_value">{{comparison.key_value}}</span>
+                                </p>
+                            {%endfor%}
+                        </div>
                     {%endfor%}
                     {% if i.reward is not None %}
                         <p></p>
@@ -164,15 +166,15 @@
 
     <div class="form-group pull-right">
         <a href="{% url 'rule_configuration:rule_engine' %}">
-            <input id="btn_dismiss" class="btn text-left mb15" type="button"
-                   value="Dismiss"/>
+            <input id="btn_cancel" class="btn text-left mb15" type="button"
+                   value="Cancel"/>
         </a>
-        {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
+{#        {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}#}
             <a href="{% url 'rule_configuration:add_mechanic' rule_id %}">
-                <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
+                <input id="btn_add_more_mechanic" class="btn btn-success text-left mb15" type="submit"
                        value="Add More Mechanic"/>
             </a>
-        {% endif %}
+{#        {% endif %}#}
 
     </div>
 {% endblock %}
