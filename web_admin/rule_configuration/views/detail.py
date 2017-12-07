@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class RuleDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "rule_configuration/rule_detail.html"
-    group_required = "CAN_VIEW_CAMPAIGN_DETAILS"
+    group_required = "CAN_VIEW_RULE_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
     person = {
@@ -76,11 +76,15 @@ class RuleDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
 
+        permissions = {}
+        permissions['CAN_DELETE_RULE_MECHANIC'] = check_permissions_by_user(self.request.user, 'CAN_DELETE_RULE_MECHANIC')
+        permissions['CAN_CREATE_RULE'] = check_permissions_by_user(self.request.user,'CAN_CREATE_RULE')
         context.update({
             'data': data,
             'active_mechanic_count': active_mechanic_count,
             'mechanic': mechanic,
-            'len_mechanic': len(mechanic)
+            'len_mechanic': len(mechanic),
+            'permissions': permissions
         })
         self.logger.info('========== Finish get mechanic list ==========')
         self.logger.info('========== Finish get rule detail ==========')
