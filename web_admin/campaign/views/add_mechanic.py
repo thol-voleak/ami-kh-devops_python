@@ -321,7 +321,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return success, data, message
 
     def _filter_detail_names(self, data):
-        filtered = [v for v in data if (v.term != 'register_customer') and (v.term != 'executed_order')]
+        filtered = [v for v in data if (v.term != 'register_customer') and (v.term != 'executed_order') and (v.term != 'login')]
         return filtered
 
     def _filter_trigger(self, data):
