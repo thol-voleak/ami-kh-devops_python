@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_CREATE_CAMPAIGN"
+    group_required = "CAN_CREATE_RULE"
     login_url = 'web:permission_denied'
     raise_exception = False
     def check_membership(self, permission):
