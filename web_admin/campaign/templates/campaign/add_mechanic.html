@@ -161,7 +161,7 @@
                         <div class="form-group" id="div_send_to" hidden>
                             <label class="col-sm-3 control-label">Send to *</label>
                             <div class="col-xs-3">
-                                <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" required placeholder="Enter URL">
+                                <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" placeholder="Enter URL">
                             </div>
                         </div>
                         <div class="form-group" id="div_amount">
@@ -191,14 +191,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div id="div_fixed_cashback">
-                            <div class="form-group" id="lbl_paid_amount" hidden>
-                                <label class="col-sm-3 control-label">Paid Amount</label>
-                                <div class="col-xs-3">
-                                    <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
-                                </div>
+                        <div class="form-group" id="lbl_paid_amount" hidden>
+                            <label class="col-sm-3 control-label">Paid Amount</label>
+                            <div class="col-xs-3">
+                                <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
                             </div>
-
+                        </div>
+                        <div id="div_fixed_cashback">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
                             </div>
@@ -256,7 +255,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Key Name *</label>
                                             <div class="col-xs-3">
-                                                <input id="txt_reward_key_name" class="form-control input-rounded" name="reward_key_name" type="text" required>
+                                                <input id="txt_reward_key_name" class="form-control input-rounded" name="reward_key_name" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -272,7 +271,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Key Value *</label>
                                             <div class="col-xs-3">
-                                                <input id="txt_reward_key_value" class="form-control input-rounded" name="reward_key_value" type="number" required>
+                                                <input id="txt_reward_key_value" class="form-control input-rounded" name="reward_key_value" type="number">
                                             </div>
                                         </div>
                                     </div>
@@ -458,6 +457,16 @@
             element.style.display = 'block';
         }
 
+        function setRequired(id) {
+            var element = document.getElementById(id);
+            element.setAttribute("required", "");
+        }
+
+        function setNotRequired(id) {
+            var element = document.getElementById(id);
+            element.removeAttribute("required");
+        }
+
         function listenTrigger() {
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
@@ -508,16 +517,36 @@
         }
         function listenRewardType (rType) {
             if (rType === 'send_notification') {
+                var nodes = document.getElementById("div_fixed_cashback").getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = false;
+                }
                 hideElement('div_amount');
+                setNotRequired('txt_amount');
                 hideElement('div_reward_recipient');
                 hideElement('div_fixed_cashback');
                 showElement('div_send_to');
+                setRequired('txt_send_to');
                 showElement('div_send_notification');
+                var nodes = document.getElementById("div_send_notification").getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = true;
+                }
             }   else if (rType === 'fixed_cashback') {
                 hideElement('div_send_to');
+                setNotRequired('txt_send_to');
                 hideElement('div_send_notification');
+                var nodes = document.getElementById("div_send_notification").getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = false;
+                }
                 showElement('div_fixed_cashback');
+                var nodes = document.getElementById("div_fixed_cashback").getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = true;
+                }
                 showElement('div_amount');
+                setRequired('txt_amount');
                 showElement('div_reward_recipient');
             }
         }
@@ -527,10 +556,12 @@
             var div_user_defined = $(div_from_database).next('div');
             if (dType === 'from_database') {
                 hideElement(div_user_defined.attr('id'));
+                div_user_defined.disabled = true;
                 showElement(div_from_database.attr('id'));
             }   else if (dType === 'user_defined') {
                 hideElement(div_from_database.attr('id'));
                 showElement(div_user_defined.attr('id'));
+                div_user_defined.disabled = false;
             }
         }
 
