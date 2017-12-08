@@ -140,20 +140,33 @@
                             <label size="2"><strong>Action</strong></label>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
-                            <label>Give Reward to:</label>
-                            <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                            <label>Action Type:</label>
+                            <span id="lbl_action_type">{{i.reward.reward_type|default_if_none:''}}</span>
+                        </p>
+                        {% if i.reward.reward_type == 'notification' %}
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label size="2"> Send to:</label>
+                            <span id="lbl_send_to">{{i.reward.send_to|default_if_none:''}}</span>
+                        </p>
+                        {% endif %}
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Data to be sent</strong></label>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2"> Reward Recipient should be:</label>
-                            <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
+                                <label size="2">Data Type:</label>
+                                <span id="lbl_data_type">User Defined</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Reward Type:</label>
-                                <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
+                                <label size="2">Key Name:</label>
+                                <span id="lbl_key_name">{{i.reward.key_name|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Amount:</label>
-                                <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
+                                <label size="2">Key Value Type:</label>
+                                <span id="lbl_key_value_type">{{i.reward.key_value_type|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Key Value:</label>
+                                <span id="lbl_key_value">{{i.reward.key_value|default_if_none:''}}</span>
                         </p>
                     {% endif %}
                 </div>
