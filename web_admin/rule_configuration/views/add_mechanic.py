@@ -1,4 +1,4 @@
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
 from web_admin.api_settings import CREATE_MECHANIC
@@ -7,13 +7,25 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from datetime import datetime
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
+from web_admin import api_settings
 import logging
-
+from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)
 
-class AddMechanic(TemplateView, GetHeaderMixin):
+class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+    group_required = "CAN_CREATE_RULE"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
     template_name = 'rule_configuration/add_mechanic.html'
+    path = api_settings.CREATE_RULE
+    logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

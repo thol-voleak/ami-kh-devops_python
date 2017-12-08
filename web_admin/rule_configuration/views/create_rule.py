@@ -13,7 +13,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_CREATE_CAMPAIGN"
+    group_required = "CAN_CREATE_RULE"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -79,7 +79,7 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "name":name,
             "description":description,
             "start_active_timestamp":start_date,
-            "is_active":False
+            "is_active":True
         }
         if end_date != '':
             params['end_active_timestamp'] = end_date
@@ -100,7 +100,7 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             self.logger.info("{}".format(status_message))
             raise InvalidAccessToken(status_message)
         elif status_message == 'Invalid date time':
-            body['error_msg'] = 'not valid date time'
+            body['error_msg'] = 'End Date could not be less than Start Date'
             body['border_color'] = "red"
             context.update(body)
             return render(request, self.template_name,context )

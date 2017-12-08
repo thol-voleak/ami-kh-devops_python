@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_CREATE_CAMPAIGN"
+    group_required = "CAN_CREATE_RULE"
     login_url = 'web:permission_denied'
     raise_exception = False
     def check_membership(self, permission):
@@ -128,7 +128,7 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         operations_map = {
             "<": 'Less Than', ">": 'More Than', "=": 'Equal to',
             "!=": 'Not Equal to', "<=": 'Less than or Equal to',
-            ">=": 'More than or equal to'
+            ">=": 'More than or Equal to'
         }
         converted_operators = []
         for operator in operations:
