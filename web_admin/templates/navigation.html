@@ -435,8 +435,8 @@
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_VIEW_RULE_LIST"%}
-            {% check_valid_url url_name 'rule_configuration' as is_fp_url %}
-            <li class="menu-accordion {% if is_fp_url %}open{% endif %}">
+            {% check_valid_url url_name 'rule_configuration' as is_rule_configuration_url %}
+            <li class="menu-accordion {% if is_rule_configuration_url %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-history"></i> <span>Rule Configuration</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'rule_engine'%}active{% endif %}">
