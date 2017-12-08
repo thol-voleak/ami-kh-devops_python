@@ -72,6 +72,10 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         #     i['is_permission_update_status'] = is_permission_update_status
         #data = self.format_data(data)
         status_list = self._get_status_list()
+        permissions = {}
+        permissions['CAN_VIEW_RULE_DETAILS'] = check_permissions_by_user(self.request.user,'CAN_VIEW_RULE_DETAILS')
+        permissions['CAN_CREATE_RULE'] = check_permissions_by_user(self.request.user, 'CAN_CREATE_RULE')
+
         context = {
             'data': data,
             'status_list': status_list,
@@ -80,6 +84,7 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'selected_status': status,
             'start_date': start_date,
             'to_date': to_date,
+            'permissions': permissions,
         }
 
         self.logger.info('========== Finished searching Rule ==========')

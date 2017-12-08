@@ -9,11 +9,11 @@ from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 import logging
-
+from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)
 
-class AddMechanic(TemplateView, GetHeaderMixin):
+class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_CREATE_RULE"
     login_url = 'web:permission_denied'
     raise_exception = False

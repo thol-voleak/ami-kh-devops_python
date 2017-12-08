@@ -8,7 +8,7 @@
         <div class="panel-heading border mb15">
            <div>
                 <div class="pull-left"><h3>Rule List</h3></div>
-                {% if request.user|has_permission_name:"CAN_CREATE_RULE"%}
+                {% if permissions.CAN_CREATE_RULE %}
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                     <a href="{% url 'rule_configuration:create_rule' %}">
                         <input id="btn_add_new_rule" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Rule"/>
@@ -115,7 +115,12 @@
                     {% for i in data %}
                         <tr>
                             <td>
+                                {% if permissions.CAN_VIEW_RULE_DETAILS %}
                                 <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="{% url 'rule_configuration:rule_detail' i.id %}">{{ i.id|default_if_none:'' }}</a>
+                                {%else%}
+                                <span id="{{ i.id }}">{{ i.id|default_if_none:'' }}</span>
+                                {%endif%}
+
                             </td>
                             <td>{{ i.name|default_if_none:'' }}</td>
                             <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
