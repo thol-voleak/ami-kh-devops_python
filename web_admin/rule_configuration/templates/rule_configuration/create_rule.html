@@ -97,7 +97,7 @@
     
     function VerifyDate(element) {
         if (new Date(element.value) <= new Date(dtp_start_date.value)) {
-            dtp_end_date.setCustomValidity('End date if exist has to be bigger than start date');
+            dtp_end_date.setCustomValidity('End Date could not be less than Start Date');
               return false;
         } else {
             dtp_end_date.setCustomValidity('');
