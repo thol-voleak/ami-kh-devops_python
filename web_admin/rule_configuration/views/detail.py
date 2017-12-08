@@ -64,14 +64,15 @@ class RuleDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if len(action) > 0:
                     action = action[0]
                     reward['reward_type'] = action['action_type']['name']
-                    for j in action['action_data']:
-                        if j['key_name'] == 'payee_user.user_id':
-                            if j['key_value'] in self.person.keys():
-                                reward['reward_to'] = self.person[j['key_value']]
-                        if j['key_name'] == 'payee_user.user_type':
-                            reward['recipient'] = j['key_value']
-                        if j['key_name'] == 'amount':
-                            reward['amount'] = j['key_value']
+                    if action['action_data'][0]['key_name'] == 'notification_url':
+                        reward['send_to'] = action['action_data'][0]['key_value']
+                        reward['key_name'] = action['action_data'][1]['key_name']
+                        reward['key_value'] = action['action_data'][1]['key_value']
+                        reward['key_value_type'] = action['action_data'][1]['key_value_type']
+                    else:
+                        reward['key_name'] = action['action_data'][0]['key_name']
+                        reward['key_value'] = action['action_data'][0]['key_value']
+                        reward['key_value_type'] = action['action_data'][0]['key_value_type']
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
