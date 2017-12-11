@@ -196,7 +196,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 },
                 {
                     'key_name': 'payee_user.user_type',
-                    'key_value': request.POST.get('reward_type'),
+                    'key_value': request.POST.get('reward_recipient'),
                     'key_value_type': 'text'
                 },
                 {
@@ -229,7 +229,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "filters": [
                 {
                     'key_name': 'payee_user.user_type',
-                    'key_value': request.POST.get('reward_type'),
+                    'key_value': request.POST.get('reward_recipient'),
                     'key_value_type': 'text',
                     "operator": "="
                 },
