@@ -612,10 +612,12 @@
             var inputEle = dataClone.getElementsByTagName("input");
             for (var i = 0; i < inputEle.length; i++) {
                 inputEle[i].name += (_data_counter + "");
+                inputEle[i].id += (_data_counter + "");
             }
             var ddlEle = dataClone.getElementsByTagName("select");
             for (var i = 0; i < ddlEle.length; i++) {
                 ddlEle[i].name += (_data_counter + "");
+                ddlEle[i].id += (_data_counter + "");
             }
 
             dataClone.id = "data_tobe_send_" + _data_counter;
