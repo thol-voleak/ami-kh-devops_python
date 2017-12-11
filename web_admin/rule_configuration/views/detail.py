@@ -65,10 +65,18 @@ class RuleDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     action = action[0]
                     reward['reward_type'] = action['action_type']['name']
                     if action['action_type']['id'] == 2:
-                        reward['send_to'] = action['action_data'][0]['key_value']
-                        reward['key_name'] = action['action_data'][1]['key_name']
-                        reward['key_value'] = action['action_data'][1]['key_value']
-                        reward['key_value_type'] = action['action_data'][1]['key_value_type']
+                        if action['action_data'][0]['key_name'] == 'notification_url':
+                            reward['send_to'] = action['action_data'][0]['key_value']
+                            reward['key_name'] = action['action_data'][1]['key_name']
+                            reward['key_value'] = action['action_data'][1]['key_value']
+                            reward['key_value_type'] = action['action_data'][1]['key_value_type']
+                        else:
+                            reward['key_name'] = action['action_data'][0]['key_name']
+                            reward['key_value'] = action['action_data'][0]['key_value']
+                            reward['key_value_type'] = action['action_data'][0]['key_value_type']
+                            for action_item in action['action_data']:
+                                if action_item['key_name'] == 'notification_url':
+                                    reward['send_to'] = action_item['key_value']
                     else:
                         reward['key_name'] = action['action_data'][0]['key_name']
                         reward['key_value'] = action['action_data'][0]['key_value']
