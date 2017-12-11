@@ -1,14 +1,133 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <div class="row no-margin rule-engine-step-bar clearfix">
-    <div class="col-sm-2 title">Create Action</div>
-    <div class="col-sm-10">
-        <ul class="progressbar">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li class="active"></li>
-        </ul>
+        <div class="col-sm-2 title">Create Action</div>
+        <div class="col-sm-10">
+            <ul class="progressbar">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li class="active"></li>
+            </ul>
+        </div>
+    </div>
+<div class="panel mb25">
+
+    {% if error_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ error_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="panel-body">
+
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{{ request.path }}">
+                    {% csrf_token %}
+                    <br/>
+                    <div class="form-group">
+                            <label class="col-sm-3 control-label">Action Type</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_action_type" name="action_type">
+                                    {% for action_type in action_types %}
+                                        <option value= "{{ action_type.id }}" {% if action_type_id == action_type.id %}selected{% endif %}>{{ action_type.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    <div class="form-group" id="send-to-area">
+                            <label class="col-sm-3 control-label">Send to *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_send_to" value="{{ send_to }}" class="form-control input-rounded" name="send_to" type="text">
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-sm-3 control-label">Data Type</label>
+                            <div class="col-xs-2">
+                                <select class="form-control" id="ddl_data_type">
+                                    <option>User Defined</option>
+                                </select>
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-sm-3 control-label">Key Name *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_key_name" value="{{ key_name }}" class="form-control input-rounded" name="key_name" type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <label class="col-sm-3 control-label">Key Value Type</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control" id="ddl_key_value_type" name="key_value_type">
+                                        {% for type in data_types %}
+                                            <option value= "{{ type }}" {% if selected_value_type == type %}selected{% endif %}>{{ type }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                    <div class="form-group">
+                            <label class="col-sm-3 control-label">Key Value *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_key_value" value="{{ key_value }}" class="form-control input-rounded" name="key_value" type="text" required>
+                            </div>
+                        </div>
+                    <div class="form-group pull-right">
+                            <a href="{% url 'rule_configuration:rule_engine' %}">
+                                <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                       value="Cancel"/>
+                            </a>
+                            <input id="btn_next" class="btn btn-success text-left mb15" type="submit"
+                                   value="Next"/>
+                        </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+        var $key_value_type = $('#ddl_key_value_type');
+        function updateKeyType() {
+            var $key_value = $('#txt_key_value');
+            $key_value.removeAttr('type')
+            if ($key_value_type.val() == 'text') {
+                $key_value.val('');
+                $key_value.attr('type', 'text');
+            }
+            if ($key_value_type.val() == 'numeric'){
+                $key_value.val('');
+                $key_value.attr('type', 'number');
+            }
+            if ($key_value_type.val() == 'timestamp'){
+                $key_value.val('');
+                $key_value.attr('type', 'datetime-local');
+            }
+        }
+        updateKeyType();
+        $key_value_type.change(function() {
+            updateKeyType();
+        });
+        $('#send-to-area').hide();
+        var $action_type = $('#ddl_action_type');
+        function updateActionType(){
+            if ($action_type.val() != '2') {
+                $('#send-to-area').hide();
+                $('#txt_send_to').removeAttr('required');
+            }
+            else {
+                $('#send-to-area').show();
+                $('#txt_send_to').attr('required', true);
+            }
+        }
+        $action_type.change(function(){
+            updateActionType();
+        })
+    </script>
+{%  endblock %}
