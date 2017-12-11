@@ -108,7 +108,7 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                         "ext_transaction_id", "payment_method_name", "payment_method_ref", "command_id", "service_name",
                         "service_id", "command_name", "service_command_id", "initiator_user_id", "initiator_user_type",
                         "initiator_sof_id", "initiator_sof_type_id", "payer_user_id", "payer_user_type",
-                        "payer_user_ref_type", "payer_user_left_value", "payer_sof_id", "payer_sof_type_id",
+                        "payer_user_ref_type", "payer_user_ref_value", "payer_sof_id", "payer_sof_type_id",
                         "payee_user_id", "payee_user_type", "payee_user_ref_type", "payee_user_ref_value",
                         "payee_sof_id", "payee_sof_type_id", "currency", "ref_order_id", "amount", "fee", "bonus",
                         "settlement_amount", "product_name", "product_ref1", "product_ref2", "product_ref3",
