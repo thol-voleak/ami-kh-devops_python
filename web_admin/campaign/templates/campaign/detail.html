@@ -154,6 +154,28 @@
                                 <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
                         </p>
                     {% endif %}
+                    {%for limitation in i.limitation_list%}
+                        <p></p>
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Limitation</strong></label>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Limit Type: </label>
+                                <span id="lbl_reward_type">{{limitation.limit_type|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Limit to: </label>
+                                <span id="lbl_reward_type">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label size="2">Recipient should be:</label>
+                            <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label>Give Reward to:</label>
+                            <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                        </p>
+                    {%endfor%}
                 </div>
             </div>
         </div>

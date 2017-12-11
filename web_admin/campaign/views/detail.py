@@ -9,7 +9,7 @@ import logging
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
 from authentications.apps import InvalidAccessToken
-from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST
+from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST, GET_LIMITION_LIST
 from django.contrib import messages
 
 
@@ -61,8 +61,10 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     self.logger.info('========== Finish get condition detail ==========')
                 self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
+                action_id = None
                 if len(action) > 0:
                     action = action[0]
+                    action_id = action['id']
                     reward['reward_type'] = action['action_type']['name']
                     for j in action['action_data']:
                         if j['key_name'] == 'payee_user.user_id':
@@ -75,6 +77,12 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
+                if action_id:
+                    limitation= self.get_limitation_list(campaign_id, i['id'], action_id)
+                    i['limitation_list'] = []
+                    for limitation in limitation:
+                        if not limitation['is_deleted']:
+                            i['limitation_list'].append(limitation)
 
         context.update({
             'data': data,
@@ -128,6 +136,14 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get_rewards_list(self, campaign_id, mechanic_id):
         url = settings.DOMAIN_NAMES + GET_REWARD_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id)
         self.logger.info('========== Start get action list ==========')
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_limitation_list(self, campaign_id, mechanic_id, action_id):
+        url = settings.DOMAIN_NAMES + GET_LIMITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_action_id=action_id)
+        self.logger.info('========== Start get limitation list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
