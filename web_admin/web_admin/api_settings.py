@@ -242,3 +242,6 @@ GET_RULE_CONDITION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{
 GET_RULE_COMPARISON_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/comparisons'
 GET_RULE_CONDITION_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}'
 GET_RULE_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
+GET_ACTION_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/action-types'
+GET_DATA_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/data-types'
+CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
