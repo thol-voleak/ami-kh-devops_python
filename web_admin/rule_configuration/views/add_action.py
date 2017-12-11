@@ -83,7 +83,8 @@ class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create action ==========')
         if success:
-            return redirect('rule_configuration:rule_detail', rule_id=data['id'])
+            messages.success(request, "Rule ID {} is updated successfully".format(rule_id))
+            return redirect('rule_configuration:rule_detail', rule_id=rule_id)
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(status_message))
             raise InvalidAccessToken(status_message)
