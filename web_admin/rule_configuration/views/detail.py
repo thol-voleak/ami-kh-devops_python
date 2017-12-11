@@ -64,7 +64,7 @@ class RuleDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if len(action) > 0:
                     action = action[0]
                     reward['reward_type'] = action['action_type']['name']
-                    if action['action_data'][0]['key_name'] == 'notification_url':
+                    if action['action_type']['id'] == 2:
                         reward['send_to'] = action['action_data'][0]['key_value']
                         reward['key_name'] = action['action_data'][1]['key_name']
                         reward['key_value'] = action['action_data'][1]['key_value']
