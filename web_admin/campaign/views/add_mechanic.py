@@ -229,7 +229,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                          "product_ref4", "product_ref5", "state", "is_deleted",
                          "created_client_id", "executed_client_id",
                          "description", "client_id", "bank_account_name",
-                         "ext_bank_reference", "sof_type"],
+                         "ext_bank_reference", "sof_type", "channel"],
                 "numeric": ["user_id", "command_id", "service_id",
                             "service_command_id", "initiator_user_id",
                             "initiator_sof_id", "initiator_sof_type_id",
