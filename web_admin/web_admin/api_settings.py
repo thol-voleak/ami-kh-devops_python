@@ -1,4 +1,4 @@
-API_VERSION = 'v2.0'
+API_VERSION = 'v2.1'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
