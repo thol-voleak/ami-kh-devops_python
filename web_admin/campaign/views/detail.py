@@ -79,6 +79,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 self.logger.info('========== Finish get action detail  ==========')
                 if action_id:
                     limitation= self.get_limitation_list(campaign_id, i['id'], action_id)
+                    self.logger.info('========== Finish get limitation list ==========')
                     i['limitation_list'] = []
                     for limitation in limitation:
                         if not limitation['is_deleted']:
