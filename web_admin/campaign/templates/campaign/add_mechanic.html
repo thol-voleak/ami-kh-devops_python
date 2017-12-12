@@ -4,6 +4,12 @@
 {% block body_stylesheet %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <style>
+        .recipient-mechanic {
+            position: relative;
+            top: 10px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -25,16 +31,21 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Trigger</label>
-                            <div class="col-sm-2">
+                            <div class="col-xs-3">
                                 <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
-                                    <option value="register_customer">Customer Registration</option>
-                                    <option value="executed_order">Customer Payment</option>
+                                    {% for item in trigger %}
+                                        {% if item.description != "" %}
+                                        <option value= "{{ item.term }}">{{ item.description }}</option>
+                                        {% else %}
+                                        <option value= "{{ item.term }}">{{ item.term }}</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Start Date *</label>
-                            <div class="col-sm-2">
+                            <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_start_date" style="height:40px; border-color: {{ border_color }};"
                                        value="{{ dtp_start_date|default_if_none:'' }}"
@@ -50,7 +61,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">End Date *</label>
-                            <div class="col-sm-2">
+                            <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
                                        name="dtp_end_date" style="height:40px; border-color: {{ border_color }};"
                                        value="{{ dtp_end_date|default_if_none:'' }}"
@@ -82,8 +93,12 @@
                                     <label class="col-sm-3 control-label">Detail Name</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_detail_name" name="detail_name">
-                                            {% for name in detail_names %}
-                                                <option value= "{{ name }}">{{ name }}</option>
+                                            {% for item in detail_names %}
+                                                {% if item.description != "" %}
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>
+                                                {% else %}
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>
+                                                {% endif %}
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -137,26 +152,33 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Reward Type</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_reward_type" name="reward_type">
+                                <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
                                     <option value= "fixed_cashback">Fixed Cashback</option>
+                                    <option value= "send_notification">Send Notification</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="div_send_to" hidden>
+                            <label class="col-sm-3 control-label">Send to *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" placeholder="Enter URL">
+                            </div>
+                        </div>
+                        <div class="form-group" id="div_amount">
                             <label class="col-sm-3 control-label">Amount *</label>
                             <div class="col-xs-3">
                                 <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="div_reward_recipient">
                             <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Reward Recipient should be</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_reward_recipient" name="reward_type">
-                                    <option value= "customer">Customer</option>
+                                <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
+                                    <option value= "customer" selected>Customer</option>
                                     <option value= "agent">Agent</option>
                                 </select>
                             </div>
@@ -164,7 +186,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Give Rewards to</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to">
+                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
                                     <option value= "@@user_id@@">Actor who registered</option>
                                 </select>
                             </div>
@@ -175,26 +197,71 @@
                                 <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
                             </div>
                         </div>
+                        <div id="div_fixed_cashback">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Product Service ID *</label>
+                                <div class="col-xs-3">
+                                    <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Payer ID *</label>
+                                <div class="col-xs-3">
+                                    <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Payer SOF ID *</label>
+                                <div class="col-xs-3">
+                                    <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="div_send_notification"></div>
+                        <div class="panel-heading">
+                            <h5><b>Set Limitations</b></h5>
+                        </div>
+                        <div id="limitation-group">
+                            <div id="div_condition_1">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Limitation Type *</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                                            <option value= "count">Count</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Limit to *</label>
+                                    <div class="col-xs-3">
+                                        <input id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Product Service ID *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Payer ID *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Payer SOF ID *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
+                                    </div>
+                                    <span class="recipient-mechanic">/recipient/mechanic</span>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
+                                            <option value= "customer">Customer</option>
+                                            <option value= "agent">Agent</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Give Rewards to</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
+                                            <option value= "@@user_id@@">Actor who registered</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            <br>
                             </div>
                         </div>
 
@@ -212,6 +279,16 @@
         </div>
     </div>
     <script>
+        function rewardRecipientShouldBe() {
+            var e = document.getElementById("ddl_reward_recipient");
+            document.getElementById("ddl_limitation_reward_recipient").selectedIndex = e.selectedIndex;
+        }
+
+        function giveRewardsTo()  {
+            var e = document.getElementById("ddl_give_reward_to");
+            document.getElementById("ddl_limitation_give_reward").selectedIndex = e.selectedIndex;
+        }
+
         function getCurrentOps (ddl) {
             var ops = [];
             ddl.find('option').each(function()
@@ -290,7 +367,7 @@
             div.className = 'form-group';
             div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
 {#                             <div class="col-xs-6 pull-right">\#}
-{#                                <button type="button" class="btn btn-default" onclick="removeCondition(this.parentNode.parentNode.parentNode.id)">\#}
+{#                                <button type="button" class="btn btn-default" onclick="removeElement(this.parentNode.parentNode.parentNode.id)">\#}
 {#                                  <span class="glyphicon glyphicon-trash"></span> \#}
 {#                                </button>\#}
 {#                             </div>';#}
@@ -299,19 +376,45 @@
             $("#txt_condition_counter").val(_counter);
         }
 
-        function removeCondition(id) {
+        function removeElement(id) {
             var element = document.getElementById(id);
             element.parentNode.removeChild(element);
+        }
+
+        function hideElement(id) {
+            var element = document.getElementById(id);
+            element.style.display = 'none';
+        }
+
+        function showElement(id) {
+            var element = document.getElementById(id);
+            element.style.display = 'block';
+        }
+
+        function setRequired(id) {
+            var element = document.getElementById(id);
+            element.setAttribute("required", "");
+        }
+
+        function setNotRequired(id) {
+            var element = document.getElementById(id);
+            element.removeAttribute("required");
         }
 
         function listenTrigger() {
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
+            var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
 
-            if (triggerValue === 'register_customer') {
+            if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
                     .val("@@user_id@@")
                     .html("Actor who registered")
                 )
@@ -330,8 +433,202 @@
                     .val("@@payee_user_id@@")
                     .html("Actor that received the transaction")
                 )
+
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received the transaction")
+                )
             }
         }
+
+        var div_fixed_cashback = document.getElementById('div_fixed_cashback');
+        var div_fixed_cashback_html = '\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label"><b>Get Funds From</b></label>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Product Service ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Payer ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Payer SOF ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>\
+                </div>\
+            </div>';
+
+        var div_send_notification = document.getElementById('div_send_notification');
+        var div_send_notification_html = '\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label"><b>Data to be sent</b></label>\
+                            </div>\
+                            <div id="data_send_group">\
+                                <div id="data_tobe_send_1">\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Data type</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_reward_data_type" name="reward_data_type" onchange="listenDataType(this, this.options[this.selectedIndex].value)">\
+                                                <option value= "from_database">From Database</option>\
+                                                <option value= "user_defined">User Defined</option>\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_from_database">\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Detail Name</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_detail_name" name="reward_detail_name">\
+                                                    {% for item in detail_names %}\
+                                                        {% if item.description != "" %}\
+                                                        <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                        {% else %}\
+                                                        <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                        {% endif %}\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_user_defined" hidden>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_name" class="form-control input-rounded" name="reward_key_name" type="text">\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value Type</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_key_value_type" name="reward_key_value_type" onchange="listenRewardKeyValType(this, this.options[this.selectedIndex].value)">\
+                                                    {% for type in key_value_types %}\
+                                                        <option value= "{{ type }}">{{ type }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_value" class="form-control input-rounded" name="reward_key_value" type="number">\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <input type="hidden" name="data_counter" id="txt_data_counter">\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3">\
+                                    <button type="button" class="btn btn-primary btn-block" id="btn_add_data_to_be_sent" onclick="addDataToSend()">\
+                                      <span class="glyphicon glyphicon-plus"></span> Add Data To Be Sent\
+                                    </button>\
+                                </div>\
+                            </div>';
+
+        function listenRewardType (rType) {
+            if (rType === 'send_notification') {
+
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                hideElement('div_reward_recipient');
+                div_fixed_cashback.innerHTML = '';
+
+                showElement('div_send_to');
+                setRequired('txt_send_to');
+
+                div_send_notification.innerHTML = div_send_notification_html;
+                sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
+
+            }   else if (rType === 'fixed_cashback') {
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+
+                div_send_notification.innerHTML = '';
+
+                showElement('div_amount');
+                setRequired('txt_amount');
+                showElement('div_reward_recipient');
+
+                div_fixed_cashback.innerHTML = div_fixed_cashback_html;
+
+            }
+        }
+
+        function listenDataType (ele, dType) {
+            var div_from_database = $(ele).parent().parent().next('div');
+            var div_user_defined = $(div_from_database).next('div');
+            if (dType === 'from_database') {
+                hideElement(div_user_defined.attr('id'));
+                showElement(div_from_database.attr('id'));
+                var nodes = document.getElementById(div_user_defined.attr('id')).getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = false;
+                }
+            }   else if (dType === 'user_defined') {
+                hideElement(div_from_database.attr('id'));
+                showElement(div_user_defined.attr('id'));
+                var nodes = document.getElementById(div_user_defined.attr('id')).getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = true;
+                }
+            }
+        }
+
+        function listenRewardKeyValType(ele, type) {
+            var keyValue = $(ele).parent().parent().nextAll('div').find('input');
+            keyValue.val('');
+            if (type === 'Freetext') {
+                keyValue.attr('type', 'text');
+            } else if (type === 'Numeric') {
+                keyValue.attr('type', 'number');
+            } else if (type === 'Timestamp') {
+                keyValue.attr('type', 'datetime-local');
+            }
+        }
+
+        var _data_counter = 1;
+        function addDataToSend() {
+            _data_counter++;
+            var dataClone = sampleData.cloneNode(true);
+            dataClone.querySelectorAll('[id="div_from_database"]')[0].id = "div_from_database" + (_data_counter + "");
+            dataClone.querySelectorAll('[id="div_user_defined"]')[0].id = "div_user_defined" + (_data_counter + "");
+            var inputEle = dataClone.getElementsByTagName("input");
+            for (var i = 0; i < inputEle.length; i++) {
+                inputEle[i].name += (_data_counter + "");
+                inputEle[i].id += (_data_counter + "");
+            }
+            var ddlEle = dataClone.getElementsByTagName("select");
+            for (var i = 0; i < ddlEle.length; i++) {
+                ddlEle[i].name += (_data_counter + "");
+                ddlEle[i].id += (_data_counter + "");
+            }
+
+            dataClone.id = "data_tobe_send_" + _data_counter;
+            var div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
+            dataClone.insertBefore(div, dataClone.firstChild);
+            document.getElementById("data_send_group").appendChild(dataClone);
+            $("#txt_data_counter").val(_data_counter);
+        }
+
     </script>
 {% endblock %}
 

@@ -1,0 +1,214 @@
+{% extends "core.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="col-xs-12">
+        <div class="alert alert-danger alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% endif %}
+{% endfor %}
+<div class="col-xs-12 mb5">
+    <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+        <strong id="alert-msg"></strong>
+    </div>
+</div>
+<h3>Rule Details</h3>
+<div class="panel panel-primary " style="background-color: #ecf0f1;">
+    <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
+        <div class="pull-left">
+        <p class="bold" style="margin-bottom:0;">
+            <label size="2"><strong>Rule ID:</strong></label>
+            <span id="lbl_rule_id" style="text-transform: uppercase">{{data.id}}</span>
+        </p>
+        <p class="bold">
+            <label size="2"><strong>Rule Name:</strong></label>
+            <span id="lbl_rule_name">{{data.name}}</span>
+        </p>
+        </div>
+    </div>
+    <div class="panel-body" style="margin-top: -20px;">
+        <p>
+            <label>Rule Description:</label>
+            <span id="lbl_rule_description">{{data.description}}</span>
+        </p>
+        <p style="margin-bottom:0; ,">
+            <label size="2">Start Date: </label>
+            <span id="lbl_rule_start_date">{{data.start_active_timestamp}}</span>
+        </p>
+        <p><font size="2"></font>
+        <label>End Date:</label>
+        <span id="lbl_rule_end_date">{{data.end_active_timestamp}}</span>
+        </p>
+    </div>
+</div>
+
+{%if len_mechanic != 0 %}
+    {% for i in mechanic %}
+        {% if not i.is_deleted %}
+        <div id="mechanic_{{ i.id }}">
+            <h3 id="lbl_mechanic_{{i.count}}" ><font size="4">Mechanic {{i.count}} Information</font></h3>
+            <div class="panel panel-primary " style="background-color: #ecf0f1;" id="div_mechanic_{{i.count}}">
+                <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
+                    <div class="pull-left">
+                    <p class="bold" style="margin-bottom:0;">
+                        <label size="2"><strong>Mechanic ID:</strong></label>
+                        <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
+                    </p>
+                    </div>
+                    <!--{%if not data.is_active and active_mechanic_count != 1 and permissions.CAN_DELETE_RULE_MECHANIC %}-->
+                    <!--<div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">-->
+                            <!--<i onClick="delete_mechanic({{ i.id }})" id="btn_delete"-->
+                               <!--data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"-->
+                               <!--class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>-->
+                    <!--</div>-->
+                    <!--{% endif %}-->
+                </div>
+                <div class="panel-body" style="margin-top: -20px;">
+                    <p style="margin-bottom:0; ,">
+                        <label size="2">Trigger:</label>
+                        <span id="lbl_mechanic_trigger">{{i.event_name}}</span>
+                    </p>
+                    <p style="margin-bottom:0; ,">
+                        <label size="2">Start Date: </label>
+                        <span id="lbl_mechanic_start_date">{{i.start_timestamp}}</span>
+                    </p>
+                    <p><font size="2"></font>
+                    <label>End Date:</label>
+                    <span id="lbl_mechanic_end_date">{{i.end_timestamp}}</span>
+                    </p>
+                    {%for condition in i.condition_list%}
+                        <div id="div_condition_{{ condition.condition_detail.id }}">
+                            <p style="margin-bottom:0; ,">
+                            <label size="2"><strong>Condition Id:</strong></label>
+                            <span id="lbl_condition_id"><strong>{{condition.condition_detail.id}}</strong></span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Condition Type:</label>
+                                <span id="lbl_condition_type">{%if condition.condition_detail.filter_type == 'event_detail'%}Event Detail{%endif%}</span>
+                            </p>
+                            {%for comparison in condition.comparison_list%}
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Detail Name:</label>
+                                    <span id="lbl_condition_detail_name">{{comparison.key_name}}</span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Key Value Type:</label>
+                                    <span id="lbl_key_value_type">{{comparison.key_value_type}}</span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2" >Operator:</label>
+                                    <span id="lbl_operator">
+                                    {%if comparison.operator == '=' %}
+                                    <span>Equal to</span>
+                                    {%elif comparison.operator == '>' %}
+                                    <span>More Than</span>
+                                    {%elif comparison.operator == '>=' %}
+                                    <span>More Than or Equal to</span>
+                                    {%elif comparison.operator == '<' %}
+                                    <span>Less Than</span>
+                                    {%elif comparison.operator == '<=' %}
+                                    <span>Less Than or Equal to</span>
+                                    {%elif comparison.operator == '!=' %}
+                                    <span>Not Equal to</span>
+                                    {%endif%}
+                                    </span>
+                                </p>
+                                <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Key Value:</label>
+                                    <span id="lbl_key_value">{{comparison.key_value}}</span>
+                                </p>
+                            {%endfor%}
+                        </div>
+                    {%endfor%}
+                    {% if i.reward is not None %}
+                        <p></p>
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Action</strong></label>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label>Action Type:</label>
+                            <span id="lbl_action_type">{{i.reward.reward_type|default_if_none:''}}</span>
+                        </p>
+                        {% if i.reward.reward_type == 'notification' %}
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label size="2"> Send to:</label>
+                            <span id="lbl_send_to">{{i.reward.send_to|default_if_none:''}}</span>
+                        </p>
+                        {% endif %}
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Data to be sent</strong></label>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Data Type:</label>
+                                <span id="lbl_data_type">User Defined</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Key Name:</label>
+                                <span id="lbl_key_name">{{i.reward.key_name|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Key Value Type:</label>
+                                <span id="lbl_key_value_type">{{i.reward.key_value_type|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Key Value:</label>
+                                <span id="lbl_key_value">{{i.reward.key_value|default_if_none:''}}</span>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    {%endfor%}
+{% endif %}
+
+    <div class="form-group pull-right">
+        <a href="{% url 'rule_configuration:rule_engine' %}">
+            <input id="btn_cancel" class="btn text-left mb15" type="button"
+                   value="Cancel"/>
+        </a>
+        {% if permissions.CAN_CREATE_RULE %}
+            <a href="{% url 'rule_configuration:add_mechanics' rule_id %}">
+                <input id="btn_add_more_mechanic" class="btn btn-success text-left mb15" type="submit"
+                       value="Add More Mechanic"/>
+            </a>
+        {% endif %}
+
+    </div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+
+    var delete_mechanic = function(mechanicId) {
+        swal({
+            title: "Delete campaign mechanic?",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            closeOnConfirm: true
+        },
+        function () {
+            var url = $("#mechanic_" + mechanicId + " #btn_delete").data("url");
+            window.location.replace(url);
+        });
+    };
+</script>
+{% endblock %}

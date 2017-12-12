@@ -120,7 +120,7 @@
                             <td>{{ i.name|default_if_none:'' }}</td>
                             <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.end_active_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-2">
+                            <td class="col-sm-2" id='toggle-area-{{ i.id }}'>
                                 <!-- Rounded switch -->
                                     <label class="switch switch-sm">
                                     {%if i.is_permission_update_status %}
@@ -229,15 +229,20 @@
         var campaign_id = e.getAttribute('data-campaign-id');
         var campaign_name = e.getAttribute('data-name');
         var campaign_description = e.getAttribute('data-description');       
-        var url = '/admin-portal/campaign/active/'+ campaign_id;
+        var url = '/admin-portal/campaign/active/'+ campaign_id+'/';
         console.log(url)
         console.log('chuyen tu inactive thanh active')
         console.log(campaign_id)
+        $('#loading-area').toggleClass('hide-loading');
         $.ajax({
             url: url,
-            type: "GET",
+            type: "POST",
             data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
             success: function (response) {
+            $('#loading-area').toggleClass('hide-loading');
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
@@ -247,10 +252,12 @@
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id +' ' + 'is now active' );
             } else {
                 // Failed
+                $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
                 showErrorMessage(response.msg);
             }
             },
             error: function (msg) {
+            $('#loading-area').toggleClass('hide-loading');
             console.log('Error active the campaign' + campaign_id);
             showErrorMessage(JSON.stringify(msg));
             }
@@ -262,14 +269,17 @@
         var campaign_id = e.getAttribute('data-campaign-id');
         var campaign_name = e.getAttribute('data-name');
         var campaign_description = e.getAttribute('data-description'); 
-        var url = '/admin-portal/campaign/inactive/'+ campaign_id;
+        var url = '/admin-portal/campaign/inactive/'+ campaign_id+'/';
         console.log(url)
         console.log('chuyen tu active thanh inactive')
         console.log(campaign_id)
         $.ajax({
             url: url,
-            type: "GET",
+            type: "POST",
             data: {"campaign_name": campaign_name, "campaign_description": campaign_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
             success: function (response) {
             if (response.status == 1) {
                 // Logout

@@ -152,8 +152,9 @@
             </form>
         </div>
     </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
 function changeValue() {
     var service = document.getElementById('ddl_service_name').value;
@@ -237,4 +238,4 @@ function changeAmount() {
     }
 }
 </script>
-{% endblock %}
+{%  endblock %}

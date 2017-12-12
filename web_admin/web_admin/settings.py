@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'card_sofs',
     'balance_adjustment',
     'campaign',
+    'fraud_prevention',
+    'rule_configuration',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -100,7 +102,9 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
-                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider','reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign')],
+                              'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
+                              'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
+                              'rule_configuration')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -301,6 +305,16 @@ LOGGING = {
             'propagate': True,
         },
         'campaign': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'fraud_prevention': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'rule_configuration': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

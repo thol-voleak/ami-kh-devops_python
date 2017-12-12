@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% block content %}
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+           <div>
+                <div class="pull-left"><h3>Rule List</h3></div>
+                {% if permissions.CAN_CREATE_RULE %}
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'rule_configuration:create_rule' %}">
+                        <input id="btn_add_new_rule" class="btn btn-success btn-block btn-md mb15" type="button" value="+  Add New Rule"/>
+                    </a>
+                </div>
+                {% endif %}
+               <div class="clearfix"></div>
+           </div>
+
+    {% for message in messages %}
+    <div class="col-xs-12">
+        <div class='alert
+                    alert-success
+                    alert-dismissable' id="msg-add-service">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+    {% if msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-update-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if add_client_msg is not None %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" id="msg-add-client">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ add_client_msg }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" style="display:none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'rule_configuration:rule_engine' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Rule ID</label>
+                <div class="col-sm-2">
+                    <input type="number" min="1" class="form-control input-rounded" name="campaign_id" id="txt_rule_id" value="{{ campaign_id }}">
+                </div>
+                <label class="col-sm-2 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status" >
+                        {% for item in status_list %}
+                            {%if item.value == selected_status%}
+                            <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                            {% else %}
+                            <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                    <label class="col-sm-2 control-label">Start and End Date</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="dtp_from"
+                               value="{{ start_date|default_if_none:'' }}"
+                               id="dtp_start_date">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-xs-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="dtp_to"
+                               value="{{ to_date|default_if_none:'' }}"
+                               id="dtp_end_date">
+                    </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+
+                    <div class="col-xs-1" style='display: none;'>
+                        <input id="btn_submit" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                    </div>
+                    <div class="col-xs-1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search" onclick="searchRule()"
+                               value="Search">
+                    </div>
+                </div>
+        </form>
+            
+            <div class="no-more-tables">
+                <table id='tbl_rules' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_campaign_id">Rule ID</th>
+                        <th id="ddl_campaign_name">Rule Name</th>
+                        <th id="ddl_start_date">Start Date</th>
+                        <th id="ddl_end_date">End Date</th>
+                        <th class="col-sm-2" id="status">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td>
+                                {% if permissions.CAN_VIEW_RULE_DETAILS %}
+                                <a id="{{ i.id }}" class="text-info" style="text-decoration:underline;" href="{% url 'rule_configuration:rule_detail' i.id %}">{{ i.id|default_if_none:'' }}</a>
+                                {%else%}
+                                <span id="{{ i.id }}">{{ i.id|default_if_none:'' }}</span>
+                                {%endif%}
+
+                            </td>
+                            <td>{{ i.name|default_if_none:'' }}</td>
+                            <td>{{ i.start_active_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.end_active_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id='toggle-area-{{ i.id }}'>
+                                <!-- Rounded switch -->
+                                    <label class="switch switch-sm">
+                                    {%if i.is_permission_update_status %}
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" checked>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    {%else%}
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}'
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled checked>
+                                        <span class="slider round" style="background-color: #e4e4e4; -webkit-box-shadow: #e4e4e4 0px 0px 0px 21px inset; box-shadow: #e4e4e4 0px 0px 0px 21px inset;
+                                        border-color: #e4e4e4;">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               onClick="doActiveOrInactive(this)"
+                                               data-campaign-id='{{i.id}}' 
+                                               data-name= '{{i.name}}'
+                                               data-description='{{i.description}}' 
+                                               id="tog_status" disabled>
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        {%endif%}
+                                    {%endif%}
+                                    </label>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var searchRule = function() {
+      var startDate = $('#dtp_start_date').val();
+      var endDate = $('#dtp_end_date').val();
+      if(startDate > endDate) {
+        $('#alert-client #alert-msg').text('End Date could not be less than Start Date');
+        $('#alert-client').css('display', 'block');
+        return;
+      }
+      $('#btn_submit').click();
+
+    };
+</script>
+{% endblock %}

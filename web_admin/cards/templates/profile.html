@@ -7,6 +7,12 @@
         <div class="panel-heading border">
             <h3>Card Profile</h3>
         </div>
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
 
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cards:profile' %}">
@@ -60,11 +66,12 @@
                         <th id="expiry_date">Expiry Date</th>
                         <th id="is_stopped">Is Stopped</th>
                         <th id="created_date">Created Date</th>
+                        <th id="action">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for card in data %}
-                        <tr>
+                        <tr id="profile_card_{{ card.id }}">
                             <td class="col-sm-2">{{ card.user_type.name }} ({{ card.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ card.id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.pan|default_if_none:'' }}</td>
@@ -73,8 +80,26 @@
                             <td class="col-sm-2">{{ card.firstname|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.lastname|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.expiry_date|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ card.is_stopped|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id="is-stopped-{{ card.id }}">{{ card.is_stopped|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ card.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">
+                            {% if card.is_stopped == 'NO' %}
+                                <button type="button" class="btn btn-primary mb5 btn-outline btn-xs"
+                                        data-deactive-url="{% url 'cards:deactivate_profile_card' card.id %}"
+                                        data-active-url="{% url 'cards:activate_profile_card' card.id %}"
+                                    id="btn_activate" data-card-id='{{ card.id }}' onClick="activateOrDeactivateCard(this)">
+                                    <span class="small" id="button-stop-card-label">Deactivate</span>
+                                </button>
+                            {% endif %}
+                            {% if card.is_stopped == 'YES' %}
+                                <button type="button" class="btn btn-primary mb5 btn-outline btn-xs"
+                                        data-deactive-url="{% url 'cards:deactivate_profile_card' card.id %}"
+                                        data-active-url="{% url 'cards:activate_profile_card' card.id %}"
+                                    id="btn_activate" data-card-id='{{ card.id }}' onClick="activateOrDeactivateCard(this)">
+                                    <span class="small" id="button-stop-card-label">Activate</span>
+                                </button>
+                            {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -85,5 +110,98 @@
             {% endif %}
         </div>
     </div>
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-success");
+            $('#alert-client').addClass("alert-danger");
+            $("#alert-client").show();
+            $("html, body").animate({scrollLeft: 0}, 100);
+            $("html, body").animate({scrollTop: 0}, "slow");
+        };
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-danger");
+            $('#alert-client').addClass("alert-success");
+            $("#alert-client").show();
+            $("html, body").animate({scrollLeft: 0}, 100);
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+        var activateOrDeactivateCard = function(e) {
+            var titleConfirm = '';
+            var isStopped = e.innerText == 'Activate';
+            if(isStopped) {
+                titleConfirm = 'Are you sure you want to activate?';
+            } else {
+                titleConfirm = 'Are you sure you want to deactivate?';
+            }
+            swal({
+                title: titleConfirm,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    var url = '';
+                    if(isStopped) {
+                        url = e.getAttribute('data-active-url');
+                    } else {
+                        url = e.getAttribute('data-deactive-url');
+                    }
+                    var card_id = e.getAttribute('data-card-id');
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            is_stopped: !isStopped
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                                window.location.replace(url);
+                            } else if (response.status == 2) {
+                                // success
+                                var stopElm = $('#is-stopped-' + card_id);
+                                if(isStopped) {
+                                    e.innerHTML = "<span class='small'>Deactivate</span>";
+                                    stopElm.text('NO');
+                                } else {
+                                    e.innerHTML = "<span class='small'>Activate</span>";
+                                    stopElm.text('YES');
+                                }
+                                if(isStopped) {
+                                    showSuccessMessage('Card '+ card_id + ' is now Activated');
+                                } else {
+                                    showSuccessMessage('Card '+ card_id + ' is now Deactivated');
+                                }
+                            } else {
+                                if(isStopped) {
+                                    showErrorMessage('Error activate the campaign');
+                                } else {
+                                    showErrorMessage('Error deactivate the campaign');
+                                }
+                            }
+                        },
+                        error: function (msg) {
+                        }
+                    });
+                }
+            });
+        };
+    </script>
 
 {% endblock %}

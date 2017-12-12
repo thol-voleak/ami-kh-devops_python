@@ -69,7 +69,7 @@
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
                     </div>
-                    {%if data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
+                    {%if not data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
                     <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
                             <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
                                data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"
@@ -154,6 +154,28 @@
                                 <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
                         </p>
                     {% endif %}
+                    {%for limitation in i.limitation_list%}
+                        <p></p>
+                        <p style="margin-bottom:0; ">
+                            <label size="2"><strong>Limitation</strong></label>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Limit Type: </label>
+                                <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Limit to: </label>
+                                <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label size="2">Reward Recipient should be :</label>
+                            <span id="lbl_limitation_reward_recipient_should_be">{{i.reward.recipient|default_if_none:''}}</span>
+                        </p>
+                        <p style="margin-bottom:0; margin-left: 10px;">
+                            <label>Give Reward to:</label>
+                            <span id="lbl_limitation_give_rewards_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                        </p>
+                    {%endfor%}
                 </div>
             </div>
         </div>
@@ -175,9 +197,9 @@
         {% endif %}
 
     </div>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
 
     var delete_mechanic = function(mechanicId) {
@@ -196,5 +218,4 @@
         });
     };
 </script>
-
 {% endblock %}

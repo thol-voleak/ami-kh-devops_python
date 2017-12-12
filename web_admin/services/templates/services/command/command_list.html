@@ -123,7 +123,9 @@
         </div>
     </div>
 </div>
-
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
 {% endblock %}
+
+{% block body_js %}
+{{ block.super }}
+<script src="{% static 'js/services/commission_and_payment.js' %}"></script>
+{%  endblock %}

@@ -17,10 +17,15 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     {% endblock %}
 </head>
-
 <body style="background-color: white;">
 {% block body_content %}
-
+<div id='loading-area' class="hide-loading">
+    <div class='back-drop'></div>
+    <div class="loading-img">
+        <img src="{% static 'image/loading.gif' %}" />
+        <div class="text-loading">Updating Campaign Information</div>
+    </div>
+</div>
 <div class="app layout-fixed-header">
 
     <!--sidebar-panel-->
@@ -75,11 +80,14 @@
                 {% if user.is_authenticated %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-user-o" aria-hidden="true"></i>
+                        &nbsp;
                         <span id="nav-username">username: {{ user.username }}</span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'system_user:self_change_password' %}">Change Password</a></li>
+                        <li><a id="top-logout" href="{% url 'authentications:logout' %}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}
