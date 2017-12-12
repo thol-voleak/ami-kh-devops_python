@@ -161,19 +161,19 @@
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                                 <label size="2">Limit Type: </label>
-                                <span id="lbl_reward_type">{{limitation.limit_type|default_if_none:''}}</span>
+                                <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                                 <label size="2">Limit to: </label>
-                                <span id="lbl_reward_type">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                                <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2">Recipient should be:</label>
-                            <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
+                            <label size="2">Reward Recipient should be :</label>
+                            <span id="lbl_limitation_reward_recipient_should_be">{{i.reward.recipient|default_if_none:''}}</span>
                         </p>
                         <p style="margin-bottom:0; margin-left: 10px;">
                             <label>Give Reward to:</label>
-                            <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                            <span id="lbl_limitation_give_rewards_to">{{i.reward.reward_to|default_if_none:''}}</span>
                         </p>
                     {%endfor%}
                 </div>
