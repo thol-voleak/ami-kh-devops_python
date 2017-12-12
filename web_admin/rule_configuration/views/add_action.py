@@ -5,6 +5,7 @@ from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
 from web_admin import api_settings
+from authentications.apps import InvalidAccessToken
 
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
