@@ -161,57 +161,132 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         # add reward
         self.logger.info('========== Start adding Reward ==========')
-        params = {
-            'action_type_id':1,
-            'data':[
-                {
-                    'key_name':'product_service_id',
-                    'key_value': request.POST.get('product_service_id'),
-                    'key_value_type':'numeric'
-                },
-                {
-                    'key_name': 'payer_user.user_id',
-                    'key_value': request.POST.get('payer_id'),
-                    'key_value_type': 'numeric'
-                },
-                {
-                    'key_name': 'payer_user.user_type',
-                    'key_value': 'agent',
-                    'key_value_type': 'text'
-                },
-                {
-                    'key_name': 'payer_user.sof.id',
-                    'key_value': request.POST.get('payer_sof_id'),
-                    'key_value_type': 'numeric'
-                },
-                {
-                    'key_name': 'payer_user.sof.type_id',
-                    'key_value': '2',
-                    'key_value_type': 'numeric'
-                },
-                {
-                    'key_name': 'payee_user.user_id',
-                    'key_value': request.POST.get('give_reward_to'),
-                    'key_value_type': 'numeric'
-                },
-                {
-                    'key_name': 'payee_user.user_type',
-                    'key_value': request.POST.get('reward_recipient'),
-                    'key_value_type': 'text'
-                },
-                {
-                    'key_name': 'amount',
-                    'key_value': request.POST.get('amount'),
-                    'key_value_type': 'numeric'
-                }
-            ]
-        }
-        if request.POST.get('give_reward_to') != '@@user_id@@' :
-            params['data'].append({
-                        'key_name': 'paid_amount',
-                        'key_value': "@@amount@@",
-                        'key_value_type': "numeric"
+
+        reward_type = request.POST.get('reward_type')
+        if reward_type == 'fixed_cashback':
+            params = {
+                'action_type_id':1,
+                'data':[
+                    {
+                        'key_name':'product_service_id',
+                        'key_value': request.POST.get('product_service_id'),
+                        'key_value_type':'numeric'
+                    },
+                    {
+                        'key_name': 'payer_user.user_id',
+                        'key_value': request.POST.get('payer_id'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'payer_user.user_type',
+                        'key_value': 'agent',
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'payer_user.sof.id',
+                        'key_value': request.POST.get('payer_sof_id'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'payer_user.sof.type_id',
+                        'key_value': '2',
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'payee_user.user_id',
+                        'key_value': request.POST.get('give_reward_to'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'payee_user.user_type',
+                        'key_value': request.POST.get('reward_recipient'),
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'amount',
+                        'key_value': request.POST.get('amount'),
+                        'key_value_type': 'numeric'
+                    }
+                ]
+            }
+            if request.POST.get('give_reward_to') != '@@user_id@@' :
+                params['data'].append({
+                            'key_name': 'paid_amount',
+                            'key_value': "@@amount@@",
+                            'key_value_type': "numeric"
+                        })
+        elif reward_type == 'send_notification':
+            detail_type_mapping = {
+                "text": ["id", "user_type", "device_id", "device_description",
+                         "event_name", "order_id", "ext_transaction_id",
+                         "payment_method_name", "payment_method_ref",
+                         "service_name", "command_name", "initiator_user_type",
+                         "payer_user_type", "payer_user_ref_type",
+                         "payer_user_ref_value", "payee_user_type",
+                         "payee_user_ref_type", "payee_user_ref_value",
+                         "currency", "ref_order_id", "product_name",
+                         "product_ref1", "product_ref2", "product_ref3",
+                         "product_ref4", "product_ref5", "state", "is_deleted",
+                         "created_client_id", "executed_client_id",
+                         "description", "client_id", "bank_account_name",
+                         "ext_bank_reference", "sof_type"],
+                "numeric": ["user_id", "command_id", "service_id",
+                            "service_command_id", "initiator_user_id",
+                            "initiator_sof_id", "initiator_sof_type_id",
+                            "payer_user_id", "payer_sof_id",
+                            "payer_sof_type_id", "payee_user_id",
+                            "payee_sof_id", "payee_sof_type_id", "amount",
+                            "fee", "bonus", "settlement_amount", "status",
+                            "notification_status", "bank_id", "sof_id"],
+                "timestamp": ["order_created_timestamp",
+                              "order_last_updated_timestamp",
+                              "created_timestamp", "register_timestamp",
+                              "login_timestamp", "event_created_timestamp"]
+            }
+
+            params = {
+                "action_type_id": 2,
+                "data": [
+                    {
+                        "key_name": "notification_url",
+                        "key_value": request.POST.get('send_to'),
+                        "key_value_type": "text"
+                    }
+                ]
+            }
+            counter = request.POST.get('data_counter') or 1
+            for i in range(int(counter)):
+                suffix = '' if i == 0 else str(i + 1)
+                reward_data_type = 'reward_data_type' + suffix
+                data_type = request.POST.get(reward_data_type)
+                if not data_type:
+                    continue
+                if data_type == 'from_database':
+                    reward_detail_name = 'reward_detail_name' + suffix
+                    detail_name = request.POST.get(reward_detail_name)
+                    reward_key_value_type = ''
+                    for type in detail_type_mapping:
+                        if detail_name in detail_type_mapping[type]:
+                            reward_key_value_type = type
+                            break
+                    if not reward_key_value_type:
+                        self.logger.error('>>>>>>>>>> Cannot find detail type for [{}] from detail mapping <<<<<<<<<<'.format(detail_name))
+
+                    params['data'].append({
+                        "key_name": detail_name,
+                        "key_value": '@@' + detail_name + '@@',
+                        "key_value_type": reward_key_value_type
                     })
+                elif data_type == 'user_defined':
+                    reward_key_name = 'reward_key_name' + suffix
+                    reward_key_value_type = 'reward_key_value_type' + suffix
+                    reward_key_value = 'reward_key_value' + suffix
+                    params['data'].append({
+                        "key_name": request.POST.get(reward_key_name),
+                        "key_value": request.POST.get(reward_key_value),
+                        "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
+                    })
+
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
         action_id = data.get("id", '')
         self.logger.info('========== Finish adding Reward ==========')
