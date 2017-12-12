@@ -94,6 +94,7 @@ class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=api_settings.GET_ACTION_TYPE, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                 status_code=status_code)
+        self.logger.info('========== finish get action type list ==========')
         return data
 
     def get_data_types_list(self):
@@ -101,6 +102,7 @@ class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=api_settings.GET_DATA_TYPE, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                             status_code=status_code)
+        self.logger.info('========== finish get data type list ==========')
         return data
 
     def create_action(self, rule_id, mechanic_id, params):
