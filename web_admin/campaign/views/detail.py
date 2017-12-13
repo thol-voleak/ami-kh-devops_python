@@ -83,6 +83,12 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     i['limitation_list'] = []
                     for limitation in limitation:
                         if not limitation['is_deleted']:
+                            for filter_limit in limitation['filters']:
+                                if filter_limit['key_name'] == 'payee_user.user_id':
+                                    if filter_limit['key_value'] in self.person.keys():
+                                        limitation['reward_to'] = self.person[filter_limit['key_value']]
+                                if filter_limit['key_name'] == 'payee_user.user_type':
+                                    limitation['recipient'] = filter_limit['key_value']
                             i['limitation_list'].append(limitation)
 
         context.update({
