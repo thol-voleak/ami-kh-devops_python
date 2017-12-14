@@ -95,7 +95,9 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
 
 function validateFormData(e) {
@@ -147,7 +149,7 @@ function changeValue() {
         : $new_balance.val($company_balance.val());
     });
 
-    
+
     $amount.keypress(function(event) {
         var $this = $(this);
         if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
@@ -207,5 +209,4 @@ function changeValue() {
 
 $(changeValue);
 </script>
-
-{% endblock %}
+{%  endblock %}

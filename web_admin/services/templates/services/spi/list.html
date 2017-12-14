@@ -138,7 +138,9 @@
         </div>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
 <script>
 var $url_type = $('#ddl_spi_url_type');
 var $call_method = $('#ddl_spi_url_call_method');
@@ -193,4 +195,4 @@ $call_method.change(function() {
         showRelateConfig();
     });
 </script>
-{% endblock %}
+{%  endblock %}

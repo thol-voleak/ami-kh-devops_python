@@ -41,7 +41,7 @@ class AddView(TemplateView, RESTfulMethods):
             context.update({
                 'conditions': tier_conditions,
                 'fee_types': fee_types,
-                'bonus_types': bonus_types,
+                # 'bonus_types': bonus_types,
                 'amount_types': amount_types,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
@@ -60,8 +60,8 @@ class AddView(TemplateView, RESTfulMethods):
         fee_amount = request.POST.get('fee_amount', '')
         fee_type = request.POST.get('fee_type', '')
         condition = request.POST.get('condition', '')
-        bonus_type = request.POST.get('bonus_type', '')
-        bonus_amount = request.POST.get('bonus_amount', '')
+        # bonus_type = request.POST.get('bonus_type', '')
+        # bonus_amount = request.POST.get('bonus_amount', '')
 
         if condition_amount:
             condition_amount = condition_amount.replace(',', '')
@@ -69,25 +69,25 @@ class AddView(TemplateView, RESTfulMethods):
         if fee_amount:
             fee_amount = fee_amount.replace(',', '')
 
-        if bonus_amount:
-            bonus_amount = bonus_amount.replace(',', '')
+        # if bonus_amount:
+        #     bonus_amount = bonus_amount.replace(',', '')
 
         params = {
             "fee_tier_condition": condition,
             "condition_amount": condition_amount,
             "fee_type": fee_type,
             "fee_amount": fee_amount,
-            "bonus_type": bonus_type,
-            "bonus_amount": bonus_amount,
+            # "bonus_type": bonus_type,
+            # "bonus_amount": bonus_amount,
             "settlement_type": settlement_type
         }
 
         self.logger.info("Create tire for service command id [{}] with param [{}]".format(service_command_id, params))
 
-        bonus_type_value = request.POST.get('bonus_type', '')
+        # bonus_type_value = request.POST.get('bonus_type', '')
 
-        if bonus_type_value == '% rate':
-            params['amount_type'] = request.POST.get('amount_type')
+        # if bonus_type_value == '% rate':
+        #     params['amount_type'] = request.POST.get('amount_type')
 
         data, success = self._add_tier(service_command_id, params)
         self.logger.info('========== Finish Adding Tier ==========')
@@ -118,7 +118,7 @@ class AddView(TemplateView, RESTfulMethods):
                 context.update({
                     'conditions': tier_conditions,
                     'fee_types': fee_types,
-                    'bonus_types': bonus_types,
+                    # 'bonus_types': bonus_types,
                     'amount_types': amount_types,
                     'service_name': service_detail.get('service_name', 'unknown'),
                     'command_name': command_name,

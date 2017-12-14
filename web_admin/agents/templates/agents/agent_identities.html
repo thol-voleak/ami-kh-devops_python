@@ -10,7 +10,7 @@
         <div class="alert alert-success" id="msg-update-success" hidden>
             <button type="button" class="close" onclick="$('.alert').hide()">×</button>
             <strong id="alert-msg"></strong>
-    </div>
+        </div>
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                 <div class="col-xs-12">
@@ -46,6 +46,8 @@
                 </div>
                 {% endif %}
             </div>
+            <br>
+            <br>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_identities">
                     <thead>

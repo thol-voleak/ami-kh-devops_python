@@ -13,7 +13,7 @@
     </div>
     {% with request.resolver_match.url_name as url_name %}
     <nav role="navigation">
-        <ul class="nav">
+        <ul class="nav"  id="horizontal-list">
             <li class="class={% if url_name == 'web-index' %} active{% endif %}">
                 <a href="{% url 'web:web-index' %}">
                     <i class="fa fa-home"></i>
@@ -23,11 +23,11 @@
             {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES" or request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
             {% check_valid_url url_name 'authentications' as is_authen_url %}
             <li class="menu-accordion {% if is_authen_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Authorizations</span> </a>
+                <a href="javascript:;"> <i class="fa fa-sign-in"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES"%}
                     <li class="menu-accordion {% if 'permissions' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Permissions</span> </a>
+                        <a href="javascript:;"><span>Permissions</span> </a>
                         <ul class="sub-menu">
                             <li class="{% if url_name in 'permissions_list,edit_permission,permission_detail,delete_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:permissions_list' %}"> <span>Permission Entities</span> </a>
@@ -43,7 +43,7 @@
 
                     {% if request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
                     <li class="menu-accordion {% if 'roles' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Roles</span> </a>
+                        <a href="javascript:;"><span>Roles</span> </a>
                         <ul class="sub-menu">
                             <li class="{% if url_name in 'role_list,edit_role,delete_role,role_detail,role_manage_permission' %}active{% endif %}">
                                 <a href="{% url 'authentications:role_list' %}"> <span>Role Entities</span> </a>
@@ -97,7 +97,7 @@
             {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP" or request.user|has_permission_name:"CAN_MANAGE_SERVICE"%}
             {% check_valid_url url_name 'service_group,services' as is_services_urls %}
             <li class="menu-accordion class={% if is_services_urls %} open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-trophy"></i> <span>Payment Services</span> </a>
+                <a href="javascript:;"> <i class="fa fa-tasks"></i> <span>Payment Services</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP"%}
                     {% check_valid_url url_name 'service_group' as is_service_group_url %}
@@ -118,7 +118,7 @@
             {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
                 {% check_valid_url url_name 'agent_type,agents' as is_agent_urls %}
                 <li class="menu-accordion {% if is_agent_urls %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-map-marker"></i> <span>Agents</span> </a>
+                <a href="javascript:;"> <i class="fa fa-id-card-o" aria-hidden="true"></i> <span>Agents</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE"%}
                     {% check_valid_url url_name 'agent_type' as is_agent_type_url %}
@@ -148,7 +148,7 @@
             {% check_valid_url url_name 'clients' as is_client_url %}
             <li class="class={% if is_client_url %} active{% endif %}">
                 <a href="{% url 'clients:client-list' %}">
-                    <i class="fa fa-tag"></i>
+                    <i class="fa fa-male"></i>
                     <span>Clients</span>
                 </a>
             </li>
@@ -163,7 +163,7 @@
             {% check_valid_url url_name 'centralize_configuration' as is_central_url %}
             <li class="class={% if is_central_url %} active{% endif %}">
                 <a href="{% url 'centralize_configuration:scope_list' %}">
-                    <i class="fa fa-sort-numeric-asc"></i>
+                    <i class="fa fa-cog"></i>
                     <span>Centralize Configuration</span>
                 </a>
             </li>
@@ -186,7 +186,7 @@
             {% if request.user|has_permission_name:"CAN_MANAGE_MEMBER_CUSTOMER_PROFILE" or request.user|has_permission_name:"CAN_MANAGE_BLOCKED_DEVICES"%}
                 {% check_valid_url url_name 'customers' as is_customer_url%}
                 <li class="{% if is_customer_url %} open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-folder"></i> <span>Member Customers</span> </a>
+                <a href="javascript:;"> <i class="fa fa-users"></i> <span>Member Customers</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"CAN_MANAGE_MEMBER_CUSTOMER_PROFILE"%}
                     <li id="customers_menu" class="{% if url_name == 'customer-list' %}active{% endif %}">
@@ -204,7 +204,7 @@
             {% if request.user|has_permission_name:"SYS_MANAGE_SYSTEM_USER"%}
             {% check_valid_url url_name 'system_user' as is_sys_user_url%}
             <li class="{% if is_sys_user_url %} open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-folder"></i> <span>System Users</span> </a>
+                <a href="javascript:;"><i class="fa fa-user-circle-o"></i><span>System Users</span> </a>
                 <ul class="sub-menu">
                     <li id="system_user_menu" class="{% if is_sys_user_url %}active{% endif %}">
                         <a href="{% url 'system_user:system-user-list' %}"><span>System Users</span></a>
@@ -247,7 +247,7 @@
             {% if request.user|has_permission_name:"CAN_MANAGE_PAYMENT"%}
             {% check_valid_url url_name 'payments' as is_payment_url%}
             <li class="menu-accordion {% if is_payment_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Payment</span> </a>
+                <a href="javascript:;"> <i class="fa fa-list"></i> <span>Payment</span> </a>
                 <ul class="sub-menu">
                     <li class="{% if is_payment_url %}active{% endif %}">
                         <a href="{% url 'payments:payment_order' %}"> <span>Order</span> </a>
@@ -255,89 +255,96 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_CASH_SOF"%}
-                {% check_valid_url url_name 'cash_sofs' as is_cash_sofs_url%}
-                <li class="menu-accordion {% if is_cash_sofs_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Cash Source Of Fund</span> </a>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
-                        <a href="{% url 'cash_sofs:cash_sof' %}"> <span>Source of Fund</span> </a>
-                    </li>
-                </ul>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'cash_transaction' %}active{% endif %}">
-                        <a href="{% url 'cash_sofs:cash_transaction' %}"> <span>Transaction</span> </a>
-                    </li>
-                </ul>
-            </li>
-            {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_BANK_SOF"%}
-                {% check_valid_url url_name 'bank_sofs' as is_bank_sof_url %}
-                <li id="bank_sof_menu" class="menu-accordion {% if is_bank_sof_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Bank Source Of Fund</span> </a>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'bank_sof' %}active{% endif %}">
-                        <a id="bank_sof_list" href="{% url 'bank_sofs:bank_sof' %}"> <span>Source of Fund</span> </a>
-                    </li>
-                     <li class="{% if url_name == 'bank_sofs_transaction' %}active{% endif %}">
-                        <a id="bank_transaction" href="{% url 'bank_sofs:bank_sofs_transaction' %}"> <span>Transaction</span> </a>
-                    </li>
-                </ul>
-            </li>
-            {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_CARD_SOF"%}
-            {% check_valid_url url_name 'card_sofs' as is_card_sof_url %}
-            <li id="card_sof_menu" class="menu-accordion {% if is_card_sof_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Source Of Fund</span> </a>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'card_sof' %}active{% endif %}">
-                        <a id="card_sof_list" href="{% url 'card_sofs:card_sof' %}"> <span>Source of Fund</span> </a>
-                    </li>
-                    <li class="{% if url_name == 'card_sofs_transaction' %}active{% endif %}">
-                        <a id="card_sofs_transaction" href="{% url 'card_sofs:card_sofs_transaction' %}"> <span>Transaction</span> </a>
-                    </li>
-                </ul>
-            </li>
-            {% endif %}
             
-            {% if request.user|has_permission_name:"SYS_MANAGE_BANK" or request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN" or request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
-                {% check_valid_url url_name 'bank,card_design,card_provider' as is_sof_url %}
+            {% if request.user|has_permission_name:"SYS_MANAGE_BANK" or request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN" or request.user|has_permission_name:"SYS_MANAGE_PROVIDER" or request.user|has_permission_name:"CAN_MANAGE_BANK_SOF" or request.user|has_permission_name:"CAN_MANAGE_CARD_SOF" or request.user|has_permission_name:"CAN_MANAGE_CASH_SOF" %}
+                {% check_valid_url url_name 'bank_sofs,bank,card_sofs,card_design,card_provider,cash_sofs' as is_sof_url %}
                 <li class="menu-accordion {% if is_sof_url %}open{% endif %}">
-                    <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Source Of Fund</span> </a>
-                    {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
+                    <a href="javascript:;"> <i class="fa fa-clone"></i> <span>Source Of Fund</span> </a>
                     <ul class="sub-menu">
-                        {% check_valid_url url_name 'bank' as is_bank_url %}
-                        <li class="{% if is_bank_url %}active{% endif %}">
-                            <a href="{% url 'bank:bank_sofs_list' %}"> <span>Manage Bank</span> </a>
-                        </li>
-                    </ul>
-                    {%endif%}
-                    {% if request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN"%}
+                    {% check_valid_url url_name 'bank_sofs,bank' as is_bank_url %}
+                    <li class="menu-accordion {% if is_bank_url %}open{% endif %}">
+                        <a href="javascript:;"><span>Bank</span> </a>
                         <ul class="sub-menu">
-                            {% check_valid_url url_name 'card_design' as is_card_design_url %}
-                            <li class="{% if is_card_design_url %}active{% endif %}">
-                                <a href="{% url 'card_design:card_designs' %}"> <span>Manage Card Design</span> </a>
+                            {% if request.user|has_permission_name:"CAN_MANAGE_BANK_SOF"%}
+                            <li class="{% if url_name == 'bank_sof' %}active{% endif %}">
+                                <a id="sof-bank-information" id="bank_sof_list" href="{% url 'bank_sofs:bank_sof' %}"> <span>Information</span> </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"SYS_MANAGE_BANK"%}
+                            <li class="{% if url_name == 'bank_sofs_list' %}active{% endif %}">
+                                <a id="sof-bank-bank-management" href="{% url 'bank:bank_sofs_list' %}"> <span>Bank Management</span> </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_MANAGE_BANK_SOF"%}
+                            <li class="{% if url_name == 'bank_sofs_transaction' %}active{% endif %}">
+                                <a id="sof-bank-transaction" href="{% url 'bank_sofs:bank_sofs_transaction' %}"> <span>Transaction</span> </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% check_valid_url url_name 'card_sofs,card_design,card_provider' as is_source_card_url %}
+                    <li class="menu-accordion {% if is_source_card_url %}open{% endif %}">
+                        <a href="javascript:;"><span>Card</span> </a>
+                        <ul class="sub-menu">
+                            {% if request.user|has_permission_name:"CAN_MANAGE_CARD_SOF"%}
+                            <li class="{% if url_name == 'card_sof' %}active{% endif %}">
+                                <a id="sof-card-information" id="card_sof_list"  href="{% url 'card_sofs:card_sof' %}"> <span>Information</span> </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"SYS_MANAGE_CARD_DESIGN"%}
+                            <li class="{% if url_name == 'card_designs' %}active{% endif %}">
+                                <a id="sof-card-design-management" href="{% url 'card_design:card_designs' %}"> <span>Design Management</span> </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
+                            <li class="{% if url_name == 'card_provider' %}active{% endif %}">
+                                <a id="sof-card-provider-management" href="{% url 'card_provider:card_provider' %}"> <span>Provider Management</span> </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_MANAGE_CARD_SOF"%}
+                            <li class="{% if url_name == 'card_sofs_transaction' %}active{% endif %}">
+                                <a id="sof-card-transaction" href="{% url 'card_sofs:card_sofs_transaction' %}"> <span>Transaction</span> </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    {% if request.user|has_permission_name:"CAN_MANAGE_CASH_SOF"%}
+                    {% check_valid_url url_name 'cash_sofs' as is_cash_sofs_url %}
+                    <li class="menu-accordion {% if is_cash_sofs_url %}open{% endif %}">
+                        <a href="javascript:;"><span>Cash</span> </a>
+                        <ul class="sub-menu">
+                            <li class="{% if url_name == 'cash_sof' %}active{% endif %}">
+                                <a id="sof-cash-information" href="{% url 'cash_sofs:cash_sof' %}"> <span>Information</span> </a>
+                            </li>
+                            <li class="{% if url_name == 'cash_transaction' %}active{% endif %}">
+                                <a id="sof-cash-transaction" href="{% url 'cash_sofs:cash_transaction' %}"> <span>Transaction</span> </a>
                             </li>
                         </ul>
+                    </li>
                     {% endif %}
-                    {% if request.user|has_permission_name:"SYS_MANAGE_PROVIDER"%}
-                        <ul class="sub-menu">
-                            {% check_valid_url url_name 'card_provider' as is_card_provider_url %}
-                            <li class="{% if is_card_provider_url %}active{% endif %}">
-                                <a href="{% url 'card_provider:card_provider' %}"> <span>Manage Card Provider</span> </a>
-                            </li>
-                        </ul>
-                    {%endif%}
+                    </ul>
+
+
+
+
+
+
+
+
+
+
+
                 </li>
             {%endif%}
             {% if request.user|has_permission_name:"CAN_MANAGE_RECONCILE"%}
             {% check_valid_url url_name 'reconcile' as is_reconcile_url %}
             <li class="menu-accordion {% if is_reconcile_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Reconcile</span> </a>
+                <a href="javascript:;"> <i class="fa fa-exchange"></i> <span>Reconcile</span> </a>
                 {% if request.user|has_permission_name:"CAN_MANAGE_PARTNER_RECONCILE"%}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'partner' in request.path %}open{% endif %}">
-                        <a href="javascript:;" id="partner_menu_reconcile"> <i class="fa fa-credit-card"></i> <span>Partner</span> </a>
+                        <a href="javascript:;" id="partner_menu_reconcile"><span>Partner</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_PARTNER_RECONCILE"%}
                             <li class="{% if 'partner/file-list' in request.path %}active{% endif %}">
@@ -356,7 +363,7 @@
                 {% if request.user|has_permission_name:"CAN_MANAGE_SOF_RECONCILE"%}
                 <ul class="sub-menu">
                     <li class="menu-accordion {% if 'reconcile/sof/' in request.path %}open{% endif %}">
-                        <a href="javascript:;"> <i class="fa fa-credit-card" id="sof_menu_reconcile"></i> <span>Source of fund</span> </a>
+                        <a href="javascript:;"> <span>Source of fund</span> </a>
                         <ul class="sub-menu">
                             {% if request.user|has_permission_name:"CAN_GET_FILE_LIST_SOF_RECONCILE"%}
                             <li class="{% if 'sof/file-list' in request.path %}active{% endif %}">
@@ -377,7 +384,7 @@
             {% if request.user|has_permission_name:"SYS_BAL_ADJUST_REQUEST" or request.user|has_permission_name:"SYS_BAL_ADJUST_HISTORY"%}
             {% check_valid_url url_name 'balance_adjustment' as is_adj_url %}
             <li class="menu-accordion {% if is_adj_url %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Balance Adjustment</span> </a>
+                <a href="javascript:;"> <i class="fa fa-pencil-square-o"></i> <span>Balance Adjustment</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"SYS_BAL_ADJUST_HISTORY"%}
                     <li class="{% if url_name == 'balance_adjustment_list' or url_name == 'balance_adjustment_detail' %}active{% endif %}">
@@ -403,10 +410,43 @@
                             <span>Campaign List</span> 
                         </a>
                     </li>
+                    {% if request.user|has_permission_name:"CAN_EDIT_CAMPAIGN_CONFIGURATION"%}
+                    <li class="{% if url_name == 'campaign_configuration'%}active{% endif %}">
+                        <a href="{% url 'campaign:campaign_configuration' %}" id="campaign_configuration">
+                            <span>Campaign Configuration</span>
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </li>
             {% endif %}
 
+            {% if request.user|has_permission_name:"CREATE_FRAUD_TICKET"%}
+            {% check_valid_url url_name 'fraud_prevention' as is_fp_url %}
+            <li class="menu-accordion {% if is_fp_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-shield"></i> <span>Fraud Prevention</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'fraud_prevention'%}active{% endif %}">
+                        <a href="{% url 'fraud_prevention:fraud_prevention' %}">
+                            <span>Create Fraud Ticket</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_VIEW_RULE_LIST"%}
+            {% check_valid_url url_name 'rule_configuration' as is_rule_configuration_url %}
+            <li class="menu-accordion {% if is_rule_configuration_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-history"></i> <span>Rule Configuration</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'rule_engine'%}active{% endif %}">
+                        <a href="{% url 'rule_configuration:rule_engine' %}">
+                            <span>Rule List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
             <li>
                 {% if user.is_authenticated %}
                 <a href="{% url 'authentications:logout' %}">

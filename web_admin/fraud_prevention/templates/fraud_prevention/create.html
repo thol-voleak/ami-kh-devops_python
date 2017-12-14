@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Create Fraud Ticket</h3>
+        </div>
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+                <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="col-xs-12">
+                    <div class='alert alert-success alert-dismissable' id="msg_cre_fraud_success">
+                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-xs-12">
+                    <div class='alert alert-danger alert-dismissable' id="msg_cre_fraud_error">
+                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                          action="{{ request.path }}" onsubmit="return validateDate()">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Data Type *</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_data_type" name="data_type" required onchange="listenDataType(this.options[this.selectedIndex].value)">
+                                    <option value="virtual_card">Virtual Card</option>
+                                    <option value="device_id">Device ID</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" id="lbl_key_value">Virtual Card ID *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Action</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_action" name="action" required>
+                                    <option>Freeze Virtual Card</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Reason *</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_reason" name="reason" required onchange="listenReason(this.options[this.selectedIndex].value)">
+                                    <option value="Not Sufficient Fund">Not Sufficient Fund</option>
+                                    <option value="Multiple Void">Multiple Void</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="div_notes" hidden>
+                            <label class="col-sm-3 control-label" >Notes *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_notes" class="form-control input-rounded" name="notes" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Start Date</label>
+                            <div class="col-xs-3">
+                                <input id="dtp_start_date" class="form-control input-rounded" name="start_date" type="date">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">End Date</label>
+                            <div class="col-xs-3">
+                                <input id="dtp_end_date" class="form-control input-rounded" name="end_date" type="date">
+                            </div>
+                        </div>
+
+                        <div class="form-group pull-right">
+                            <a href="{% url 'web:web-index' %}">
+                                <input id="btn_cancel" class="btn btn-default text-left mb15" type="button"
+                                       value="Cancel"/>
+                            </a>
+                            <input id="btn_create_fraud_ticket" class="btn btn-success text-left mb15" type="submit"
+                                   value="Create Fraud Ticket"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function listenReason(reason) {
+            if (reason === 'Others') {
+                $('#div_notes').show();
+                $('#txt_notes').prop('required',true);
+            } else {
+                $('#div_notes').hide();
+                $('#txt_notes').prop('required',false);
+            }
+        }
+        function listenDataType(type) {
+            $('#div_notes').hide();
+            $('#txt_notes').prop('required',false);
+
+            var lbl_kv = $("#lbl_key_value");
+            var ddl_action = $("#ddl_action");
+            var ddl_reson = $("#ddl_reason");
+
+            if (type === 'virtual_card') {
+                lbl_kv.text('Virtual Card ID *');
+                ddl_action.empty();
+                ddl_action.append($("<option>")
+                    .html("Freeze Virtual Card")
+                );
+                ddl_reson.empty();
+                ddl_reson.append($("<option>")
+                    .html("Not Sufficient Fund")
+                    .val("Not Sufficient Fund")
+                );
+                ddl_reson.append($("<option>")
+                    .html("Multiple Void")
+                    .val("Multiple Void")
+                );
+                ddl_reson.append($("<option>")
+                    .html("Others")
+                    .val("Others")
+                )
+            }   else if (type === 'device_id') {
+                lbl_kv.text('Device ID *');
+                ddl_action.empty();
+                ddl_action.append($("<option>")
+                    .html("Block Registration")
+                );
+                ddl_reson.empty();
+                ddl_reson.append($("<option>")
+                    .html("Multiple Registration")
+                    .val("Multiple Registration")
+                );
+                ddl_reson.append($("<option>")
+                    .html("Others")
+                    .val("Others")
+                )
+            }
+        }
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg);
+        $("#msg-error").fadeIn();
+    }
+
+    function validateDate() {
+        $("#msg-error").fadeOut();
+        var from = document.getElementById("dtp_start_date");
+        var to = document.getElementById("dtp_end_date");
+        if (!to.value) {
+            return true;
+        } else {
+            var toDate = new Date(to.value);
+        }
+
+        if (!from.value) {
+            var fromDate = new Date();
+        } else {
+            var fromDate = new Date(from.value);
+        }
+
+        if (fromDate >= toDate) {
+            $("#msg_cre_fraud_success").fadeOut();
+            $("#msg_cre_fraud_error").fadeOut();
+            if (!from.value) {
+                from.valueAsDate = new Date();
+            }
+            showErrorMessage('Start date should be less than end date');
+            return false;
+        }
+    }
+    </script>
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <style>
+        .recipient-mechanic {
+            position: relative;
+            top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row no-margin rule-engine-step-bar clearfix">
+    <div class="col-sm-2 title">Create Mechanic</div>
+        <div class="col-sm-10">
+            <ul class="progressbar">
+                <li></li>
+                <li class="active"></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <div class="panel mb25">
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-roles">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% endfor %}
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                          action="{{ request.path }}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Trigger</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_trigger" name="trigger"  required>
+                                        <option value= "register_customer" {% if trigger == 'register_customer' %}selected{% endif %}>Customer Registration</option>
+                                        <option value= "executed_order" {% if trigger == 'executed_order' %}selected{% endif %}>Customer Payment</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Start Date *</label>
+                            <div class="col-xs-3">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_start_date"
+                                       value="{{ dtp_start_date|default_if_none:'' }}"
+                                       id="dtp_start_date" required>
+                            </div>
+                            <div class="col-xs-2">
+                                <input  class="form-control input-rounded"
+                                        type=time min=00:00 max=23:59 step=60 value="00:01"
+                                       id="dtp_start_time" name="dtp_start_time"
+                                       value="{{ dtp_start_time|default_if_none:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">End Date</label>
+                            <div class="col-xs-3">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_end_date" value="{{ dtp_end_date|default_if_none:'' }}"
+                                       id="dtp_end_date">
+                            </div>
+                            <div class="col-xs-2">
+                                <input  class="form-control input-rounded"
+                                        type=time min=00:00 max=23:59 step=60
+                                       id="dtp_end_time" name="dtp_end_time"
+                                       value="{{ dtp_end_time|default_if_none:'' }}">
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <a href="{% url 'rule_configuration:rule_engine' %}">
+                                <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                       value="Cancel"/>
+                            </a>
+                             <input id="btn_next" class="btn btn-success text-left mb15" type="submit"
+                                   value="Next"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
