@@ -9,7 +9,7 @@
 {% csrf_token %}
 <div class="panel mb25">
     <div class="panel-heading">
-        <h3>Voucher Detail</h3>
+        <h3>View Voucher Detail</h3>
     </div>
         <!--If success return green notification and return red notification if message is failed-->
     {% for msg in msgs.values %}
@@ -39,17 +39,20 @@
                     <!-- Begin section 1 -->
                     <div class="row">
                         <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Voucher Details</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Voucher ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id"
                                        value="{{ data.voucher_id|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="product_name" id="txt_product_name"
-                                       value="{{ data.product.product_name|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -61,13 +64,6 @@
                                        value="{{ data.voucher_type|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 1</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
-                                       value="{{ data.product.product_ref1|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
@@ -75,13 +71,6 @@
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_claim_status"
                                        value="{{ data.is_used|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 2</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref2"
-                                       value="{{ data.product.product_ref2|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -93,13 +82,6 @@
                                        value="{{ data.is_deleted|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 3</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref3"
-                                       value="{{ data.product.product_ref3|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
@@ -109,11 +91,13 @@
                                        value="{{ data.amount|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 4</label>
+                            <label class="col-sm-4 control-label">Fee</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref4"
-                                       value="{{ data.product.product_ref4|default_if_none:'' }}" disabled/>
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_fee"
+                                       value="{{ data.fee|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -125,14 +109,38 @@
                                        value="{{ data.currency|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 5</label>
+                            <label class="col-sm-4 control-label">Create Timestamp</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref5"
-                                       value="{{ data.product.product_ref5|default_if_none:'' }}" disabled/>
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_create_timestamp"
+                                       value="{{ data.created_timestamp|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Last Update Time</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_last_update_time"
+                                       value="{{ data.last_updated_timestamp|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Begin section 2 -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"><strong>Stakeholders</strong></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <br>
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Cash In Order ID</label>
@@ -181,26 +189,78 @@
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <!-- Begin section 3 -->
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Create Timestamp</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="status" id="txt_create_timestamp"
-                                       value="{{ data.created_timestamp|default_if_none:'' }}" disabled/>
-                            </div>
+                            <label class="col-sm-4 control-label"><strong>Product Reference</strong></label>
+                            <div class="col-sm-8"></div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Last Update Time</label>
+                            <label class="col-sm-4 control-label"></label>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Name</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_last_update_time"
-                                       value="{{ data.last_updated_timestamp|default_if_none:'' }}" disabled/>
+                                <input type="text" class="form-control input-rounded" name="product_name" id="txt_product_name"
+                                       value="{{ data.product.product_name|default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 1</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
+                                       value="{{ data.product.product_ref1|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 2</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
+                                       value="{{ data.product.product_ref2|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 3</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
+                                       value="{{ data.product.product_ref3|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 4</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
+                                       value="{{ data.product.product_ref4|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label" id="lbl_agent_id">Product Ref 5</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_product_ref1"
+                                       value="{{ data.product.product_ref5|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- End section 8 - row 8 -->
                     <div class="pull-right">
                         <a href="{% url 'voucher:voucher' %}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Back"/>
+                            <input id="btn_cancel" class="btn text-left mb15" type="button" value="Back"/>
                         </a>
                     </div>
                 </form>
