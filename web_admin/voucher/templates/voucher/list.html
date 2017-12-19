@@ -1,2 +1,183 @@
 {% extends "base.html" %}
-Voucher List
+{% load static %}
+{% load permissions_filter %}
+{% block content %}
+    <div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+           <div>
+                <div class="pull-left"><h3>Voucher List</h3></div>
+               <div class="clearfix"></div>
+           </div>
+        </div>
+        {% for message in messages %}
+        <div class="col-xs-12">
+            <div class='alert
+                        alert-success
+                        alert-dismissable' id="msg-add-service">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endfor %}
+        {% if msg is not None %}
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ msg }}</strong>
+            </div>
+        </div>
+        {% endif %}
+        {% if add_client_msg is not None %}
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-success alert-dismissable" id="msg-add-client">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ add_client_msg }}</strong>
+            </div>
+        </div>
+        {% endif %}
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'voucher:voucher' %}">
+            {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Voucher ID</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id" value="{{ voucher_id }}">
+                    </div>
+                    <label class="col-sm-2 control-label">Claim Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_claim_status" name="claim_status" >
+                            {% for item in claim_status_list %}
+                                {%if item.value == selected_status%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Cash In User Type</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="user_type_cash_in"
+                               value="Agent"
+                               id="txt_user_type_cash_in" readonly>
+                    </div>
+                    <label class="col-sm-2 control-label">Cash In ID</label>
+                    <div class="col-xs-2">
+                        <input type="number" class="form-control input-rounded"
+                               name="cash_in_id"
+                               value="{{ cash_in_id|default_if_none:'' }}"
+                               id="txt_cash_in_id">
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Cash Out User Type</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="user_type_cash_out"
+                               value="Agent" readonly
+                               id="txt_user_type_cash_out">
+                    </div>
+                    <label class="col-sm-2 control-label">Cash Out ID</label>
+                    <div class="col-xs-2">
+                        <input type="number" class="form-control input-rounded"
+                               name="cash_out_id"
+                               value="{{ cash_out_id|default_if_none:'' }}"
+                               id="txt_cash_out_id">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Create Date From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="create_date_from"
+                               value="{{ create_date_from|default_if_none:'' }}"
+                               id="dtp_create_date_from">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-xs-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="create_date_to"
+                               value="{{ create_date_to|default_if_none:'' }}"
+                               id="dtp_create_date_to">
+                    </div>
+
+                    <div class="col-xs-1">
+                        <input id="btn_search_shown" class="btn btn-success btn-block" type="button" name="search_shown"
+                               onclick="searchVouchers()" value="Search">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search" style="display: none;">
+                    </div>
+                </div>
+            </form>
+
+            <div class="no-more-tables">
+                <table id='tbl_voucher' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th id="ddl_voucher_id">Voucher ID</th>
+                        <th id="ddl_voucher_type">Voucher Type</th>
+                        <th id="ddl_voucher_amount">Voucher Amount</th>
+                        <th id="ddl_voucher_fee">Voucher Fee</th>
+                        <th id="ddl_status">Claim Status</th>
+                        <th id="ddl_delete_status">Delete Status</th>
+                        <th id="ddl_create_date">Create Date</th>
+                        <th id="ddl_update_date">Update Date</th>
+                        <th id="ddl_currency">Currency</th>
+                        <th id="ddl_action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td>{{ i.voucher_id|default_if_none:'' }}</td>
+                            <td>{{ i.voucher_type|default_if_none:'' }}</td>
+                            <td>{{ i.amount|default_if_none:'' }}</td>
+                            <td>{{ i.fee|default_if_none:'' }}</td>
+                            <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
+                            <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
+                            <td>{{ i.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.currency|default_if_none:'' }}</td>
+                            <td>
+                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+    var submitButton = $('#btn_search');
+    var searchVouchers = function(){
+        var from_date = $('#dtp_create_date_from').val();
+        var to_date = $('#dtp_create_date_to').val();
+        if(from_date != '' && to_date != '') {
+            var date_from = new Date(from_date);
+            var date_to = new Date(to_date);
+            if(date_from > date_to) {
+                $('#alert-client').css('display', 'block');
+                $('#alert-client #alert-msg').text('Create Date To cannot be less than Create Date From');
+                return;
+            }
+        }
+        submitButton.click();
+    };
+</script>
+{% endblock %}
