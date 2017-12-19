@@ -245,3 +245,6 @@ GET_RULE_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rul
 GET_ACTION_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/action-types'
 GET_DATA_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/data-types'
 CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
+
+#Remmittance
+GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
