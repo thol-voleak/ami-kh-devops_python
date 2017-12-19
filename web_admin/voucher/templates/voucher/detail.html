@@ -70,7 +70,7 @@
                             <label class="col-sm-4 control-label">Claim Status</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_claim_status"
-                                       value="{{ data.is_used|default_if_none:'' }}" disabled/>
+                                       value="{{ data.is_used|yesno:"Used,Unused,''" }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                             <label class="col-sm-4 control-label">Delete Status</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_delete_status"
-                                       value="{{ data.is_deleted|default_if_none:'' }}" disabled/>
+                                       value="{{ data.is_deleted|yesno:"Yes,No" }}" disabled/>
                             </div>
                         </div>
                     </div>
