@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'campaign',
     'fraud_prevention',
     'rule_configuration',
+    'voucher',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -100,11 +101,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(PROJECT_PATH, 'web', 'templates', 'clients', 'oauth_client', 'balances', 'agent_type',
+                 os.path.join(PROJECT_PATH, 'web', 'templates', 'voucher', 'clients', 'oauth_client', 'balances', 'agent_type',
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
                               'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
                               'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
-                              'rule_configuration')],
+                              'rule_configuration',)],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -318,6 +319,11 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
-        }
+        },
+        'voucher': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     }
 }
