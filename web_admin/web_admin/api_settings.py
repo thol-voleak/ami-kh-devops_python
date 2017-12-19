@@ -54,7 +54,7 @@ AGENT_ADD_IDENTITY_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent
 AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
 ADD_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards'
 DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards/{}'
-
+AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
