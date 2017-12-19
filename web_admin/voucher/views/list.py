@@ -47,11 +47,15 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         to_date = request.POST.get('create_date_to')
 
         body = {}
+        if cash_in_id:
+            body['cash_in_user_id'] = int(cash_in_id)
+        if cash_out_id:
+            body['cash_out_user_id'] = int(cash_out_id)
         if voucher_id:
             body['voucher_id'] = int(voucher_id)
-        if (claim_status == 'True'):
+        if claim_status == 'True':
             body['is_used'] = True
-        if (claim_status == 'False'):
+        if claim_status == 'False':
             body['is_used'] = False
 
         if from_date:
