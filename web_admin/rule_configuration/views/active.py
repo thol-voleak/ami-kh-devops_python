@@ -29,21 +29,35 @@ class ActiveRule(RuleDetail):
     def post(self, request, rule_id):
         self.logger.info('========== Start activate rule ==========')
         url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=rule_id)
+        is_able_to_activate = False
         mechanic = self.get_mechanic_list(rule_id)
         if not len(mechanic):
             return JsonResponse({"status": 3, "msg": 'Rule ID {} cannot be activated because this rule ID has to include at least 1 mechanic, 1 condition and 1 action'.format(rule_id)})
         else:
+            mechanic = [i for i in mechanic if not i.get('is_deleted')]
             for i in mechanic:
                 condition_list = self.get_condition_list(rule_id, i['id'])
+                self.logger.info('========== Finish get condition list ==========')
+                condition_list = [i for i in condition_list if not i.get('is_deleted')]
+                if len(condition_list) == 0:
+                    continue
                 action = self.get_rewards_list(rule_id, i['id'])
-                if not len(condition_list) and not len(action):
-                    return JsonResponse({"status": 3, "msg": 'Rule ID {} cannot be activated because this rule ID has to include at least 1 mechanic, 1 condition and 1 action'.format(rule_id)})
-                else:        
-                    params = {
+                self.logger.info('========== Finish get action list ==========')
+                action = [i for i in action if not i.get('is_deleted')]
+                if len(action) == 0:
+                    continue
+                if len(condition_list) > 0 and len(action) > 0:
+                    is_able_to_activate = True
+                    break
+            if is_able_to_activate:
+                params = {
                         'is_active': True,
                         'name': request.POST.get("rule_name"),
                         'description': request.POST.get("rule_description")
-                    }
-                    result = ajax_functions._put_method(request, url, "", self.logger, params)
-                    self.logger.info('========== Finish activate rule ==========')
-                    return result
+                }
+                result = ajax_functions._put_method(request, url, "", self.logger, params)
+                self.logger.info('========== Finish activate rule ==========')
+                return result
+            self.logger.info('========== Finish activate rule ==========')
+            return JsonResponse({"status": 3, "msg": 'Rule ID {} cannot be activated because this rule ID has to include at least 1 mechanic, 1 condition and 1 action'.format(rule_id)})
+
