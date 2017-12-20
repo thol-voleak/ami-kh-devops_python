@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "voucher/list.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_VIEW_VOUCHER_LIST"
     login_url = 'web:permission_denied'
     logger = logger
 
@@ -72,6 +72,9 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
         self.logger.info('========== Finished searching Campaign ==========')
+        permissions = {}
+        permissions['CAN_VIEW_VOUCHER_DETAILS'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_VIEW_VOUCHER_DETAILS')
         context = {
             'data': data,
             'voucher_id': voucher_id,
@@ -81,6 +84,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_out_id': cash_out_id,
             'create_date_from': from_date,
             'create_date_to': to_date,
+            'permissions': permissions,
         }
         return render(request, self.template_name, context)
 

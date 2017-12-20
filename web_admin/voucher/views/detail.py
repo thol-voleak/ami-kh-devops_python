@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "voucher/detail.html"
-    group_required = "CAN_VIEW_CAMPAIGNS"
+    group_required = "CAN_VIEW_VOUCHER_DETAILS"
     login_url = 'web:permission_denied'
     logger = logger
 

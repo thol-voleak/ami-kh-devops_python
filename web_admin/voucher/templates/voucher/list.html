@@ -150,7 +150,9 @@
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td>
+                                {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
                                 <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
