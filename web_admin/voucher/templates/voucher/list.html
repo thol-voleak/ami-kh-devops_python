@@ -113,10 +113,8 @@
                     </div>
 
                     <div class="col-xs-1">
-                        <input id="btn_search_shown" class="btn btn-success btn-block" type="button" name="search_shown"
+                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
                                onclick="searchVouchers()" value="Search">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
-                               value="Search" style="display: none;">
                     </div>
                 </div>
             </form>
@@ -166,7 +164,6 @@
 {% block body_js %}
 {{ block.super }}
 <script>
-    var submitButton = $('#btn_search');
     var searchVouchers = function(){
         var from_date = $('#dtp_create_date_from').val();
         var to_date = $('#dtp_create_date_to').val();
@@ -179,7 +176,7 @@
                 return;
             }
         }
-        submitButton.click();
+        document.getElementById("submit-form").submit();
     };
 </script>
 {% endblock %}
