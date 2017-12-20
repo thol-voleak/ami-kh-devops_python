@@ -6,8 +6,8 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 
 
 def suspend(request, agent_id):
-    # if not check_permissions_by_user(request.user, 'CAN_SUSPEND_AGENTS'):
-    #     return
+    if not check_permissions_by_user(request.user, 'CAN_SUSPEND_AGENTS'):
+        return {"status": 0, "msg": 'Permission Denied'}
 
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)

@@ -99,7 +99,7 @@
                        id="dtp_to">
             </div>
             <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-            {% if is_permission_search %}
+            {% if has_permission_search %}
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
@@ -160,49 +160,51 @@
                             <td class="col-sm-2" id="status_{{ agent.id }}">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
                             <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
                             <td class="col-sm-3">
-                                {% if agent.is_permission_view %}
+                                {% if agent.has_permission_view %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                                 {% endif %}
-                                {% if agent.is_permission_edit %}
+                                {% if agent.has_permission_edit %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                                 {% endif %}
-                                {% if agent.is_permission_delete %}
+                                {% if agent.has_permission_delete %}
                                     <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger " onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
                                 {% endif %}
-                                {% if agent.is_permission_identity %}
+                                {% if agent.has_permission_identity %}
                                     <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
                                 {% endif %}
-                                {% if agent.is_permission_smartcard %}
+                                {% if agent.has_permission_smartcard %}
                                     <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
                                 {% endif %}
-                                {% if agent.is_permission_sofcash %}
+                                {% if agent.has_permission_sofcash %}
                                     <button id="btn_sof_cash" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofcash' agent.id %}'">SOF Cash</button>
                                 {% endif %}
-                                {% if agent.is_permission_sofbank %}
+                                {% if agent.has_permission_sofbank %}
                                     <button id="btn_sof_bank" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofbank' agent.id %}'">SOF Bank</button>
                                 {% endif %}
-                                {% if not agent.is_suspended %}
-                                    <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
-                                        class="btn btn-danger mb5 btn-outline btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        id="btn_suspend"
-                                        data-url="{% url 'agents:agent_suspend' agent.id %}"
-                                        data-agent-id='{{ agent.id }}'
-                                        onClick="doSuspendOrActivate(this)">
-                                        <span class="small">Suspend</span>
-                                    </button>
-                                {% else %}
-                                    <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
-                                        class="btn btn-danger btn-outline mb5 btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
-                                        id="btn_suspend"
-                                        data-url="{% url 'agents:agent_activate' agent.id %}"
-                                        data-agent-id='{{ agent.id }}'
-                                        onClick="doSuspendOrActivate(this)">
-                                    <span class="small">Activate</span>
-                                    </button>
+                                {% if agent.has_permission_suspend %}
+                                    {% if not agent.is_suspended %}
+                                        <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
+                                            class="btn btn-danger mb5 btn-outline btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                            id="btn_suspend"
+                                            data-url="{% url 'agents:agent_suspend' agent.id %}"
+                                            data-agent-id='{{ agent.id }}'
+                                            onClick="doSuspendOrActivate(this)">
+                                            <span class="small">Suspend</span>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
+                                            class="btn btn-danger btn-outline mb5 btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                            id="btn_suspend"
+                                            data-url="{% url 'agents:agent_activate' agent.id %}"
+                                            data-agent-id='{{ agent.id }}'
+                                            onClick="doSuspendOrActivate(this)">
+                                        <span class="small">Activate</span>
+                                        </button>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         {% endif %}
