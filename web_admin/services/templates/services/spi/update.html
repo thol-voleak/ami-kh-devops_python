@@ -59,10 +59,27 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div>
+                <label class="col-sm-2"></label>
+                <label><input type="radio" name="spi_url_option" value="internal" {% if internal %}checked{% endif %}> Internal</label>&nbsp;
+                <label><input type="radio" name="spi_url_option" value="external" {% if external %}checked{% endif %}> External </label>
+            </div>
+            <div class="form-group internal box" id= "internal">
+                <label class="col-sm-2 control-label">SPI URL Value *</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="ddl_spi_url_value" name="spi_url_value_internal">
+                            <option value="/voucher/{}/internal/vouchers" {% if data.internal_url == '/voucher/{}/internal/vouchers' %}selected="selected"{% endif %}>Voucher Generate</option>
+                            <option value="/voucher/{}/internal/vouchers/pre-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/pre-payment' %}selected="selected"{% endif %}>Voucher Verification</option>
+                            <option value="/voucher/{}/internal/vouchers/post-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/post-payment' %}selected="selected"{% endif %}>Voucher Claim</option>
+                            <option value="/voucher/{}/internal/vouchers/cancellation" {% if data.internal_url == '/voucher/{}/internal/vouchers/cancellation' %}selected="selected"{% endif %}>Voucher Cancel</option>
+                            <option value="/voucher/{}/internal/vouchers/rollback" {% if data.internal_url == '/voucher/{}/internal/vouchers/rollback' %}selected="selected"{% endif %}>Voucher Rollback</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="form-group external box" id= "external" >
                 <label class="col-sm-2 control-label">SPI URL Value *</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" value="{{ data.url }}" required="required"/>
+                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value_external" value="{{ data.external_url }}" required="required"/>
                 </div>
             </div>
             <div class="form-group">
@@ -160,5 +177,28 @@ $(changeType);
 $call_method.change(function() {
         showRelateConfig();
     });
+{% if internal %}
+    $('#external').hide();
+    $('#txt_spi_url_value').removeAttr('required');
+{% endif %}
+{% if external %}
+    $('#internal').hide();
+{% endif %}
+
+function radioCheckbox(){
+    $('input[type="radio"]').click(function(){
+        var inputValue = $(this).attr("value");
+        var targetBox = $("." + inputValue);
+        $(".box").not(targetBox).hide();
+        $(targetBox).show();
+        if (inputValue =="internal"){
+            $('#txt_spi_url_value').removeAttr('required');
+        }
+        else if (inputValue =="external"){
+            $('#txt_spi_url_value').attr('required', true);
+        }
+    });
+}
+$(radioCheckbox);
 </script>
 {%  endblock %}
