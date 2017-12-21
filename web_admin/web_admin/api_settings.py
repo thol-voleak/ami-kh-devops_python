@@ -91,6 +91,7 @@ SPI_ADD_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/sp
 SPI_DETAIL_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
 SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
 SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spi_url_id}'
+SPI_CALL_METHOD_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-call-methods'
 
 # Service Group
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'

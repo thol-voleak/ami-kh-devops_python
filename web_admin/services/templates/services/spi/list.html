@@ -56,10 +56,27 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div>
+                <label class="col-sm-2"></label>
+                <label><input type="radio" name="spi_url_option" value="internal" checked="checked"> Internal</label>&nbsp;
+                <label><input type="radio" name="spi_url_option" value="external"> External </label>
+            </div>
+            <div class="form-group internal box" id= "internal">
+                    <label class="col-sm-2 control-label">SPI URL Value</label>
+                    <div class="col-sm-4">
+                            <select class="form-control" id="ddl_spi_url_value" name="spi_url_value_internal">
+                                <option value="/voucher/{}/internal/vouchers">Voucher Generate</option>
+                                <option value="/voucher/{}/internal/vouchers/pre-payment">Voucher Verification</option>
+                                <option value="/voucher/{}/internal/vouchers/post-payment">Voucher Claim</option>
+                                <option value="/voucher/{}/internal/vouchers/cancellation">Voucher Cancel</option>
+                                <option value="/voucher/{}/internal/vouchers/rollback">Voucher Rollback</option>
+                            </select>
+                        </div>
+                </div>
+            <div class="form-group external box" id= "external" hidden>
                 <label class="col-sm-2 control-label">SPI URL Value *</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value" required = "required"/>
+                    <input type="text" class="form-control" id="txt_spi_url_value" name="spi_url_value_external"/>
                 </div>
             </div>
             <div class="form-group">
@@ -194,5 +211,20 @@ $(changeType);
 $call_method.change(function() {
         showRelateConfig();
     });
+function radioCheckbox(){
+    $('input[type="radio"]').click(function(){
+        var inputValue = $(this).attr("value");
+        var targetBox = $("." + inputValue);
+        $(".box").not(targetBox).hide();
+        $(targetBox).show();
+        if (inputValue =="internal"){
+            $('#txt_spi_url_value').removeAttr('required');
+        }
+        else if (inputValue =="external"){
+            $('#txt_spi_url_value').attr('required', true);
+        }
+    });
+}
+$(radioCheckbox);
 </script>
 {%  endblock %}
