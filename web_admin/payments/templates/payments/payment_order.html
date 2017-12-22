@@ -21,7 +21,7 @@
                 </div>
                 <label class="col-sm-1 control-label">Error Code</label>
                 <div class="col-sm-3 select-error-code">
-                    <select id="ddl_error_code" data-placeholder="All" multiple class="chosen" name="error_code_id">
+                    <select id="ddl_error_code" data-placeholder="-" multiple class="chosen" name="error_code_id">
                         {% for item in error_list %}
                             {% if item.name in error_code_id %}
                                 <option value="{{item.name}}" selected>{{item.name}}</option>
