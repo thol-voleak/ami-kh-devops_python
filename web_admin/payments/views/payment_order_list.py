@@ -58,6 +58,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
+            {"name": "All"},
             {"name": "insufficient_fund"},
             {"name": "security_code_expired"},
             {"name": "security_code_failed"},
@@ -96,6 +97,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
         error_code = request.POST.getlist('error_code_id')
+        error_code_search = error_code
+
+        if 'All' in error_code:
+            error_code_search = ["insufficient_fund", "security_code_expired","security_code_failed","invalid_request",
+                          "payment_not_allow", "cancel_order_not_allow", "general_error"]
+            error_code = ["All"]
 
         body = {}
         body['paging'] = True
@@ -122,8 +129,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['created_client_id'] = creation_client_id
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
-        if error_code:
-            body['error_code'] = error_code
+        if error_code_search:
+            body['error_code'] = error_code_search
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -163,6 +170,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
+            {"name": "All"},
             {"name": "insufficient_fund"},
             {"name": "security_code_expired"},
             {"name": "security_code_failed"},
