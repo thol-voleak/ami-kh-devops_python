@@ -117,7 +117,6 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
                 context['internal'] = True
                 data['internal_url'] = data['url']
                 data['internal_url'] = data['internal_url'].replace(api_settings.API_VERSION, '{}')
-                print("data internal is : {}".format(data['internal_url']))
             else:
                 context['external'] = True
                 data['external_url'] = data['url']
