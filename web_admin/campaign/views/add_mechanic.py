@@ -401,4 +401,6 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _filter_trigger(self, data):
         filtered = [v for v in data if ((v.term == 'register_customer') or (v.term == 'executed_order') or (v.term == 'login'))]
+        link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
+        filtered.append(link_bank)
         return filtered
