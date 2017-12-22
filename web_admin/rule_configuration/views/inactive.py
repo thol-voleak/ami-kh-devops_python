@@ -27,7 +27,7 @@ class InactiveRule(RuleDetail):
         return super(InactiveRule, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, rule_id):
-        self.logger.info('========== Start activate rule ==========')
+        self.logger.info('========== Start inactivate rule ==========')
         url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=rule_id)
         params = {
             'is_active': False,
@@ -35,5 +35,5 @@ class InactiveRule(RuleDetail):
             'description': request.POST.get("rule_description")
         }
         result = ajax_functions._put_method(request, url, "", self.logger, params)
-        self.logger.info('========== Finish activate rule ==========')
+        self.logger.info('========== Finish inactivate rule ==========')
         return result
