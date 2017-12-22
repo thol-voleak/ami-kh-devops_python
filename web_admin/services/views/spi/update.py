@@ -73,7 +73,7 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
 
             if success:
                 message_level = messages.SUCCESS
-                message_text = 'Update data succesfully'
+                message_text = 'Updated data successfully'
             elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
                 raise InvalidAccessToken(status_message)
