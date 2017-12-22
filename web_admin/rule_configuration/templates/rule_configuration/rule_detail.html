@@ -69,7 +69,7 @@
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
                     </div>
-                    {%if not data.is_active and active_mechanic_count != 1 and permissions.CAN_DELETE_RULE_MECHANIC %}
+                    {%if permissions.CAN_DELETE_RULE_MECHANIC %}
                     <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
                             <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
                                data-url="{% url 'rule_configuration:delete_rule_mechanic' data.id i.id %}"
