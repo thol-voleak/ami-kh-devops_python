@@ -6,12 +6,12 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 
 
 def suspend(request, agent_id):
-    if not check_permissions_by_user(request.user, 'CAN_SUSPEND_AGENTS'):
-        return {"status": 0, "msg": 'Permission Denied'}
-
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
+    logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_SUSPEND_AGENTS'))
+    if not check_permissions_by_user(request.user, 'CAN_SUSPEND_AGENTS'):
+        return {"status": 1, "msg": ''}
     logger.info('========== Start suspending agent ==========')
     url = settings.DOMAIN_NAMES + api_settings.AGENT_STATUS_URL.format(agent_id)
     params = {
