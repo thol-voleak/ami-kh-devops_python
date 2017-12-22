@@ -8,7 +8,7 @@ from .views.detail import RuleDetail
 from .views.add_action import AddRuleAction
 from .views.active import ActiveRule
 from .views.inactive import InactiveRule
-
+from .views.delete_mechanic import MechanicDelete
 
 app_name = 'rule_configuration'
 
@@ -29,4 +29,6 @@ urlpatterns = [
         name="inactive-rule"),
     url(r'^active/(?P<rule_id>[0-9A-Za-z]+)/$', login_required(ActiveRule.as_view(), login_url='authentications:login'),
         name="activate-rule"),
+    url(r'^(?P<rule_id>[0-9A-Za-z]+)/delete/(?P<mechanic_id>[0-9A-Za-z]+)/$', login_required(MechanicDelete.as_view(), login_url='authentications:login'),
+        name="delete_rule_mechanic"),
 ]

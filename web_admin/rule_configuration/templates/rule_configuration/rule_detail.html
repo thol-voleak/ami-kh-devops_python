@@ -69,13 +69,13 @@
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
                     </div>
-                    <!--{%if not data.is_active and active_mechanic_count != 1 and permissions.CAN_DELETE_RULE_MECHANIC %}-->
-                    <!--<div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">-->
-                            <!--<i onClick="delete_mechanic({{ i.id }})" id="btn_delete"-->
-                               <!--data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"-->
-                               <!--class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>-->
-                    <!--</div>-->
-                    <!--{% endif %}-->
+                    {%if not data.is_active and active_mechanic_count != 1 and permissions.CAN_DELETE_RULE_MECHANIC %}
+                    <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
+                            <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
+                               data-url="{% url 'rule_configuration:delete_rule_mechanic' data.id i.id %}"
+                               class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="panel-body" style="margin-top: -20px;">
                     <p style="margin-bottom:0; ,">
@@ -197,7 +197,7 @@
 
     var delete_mechanic = function(mechanicId) {
         swal({
-            title: "Delete campaign mechanic?",
+            title: "Are you sure you want to delete?",
             text: "",
             type: "warning",
             showCancelButton: true,
