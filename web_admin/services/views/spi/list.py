@@ -1,6 +1,8 @@
-from web_admin import api_settings, setup_logger
+from web_admin import api_settings, setup_logger, RestFulClient
 from authentications.utils import get_correlation_id_from_username
-from services.views.spi import SpiApi
+from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
+from web_admin.api_logger import API_Logger
 
 from django.contrib import messages
 from django.http import Http404
@@ -12,9 +14,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class SPIView(TemplateView, SpiApi):
+class SPIView(TemplateView, GetHeaderMixin):
     template_name = 'services/spi/list.html'
-    get_call_method_url = 'api-gateway/payment/'+api_settings.API_VERSION+'/spi-url-call-methods'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -23,7 +24,6 @@ class SPIView(TemplateView, SpiApi):
         return super(SPIView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info("========== Start adding SPI URL by service command ==========")
 
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
@@ -32,7 +32,9 @@ class SPIView(TemplateView, SpiApi):
             raise Http404
 
         spi_type = request.POST.get('spi_url_type')
-        spi_url = request.POST.get('spi_url_value')
+        spi_url_option = request.POST.get('spi_url_option')
+        spi_url_value_internal = request.POST.get('spi_url_value_internal')
+        spi_url_value_external = request.POST.get('spi_url_value_external')
         spi_url_call_method = request.POST.get('spi_url_call_method')
         connection_timeout = request.POST.get('connection_timeout', 0)
         read_timeout = request.POST.get('read_timeout', 0)
@@ -40,7 +42,13 @@ class SPIView(TemplateView, SpiApi):
         retry_delay = request.POST.get('retry_delay', 0)
         expire_in_minute = request.POST.get('expire_in_minute', 0)
 
+        if spi_url_option == 'internal':
+            spi_url = spi_url_value_internal.format(api_settings.API_VERSION)
+        elif spi_url_option == 'external':
+            spi_url = spi_url_value_external
+
         if spi_url != "" and spi_url is not None:
+            spi_url = spi_url
             params = {
                 "spi_url_type": spi_type,
                 "url": spi_url,
@@ -51,15 +59,17 @@ class SPIView(TemplateView, SpiApi):
                 "read_timeout": 0 if read_timeout == "" else int(read_timeout),
                 "connection_timeout": 0 if connection_timeout == "" else int(connection_timeout)
             }
-            data, success = self.add_spi(service_command_id, params)
-            self.logger.info("========== Finish adding SPI URL by service command ==========")
+            success, status_code, message, data = self.add_spi(service_command_id, params)
 
             if success:
                 message_level = messages.SUCCESS
                 message_text = 'Added SPI URL successfully'
+            elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(status_message))
+                raise InvalidAccessToken(status_message)
             else:
                 message_level = messages.ERROR
-                message_text = data
+                message_text = message
         else:
             message_level = messages.ERROR
             message_text = "SPI url cannot be empty."
@@ -75,28 +85,54 @@ class SPIView(TemplateView, SpiApi):
                         service_id=service_id)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start getting SPI url list ==========')
         context = super(SPIView, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
         if not service_command_id:
             raise Http404
-        data, success = self.get_spi_list(service_command_id)
-        data_spi_call_method, status_call_method = self.get_call_method()
-        spi_types, success2 = self.get_spi_types()
-
-        context['data'] = data
-        context['data_spi_call_method'] = data_spi_call_method
-        context['spi_types'] = spi_types
-        context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
-        context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
-        context['spi_delete_msg'] = self.request.session.pop('spi_delete_msg', None)
-        self.logger.info('========== Finish getting SPI url list ==========')
-        return context
+        success, status_code, data = self.get_spi_list(service_command_id)
+        if success:
+            data_spi_call_method = self.get_call_method()
+            spi_types = self.get_spi_types()
+            context['data'] = data
+            context['data_spi_call_method'] = data_spi_call_method
+            context['spi_types'] = spi_types
+            context['add_spi_url_msg'] = self.request.session.pop('add_spi_url_msg', None)
+            context['spi_update_msg'] = self.request.session.pop('spi_update_msg', None)
+            context['spi_delete_msg'] = self.request.session.pop('spi_delete_msg', None)
+            context['api_version'] = api_settings.API_VERSION
+            return context
+        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
 
     def get_spi_types(self):
-        path = api_settings.SPI_TYPES_PATH
-        return self._get_method(path, 'SPI Types', logger, True)
+        self.logger.info('========== Start getting spi url types ==========')
+        success, status_code, data  = RestFulClient.get(url=api_settings.SPI_TYPES_PATH, loggers=self.logger, headers=self._get_headers())
+        self.logger.info('========== finish get spi url types ==========')
+        return data
 
     def add_spi(self, service_command_id, params):
+        self.logger.info("========== Start adding SPI URL by service command ==========")
         path = api_settings.SPI_ADD_PATH.format(service_command_id)
-        return self._post_method(path, "SPI Types", logger, params)
+        success, status_code, message, data = RestFulClient.post(
+                url = path,
+                headers=self._get_headers(),
+                loggers=self.logger,
+                params=params)
+        self.logger.info("param is : {}".format(params))
+        self.logger.info("========== Finish adding SPI URL by service command ==========")
+        return success, status_code, message, data
+
+    def get_call_method(self):
+        self.logger.info('========== Start getting spi call method ==========')
+        success, status_code, data  = RestFulClient.get(url=api_settings.SPI_CALL_METHOD_PATH, loggers=self.logger, headers=self._get_headers())
+        self.logger.info('========== finish get spi call method ==========')
+        return data
+
+    def get_spi_list(self, service_command_id):
+        self.logger.info('========== Start getting SPI url list ==========')
+        success, status_code, data  = RestFulClient.get(url=api_settings.SPI_LIST_PATH.format(service_command_id), loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                            status_code=status_code)
+        self.logger.info('========== finish get SPI url list ==========')
+        return success, status_code, data
