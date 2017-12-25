@@ -68,11 +68,11 @@
                 <label class="col-sm-2 control-label">SPI URL Value *</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="ddl_spi_url_value" name="spi_url_value_internal">
-                            <option value="/voucher/{}/internal/vouchers" {% if data.internal_url == '/voucher/{}/internal/vouchers' %}selected="selected"{% endif %}>Voucher Generate</option>
-                            <option value="/voucher/{}/internal/vouchers/pre-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/pre-payment' %}selected="selected"{% endif %}>Voucher Verification</option>
-                            <option value="/voucher/{}/internal/vouchers/post-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/post-payment' %}selected="selected"{% endif %}>Voucher Claim</option>
-                            <option value="/voucher/{}/internal/vouchers/cancellation" {% if data.internal_url == '/voucher/{}/internal/vouchers/cancellation' %}selected="selected"{% endif %}>Voucher Cancel</option>
-                            <option value="/voucher/{}/internal/vouchers/rollback" {% if data.internal_url == '/voucher/{}/internal/vouchers/rollback' %}selected="selected"{% endif %}>Voucher Rollback</option>
+                            <option value="/voucher/v${api.version}/internal/vouchers" {% if data.internal_url == '/voucher/{}/internal/vouchers' %}selected="selected"{% endif %}>Voucher Generate</option>
+                            <option value="/voucher/v${api.version}/internal/vouchers/pre-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/pre-payment' %}selected="selected"{% endif %}>Voucher Verification</option>
+                            <option value="/voucher/v${api.version}/internal/vouchers/post-payment" {% if data.internal_url == '/voucher/{}/internal/vouchers/post-payment' %}selected="selected"{% endif %}>Voucher Claim</option>
+                            <option value="/voucher/v${api.version}/internal/vouchers/cancellation" {% if data.internal_url == '/voucher/{}/internal/vouchers/cancellation' %}selected="selected"{% endif %}>Voucher Cancel</option>
+                            <option value="/voucher/v${api.version}/internal/vouchers/rollback" {% if data.internal_url == '/voucher/{}/internal/vouchers/rollback' %}selected="selected"{% endif %}>Voucher Rollback</option>
                         </select>
                     </div>
             </div>

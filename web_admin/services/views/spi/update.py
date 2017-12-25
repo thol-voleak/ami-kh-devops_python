@@ -19,11 +19,11 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
 
     logger = logger
     internal_urls = [
-        "/voucher/{}/internal/vouchers",
-        "/voucher/{}/internal/vouchers/pre-payment",
-        "/voucher/{}/internal/vouchers/post-payment",
-        "/voucher/{}/internal/vouchers/cancellation",
-        "/voucher/{}/internal/vouchers/rollback"
+        "/voucher/v${api.version}/internal/vouchers",
+        "/voucher/v${api.version}/internal/vouchers/pre-payment",
+        "/voucher/v${api.version}/internal/vouchers/post-payment",
+        "/voucher/v${api.version}/internal/vouchers/cancellation",
+        "/voucher/v${api.version}/internal/vouchers/rollback"
     ]
 
     def dispatch(self, request, *args, **kwargs):
@@ -107,7 +107,6 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start getting SPI url detail ==========')
         context = super(SPIUpdate, self).get_context_data(**kwargs)
-        v_internal_urls = [i.format(api_settings.API_VERSION) for i in self.internal_urls]
         service_command_id = kwargs.get('service_command_id')
         spi_url_id = kwargs.get('spiUrlId')
 
@@ -121,10 +120,9 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
                                         loggers=self.logger,
                                         headers=self._get_headers())
         if success:
-            if data['url'] in v_internal_urls:
+            if data['url'] in self.internal_urls:
                 context['internal'] = True
                 data['internal_url'] = data['url']
-                data['internal_url'] = data['internal_url'].replace(api_settings.API_VERSION, '{}')
             else:
                 context['external'] = True
                 data['external_url'] = data['url']
