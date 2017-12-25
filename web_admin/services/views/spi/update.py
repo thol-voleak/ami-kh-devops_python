@@ -52,7 +52,7 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
         expire_in_minute = request.POST.get('expire_in_minute', 0)
 
         if spi_url_option == 'internal':
-            spi_url = spi_url_value_internal.format(api_settings.API_VERSION)
+            spi_url = spi_url_value_internal
         elif spi_url_option == 'external':
             spi_url = spi_url_value_external
 
