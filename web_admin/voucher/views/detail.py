@@ -36,7 +36,6 @@ class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(VoucherDetail, self).get_context_data(**kwargs)
         voucher_id = context['voucher_id']
         data = self.get_voucher_detail(voucher_id)
-        print(data)
         context.update({
             'data': data[0]
         })
