@@ -105,7 +105,6 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
                         service_id=service_id)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start getting SPI url detail ==========')
         context = super(SPIUpdate, self).get_context_data(**kwargs)
         service_command_id = kwargs.get('service_command_id')
         spi_url_id = kwargs.get('spiUrlId')
@@ -115,10 +114,12 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
 
         spi_types = self.get_spi_types()
         data_spi_call_method = self.get_call_method()
+        self.logger.info('========== Start getting SPI url detail ==========')
         success, status_code, data  = RestFulClient.get(
                                         url=api_settings.SPI_DETAIL_PATH.format(spiUrlId=spi_url_id),
                                         loggers=self.logger,
                                         headers=self._get_headers())
+        self.logger.info('Response_content: {}'.format(data))
         if success:
             if data['url'] in self.internal_urls:
                 context['internal'] = True
