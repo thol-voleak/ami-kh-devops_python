@@ -159,7 +159,12 @@
                 </thead>
                 <tbody id="table_body">
                     {% for order in order_list %}
-                        <tr>
+                        {% if not order.error_code %}
+                        <tr class="order_error_code_none">
+                        {%else%}
+                        <tr class="{{ order.error_code }}">
+                        {%endif%}
+
                             <td class="col-sm-2">{{ order.order_id }}</td>
                             <td class="col-sm-2">{{ order.ref_order_id|default_if_none:""}}</td>
                             <td class="col-sm-2">{{ order.product_service.name }}</td>
