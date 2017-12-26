@@ -30,17 +30,23 @@ class ActiveRule(TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + UPDATE_CAMPAIGNS.format(bak_rule_id=rule_id)
         is_able_to_activate = False
         mechanic = self.get_mechanic_list(rule_id)
+        if mechanic == 'access_token_expired':
+            return JsonResponse({"status": 1, "msg": ''})
         if not len(mechanic):
             return JsonResponse({"status": 3, "msg": 'Rule ID {} cannot be activated because this rule ID has to include at least 1 mechanic, 1 condition and 1 action'.format(rule_id)})
         else:
             mechanic = [i for i in mechanic if not i.get('is_deleted')]
             for i in mechanic:
                 condition_list = self.get_condition_list(rule_id, i['id'])
+                if condition_list == 'access_token_expired':
+                    return JsonResponse({"status": 1, "msg": ''})
                 self.logger.info('========== Finish get condition list ==========')
                 condition_list = [i for i in condition_list if not i.get('is_deleted')]
                 if len(condition_list) == 0:
                     continue
                 action = self.get_rewards_list(rule_id, i['id'])
+                if action == 'access_token_expired':
+                    return JsonResponse({"status": 1, "msg": ''})
                 self.logger.info('========== Finish get action list ==========')
                 action = [i for i in action if not i.get('is_deleted')]
                 if len(action) == 0:
@@ -64,6 +70,11 @@ class ActiveRule(TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + GET_RULE_REWARD_LIST.format(rule_id=rule_id, mechanic_id=mechanic_id)
         self.logger.info('========== Start get action list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info('========== Finish get rewards list ==========')
+            self.logger.info('========== Finish get mechanic list ==========')
+            self.logger.info('========== Finish activate campaign ==========')
+            return 'access_token_expired'
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
         return data
@@ -72,6 +83,11 @@ class ActiveRule(TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + GET_RULE_CONDITION_LIST.format(rule_id=rule_id, mechanic_id=mechanic_id)
         self.logger.info('========== Start get condition list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info('========== Finish get condition list ==========')
+            self.logger.info('========== Finish get mechanic list ==========')
+            self.logger.info('========== Finish activate campaign ==========')
+            return 'access_token_expired'
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
         return data
@@ -80,6 +96,10 @@ class ActiveRule(TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + GET_RULE_MECHANIC_LIST.format(rule_id=rule_id)
         self.logger.info('========== Start get mechanic list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info('========== Finish get mechanic list ==========')
+            self.logger.info('========== Finish activate campaign ==========')
+            return 'access_token_expired'
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
         return data
