@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from .detail import RuleDetail
 from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
-from web_admin.api_settings import UPDATE_CAMPAIGNS, GET_MECHANIC_LIST, GET_REWARD_LIST, GET_LIMITION_LIST
+from web_admin.api_settings import UPDATE_CAMPAIGNS, GET_RULE_MECHANIC_LIST, GET_RULE_REWARD_LIST, GET_RULE_CONDITION_LIST
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from django.contrib import messages
 from web_admin.api_logger import API_Logger
@@ -17,8 +17,7 @@ import json
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
-class ActiveRule(RuleDetail):
-
+class ActiveRule(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -60,4 +59,28 @@ class ActiveRule(RuleDetail):
                 return result
             self.logger.info('========== Finish activate rule ==========')
             return JsonResponse({"status": 3, "msg": 'Rule ID {} cannot be activated because this rule ID has to include at least 1 mechanic, 1 condition and 1 action'.format(rule_id)})
+
+    def get_rewards_list(self, rule_id, mechanic_id):
+        url = settings.DOMAIN_NAMES + GET_RULE_REWARD_LIST.format(rule_id=rule_id, mechanic_id=mechanic_id)
+        self.logger.info('========== Start get action list ==========')
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_condition_list(self, rule_id, mechanic_id):
+        url = settings.DOMAIN_NAMES + GET_RULE_CONDITION_LIST.format(rule_id=rule_id, mechanic_id=mechanic_id)
+        self.logger.info('========== Start get condition list ==========')
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_mechanic_list(self, rule_id):
+        url = settings.DOMAIN_NAMES + GET_RULE_MECHANIC_LIST.format(rule_id=rule_id)
+        self.logger.info('========== Start get mechanic list ==========')
+        success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
 

@@ -17,8 +17,7 @@ import json
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
-class InactiveRule(RuleDetail):
-
+class InactiveRule(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

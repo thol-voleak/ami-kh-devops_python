@@ -31,6 +31,12 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def check_membership(self, permission):
         self.logger.info(
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, 'CAN_CREATE_RULE'))
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, 'CAN_VIEW_RULE_DETAILS'))
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, 'CAN_ENABLE_DISABLE_RULE'))
         return check_permissions_by_user(self.request.user, permission[0])
 
     def post(self, request, *args, **kwargs):
@@ -65,7 +71,7 @@ class RuleList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
 
         data = self._search_for_rule(body)
-        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_RULE_DETAILS  ')
+        is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_RULE_DETAILS')
         is_permission_update_status = check_permissions_by_user(self.request.user, 'CAN_ENABLE_DISABLE_RULE')
         for i in data:
             i['is_permission_detail'] = is_permission_detail
