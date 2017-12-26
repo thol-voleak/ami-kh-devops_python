@@ -162,7 +162,7 @@
     font-weight: bold;
 }
 
-#btn_dismiss, #btn_cancel {
+#btn_dismiss, #btn_cancel , #btn_back{
     background-color: #e4e2e2;
 }
 
