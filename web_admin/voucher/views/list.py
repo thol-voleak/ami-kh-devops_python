@@ -71,7 +71,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
-        self.logger.info('========== Finished searching Campaign ==========')
+        self.logger.info('========== Finished searching Vouchers ==========')
         permissions = {}
         permissions['CAN_VIEW_VOUCHER_DETAILS'] = check_permissions_by_user(self.request.user,
                                                                             'CAN_VIEW_VOUCHER_DETAILS')
