@@ -33,9 +33,11 @@ class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start get Vouchers details ==========')
         context = super(VoucherDetail, self).get_context_data(**kwargs)
         voucher_id = context['voucher_id']
         data = self.get_voucher_detail(voucher_id)
+        self.logger.info('========== Fisnish get Vouchers details ==========')
         context.update({
             'data': data[0]
         })
@@ -53,7 +55,7 @@ class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                             timeout=settings.GLOBAL_TIMEOUT)
 
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
-                        status_code=status_code, is_getting_list=True)
+                        status_code=status_code)
 
         if not is_success:
             messages.add_message(
