@@ -170,3 +170,7 @@
 .select-error-code .chosen-choices {
   padding: 0 0 0 5px !important;
 }
+
+.chosen-choices .search-field input {
+  color: #524848 !important;
+}
