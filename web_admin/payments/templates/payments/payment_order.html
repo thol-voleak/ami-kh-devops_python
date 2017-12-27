@@ -21,7 +21,7 @@
                 </div>
                 <label class="col-sm-1 control-label">Error Code</label>
                 <div class="col-sm-3 select-error-code">
-                    <select id="ddl_error_code" data-placeholder="-" multiple class="chosen" name="error_code_id">
+                    <select id="ddl_error_code" onchange="selectErrorCode()" data-placeholder="-" multiple class="chosen" name="error_code_id">
                         {% for item in error_list %}
                             {% if item.name in error_code_id %}
                                 <option value="{{item.name}}" selected>{{item.name}}</option>
@@ -210,5 +210,39 @@
 <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
 <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
 <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
+<script>
+    var isAllSelected = function(selectedValues) {
+        for(var i = 0; i < selectedValues.length; i++) {
+            if(selectedValues[i] == 'All') {
+                return true;
+            }
+        }
+        return false;
+    };
+    var selectErrorCode = function() {
+        var selectedValues = $('#ddl_error_code').val();
+        if(selectedValues == null) {
+            selectedValues = [];
+        }
+        if(isAllSelected(selectedValues)) {
+            var selectedNode =  document.getElementsByClassName("search-choice");
+            for(var i = 0; i< selectedNode.length; i++) {
+                if(selectedNode[i].childNodes[0].innerText !== 'All') {
+                    selectedNode[i].childNodes[1].click();
+                }
+            }
+            $('.select-error-code .chosen-drop .chosen-results li').each(function(index, elm) {
+                $(elm).removeClass('active-result');
+                 $(elm).removeClass('highlighted');
+                $(elm).addClass('result-selected');
+            });
+        }
+    };
+
+    $('#ddl_error_code').on("chosen:showing_dropdown", function () {
+        selectErrorCode();
+    });
+
+</script>
 {% endblock %}
 
