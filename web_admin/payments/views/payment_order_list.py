@@ -77,11 +77,11 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['error_code_id'] = error_code_id
         context['status_id'] = ''
         context['permissions'] = self._get_has_permissions()
-
+        self.logger.info('========== Finish render payment order ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        # self.logger.info('========== Start searching payment order ==========')
+        self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
@@ -91,7 +91,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         payee_user_type_id = request.POST.get('payee_user_type_id')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
+        self.logger.info('========== Start getting service list ==========')
         service_list = self.get_services_list()
+        self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         status_id = request.POST.get('status_id')
         creation_client_id = request.POST.get('creation_client_id')
@@ -144,7 +146,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
 
-        self.logger.info('========== Start searching payment order ==========')
         data = self.get_payment_order_list(body=body)
 
         if data:
