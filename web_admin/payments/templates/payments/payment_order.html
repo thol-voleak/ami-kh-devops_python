@@ -24,9 +24,9 @@
                     <select id="ddl_error_code" onchange="selectErrorCode()" data-placeholder="-" multiple class="chosen" name="error_code_id">
                         {% for item in error_list %}
                             {% if item.name in error_code_id %}
-                                <option value="{{item.name}}" selected>{{item.name}}</option>
+                                <option value="{{item.name}}" selected>{{ item.title }}</option>
                             {%else%}
-                                <option value="{{item.name}}">{{item.name}}</option>
+                                <option value="{{item.name}}">{{ item.title }}</option>
                             {%endif%}
                         {% endfor %}
                     </select>

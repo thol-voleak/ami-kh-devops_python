@@ -59,15 +59,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
-            {"name": "All"},
-            {"name": "insufficient_fund"},
-            {"name": "security_code_expired"},
-            {"name": "security_code_failed"},
-            {"name": "invalid_request"},
-            {"name": "payment_not_allow"},
-            {"name": "cancel_order_not_allow"},
-            {"name": "general_error"},
+            {"name": "All", "title": "All"},
+            {"name": "insufficient_fund", "title": "Insufficient Fund"},
+            {"name": "security_code_expired", "title": "Security Code Expired"},
+            {"name": "security_code_failed", "title": "Security Code Failed"},
+            {"name": "invalid_request", "title": "Invalid Request"},
+            {"name": "payment_not_allow", "title": "Payment Not Allow"},
+            {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
+            {"name": "general_error", "title": "General Error"},
         ]
+
         error_code_id = []
 
         context['data'] = data
@@ -170,14 +171,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
-            {"name": "All"},
-            {"name": "insufficient_fund"},
-            {"name": "security_code_expired"},
-            {"name": "security_code_failed"},
-            {"name": "invalid_request"},
-            {"name": "payment_not_allow"},
-            {"name": "cancel_order_not_allow"},
-            {"name": "general_error"},
+            {"name": "All", "title": "All"},
+            {"name": "insufficient_fund", "title": "Insufficient Fund"},
+            {"name": "security_code_expired", "title": "Security Code Expired"},
+            {"name": "security_code_failed", "title": "Security Code Failed"},
+            {"name": "invalid_request", "title": "Invalid Request"},
+            {"name": "payment_not_allow", "title": "Payment Not Allow"},
+            {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
+            {"name": "general_error", "title": "General Error"},
         ]
 
         context = {'order_list': orders,
