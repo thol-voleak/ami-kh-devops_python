@@ -10,6 +10,7 @@ from django.shortcuts import render
 from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 import logging
+from django.contrib import messages
 from datetime import datetime
 logger = logging.getLogger(__name__)
 
@@ -155,8 +156,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         orders = order_list.get("orders", [])
         page = order_list.get("page", {})
         self.logger.info('Page : {}'.format(page))
-        # print(page)
-        # self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -205,9 +204,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['status_id'] = int(status_id)
         if error_code:
             context['error_code_id'] = error_code
-            print(context['error_code_id'])
-            for i in error_code:
-                print(i)
 
         self.logger.info('========== Finished searching payment order ==========')
 
