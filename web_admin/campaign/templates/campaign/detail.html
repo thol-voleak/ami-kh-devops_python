@@ -133,26 +133,65 @@
                         {%endfor%}
                     {%endfor%}
                     {% if i.reward is not None %}
-                        <p></p>
                         <p style="margin-bottom:0; ">
                             <label size="2"><strong>Reward</strong></label>
                         </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label>Give Reward to:</label>
-                            <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2"> Reward Recipient should be:</label>
-                            <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Reward Type:</label>
+                        {% if i.reward.id == 1 %}
+                            <p></p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label>Give Reward to:</label>
+                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2"> Reward Recipient should be:</label>
+                                <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Reward Type:</label>
+                                    <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Amount:</label>
+                                    <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
+                            </p>
+                        {% endif %}
+                        {% if i.reward.id == 2 %}
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label>Reward Type:</label>
                                 <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Amount:</label>
-                                <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
-                        </p>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label>Send Notification To:</label>
+                                <span id="lbl_send_notification_to">{{i.reward.send_to|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2">Recipient should be:{{i.reward.recipient|default_if_none:''}}</label>
+                                <span id="lbl_reward_recipient"></span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label>Give Reward to:</label>
+                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; ">
+                                <label size="2"><strong>Data to be sent</strong></label>
+                                {%for data_to_be_sent in i.reward.data_to_be_sent%}
+                                    {% if data_to_be_sent.key_name != 'notification_url' %}
+                                        <p style="margin-bottom:0; margin-left: 10px;">
+                                            <label>Key Name:</label>
+                                            <span id="lbl_key_name">{{data_to_be_sent.key_name|default_if_none:''}}</span>
+                                        </p>
+                                        <p style="margin-bottom:0; margin-left: 10px;">
+                                            <label>Key Value Type:</label>
+                                            <span id="lbl_key_value_type">{{data_to_be_sent.key_value_type|default_if_none:''}}</span>
+                                        </p>
+                                         <p style="margin-bottom: 10px; margin-left: 10px;">
+                                            <label>Key Value:</label>
+                                            <span id="lbl_key_value">{{data_to_be_sent.key_value|default_if_none:''}}</span>
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
                     {% endif %}
                     {%for limitation in i.limitation_list%}
                         <p></p>

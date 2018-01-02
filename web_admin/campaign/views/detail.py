@@ -62,18 +62,30 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
                 action_id = None
+                data_to_be_sent = []
                 if len(action) > 0:
                     action = action[0]
                     action_id = action['id']
                     reward['reward_type'] = action['action_type']['name']
-                    for j in action['action_data']:
-                        if j['key_name'] == 'payee_user.user_id':
-                            if j['key_value'] in self.person.keys():
-                                reward['reward_to'] = self.person[j['key_value']]
-                        if j['key_name'] == 'payee_user.user_type':
-                            reward['recipient'] = j['key_value']
-                        if j['key_name'] == 'amount':
-                            reward['amount'] = j['key_value']
+                    reward['id'] = action['action_type']['id']
+                    is_fixed_cashback = True
+                    if action['action_type']['id'] == 2:
+                        is_fixed_cashback = False
+                        reward['reward_type'] = 'Send Notification'
+                    if is_fixed_cashback:
+                        for j in action['action_data']:
+                            if j['key_name'] == 'payee_user.user_id':
+                                if j['key_value'] in self.person.keys():
+                                    reward['reward_to'] = self.person[j['key_value']]
+                            if j['key_name'] == 'payee_user.user_type':
+                                reward['recipient'] = j['key_value']
+                            if j['key_name'] == 'amount':
+                                reward['amount'] = j['key_value']
+                    else:
+                        for action_data in action['action_data']:
+                            if action_data['key_name'] == 'notification_url':
+                                reward['send_to'] = action_data['key_value']
+                        reward['data_to_be_sent'] = action['action_data']
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
