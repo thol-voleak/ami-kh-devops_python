@@ -112,6 +112,15 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Expiration Date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_expiration_date"
+                                       value="{{ data.expire_date_timestamp|default_if_none:'' }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Create Timestamp</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_create_timestamp"

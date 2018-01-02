@@ -45,6 +45,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cash_out_id = request.POST.get('cash_out_id')
         from_date = request.POST.get('create_date_from')
         to_date = request.POST.get('create_date_to')
+        expire_from_date = request.POST.get('expiration_date_from')
+        expire_to_date = request.POST.get('expiration_date_to')
 
         body = {}
         if cash_in_id:
@@ -69,6 +71,17 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
 
+        if expire_from_date:
+            new_expire_from_timestamp = datetime.strptime(expire_from_date, "%Y-%m-%d")
+            new_expire_from_timestamp = new_expire_from_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_expire_date_timestamp'] = new_expire_from_timestamp
+
+        if expire_to_date:
+            new_to_expire_timestamp = datetime.strptime(expire_to_date, "%Y-%m-%d")
+            new_to_expire_timestamp = new_to_expire_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_expire_timestamp = new_to_expire_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_expire_date_timestamp'] = new_to_expire_timestamp
+
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
         self.logger.info('========== Finished searching Vouchers ==========')
@@ -84,6 +97,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_out_id': cash_out_id,
             'create_date_from': from_date,
             'create_date_to': to_date,
+            'expiration_date_from': expire_from_date,
+            'expiration_date_to': expire_to_date,
             'permissions': permissions,
         }
         return render(request, self.template_name, context)

@@ -111,12 +111,28 @@
                                value="{{ create_date_to|default_if_none:'' }}"
                                id="dtp_create_date_to">
                     </div>
-
-                    <div class="col-xs-1">
-                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
-                               onclick="searchVouchers()" value="Search">
-                    </div>
                 </div>
+                 <div class="form-group">
+                        <label class="col-sm-2 control-label">Expiration Date From</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="expiration_date_from"
+                                   value="{{ expiration_date_from|default_if_none:'' }}"
+                                   id="dtp_expiration_date_from">
+                        </div>
+                        <label class="col-sm-2 control-label">To</label>
+                        <div class="col-xs-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="expiration_date_to"
+                                   value="{{ expiration_date_to|default_if_none:'' }}"
+                                   id="dtp_expiration_date_to">
+                        </div>
+
+                        <div class="col-xs-1">
+                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                                   onclick="searchVouchers()" value="Search">
+                        </div>
+                 </div>
             </form>
 
             <div class="no-more-tables">
@@ -131,6 +147,7 @@
                         <th id="ddl_delete_status">Delete Status</th>
                         <th id="ddl_create_date">Create Date</th>
                         <th id="ddl_update_date">Update Date</th>
+                        <th id="ddl_expiration_date">Expiration Date</th>
                         <th id="ddl_currency">Currency</th>
                         <th id="ddl_action">Action</th>
                     </tr>
@@ -146,6 +163,7 @@
                             <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td>
                                 {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
@@ -173,6 +191,17 @@
             if(date_from > date_to) {
                 $('#alert-client').css('display', 'block');
                 $('#alert-client #alert-msg').text('Create Date To cannot be less than Create Date From');
+                return;
+            }
+        }
+        var expire_from_date = $('#dtp_expiration_date_from').val();
+        var expire_to_date = $('#dtp_expiration_date_to').val();
+        if(expire_from_date != '' && expire_to_date != '') {
+            var expire_date_from = new Date(expire_from_date);
+            var expire_date_to = new Date(expire_to_date);
+            if(expire_date_from > expire_date_to) {
+                $('#alert-client').css('display', 'block');
+                $('#alert-client #alert-msg').text('Expiration Date to cannot be less than Expiration Date From');
                 return;
             }
         }
