@@ -86,10 +86,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
-        payer_user_id = request.POST.get('payer_user_id')
-        payer_user_type_id = request.POST.get('payer_user_type_id')
-        payee_user_id = request.POST.get('payee_user_id')
-        payee_user_type_id = request.POST.get('payee_user_type_id')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         self.logger.info('========== Start getting service list ==========')
@@ -115,15 +113,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['order_id'] = order_id
         if service_name:
             body['service_name'] = service_name
-        if payer_user_id:
-            body['payer_user_id'] = payer_user_id
-        if payer_user_type_id.isdigit() and payer_user_type_id != '0':
-            body['payer_user_type_id'] = int(payer_user_type_id)
-        if payee_user_id:
-            body['payee_user_id'] = payee_user_id
-        if payee_user_type_id.isdigit() and payee_user_type_id != '0':
-            body['payee_user_type_id'] = int(payee_user_type_id)
-
+        if user_id and user_id.isdigit():
+            body['user_id'] = int(user_id)
+        elif user_id:
+            body['user_id'] = user_id
+        if user_type_id.isdigit() and user_type_id != '0':
+            body['user_type_id'] = int(user_type_id)
         if ext_transaction_id:
             body['ext_transaction_id'] = ext_transaction_id
         if status_id:
@@ -185,10 +180,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'order_id': order_id,
                    'service_name': service_name,
                    'data': service_list,
-                   'payer_user_id': payer_user_id,
-                   'payer_user_type_id':payer_user_type_id,
-                   'payee_user_id': payee_user_id,
-                   'payee_user_type_id':payee_user_type_id,
+                   'user_type':user_type_id,
+                   'user_id': user_id,
                    'search_count': page.get('total_elements', 0),
                    'creation_client_id': creation_client_id,
                    'execution_client_id': execution_client_id,
