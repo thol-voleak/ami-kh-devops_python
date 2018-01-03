@@ -44,7 +44,7 @@ class UpdateView(TemplateView, RESTfulMethods):
             context.update({
                 'conditions': tier_conditions,
                 'fee_types':  fee_types,
-                # 'bonus_types': bonus_types,
+                'bonus_types': bonus_types,
                 'amount_types': amount_types,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
@@ -111,7 +111,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         settlement_type = request.POST.get('settlement_type', '')
         condition = request.POST.get('condition', '')
         fee_type = request.POST.get('fee_type')
-        # bonus_type = request.POST.get('bonus_type')
+        bonus_type = request.POST.get('bonus_type')
         amount_type = request.POST.get('amount_type')
 
         if condition_amount:
@@ -119,23 +119,23 @@ class UpdateView(TemplateView, RESTfulMethods):
         fee_amount = request.POST.get('fee_amount')
         if fee_amount:
             fee_amount = fee_amount.replace(',', '')
-        # bonus_amount = request.POST.get('bonus_amount')
-        # if bonus_amount:
-        #     bonus_amount = bonus_amount.replace(',', '')
+        bonus_amount = request.POST.get('bonus_amount')
+        if bonus_amount:
+            bonus_amount = bonus_amount.replace(',', '')
 
         params = {
             "fee_tier_condition": condition,
             "condition_amount": condition_amount,
             "fee_type": fee_type,
             "fee_amount": fee_amount,
-            # "bonus_type": bonus_type,
-            # "bonus_amount": bonus_amount,
+            "bonus_type": bonus_type,
+            "bonus_amount": bonus_amount,
             "amount_type": amount_type,
             "settlement_type": settlement_type
         }
 
-        # if params['bonus_type'] == "Flat value":
-        #     params['amount_type'] = ''
+        if params['bonus_type'] == "Flat value":
+            params['amount_type'] = ''
 
         fee_tier_id = context['fee_tier_id']
 
@@ -171,7 +171,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                 context.update({
                     'conditions': tier_conditions,
                     'fee_types': fee_types,
-                    # 'bonus_types': bonus_types,
+                    'bonus_types': bonus_types,
                     'amount_types': amount_types,
                     'service_name': service_detail.get('service_name', 'unknown'),
                     'command_name': command_name,
@@ -199,3 +199,4 @@ class UpdateView(TemplateView, RESTfulMethods):
             return curr_dict
         else:
             return {}
+        return {}
