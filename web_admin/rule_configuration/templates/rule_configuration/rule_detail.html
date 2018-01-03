@@ -124,7 +124,9 @@
                                     <span>Less Than or Equal to</span>
                                     {%elif comparison.operator == '!=' %}
                                     <span>Not Equal to</span>
-                                    {%endif%}
+                                    {% else %}
+                                    <span>{{ comparison.operator }}</span>
+                                    {% endif %}
                                     </span>
                                 </p>
                                 <p style="margin-bottom:0; margin-left: 10px;">
