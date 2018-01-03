@@ -133,9 +133,12 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         converted_operators = []
         for operator in operations:
             operators = {
-                'key': operator,
-                'value': operations_map[operator] if operations_map[operator] else operator
+                'key': operator
             }
+            if operator in operations_map.keys():
+                operators['value'] = operations_map[operator]
+            else:
+                operators['value'] = operator
             converted_operators.append(operators)
         ops = {
             'detail_names': detail_names,
