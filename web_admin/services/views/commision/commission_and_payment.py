@@ -281,7 +281,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Added Setting Payment & Fee Structure successfully'
+                'Added Setting Payment, Fee & Bonus Structure successfully'
             )
         else:
             messages.add_message(

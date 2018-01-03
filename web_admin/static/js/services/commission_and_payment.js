@@ -303,9 +303,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         // success
-                        console.log('Updated Setting Payment & Fee Structure Successfully');
+                        console.log('Updated Setting Payment, Fee & Bonus Structure successfully');
                         saveRow(oTable, nRow);
-                        addMessage("Updated Setting Payment & Fee Structure Successfully");
+                        addMessage("Updated Setting Payment, Fee & Bonus Structure successfully");
                     } else {
                         // Failed
                         console.log('Updated Setting Payment & Fee Structure got error!');
