@@ -84,15 +84,17 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Condition type</label>
                                     <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_condition_type" name="condition_type">
+                                        <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
                                             <option value= "event_detail">Event Detail</option>
+                                            <option value= "sum_of">Sum of</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div id="event_detail_area">
+                                    <div class="form-group">
                                     <label class="col-sm-3 control-label">Detail Name</label>
                                     <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_detail_name" name="detail_name">
+                                        <select class="form-control" id="ddl_detail_name" name="detail_name_1">
                                             {% for item in detail_names %}
                                                 {% if item.description != "" %}
                                                 <option value= "{{ item.term }}">{{ item.description }}</option>
@@ -102,32 +104,35 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Key Value Type</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_key_value_type" name="key_value_type" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
-                                            {% for type in key_value_types %}
-                                                <option value= "{{ type }}">{{ type }}</option>
-                                            {% endfor %}
-                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Key Value Type</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                                {% for type in key_value_types %}
+                                                    <option value= "{{ type }}">{{ type }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Operator</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                                {% for oper in operations %}
+                                                    <option value= "{{ oper }}">{{ oper }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="last_form_group">
+                                        <label class="col-sm-3 control-label">Key Value *</label>
+                                        <div class="col-xs-3">
+                                            <input id="txt_key_value" class="form-control input-rounded" name="key_value_1" type="number" required>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Operator</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_operator" name="operator" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
-                                            {% for oper in operations %}
-                                                <option value= "{{ oper }}">{{ oper }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Key Value *</label>
-                                    <div class="col-xs-3">
-                                        <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="number" required>
-                                    </div>
+                                <div id="sum_of_area">
                                 </div>
                             <br>
                             </div>
@@ -350,29 +355,74 @@
         }
 
         var _counter = 1;
+        // defaut element when create new condition with the index
+        var createDefaultConditionElem = function(counter) {
+             var defaultConditionHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>\
+                                <div id="div_condition_' + counter + '">\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Condition type</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_condition_type" name="condition_type_' + counter + '" counter="' + counter + '" onchange="selectConditionType(this.value, this)">\
+                                            <option value= "event_detail">Event Detail</option>\
+                                            <option value= "sum_of">Sum of</option>\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <div id="event_detail_area">\
+                                    <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_detail_name" name="detail_name_' + counter + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_key_value" class="form-control input-rounded" name="key_value_' + counter + '" type="number" required>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div id="sum_of_area">\
+                                </div>\
+                            <br>\
+                            </div></div>';
+            return defaultConditionHtml;
+        };
+
         function addCondition() {
             _counter++;
-            var oClone = document.getElementById("div_condition_1").cloneNode(true);
-            var inputEle = oClone.getElementsByTagName("input");
-            inputEle[0].type = 'text';
-            inputEle[0].value = '';
-            inputEle[0].name += (_counter + "");
-            var ddlEle = oClone.getElementsByTagName("select");
-            for (var i = 0; i < ddlEle.length; i++) {
-                ddlEle[i].name += (_counter + "");
-            }
-
-            oClone.id = "div_condition_" + _counter;
             var div = document.createElement('div');
-            div.className = 'form-group';
-            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
-{#                             <div class="col-xs-6 pull-right">\#}
-{#                                <button type="button" class="btn btn-default" onclick="removeElement(this.parentNode.parentNode.parentNode.id)">\#}
-{#                                  <span class="glyphicon glyphicon-trash"></span> \#}
-{#                                </button>\#}
-{#                             </div>';#}
-            oClone.insertBefore(div, oClone.firstChild);
-            document.getElementById("condition-group").appendChild(oClone);
+            div.innerHTML = createDefaultConditionElem(_counter);
+            var newConditionElem  = div.cloneNode(true);
+            document.getElementById("condition-group").appendChild(newConditionElem);
             $("#txt_condition_counter").val(_counter);
         }
 
@@ -628,6 +678,187 @@
             document.getElementById("data_send_group").appendChild(dataClone);
             $("#txt_data_counter").val(_data_counter);
         }
+
+    // Sum of
+        var getSumOfKeyValueHtml = function(conditionNumber) {
+              var sumOfKeyValueHtml =  '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Sum Key Name *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_sum_key_name" name="sum_key_name_' + conditionNumber + '">\
+                                            {% for key_name in sum_key_name %}\
+                                                <option value= "{{ key_name.value }}">{{ key_name.text }}</option>\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Operator</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_sum_operator" name="sum_operator_' + conditionNumber +'">\
+                                            {% for operator in sum_of_operators %}\
+                                                <option value= "{{ operator }}">{{ operator }}</option>\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Sum Key Value *</label>\
+                                    <div class="col-xs-3">\
+                                        <input id="txt_sum_key_value" class="form-control input-rounded" name="sum_key_value_' + conditionNumber + '" type="number">\
+                                    </div>\
+                                </div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Filter</label>\
+                                    <div class="col-xs-3">\
+                                    </div>\
+                                    <input id="filter_count" name="filter_count_' + conditionNumber +'" type="text" value="1" hidden />\
+                                </div>';
+            return sumOfKeyValueHtml;
+        };
+
+        var getMoreFilterButtonHtml = function(conditionNumber) {
+               var addMoreFilterHtml =  '<div class="form-group" id="add_more_filter_area">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3" style="text-align: right;">\
+                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_filter" onclick="addFilter(this, ' + conditionNumber + ')">\
+                                      <span class="glyphicon glyphicon-plus"></span> Add Filter\
+                                    </button>\
+                                </div>\
+                                </div>';
+               return addMoreFilterHtml;
+        };
+
+        var getFilterAreaHtml = function(conditionNumber, filterCount) {
+             var filterAreaHtml = '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_filter_detail_name" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_filter_key_value_type" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_filter_operator" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_filter_key_value" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return filterAreaHtml;
+        };
+
+        var getEventDetailAreaHtml = function(conditionNumber) {
+            var eventdetailareaHtml =     '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_detail_name" name="detail_name_' + conditionNumber + '" >\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_key_value" class="form-control input-rounded" name="key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return eventdetailareaHtml;
+        };
+
+        var selectConditionType = function(selectedValue, elem) {
+            var conditionNumber = parseInt($(elem).attr('counter'), 10);
+            var conditionElem = document.getElementById('div_condition_' + conditionNumber);
+            if(selectedValue == 'sum_of') {
+                conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                var sumOfArea = conditionElem.querySelector('#sum_of_area');
+                var sumKeyDiv = document.createElement('div');
+                sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
+                var newSumKeyElem  = sumKeyDiv.cloneNode(true);
+                sumOfArea.appendChild(newSumKeyElem);
+                var filterAreaDiv = document.createElement('div');
+                filterAreaDiv.id = "sum-of-filter-area";
+                filterAreaDiv.innerHTML = getFilterAreaHtml(conditionNumber, 1);
+                var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
+                sumOfArea.appendChild(filterAreaDivElem);
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterButtonHtml(conditionNumber, 1);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                sumOfArea.appendChild(filterButtonDivElem);
+            } else if(selectedValue == 'event_detail') {
+                conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                var eventDetailArea = conditionElem.querySelector('#event_detail_area');
+                var eventDetailDiv = document.createElement('div');
+                eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
+                var eventDetailDivElem  = eventDetailDiv.cloneNode(true);
+                eventDetailArea.appendChild(eventDetailDivElem);
+            }
+        };
+
+        var addFilter = function(elem, conditionNum) {
+            var conditionElem = document.getElementById('div_condition_' + conditionNum);
+            var filterCountInput = conditionElem.querySelector('#filter_count');
+            var filterCount = filterCountInput.getAttribute('value');
+            filterCount = parseInt(filterCount, 10);
+            filterCount++;
+            var filterAreaElem = conditionElem.querySelector('#sum-of-filter-area');
+            var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            var newFilterElemDiv = document.createElement('div');
+            newFilterElemDiv.innerHTML = newFilterElementHtml;
+            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            filterAreaElem.appendChild(newFilterElemDivElem);
+            filterCountInput.setAttribute('value', filterCount);
+        };
 
     </script>
 {% endblock %}
