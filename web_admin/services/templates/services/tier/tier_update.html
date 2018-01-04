@@ -352,7 +352,7 @@ var $ddl_fee_type = $('#ddl_fee_type');
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == ''){
+if($bonus_type.val() == '' || $bonus_type.val() == 'Flat value'){
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
