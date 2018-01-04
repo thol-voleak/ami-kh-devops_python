@@ -62,13 +62,9 @@
                             <select class="form-control" id="ddl_condition" name="condition" required>
                                 {% for item in conditions %}
                                     {% if item.fee_tier_condition == update_tier.fee_tier_condition %}
-                                        <option value="{{ item.fee_tier_condition }}" selected="selected">
-                                            {{ item.fee_tier_condition }}
-                                        </option>
+                                        <option value="{{ item.fee_tier_condition }}" selected="selected">{{item.fee_tier_condition}}</option>
                                     {% else %}
-                                        <option value="{{ item.fee_tier_condition }}">
-                                            {{ item.fee_tier_condition }}
-                                        </option>
+                                        <option value="{{ item.fee_tier_condition }}">{{item.fee_tier_condition}}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
