@@ -8,10 +8,7 @@ from django.shortcuts import render
 import logging
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
-from authentications.apps import InvalidAccessToken
-from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST, GET_LIMITION_LIST
-from django.contrib import messages
-
+from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST, GET_LIMITION_LIST, GET_CONDITION_FILTER
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +44,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         mechanic = self.get_mechanic_list(campaign_id)
         count = 0
         active_mechanic_count = 0
+
         for i in mechanic:
             reward = {}
             if not i['is_deleted']:
@@ -55,10 +53,12 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 i['count'] = active_mechanic_count
                 i['condition_list'] = self.get_condition_list(campaign_id, i['id'])
                 for condition in i['condition_list']:
-                    condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
+                    #condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
                     condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+                    condition['filter'] = self.get_condition_filter(campaign_id, i['id'], condition['id'])
+                    self.logger.info('========== Finish get condition filter ==========')
                     self.logger.info('========== Finish get comparison list ==========')
-                    self.logger.info('========== Finish get condition detail ==========')
+                    #self.logger.info('========== Finish get condition detail ==========')
                 self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
                 action_id = None
@@ -109,6 +109,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'mechanic': mechanic,
             'len_mechanic': len(mechanic)
         })
+
         self.logger.info('========== Finish get mechanic list ==========')
         self.logger.info('========== Finish get campaign detail ==========')
         return render(request, self.template_name, context)
@@ -164,6 +165,14 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         url = settings.DOMAIN_NAMES + GET_LIMITION_LIST.format(bak_rule_id=campaign_id, bak_mechanic_id=mechanic_id, bak_action_id=action_id)
         self.logger.info('========== Start get limitation list ==========')
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        return data
+
+    def get_condition_filter(self, campaign_id, mechanic_id, condition_id):
+        url = settings.DOMAIN_NAMES + GET_CONDITION_FILTER.format(rule_id=campaign_id, mechanic_id=mechanic_id, condition_id=condition_id)
+        self.logger.info('========== Start get condition filter ==========')
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
         return data
