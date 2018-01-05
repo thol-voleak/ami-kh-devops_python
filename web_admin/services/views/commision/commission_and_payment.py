@@ -33,35 +33,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         if not tier_id:
             raise Http404
 
-        self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
-
-        fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
-
-        data, success = self._get_commission_and_payment_list(tier_id)
-
-        bonus, success = self._get_setting_bonus_list(tier_id)
-
-        agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
-        total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
-
-        fee, success = self._get_agent_fee_distribution_list(tier_id)
-        choices = self._get_choices()
-        #agents = self._get_agents()
-
-        specific_ids = self._get_specific_ids()
-        if specific_ids and isinstance(specific_ids, list):
-            context['specific_ids'] = specific_ids
-        else:
-            context['specific_ids'] = []
-            self.logger.error('Error when getting Specific IDs: {}'.format(specific_ids))
-
-        context['fee_tier_detail'] = fee_tier_detail
-        context['data'] = self._filter_deleted_items(data)
-        context['bonus'] = self._filter_deleted_items(bonus)
-        context['agent_bonus_distribution'] = total_bonus_distribution
-        context['fee'] = self._filter_deleted_items(fee)
-        context['choices'] = choices
-        #context['agents'] = agents
+        self.logger.info('========== Start getting Balance Movement ==========')
 
         self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
@@ -70,6 +42,49 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         self.logger.info('========== Start get service name ==========')
         context['service_name'] = self._get_service_name_by_id(service_id)
         self.logger.info('========== Finish get service name ==========')
+
+        #self.logger.info('Get CommissionAndPaymentView by user: {}'.format(self.request.user.username))
+
+        self.logger.info('========== Start getting Fee Tier Detail ==========')
+        fee_tier_detail, success = self._get_fee_tier_detail(tier_id)
+        self.logger.info('========== Finish getting Fee Tier Detail ==========')
+
+        self.logger.info('========== Start getting Setting Payment, Fee & Bonus Structure ==========')
+        data, success = self._get_commission_and_payment_list(tier_id)
+        self.logger.info('========== Finish getting Setting Payment, Fee & Bonus Structure ==========')
+
+        #bonus, success = self._get_setting_bonus_list(tier_id)
+
+        # agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
+        # total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
+
+        #fee, success = self._get_agent_fee_distribution_list(tier_id)
+        self.logger.info('========== Start getting options for Setting Payment, Fee & Bonus Structure ==========')
+        choices = self._get_choices()
+        self.logger.info('========== Finish getting options for Setting Payment, Fee & Bonus Structure ==========')
+        #agents = self._get_agents()
+
+        #self.logger.info('========== Start getting specific ids ==========')
+        specific_ids = self._get_specific_ids()
+        #self.logger.info('========== Finish getting specific ids ==========')
+        if specific_ids and isinstance(specific_ids, list):
+            context['specific_ids'] = specific_ids
+        else:
+            context['specific_ids'] = []
+            self.logger.error('Error when getting Specific IDs: {}'.format(specific_ids))
+
+        context['fee_tier_detail'] = fee_tier_detail
+
+        context['data'] = self._filter_deleted_items(data)
+        #context['bonus'] = self._filter_deleted_items(bonus)
+        #context['agent_bonus_distribution'] = total_bonus_distribution
+        #context['fee'] = self._filter_deleted_items(fee)
+        context['choices'] = choices
+        #context['agents'] = agents
+
+
+
+        self.logger.info('========== Finish getting Balance Movement ==========')
         return context
 
     def _filter_deleted_items(self, data):

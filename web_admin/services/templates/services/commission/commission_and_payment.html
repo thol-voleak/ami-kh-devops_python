@@ -85,6 +85,7 @@
 
             <div class="panel-heading">
                 <h4>II. Setting Payment, Fee & Bonus Structure</h4>
+                <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" hidden/>
             </div>
 
             <form method="POST" class="form-horizontal" role="form"
@@ -218,123 +219,123 @@
                 </div>
             </form>
 
-            <div class="panel-heading" hidden>
-                <h4>III. Setting Bonus</h4>
-            </div>
+            <!--<div class="panel-heading" hidden>-->
+                <!--<h4>III. Setting Bonus</h4>-->
+            <!--</div>-->
 
-            <form method="POST" class="form-horizontal" role="form"
-                  action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}"
-                  id="Setting_Bonus_Form" hidden>
+            <!--<form method="POST" class="form-horizontal" role="form"-->
+                  <!--action="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}"-->
+                  <!--id="Setting_Bonus_Form" hidden>-->
 
-                {% csrf_token %}
-                <div class="form-group table-responsive row">
-                    <table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">
-                        <thead>
-                        <tr>
-                            <th class="col-sm-1" id="lbl_db">Debit/Credit</th>
-                            <th class="col-sm-2" id="lbl_actor">Actor</th>
-                            <th class="col-sm-2" id="lbl_specific_id">Specific ID</th>
-                            <th class="col-sm-1" id="lbl_source_of_fund">Source of Fund</th>
-                            <th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>
-                            <th class="col-sm-2" id="lbl_from_amount">Amount</th>
-                            <th class="col-sm-1" id="lbl_rate">Rate %</th>
-                            <th class="col-sm-1" id="lbl_actions">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for d in bonus %}
-                            <tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"
-                                data-id="{{ d.bonus_distribution_id }}"
-                                id="bonus-distribution-{{ d.bonus_distribution_id }}">
-                                <td>{{ d.action_type|default_if_none:'' }}</td>
-                                <td>{{ d.actor_type|default_if_none:'' }}</td>
-                                <td>{{ d.specific_actor_id|default_if_none:'' }}</td>
-                                <td>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>
-                                <td>{{ d.specific_sof|default_if_none:'' }}</td>
-                                <td>{{ d.amount_type|default_if_none:'' }}</td>
-                                <td>{{ d.rate|default_if_none:'' }}</td>
-                                <td>
-                                    <button type="button"
-                                            class="edit btn btn-outline btn-xs btn-primary text-info small"
-                                            id="btn_setting_bonus_edit">Edit
-                                    </button>
-                                    <button type="button"
-                                            class="delete btn btn-outline btn-xs btn-danger text-info small"
-                                            id="btn_setting_bonus_delete"
-                                            onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td>
-                                <select class="form-control" name="action_type" id="ddl_setting_bonus_dc">
-                                    {% for action_type in choices.action_types %}
-                                        <option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#ddl_setting_bonus_specific_id', '#ddl_setting_bonus_spec_src_fund')">
-                                    {% for actor_type in choices.actor_types %}
-                                        <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
-                                    {% endfor %}
-                                </select>
-                            <td>
-                                <select class="form-control" name="specific_actor_id" id="ddl_setting_bonus_specific_id" list="dl_setting_bonus_specific_id"
-                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
-                                        disabled
-                                    {% endif %}
-                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
-                                <datalist id="dl_setting_bonus_specific_id">
-                                    <option value=""></option>
-                                    {% for id in specific_ids %}
-                                        <option value="{{ id }}">{{ id }}</option>
-                                    {% endfor %}
-                                </datalist>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund"
-                                onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">
-                                    {% for sof_type in choices.sof_types %}
-                                        <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" id="ddl_setting_bonus_spec_src_fund" name="specific_sof"
-                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
-                                        disabled
-                                    {% endif %}
-                                >
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" name="amount_type" id="ddl_setting_bonus_amount"
-                                        onchange="changeAmountType('#ddl_setting_bonus_amount', '#txt_setting_bonus_rate')">
-                                    {% for amount_type in choices.amount_types %}
-                                        <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
-                                    {% endfor %}
-                                </select>
-                            <td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required
-                                    {% if 'Rate' not in choices.amount_types.0.amount_type %}
-                                        disabled
-                                    {% endif %}
-                                />
-                            </td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
+                <!--{% csrf_token %}-->
+                <!--<div class="form-group table-responsive row">-->
+                    <!--<table class="table table-bordered table-striped mb0" id="tbl_setting_bonus">-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th class="col-sm-1" id="lbl_db">Debit/Credit</th>-->
+                            <!--<th class="col-sm-2" id="lbl_actor">Actor</th>-->
+                            <!--<th class="col-sm-2" id="lbl_specific_id">Specific ID</th>-->
+                            <!--<th class="col-sm-1" id="lbl_source_of_fund">Source of Fund</th>-->
+                            <!--<th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>-->
+                            <!--<th class="col-sm-2" id="lbl_from_amount">Amount</th>-->
+                            <!--<th class="col-sm-1" id="lbl_rate">Rate %</th>-->
+                            <!--<th class="col-sm-1" id="lbl_actions">Actions</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--{% for d in bonus %}-->
+                            <!--<tr role="row" data-url="{% url "services:setting_bonus_update" d.bonus_distribution_id %}"-->
+                                <!--data-id="{{ d.bonus_distribution_id }}"-->
+                                <!--id="bonus-distribution-{{ d.bonus_distribution_id }}">-->
+                                <!--<td>{{ d.action_type|default_if_none:'' }}</td>-->
+                                <!--<td>{{ d.actor_type|default_if_none:'' }}</td>-->
+                                <!--<td>{{ d.specific_actor_id|default_if_none:'' }}</td>-->
+                                <!--<td>{% for sof_type in choices.sof_types %}{% if sof_type.sof_type_id == d.sof_type_id %}{{ sof_type.sof_type }}{% endif %}{% endfor %}</td>-->
+                                <!--<td>{{ d.specific_sof|default_if_none:'' }}</td>-->
+                                <!--<td>{{ d.amount_type|default_if_none:'' }}</td>-->
+                                <!--<td>{{ d.rate|default_if_none:'' }}</td>-->
+                                <!--<td>-->
+                                    <!--<button type="button"-->
+                                            <!--class="edit btn btn-outline btn-xs btn-primary text-info small"-->
+                                            <!--id="btn_setting_bonus_edit">Edit-->
+                                    <!--</button>-->
+                                    <!--<button type="button"-->
+                                            <!--class="delete btn btn-outline btn-xs btn-danger text-info small"-->
+                                            <!--id="btn_setting_bonus_delete"-->
+                                            <!--onclick="deleteSettingBonus('{{ d.bonus_distribution_id }}')">Delete-->
+                                    <!--</button>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                        <!--{% endfor %}-->
+                        <!--<tr>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" name="action_type" id="ddl_setting_bonus_dc">-->
+                                    <!--{% for action_type in choices.action_types %}-->
+                                        <!--<option value="{{ action_type.action_type }}">{{ action_type.action_type }}</option>-->
+                                    <!--{% endfor %}-->
+                                <!--</select>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" name="actor_type" id="ddl_setting_bonus_actor"-->
+                                        <!--onchange="changeSpecificActorType('#ddl_setting_bonus_actor', '#ddl_setting_bonus_specific_id', '#ddl_setting_bonus_spec_src_fund')">-->
+                                    <!--{% for actor_type in choices.actor_types %}-->
+                                        <!--<option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>-->
+                                    <!--{% endfor %}-->
+                                <!--</select>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" name="specific_actor_id" id="ddl_setting_bonus_specific_id" list="dl_setting_bonus_specific_id"-->
+                                    <!--{% if choices.actor_types.0.actor_type != 'Specific ID' %}-->
+                                        <!--disabled-->
+                                    <!--{% endif %}-->
+                                <!--onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">-->
+                                <!--<datalist id="dl_setting_bonus_specific_id">-->
+                                    <!--<option value=""></option>-->
+                                    <!--{% for id in specific_ids %}-->
+                                        <!--<option value="{{ id }}">{{ id }}</option>-->
+                                    <!--{% endfor %}-->
+                                <!--</datalist>-->
+                                <!--</select>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" name="sof_type_id" id="ddl_setting_bonus_src_fund"-->
+                                <!--onchange="getSOF('ddl_setting_bonus_actor', 'ddl_setting_bonus_specific_id', 'ddl_setting_bonus_src_fund', 'ddl_setting_bonus_spec_src_fund')">-->
+                                    <!--{% for sof_type in choices.sof_types %}-->
+                                        <!--<option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>-->
+                                    <!--{% endfor %}-->
+                                <!--</select>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" id="ddl_setting_bonus_spec_src_fund" name="specific_sof"-->
+                                    <!--{% if choices.actor_types.0.actor_type != 'Specific ID' %}-->
+                                        <!--disabled-->
+                                    <!--{% endif %}-->
+                                <!--&gt;-->
+                                <!--</select>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--<select class="form-control" name="amount_type" id="ddl_setting_bonus_amount"-->
+                                        <!--onchange="changeAmountType('#ddl_setting_bonus_amount', '#txt_setting_bonus_rate')">-->
+                                    <!--{% for amount_type in choices.amount_types %}-->
+                                        <!--<option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>-->
+                                    <!--{% endfor %}-->
+                                <!--</select>-->
+                            <!--<td><input id="txt_setting_bonus_rate" class="form-control" name="rate" required-->
+                                    <!--{% if 'Rate' not in choices.amount_types.0.amount_type %}-->
+                                        <!--disabled-->
+                                    <!--{% endif %}-->
+                                <!--/>-->
+                            <!--</td>-->
+                            <!--<td></td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
 
-                <div class="form-group pull-right">
-                    <a href="#">
-                        <input id="btn_setting_bonus_add" class="btn btn-success" type="submit" value="Add"/>
-                    </a>
-                </div>
-            </form>
+                <!--<div class="form-group pull-right">-->
+                    <!--<a href="#">-->
+                        <!--<input id="btn_setting_bonus_add" class="btn btn-success" type="submit" value="Add"/>-->
+                    <!--</a>-->
+                <!--</div>-->
+            <!--</form>-->
 
 {#            {% include "services/commission/agent_hierrachy_distribution_fee.html" %}#}
 {#            {% include "services/commission/agent_hierarchy_distribution_bonus.html" %}#}
@@ -362,7 +363,8 @@
                 return
             }
 
-            url = $('#Setting_Bonus_Form').attr('action') + specific_id.value + '/' + sof.value;
+            url = $('#data-specific-sof-list-url').attr('data-specific-sof-list-url') + specific_id.value + '/' + sof.value;
+            //url = $('#Setting_Bonus_Form').attr('action') + specific_id.value + '/' + sof.value;
             $.ajax({
                 url: url,
                 type: "GET",
@@ -465,7 +467,8 @@
 
 
         function deleteSettingBonus(bonus_distributions_id) {
-            var url = $('#Setting_Bonus_Form').attr('action') + bonus_distributions_id;
+            var url = $('#data-specific-sof-list-url').attr('data-specific-sof-list-url') + bonus_distributions_id;
+            //var url = $('#Setting_Bonus_Form').attr('action') + bonus_distributions_id;
             $.ajax({
                 url: url,
                 type: "DELETE",
