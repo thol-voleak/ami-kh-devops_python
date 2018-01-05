@@ -61,12 +61,10 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         #fee, success = self._get_agent_fee_distribution_list(tier_id)
         self.logger.info('========== Start getting options for Setting Payment, Fee & Bonus Structure ==========')
         choices = self._get_choices()
+        specific_ids = self._get_specific_ids()
         self.logger.info('========== Finish getting options for Setting Payment, Fee & Bonus Structure ==========')
         #agents = self._get_agents()
 
-        #self.logger.info('========== Start getting specific ids ==========')
-        specific_ids = self._get_specific_ids()
-        #self.logger.info('========== Finish getting specific ids ==========')
         if specific_ids and isinstance(specific_ids, list):
             context['specific_ids'] = specific_ids
         else:
