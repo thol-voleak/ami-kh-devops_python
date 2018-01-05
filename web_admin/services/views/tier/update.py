@@ -21,19 +21,25 @@ class UpdateView(TemplateView, RESTfulMethods):
         return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start Updating Tier ==========')
+        self.logger.info('========== Start Loading updating Tier Page==========')
         decimal = 0
         context = super(UpdateView, self).get_context_data(**kwargs)
         tier_id = context['fee_tier_id']
         tier_to_update = self._get_tier_detail(tier_id)
+        self.logger.info('========== Finish get Tier detail ==========')
         context['update_tier'] = tier_to_update
         service_id = context['service_id']
         command_id = context['command_id']
         tier_conditions, status1 = self._get_tier_condition()
+        self.logger.info('========== Finish get Tier condition ==========')
         fee_types, status2 = self._get_fee_types()
+        self.logger.info('========== Finish get fee types ==========')
         bonus_types, status3 = self._get_bonus_types()
+        self.logger.info('========== Finish get bonus types ==========')
         amount_types, status4 = self._get_amount_types()
+        self.logger.info('========== Finish get amount type ==========')
         service_detail, status5 = self._get_service_detail(service_id)
+        self.logger.info('========== Finish get service detail ==========')
         currencies = self._get_currencies_list()
 
         if service_detail and currencies:
@@ -53,34 +59,41 @@ class UpdateView(TemplateView, RESTfulMethods):
                 'update_tier': tier_to_update,
                 'decimal': int(decimal),
             })
-
+        self.logger.info('========== Finish Loading updating Tier Page==========')
         return render(request, self.template_name, context)
 
     def _get_tier_detail(self, tier_id):
+        self.logger.info('========== Start get Tier detail ==========')
         tier_detail, status = self._get_precision_method(api_settings.TIER_PATH.format(tier_id),
                                                          func_description="Tier Detail",
                                                          logger=logger)
+        self.logger.info('========== Finish get Tier detail ==========')
         return tier_detail
 
     def _get_tier_condition(self):
+        self.logger.info('========== Start get Tier condition ==========')
         return self._get_method(api_settings.FEE_TIER_CONDITION_URL,
                                 func_description="Tier Condition",
                                 logger=logger)
 
     def _get_amount_types(self):
+        self.logger.info('========== Start get amount type ==========')
         return self._get_method(api_settings.AMOUNT_TYPES_URL,
                                 func_description="Amount Types",
                                 logger=logger)
 
     def _get_service_detail(self, service_id):
+        self.logger.info('========== Start get service detail ==========')
         return self._get_method(api_settings.SERVICE_DETAIL_URL.format(service_id),
                                 func_description="Service Detail",
                                 logger=logger)
 
     def _get_command_name(self, command_id):
+        self.logger.info('========== Start get command name ==========')
         commands_list, status = self._get_method(api_settings.COMMAND_LIST_URL,
                                                  func_description="Commands List",
                                                  logger=logger)
+        self.logger.info('========== Finish get command name ==========')
         if status:
             command_name = None
             my_id = int(command_id)
@@ -93,18 +106,20 @@ class UpdateView(TemplateView, RESTfulMethods):
             return None, False
 
     def _get_fee_types(self):
-
+        self.logger.info('========== Start get fee types ==========')
         return self._get_method(api_settings.GET_FEE_TYPES_PATH,
                                 func_description="Fee Types",
                                 logger=logger)
 
     def _get_bonus_types(self):
+        self.logger.info('========== Start get bonus types ==========')
         return self._get_method(api_settings.GET_BONUS_TYPES_PATH,
                                 func_description="Bonus Types",
                                 logger=logger)
 
     def post(self, request, *args, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
+        self.logger.info('========== Start updating Tier==========')
         command_id = context['command_id']
         service_id = context['service_id']
         service_command_id = context['service_command_id']
@@ -180,7 +195,6 @@ class UpdateView(TemplateView, RESTfulMethods):
                     'decimal': int(decimal),
                     'update_tier': params
                 })
-
             return render(request, self.template_name, context)
 
     def _edit_tier(self, fee_tier_id, data):
@@ -189,11 +203,13 @@ class UpdateView(TemplateView, RESTfulMethods):
                                 logger=logger, params=data)
 
     def _get_currencies_list(self):
+        self.logger.info('========== Start get currencies list ==========')
         url = api_settings.GET_ALL_CURRENCY_URL
         data, success = self._get_method(api_path=url,
                                          func_description="currency list",
                                          logger=logger,
                                          is_getting_list=True)
+        self.logger.info('========== Finish get currencies list ==========')
         if data:
             value = data.get('value', '')
             currencies = value.split(',')
