@@ -348,14 +348,18 @@ var $ddl_fee_type = $('#ddl_fee_type');
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == '' || $bonus_type.val() == 'Flat value'){
+if($bonus_type.val() == ''){
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
+    $("#from").hide();
+}
+if($bonus_type.val() == 'Flat value') {
     $("#from").hide();
 }
     $bonus_type.change(function(){
         if($bonus_type.val() == ''){
             $('#txt_bonus_amount').attr('disabled', true);
+
             $('#txt_bonus_amount').val('');
             $("#label_bonus_amount").text("Bonus Amount");
             $("#from").fadeOut(500);
