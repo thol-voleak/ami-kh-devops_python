@@ -20,7 +20,7 @@ class AddView(TemplateView, RESTfulMethods):
         return super(AddView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start Adding Tier ==========')
+        self.logger.info('========== Start loading Adding Tier page ==========')
         decimal = 0
         context = super(AddView, self).get_context_data(**kwargs)
         service_id = context['service_id']
@@ -47,10 +47,12 @@ class AddView(TemplateView, RESTfulMethods):
                 'command_name': command_name,
                 'decimal': int(decimal),
             })
+        self.logger.info('========== Finish loading Adding Tier page ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         context = super(AddView, self).get_context_data(**kwargs)
+        self.logger.info('========== Start Adding Tier ==========')
         command_id = kwargs['command_id']
         service_id = kwargs['service_id']
         service_command_id = kwargs['service_command_id']
@@ -133,27 +135,35 @@ class AddView(TemplateView, RESTfulMethods):
                                  logger=logger, params=data)
 
     def _get_tier_condition(self):
+        self.logger.info('========== Start get Tier condition ==========')
         tier_conditions, status = self._get_method(api_path=api_settings.FEE_TIER_CONDITION_URL,
                                                    func_description="Fee Tier Condition",
                                                    logger=logger)
+        self.logger.info('========== Finish get Tier condition ==========')
         return tier_conditions, status
 
     def _get_amount_types(self):
+        self.logger.info('========== Start get amount type ==========')
         amount_types, status = self._get_method(api_path=api_settings.AMOUNT_TYPES_URL,
                                                 func_description="Amount Types",
                                                 logger=logger)
+        self.logger.info('========== Finish get amount type ==========')
         return amount_types, status
 
     def _get_service_detail(self, service_id):
+        self.logger.info('========== Start get service details ==========')
         service_detail, status = self._get_method(api_settings.SERVICE_DETAIL_URL.format(service_id),
                                                   func_description="Service Detail",
                                                   logger=logger)
+        self.logger.info('========== Finish get service details ==========')
         return service_detail, status
 
     def _get_command_name(self, command_id):
+        self.logger.info('========== Start get command name ==========')
         commands_list, status = self._get_method(api_settings.COMMAND_LIST_URL,
                                                  func_description="Commands List",
                                                  logger=logger)
+        self.logger.info('========== Finish get command name ==========')
         if status:
             command_name = None
             my_id = int(command_id)
@@ -166,23 +176,29 @@ class AddView(TemplateView, RESTfulMethods):
             return None, False
 
     def _get_fee_types(self):
+        self.logger.info('========== Start get fee type ==========')
         fee_types, status = self._get_method(api_settings.GET_FEE_TYPES_PATH,
                                              func_description="Fee Types",
                                              logger=logger)
+        self.logger.info('========== Finish get fee type ==========')
         return fee_types, status
 
     def _get_bonus_types(self):
+        self.logger.info('========== Start get bonus type ==========')
         bonus_types, status = self._get_method(api_settings.GET_BONUS_TYPES_PATH,
                                                func_description="Bonus Types",
                                                logger=logger)
+        self.logger.info('========== Finish get bonus type ==========')
         return bonus_types, status
 
     def _get_currencies_list(self):
         url = api_settings.GET_ALL_CURRENCY_URL
+        self.logger.info('========== Start get currencies list ==========')
         data, success = self._get_method(api_path=url,
                                          func_description="currency list",
                                          logger=logger,
                                          is_getting_list=True)
+        self.logger.info('========== Finish get currencies list ==========')
         if data:
             value = data.get('value', '')
             currencies = value.split(',')

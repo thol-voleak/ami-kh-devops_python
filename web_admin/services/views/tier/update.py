@@ -5,6 +5,8 @@ from web_admin import api_settings, setup_logger
 from django.shortcuts import redirect, render
 from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
