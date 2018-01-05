@@ -155,6 +155,44 @@ class UpdateView(TemplateView, RESTfulMethods):
 
         fee_tier_id = context['fee_tier_id']
 
+        if bonus_amount != '' and condition_amount != '' and bonus_amount is not None and condition_amount is not None:
+            amount_number = float(condition_amount)
+            bonus_amount_number = float(bonus_amount)
+            if amount_number < bonus_amount_number:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    message="Bonus Amount cannot be greater than the Amount"
+                )
+
+                decimal = 0
+                context = super(UpdateView, self).get_context_data(**kwargs)
+                service_id = context['service_id']
+                command_id = context['command_id']
+                tier_conditions, status1 = self._get_tier_condition()
+                fee_types, status2 = self._get_fee_types()
+                bonus_types, status3 = self._get_bonus_types()
+                amount_types, status4 = self._get_amount_types()
+                service_detail, status5 = self._get_service_detail(service_id)
+                currencies = self._get_currencies_list()
+                if service_detail and currencies:
+                    currency_name = service_detail['currency']
+                    if currency_name in currencies.keys():
+                        decimal = currencies[currency_name]
+                command_name, status6 = self._get_command_name(command_id)
+                if status1 and status2 and status3 and status4 and status5 and status6:
+                    context.update({
+                        'conditions': tier_conditions,
+                        'fee_types': fee_types,
+                        'bonus_types': bonus_types,
+                        'amount_types': amount_types,
+                        'service_name': service_detail.get('service_name', 'unknown'),
+                        'command_name': command_name,
+                        'decimal': int(decimal),
+                        'update_tier': params
+                    })
+                return render(request, self.template_name, context)
+
         data, success = self._edit_tier(fee_tier_id, params)
         self.logger.info('========== Finish Updating Tier ==========')
         if success:

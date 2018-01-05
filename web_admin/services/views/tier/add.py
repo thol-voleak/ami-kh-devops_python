@@ -91,6 +91,40 @@ class AddView(TemplateView, RESTfulMethods):
         if bonus_type_value == '% rate':
             params['amount_type'] = request.POST.get('amount_type')
 
+        if bonus_amount != '' and condition_amount != '' and bonus_amount is not None and condition_amount is not None:
+            amount_number = float(condition_amount)
+            bonus_amount_number = float(bonus_amount)
+            if amount_number < bonus_amount_number:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    message="Bonus Amount cannot be greater than the Amount"
+                )
+                decimal = 0
+                tier_conditions, status1 = self._get_tier_condition()
+                amount_types, status2 = self._get_amount_types()
+                service_detail, status3 = self._get_service_detail(service_id)
+                currencies = self._get_currencies_list()
+                if service_detail and currencies:
+                    currency_name = service_detail['currency']
+                    if currency_name in currencies.keys():
+                        decimal = currencies[currency_name]
+                command_name, status4 = self._get_command_name(command_id)
+                fee_types, status5 = self._get_fee_types()
+                bonus_types, status6 = self._get_bonus_types()
+                if status1 and status2 and status3 and status4 and status5 and status6:
+                    context.update({
+                        'conditions': tier_conditions,
+                        'fee_types': fee_types,
+                        'bonus_types': bonus_types,
+                        'amount_types': amount_types,
+                        'service_name': service_detail.get('service_name', 'unknown'),
+                        'command_name': command_name,
+                        'decimal': int(decimal),
+                        'body': params
+                    })
+                return render(request, self.template_name, context)
+
         data, success = self._add_tier(service_command_id, params)
         self.logger.info('========== Finish Adding Tier ==========')
 
