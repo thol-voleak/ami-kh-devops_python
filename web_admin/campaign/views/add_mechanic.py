@@ -493,5 +493,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def _filter_trigger(self, data):
         filtered = [v for v in data if ((v.term == 'register_customer') or (v.term == 'executed_order') or (v.term == 'login'))]
         link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
+        created_order = {'term': 'create_order', 'description': 'Create Order'}
         filtered.append(link_bank)
+        filtered.append(created_order)
         return filtered
