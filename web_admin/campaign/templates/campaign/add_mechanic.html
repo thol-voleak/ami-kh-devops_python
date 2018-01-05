@@ -339,7 +339,7 @@
             var keyValueType = $(ele).parent().parent().prev('div').find('select');
             var keyValue = $(ele).parent().parent().next('div').find('input');
             var currentKVType = getCurrentOps(keyValueType);
-            if (operation.includes(type)) {
+            if (type === "Equal to" || type === "Not Equal to") {
                 if (JSON.stringify(currentKVType) !== JSON.stringify(fullOps)) {
                     setDDL(keyValueType, fullOps);
                     keyValue.attr('type', 'number');
