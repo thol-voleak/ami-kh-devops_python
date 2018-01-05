@@ -26,7 +26,6 @@ class UpdateView(TemplateView, RESTfulMethods):
         context = super(UpdateView, self).get_context_data(**kwargs)
         tier_id = context['fee_tier_id']
         tier_to_update = self._get_tier_detail(tier_id)
-        self.logger.info('========== Finish get Tier detail ==========')
         context['update_tier'] = tier_to_update
         service_id = context['service_id']
         command_id = context['command_id']
