@@ -117,7 +117,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
-                                         func_description="Setting Payment & Fee Structure from list url",
+                                         func_description="Setting Payment, Fee & Bonus Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
@@ -236,7 +236,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
-                                         func_description="Setting Payment & Fee Structure from list url",
+                                         func_description="Setting Payment, Fee & Bonus Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
@@ -273,7 +273,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
         url = settings.DOMAIN_NAMES + api_settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
 
-        self.logger.info('========== Start create Setting Payment & Fee Structure ==========')
+        self.logger.info('========== Start create Setting Payment, Fee & Bonus Structure ==========')
 
         data = request.POST.copy()
         post_data = {
@@ -287,7 +287,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         }
 
         response, status = self._post_method(api_path=url,
-                                   func_description="create Setting Payment & Fee Structure",
+                                   func_description="create Setting Payment, Fee & Bonus Structure",
                                    logger=logger, params=post_data)
 
         if status:
@@ -302,7 +302,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
                 messages.ERROR,
                 response
             )
-        self.logger.info('========== Finish create Setting Payment & Fee Structure ==========')
+        self.logger.info('========== Finish create Setting Payment, Fee & Bonus Structure ==========')
 
         return redirect('services:commission_and_payment',
                         service_id=service_id,
@@ -320,7 +320,7 @@ class BalanceDistributionsUpdate(View):
         return super(BalanceDistributionsUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info("========== Start updating setting payment & fee structure ==========")
+        self.logger.info("========== Start updating Setting Payment, Fee & Bonus Structure ==========")
 
         balance_distribution_id = kwargs.get('balance_distributions_id')
         url = api_settings.BALANCE_DISTRIBUTION_UPDATE_URL.format(balance_distribution_id=balance_distribution_id)
@@ -339,7 +339,7 @@ class BalanceDistributionsUpdate(View):
         }
 
         response = ajax_functions._put_method(request, url, "", self.logger, post_data)
-        self.logger.info("========== Finished updating setting payment & fee structure ==========")
+        self.logger.info("========== Finished updating Setting Payment, Fee & Bonus Structure ==========")
         return response
 
 
@@ -483,7 +483,7 @@ class SettingBonusView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulM
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
-                                         func_description="Setting Payment & Fee Structure from list url",
+                                         func_description="Setting Payment, Fee & Bonus Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
@@ -565,12 +565,12 @@ class PaymentAndFeeStructureDetailView(View):
         return super(PaymentAndFeeStructureDetailView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        self.logger.info('========== Start deleting Balance Distribution ==========')
+        self.logger.info('========== Start deleting Setting Payment, Fee & Bonus Structure ==========')
         balance_distribution_id = kwargs.get('balance_distribution_id')
 
         url = api_settings.BALANCE_DISTRIBUTION_DETAIL_URL.format(balance_distribution_id=balance_distribution_id)
         response = ajax_functions._delete_method(request, url, "", self.logger)
-        self.logger.info('========== Finish deleting Balance Distribution ==========')
+        self.logger.info('========== Finish deleting Setting Payment, Fee & Bonus Structure ==========')
         return response
 
 class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
@@ -651,7 +651,7 @@ class AgentFeeView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMetho
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
-                                         func_description="Setting Payment & Fee Structure from list url",
+                                         func_description="Setting Payment, Fee & Bonus Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
@@ -817,7 +817,7 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
 
     def _get_commission_and_payment_list(self, fee_tier_id):
         data, success = self._get_method(api_path=api_settings.BALANCE_DISTRIBUTION_URL.format(fee_tier_id=fee_tier_id),
-                                         func_description="Setting Payment & Fee Structure from list url",
+                                         func_description="Setting Payment, Fee & Bonus Structure from list url",
                                          logger=logger,
                                          is_getting_list=True)
         return data, success
