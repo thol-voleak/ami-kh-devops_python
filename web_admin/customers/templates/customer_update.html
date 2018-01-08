@@ -66,9 +66,9 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label class="col-sm-5 control-label">Unique Reference</label>
+                                            <label class="col-sm-5 control-label">Unique Reference *</label>
                                             <div class="col-sm-7">
-                                                <input type="text" class="form-control input-rounded" name="unique_reference"
+                                                <input type="text" class="form-control input-rounded" name="unique_reference" required
                                                         id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}"/>
                                             </div>
                                         </div>
@@ -78,7 +78,7 @@
                                             <label class="col-sm-5 control-label">First Name</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                                        id="txt_first_name" value="{{ customer_info.firstname|default_if_none:'' }}" />
+                                                        id="txt_firstname" value="{{ customer_info.firstname|default_if_none:'' }}" />
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
@@ -111,7 +111,7 @@
                                             <label class="col-sm-5 control-label">Last Name</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                                        id="txt_last_name" value="{{ customer_info.lastname|default_if_none:'' }}" />
+                                                        id="txt_lastname" value="{{ customer_info.lastname|default_if_none:'' }}" />
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
