@@ -7,8 +7,8 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
 from datetime import datetime
 from campaign.models import terms_mapping
-from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
+from django.http import JsonResponse
 
 import logging
 
@@ -89,8 +89,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if input_start_date is "" or input_end_date is "" or input_start_time is "" or input_end_time is "":
             message = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
-            context['border_color'] = 'red'
-            return self.render_add_page(request, context, message)
+            return JsonResponse({"status": 4, "msg": message})
 
         start_hour = int(input_start_time[0:2])
         start_minute = int(input_start_time[-2:])
@@ -104,8 +103,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if start_date > end_date or start_date < current_date or end_date < current_date:
             message = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
-            context['border_color'] = 'red'
-            return self.render_add_page(request, context, message, start_date, end_date)
+            return JsonResponse({"status": 4, "msg": message})
 
         param_start_date = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         param_end_date = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -128,7 +126,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if not success:
             message = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
-            return self.render_add_page(request, context, message, start_date, end_date)
+            return JsonResponse({"status": 4, "msg": message})
 
         mechanic_id = data['id']
         operations_map = {
@@ -155,7 +153,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
                 self.logger.info('========== Finish adding Condition ==========')
                 if not success:
-                    return self.render_add_page(request, context, message, start_date, end_date)
+                    return JsonResponse({"status": 3, "msg": message})
 
                 condition_id = data['id']
                 key_value_type = 'key_value_type_' + suffix
@@ -178,14 +176,14 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 self.logger.info('========== Finish adding Comparison ==========')
                 if not success:
-                    return self.render_add_page(request, context, message, start_date, end_date)
+                    return JsonResponse({"status": 3, "msg": message})
 
             if condition_type == 'sum_of':
                 params = {'filter_type': condition_type, 'sum_key_name': sum_key_name}
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
                 self.logger.info('========== Finish adding Condition ==========')
                 if not success:
-                    return self.render_add_page(request, context, message, start_date, end_date)
+                    return JsonResponse({"status": 3, "msg": message})
 
                 condition_id = data['id']
 
@@ -200,7 +198,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 self.logger.info('========== Finish adding Comparison ==========')
                 if not success:
-                    return self.render_add_page(request, context, message, start_date, end_date)
+                    return JsonResponse({"status": 3, "msg": message})
 
                 for i in range(1, int(filter_counter) + 1):
                     prefix = str(i)
@@ -221,7 +219,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
                     self.logger.info('========== Finish adding Filter ==========')
                     if not success:
-                        return self.render_add_page(request, context, message, start_date, end_date)
+                        return JsonResponse({"status": 3, "msg": message})
 
         # add reward
         self.logger.info('========== Start adding Reward ==========')
@@ -356,7 +354,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish adding Reward ==========')
 
         if not success:
-            return self.render_add_page(request, context, message, start_date, end_date)
+            return JsonResponse({"status": 3, "msg": message})
 
         # add limitation
         self.logger.info('========== Start adding Limitation ==========')
@@ -387,7 +385,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if success:
             messages.success(request, 'Mechanic Added')
-            return redirect('campaign:campaign_detail', campaign_id=campaign_id)
+            return JsonResponse({"status": 2, "msg": message})
 
     def create_condition(self, campaign_id, mechanic_id, params):
         success, status_code, message, data = RestFulClient.post(
@@ -421,48 +419,6 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         return success, data, message
-
-    def render_add_page(self, request, context, message, start_date=None, end_date=None):
-        context['error_msg'] = message
-        if start_date and end_date:
-            context['dtp_start_date'] = start_date.strftime('%Y-%m-%d')
-            context['dtp_end_date'] = end_date.strftime('%Y-%m-%d')
-        operations = ["Equal to", "Not Equal to", "Less Than", "More Than",
-                      "Less than or Equal to",
-                      "More than or Equal to"]
-        sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
-        sum_key_name = [{
-            'value': 'amount',
-            'text': 'Amount'
-        }, {
-            'value': 'fee',
-            'text': 'Fee'
-        }, {
-            'value': 'bonus',
-            'text': 'Bonus'
-        }, {
-            'value': 'settlement_amount',
-            'text': 'Settlement Amount'
-        }]
-        freetext_ops = ["Equal to", "Not Equal to"]
-        key_value_types = ["Numeric", "Freetext", "Timestamp"]
-        filter_ops = ["Equal to", "Not Equal to"]
-        filter_key_value_types = ["Numeric", "Timestamp"]
-
-        all_terms = list(terms_mapping.objects.all())
-        detail_names = self._filter_detail_names(all_terms)
-        trigger = self._filter_trigger(all_terms)
-
-        context['operations'] = operations
-        context['key_value_types'] = key_value_types
-        context['detail_names'] = detail_names
-        context['trigger'] = trigger
-        context['freetext_ops'] = freetext_ops
-        context['filter_ops'] = filter_ops
-        context['filter_key_value_types'] = filter_key_value_types
-        context['sum_of_operators'] = sum_of_operators
-        context['sum_key_name'] = sum_key_name
-        return render(request, self.template_name, context)
 
     def create_reward(self, campaign_id, mechanic_id, params):
         success, status_code, message, data = RestFulClient.post(

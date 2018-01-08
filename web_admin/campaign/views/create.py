@@ -35,6 +35,8 @@ class CreateCampaignView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(CreateCampaignView, self).get_context_data(**kwargs)
         context['start_date'] = datetime.now().strftime("%Y-%m-%d")
         context['end_date'] = datetime.now().strftime("%Y-%m-%d")
+        context['start_time'] = '00:01'
+        context['end_time'] = '00:01'
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):

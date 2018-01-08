@@ -23,6 +23,14 @@
                 <strong id="alert-msg">{{ error_msg|capfirst }}</strong>
             </div>
         {% endif %}
+
+        <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-message"></strong>
+        </div>
+        </div>
+
         <div class="panel-body">
             <div class="row no-margin">
                 <div class="col-lg-12">
@@ -47,7 +55,7 @@
                             <label class="col-sm-3 control-label">Start Date *</label>
                             <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
-                                       name="dtp_start_date" style="height:40px; border-color: {{ border_color }};"
+                                       name="dtp_start_date" style="height:40px;"
                                        value="{{ dtp_start_date|default_if_none:'' }}"
                                        id="dtp_start_date" required >
                             </div>
@@ -56,14 +64,14 @@
                                         type=time min=00:00 max=23:59 step=60 value="00:01"
                                        id="dtp_start_time" name="dtp_start_time"
                                        value="{{ dtp_start_time|default_if_none:'' }}"
-                                       style="height:40px;border-color: {{ border_color }};" required >
+                                       style="height:40px;" required >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">End Date *</label>
                             <div class="col-xs-3">
                                 <input type="date" class="form-control input-rounded"
-                                       name="dtp_end_date" style="height:40px; border-color: {{ border_color }};"
+                                       name="dtp_end_date" style="height:40px;"
                                        value="{{ dtp_end_date|default_if_none:'' }}"
                                        id="dtp_end_date" required>
                             </div>
@@ -72,7 +80,7 @@
                                         type=time min=00:00 max=23:59 step=60 value="00:01"
                                        id="dtp_end_time" name="dtp_end_time"
                                        value="{{ dtp_end_time|default_if_none:'' }}"
-                                        style="height:40px;border-color: {{ border_color }};" required>
+                                        style="height:40px;" required>
                             </div>
                         </div>
 
@@ -270,12 +278,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group pull-right">
+                        <div id='div_button' class="form-group pull-right">
                             <a href="{% url 'campaign:campaign_detail' campaign_id %}">
                                 <input id="btn_dismiss" class="btn text-left mb15" type="button"
                                        value="Dismiss"/>
                             </a>
-                             <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
+                             <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="button" onclick="return submitForm();"
                                    value="Add Mechanic"/>
                         </div>
                     </form>
@@ -859,6 +867,44 @@
             filterAreaElem.appendChild(newFilterElemDivElem);
             filterCountInput.setAttribute('value', filterCount);
         };
+
+        function submitForm(){
+            var form = $("#submit-form");
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (response) {
+                    if (!response.status) {
+                        location.reload();
+                    } else if (response.status == 2) {
+                        // success
+                        url = $('#div_button').find('a').attr('href');
+                        window.location.replace(url);
+                    } else {
+                        console.log(response);
+                        showErrorMessage(response.msg);
+                        if (response.status == 4) {
+                            $('#dtp_start_date').css('border-color', 'red');
+                            $('#dtp_start_time').css('border-color', 'red');
+                            $('#dtp_end_date').css('border-color', 'red');
+                            $('#dtp_end_time').css('border-color', 'red');
+                        }
+                    }
+                },
+                error: function (msg) {
+                    showErrorMessage('System Error');
+                }
+            });
+        };
+
+        function showErrorMessage(msg) {
+            $("#alert-message").text(msg);
+            $("#msg-update-failed").prop("hidden", true);
+            $("#alert-campaign").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
 
     </script>
 {% endblock %}
