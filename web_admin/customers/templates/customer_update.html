@@ -33,14 +33,11 @@
                             <!-- first column -->
                             <div class="col-md-2">
                                     {% if customer_info.profile_picture_url %}
-                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
-                                            
+                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;">
                                     <img src="{{ customer_info.profile_picture_url|default_if_none:'' }}"
-                                    alt="No image Available"
-                                            value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
-                                            height="170" width="170" readonly>
-                                    </div>
-                                            {% endif %}
+                                         alt="No image Available"
+                                         value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                         height="170" width="170" readonly></div>{% endif %}
                                     {% if not customer_info.profile_picture_url %}
                                     <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
                                         <span>No image Available
@@ -235,22 +232,33 @@
                                 </div>
                             </div>
                             <!-- End section 8 - row 1 -->
-                        <div class="form-group">
-                                <label class="col-sm-2 control-label">Mobile Number</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded"
-                                            id="txt_mobile_number" name="mobile_number"
-                                            value="{{ customer_info.mobile_number | default_if_none:'' }}" >
+                        <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Mobile Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="mobile_number"
+                                                id="txt_mobile_number" value="{{ customer_info.mobile_number|default_if_none:'' }}" />
+                                    </div>
                                 </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">
+                                        <div class="col-sm-8">
+                                        </div>
+                                    </div>
                             </div>
-                        <!-- End section 8 - row 1 -->
-                        <div class="form-group">
-                                <label class="col-sm-2 control-label">Email Address</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded"
-                                           id="txt_email_address" name="email"
-                                           value="{{ customer_info.email | default_if_none:'' }}" >
+                        <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Email Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="email"
+                                                id="txt_email_address" value="{{ customer_info.email|default_if_none:'' }}" />
+                                    </div>
                                 </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">
+                                        <div class="col-sm-8">
+                                        </div>
+                                    </div>
                             </div>
                         <hr/>
                         <div id="current-address-area">
