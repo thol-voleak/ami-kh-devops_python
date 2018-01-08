@@ -1,12 +1,14 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
-from django.contrib import messages
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
-from web_admin import api_settings
-from authentications.apps import InvalidAccessToken
-
+import time
+import requests
+from django.contrib import messages
+from django.http import JsonResponse
+from django.conf import settings
+from authentications.utils import get_auth_header
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from datetime import datetime
@@ -78,17 +80,12 @@ class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             })
 
         self.logger.info("param is : {}".format(params))
+        result = self.create_action(rule_id, mechanic_id, params)
 
-        success, status_code, status_message, data = self.create_action(rule_id, mechanic_id, params)
-
-        #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create action ==========')
-        if success:
-            messages.success(request, "Rule ID {} is updated successfully".format(rule_id))
-            return redirect('rule_configuration:rule_detail', rule_id=rule_id)
-        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            self.logger.info("{}".format(status_message))
-            raise InvalidAccessToken(status_message)
+
+        return  result
+
 
     def get_action_types_list(self):
         self.logger.info('========== Start get action type list ==========')
@@ -107,12 +104,44 @@ class AddRuleAction(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return data
 
     def create_action(self, rule_id, mechanic_id, params):
-        success, status_code, message, data = RestFulClient.post(
-                url = api_settings.CREATE_ACTION.format(rule_id=rule_id, mechanic_id=mechanic_id),
-                headers=self._get_headers(),
-                loggers=self.logger,
-                params=params)
-        return success, status_code, message, data
+        #rule_id = 99999
+        api_path = api_settings.CREATE_ACTION.format(rule_id=rule_id, mechanic_id=mechanic_id)
+        url = settings.DOMAIN_NAMES + api_path
+
+        timeout = settings.GLOBAL_TIMEOUT
+
+
+        logger.info('API-Path: {path}'.format(path=api_path))
+
+        start = time.time()
+        try:
+            response = requests.post(url, headers=get_auth_header(self.request.user), json=params, verify=settings.CERT,
+                                     timeout=timeout)
+        except requests.exceptions.Timeout:
+            return JsonResponse({'status': 'timeout'})
+        done = time.time()
+        logger.info('Response_code: {}'.format(response.status_code))
+        logger.info('Response_content: {}'.format(response.text))
+        logger.info('Response_time: {}'.format(done - start))
+        response_json = response.json()
+        status = response_json.get('status', {})
+
+        code = 0
+        message = status.get('message', 'Something went wrong.')
+        if status['code'] in ['access_token_expire', 'authentication_fail', 'invalid_access_token']:
+            logger.info("{} for {} username".format(message, self.request.user))
+            messages.add_message(self.request, messages.INFO,
+                                 str('Your login credentials have expired. Please login again.'))
+            code = 1
+            return JsonResponse({"status": code, "msg": message})
+
+        if status['code'] == "success":
+            code = 2
+            messages.success(self.request, "Rule ID {} is updated successfully".format(rule_id))
+        else:
+            code = 3
+
+        return JsonResponse({"status": code, "msg": message, "data": response_json.get('data', {})})
 
 
 

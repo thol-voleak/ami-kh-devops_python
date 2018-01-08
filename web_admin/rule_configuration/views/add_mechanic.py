@@ -36,6 +36,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== User go to Add Mechanic page ==========')
         context = super(AddMechanic, self).get_context_data(**kwargs)
         context['dtp_start_date'] = datetime.now().strftime("%Y-%m-%d")
+        context['dtp_start_time'] = '00:01'
         return context
 
     def post(self, request, *args, **kwargs):
