@@ -30,182 +30,411 @@
                     <form id="submit-form" class="form-horizontal" role="form" method="post"
                         action="{% url 'customers:customer_update' customer_id %}" id="input_form">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded"
-                                       id="txt_id"
-                                       value="{{ customer_info.id | default_if_none:'' }}" readonly>
+                            <!-- first column -->
+                            <div class="col-md-2">
+                                    {% if customer_info.profile_picture_url %}
+                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
+                                            
+                                    <img src="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                    alt="No image Available"
+                                            value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                            height="170" width="170" readonly>
+                                    </div>
+                                            {% endif %}
+                                    {% if not customer_info.profile_picture_url %}
+                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
+                                        <span>No image Available
+                                            </span></div>
+                                    {% endif %}
+                                    <input value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                    name="profile_picture_url" hidden >
+                                </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-6 control-label"><strong>Personal Details</strong></label>
+                                            <div class="col-sm-6"></div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-6 control-label"></label>
+                                            <div class="col-sm-8"></div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">ID</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded"
+                                                        id="txt_id" value="{{ customer_info.id|default_if_none:'' }}" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Unique Reference</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="unique_reference"
+                                                        id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}"/>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">First Name</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="firstname"
+                                                        id="txt_first_name" value="{{ customer_info.firstname|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Citizen Card ID</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="citizen_card_id"
+                                                        id="txt_citizen_card_id" value="{{ customer_info.citizen_card_id|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-5 control-label">Middle Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded" name="middle_name"
+                                                    id="txt_middle_name" value="{{ customer_info.middle_name | default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-5 control-label">Passport ID</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded" name="passport_id"
+                                                    id="txt_passport_id" value="{{ customer_info.passport_id|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End section 5 -row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Last Name</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="lastname"
+                                                        id="txt_last_name" value="{{ customer_info.lastname|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Tax ID</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="tax_id"
+                                                        id="txt_tax_id" value="{{ customer_info.tax_id|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Place of Birth</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="place_of_birth"
+                                                        id="txt_place_of_birth" value="{{ customer_info.place_of_birth|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Social Security ID</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="social_security_id"
+                                                        id="txt_social_security_id" value="{{ customer_info.social_security_id|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Date of Birth</label>
+                                            <div class="col-sm-7">
+                                                <input type="date" class="form-control input-rounded" name="date_of_birth" 
+                                                        id="dtp_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">National Date of Issued</label>
+                                            <div class="col-sm-7">
+                                                <input type="date" class="form-control input-rounded" name="citizen_card_date_of_issue"
+                                                        id="dtp_national_date_of_issued" value="{{ customer_info.citizen_card_date_of_issue|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Gender</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="gender"
+                                                        id="txt_gender" value="{{ customer_info.gender|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Passport Date of Issued</label>
+                                            <div class="col-sm-7">
+                                                <input type="date" class="form-control input-rounded" name="passport_date_of_issue"
+                                                        id="dtp_passport_issued_date" value="{{ customer_info.passport_date_of_issue|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Occupations</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="occupations"
+                                                        id="txt_occupations" value="{{ customer_info.occupations|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">National Place of Issued</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="citizen_card_place_of_issue"
+                                                        id="txt_national_place_of_issued" value="{{ customer_info.citizen_card_place_of_issue|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Nationality</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="nationality"
+                                                        id="txt_nationality" value="{{ customer_info.nationality|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">Passport Place of Issued</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="passport_place_of_issue"
+                                                        id="txt_passport_place_of_issued" value="{{ customer_info.passport_place_of_issue|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- End section 5 - row 2 -->
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-5 control-label">The Beneficiary</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control input-rounded" name="beneficiary"
+                                                        id="txt_the_beneficiary" value="{{ customer_info.beneficiary|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
+                            <div class=clearfix></div>
+                            <hr/>
+                           
+                        <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"><strong>Contact Details</strong></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                            </div>
+                            <!-- End section 8 - row 1 -->
+                        <div class="form-group">
+                                <label class="col-sm-2 control-label">Mobile Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                            id="txt_mobile_number" name="mobile_number"
+                                            value="{{ customer_info.mobile_number | default_if_none:'' }}" >
+                                </div>
+                            </div>
+                        <!-- End section 8 - row 1 -->
+                        <div class="form-group">
+                                <label class="col-sm-2 control-label">Email Address</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           id="txt_email_address" name="email"
+                                           value="{{ customer_info.email | default_if_none:'' }}" >
+                                </div>
+                            </div>
+                        <hr/>
+                        <div id="current-address-area">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label current-address-label"><strong>Current Address</strong></label>
+                                        <div class="col-sm-8"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-8"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Address</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="current_address"
+                                                   id="txt_current_address" value="{{ customer_info.current_address|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                            <label class="col-sm-4 control-label">Land Mark</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_landmark"
+                                                       id="txt_current_land_mark" value="{{ customer_info.current_landmark|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">City</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_city"
+                                                   id="txt_current_city" value="{{ customer_info.current_city|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                            <label class="col-sm-4 control-label">Latitude</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_latitude"
+                                                       id="txt_current_latitude" value="{{ customer_info.current_latitude|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Province</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="current_province"
+                                                   id="txt_current_province" value="{{ customer_info.current_province|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                            <label class="col-sm-4 control-label">Longitude</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_longitude"
+                                                       id="txt_current_longitude" value="{{ customer_info.current_longitude|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    
+                                </div>
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                                <label class="col-sm-4 control-label">District</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control input-rounded" name="current_district"
+                                                           id="txt_current_district" value="{{ customer_info.current_district|default_if_none:'' }}" />
+                                                </div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                            <label class="col-sm-4 control-label">Commune</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_commune"
+                                                       id="txt_current_commune" value="{{ customer_info.current_commune|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="col-sm-4 control-label">Country</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control input-rounded" name="current_country"
+                                                        id="txt_current_country" value="{{ customer_info.current_country|default_if_none:'' }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        <div class="checkbox" style="margin-left: 33px;">
+                            <label>
+                                <input type="checkbox" id="chk_permanent_address" name="is-permanent-same-current">Permanent Address and Current Address are the same</label>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Unique Reference *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="unique_reference" required
-                                       id="txt_unique_reference"
-                                       value="{{ customer_info.unique_reference | default_if_none:'' }}" >
+                        <hr/>
+                        <div id="permanent-address-area" >
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label current-address-label"><strong>Permanent Address</strong></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="permanent_address"
+                                                id="txt_permanent_address" value="{{ customer_info.permanent_address|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Land Mark</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_landmark"
+                                                    id="txt_permanent_land_mark" value="{{ customer_info.permanent_landmark|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">City</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_city"
+                                                    id="txt_permanent_city" value="{{ customer_info.permanent_city|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Latitude</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_latitude"
+                                                    id="txt_permanent_latitude" value="{{ customer_info.permanent_latitude|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Province</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="permanent_province"
+                                                id="txt_permanent_province" value="{{ customer_info.permanent_province|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Longitude</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_longitude"
+                                                    id="txt_permanent_longitude" value="{{ customer_info.permanent_longitude|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">District</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_district"
+                                                    id="txt_permanent_district" value="{{ customer_info.permanent_district|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">Commune</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control input-rounded" name="permanent_commune"
+                                                    id="txt_permanent_commune" value="{{ customer_info.permanent_commune|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="permanent_country"
+                                                id="txt_permanent_country" value="{{ customer_info.permanent_country|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Mobile Number</label>
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="mobile_number"
-                                       id="txt_mobile_number"
-                                       value="{{ customer_info.mobile_number | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Firstname</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_first_name"
-                                       value="{{ customer_info.firstname | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Lastname</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_last_name"
-                                       value="{{ customer_info.lastname | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Place of Birth</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="place_of_birth"
-                                       id="txt_place_of_birth"
-                                       value="{{ customer_info.place_of_birth | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Date of Birth</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="date_of_birth"
-                                       id="dtp_birth_date"
-                                       value="{{ customer_info.date_of_birth | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Citizen Card ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="citizen_card_id"
-                                       id="txt_national"
-                                       value="{{ customer_info.citizen_card_id | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Passport ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="passport_id"
-                                       id="txt_passport"
-                                       value="{{ customer_info.passport_id | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">National Date of Issued</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="citizen_card_date_of_issue"
-                                       id="dtp_national_issued_date"
-                                       value="{{ customer_info.citizen_card_date_of_issue | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Passport Date of Issued</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control input-rounded" name="passport_date_of_issue"
-                                       id="dtp_passport_issued_date"
-                                       value="{{ customer_info.passport_date_of_issue | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">National Place of Issued</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="citizen_card_place_of_issue"
-                                       id="txt_national_place_issued"
-                                       value="{{ customer_info.citizen_card_place_of_issue | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Passport Place of Issued</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="passport_place_of_issue"
-                                       id="txt_passport_place_issued"
-                                       value="{{ customer_info.passport_place_of_issue | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Permanent Address</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="permanent_address"
-                                       id="txt_permanent_address"
-                                       value="{{ customer_info.permanent_address | default_if_none:'' }}" >
-                            </div>
-                        </div>        
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Current Address</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="current_address"
-                                       id="txt_current_address"
-                                       value="{{ customer_info.current_address | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Email Address</label>
-                            <div class="col-sm-8">
-                                <input type="email" class="form-control input-rounded" name="email"
-                                       id="txt_email_address"
-                                       value="{{ customer_info.email | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Occupations</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="occupations"
-                                       id="txt_occupation"
-                                       value="{{ customer_info.occupations | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Nationality</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="nationality"
-                                       id="txt_nationality"
-                                       value="{{ customer_info.nationality | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">The Beneficiary</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="beneficiary"
-                                       id="txt_the_beneficiary"
-                                       value="{{ customer_info.beneficiary | default_if_none:'' }}" >
-                            </div>
-                        </div>
-                        <!--<div class="form-group">-->
-                            <!--<label class="col-sm-2 control-label">Status</label>-->
-                            <!--<div class="col-sm-8">-->
-                                <!--<input type="text" class="form-control input-rounded"-->
-                                       <!--id="txt_status"-->
-                                       <!--value="{{ customer_info.is_suspended | default_if_none:'' }}" readonly>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--<label class="col-sm-2 control-label">KYC Status</label>-->
-                            <!--<div class="col-sm-8">-->
-                                <!--<input type="text" class="form-control input-rounded"-->
-                                       <!--id="txt_kyc_status"-->
-                                       <!--value="{{ customer_info.kyc_status | default_if_none:'' }}" readonly>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--<label class="col-sm-2 control-label">KYC Remark</label>-->
-                            <!--<div class="col-sm-8">-->
-                                <!--<input type="text" class="form-control input-rounded"-->
-                                       <!--id="txt_kyc_remark"-->
-                                       <!--value="{{ customer_info.kyc_remark | default_if_none:'' }}" readonly>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                        
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Profile Create Date</label>
                             <div class="col-sm-8">
@@ -247,6 +476,17 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
-
+{% block body_js %}
+{{ block.super }}
+<script>
+    $('#chk_permanent_address').change(function() {
+        if($('#chk_permanent_address').is(':checked')) {
+            $('#permanent-address-area').hide();
+        } else {
+            $('#permanent-address-area').show();
+        }
+    });
+</script>
 {% endblock %}
