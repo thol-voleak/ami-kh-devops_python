@@ -150,7 +150,7 @@ class UpdateView(TemplateView, RESTfulMethods):
             "settlement_type": settlement_type
         }
 
-        if params['bonus_type'] == "Flat value":
+        if params['bonus_type'] == "Flat value" or params['bonus_type'] == "":
             params['amount_type'] = ''
 
         fee_tier_id = context['fee_tier_id']
