@@ -91,7 +91,7 @@ class AddView(TemplateView, RESTfulMethods):
         if bonus_type_value == '% rate':
             params['amount_type'] = request.POST.get('amount_type')
 
-        if bonus_amount != '' and condition_amount != '' and bonus_amount is not None and condition_amount is not None:
+        if bonus_type_value == 'Flat value' and condition != 'unlimit' and self.is_float(bonus_amount) and self.is_float(condition_amount):
             amount_number = float(condition_amount)
             bonus_amount_number = float(bonus_amount)
             if amount_number < bonus_amount_number:
@@ -240,3 +240,10 @@ class AddView(TemplateView, RESTfulMethods):
             return curr_dict
         else:
             return {}
+
+    def is_float(self, input_number):
+        try:
+            num = float(input_number)
+        except Exception :
+            return False
+        return True
