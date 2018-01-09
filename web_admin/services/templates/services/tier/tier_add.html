@@ -344,6 +344,9 @@ if($bonus_type.val() == ''){
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
 }
+if($bonus_type.val() == 'Flat value'){
+    $("#from").hide();
+}
     $bonus_type.change(function(){
         if($bonus_type.val() == ''){
             $('#txt_bonus_amount').attr('disabled', true);
