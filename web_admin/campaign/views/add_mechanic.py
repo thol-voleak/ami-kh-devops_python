@@ -178,7 +178,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
 
-            if condition_type == 'sum_of':
+            else:
+                # condition_type == 'sum_of'
                 params = {'filter_type': condition_type, 'sum_key_name': sum_key_name}
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
                 self.logger.info('========== Finish adding Condition ==========')
