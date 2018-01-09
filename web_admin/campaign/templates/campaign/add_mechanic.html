@@ -348,16 +348,12 @@
             var keyValue = $(ele).parent().parent().next('div').find('input');
             var currentKVType = getCurrentOps(keyValueType);
             if (type === "Equal to" || type === "Not Equal to") {
-                if (JSON.stringify(currentKVType) !== JSON.stringify(fullOps)) {
-                    setDDL(keyValueType, fullOps);
-                    keyValue.attr('type', 'number');
-                    keyValue.val('');
+                if (currentKVType.length === 2) {
+                    keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
                 }
             } else {
-                if (JSON.stringify(currentKVType) !== JSON.stringify(filterOps)) {
-                    setDDL(keyValueType, filterOps);
-                    keyValue.attr('type', 'number');
-                    keyValue.val('');
+                if (currentKVType.length === 3) {
+                    keyValueType.find('[value="Freetext"]').remove();
                 }
             }
         }
