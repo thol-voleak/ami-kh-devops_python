@@ -31,8 +31,7 @@
                                          height="170" width="170" readonly></div>{% endif %}
                                     {% if not customer_info.profile_picture_url %}
                                     <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
-                                        <span id="lbl_no_image">No image Available
-                                            </span></div>
+                                        <span id="lbl_no_image">No image Available</span></div>
                                     {% endif %}
                                 </div>
                     <div class="col-md-10">
@@ -51,7 +50,7 @@
                                     <label class="col-sm-5 control-label">First Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="firstname" readonly
-                                                id="txt_first_name" value="{{ customer_info.firstname|default_if_none:'' }}" />
+                                                id="txt_firstname" value="{{ customer_info.firstname|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -84,7 +83,7 @@
                                     <label class="col-sm-5 control-label">Last Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="lastname" readonly
-                                                id="txt_last_name" value="{{ customer_info.lastname|default_if_none:'' }}" />
+                                                id="txt_lastname" value="{{ customer_info.lastname|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -118,7 +117,7 @@
                                     <label class="col-sm-5 control-label">Date of Birth</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="date_of_birth" readonly
-                                                id="text_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
+                                                id="txt_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
