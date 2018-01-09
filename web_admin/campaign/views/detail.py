@@ -55,9 +55,9 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 for condition in i['condition_list']:
                     #condition['condition_detail'] = self.get_condition_detail(campaign_id, i['id'], condition['id'])
                     condition['comparison_list'] = self.get_comparison_list(campaign_id, i['id'], condition['id'])
+                    self.logger.info('========== Finish get comparison list ==========')
                     condition['filter'] = self.get_condition_filter(campaign_id, i['id'], condition['id'])
                     self.logger.info('========== Finish get condition filter ==========')
-                    self.logger.info('========== Finish get comparison list ==========')
                     #self.logger.info('========== Finish get condition detail ==========')
                 self.logger.info('========== Finish get condition list ==========')
                 action = self.get_rewards_list(campaign_id, i['id'])
