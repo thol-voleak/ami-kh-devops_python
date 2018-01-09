@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load menu_tags %}
 {% block content %}
     <div class="app layout-fixed-header bg-white usersession">
         <div class="full-height">
@@ -11,7 +11,8 @@
                                 <div class="text-center mb15">
                                     <!--<img src="images/logo-dark.png"/>-->
                                 </div>
-                                {% for message in messages %}
+                                {% remove_dupplicate_message  messages as login_messages  %}
+                                {% for message in login_messages %}
                                     <div class='alert alert-danger alert-dismissable' id="msg-add-service">
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a><strong>{{ message|capfirst }}</strong>
                                     </div>

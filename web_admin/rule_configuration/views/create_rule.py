@@ -34,6 +34,7 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         context = super(CreateRuleView, self).get_context_data(**kwargs)
         context['start_date'] = datetime.now().strftime("%Y-%m-%d")
+        context['start_time'] = '00:01'
         #context['end_date'] = datetime.now().strftime("%Y-%m-%d")
         return render(request, self.template_name, context)
 
@@ -84,21 +85,16 @@ class CreateRuleView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if end_date != '':
             params['end_active_timestamp'] = end_date
 
-        self.logger.info("param is : {}".format(params))
-
         success, status_code, status_message, data = RestFulClient.post(
             url=self.path,
             headers=self._get_headers(),
             loggers=self.logger,
             params=params)
 
-        #API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         self.logger.info('========== Finish create rule ==========')
         if success:
             return redirect('rule_configuration:add_mechanics', rule_id=data['id'])
-        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            self.logger.info("{}".format(status_message))
-            raise InvalidAccessToken(status_message)
         elif status_message == 'Invalid date time':
             body['error_msg'] = 'End Date could not be less than Start Date'
             body['border_color'] = "red"

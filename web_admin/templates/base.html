@@ -14,18 +14,11 @@
     <link rel="stylesheet" href="{% static 'styles/font-awesome.css' %}">
     <link rel="stylesheet" href="{% static 'styles/urban.css' %}">
     <link rel="stylesheet" href="{% static 'styles/urban.skins.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}?{% now "U" %}">
     {% endblock %}
 </head>
 <body style="background-color: white;">
 {% block body_content %}
-<div id='loading-area' class="hide-loading">
-    <div class='back-drop'></div>
-    <div class="loading-img">
-        <img src="{% static 'image/loading.gif' %}" />
-        <div class="text-loading">Updating Campaign Information</div>
-    </div>
-</div>
 <div class="app layout-fixed-header">
 
     <!--sidebar-panel-->

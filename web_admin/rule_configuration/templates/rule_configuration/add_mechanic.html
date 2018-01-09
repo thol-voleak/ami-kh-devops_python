@@ -49,6 +49,7 @@
                                 <select class="form-control" id="ddl_trigger" name="trigger"  required>
                                         <option value= "register_customer" {% if trigger == 'register_customer' %}selected{% endif %}>Customer Registration</option>
                                         <option value= "executed_order" {% if trigger == 'executed_order' %}selected{% endif %}>Customer Payment</option>
+                                        <option value= "create_order" {% if trigger == 'create_order' %}selected{% endif %}>Create Order</option>
                                 </select>
                             </div>
                         </div>
@@ -62,7 +63,7 @@
                             </div>
                             <div class="col-xs-2">
                                 <input  class="form-control input-rounded"
-                                        type=time min=00:00 max=23:59 step=60 value="00:01"
+                                        type=time min=00:00 max=23:59 step=60
                                        id="dtp_start_time" name="dtp_start_time"
                                        value="{{ dtp_start_time|default_if_none:'' }}" required>
                             </div>

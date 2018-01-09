@@ -62,13 +62,9 @@
                             <select class="form-control" id="ddl_condition" name="condition" required>
                                 {% for item in conditions %}
                                     {% if item.fee_tier_condition == update_tier.fee_tier_condition %}
-                                        <option value="{{ item.fee_tier_condition }}" selected="selected">
-                                            {{ item.fee_tier_condition }}
-                                        </option>
+                                        <option value="{{ item.fee_tier_condition }}" selected="selected">{{item.fee_tier_condition}}</option>
                                     {% else %}
-                                        <option value="{{ item.fee_tier_condition }}">
-                                            {{ item.fee_tier_condition }}
-                                        </option>
+                                        <option value="{{ item.fee_tier_condition }}">{{item.fee_tier_condition}}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -106,6 +102,46 @@
                             <input value="{{ update_tier.fee_amount|default_if_none:'' }}" type="text"
                                    class="form-control" name="fee_amount" id="txt_fee_amount"
                                    onchange="onChangesAmount('txt_fee_amount');"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">Bonus Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_bonus_type" name="bonus_type" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.bonus_type %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="from" >
+                        <label class="col-sm-2 control-label" id="txt_from">From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_from" name="amount_type">
+                                {% for type in amount_types %}
+                                    {% if type.amount_type == update_tier.amount_type %}
+                                        <option value="{{ type.amount_type }}" selected="selected">{{ type.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_bonus_amount">Bonus Amount *</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.bonus_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_bonus_amount');" name="bonus_amount" id="txt_bonus_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
                     </div>
@@ -258,6 +294,7 @@ function forceNumber(any_amount, any_type) {
 
 forceAmountNumber("txt_amount");
 forceNumber("txt_fee_amount", "ddl_fee_type");
+forceNumber("txt_bonus_amount","ddl_bonus_type");
 
 
 // start Amount constraint
@@ -307,6 +344,46 @@ var $ddl_fee_type = $('#ddl_fee_type');
     validate_fee_type();
 // end Fee Amount constraint
 
+
+
+// start Bonus Amount constraint
+var $bonus_type = $('#ddl_bonus_type');
+if($bonus_type.val() == ''){
+    $('#txt_bonus_amount').attr('disabled', true);
+    $("#label_bonus_amount").text("Bonus Amount");
+    $("#from").hide();
+}
+if($bonus_type.val() == 'Flat value') {
+    $("#from").hide();
+}
+    $bonus_type.change(function(){
+        if($bonus_type.val() == ''){
+            $('#txt_bonus_amount').attr('disabled', true);
+
+            $('#txt_bonus_amount').val('');
+            $("#label_bonus_amount").text("Bonus Amount");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == 'Flat value'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeOut(500);
+        }
+        else if($bonus_type.val() == '% rate'){
+            $('#txt_bonus_amount').removeAttr('disabled');
+            if($('#txt_bonus_amount').val() == '') {
+                $('#txt_bonus_amount').val('0');
+            }
+            $("#label_bonus_amount").text("Bonus Amount *");
+            $("#from").fadeIn(1000);
+        }
+    })
+// end Bonus Amount constraint
+
+var txt_bonus_amount = document.getElementById("txt_bonus_amount");
 var txt_fee_amount = document.getElementById('txt_fee_amount');
 var condition_amount = document.getElementById('txt_amount');
 
@@ -317,6 +394,20 @@ function onChangesAmount(s) {
     }
 };
 
+function validateBonusValue() {
+    /*if(txt_bonus_amount.value == '') {
+        <!--txt_bonus_amount.value = '0';-->
+    } else {
+        txt_bonus_amount.value = txt_bonus_amount.value.replace(/^0+/, '')
+    }
+
+    if(txt_bonus_amount.value == '') {
+        <!--txt_bonus_amount.value = '0';-->
+    }*/
+
+    // Validate min value
+    return validateMinValue(txt_bonus_amount);
+}
 
 function validateFeeValue() {
     /*if(txt_fee_amount.value == '') {
@@ -372,9 +463,10 @@ function validateMaxValue(element) {
 }
 
 function validateAmountFields() {
-    return validateConditionAmount() && validateFeeValue();
+    return validateConditionAmount() && validateFeeValue() && validateBonusValue();
 }
 
+txt_bonus_amount.onkeyup = validateBonusValue;
 txt_fee_amount.onkeyup = validateFeeValue;
 condition_amount.onkeyup = validateConditionAmount;
 </script>

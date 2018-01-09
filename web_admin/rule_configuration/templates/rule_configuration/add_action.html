@@ -22,6 +22,15 @@
         </div>
     </div>
     {% endif %}
+
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+    <input type="text" id="data-rule-detail-url" data-rule-detail-url="{% url 'rule_configuration:rule_detail' rule_id %}" class="form-control" style="display:none"/>
     <div class="panel-body">
 
         <div class="row no-margin">
@@ -81,8 +90,8 @@
                                 <input id="btn_cancel" class="btn text-left mb15" type="button"
                                        value="Cancel"/>
                             </a>
-                            <input id="btn_next" class="btn btn-success text-left mb15" type="submit"
-                                   value="Next"/>
+                            <input id="btn_next" class="btn btn-success text-left mb15" type="button"
+                                   value="Next" onclick="return formSubmit();"/>
                         </div>
                 </form>
             </div>
@@ -93,6 +102,53 @@
 {% block body_js %}
 {{ block.super }}
 <script>
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg)
+            $('#alert-client').removeClass("alert-success");
+            $('#alert-client').addClass("alert-danger");
+            $("#msg-update-client").prop("hidden", true);
+
+            $("#alert-client").show();
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg)
+            $('#alert-client').removeClass("alert-danger");
+            $('#alert-client').addClass("alert-success");
+            $("#msg-update-client").prop("hidden", true);
+
+            $("#alert-client").show();
+        }
+
+        function formSubmit(){
+            var form = $("#submit-form");
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var input = document.getElementById('data-rule-detail-url');
+                            var url = input.getAttribute('data-rule-detail-url');
+                            window.location.replace(url);
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error: ' + msg);
+                        //showErrorMessage(JSON.stringify(msg));
+                        showErrorMessage('System Error');
+                    }
+                });
+            return true;
+        }
         var $key_value_type = $('#ddl_key_value_type');
         function updateKeyType() {
             var $key_value = $('#txt_key_value');

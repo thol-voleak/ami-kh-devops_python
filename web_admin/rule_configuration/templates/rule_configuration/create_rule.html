@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-sm-2">
                                     <input class="form-control input-rounded"
-                                           type=time min=00:00 max=23:59 step=60 value=00:01 required
+                                           type=time min=00:00 max=23:59 step=60 value="{{ start_time | default_if_none:'00:01' }}" required
                                            style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                            id="dtp_start_time" name="start_time">
                             </div>
@@ -74,6 +74,7 @@
                             <div class="col-sm-2" >
                                 <input class="form-control input-rounded"
                                        type=time min=00:00 max=23:59 step=60
+                                       value="{{ end_time | default_if_none:'' }}"
                                        style="height:40px; border-color: {{ border_color| default_if_none:'' }};"
                                        id="dtp_end_time" name="end_time">
                             </div>

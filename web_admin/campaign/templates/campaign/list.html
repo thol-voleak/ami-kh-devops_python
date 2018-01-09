@@ -73,14 +73,14 @@
                 </div>
             </div>
             <div class="form-group">
-                    <label class="col-sm-2 control-label">Start and End Date</label>
+                    <label class="col-sm-2 control-label">Start Date</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="dtp_from"
                                value="{{ start_date|default_if_none:'' }}"
                                id="dtp_from">
                     </div>
-                    <label class="col-sm-2 control-label">To</label>
+                    <label class="col-sm-2 control-label">End Date</label>
                     <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="dtp_to"
@@ -222,7 +222,7 @@
         }
 
     }
-
+ 
     function active(e) {
         // body...
         
@@ -230,10 +230,7 @@
         var campaign_name = e.getAttribute('data-name');
         var campaign_description = e.getAttribute('data-description');       
         var url = '/admin-portal/campaign/active/'+ campaign_id+'/';
-        console.log(url)
-        console.log('chuyen tu inactive thanh active')
-        console.log(campaign_id)
-        $('#loading-area').toggleClass('hide-loading');
+        $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
         $.ajax({
             url: url,
             type: "POST",
@@ -242,14 +239,15 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
-            $('#loading-area').toggleClass('hide-loading');
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                window.location.replace(url);
+                location.reload();
             } else if (response.status == 2) {
                 // success
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id +' ' + 'is now active' );
+                $('#toggle-area-' + campaign_id + ' #tog_status').prop("checked", true);
+                $('#toggle-area-' + campaign_id + ' #tog_status').attr("checked", "checked");
             } else {
                 // Failed
                 $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
@@ -257,7 +255,6 @@
             }
             },
             error: function (msg) {
-            $('#loading-area').toggleClass('hide-loading');
             console.log('Error active the campaign' + campaign_id);
             showErrorMessage(JSON.stringify(msg));
             }
@@ -284,10 +281,12 @@
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                window.location.replace(url);
+                location.reload();
             } else if (response.status == 2) {
                 // success
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id + ' '+ 'is now inactive');
+                $('#toggle-area-' + campaign_id + ' #tog_status').prop("checked", false);
+                $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
             } else {
                 // Failed
                 showErrorMessage('Error inactive the campaign');
