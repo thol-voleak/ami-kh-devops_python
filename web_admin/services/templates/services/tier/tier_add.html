@@ -224,7 +224,14 @@ function forceNumber(any_amount, any_type) {
         amount.value = '';
     }
     any_amt = $('#'+any_amount);
-
+    var e = document.getElementById(any_type);
+        if (e.value == '% rate'){
+            deci = 3;
+            }
+        else if ( e.value == 'Flat value'){
+            deci = {{ decimal }};
+            }
+        else {deci = 0;}
     $('#' + any_type).change(function() {
         var e = document.getElementById(any_type);
         if (e.value == '% rate'){
