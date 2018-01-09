@@ -35,6 +35,7 @@
                                     {% if customer_info.profile_picture_url %}
                                     <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;">
                                     <img src="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                        style="margin-top: -3px;margin-left: -1px;"
                                          alt="No image Available" id="img_profile_picture"
                                          value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
                                          height="170" width="170" readonly></div>{% endif %}
