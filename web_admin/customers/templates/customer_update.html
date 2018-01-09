@@ -33,18 +33,15 @@
                             <!-- first column -->
                             <div class="col-md-2">
                                     {% if customer_info.profile_picture_url %}
-                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
-                                            
+                                    <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;">
                                     <img src="{{ customer_info.profile_picture_url|default_if_none:'' }}"
-                                    alt="No image Available"
-                                            value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
-                                            height="170" width="170" readonly>
-                                    </div>
-                                            {% endif %}
+                                        style="margin-top: -3px;margin-left: -1px;"
+                                         alt="No image Available" id="img_profile_picture"
+                                         value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                         height="170" width="170" readonly></div>{% endif %}
                                     {% if not customer_info.profile_picture_url %}
                                     <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;"> 
-                                        <span>No image Available
-                                            </span></div>
+                                        <span id="lbl_no_image">No Image Available</span></div>
                                     {% endif %}
                                     <input value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
                                     name="profile_picture_url" hidden >
@@ -69,9 +66,9 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label class="col-sm-5 control-label">Unique Reference</label>
+                                            <label class="col-sm-5 control-label">Unique Reference *</label>
                                             <div class="col-sm-7">
-                                                <input type="text" class="form-control input-rounded" name="unique_reference"
+                                                <input type="text" class="form-control input-rounded" name="unique_reference" required
                                                         id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}"/>
                                             </div>
                                         </div>
@@ -81,7 +78,7 @@
                                             <label class="col-sm-5 control-label">First Name</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                                        id="txt_first_name" value="{{ customer_info.firstname|default_if_none:'' }}" />
+                                                        id="txt_firstname" value="{{ customer_info.firstname|default_if_none:'' }}" />
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
@@ -114,7 +111,7 @@
                                             <label class="col-sm-5 control-label">Last Name</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                                        id="txt_last_name" value="{{ customer_info.lastname|default_if_none:'' }}" />
+                                                        id="txt_lastname" value="{{ customer_info.lastname|default_if_none:'' }}" />
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
@@ -235,22 +232,33 @@
                                 </div>
                             </div>
                             <!-- End section 8 - row 1 -->
-                        <div class="form-group">
-                                <label class="col-sm-2 control-label">Mobile Number</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded"
-                                            id="txt_mobile_number" name="mobile_number"
-                                            value="{{ customer_info.mobile_number | default_if_none:'' }}" >
+                        <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Mobile Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="mobile_number"
+                                                id="txt_mobile_number" value="{{ customer_info.mobile_number|default_if_none:'' }}" />
+                                    </div>
                                 </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">
+                                        <div class="col-sm-8">
+                                        </div>
+                                    </div>
                             </div>
-                        <!-- End section 8 - row 1 -->
-                        <div class="form-group">
-                                <label class="col-sm-2 control-label">Email Address</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded"
-                                           id="txt_email_address" name="email"
-                                           value="{{ customer_info.email | default_if_none:'' }}" >
+                        <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Email Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded" name="email"
+                                                id="txt_email_address" value="{{ customer_info.email|default_if_none:'' }}" />
+                                    </div>
                                 </div>
+                                <div class="form-group col-md-6">
+                                        <label class="col-sm-4 control-label">
+                                        <div class="col-sm-8">
+                                        </div>
+                                    </div>
                             </div>
                         <hr/>
                         <div id="current-address-area">
@@ -273,10 +281,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                            <label class="col-sm-4 control-label">Land Mark</label>
+                                            <label class="col-sm-4 control-label">Landmark</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control input-rounded" name="current_landmark"
-                                                       id="txt_current_land_mark" value="{{ customer_info.current_landmark|default_if_none:'' }}" />
+                                                       id="txt_current_landmark" value="{{ customer_info.current_landmark|default_if_none:'' }}" />
                                             </div>
                                         </div>
                                 </div>
@@ -366,10 +374,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                        <label class="col-sm-4 control-label">Land Mark</label>
+                                        <label class="col-sm-4 control-label">Landmark</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control input-rounded" name="permanent_landmark"
-                                                    id="txt_permanent_land_mark" value="{{ customer_info.permanent_landmark|default_if_none:'' }}" />
+                                                    id="txt_permanent_landmark" value="{{ customer_info.permanent_landmark|default_if_none:'' }}" />
                                         </div>
                                     </div>
                             </div>

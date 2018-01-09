@@ -348,16 +348,12 @@
             var keyValue = $(ele).parent().parent().next('div').find('input');
             var currentKVType = getCurrentOps(keyValueType);
             if (type === "Equal to" || type === "Not Equal to") {
-                if (JSON.stringify(currentKVType) !== JSON.stringify(fullOps)) {
-                    setDDL(keyValueType, fullOps);
-                    keyValue.attr('type', 'number');
-                    keyValue.val('');
+                if (currentKVType.length === 2) {
+                    keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
                 }
             } else {
-                if (JSON.stringify(currentKVType) !== JSON.stringify(filterOps)) {
-                    setDDL(keyValueType, filterOps);
-                    keyValue.attr('type', 'number');
-                    keyValue.val('');
+                if (currentKVType.length === 3) {
+                    keyValueType.find('[value="Freetext"]').remove();
                 }
             }
         }
@@ -690,7 +686,7 @@
     // Sum of
         var getSumOfKeyValueHtml = function(conditionNumber) {
               var sumOfKeyValueHtml =  '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Sum Key Name *</label>\
+                                    <label class="col-sm-3 control-label">Sum Key Name</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_sum_key_name" name="sum_key_name_' + conditionNumber + '">\
                                             {% for key_name in sum_key_name %}\
