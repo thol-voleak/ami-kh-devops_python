@@ -4,7 +4,7 @@ from django.contrib import messages
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
-
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 
@@ -29,6 +29,15 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AddRuleCondition, self).dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start showing Add Rule Condition page ==========')
+        context = super(AddRuleCondition, self).get_context_data(**kwargs)
+
+        self.get_page_data(context)
+        self.logger.info('========== Finished showing Add Rule Condition page ==========')
+        return render(request, self.template_name, context=context)
+
+
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start adding Condition ==========')
         context = super(AddRuleCondition, self).get_context_data(**kwargs)
@@ -46,7 +55,11 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish adding Condition ==========')
 
         if not success:
-            return self.render_add_condition_page(request, context, message, params)
+            return JsonResponse({"status": 3, "msg": message, "data": data})
+
+        if 'add_more_condition' in request.POST.keys():
+            messages.add_message(request, messages.SUCCESS,
+                                 str('Condition is successfully created'))
 
         condition_id = data['id']
 
@@ -55,23 +68,9 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish adding Comparison ==========')
 
         if not success:
-            return self.render_add_condition_page(request, context, message, params)
+            return JsonResponse({"status": 3, "msg": message, "data": data})
 
-        if 'add_more_condition' in request.POST.keys():
-            self.get_page_data(context)
-            messages.success(request, 'Condition is successfully created')
-            return render(request, self.template_name, context)
-
-        if 'next' in request.POST.keys():
-            return redirect('rule_configuration:add_action', rule_id=rule_id, mechanic_id=mechanic_id)
-
-    def get_context_data(self, **kwargs):
-        self.logger.info('========== Start showing Add Rule Condition page ==========')
-        context = super(AddRuleCondition, self).get_context_data(**kwargs)
-
-        self.get_page_data(context)
-        self.logger.info('========== Finished showing Add Rule Condition page ==========')
-        return context
+        return JsonResponse({"status": 2, "msg": message, "data": data})
 
     def get_data_type_list(self):
         success, status_code, data = RestFulClient.get(url=api_settings.GET_RULE_CONDITION_DATA_TYPE, loggers=self.logger, headers=self._get_headers())
@@ -147,14 +146,6 @@ class AddRuleCondition(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         context.update(ops)
 
-    def render_add_condition_page(self, request, context, message, params):
-        context['error_msg'] = message
-        context['selected_detail_name'] = params['key_name']
-        context['selected_value_type'] = params['key_value_type']
-        context['selected_operator'] = params['operator']
-        context['input_key_value'] = params['key_value']
-        self.get_page_data(context)
-        return render(request, self.template_name, context)
 
     def create_comparison(self, rule_id, mechanic_id, condition_id, params):
         success, status_code, message, data = RestFulClient.post(
