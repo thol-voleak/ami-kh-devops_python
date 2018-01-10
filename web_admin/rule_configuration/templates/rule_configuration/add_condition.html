@@ -102,6 +102,8 @@
 
                     <input id="btn_next" class="btn btn-success text-left mb15" type="button"
                            name="next" value="Next" onclick="return doNext();"/>
+                    <input id='hidden_submit' type="submit" hidden>
+
                 </div>
             </form>
         </div>
@@ -133,68 +135,80 @@
         function doNext(){
             var form = $("#submit-form");
 
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (response) {
-                        if (!response.status) {
-                            // Logout
-                            location.reload();
-                        } else if (response.status == 2) {
-                            // success
-                            var url = form.attr('data-next-url');
-                            console.log('next: ' + url);
-                            window.location.replace(url);
-                        } else {
-                            // Failed
-                            showErrorMessage(response.msg);
+            if (form[0].checkValidity()) {
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                            if (!response.status) {
+                                // Logout
+                                location.reload();
+                            } else if (response.status == 2) {
+                                // success
+                                var url = form.attr('data-next-url');
+                                console.log('next: ' + url);
+                                window.location.replace(url);
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error: ' + msg);
+                            //showErrorMessage(JSON.stringify(msg));
+                            showErrorMessage('System Error');
                         }
-                    },
-                    error: function (msg) {
-                        console.log('Error: ' + msg);
-                        //showErrorMessage(JSON.stringify(msg));
-                        showErrorMessage('System Error');
-                    }
-                });
+                    });
+
+            } else {
+                $('#hidden_submit').click();
+            }
+
             return true;
         }
 
         function addMoreCondition(){
             var form = $("#submit-form");
 
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (response) {
-                        if (!response.status) {
-                            // Logout
-                            location.reload();
-                        } else if (response.status == 2) {
-                            // success
-                            /*var url = window.location.origin + form.attr('action');
-                            console.log('add_more_condition: ' + url);
-                            window.location.replace(url);*/
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                            if (!response.status) {
+                                // Logout
+                                location.reload();
+                            } else if (response.status == 2) {
+                                // success
+                                /*var url = window.location.origin + form.attr('action');
+                                console.log('add_more_condition: ' + url);
+                                window.location.replace(url);*/
 
-                            document.getElementById('ddl_condition_type').selectedIndex = 0;
-                            document.getElementById('ddl_detail_name').selectedIndex = 0;
-                            document.getElementById('ddl_key_value_type').selectedIndex = 0;
-                            document.getElementById('ddl_operator').selectedIndex = 0;
-                            document.getElementById('txt_key_value').value = '';
-                            showSuccessMessage("Condition is successfully created");
+                                document.getElementById('ddl_condition_type').selectedIndex = 0;
+                                document.getElementById('ddl_detail_name').selectedIndex = 0;
+                                document.getElementById('ddl_key_value_type').selectedIndex = 0;
+                                document.getElementById('ddl_operator').selectedIndex = 0;
+                                document.getElementById('txt_key_value').value = '';
+                                showSuccessMessage("Condition is successfully created");
 
-                        } else {
-                            // Failed
-                            showErrorMessage(response.msg);
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error: ' + msg);
+                            //showErrorMessage(JSON.stringify(msg));
+                            showErrorMessage('System Error');
                         }
-                    },
-                    error: function (msg) {
-                        console.log('Error: ' + msg);
-                        //showErrorMessage(JSON.stringify(msg));
-                        showErrorMessage('System Error');
-                    }
-                });
+                    });
+
+            } else {
+                $('#hidden_submit').click();
+            }
             return true;
         }
 

@@ -92,6 +92,8 @@
                             </a>
                             <input id="btn_next" class="btn btn-success text-left mb15" type="button"
                                    value="Next" onclick="return formSubmit();"/>
+                            <input id='hidden_submit' type="submit" hidden>
+
                         </div>
                 </form>
             </div>
@@ -122,31 +124,34 @@
 
         function formSubmit(){
             var form = $("#submit-form");
-
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (response) {
-                        if (response.status == 1) {
-                            // Logout
-                            location.reload();
-                        } else if (response.status == 2) {
-                            // success
-                            var input = document.getElementById('data-rule-detail-url');
-                            var url = input.getAttribute('data-rule-detail-url');
-                            window.location.replace(url);
-                        } else {
-                            // Failed
-                            showErrorMessage(response.msg);
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                location.reload();
+                            } else if (response.status == 2) {
+                                // success
+                                var input = document.getElementById('data-rule-detail-url');
+                                var url = input.getAttribute('data-rule-detail-url');
+                                window.location.replace(url);
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error: ' + msg);
+                            //showErrorMessage(JSON.stringify(msg));
+                            showErrorMessage('System Error');
                         }
-                    },
-                    error: function (msg) {
-                        console.log('Error: ' + msg);
-                        //showErrorMessage(JSON.stringify(msg));
-                        showErrorMessage('System Error');
-                    }
-                });
+                    });
+             } else {
+                $('#hidden_submit').click();
+             }
             return true;
         }
         var $key_value_type = $('#ddl_key_value_type');
