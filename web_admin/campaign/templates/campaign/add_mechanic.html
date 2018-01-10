@@ -283,8 +283,9 @@
                                 <input id="btn_dismiss" class="btn text-left mb15" type="button"
                                        value="Dismiss"/>
                             </a>
-                             <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="button" onclick="return submitForm();"
+                            <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="button" onclick="return submitForm();"
                                    value="Add Mechanic"/>
+                            <input id='hidden_submit' type="submit" hidden>
                         </div>
                     </form>
                 </div>
@@ -866,33 +867,36 @@
 
         function submitForm(){
             var form = $("#submit-form");
-
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (response) {
-                    if (!response.status) {
-                        location.reload();
-                    } else if (response.status == 2) {
-                        // success
-                        url = $('#div_button').find('a').attr('href');
-                        window.location.replace(url);
-                    } else {
-                        console.log(response);
-                        showErrorMessage(response.msg);
-                        if (response.status == 4) {
-                            $('#dtp_start_date').css('border-color', 'red');
-                            $('#dtp_start_time').css('border-color', 'red');
-                            $('#dtp_end_date').css('border-color', 'red');
-                            $('#dtp_end_time').css('border-color', 'red');
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (!response.status) {
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            url = $('#div_button').find('a').attr('href');
+                            window.location.replace(url);
+                        } else {
+                            console.log(response);
+                            showErrorMessage(response.msg);
+                            if (response.status == 4) {
+                                $('#dtp_start_date').css('border-color', 'red');
+                                $('#dtp_start_time').css('border-color', 'red');
+                                $('#dtp_end_date').css('border-color', 'red');
+                                $('#dtp_end_time').css('border-color', 'red');
+                            }
                         }
+                    },
+                    error: function (msg) {
+                        showErrorMessage('System Error');
                     }
-                },
-                error: function (msg) {
-                    showErrorMessage('System Error');
-                }
-            });
+                });
+            } else {
+                $('#hidden_submit').click();
+            }
         };
 
         function showErrorMessage(msg) {
