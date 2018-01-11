@@ -399,7 +399,17 @@
                 </ul>
             </li>
             {% endif %}
-
+            {% if request.user|has_permission_name:"CAN_VIEW_VOUCHER_LIST"%}
+            {% check_valid_url url_name 'voucher' as is_vouchers_url %}
+            <li class="menu-accordion {% if is_vouchers_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-refresh"></i> <span>Vouchers</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'voucher' %}active{% endif %}">
+                        <a href="{% url 'voucher:voucher' %}"> <span>Voucher List</span> </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
             {% if request.user|has_permission_name:"CAN_VIEW_CAMPAIGNS"%}
             {% check_valid_url url_name 'campaign' as is_campaign_url %}
             <li class="menu-accordion {% if is_campaign_url %}open{% endif %}">

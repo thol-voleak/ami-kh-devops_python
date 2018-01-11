@@ -30,6 +30,12 @@
             </div>
         {% endif %}
     {% endfor %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_agent">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert_msg"></strong>
+        </div>
+    </div>
     <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent-list' %}" onsubmit="return validateForm()">
         {% csrf_token %}
         <div class="form-group">
@@ -93,7 +99,7 @@
                        id="dtp_to">
             </div>
             <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-            {% if is_permission_search %}
+            {% if has_permission_search %}
             <div class="col-xs-1">
                 <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
             </div>
@@ -151,33 +157,54 @@
                             <td class="col-sm-2">{{ agent.kyc_status|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
+                            <td class="col-sm-2" id="status_{{ agent.id }}">{{ agent.is_suspended|yesno:"Yes,No" }}</td>
                             <td class="col-sm-2">{{ agent.is_deleted|yesno:"Yes,No" }}</td>
                             <td class="col-sm-3">
-                                {% if agent.is_permission_view %}
+                                {% if agent.has_permission_view %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                                 {% endif %}
-                                {% if agent.is_permission_edit %}
+                                {% if agent.has_permission_edit %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                                 {% endif %}
-                                {% if agent.is_permission_delete %}
+                                {% if agent.has_permission_delete %}
                                     <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger " onclick="location.href='{% url 'agents:agent_delete' agent.id %}'">Delete</button>
                                 {% endif %}
-                                {% if agent.is_permission_identity %}
+                                {% if agent.has_permission_identity %}
                                     <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
                                 {% endif %}
-                                {% if agent.is_permission_smartcard %}
+                                {% if agent.has_permission_smartcard %}
                                     <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>
                                 {% endif %}
-                                {% if agent.is_permission_sofcash %}
+                                {% if agent.has_permission_sofcash %}
                                     <button id="btn_sof_cash" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofcash' agent.id %}'">SOF Cash</button>
                                 {% endif %}
-                             {% if agent.is_permission_sofbank %}
+                                {% if agent.has_permission_sofbank %}
                                     <button id="btn_sof_bank" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-sofbank' agent.id %}'">SOF Bank</button>
+                                {% endif %}
+                                {% if agent.has_permission_suspend %}
+                                    {% if not agent.is_suspended %}
+                                        <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
+                                            class="btn btn-danger mb5 btn-outline btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                            id="btn_suspend"
+                                            data-url="{% url 'agents:agent_suspend' agent.id %}"
+                                            data-agent-id='{{ agent.id }}'
+                                            onClick="doSuspendOrActivate(this)">
+                                            <span class="small">Suspend</span>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" {{ agent.is_deleted|yesno:'disable=true, disable=false' }}
+                                            class="btn btn-danger btn-outline mb5 btn-xs {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                            id="btn_suspend"
+                                            data-url="{% url 'agents:agent_activate' agent.id %}"
+                                            data-agent-id='{{ agent.id }}'
+                                            onClick="doSuspendOrActivate(this)">
+                                        <span class="small">Activate</span>
+                                        </button>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -198,23 +225,139 @@
 </div>
 
 <script>
-function showErrorMessage(msg) {
-    $("#alert-msg").text(msg)
-    $("#msg-error").fadeIn(700);
-}
-
-function validateForm() {
-    var from = document.getElementById("dtp_from");
-    var to = document.getElementById("dtp_to");
-
-    var fromDate = new Date(from.value);
-    var toDate = new Date(to.value);
-
-    if (fromDate && toDate && (fromDate > toDate)) {
-        showErrorMessage('Create date From should be <= To')
-        return false;
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg)
+        $("#msg-error").fadeIn(700);
     }
-}
+
+    function showSuccessMessage(msg) {
+	    $("#alert_msg").text(msg);
+	    $('#alert_agent').removeClass("alert-danger");
+	    $('#alert_agent').addClass("alert-success");
+
+	    $("#alert_agent").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+    function validateForm() {
+        var from = document.getElementById("dtp_from");
+        var to = document.getElementById("dtp_to");
+
+        var fromDate = new Date(from.value);
+        var toDate = new Date(to.value);
+
+        if (fromDate && toDate && (fromDate > toDate)) {
+            showErrorMessage('Create date From should be <= To')
+            return false;
+        }
+    }
+
+    function doSuspendOrActivate(e) {
+        var title = e.innerText;
+        if (title === 'Activate') {
+            activate(e);
+        } else {
+            suspend(e);
+        }
+    }
+
+    function suspend(e) {
+    swal({
+            title: "Are you sure you want to suspend?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#2ECC71",
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var agent_id = e.getAttribute('data-agent-id');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {},
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/suspend/', '/activate/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Activate</span>";
+                            e.disabled = true;
+                            e.disabled = false;
+
+                            var status_id = 'status_' + agent_id;
+                            document.getElementById(status_id).innerText = 'Yes';
+
+                            showSuccessMessage('Suspended data successfully');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error suspending the agent id' + agent_id + msg);
+                        showErrorMessage(JSON.stringify(msg));
+                    }
+                });
+            }
+        });
+    }
+
+    function activate(e) {
+        swal({
+            title: "Are you sure you want to activate?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#2ECC71",
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var agent_id = e.getAttribute('data-agent-id');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {},
+                    success: function (response) {
+                        if (response.status == 1) {
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/activate/', '/suspend/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Suspend</span>";
+                            e.disabled = true;
+                            e.disabled = false;
+
+                            var status_id = 'status_' + agent_id;
+                            document.getElementById(status_id).innerText = 'No';
+
+                            showSuccessMessage('Activated data successfully');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error activating the agent id' + agent_id + msg);
+                        showErrorMessage(JSON.stringify(msg));
+                    }
+                });
+            }
+        });
+    }
+
 </script>
 
 {% endblock %}

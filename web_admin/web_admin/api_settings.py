@@ -1,4 +1,4 @@
-API_VERSION = 'v2.1'
+API_VERSION = 'v3.0'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -54,7 +54,7 @@ AGENT_ADD_IDENTITY_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{agent
 AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
 ADD_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards'
 DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards/{}'
-
+AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -91,6 +91,7 @@ SPI_ADD_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{}/sp
 SPI_DETAIL_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
 SPI_UPDATE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spiUrlId}'
 SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spi_url_id}'
+SPI_CALL_METHOD_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-call-methods'
 
 # Service Group
 SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
@@ -222,6 +223,7 @@ CREATE_MECHANIC = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}
 GET_CONDITION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions'
 GET_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions'
 GET_CONDITION_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}'
+GET_CONDITION_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters'
 GET_COMPARISON_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}/comparisons'
 DELETE_MECHANIC_URL = 'api-gateway/rule-engine/' + API_VERSION + '/admin/rules/{campaign_id}/mechanics/{mechanic_id}'
 CREATE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions'
@@ -229,6 +231,7 @@ CREATE_COMPARISON = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_i
 CREATE_REWARD =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
 CREATE_LIMITATION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}/limits'
 GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions/{bak_action_id}/limits'
+CREATE_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters'
 
 # Rule Engine
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
@@ -245,3 +248,9 @@ GET_RULE_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rul
 GET_ACTION_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/action-types'
 GET_DATA_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/data-types'
 CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
+
+
+#Remmittance
+GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
+SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
+

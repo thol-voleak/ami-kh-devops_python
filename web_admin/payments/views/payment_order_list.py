@@ -10,6 +10,7 @@ from django.shortcuts import render
 from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 import logging
+from django.contrib import messages
 from datetime import datetime
 logger = logging.getLogger(__name__)
 
@@ -58,14 +59,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
-            {"name": "insufficient_fund"},
-            {"name": "security_code_expired"},
-            {"name": "security_code_failed"},
-            {"name": "invalid_request"},
-            {"name": "payment_not_allow"},
-            {"name": "cancel_order_not_allow"},
-            {"name": "general_error"},
+            {"name": "All", "title": "All"},
+            {"name": "insufficient_fund", "title": "Insufficient Fund"},
+            {"name": "security_code_expired", "title": "Security Code Expired"},
+            {"name": "security_code_failed", "title": "Security Code Failed"},
+            {"name": "invalid_request", "title": "Invalid Request"},
+            {"name": "payment_not_allow", "title": "Payment Not Allow"},
+            {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
+            {"name": "general_error", "title": "General Error"},
         ]
+
         error_code_id = []
 
         context['data'] = data
@@ -75,27 +78,33 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['error_code_id'] = error_code_id
         context['status_id'] = ''
         context['permissions'] = self._get_has_permissions()
-
+        self.logger.info('========== Finish render payment order ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        # self.logger.info('========== Start searching payment order ==========')
+        self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
         service_name = request.POST.get('service_name')
-        payer_user_id = request.POST.get('payer_user_id')
-        payer_user_type_id = request.POST.get('payer_user_type_id')
-        payee_user_id = request.POST.get('payee_user_id')
-        payee_user_type_id = request.POST.get('payee_user_type_id')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
+        self.logger.info('========== Start getting service list ==========')
         service_list = self.get_services_list()
+        self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         status_id = request.POST.get('status_id')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
         error_code = request.POST.getlist('error_code_id')
+        error_code_search = error_code
+
+        if 'All' in error_code:
+            error_code_search = ["insufficient_fund", "security_code_expired","security_code_failed","invalid_request",
+                          "payment_not_allow", "cancel_order_not_allow", "general_error"]
+            error_code = ["All"]
 
         body = {}
         body['paging'] = True
@@ -104,15 +113,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['order_id'] = order_id
         if service_name:
             body['service_name'] = service_name
-        if payer_user_id:
-            body['payer_user_id'] = payer_user_id
-        if payer_user_type_id.isdigit() and payer_user_type_id != '0':
-            body['payer_user_type_id'] = int(payer_user_type_id)
-        if payee_user_id:
-            body['payee_user_id'] = payee_user_id
-        if payee_user_type_id.isdigit() and payee_user_type_id != '0':
-            body['payee_user_type_id'] = int(payee_user_type_id)
-
+        if user_id and user_id.isdigit():
+            body['user_id'] = int(user_id)
+        elif user_id:
+            body['user_id'] = user_id
+        if user_type_id.isdigit() and user_type_id != '0':
+            body['user_type_id'] = int(user_type_id)
         if ext_transaction_id:
             body['ext_transaction_id'] = ext_transaction_id
         if status_id:
@@ -122,8 +128,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['created_client_id'] = creation_client_id
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
-        if error_code:
-            body['error_code'] = error_code
+        if error_code_search:
+            body['error_code'] = error_code_search
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -136,7 +142,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
 
-        self.logger.info('========== Start searching payment order ==========')
         data = self.get_payment_order_list(body=body)
 
         if data:
@@ -148,8 +153,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         orders = order_list.get("orders", [])
         page = order_list.get("page", {})
         self.logger.info('Page : {}'.format(page))
-        # print(page)
-        # self.logger.info('Total count : {}'.format(page.get('total_elements', 0)))
         count = 0
         if len(order_list):
             count = len(order_list)
@@ -163,23 +166,22 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"id": 4, "name": "TIME_OUT"},
         ]
         error_list = [
-            {"name": "insufficient_fund"},
-            {"name": "security_code_expired"},
-            {"name": "security_code_failed"},
-            {"name": "invalid_request"},
-            {"name": "payment_not_allow"},
-            {"name": "cancel_order_not_allow"},
-            {"name": "general_error"},
+            {"name": "All", "title": "All"},
+            {"name": "insufficient_fund", "title": "Insufficient Fund"},
+            {"name": "security_code_expired", "title": "Security Code Expired"},
+            {"name": "security_code_failed", "title": "Security Code Failed"},
+            {"name": "invalid_request", "title": "Invalid Request"},
+            {"name": "payment_not_allow", "title": "Payment Not Allow"},
+            {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
+            {"name": "general_error", "title": "General Error"},
         ]
 
         context = {'order_list': orders,
                    'order_id': order_id,
                    'service_name': service_name,
                    'data': service_list,
-                   'payer_user_id': payer_user_id,
-                   'payer_user_type_id':payer_user_type_id,
-                   'payee_user_id': payee_user_id,
-                   'payee_user_type_id':payee_user_type_id,
+                   'user_type':user_type_id,
+                   'user_id': user_id,
                    'search_count': page.get('total_elements', 0),
                    'creation_client_id': creation_client_id,
                    'execution_client_id': execution_client_id,
@@ -197,9 +199,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['status_id'] = int(status_id)
         if error_code:
             context['error_code_id'] = error_code
-            print(context['error_code_id'])
-            for i in error_code:
-                print(i)
 
         self.logger.info('========== Finished searching payment order ==========')
 

@@ -44,3 +44,10 @@ def check_url(url, apps, urls_dict):
         if url in urls_dict[app]:
             return True
     return False
+
+@register.simple_tag(name='remove_dupplicate_message', takes_context=True)
+def remove_dupplicate_message(context, messages):
+    custom_message = []
+    for msg in messages:
+        custom_message.append(msg.message)
+    return list(set(custom_message))

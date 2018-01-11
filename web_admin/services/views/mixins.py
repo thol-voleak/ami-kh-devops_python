@@ -5,6 +5,8 @@ from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,8 @@ class GetCommandNameAndServiceNameMixin(View, GetHeaderMixin):
         is_success, status_code, data = RestFulClient.get(url=url,
                                                          headers=self._get_headers(),
                                                          loggers= self.logger)
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         if is_success:
             command_name = [d['command_name']
                             for d in data
@@ -34,6 +38,8 @@ class GetCommandNameAndServiceNameMixin(View, GetHeaderMixin):
         is_success, status_code, data = RestFulClient.get(url=url,
                                                          headers=self._get_headers(),
                                                          loggers= self.logger)
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
         if is_success:
             return data.get('service_name', service_id)
         else: 

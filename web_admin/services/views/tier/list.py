@@ -22,13 +22,20 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
 
     def get_context_data(self, *args, **kwargs):
         context = super(FeeTierListView, self).get_context_data(*args, **kwargs)
+        self.logger.info('========== Start get Fee Tier List ==========')
         service_id = kwargs.get('service_id')
         command_id = kwargs.get('command_id')
         service_command_id = kwargs.get('service_command_id')
         if not service_id or not service_command_id:
             raise Http404
+        self.logger.info('========== Start get service name ==========')
+        context['service_name'] = self._get_service_name_by_id(service_id)
+        self.logger.info('========== Finish get service name ==========')
 
-        self.logger.info('========== Start get Fee Tier List ==========')
+        self.logger.info('========== Start get command name ==========')
+        context['command_name'] = self._get_command_name_by_id(command_id)
+        self.logger.info('========== Finish get command name ==========')
+        
         data, success = self._get_fee_tier_list(service_command_id)
         self.logger.info('========== Finished get Fee Tier List ==========')
 
@@ -37,16 +44,8 @@ class FeeTierListView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMe
         context['edit_msg'] = self.request.session.pop('edit_tier_msg', None)
         context['delete_msg'] = self.request.session.pop('delete_tier_msg', None)
 
-        self.logger.info('========== Start get service name ==========')
-        context['service_name'] = self._get_service_name_by_id(service_id)
-        self.logger.info('========== Finish get service name ==========')
-
-        self.logger.info('========== Start get command name ==========')
-        context['command_name'] = self._get_command_name_by_id(command_id)
-        self.logger.info('========== Finish get command name ==========')
-
         return context
 
     def _get_fee_tier_list(self, service_command_id):
         url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
-        return self._get_precision_method(api_path=url, func_description="fee tier list")
+        return self._get_precision_method(api_path=url, func_description="fee tier list", is_getting_list=True)

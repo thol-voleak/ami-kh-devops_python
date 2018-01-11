@@ -19,6 +19,15 @@
             <strong id="alert-msg">{{ error_msg|capfirst }}</strong>
         </div>
     {% endif %}
+
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+    
     {% for message in messages %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
         <div class="col-xs-12">
@@ -32,7 +41,7 @@
     <div class="panel-body">
     <div class="row no-margin">
         <div class="col-lg-12">
-            <form id="submit-form" class="form-horizontal" role="form" method="post">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{{ request.path }}" data-next-url="{% url 'rule_configuration:add_action' rule_id mechanic_id %}">
                 {% csrf_token %}
                 <div id="condition-group">
                     <div id="div_condition_1">
@@ -88,10 +97,13 @@
                         <input id="btn_cancel" class="btn text-left mb15" type="button"
                                value="Cancel"/>
                     </a>
-                     <input id="btn_add_more_condition" class="btn btn-success text-left mb15" name="add_more_condition" type="submit"
-                           value="Add More Condition"/>
-                    <input id="btn_next" class="btn btn-success text-left mb15" type="submit"
-                           name="next" value="Next"/>
+                     <input id="btn_add_more_condition" class="btn btn-success text-left mb15" name="add_more_condition" type="button"
+                           value="Add More Condition" onclick="return addMoreCondition();"/>
+
+                    <input id="btn_next" class="btn btn-success text-left mb15" type="button"
+                           name="next" value="Next" onclick="return doNext();"/>
+                    <input id='hidden_submit' type="submit" hidden>
+
                 </div>
             </form>
         </div>
@@ -99,3 +111,106 @@
     </div>
 </div>
 {% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg)
+            $('#alert-client').removeClass("alert-success");
+            $('#alert-client').addClass("alert-danger");
+            $("#msg-update-client").prop("hidden", true);
+
+            $("#alert-client").show();
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg)
+            $('#alert-client').removeClass("alert-danger");
+            $('#alert-client').addClass("alert-success");
+            $("#msg-update-client").prop("hidden", true);
+
+            $("#alert-client").show();
+        }
+
+        function doNext(){
+            var form = $("#submit-form");
+
+            if (form[0].checkValidity()) {
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                            if (!response.status) {
+                                // Logout
+                                location.reload();
+                            } else if (response.status == 2) {
+                                // success
+                                var url = form.attr('data-next-url');
+                                console.log('next: ' + url);
+                                window.location.replace(url);
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error: ' + msg);
+                            //showErrorMessage(JSON.stringify(msg));
+                            showErrorMessage('System Error');
+                        }
+                    });
+
+            } else {
+                $('#hidden_submit').click();
+            }
+
+            return true;
+        }
+
+        function addMoreCondition(){
+            var form = $("#submit-form");
+
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                            if (!response.status) {
+                                // Logout
+                                location.reload();
+                            } else if (response.status == 2) {
+                                // success
+                                /*var url = window.location.origin + form.attr('action');
+                                console.log('add_more_condition: ' + url);
+                                window.location.replace(url);*/
+
+                                document.getElementById('ddl_condition_type').selectedIndex = 0;
+                                document.getElementById('ddl_detail_name').selectedIndex = 0;
+                                document.getElementById('ddl_key_value_type').selectedIndex = 0;
+                                document.getElementById('ddl_operator').selectedIndex = 0;
+                                document.getElementById('txt_key_value').value = '';
+                                showSuccessMessage("Condition is successfully created");
+
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            console.log('Error: ' + msg);
+                            //showErrorMessage(JSON.stringify(msg));
+                            showErrorMessage('System Error');
+                        }
+                    });
+
+            } else {
+                $('#hidden_submit').click();
+            }
+            return true;
+        }
+
+    </script>
+{%  endblock %}

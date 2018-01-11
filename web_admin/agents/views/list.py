@@ -113,7 +113,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         'email': email,
                         'primary_mobile_number': primary_mobile_number,
                         'kyc_status': kyc_status,
-                        'is_permission_search': check_permissions_by_user(self.request.user,"CAN_SEARCH_AGENT")
+                        'has_permission_search': check_permissions_by_user(self.request.user,"CAN_SEARCH_AGENT")
                         })
 
         # Get Data
@@ -201,7 +201,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             page = data.get("page", {})
             context.update(
                 {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
-        context['is_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
+        context['has_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
         self.update_session(request, None, unique_reference, email,
                             primary_mobile_number, kyc_status,
                             new_from_created_timestamp,
@@ -223,22 +223,24 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                 status_code=status_code, is_getting_list=True)
 
         if success:
-            is_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
-            is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
-            is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
-            is_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_IDENTITIES')
-            is_permission_smartcard = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SMARTCARD')
-            is_permission_sofcash = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFCASH')
-            is_permission_sofbank = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFBANK')
+            has_permission_view = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT')
+            has_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_AGENT_DETAILS')
+            has_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_AGENT')
+            has_permission_identity = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_IDENTITIES')
+            has_permission_smartcard = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SMARTCARD')
+            has_permission_sofcash = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFCASH')
+            has_permission_sofbank = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFBANK')
+            has_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_AGENTS')
             agents = data.get('agents', [])
             for i in agents:
-                i['is_permission_view'] = is_permission_view
-                i['is_permission_edit'] = is_permission_edit
-                i['is_permission_delete'] = is_permission_delete
-                i['is_permission_identity'] = is_permission_identity
-                i['is_permission_smartcard'] = is_permission_smartcard
-                i['is_permission_sofcash'] = is_permission_sofcash
-                i['is_permission_sofbank'] = is_permission_sofbank
+                i['has_permission_view'] = has_permission_view
+                i['has_permission_edit'] = has_permission_edit
+                i['has_permission_delete'] = has_permission_delete
+                i['has_permission_identity'] = has_permission_identity
+                i['has_permission_smartcard'] = has_permission_smartcard
+                i['has_permission_sofcash'] = has_permission_sofcash
+                i['has_permission_sofbank'] = has_permission_sofbank
+                i['has_permission_suspend'] = has_permission_suspend
 
         self.logger.info('========== Finished searching agent ==========')
         return data, success, status_message

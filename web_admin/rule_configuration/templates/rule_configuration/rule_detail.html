@@ -69,13 +69,13 @@
                         <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
                     </p>
                     </div>
-                    <!--{%if not data.is_active and active_mechanic_count != 1 and permissions.CAN_DELETE_RULE_MECHANIC %}-->
-                    <!--<div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">-->
-                            <!--<i onClick="delete_mechanic({{ i.id }})" id="btn_delete"-->
-                               <!--data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"-->
-                               <!--class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>-->
-                    <!--</div>-->
-                    <!--{% endif %}-->
+                    {%if permissions.CAN_DELETE_RULE_MECHANIC %}
+                    <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
+                            <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
+                               data-url="{% url 'rule_configuration:delete_rule_mechanic' data.id i.id %}"
+                               class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="panel-body" style="margin-top: -20px;">
                     <p style="margin-bottom:0; ,">
@@ -93,7 +93,7 @@
                     {%for condition in i.condition_list%}
                         <div id="div_condition_{{ condition.condition_detail.id }}">
                             <p style="margin-bottom:0; ,">
-                            <label size="2"><strong>Condition Id:</strong></label>
+                            <label size="2"><strong>Condition ID:</strong></label>
                             <span id="lbl_condition_id"><strong>{{condition.condition_detail.id}}</strong></span>
                             </p>
                             <p style="margin-bottom:0; margin-left: 10px;">
@@ -124,7 +124,9 @@
                                     <span>Less Than or Equal to</span>
                                     {%elif comparison.operator == '!=' %}
                                     <span>Not Equal to</span>
-                                    {%endif%}
+                                    {% else %}
+                                    <span>{{ comparison.operator }}</span>
+                                    {% endif %}
                                     </span>
                                 </p>
                                 <p style="margin-bottom:0; margin-left: 10px;">
@@ -197,7 +199,7 @@
 
     var delete_mechanic = function(mechanicId) {
         swal({
-            title: "Delete campaign mechanic?",
+            title: "Are you sure you want to delete?",
             text: "",
             type: "warning",
             showCancelButton: true,

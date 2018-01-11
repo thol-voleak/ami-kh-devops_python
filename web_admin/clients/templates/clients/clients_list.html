@@ -312,10 +312,12 @@
                         success: function (response) {
                             if (response.status == 1) {
                                 // Logout
-                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                                window.location.replace(url);
+                                var url2 = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                                window.location.replace(url2);
                             } else if (response.status == 2) {
                                 // success
+                                updatedUrl = url.replace(/suspend/g, 'activate');
+                                e.setAttribute("data-url", updatedUrl);
                                 e.innerHTML = "<span class='small'>Activate</span>";
                                 e.disabled = true;
                                 e.disabled = false;
@@ -358,10 +360,12 @@
                         success: function (response) {
                             if (response.status == 1) {
                                 // Logout
-                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                                window.location.replace(url);
+                                var url2 = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                                window.location.replace(url2);
                             } else if (response.status == 2) {
                                 // success
+                                var updatedUrl = url.replace(/activate/g, 'suspend');
+                                e.setAttribute("data-url", updatedUrl);
                                 e.innerHTML = "<span class='small'>Suspend</span>";
                                 e.disabled = true;
                                 e.disabled = false;

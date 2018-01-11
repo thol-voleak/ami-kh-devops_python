@@ -132,7 +132,7 @@
                                         {%if i.is_active%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
-                                               data-campaign-id='{{i.id}}'
+                                               data-rule-id='{{i.id}}'
                                                data-name= '{{i.name}}'
                                                data-description='{{i.description}}' 
                                                id="tog_status" checked>
@@ -142,7 +142,7 @@
                                         {%else%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
-                                               data-campaign-id='{{i.id}}' 
+                                               data-rule-id='{{i.id}}' 
                                                data-name= '{{i.name}}'
                                                data-description='{{i.description}}' 
                                                id="tog_status">
@@ -154,7 +154,7 @@
                                         {%if i.is_active%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
-                                               data-campaign-id='{{i.id}}'
+                                               data-rule-id='{{i.id}}'
                                                data-name= '{{i.name}}'
                                                data-description='{{i.description}}' 
                                                id="tog_status" disabled checked>
@@ -165,7 +165,7 @@
                                         {%else%}
                                         <input type="checkbox"
                                                onClick="doActiveOrInactive(this)"
-                                               data-campaign-id='{{i.id}}' 
+                                               data-rule-id='{{i.id}}' 
                                                data-name= '{{i.name}}'
                                                data-description='{{i.description}}' 
                                                id="tog_status" disabled>
@@ -196,5 +196,121 @@
       $('#btn_submit').click();
 
     };
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-success");
+        $('#alert-client').addClass("alert-danger");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+
+
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-danger");
+        $('#alert-client').addClass("alert-success");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+    
+    function doActiveOrInactive(e) {
+        if ($(e).is(':checked')){
+            active(e);
+        }
+        else{
+            inactive(e);
+        }
+
+    }
+
+    function active(e) {
+        // body...
+        
+        var rule_id = e.getAttribute('data-rule-id');
+        var rule_name = e.getAttribute('data-name');
+        var rule_description = e.getAttribute('data-description');       
+        var url = '/admin-portal/rule-configuration/active/'+ rule_id+'/';
+        $('#toggle-area-' + rule_id + ' #tog_status').removeAttr("checked");
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {"rule_name": rule_name, "rule_description": rule_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+            if (response.status == 1) {
+                // Logout
+                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                location.reload();
+            } else if (response.status == 2) {
+                // success
+                showSuccessMessage('Rule ID'+ ' '+ rule_id +' ' + 'is now active' );
+                $('#toggle-area-' + rule_id + ' #tog_status').prop("checked", true);
+                $('#toggle-area-' + rule_id + ' #tog_status').attr("checked", "checked");
+            } else {
+                // Failed
+                $('#toggle-area-' + rule_id + ' #tog_status').removeAttr("checked");
+                showErrorMessage(response.msg);
+            }
+            },
+            error: function (msg) {
+            console.log('Error active the campaign' + rule_id);
+            showErrorMessage(JSON.stringify(msg));
+            }
+        });
+    }
+
+    function inactive(e) {
+        // body...
+        var rule_id = e.getAttribute('data-rule-id');
+        var rule_name = e.getAttribute('data-name');
+        var rule_description = e.getAttribute('data-description'); 
+        var url = '/admin-portal/rule-configuration/inactive/'+ rule_id+'/';
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {"rule_name": rule_name, "rule_description": rule_description},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+            if (response.status == 1) {
+                // Logout
+                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                location.reload();
+            } else if (response.status == 2) {
+                // success
+                showSuccessMessage('Rule ID'+ ' '+ rule_id + ' '+ 'is now inactive');
+                $('#toggle-area-' + rule_id + ' #tog_status').prop("checked", false);
+                $('#toggle-area-' + rule_id + ' #tog_status').removeAttr("checked");
+            } else {
+                // Failed
+                showErrorMessage('Error inactive the Rule');
+            }
+            },
+            error: function (msg) {
+            console.log('Error inactive the rule' + rule_id);
+            showErrorMessage(JSON.stringify(msg));
+            }
+        });
+    }
 </script>
 {% endblock %}

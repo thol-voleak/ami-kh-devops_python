@@ -162,11 +162,15 @@
     font-weight: bold;
 }
 
-#btn_dismiss, #btn_cancel {
+#btn_dismiss, #btn_cancel , #btn_back , #btn_close{
     background-color: #e4e2e2;
 }
 
 
-.select-error-code .chosen-choices{
+.select-error-code .chosen-choices {
   padding: 0 0 0 5px !important;
+}
+
+.chosen-choices .search-field input {
+  color: #524848 !important;
 }

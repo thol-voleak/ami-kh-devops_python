@@ -49,4 +49,5 @@ urlpatterns = [
     url(r'^admin-portal/campaign/', include('campaign.urls')),
     url(r'^admin-portal/fraud-prevention/', include('fraud_prevention.urls')),
     url(r'^admin-portal/rule-configuration/', include('rule_configuration.urls')),
+    url(r'^admin-portal/voucher/', include('voucher.urls')),
 ]

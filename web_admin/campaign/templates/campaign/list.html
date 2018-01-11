@@ -242,11 +242,12 @@
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                window.location.replace(url);
+                location.reload();
             } else if (response.status == 2) {
                 // success
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id +' ' + 'is now active' );
                 $('#toggle-area-' + campaign_id + ' #tog_status').prop("checked", true);
+                $('#toggle-area-' + campaign_id + ' #tog_status').attr("checked", "checked");
             } else {
                 // Failed
                 $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
@@ -280,10 +281,12 @@
             if (response.status == 1) {
                 // Logout
                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                window.location.replace(url);
+                location.reload();
             } else if (response.status == 2) {
                 // success
                 showSuccessMessage('Campaign ID'+ ' '+ campaign_id + ' '+ 'is now inactive');
+                $('#toggle-area-' + campaign_id + ' #tog_status').prop("checked", false);
+                $('#toggle-area-' + campaign_id + ' #tog_status').removeAttr("checked");
             } else {
                 // Failed
                 showErrorMessage('Error inactive the campaign');
