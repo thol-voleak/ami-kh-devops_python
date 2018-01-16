@@ -413,12 +413,19 @@
                                                     <td>{{ order.last_updated_timestamp|default_if_none:'' }}</td>
                                                 </tr>
                                             {% endfor %}
+                                            {% if order_balance_movement|length > 0 %}
                                             <tr>
                                                 <td colspan="5" style="text-align: center;">Total</td>
                                                 <td><span id="lbl_total_debit">{{ total_credit|default_if_none:'' }}</span></td>
                                                 <td><span id="lbl_total_credit">{{ total_debit|default_if_none:'' }}</span></td>
                                                 <td colspan="2"></td>
                                             </tr>
+                                            {% endif %}
+                                            {% if order_balance_movement|length == 0 %}
+                                            <tr>
+                                                <td colspan="9" style="text-align: center;">No record Found</td>
+                                            </tr>
+                                            {% endif %}
                                         </tbody>
                                     </table>
                                 </div>
