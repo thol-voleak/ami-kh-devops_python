@@ -60,6 +60,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }]
         all_terms = list(terms_mapping.objects.all())
         detail_names = self._filter_detail_names(all_terms)
+        username = {'term': 'username', 'description': ''}
+        detail_names.append(username)
         trigger = self._filter_trigger(all_terms)
 
         ops = {
