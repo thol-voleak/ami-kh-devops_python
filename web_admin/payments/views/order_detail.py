@@ -22,6 +22,15 @@ STATUS_ORDER = {
      4: 'TIME_OUT',
 }
 
+BALANCE_MOVEMENT_STATUS_ORDER = {
+    -1: 'FAIL',
+     0: 'CREATED',
+     1: 'LOCKING',
+     2: 'EXECUTED',
+     3: 'TIME_OUT',
+     4: 'ROLLED_BACK',
+}
+
 IS_DELETED = {
     True: 'Yes',
     False: 'No',
@@ -70,13 +79,30 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 "Something went wrong"
             )
+        order_balance_movement = []
+        total_credit = 0
+        total_debit = 0
         if data:
             data['status'] = STATUS_ORDER.get(data['status'], 'UN_KNOWN')
             data['is_deleted'] = IS_DELETED.get(data.get('is_deleted'))
             data['initiator_user']['sof_type_id'] = SOF_TYPE.get(data['initiator_user']['sof_type_id'])
             data['payer_user']['sof_type_id'] = SOF_TYPE.get(data['payer_user']['sof_type_id'])
             data['payee_user']['sof_type_id'] = SOF_TYPE.get(data['payee_user']['sof_type_id'])
+            order_balance_movement = data['order_balance_movements']
+            for order in order_balance_movement:
+                order['converted_status'] = BALANCE_MOVEMENT_STATUS_ORDER.get(order['status'], 'UN_KNOWN')
+                if order['action_type'] == "Debit":
+                    total_debit += order['amount']
+                    order['debit_amount'] = order['amount']
+                    order['credit_amount'] = '-'
+                if order['action_type'] == "Credit":
+                    total_credit += order['amount']
+                    order['credit_amount'] = order['amount']
+                    order['debit_amount'] = '-'
         context['data'] = data
+        context['order_balance_movement'] = order_balance_movement
+        context['total_credit'] = total_credit
+        context['total_debit'] = total_debit
         self.logger.info('Response_content: {}'.format(data))
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)

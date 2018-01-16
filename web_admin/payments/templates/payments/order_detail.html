@@ -381,6 +381,50 @@
                             </div>
                     </div>
 
+                     <div class="row">
+                            <div class="panel-body">
+                                <div style="font-size: 14px;font-weight: bold;margin-bottom: 8px;">Balance Movement</div>
+                                <div class="no-more-tables">
+                                    <table class="table table-bordered table-striped mb0" id="tbl_balance_movement">
+                                        <thead>
+                                        <tr>
+                                            <th id="balance_movement_sof_id">SOF ID</th>
+                                            <th id="balance_movement_order_detail_id">Order Detail ID</th>
+                                            <th id="balance_movement_order_id">Order ID</th>
+                                            <th id="balance_movement_status">Status</th>
+                                            <th id="balance_movement_fee_related">Fee Related</th>
+                                            <th id="balance_movement_debit">Debit</th>
+                                            <th id="balance_movement_credit">Credit</th>
+                                            <th id="balance_movement_created_time">Created Time</th>
+                                            <th id="balance_movement_update_date">Update Time</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in order_balance_movement %}
+                                               <tr id="row-{{ order.order_balance_movement_id }}">
+                                                    <td>{{ order.sof_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.order_balance_movement_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.order_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.converted_status|default_if_none:'' }}</td>
+                                                    <td>{{ order.fee_related|yesno:"Yes,No,''" }}</td>
+                                                    <td>{{ order.debit_amount|default_if_none:'' }}</td>
+                                                    <td>{{ order.credit_amount|default_if_none:'' }}</td>
+                                                    <td>{{ order.created_timestamp|default_if_none:'' }}</td>
+                                                    <td>{{ order.last_updated_timestamp|default_if_none:'' }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan="5" style="text-align: center;">Total</td>
+                                                <td><span id="lbl_total_debit">{{ total_credit|default_if_none:'' }}</span></td>
+                                                <td><span id="lbl_total_credit">{{ total_debit|default_if_none:'' }}</span></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+
                     <div class="pull-right">
                         <a href="{% url 'payments:payment_order' %}">
                             <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
