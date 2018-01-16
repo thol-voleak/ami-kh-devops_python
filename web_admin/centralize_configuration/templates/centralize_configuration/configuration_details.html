@@ -31,7 +31,7 @@
                     {% if key == 'value' %}
                     <td class="col-sm-1" id="txt_key_name">{{ key|default_if_none:'' }}</td>
                     <td class="col-sm-2">
-                        <input type="text" class="form-control" id="txt_key_value" name="conf_value" value="{{ values }}">
+                        <textarea type="input" class="form-control" id="txt_key_value" name="conf_value">{{ values }}</textarea>
                     </td>
                     {% endif %}
                 </tr>
@@ -63,17 +63,24 @@
 </div>
 
 <script type="text/javascript">
+function auto_grow(element) {
+    element.style.height = "30px";
+    element.style.minHeight = "30px";
+    element.style.height = (element.scrollHeight)+"px";
+}
+auto_grow(document.getElementById("txt_key_value"));
+
 function saveData() {
     localStorage.setItem("edit_key", "{{ conf_key|safe }}");
     localStorage.setItem("edit_value", document.getElementById("txt_key_value").value);
     localStorage.setItem("user_name", "{{ user }}");
     document.getElementById("edit_conf_form").submit();
-};
+}
 
 function clearData() {
     localStorage.clear();
     window.location.href = "{% url 'centralize_configuration:configuration_list' scope_name %}";
-};
+}
 </script>
 
 {% endblock %}
