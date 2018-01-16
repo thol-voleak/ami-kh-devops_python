@@ -67,6 +67,10 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"name": "payment_not_allow", "title": "Payment Not Allow"},
             {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
             {"name": "general_error", "title": "General Error"},
+            {"name": "internal_error", "title": "Internal Error"},
+            {"name": "internal_server_error", "title": "Internal Server Error"},
+            {"name": "internal_call_timeout", "title": "Internal Call Timeout"},
+            {"name": "bad_request", "title": "Bad Request"},
         ]
 
         error_code_id = []
@@ -174,6 +178,10 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"name": "payment_not_allow", "title": "Payment Not Allow"},
             {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
             {"name": "general_error", "title": "General Error"},
+            {"name": "internal_error", "title": "Internal Error"},
+            {"name": "internal_server_error", "title": "Internal Server Error"},
+            {"name": "internal_call_timeout", "title": "Internal Call Timeout"},
+            {"name": "bad_request", "title": "Bad Request"},
         ]
 
         context = {'order_list': orders,
