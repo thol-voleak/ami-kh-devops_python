@@ -208,6 +208,7 @@ GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
 SEARCH_TICKET = 'api-gateway/report/' + API_VERSION + '/tickets'
 DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin/tickets/{ticket_id}'
 CREATE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/tickets'
+DELETE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/tickets/{ticket_id}'
 
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'

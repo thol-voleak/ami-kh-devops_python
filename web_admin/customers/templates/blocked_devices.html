@@ -3,11 +3,26 @@
 {% load permissions_filter %}
 
 {% block content %}
+<style>
+    .sweet-alert p {
+        font-size: 19px;
+        font-weight: bold;
+    }
+</style>
 <div class="col-md-12">
     <div class="panel mb25">
+
         <div class="panel-heading border mb15">
             <h3>Blocked Devices</h3>
         </div>
+
+        <div class="col-xs-12">
+            <div class='alert alert-success alert-dismissable' id="msg-success" hidden>
+                <button type="button" class="close" onclick="$('#msg-success').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
+
         <label class="pull-right" id="tbl_total">{{ total_devices }}</label>
         <label class="pull-right" >Total Count:&nbsp;</label>
         <div class="panel-body">
@@ -22,6 +37,7 @@
                         <th id="end_block">End Block</th>
                         <th id="action">Event</th>
                         <th id="description">Description</th>
+                        <th id="actions">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -35,6 +51,16 @@
                             <td>{{ device.end_active_ticket_timestamp|default_if_none:'' }}</td>
                             <td>{{ device.action|default_if_none:'' }}</td>
                             <td>{{ device.description|default_if_none:'' }}</td>
+                            <td>
+{#                                {% if permissions.can_unblock_device %}#}
+                                <button id="btn_unblock" class="btn btn-danger mb5 btn-outline btn-xs"
+                                        data-url="{% url 'customers:unblock_devices' device.ticket_id %}"
+                                        data-device-id="{{ device.device_id }}"
+                                        onclick="unblock(this)" >
+                                    <span class="small">Unblock</span>
+                                </button>
+{#                                {% endif %}#}
+                            </td>
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -44,4 +70,57 @@
         </div>
     </div>
 </div>
+
+<script>
+    function unblock(e) {
+        var deviceId = e.getAttribute('data-device-id');
+        swal({
+            title: 'Are you sure you want to Unblock Device ID',
+            text: deviceId + '?',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "red",
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {},
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var row = $('#tbl_blocked_devices tr').filter(function(){
+                               return $.trim($('td', this).eq(2).text())==deviceId;
+                            });
+                            row.remove();
+                            showSuccessMessage('Device ' + deviceId + ' is Unblocked');
+                        } else {
+                            // Failed
+                            console.log('Error: ', response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error unblocking the device id' + deviceId + msg);
+                    }
+                });
+            }
+        });
+    }
+
+    function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg);
+	    $("#msg-success").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+</script>
+
 {% endblock %}

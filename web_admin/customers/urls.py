@@ -9,6 +9,7 @@ from .views.suspend import suspend
 from .views.api_customers import activate, delete_customer
 from .views.reset_identity_password import reset_password
 from .views.blocked_devices import BlockedDevicesList
+from .views.unblock_devices import unblock
 
 app_name = 'customers'
 
@@ -27,4 +28,5 @@ url(r'^delete/(?P<customer_id>[0-9A-Za-z]+)', login_required(delete_customer, lo
     url(r'^(?P<customer_id>[0-9A-Za-z]+)/identities/(?P<identity_id>[0-9A-Za-z]+)/$', login_required(reset_password, login_url='authentications:login'), name="reset-identity-password"),
     url(r'^blocked_devices', login_required(BlockedDevicesList.as_view(), login_url='authentications:login'),
         name="blocked-devices"),
+    url(r'^unblock/(?P<ticket_id>[0-9A-Za-z]+)/', login_required(unblock, login_url='authentications:login'), name="unblock_devices"),
 ]
