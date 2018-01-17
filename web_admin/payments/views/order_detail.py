@@ -92,7 +92,6 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['order_balance_movement'] = order_balance_movement
         context['total_credit'] = total_credit
         context['total_debit'] = total_debit
-        self.logger.info('Response_content: {}'.format(data))
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)
 
@@ -103,7 +102,7 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            params=body)
 
         API_Logger.post_logging(loggers=self.logger, params=body, response=data['orders'],
-                                status_code=status_code, is_getting_list=True)
+                                status_code=status_code, is_getting_list=False)
 
         if not is_success:
             messages.add_message(
