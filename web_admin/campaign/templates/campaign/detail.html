@@ -153,6 +153,8 @@
                                     <span>Less than or Equal to</span>
                                     {%elif condition.comparison_list.0.operator == '!=' %}
                                     <span>Not Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    <span>Contains</span>
                                     {%endif%}
                                     </span>
                                 </p>
@@ -191,6 +193,8 @@
                                                 <span>Less than or Equal to</span>
                                                 {%elif filter.operator == '!=' %}
                                                 <span>Not Equal to</span>
+                                                {%elif filter.operator == 'contains' %}
+                                                <span>Contains</span>
                                                 {%endif%}
                                                 </span>
                                             </p>

@@ -67,7 +67,23 @@
                                    value="{{ card_type_info.url_get_card_detail | default_if_none:'' }}" disabled>
                         </div>
                     </div>
-                    <div class="pull-right col-sm-2">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">URL - Update Card Status</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-rounded" name="url_update_card_status"
+                                   id="txt_url_update_card_status"
+                                   value="{{ card_type.url_update_card_status }}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Timeout - Update Card Status (s)</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control input-rounded" name="timeout_update_card_status"
+                                   id="txt_timeout_update_card_status"
+                                   value="{{ card_type.timeout_update_card_status_in_second }}" disabled>
+                        </div>
+                    </div>
+                    <div class="pull-right">
                         <a href="{% url 'card_type:card-type-list' %}">
                             <input id="btn_card_type_detail_cancel" class="btn text-left mb15" type="button"
                                    value="Cancel"/>
