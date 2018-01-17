@@ -345,10 +345,12 @@
         }
 
         function listenOperator(ele, type, operation, fullOps, filterOps) {
+            return;
+
             var keyValueType = $(ele).parent().parent().prev('div').find('select');
             var keyValue = $(ele).parent().parent().next('div').find('input');
             var currentKVType = getCurrentOps(keyValueType);
-            if (type === "Equal to" || type === "Not Equal to") {
+            if (type === "Equal to" || type === "Not Equal to" || type === "Contains") {
                 if (currentKVType.length === 2) {
                     keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
                 }
