@@ -98,9 +98,7 @@
                             location.reload();
                         } else if (response.status == 2) {
                             // success
-                            var row = $('#tbl_blocked_devices tr').filter(function(){
-                               return $.trim($('td', this).eq(2).text())==deviceId;
-                            });
+                            var row = $(e).closest("tr");
                             row.remove();
                             showSuccessMessage('Device ' + deviceId + ' is Unblocked');
                         } else {
