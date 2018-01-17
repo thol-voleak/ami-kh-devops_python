@@ -42,24 +42,30 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         timeout_get_card_detail = request.POST.get('timeout_get_card_detail_input')
         url_create_card = request.POST.get('url_create_card_input')
         url_get_card_detail = request.POST.get('url_get_card_detail_input')
+        url_update_card_status = request.POST.get('url_update_card_status')
+        timeout_update_card_status = request.POST.get('timeout_update_card_status')
 
         timeout_create_card_in_millisecond = int(timeout_create_card) * 1000
         timeout_get_card_detail_in_millisecond = int(timeout_get_card_detail) * 1000
+        timeout_update_card_status = int(timeout_update_card_status) * 1000
 
         params = {
             'name': card_type_name,
             'timeout_create_card': timeout_create_card_in_millisecond,
             'timeout_get_card_detail': timeout_get_card_detail_in_millisecond,
             'create_card_endpoint_host': url_create_card,
-            'card_detail_endpoint_host': url_get_card_detail
+            'card_detail_endpoint_host': url_get_card_detail,
+            'update_card_status_endpoint_host': url_update_card_status,
+            'timeout_update_card_status': timeout_update_card_status
         }
+        print(params)
 
         is_success, status_code, status_message, data = RestFulClient.put(url=UPDATE_CARD_TYPE.format(card_type_id=card_type_id), headers=self._get_headers(), params=params, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
         if is_success:
             previous_page = request.POST.get('previous_page')
             request.session['card_type_update_msg'] = 'Updated card type successfully'
             self.logger.info('========== Finished updating Card type ==========')
-            return HttpResponseRedirect(previous_page)
+            return redirect('card_type:card-type-list')
         self.logger.info('========== Finished updating Card type ==========')
         return redirect(request.META['HTTP_REFERER'])
 
@@ -67,6 +73,8 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE, headers=self._get_headers(), params={'id': card_type_id}, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
         timeout_create_card_in_second = int(data[0]['timeout_create_card']) / 1000
         timeout_get_card_detail_in_second = int(data[0]['timeout_get_card_detail']) / 1000
+        timeout_update_card_status_in_second = int(data[0]['timeout_update_card_status'] or 0) / 1000
         data[0].update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
-                        'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
+                        'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second,
+                        'timeout_update_card_status_in_second': '%g' % timeout_update_card_status_in_second})
         return data[0]
