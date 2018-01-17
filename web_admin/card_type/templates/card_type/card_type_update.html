@@ -61,13 +61,13 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="url_update_card_status"
                                    id="txt_url_update_card_status"
-                                   value="{{ card_type.url_update_card_status }}" >
+                                   value="{{ card_type.url_update_card_status|default_if_none:'' }}" >
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Timeout - Update Card Status (s)</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="timeout_update_card_status"
+                            <input type="number" class="form-control input-rounded" name="timeout_update_card_status"
                                    id="txt_timeout_update_card_status"
                                    value="{{ card_type.timeout_update_card_status_in_second}}" >
                         </div>
@@ -79,7 +79,7 @@
                             <input id="card_type_btn_cancel" class="btn" type="button" value="Cancel"/>
                         </a>
                         <a href="{% url 'card_type:card-type-list'%}">
-                            <input id="card_type_btn_save" class="btn btn-success" type="submit" value="Save"/>
+                            <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
                         </a>
                     </div>
                 </form>

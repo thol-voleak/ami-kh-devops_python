@@ -47,7 +47,10 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
 
         timeout_create_card_in_millisecond = int(timeout_create_card) * 1000
         timeout_get_card_detail_in_millisecond = int(timeout_get_card_detail) * 1000
-        timeout_update_card_status = int(timeout_update_card_status) * 1000
+        try :
+            timeout_update_card_status = int(timeout_update_card_status) * 1000
+        except Exception as e:
+            timeout_update_card_status = ''
 
         params = {
             'name': card_type_name,
@@ -72,8 +75,15 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE, headers=self._get_headers(), params={'id': card_type_id}, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
         timeout_create_card_in_second = int(data[0]['timeout_create_card']) / 1000
         timeout_get_card_detail_in_second = int(data[0]['timeout_get_card_detail']) / 1000
-        timeout_update_card_status_in_second = int(data[0]['timeout_update_card_status'] or 0) / 1000
+        try:
+            result = int(data[0]['timeout_update_card_status']) / 1000
+        except Exception as e:
+            timeout_update_card_status_in_second = ''
+        else:
+            timeout_update_card_status_in_second = result
+    
+        # timeout_update_card_status_in_second = int(data[0]['timeout_update_card_status']) / 1000
         data[0].update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
                         'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second,
-                        'timeout_update_card_status_in_second': '%g' % timeout_update_card_status_in_second})
+                        'timeout_update_card_status_in_second': '%s' % timeout_update_card_status_in_second})
         return data[0]
