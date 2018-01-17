@@ -52,8 +52,10 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
             card_type_detail = data[0]
             timeout_create_card_in_second = int(card_type_detail['timeout_create_card']) / 1000
             timeout_get_card_detail_in_second = int(card_type_detail['timeout_get_card_detail']) / 1000
+            timeout_update_card_status = int(card_type_detail['timeout_update_card_status']or 0 ) / 1000
             card_type_detail.update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
-                                     'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
+                                     'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second,
+                                     'timeout_update_card_status': '%g' % timeout_update_card_status})
         except IndexError:
             card_type_detail = {}
         self.logger.info('========== Finish Get Card Type Detail ==========')

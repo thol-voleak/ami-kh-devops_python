@@ -58,7 +58,6 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
             'update_card_status_endpoint_host': url_update_card_status,
             'timeout_update_card_status': timeout_update_card_status
         }
-        print(params)
 
         is_success, status_code, status_message, data = RestFulClient.put(url=UPDATE_CARD_TYPE.format(card_type_id=card_type_id), headers=self._get_headers(), params=params, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
         if is_success:
