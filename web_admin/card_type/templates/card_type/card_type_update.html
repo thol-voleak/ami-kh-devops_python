@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Timeout - Create Card (s)</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="timeout_create_card_input"
+                            <input type="number" class="form-control input-rounded" name="timeout_create_card_input"
                                    id="timeout_create_card_input"
                                    value="{{ card_type.timeout_create_card_in_second }}" required>
                         </div>
@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Timeout - Get Card Full Detail (s)</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="timeout_get_card_detail_input"
+                            <input type="number" class="form-control input-rounded" name="timeout_get_card_detail_input"
                                    id="timeout_get_card_detail_input"
                                    value="{{ card_type.timeout_get_card_detail_in_second }}" required>
                         </div>
@@ -67,7 +67,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Timeout - Update Card Status (s)</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="timeout_update_card_status"
+                            <input type="number" class="form-control input-rounded" name="timeout_update_card_status"
                                    id="txt_timeout_update_card_status"
                                    value="{{ card_type.timeout_update_card_status_in_second}}" >
                         </div>

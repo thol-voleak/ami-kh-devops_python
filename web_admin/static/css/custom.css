@@ -162,7 +162,7 @@
     font-weight: bold;
 }
 
-#btn_dismiss, #btn_cancel , #btn_back , #btn_close, #card_type_btn_cancel{
+#btn_dismiss, #btn_cancel , #btn_back , #btn_close, #card_type_btn_cancel, #btn_card_type_detail_cancel{
     background-color: #e4e2e2;
 }
 

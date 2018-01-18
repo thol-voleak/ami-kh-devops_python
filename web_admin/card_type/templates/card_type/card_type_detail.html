@@ -80,7 +80,7 @@
                         <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="timeout_update_card_status"
                                    id="txt_timeout_update_card_status"
-                                   value="{{ card_type_info.timeout_update_card_status }}" disabled>
+                                   value="{{ card_type_info.timeout_update_card_status|default_if_none:'' }}" disabled>
                         </div>
                     </div>
                     <div class="pull-right">

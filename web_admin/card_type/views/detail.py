@@ -64,6 +64,8 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
                 timeout_update_card_status_in_second = ''
             else:
                 timeout_update_card_status_in_second = result
-        card_type_detail['timeout_update_card_status'] = timeout_update_card_status_in_second
+        if card_type_detail['timeout_update_card_status'] is not None:
+            card_type_detail.update({'timeout_update_card_status': '%g' % timeout_update_card_status_in_second})
         self.logger.info('========== Finish Get Card Type Detail ==========')
+        
         return card_type_detail
