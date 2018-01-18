@@ -221,7 +221,10 @@
                     {%endfor%}
                     {% if i.reward is not None %}
                         <p style="margin-bottom:0; ">
-                            <label size="2"><strong>Reward</strong></label>
+                            <label size="2"><strong>
+                                {% if i.reward.id == 1 or i.reward.id == 2 %}Reward{% endif %}
+                                {% if i.reward.id == 4 %}Action{% endif %}
+                            </strong></label>
                         </p>
                         {% if i.reward.id == 1 %}
                             <p></p>
@@ -277,6 +280,20 @@
                                         </p>
                                     {% endif %}
                                 {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if i.reward.id == 4 %}
+                             <p style="margin-bottom:0; margin-left: 10px;">
+                                    <label size="2">Action:</label>
+                                    <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label size="2"> Action Recipient should be:</label>
+                                <span id="lbl_reward_recipient" style="text-transform: capitalize;">{{i.reward.recipient|default_if_none:''}}</span>
+                            </p>
+                            <p style="margin-bottom:0; margin-left: 10px;">
+                                <label>Do action to:</label>
+                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
                             </p>
                         {% endif %}
                     {% endif %}
