@@ -124,6 +124,8 @@
                                         <span>Less than or Equal to</span>
                                         {%elif comparison.operator == '!=' %}
                                         <span>Not Equal to</span>
+                                        {%elif comparison.operator == 'contains' %}
+                                        <span>Contains</span>
                                         {%endif%}
                                         </span>
                                     </p>
