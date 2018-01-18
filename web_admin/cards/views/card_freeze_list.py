@@ -26,7 +26,7 @@ def _format_data(data):
 
 
 class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
-    group_required = "CAN_MANAGE_FREEZE_CARD"
+    group_required = "CAN_VIEW_FREEZE_CARD_LIST"
     login_url = 'web:permission_denied'
     raise_exception = False
 
