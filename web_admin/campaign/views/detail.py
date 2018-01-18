@@ -85,13 +85,18 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 reward['send_to'] = action_data['key_value']
                         reward['data_to_be_sent'] = action['action_data']
                     elif action['action_type']['id'] == 4:
-                        reward['reward_type'] = 'Suspend Acount'
+                        reward['reward_type'] = 'Suspend Account'
                         for j in action['action_data']:
                             if j['key_name'] == 'user_id':
                                 if j['key_value'] in self.person.keys():
                                     reward['reward_to'] = self.person[j['key_value']]
                             if j['key_name'] == 'user_type':
-                                reward['recipient'] = j['key_value']
+                                if j['key_value'] == 'customer':
+                                    reward['recipient'] = 'Customer'
+                                elif j['key_value'] == 'agent':
+                                    reward['recipient'] = 'Agent'
+                                else:
+                                    reward['recipient'] = j['key_value']
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
