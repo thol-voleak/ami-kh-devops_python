@@ -22,7 +22,7 @@
                 <strong id="alert-msg"></strong>
             </div>
         </div>
-
+        <input hidden id="permission_deny_url" value="{% url 'web:permission_denied' %}"/>
         <label class="pull-right" id="tbl_total">{{ total_devices }}</label>
         <label class="pull-right" >Total Count:&nbsp;</label>
         <div class="panel-body">
@@ -52,14 +52,14 @@
                             <td>{{ device.action|default_if_none:'' }}</td>
                             <td>{{ device.description|default_if_none:'' }}</td>
                             <td>
-{#                                {% if permissions.can_unblock_device %}#}
-                                <button id="btn_unblock" class="btn btn-danger mb5 btn-outline btn-xs"
-                                        data-url="{% url 'customers:unblock_devices' device.ticket_id %}"
-                                        data-device-id="{{ device.device_id }}"
-                                        onclick="unblock(this)" >
-                                    <span class="small">Unblock</span>
-                                </button>
-{#                                {% endif %}#}
+                                {% if can_unblock_device %}
+                                    <button id="btn_unblock" class="btn btn-danger mb5 btn-outline btn-xs"
+                                            data-url="{% url 'customers:unblock_devices' device.ticket_id %}"
+                                            data-device-id="{{ device.device_id }}"
+                                            onclick="unblock(this)" >
+                                        <span class="small">Unblock</span>
+                                    </button>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endif %}
@@ -96,6 +96,10 @@
                         if (response.status == 1) {
                             // Logout
                             location.reload();
+                        } else if (response.status == 0) {
+                            // permission denied
+                            var url1 = document.getElementById('permission_deny_url').value;
+                            location.replace(url1);
                         } else if (response.status == 2) {
                             // success
                             var row = $(e).closest("tr");
