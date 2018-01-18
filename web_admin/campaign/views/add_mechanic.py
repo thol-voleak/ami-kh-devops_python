@@ -44,7 +44,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
-        sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to", "Contains"]
+        sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
