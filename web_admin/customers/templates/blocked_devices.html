@@ -104,6 +104,8 @@
                             // success
                             var row = $(e).closest("tr");
                             row.remove();
+                            var lbl = $('#tbl_total');
+                            lbl.text(lbl.text() - 1);
                             showSuccessMessage('Device ' + deviceId + ' is Unblocked');
                         } else {
                             // Failed
