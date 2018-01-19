@@ -334,15 +334,15 @@
                 }
                 keyValue.attr('type', 'text');
             } else {
-                if (JSON.stringify(currentOperator) !== JSON.stringify(fullOps)) {
-                    setDDL(operator, fullOps);
-                }
+                setDDL(operator, fullOps);
                 if (type === 'Numeric') {
                     keyValue.attr('type', 'number');
                 } else if (type === 'Timestamp') {
                     keyValue.attr('type', 'datetime-local');
                 }
             }
+
+            operator.selectedIndex = 0;
         }
 
         function listenOperator(ele, type, operation, fullOps, filterOps) {
