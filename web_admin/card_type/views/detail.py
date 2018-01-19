@@ -6,6 +6,8 @@ from django.conf import settings
 from authentications.utils import get_correlation_id_from_username
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin import api_settings, setup_logger, RestFulClient
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,8 +48,9 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
                                                                            loggers=self.logger,
                                                                            params=params,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
 
-        self.logger.info("data=[{}]".format(data))
         try:
             card_type_detail = data[0]
             timeout_create_card_in_second = int(card_type_detail['timeout_create_card']) / 1000

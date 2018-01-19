@@ -8,6 +8,8 @@ from web_admin import setup_logger
 from web_admin.api_settings import SEARCH_CARD_TYPE
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +34,12 @@ class ListView(GetHeaderMixin, TemplateView):
         return result
 
     def get_card_types_list(self):
+        self.logger.info('========== Start get Card Type List  ==========')
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.post_logging(loggers=self.logger, response=data,
+                                status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get Card Type List  ==========')
         return data
