@@ -3,7 +3,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import setup_logger, api_settings
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
-
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
@@ -48,12 +48,21 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
 
         data = self.get_freeze_card_list()
         result_data = _format_data(data)
-        context = {'data': result_data}
+
+        permissions = {}
+        permissions['CAN_DELETE_FRAUD_TICKET'] = check_permissions_by_user(self.request.user, 'CAN_DELETE_FRAUD_TICKET')
+        context = {'data': result_data,
+                   'permissions': permissions,
+                   }
 
         self.logger.info('========== End get freeze card ==========')
         return render(request, 'freeze-list.html', context)
 
     def post(self, request, *args, **kwargs):
+        logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_DELETE_FRAUD_TICKET'))
+        if not check_permissions_by_user(request.user, 'CAN_DELETE_FRAUD_TICKET'):
+           return JsonResponse({"status": 0, "msg": ""})
+
         self.logger.info('========== Start delete freeze card ==========')
         context = super(CardFreezeList, self).get_context_data(**kwargs)
         freeze_card_id = context['id']

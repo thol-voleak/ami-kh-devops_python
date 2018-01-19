@@ -17,6 +17,14 @@
     </div>
     {% endfor %}
 
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
+    <input id="data-no-permission-url"  data-no-permission-url="{% url 'web:permission_denied' %}" style="display:none;"/>
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_card_history">
@@ -50,10 +58,11 @@
                             <td class="col-sm-1">{{ freezeCard.last_updated_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.is_deleted}}</td>
                             <td class="col-sm-1">
-                                {% if not freezeCard.is_deleted %}
+
+                                {% if not freezeCard.is_deleted and permissions.CAN_DELETE_FRAUD_TICKET %}
                                     <button type="button"
                             class="btn btn-danger mb5 btn-outline btn-xs"
-                            id="freeze-card-btn-delete-{{ freezeCard.ticket_id }}"
+                            id="btn_freeze_card_delete_{{ freezeCard.ticket_id }}"
                             data-url="{% url 'cards:delete_card_freeze' freezeCard.ticket_id %}"
                             onclick="unFreezeCard('{{ freezeCard.ticket_id }}')">
                             <span class="small">UnFreeze</span>
@@ -74,6 +83,33 @@
 {{ block.super }}
     <script>
 
+    function showErrorMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-success");
+	    $('#alert-client').addClass("alert-danger");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $("#alert-msg").text(msg)
+	    $('#alert-client').removeClass("alert-danger");
+	    $('#alert-client').addClass("alert-success");
+	    //$("#alert-client").prop("hidden", false);
+	    //$("#alert-client").prop("style", "display: block;");
+
+	    $("#msg-add-service").prop("hidden", true);
+
+	    $("#alert-client").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
     function unFreezeCard(id) {
         console.log(id);
         swal({
@@ -86,7 +122,7 @@
                 closeOnConfirm: true
             },
             function () {
-                var url = $("#freeze-card-btn-delete-" + id).data("url");
+                var url = $("#btn_freeze_card_delete_" + id).data("url");
                 console.log(url);
                 $.ajax({
                     url: url,
@@ -104,6 +140,9 @@
                         } else if (response.status == 2) {
                             // success
                            var url = window.location.origin+"/admin-portal/cards/card-freeze-list/";
+                            window.location.replace(url);
+                        } else if (response.status == 0) {
+                            var url = $("#data-no-permission-url").data("data-no-permission-url");
                             window.location.replace(url);
                         } else {
                             // Failed
