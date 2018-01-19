@@ -35,6 +35,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         status_list = self._get_status_list()
         context = {
             'claim_status_list': status_list,
+            'hold_status_list': self._get_hold_status_list(),
         }
         return render(request, self.template_name, context)
 
@@ -47,6 +48,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         to_date = request.POST.get('create_date_to')
         expire_from_date = request.POST.get('expiration_date_from')
         expire_to_date = request.POST.get('expiration_date_to')
+        hold_status = request.POST.get('hold_status')
 
         body = {}
         if cash_in_id:
@@ -59,6 +61,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['is_used'] = True
         if claim_status == 'False':
             body['is_used'] = False
+        if hold_status != '':
+            body['is_on_hold'] = True if hold_status == 'True' else False
 
         if from_date:
             new_from_created_timestamp = datetime.strptime(from_date, "%Y-%m-%d")
@@ -100,6 +104,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'expiration_date_from': expire_from_date,
             'expiration_date_to': expire_to_date,
             'permissions': permissions,
+            'hold_status_list': self._get_hold_status_list(),
+            'hold_status': hold_status,
         }
         return render(request, self.template_name, context)
 
@@ -109,6 +115,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "All", "value": ""},
             {"name": "Used", "value": "True"},
             {"name": "Unused", "value": "False"},
+        ]
+
+    def _get_hold_status_list(self):
+        return [
+            {"name": "ALL", "value": ""},
+            {"name": "HOLD", "value": "True"},
+            {"name": "UNHOLD", "value": "False"},
         ]
 
     def _search_for_vouchers(self, body):

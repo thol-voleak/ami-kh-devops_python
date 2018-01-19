@@ -63,6 +63,18 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <label class="col-sm-2 control-label">HOLD Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_hold_status" name="hold_status" >
+                            {% for item in hold_status_list %}
+                                {%if item.value == hold_status%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                  <div class="form-group">
                     <label class="col-sm-2 control-label">Cash In User Type</label>
