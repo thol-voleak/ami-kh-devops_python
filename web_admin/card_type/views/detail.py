@@ -40,7 +40,6 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
         return render(request, self.template_name, context)
 
     def _get_card_type_detail(self, params):
-        self.logger.info('========== Start Get Card Type Detail ==========')
         api_path = api_settings.SEARCH_CARD_TYPE
 
         is_success, status_code, status_message, data = RestFulClient.post(url= api_path,
@@ -69,6 +68,5 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
                 timeout_update_card_status_in_second = result
         if card_type_detail['timeout_update_card_status'] is not None:
             card_type_detail.update({'timeout_update_card_status': '%g' % timeout_update_card_status_in_second})
-        self.logger.info('========== Finish Get Card Type Detail ==========')
         
         return card_type_detail

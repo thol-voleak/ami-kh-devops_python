@@ -70,6 +70,8 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         }
 
         is_success, status_code, status_message, data = RestFulClient.put(url=UPDATE_CARD_TYPE.format(card_type_id=card_type_id), headers=self._get_headers(), params=params, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
         if is_success:
             previous_page = request.POST.get('previous_page')
             request.session['card_type_update_msg'] = 'Updated card type successfully'
@@ -79,7 +81,6 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         return redirect(request.META['HTTP_REFERER'])
 
     def _get_card_type_detail(self, card_type_id):
-        self.logger.info('========== Start Get Card Type Detail ==========')
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE, headers=self._get_headers(), params={'id': card_type_id}, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
 
         API_Logger.post_logging(loggers=self.logger, params={'id': card_type_id}, response=data,
@@ -102,6 +103,5 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
 
         data[0].update({'timeout_create_card_in_second': '%g' % timeout_create_card_in_second,
                             'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
-        self.logger.info('========== Finish Get Card Type Detail ==========')
 
         return data[0]
