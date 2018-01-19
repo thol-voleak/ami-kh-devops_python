@@ -44,7 +44,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
-        sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to", "Contains"]
+        sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -352,6 +352,22 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                         "key_value": request.POST.get(reward_key_value),
                         "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
                     })
+        elif reward_type == 'suspend_account':
+            params = {
+                "action_type_id": 4,
+                "data": [
+                    {
+                        'key_name': 'user_id',
+                        'key_value': request.POST.get('give_reward_to'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'user_type',
+                        'key_value': request.POST.get('reward_recipient'),
+                        'key_value_type': 'text'
+                    },
+                ]
+            }
 
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
         action_id = data.get("id", '')

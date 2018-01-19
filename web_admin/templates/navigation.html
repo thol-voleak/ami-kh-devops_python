@@ -236,11 +236,13 @@
                         <a href="{% url 'card_type:card-type-list' %}"> <span>Card Type List</span> </a>
                     </li>
                 </ul>
+                {% if request.user|has_permission_name:"CAN_VIEW_FREEZE_CARD_LIST"%}
                 <ul class="sub-menu">
                     <li class="{% if url_name == 'card_freeze_list' %}active{% endif %}">
                         <a href="{% url 'cards:card_freeze_list' %}"> <span>Freeze cards list</span> </a>
                     </li>
                 </ul>
+                {%endif%}
 
             </li>
             {% endif %}

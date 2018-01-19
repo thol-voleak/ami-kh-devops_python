@@ -168,6 +168,7 @@
                                 <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
                                     <option value= "fixed_cashback">Fixed Cashback</option>
                                     <option value= "send_notification">Send Notification</option>
+                                    <option value= "suspend_account">Suspend Account</option>
                                 </select>
                             </div>
                         </div>
@@ -333,15 +334,15 @@
                 }
                 keyValue.attr('type', 'text');
             } else {
-                if (JSON.stringify(currentOperator) !== JSON.stringify(fullOps)) {
-                    setDDL(operator, fullOps);
-                }
+                setDDL(operator, fullOps);
                 if (type === 'Numeric') {
                     keyValue.attr('type', 'number');
                 } else if (type === 'Timestamp') {
                     keyValue.attr('type', 'datetime-local');
                 }
             }
+
+            operator.selectedIndex = 0;
         }
 
         function listenOperator(ele, type, operation, fullOps, filterOps) {
@@ -457,11 +458,16 @@
             var element = document.getElementById(id);
             element.removeAttribute("required");
         }
+        var resetValue = function(id) {
+            var element = document.getElementById(id);
+            element.value = '';
+        };
 
         function listenTrigger() {
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
+            var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
             if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
@@ -476,7 +482,11 @@
                     .html("Actor who registered")
                 )
             } else {
-                $("#lbl_paid_amount").prop('hidden', false);
+                if(rewardTypeSelectedValue == 'suspend_account') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
                     .val("@@payer_user_id@@")
@@ -599,11 +609,44 @@
                                 </div>\
                             </div>';
 
-        function listenRewardType (rType) {
-            if (rType === 'send_notification') {
+        var reward_recipient_should_be_elem = document.getElementById('ddl_reward_recipient');
+        var give_rewards_to_elem = document.getElementById('ddl_give_reward_to');
 
+        var resetSelectElement = function (selectElement) {
+            var options = selectElement.options;
+
+            // Look for a default selected option
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+
+                if (options[i].defaultSelected) {
+                    selectElement.selectedIndex = i;
+                    return;
+                }
+            }
+
+            selectElement.selectedIndex = 0; // or -1 for no option selected
+        };
+
+        var resetRewardRecipient = function() {
+            resetSelectElement(reward_recipient_should_be_elem);
+            resetSelectElement(give_rewards_to_elem);
+            rewardRecipientShouldBe();
+            giveRewardsTo();
+        };
+
+        // confirm API, confirm paid amount
+        function listenRewardType (rType) {
+            var triggerValue = $("#ddl_trigger").val();
+            if (rType === 'send_notification') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
+                resetRewardRecipient();
                 hideElement('div_amount');
                 setNotRequired('txt_amount');
+                resetValue('txt_amount');
                 hideElement('div_reward_recipient');
                 div_fixed_cashback.innerHTML = '';
 
@@ -614,9 +657,15 @@
                 sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
 
             }   else if (rType === 'fixed_cashback') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
+                resetRewardRecipient();
                 hideElement('div_send_to');
                 setNotRequired('txt_send_to');
-
+                resetValue('txt_send_to');
                 div_send_notification.innerHTML = '';
 
                 showElement('div_amount');
@@ -625,6 +674,18 @@
 
                 div_fixed_cashback.innerHTML = div_fixed_cashback_html;
 
+            } else if (rType === 'suspend_account') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                resetRewardRecipient();
+                showElement('div_reward_recipient');
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                div_send_notification.innerHTML = '';
+                div_fixed_cashback.innerHTML = '';
             }
         }
 

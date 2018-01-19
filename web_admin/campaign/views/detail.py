@@ -68,11 +68,9 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     action_id = action['id']
                     reward['reward_type'] = action['action_type']['name']
                     reward['id'] = action['action_type']['id']
-                    is_fixed_cashback = True
                     if action['action_type']['id'] == 2:
-                        is_fixed_cashback = False
                         reward['reward_type'] = 'Send Notification'
-                    if is_fixed_cashback:
+                    if action['action_type']['id'] == 1:
                         for j in action['action_data']:
                             if j['key_name'] == 'payee_user.user_id':
                                 if j['key_value'] in self.person.keys():
@@ -81,11 +79,24 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 reward['recipient'] = j['key_value']
                             if j['key_name'] == 'amount':
                                 reward['amount'] = j['key_value']
-                    else:
+                    elif action['action_type']['id'] == 2:
                         for action_data in action['action_data']:
                             if action_data['key_name'] == 'notification_url':
                                 reward['send_to'] = action_data['key_value']
                         reward['data_to_be_sent'] = action['action_data']
+                    elif action['action_type']['id'] == 4:
+                        reward['reward_type'] = 'Suspend Account'
+                        for j in action['action_data']:
+                            if j['key_name'] == 'user_id':
+                                if j['key_value'] in self.person.keys():
+                                    reward['reward_to'] = self.person[j['key_value']]
+                            if j['key_name'] == 'user_type':
+                                if j['key_value'] == 'customer':
+                                    reward['recipient'] = 'Customer'
+                                elif j['key_value'] == 'agent':
+                                    reward['recipient'] = 'Agent'
+                                else:
+                                    reward['recipient'] = j['key_value']
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
