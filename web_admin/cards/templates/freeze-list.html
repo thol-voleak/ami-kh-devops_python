@@ -56,7 +56,7 @@
                             <td class="col-sm-1">{{ freezeCard.end_active_ticket_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.created_timestamp}}</td>
                             <td class="col-sm-1">{{ freezeCard.last_updated_timestamp}}</td>
-                            <td class="col-sm-1">{{ freezeCard.is_deleted}}</td>
+                            <td class="col-sm-1" id="delete-status-{{ freezeCard.ticket_id }}">{{ freezeCard.is_deleted}}</td>
                             <td class="col-sm-1">
 
                                 {% if not freezeCard.is_deleted and permissions.CAN_DELETE_FRAUD_TICKET %}
@@ -135,12 +135,15 @@
                         console.log(response);
                         if (response.status == 1) {
                             // Logout
-                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                            window.location.replace(url);
+                            //var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                            window.location.reload();
                         } else if (response.status == 2) {
                             // success
                             showSuccessMessage("Unfreeze card successfully");
                             e.remove();
+                            var deletedId = "delete-status-" + id;
+                            var status = document.getElementById(deletedId);
+                            status.innerText = "True";
 
                         } else if (response.status == 0) {
                             var url = $("#data-no-permission-url").data("data-no-permission-url");
