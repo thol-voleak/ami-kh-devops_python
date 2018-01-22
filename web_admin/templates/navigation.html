@@ -142,6 +142,16 @@
                     </li>
                     {% endif %}
                 </ul>
+                <ul class="sub-menu">
+                    {% if user.is_authenticated %}
+                        {% check_valid_url url_name 'report_configuration' as is_report_configuration_url %}
+                        <li class="class={% if is_report_configuration_url %} active{% endif %}">
+                            <a href="{% url 'report_configuration:report_configuration' %}">
+                                <span>Report Configuration</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
