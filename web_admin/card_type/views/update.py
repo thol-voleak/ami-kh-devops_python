@@ -7,6 +7,8 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
+from web_admin.api_logger import API_Logger
+
 
 import logging
 
@@ -68,6 +70,8 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
         }
 
         is_success, status_code, status_message, data = RestFulClient.put(url=UPDATE_CARD_TYPE.format(card_type_id=card_type_id), headers=self._get_headers(), params=params, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
         if is_success:
             previous_page = request.POST.get('previous_page')
             request.session['card_type_update_msg'] = 'Updated card type successfully'
@@ -78,6 +82,9 @@ class CardTypeUpdateForm(GetHeaderMixin, TemplateView):
 
     def _get_card_type_detail(self, card_type_id):
         is_success, status_code, status_message, data = RestFulClient.post(url=SEARCH_CARD_TYPE, headers=self._get_headers(), params={'id': card_type_id}, loggers=self.logger, timeout=settings.GLOBAL_TIMEOUT)
+
+        API_Logger.post_logging(loggers=self.logger, params={'id': card_type_id}, response=data,
+                                status_code=status_code)
         timeout_create_card_in_second = int(data[0]['timeout_create_card']) / 1000
         timeout_get_card_detail_in_second = int(data[0]['timeout_get_card_detail']) / 1000
 

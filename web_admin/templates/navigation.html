@@ -212,7 +212,7 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_CARD"%}
+            {% if request.user|has_permission_name:"CAN_SEARCH_CARD_PROFILE" or request.user|has_permission_name:"CAN_SEARCH_CARD_HISTORY" or request.user|has_permission_name:"CAN_VIEW_FREEZE_CARD_LIST"%}
                 {% check_valid_url url_name 'cards,card_type' as is_card_urls %}
                 <li class="menu-accordion {% if is_card_urls %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Card Management</span> </a>
