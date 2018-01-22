@@ -60,7 +60,6 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                                 service['is_checked'] = True
                                 break
                         shown_service_list.append(service)
-                    break
             if len(shown_service_list) == 0:
                 continue
             service_group['service_list'] = list(shown_service_list)
