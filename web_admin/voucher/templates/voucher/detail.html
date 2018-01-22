@@ -85,6 +85,15 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
+                            <label class="col-sm-4 control-label">Hold Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded" name="status" id="txt_hold_status"
+                                       value="{{ data.is_on_hold|yesno:"Yes,No,''" }}" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Amount</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="status" id="txt_amount"
