@@ -255,3 +255,6 @@ CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_i
 GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
 SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
 
+#Report Configuration
+GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
+
