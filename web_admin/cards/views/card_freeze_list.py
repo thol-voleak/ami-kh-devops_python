@@ -9,6 +9,7 @@ from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
 from web_admin import ajax_functions
 from django.contrib import messages
+from web_admin.api_logger import API_Logger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -91,6 +92,8 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         params = {}
         is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
                                                                            loggers=self.logger, params=params)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code, is_getting_list=True)
         if is_success:
             if isinstance(data, list):
                 return data
