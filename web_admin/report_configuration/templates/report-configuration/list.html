@@ -15,14 +15,14 @@
                     {% for service_group in service_group_list %}
                         <div style="position: relative;">
                             <span style="cursor: pointer; position: absolute; top: 2px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}" onclick="changeToggleSign('toggle-sign-{{ service_group.service_group_id }}', {{ service_group.service_group_id }})"></span>
-                            <div class="checkbox" style="margin-left: 20px;">
+                            <div class="checkbox" style="margin-left: 20px;" id="service-group-{{ service_group.service_group_id }}">
                                 <label>
                                     <input type="checkbox" id="chk_service_group_id" name="service-group" {% if service_group.is_checked %}checked{% endif %} /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} -  {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
                             </div>
                         </div>
                         <div id="collapse-{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
                             {% for service in  service_group.service_list %}
-                             <div class="checkbox" style="margin-left: 20px;">
+                             <div class="checkbox" style="margin-left: 20px;" id="service-{{ service.service_id }}">
                                 <label>
                                     <input type="checkbox" id="chk_service_id" name="service" {% if service.is_checked %}checked{% endif %}><span {% if service.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service.service_name }} ({{ service.service_id }} -  {{ service.description }} ){% if service.is_deleted %}(deleted){% endif %}</span></label>
                             </div>
