@@ -51,7 +51,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         result_data = _format_data(data)
 
         permissions = {}
-        permissions['CAN_DELETE_FRAUD_TICKET'] = check_permissions_by_user(self.request.user, 'CAN_DELETE_FRAUD_TICKET')
+        permissions['CAN_DELETE_FRAUD_TICKET'] = self.check_membership(["CAN_DELETE_FRAUD_TICKET"])
         context = {'data': result_data,
                    'permissions': permissions,
                    }
@@ -61,7 +61,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_DELETE_FRAUD_TICKET'))
-        if not check_permissions_by_user(request.user, 'CAN_DELETE_FRAUD_TICKET'):
+        if not self.check_membership(["CAN_DELETE_FRAUD_TICKET"]):
            return JsonResponse({"status": 0, "msg": ""})
 
         self.logger.info('========== Start delete freeze card ==========')
@@ -79,11 +79,6 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         self.logger.info("{} - json data".format(result))
 
         self.logger.info("{}=========".format(result.content))
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            'Unfreeze card successfully'
-        )
         self.logger.info('========== End delete freeze card ==========')
         return result
 

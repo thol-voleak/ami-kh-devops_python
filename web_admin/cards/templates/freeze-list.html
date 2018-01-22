@@ -64,7 +64,7 @@
                             class="btn btn-danger mb5 btn-outline btn-xs"
                             id="btn_freeze_card_delete_{{ freezeCard.ticket_id }}"
                             data-url="{% url 'cards:delete_card_freeze' freezeCard.ticket_id %}"
-                            onclick="unFreezeCard('{{ freezeCard.ticket_id }}')">
+                            onclick="unFreezeCard('{{ freezeCard.ticket_id }}', this)">
                             <span class="small">UnFreeze</span>
                             </button>
                                 {% endif %}
@@ -110,7 +110,7 @@
 	    $("html, body").animate({scrollTop: 0}, "slow");
 	}
 
-    function unFreezeCard(id) {
+    function unFreezeCard(id, e) {
         console.log(id);
         swal({
                 title: "Are you sure you want to unfreeze card?",
@@ -139,8 +139,9 @@
                             window.location.replace(url);
                         } else if (response.status == 2) {
                             // success
-                           var url = window.location.origin+"/admin-portal/cards/card-freeze-list/";
-                            window.location.replace(url);
+                            showSuccessMessage("Unfreeze card successfully");
+                            e.remove();
+
                         } else if (response.status == 0) {
                             var url = $("#data-no-permission-url").data("data-no-permission-url");
                             window.location.replace(url);
