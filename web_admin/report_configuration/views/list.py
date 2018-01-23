@@ -11,7 +11,6 @@ from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
-checked_service_arr = []
 
 class ReportConfigurationList(TemplateView, GetHeaderMixin):
     template_name = "report-configuration/list.html"
@@ -42,7 +41,7 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish getting report configurations ==========')
 
         shown_service_group_list = []
-        global checked_service_arr
+
         checked_service_arr = []
         for service_group in service_group_list:
             shown_service_list = []
@@ -76,25 +75,22 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                 service_group['is_checked'] = True
             shown_service_group_list.append(service_group)
 
-        return render(request, self.template_name, {'service_group_list': shown_service_group_list})
+        return render(request, self.template_name, {'service_group_list': shown_service_group_list, 'checked_service_arr' : checked_service_arr})
 
     def post(self, request, *args, **kwargs):
-        global checked_service_arr
+        checked_service_arr = request.POST.getlist('checked_list')
         new_checked_list = request.POST.getlist('service')
-        new_service_list = []
-        for i in new_checked_list:
-            new_service_list.append(int(i))
         deleted_service_arr = []
         added_service_arr = []
-        for origon_service in checked_service_arr:
-            if origon_service not in new_service_list:
-                deleted_service_arr.append(origon_service)
-        for new_service in new_service_list:
+        for origin_service in checked_service_arr:
+            if origin_service not in new_checked_list:
+                deleted_service_arr.append(int(origin_service))
+        for new_service in new_checked_list:
             if new_service not in checked_service_arr:
-                added_service_arr.append(new_service)
+                added_service_arr.append(int(new_service))
 
-        is_add_sucess = self.add_service(added_service_arr)
-        if is_add_sucess:
+        is_add_success = self.add_service(added_service_arr)
+        if is_add_success:
             is_delete_success = self.delete_service(deleted_service_arr)
             if is_delete_success:
                 messages.add_message(request, messages.SUCCESS, 'Change has been saved')
@@ -105,9 +101,6 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         else:
             messages.add_message(request, messages.ERROR, 'There was an error occurred, please try submitting again')
             return redirect('report_configuration:report_configuration')
-
-
-        return redirect('report_configuration:report_configuration')
 
     def get_whitelist_services(self):
         is_success, status_code, data = RestFulClient.get(url=api_settings.GET_WHITELIST_REPORT, headers=self._get_headers(), loggers=self.logger)
@@ -157,26 +150,29 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         return data
 
     def add_service(self, service_id_list):
+        self.logger.info('========== Start add service to whitelist ==========')
         url = api_settings.ADD_SERVICE
         params = {'service_ids': service_id_list}
-        print(params)
 
         is_success, status_code, status_message, data = RestFulClient.post(url, 
                                                                             headers=self._get_headers(), 
                                                                             params=params, loggers=self.logger)
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
                                 status_code=status_code)
+        self.logger.info('========== Finish add service to whitelist  ==========')
         return is_success
 
     def delete_service(self, service_id_list):
+        self.logger.info('========== Start delete service from whitelist ==========')
         url = api_settings.DELETE_SERVICE
         params = {'service_ids': service_id_list}
-        print(params)
 
         is_success, status_code, data = RestFulClient.delete(url, 
                                                             headers=self._get_headers(), 
                                                             params=params, loggers=self.logger)
+        self.logger.info("Params: {} ".format(params))
         API_Logger.delete_logging(loggers=self.logger, status_code=status_code)
+        self.logger.info('========== Finish delete service from whitelist ==========')
 
         return is_success
 

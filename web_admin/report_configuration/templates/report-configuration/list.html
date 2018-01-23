@@ -52,12 +52,20 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="row pull-right" style="margin-top: 20px;">
-                <a>
-                    <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
-                </a>
-            </div>
-            </form>
+                <select name="checked_list" multiple hidden >
+                    {% for checked_service in checked_service_arr %}
+                        <option value="{{ checked_service }}" selected>{{ checked_service }}</option>
+                    {% endfor %}
+                </select>
+             <select name="checked_list_1" multiple hidden >
+
+                </select>
+        <div class="row pull-right" style="margin-top: 20px;">
+            <a>
+                <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
+            </a>
+        </div>
+        </form>
         </div>
     </div>
 {% endblock %}
