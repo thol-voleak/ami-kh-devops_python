@@ -11,16 +11,16 @@
         <div class="row">
              <div class="col-md-2" style="font-size: 15px;font-weight: bold; margin-top: 3px;">Service White List</div>
              <div class="col-md-10">
-                <div style="max-height: 400px; overflow-y: scroll">
+                <div style="max-height: 400px; overflow-y: scroll" id="service-whitelist-content-area">
                     {% for service_group in service_group_list %}
                         <div style="position: relative;">
-                            <span style="cursor: pointer; position: absolute; top: 2px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}" onclick="changeToggleSign('toggle-sign-{{ service_group.service_group_id }}', {{ service_group.service_group_id }})"></span>
+                            <span style="cursor: pointer; position: absolute; top: 2px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}"></span>
                             <div class="checkbox" style="margin-left: 20px;" id="service-group-{{ service_group.service_group_id }}">
                                 <label>
                                     <input type="checkbox" id="chk_service_group_id" name="service-group" {% if service_group.is_checked %}checked{% endif %} /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
                             </div>
                         </div>
-                        <div id="collapse-{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
+                        <div id="collapse-{{ service_group.service_group_id }}" group-id="{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
                             {% for service in  service_group.service_list %}
                              <div class="checkbox" style="margin-left: 20px;" id="service-{{ service.service_id }}">
                                 <label>
@@ -42,15 +42,15 @@
 {% block body_js %}
 {{ block.super }}
     <script>
-        var changeToggleSign = function(toggleSignId, serviceGroupId) {
-            var elem = document.getElementById(toggleSignId);
-            if(elem.classList.contains('glyphicon-plus')) {
-                elem.classList.remove("glyphicon-plus");
-                elem.classList.add("glyphicon-minus");
-            } else {
-                elem.classList.add("glyphicon-plus");
-                elem.classList.remove("glyphicon-minus");
-            }
-        };
+        $('.collapse').on('hide.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.add("glyphicon-plus");
+            elem.classList.remove("glyphicon-minus");
+        });
+        $('.collapse').on('show.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.remove("glyphicon-plus");
+            elem.classList.add("glyphicon-minus");
+        });
     </script>
 {% endblock %}
