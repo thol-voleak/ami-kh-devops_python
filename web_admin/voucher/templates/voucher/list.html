@@ -63,7 +63,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <label class="col-sm-2 control-label">HOLD Status</label>
+                    <label class="col-sm-2 control-label">Hold Status</label>
                     <div class="col-sm-2">
                         <select class="form-control" id="ddl_hold_status" name="hold_status" >
                             {% for item in hold_status_list %}
@@ -173,7 +173,7 @@
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
-                            <td>{{ i.is_on_hold|yesno:"HOLD,UNHOLD,''"  }}</td>
+                            <td>{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
                             <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>

@@ -119,9 +119,9 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _get_hold_status_list(self):
         return [
-            {"name": "ALL", "value": ""},
-            {"name": "HOLD", "value": "True"},
-            {"name": "UNHOLD", "value": "False"},
+            {"name": "All", "value": ""},
+            {"name": "Hold", "value": "True"},
+            {"name": "Unhold", "value": "False"},
         ]
 
     def _search_for_vouchers(self, body):
