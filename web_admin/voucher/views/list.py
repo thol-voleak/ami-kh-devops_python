@@ -32,6 +32,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start render Vouchers List page==========')
         status_list = self._get_status_list()
         permissions = {}
         permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
@@ -42,6 +43,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'claim_status_list': status_list,
             'hold_status_list': self._get_hold_status_list(),
         }
+        self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
