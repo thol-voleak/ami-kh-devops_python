@@ -49,7 +49,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render payment order ==========')
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
-        data = self.get_services_list()
+        services = self.get_services_list()
+        services.sort(key = lambda service: service['service_name'])
+
         status_list = [
             {"id": 0, "name": "Created"},
             {"id": 2, "name": "Executed"},
@@ -76,7 +78,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         error_code_id = []
         status_code_id = []
 
-        context['data'] = data
+        context['services'] = services
         context['search_count'] = 0
         context['status_list'] = status_list
         context['error_list'] = error_list
@@ -90,13 +92,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
-        service_name = request.POST.get('service_name')
+        searched_services = request.POST.getlist('service_name')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         self.logger.info('========== Start getting service list ==========')
-        service_list = self.get_services_list()
+        services = self.get_services_list()
+        services.sort(key=lambda service: service['service_name'])
         self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         list_status_id = request.POST.getlist('list_status_id')
@@ -121,8 +124,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id
-        if service_name:
-            body['service_name'] = service_name
         if user_id and user_id.isdigit():
             body['user_id'] = int(user_id)
         elif user_id:
@@ -141,6 +142,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['executed_client_id'] = execution_client_id
         if error_code_search:
             body['error_code'] = error_code_search
+        if searched_services:
+            searched_services = [int(i) for i in searched_services if i.isnumeric()]
+            body['service_id_list'] = searched_services
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -152,6 +156,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
+
 
         data = self.get_payment_order_list(body=body)
 
@@ -194,8 +199,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         context = {'order_list': orders,
                    'order_id': order_id,
-                   'service_name': service_name,
-                   'data': service_list,
+                   'searched_services': searched_services,
+                   'services': services,
                    'user_type':user_type_id,
                    'user_id': user_id,
                    'search_count': page.get('total_elements', 0),
@@ -219,6 +224,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Finished searching payment order ==========')
 
         return render(request, self.template_name, context)
+
 
     def get_payment_order_list(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=PAYMENT_URL,
@@ -251,10 +257,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_services_list(self):
         url = SERVICE_LIST_URL
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
-        if not success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format('access_token_expire'))
-                raise InvalidAccessToken('access_token_expire')
+        API_Logger.get_logging(loggers=self.logger,
+                               response=data,
+                               status_code=status_code)
         return data
 
     def _get_has_permissions(self):
