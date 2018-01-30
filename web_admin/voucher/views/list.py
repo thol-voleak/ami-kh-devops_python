@@ -37,6 +37,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         permissions = {}
         permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
                                                                             'CAN_CREATE_VOUCHER_ACTION')
+        permissions['CAN_HOLD_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_HOLD_VOUCHER_ACTION')
 
         context = {
             'permissions': permissions,
@@ -101,6 +103,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                             'CAN_VIEW_VOUCHER_DETAILS')
         permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
                                                                             'CAN_CREATE_VOUCHER_ACTION')
+        permissions['CAN_HOLD_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_HOLD_VOUCHER_ACTION')
         context = {
             'data': data,
             'voucher_id': voucher_id,
