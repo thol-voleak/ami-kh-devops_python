@@ -2,11 +2,39 @@
 {% load static %}
 {% load permissions_filter %}
 {% block content %}
+<style>
+    #btn_add_new_voucher {
+        background-color: #337ab7;
+        border-color: #337ab7;
+        font-size: 14px;
+        border-radius: 3px;
+        position: relative;
+        top: 15px;
+        right: -20px;
+        hover: red !important;
+    }
+
+    #btn_add_new_voucher strong {
+        font-weight: bold !important;
+        font-size: 20px;
+    }
+
+    #btn_add_new_voucher span {
+        position: relative;
+        top: -1px;
+    }
+
+</style>
     <div class="col-md-12">
     <div class="panel mb25">
         <div class="panel-heading border mb15">
            <div>
-                <div class="pull-left"><h3>Voucher List</h3></div>
+               <div class="pull-left"><h3>Voucher List</h3></div>
+               <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'voucher:create_new_voucher' %}">
+                        <button id="btn_add_new_voucher" class="btn btn-primary btn-block btn-md mb15"><strong>+</strong> <span>Add New Voucher</span></button>
+                    </a>
+               </div>
                <div class="clearfix"></div>
            </div>
         </div>

@@ -2,7 +2,30 @@
 {% load static %}
 
 {% block content %}
+<style>
+    #lbl_voucher {
+        background-color: #2ecc71;
+        border-color: green;
+        font-size: 14px;
+        position: relative;
+
+        width: 83%;
+        text-align: center !important;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+</style>
     <div class="panel mb25">
+        {% for msg in messages %}
+            {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                <div id="lbl_voucher">Please input the voucher detail</div>
+            {% endif %}
+        </div>
+
+        {% endfor %}
+
         <div class="panel-heading border">
             <h3>Balance Adjustment Execute</h3>
         </div>
