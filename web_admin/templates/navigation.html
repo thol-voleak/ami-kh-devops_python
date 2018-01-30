@@ -142,6 +142,33 @@
                     </li>
                     {% endif %}
                 </ul>
+
+            </li>
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
+            {% check_valid_url url_name 'clients' as is_client_url %}
+            <li class="class={% if is_client_url %} active{% endif %}">
+                <a href="{% url 'clients:client-list' %}">
+                    <i class="fa fa-male"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if request.user|has_permission_name:"SYS_MANAGE_SCOPES" or user.is_authenticated %}
+            {% check_valid_url url_name 'centralize_configuration,report_configuration' as is_configuration_url %}
+            <li class="menu-accordion {% if is_configuration_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-cog"></i> <span>Configuration</span> </a>
+                <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"SYS_MANAGE_SCOPES" %}
+                    {% check_valid_url url_name 'centralize_configuration' as is_centralize_url %}
+                    <li class="class={% if is_centralize_url %} active{% endif %}">
+                        <a href="{% url 'centralize_configuration:scope_list' %}">
+                            <span>Centralize Configuration</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
                 <ul class="sub-menu">
                     {% if user.is_authenticated %}
                         {% check_valid_url url_name 'report_configuration' as is_report_configuration_url %}
@@ -154,45 +181,7 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
-            {% check_valid_url url_name 'clients' as is_client_url %}
-            <li class="class={% if is_client_url %} active{% endif %}">
-                <a href="{% url 'clients:client-list' %}">
-                    <i class="fa fa-male"></i>
-                    <span>Clients</span>
-                </a>
-            </li>
-            {% endif %}
-            <!--<li class="class={% if url_name == 'api_list' %} active{% endif %}">-->
-            <!--<a href="{% url 'api_management:api_list' %}">-->
-            <!--<i class="fa fa-sort-numeric-asc"></i>-->
-            <!--<span>Api management</span>-->
-            <!--</a>-->
-            <!--</li>-->
-            {% if request.user|has_permission_name:"SYS_MANAGE_SCOPES"%}
-            {% check_valid_url url_name 'centralize_configuration' as is_central_url %}
-            <li class="class={% if is_central_url %} active{% endif %}">
-                <a href="{% url 'centralize_configuration:scope_list' %}">
-                    <i class="fa fa-cog"></i>
-                    <span>Centralize Configuration</span>
-                </a>
-            </li>
-            {% endif %}
-            <!-- <li class="menu-accordion {% if 'api-management' in request.path %}open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-credit-card"></i> <span>Api management</span> </a>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'api_list' %}active{% endif %}">
-                        <a href="{% url 'api_management:api_list' %}">
-                            <span>Apis</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="sub-menu">
-                    <li class="{% if url_name == 'service_list' %}active{% endif %}">
-                        <a href="{% url 'api_management:service_list' %}"> <span>Services</span> </a>
-                    </li>
-                </ul>
-            </li> -->
+
             {% if request.user|has_permission_name:"CAN_MANAGE_MEMBER_CUSTOMER_PROFILE" or request.user|has_permission_name:"CAN_MANAGE_BLOCKED_DEVICES"%}
                 {% check_valid_url url_name 'customers' as is_customer_url%}
                 <li class="{% if is_customer_url %} open{% endif %}">

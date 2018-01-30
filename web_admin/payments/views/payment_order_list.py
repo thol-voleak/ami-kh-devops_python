@@ -20,12 +20,12 @@ IS_SUCCESS = {
 }
 
 STATUS_ORDER = {
-    -1: 'FAIL',
-     0: 'CREATED',
-     1: 'LOCKING',
-     2: 'EXECUTED',
-     3: 'ROLLED_BACK',
-     4: 'TIME_OUT',
+    -1: 'Fail',
+     0: 'Created',
+     1: 'Locking',
+     2: 'Executed',
+     3: 'Rolled back',
+     4: 'Time out',
 }
 
 class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
@@ -51,12 +51,13 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
         data = self.get_services_list()
         status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
+            {"id": 'All', "name": "All"},
+            {"id": 0, "name": "Created"},
+            {"id": 2, "name": "Executed"},
+            {"id": -1, "name": "Fail"},
+            {"id": 1, "name": "Locking"},
+            {"id": 3, "name": "Rolled back"},
+            {"id": 4, "name": "Time out"},
         ]
         error_list = [
             {"name": "All", "title": "All"},
@@ -74,13 +75,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         ]
 
         error_code_id = []
+        status_code_id = []
 
         context['data'] = data
         context['search_count'] = 0
         context['status_list'] = status_list
         context['error_list'] = error_list
         context['error_code_id'] = error_code_id
-        context['status_id'] = ''
+        context['status_code_id'] = status_code_id
         context['permissions'] = self._get_has_permissions()
         self.logger.info('========== Finish render payment order ==========')
         return render(request, self.template_name, context)
@@ -98,7 +100,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         service_list = self.get_services_list()
         self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
-        status_id = request.POST.get('status_id')
+        list_status_id = request.POST.getlist('list_status_id')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
@@ -109,6 +111,15 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             error_code_search = ["insufficient_fund", "security_code_expired","security_code_failed","invalid_request",
                           "payment_not_allow", "cancel_order_not_allow", "general_error"]
             error_code = ["All"]
+
+        list_status_search = []
+        if 'All' in list_status_id:
+            list_status_search = [-1, 0, 1, 2, 3, 4]
+            list_status_id = ['All']
+        else:
+            for status in list_status_id:
+                list_status_search.append(int(status))
+            list_status_id = list(list_status_search)
 
         body = {}
         body['paging'] = True
@@ -125,8 +136,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = int(user_type_id)
         if ext_transaction_id:
             body['ext_transaction_id'] = ext_transaction_id
-        if status_id:
-            body['status_id'] = [int(status_id)]
+
+        if list_status_search:
+            body['status_id_list'] = list_status_search
 
         if creation_client_id:
             body['created_client_id'] = creation_client_id
@@ -162,13 +174,15 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             count = len(order_list)
 
         status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
+            {"id": 'All', "name": "All"},
+            {"id": 0, "name": "Created"},
+            {"id": 2, "name": "Executed"},
+            {"id": -1, "name": "Fail"},
+            {"id": 1, "name": "Locking"},
+            {"id": 3, "name": "Rolled back"},
+            {"id": 4, "name": "Time out"},
         ]
+
         error_list = [
             {"name": "All", "title": "All"},
             {"name": "insufficient_fund", "title": "Insufficient Fund"},
@@ -203,8 +217,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'page_range': calculate_page_range_from_page_info(page),
         }
 
-        if status_id:
-            context['status_id'] = int(status_id)
+        if list_status_id:
+            context['status_code_id'] = list_status_id
         if error_code:
             context['error_code_id'] = error_code
 

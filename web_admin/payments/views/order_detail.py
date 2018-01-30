@@ -13,12 +13,12 @@ from web_admin.api_logger import API_Logger
 logger = logging.getLogger(__name__)
 
 STATUS_ORDER = {
-    -1: 'FAIL',
-     0: 'CREATED',
-     1: 'LOCKING',
-     2: 'EXECUTED',
-     3: 'ROLLED_BACK',
-     4: 'TIME_OUT',
+    -1: 'Fail',
+     0: 'Created',
+     1: 'Locking',
+     2: 'Executed',
+     3: 'Rolled back',
+     4: 'Time out',
 }
 
 BALANCE_MOVEMENT_STATUS_ORDER = {
