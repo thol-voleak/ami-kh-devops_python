@@ -33,7 +33,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         status_list = self._get_status_list()
+        permissions = {}
+        permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_CREATE_VOUCHER_ACTION')
+
         context = {
+            'permissions': permissions,
             'claim_status_list': status_list,
             'hold_status_list': self._get_hold_status_list(),
         }
@@ -92,6 +97,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         permissions = {}
         permissions['CAN_VIEW_VOUCHER_DETAILS'] = check_permissions_by_user(self.request.user,
                                                                             'CAN_VIEW_VOUCHER_DETAILS')
+        permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_CREATE_VOUCHER_ACTION')
         context = {
             'data': data,
             'voucher_id': voucher_id,

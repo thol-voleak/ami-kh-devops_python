@@ -30,11 +30,13 @@
         <div class="panel-heading border mb15">
            <div>
                <div class="pull-left"><h3>Voucher List</h3></div>
+               {% if permissions.CAN_CREATE_VOUCHER_ACTION %}
                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                     <a href="{% url 'voucher:create_new_voucher' %}">
                         <button id="btn_add_new_voucher" class="btn btn-primary btn-block btn-md mb15"><strong>+</strong> <span>Add New Voucher</span></button>
                     </a>
                </div>
+               {%endif%}
                <div class="clearfix"></div>
            </div>
         </div>
