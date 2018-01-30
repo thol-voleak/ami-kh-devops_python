@@ -61,9 +61,23 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         service_name = service['service_name']
         service_id = service['service_id']
         user_type = {'customer': 1, 'agent': 2}
+        product_name = request.POST.get('product_name')
+        product_ref1 = request.POST.get('product_ref1')
+        product_ref2 = request.POST.get('product_ref2')
+        product_ref3 = request.POST.get('product_ref3')
+        product_ref4 = request.POST.get('product_ref4')
+        product_ref5 = request.POST.get('product_ref5')
 
         params = {
             "product_service_id": service_id,
+            "product": {
+                "product_name": product_name,
+                "product_ref1": product_ref1,
+                "product_ref2": product_ref2,
+                "product_ref3": product_ref3,
+                "product_ref4": product_ref4,
+                "product_ref5": product_ref5
+            },
             "reference_order_id": ref_order_id,
             "reason": reason,
             "initiator": {
