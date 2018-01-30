@@ -30,7 +30,7 @@
             <div id="lbl_voucher" class='alert
                         alert-info
                         alert-dismissable'>
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <button type="button" class="close" onclick="closeMessage()">×</button>
                 <strong>Please input the voucher detail</strong>
             </div>
         </div>
@@ -232,6 +232,13 @@
 {% block body_js %}
 {{ block.super }}
 <script>
+function closeMessage() {
+    $('.alert').hide();
+    var elm = document.getElementById("header-div");
+    elm.removeAttribute("Id");
+}
+
+
 function changeValue() {
     var service = document.getElementById('ddl_service_name').value;
     var obj = eval('(' + service + ')');
