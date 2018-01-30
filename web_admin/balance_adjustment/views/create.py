@@ -35,6 +35,8 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentCreateView, self).get_context_data(**kwargs)
         services = self.get_services_list()
         self.update_step_to_service(services)
+        add_new_voucher = self.request.session.pop('Add_New_Voucher', None)
+        context.update({'add_new_voucher': add_new_voucher})
         context.update({'services': services})
         context.update({'currency': self.get_currency_list().get('value')})
         return render(request, self.template_name, context)

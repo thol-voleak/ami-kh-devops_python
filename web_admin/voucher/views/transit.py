@@ -26,9 +26,5 @@ class Transit(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
-        messages.add_message(
-            request,
-            messages.WARNING,
-            'Add New Voucher'
-        )
+        self.request.session['Add_New_Voucher'] = 'Add New Voucher'
         return redirect('balance_adjustment:balance_adjustment_create')
