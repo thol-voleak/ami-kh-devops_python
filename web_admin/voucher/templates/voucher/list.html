@@ -174,17 +174,17 @@
                             <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
                                    onclick="searchVouchers()" value="Search">
                         </div>
-                        <div class="dropdown pull-right" id="ddl_select_action">
-                                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Hold</a></li>
-                                    <li><a href="#">Unhold</a></li>
-                                </ul>
-                        </div>
                  </div>
             </form>
 
-            <div class="no-more-tables">
+            <div class="no-more-tables" style="position: absolute;">
+                <div class="dropdown pull-right" id="ddl_select_action" style="margin-top: -50px;">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Hold</a></li>
+                        <li><a href="#">Unhold</a></li>
+                    </ul>
+                </div>
                 <table id='tbl_voucher' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
