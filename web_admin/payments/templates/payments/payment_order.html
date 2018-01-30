@@ -67,7 +67,7 @@
                 </div>
                 <label class="col-sm-2 control-label">Status</label>
                 <div class="col-sm-2 custom-multiple-select select-status-code" id="select-status-code-area" style="position: relative;">
-                    <select style="display:none;" id="ddl_status" onchange="selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')" data-placeholder="-" multiple class="chosen" name="list_status_id">
+                    <select style="display:none;" id="ddl_status" onchange="selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')" data-placeholder="All" multiple class="chosen" name="list_status_id">
                         {% for item in status_list %}
                             {% if item.id in status_code_id %}
                                 <option value="{{item.id}}" selected>{{ item.name }}</option>

@@ -51,7 +51,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
         data = self.get_services_list()
         status_list = [
-            {"id": 'All', "name": "All"},
             {"id": 0, "name": "Created"},
             {"id": 2, "name": "Executed"},
             {"id": -1, "name": "Fail"},
@@ -113,13 +112,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             error_code = ["All"]
 
         list_status_search = []
-        if 'All' in list_status_id:
-            list_status_search = [-1, 0, 1, 2, 3, 4]
-            list_status_id = ['All']
-        else:
-            for status in list_status_id:
-                list_status_search.append(int(status))
-            list_status_id = list(list_status_search)
+        for status in list_status_id:
+            list_status_search.append(int(status))
+        list_status_id = list(list_status_search)
 
         body = {}
         body['paging'] = True
@@ -174,7 +169,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             count = len(order_list)
 
         status_list = [
-            {"id": 'All', "name": "All"},
             {"id": 0, "name": "Created"},
             {"id": 2, "name": "Executed"},
             {"id": -1, "name": "Fail"},
