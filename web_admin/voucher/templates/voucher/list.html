@@ -178,15 +178,19 @@
             </form>
 
             <div class="no-more-tables" style="position: absolute;">
+                {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                 <div class="dropdown pull-right" id="ddl_select_action" style="margin-top: -50px;">
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
                         <li><a href="#">Hold</a></li>
                         {%endif%}
+                        {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                         <li><a href="#">Unhold</a></li>
+                        {%endif%}
                     </ul>
                 </div>
+                {%endif%}
                 <table id='tbl_voucher' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
