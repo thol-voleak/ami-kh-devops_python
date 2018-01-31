@@ -56,7 +56,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if not is_success_currencies:
             messages.error(self.request, currencies)
             currencies = []
-        print(bank_detail)
+
         context = {'bank': bank_detail, 'currencies': currencies}
         self.logger.info('========== Finished get bank sofs ==========')
         return context
