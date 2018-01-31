@@ -140,7 +140,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
         if error_code_search:
-            body['error_code'] = error_code_search
+            body['error_codes'] = error_code_search
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
