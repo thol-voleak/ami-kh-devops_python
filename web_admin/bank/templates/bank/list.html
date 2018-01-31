@@ -59,7 +59,7 @@
                                         <a type="button"
                                             class="btn btn-outline btn-xs btn-info"
                                             role="button"
-                                            id="bank_sof_btn_detail_{{ bank.id }}"
+                                            id="btn_detail"
                                             href="{% url 'bank:bank_sofs_detail' bank.id %}">
                                             <span class="small">Detail</span>
                                         </a>
@@ -69,7 +69,7 @@
                                             class="btn btn-outline btn-xs btn-primary"
                                             role="button"
                                             href="{% url 'bank:bank_sofs_edit' bank.id %}"
-                                            id="bank_sof_btn_edit_{{ bank.id }}">
+                                            id="btn_edit">
                                             <span class="small">Edit</span>
                                         </a>
                                     {% endif %}
@@ -78,7 +78,7 @@
                                             class="btn btn-outline btn-xs btn-danger"
                                             role="button"
                                             href="{% url 'bank:bank_sofs_delete' bank.id %}"
-                                            id="bank_sof_btn_delete_{{ bank.id }}">
+                                            id="btn_delete">
                                             <span class="small">Delete</span>
                                         </a>
                                     {% endif %}
