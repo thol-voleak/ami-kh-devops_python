@@ -138,12 +138,12 @@
                     </div>
                     <div class="pull-right">
                         <a href="{% url 'bank:bank_sofs_list' %}">
-                            <input id="bank_btn_cancel" class="btn text-left mb15 btn-small" type="button"
+                            <input id="btn_cancel" class="btn text-left mb15 btn-small" type="button"
                                    value="Cancel"/>
                         </a>
                         {% if request.user|has_permission_name:"SYS_EDIT_BANK"%}
                             <a href="{% url 'bank:bank_sofs_edit' bank.id%}">
-                                <input id="bank_btn_edit" class="btn btn-success text-left mb15 btn-small" type="button" value="Edit"/>
+                                <input id="btn_edit" class="btn btn-success text-left mb15 btn-small" type="button" value="Edit"/>
                             </a>
                         {% endif %}
                     </div>
