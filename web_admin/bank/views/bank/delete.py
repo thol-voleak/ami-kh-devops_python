@@ -2,6 +2,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from bank.views.banks_client import BanksClient
 from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_logger import API_Logger
 
 from django.conf import settings
 from django.contrib import messages
@@ -46,6 +47,9 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, bank_detail = BanksClient.get_bank_details(
             params=params, headers=self._get_headers(), logger=self.logger
         )
+
+        API_Logger.post_logging(loggers=self.logger, params=params, response=bank_detail,
+                                status_code=status_code, is_getting_list=False)
 
         if not is_success:
             messages.error(self.request, status_message)

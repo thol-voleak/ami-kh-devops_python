@@ -7,7 +7,6 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from django.shortcuts import render
-from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 import logging
 from django.contrib import messages
@@ -141,7 +140,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
         if error_code_search:
-            body['error_code'] = error_code_search
+            body['error_codes'] = error_code_search
         if searched_services:
             searched_services = [int(i) for i in searched_services if i.isnumeric()]
             body['service_id_list'] = searched_services
@@ -156,7 +155,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to'] = new_to_created_timestamp
-
 
         data = self.get_payment_order_list(body=body)
 
@@ -224,7 +222,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Finished searching payment order ==========')
 
         return render(request, self.template_name, context)
-
 
     def get_payment_order_list(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=PAYMENT_URL,
