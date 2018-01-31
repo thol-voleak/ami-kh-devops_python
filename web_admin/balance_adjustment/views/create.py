@@ -9,6 +9,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
 import logging
 from web_admin.api_logger import API_Logger
+from web_admin.api_logger import API_Logger
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +33,16 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         return super(BalanceAdjustmentCreateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start render order balance adjustment ==========')
         context = super(BalanceAdjustmentCreateView, self).get_context_data(**kwargs)
         services = self.get_services_list()
-        self.update_step_to_service(services)
+        currencies = self.get_currency_list().get('value')
+        self.update_step_to_service(services, currencies)
         add_new_voucher = self.request.session.pop('Add_New_Voucher', None)
         context.update({'add_new_voucher': add_new_voucher})
         context.update({'services': services})
-        context.update({'currency': self.get_currency_list().get('value')})
+        context.update({'currency': currencies})
+        self.logger.info('========== Finish render order balance adjustment ==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -148,7 +152,8 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             }
 
             services = self.get_services_list()
-            self.update_step_to_service(services)
+            currencies = self.get_currency_list().get('value')
+            self.update_step_to_service(services, currencies)
             context.update({'services': services})
 
             if status_code.lower() in ["general_error"]:
@@ -173,25 +178,34 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             return render(request, self.template_name, context) #
 
     def get_services_list(self):
+        self.logger.info('========== Start get services list ==========')
         url = api_settings.SERVICE_LIST_URL
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         if not success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
                 raise InvalidAccessToken('access_token_expire')
+
+        API_Logger.get_logging(loggers=self.logger, response=data,
+                                status_code=status_code)
+        self.logger.info('========== Finish get services list ==========')
         return data
 
     def get_currency_list(self):
+        self.logger.info('========== Start get currency list ==========')
         url = api_settings.GET_ALL_CURRENCY_URL
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         if not success:
             if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format('access_token_expire'))
                 raise InvalidAccessToken('access_token_expire')
+
+        API_Logger.get_logging(loggers=self.logger, response=data,
+                                status_code=status_code)
+        self.logger.info('========== Finish get currency list ==========')
         return data
 
-    def update_step_to_service(self, services):
-        currencies = self.get_currency_list().get('value')
+    def update_step_to_service(self, services, currencies):
         for service in services:
             currency = service['currency']
             decimal = int(currencies.split(currency + '|')[1].split(',')[0])
