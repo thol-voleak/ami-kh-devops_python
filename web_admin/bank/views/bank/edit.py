@@ -69,6 +69,10 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         bank_bin = request.POST.get('bin')
         is_active = request.POST.get('is_active')
         description = request.POST.get('description')
+        pre_sof_url = request.POST.get('pre_sof_url', '')
+        presof_order_read_timeout = request.POST.get('presof_order_read_timeout', '')
+        if presof_order_read_timeout:
+            presof_order_read_timeout = int(presof_order_read_timeout)
         credit_url = request.POST.get('credit_url')
         debit_url = request.POST.get('debit_url')
         account_number = request.POST.get('account_number')
@@ -88,6 +92,8 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "name": name,
             "bin": bank_bin,
             "description": description,
+            "pre_sof_url": pre_sof_url,
+            "pre_sof_read_timeout": presof_order_read_timeout,
             "is_active": bool(is_active),
             "debit_url": debit_url,
             "credit_url": credit_url,

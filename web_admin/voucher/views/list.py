@@ -35,8 +35,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start render Vouchers List page==========')
         status_list = self._get_status_list()
         permissions = {}
-        permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
-                                                                            'CAN_CREATE_VOUCHER_ACTION')
+        permissions['CAN_CREATE_VOUCHER_ACTION'] = self.check_membership(['CAN_CREATE_VOUCHER_ACTION'])
 
         permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
         permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
