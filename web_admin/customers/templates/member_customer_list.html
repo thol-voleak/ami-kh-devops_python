@@ -6,6 +6,19 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
+<style>
+
+    .suspend-label-custom {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .swal-button--confirm {
+        background-color: #2ECC71;
+    }
+</style>
 
 <div class="panel mb25">
     <div class="panel-heading border mb15">
@@ -240,16 +253,11 @@
     function delete_customer(e) {
         swal({
                 title: "Are you sure you want to delete?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+                icon: "error",
+                buttons: ["Cancel", "OK"],
+                closeOnClickOutside: false
+            }).then(function(ok){
+                if(ok){
                     var url = e.getAttribute('data-url');
                     var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
@@ -289,24 +297,44 @@
     }
 
     function suspend(e) {
+         var suspendContentElem = document.createElement("div");
+        suspendContentElem.innerHTML = '<div class="form-group">'
+                                        +'<div class="control-label suspend-label-custom">Suspend reason *</div>'
+                                        +'<div>'
+                                        +'<select class="form-control" id="active_suspend_reason" name="active_suspend_reason" >'
+                                        + '<option value="Suspicious Transaction">Suspicious Transaction</option>'
+                                        + '<option value="Requested by Account holder">Requested by Account holder</option>'
+                                        + '<option value="High Risk Account">High Risk Account</option>'
+                                        + '<option value="Others">Others</option>'
+                                        +'</select>'
+                                        +'</div>'
+                                        +'</div>'
+                                        +'<div id="reason-text-area" class="form-group" style="margin-bottom: 40px;">'
+                                        +'<div class="control-label suspend-label-custom">Suspend reason Description</div>'
+                                        +'<div>'
+                                        +'<textarea id="input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
+                                        +'</div>'
+                                        +'</div>';
         swal({
-                title: "Are you sure you want to suspend?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+          content: suspendContentElem,
+          icon: "warning",
+          title: 'Are you sure you want to suspend?',
+          buttons: ["Cancel", "OK"],
+          closeOnClickOutside: false
+        }).then(function(ok) {
+            if (ok) {
                     var url = e.getAttribute('data-url');
                     var customer_id = e.getAttribute('data-customer-id');
+                    var active_suspend_reason = document.getElementById("active_suspend_reason");
+                    var resason_suppend = active_suspend_reason.options[active_suspend_reason.selectedIndex].value;
+                    if(active_suspend_reason.options[active_suspend_reason.selectedIndex].value == 'Others') {
+                        resason_suppend = document.getElementById("input_reason").value;
+                    }
+
                     $.ajax({
                         url: url,
                         type: "GET",
-                        data: {},
+                        data: {"active_suspend_reason":resason_suppend},
                         success: function (response) {
                             if(response.status == 1) {
                                 // Logout
@@ -330,22 +358,26 @@
                         }
                     });
                 }
-            });
+        });
+        var activeSuspendReason = document.getElementById("active_suspend_reason");
+            activeSuspendReason.addEventListener("change", function(event) {
+                if(activeSuspendReason.options[activeSuspendReason.selectedIndex].value == 'Others') {
+                    document.getElementById("input_reason").removeAttribute('disabled');
+                } else {
+                    document.getElementById("input_reason").setAttribute("disabled", true);
+                }
+        });
+
     }
 
     function activate(e) {
         swal({
                 title: "Are you sure you want to activate?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+                icon: "info",
+                buttons: ["Cancel", "OK"],
+                closeOnClickOutside: false
+            }).then(function (ok) {
+                if (ok) {
                     var url = e.getAttribute('data-url');
                     console.log(url)
                     var customer_id = e.getAttribute('data-customer-id');
@@ -403,5 +435,5 @@
 
 {% block body_js %}
     {{ block.super }}
-    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 {% endblock %}
