@@ -23,8 +23,8 @@
                       action="{% url 'bank:bank_sofs_create' %}">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Is Active</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Is Active</label>
+                        <div class="col-sm-7">
                             <select class="form-control" id="bank_active" name="is_active" disabled>
                                 <option value=1 {% if user_type_id == 1 %}selected="selected" {% endif %}>True
                                 </option>
@@ -36,16 +36,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Name *</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Name *</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="name"
                                    id="bank_name"
                                    value="{{ bank_info.name | default_if_none:'' }}" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">BIN</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">BIN</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="bin"
                                    id="bank_bin"
                                    value="{{ bank_info.bin | default_if_none:'' }}">
@@ -54,8 +54,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Description</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="description"
                                    id="bank_description"
                                    value="{{ bank_info.description | default_if_none:'' }}">
@@ -64,23 +64,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Pre-sof Order URL </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Pre-sof Order URL </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_presof_order_url" name="pre_sof_url">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Pre-sof Order Read Timeout</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Pre-sof Order Read Timeout</label>
+                        <div class="col-sm-7">
                             <input type="number" class="form-control" id="txt_presof_order_read_timeout" name="presof_order_read_timeout">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Credit Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Credit Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="credit_url"
                                    id="bank_credit_url"
                                    value="{{ bank_info.credit_url | default_if_none:'' }}">
@@ -89,8 +89,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Debit Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Debit Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="debit_url"
                                    id="bank_debit_url"
                                    value="{{ bank_info.debit_url | default_if_none:'' }}">
@@ -99,8 +99,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Check Status Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Check Status Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="check_status_url"
                                    id="check_status_url"
                                    value="{{ bank_info.check_status_url | default_if_none:'' }}">
@@ -109,8 +109,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Cancel Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Cancel Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="cancel_url"
                                    id="txt_cancel_url"
                                    value="{{ bank_info.cancel_url | default_if_none:'' }}">
@@ -119,15 +119,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Read Timeout (millisec.)</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Read Timeout (millisec.)</label>
+                        <div class="col-sm-7">
                             <input type="number" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ bank_info.read_timeout }}" />
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Account Number</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Account Number</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="account_number"
                                    id="bank_account_number"
                                    value="{{ bank_info.bank_account_number | default_if_none:'' }}">
@@ -136,8 +136,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Account Name</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Account Name</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="account_name"
                                    id="bank_account_name"
                                    value="{{ bank_info.bank_account_name | default_if_none:'' }}">
@@ -145,8 +145,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Currency</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Currency</label>
+                        <div class="col-sm-7">
                             <select class="form-control" id="bank_currency" name="currency" required>
                                 {% for currency in currencies %}
                                 {% if currency.0 == bank_info.currency %}

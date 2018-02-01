@@ -23,16 +23,16 @@
                       action="{% url 'bank:bank_sofs_delete' bank.id %}">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Is Active</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Is Active</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_is_active"
                                    value="{{ bank.is_active | default_if_none:'' }}" readonly>
                         </div>
                     </div>
                      <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Name </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Name </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_name"
                                    value="{{ bank.name| default_if_none:'' }}" readonly>
@@ -40,8 +40,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">BIN </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">BIN </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_bin"
                                    value="{{ bank.bin| default_if_none:'' }}" readonly>
@@ -49,8 +49,8 @@
                     </div>
 
                      <div class="form-group">
-                        <label class="col-sm-2 control-label">Pre-sof Order URL </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Pre-sof Order URL </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="txt_presof_order_url" name="pre_sof_url"
                                    value="{{ bank.pre_sof_url| default_if_none:'' }}" readonly>
@@ -58,15 +58,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Pre-sof Order Read Timeout</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Pre-sof Order Read Timeout</label>
+                        <div class="col-sm-7">
                             <input type="number" class="form-control" id="txt_presof_order_read_timeout" name="presof_order_read_timeout" value="{{ bank.pre_sof_read_timeout }}" readonly/>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Credit URL </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Credit URL </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_credit_url"
                                    value="{{ bank.credit_url| default_if_none:'' }}" readonly>
@@ -74,8 +74,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Debit URL </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Debit URL </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_debit_url"
                                    value="{{ bank.debit_url| default_if_none:'' }}" readonly>
@@ -83,8 +83,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Check Status Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Check Status Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="check_status_url"
                                    id="check_status_url"
                                    value="{{ bank.check_status_url | default_if_none:'' }}" readonly>
@@ -93,8 +93,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Cancel Url</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Cancel Url</label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded" name="cancel_url"
                                    id="txt_cancel_url"
                                    value="{{ bank.cancel_url | default_if_none:'' }}" readonly>
@@ -103,15 +103,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Read Timeout (millisec.)</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Read Timeout (millisec.)</label>
+                        <div class="col-sm-7">
                             <input type="number" class="form-control" id="txt_read_timeout" name="read_timeout" value="{{ bank.read_timeout }}" readonly />
                         </div>
                     </div>
 
                      <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Account Name </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Account Name </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_account_name"
                                    value="{{ bank.bank_account_name| default_if_none:'' }}" readonly>
@@ -119,8 +119,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bank Account Number </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Bank Account Number </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_account_number"
                                    value="{{ bank.bank_account_number| default_if_none:'' }}" readonly>
@@ -128,8 +128,8 @@
                     </div>
 
                      <div class="form-group">
-                        <label class="col-sm-2 control-label">Currency </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Currency </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_currency"
                                    value="{{ bank.currency| default_if_none:'' }}" readonly>
@@ -137,8 +137,8 @@
                     </div>
 
                      <div class="form-group">
-                        <label class="col-sm-2 control-label">Description </label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-3 control-label">Description </label>
+                        <div class="col-sm-7">
                             <input type="text" class="form-control input-rounded"
                                    id="bank_description"
                                    value="{{ bank.description| default_if_none:'' }}" readonly>
