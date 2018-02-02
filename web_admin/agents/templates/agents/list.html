@@ -287,7 +287,7 @@
         suspendContentElem.innerHTML = '<div class="form-group">'
                                         +'<div class="control-label suspend-label-custom">Suspend Reason *</div>'
                                         +'<div>'
-                                        +'<select class="form-control" id="active_suspend_reason" name="active_suspend_reason" >'
+                                        +'<select class="form-control" id="ddl_active_suspend_reason" name="active_suspend_reason" >'
                                         + '<option value="Suspicious Transaction">Suspicious Transaction</option>'
                                         + '<option value="Requested by Account holder">Requested by Account holder</option>'
                                         + '<option value="High Risk Account">High Risk Account</option>'
@@ -300,7 +300,7 @@
                                         +'<span> </span>'
                                         +'<span id="required-description" style="display:none;">*</span></div>'
                                         +'<div>'
-                                        +'<textarea id="input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
+                                        +'<textarea id="txt_input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
                                         +'</div>'
                                         +'</div>';
         swal({
@@ -314,10 +314,10 @@
             if (isConfirm) {
                 var url = e.getAttribute('data-url');
                 var agent_id = e.getAttribute('data-agent-id');
-                var active_suspend_reason = document.getElementById("active_suspend_reason");
+                var active_suspend_reason = document.getElementById("ddl_active_suspend_reason");
                 var resason_suppend = active_suspend_reason.options[active_suspend_reason.selectedIndex].value;
                 if (active_suspend_reason.options[active_suspend_reason.selectedIndex].value === 'Others') {
-                    resason_suppend = document.getElementById("input_reason").value;
+                    resason_suppend = document.getElementById("txt_input_reason").value;
                 }
                 $.ajax({
                     url: url,
@@ -351,16 +351,16 @@
                 });
             }
         });
-        var activeSuspendReason = document.getElementById("active_suspend_reason");
+        var activeSuspendReason = document.getElementById("ddl_active_suspend_reason");
         var okButton = document.getElementsByClassName("swal-button--confirm")[0];
-        var input_reason = document.getElementById("input_reason");
+        var input_reason = document.getElementById("txt_input_reason");
         activeSuspendReason.addEventListener("change", function(event) {
             if(activeSuspendReason.options[activeSuspendReason.selectedIndex].value == 'Others') {
-                document.getElementById("input_reason").removeAttribute('disabled');
+                input_reason.removeAttribute('disabled');
                 okButton.setAttribute("disabled", true);
                 document.getElementById('required-description').style.display = 'inline-block';
             } else {
-                document.getElementById("input_reason").setAttribute("disabled", true);
+                input_reason.setAttribute("disabled", true);
                 okButton.removeAttribute("disabled");
                 document.getElementById('required-description').style.display = 'none';
                 input_reason.value = '';
