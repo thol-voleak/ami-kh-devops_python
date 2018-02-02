@@ -3,6 +3,18 @@
 {% load permissions_filter %}
 
 {% block content %}
+<style>
+    .swal-button--confirm {
+        background-color: #2ECC71;
+    }
+
+    .suspend-label-custom {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        }
+</style>
 <div class="panel mb25">
     <div class="panel-heading border mb15">
         <h3>Agent Profile</h3>
@@ -224,6 +236,14 @@
     </div>
 </div>
 
+{% endblock %}
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
 <script>
     function showErrorMessage(msg) {
         $("#alert-msg").text(msg)
@@ -261,25 +281,48 @@
         }
     }
 
+
     function suspend(e) {
-    swal({
+        var suspendContentElem = document.createElement("div");
+        suspendContentElem.innerHTML = '<div class="form-group">'
+                                        +'<div class="control-label suspend-label-custom">Suspend Reason *</div>'
+                                        +'<div>'
+                                        +'<select class="form-control" id="active_suspend_reason" name="active_suspend_reason" >'
+                                        + '<option value="Suspicious Transaction">Suspicious Transaction</option>'
+                                        + '<option value="Requested by Account holder">Requested by Account holder</option>'
+                                        + '<option value="High Risk Account">High Risk Account</option>'
+                                        + '<option value="Others">Others</option>'
+                                        +'</select>'
+                                        +'</div>'
+                                        +'</div>'
+                                        +'<div id="reason-text-area" class="form-group" style="margin-bottom: 40px;">'
+                                        +'<div class="control-label suspend-label-custom">Suspend Reason Description'
+                                        +'<span> </span>'
+                                        +'<span id="required-description" style="display:none;">*</span></div>'
+                                        +'<div>'
+                                        +'<textarea id="input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
+                                        +'</div>'
+                                        +'</div>';
+        swal({
+            content: suspendContentElem,
+            icon: "warning",
             title: "Are you sure you want to suspend?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#2ECC71",
-            confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
-            closeOnConfirm: true,
-            closeOnCancel: true
-        },
-        function (isConfirm) {
+            buttons: true,
+            closeOnClickOutside: false
+        })
+        .then(function(isConfirm) {
             if (isConfirm) {
                 var url = e.getAttribute('data-url');
                 var agent_id = e.getAttribute('data-agent-id');
+                var active_suspend_reason = document.getElementById("active_suspend_reason");
+                var resason_suppend = active_suspend_reason.options[active_suspend_reason.selectedIndex].value;
+                if (active_suspend_reason.options[active_suspend_reason.selectedIndex].value === 'Others') {
+                    resason_suppend = document.getElementById("input_reason").value;
+                }
                 $.ajax({
                     url: url,
                     type: "GET",
-                    data: {},
+                    data: {"active_suspend_reason":resason_suppend},
                     success: function (response) {
                         if (response.status == 1) {
                             // Logout
@@ -308,20 +351,38 @@
                 });
             }
         });
+        var activeSuspendReason = document.getElementById("active_suspend_reason");
+        var okButton = document.getElementsByClassName("swal-button--confirm")[0];
+        var input_reason = document.getElementById("input_reason");
+        activeSuspendReason.addEventListener("change", function(event) {
+            if(activeSuspendReason.options[activeSuspendReason.selectedIndex].value == 'Others') {
+                document.getElementById("input_reason").removeAttribute('disabled');
+                okButton.setAttribute("disabled", true);
+                document.getElementById('required-description').style.display = 'inline-block';
+            } else {
+                document.getElementById("input_reason").setAttribute("disabled", true);
+                okButton.removeAttribute("disabled");
+                document.getElementById('required-description').style.display = 'none';
+                input_reason.value = '';
+            }
+        });
+
+        input_reason.addEventListener("keyup", function(event) {
+            if(input_reason.value == ''){
+                okButton.setAttribute("disabled", true);
+            } else {
+                okButton.removeAttribute("disabled");
+            }
+        })
     }
 
     function activate(e) {
         swal({
             title: "Are you sure you want to activate?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#2ECC71",
-            confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
-            closeOnConfirm: true,
-            closeOnCancel: true
-        },
-        function (isConfirm) {
+            icon: "info",
+            buttons: true,
+            closeOnClickOutside: false
+        }).then(function (isConfirm) {
             if (isConfirm) {
                 var url = e.getAttribute('data-url');
                 var agent_id = e.getAttribute('data-agent-id');
@@ -359,5 +420,4 @@
     }
 
 </script>
-
 {% endblock %}

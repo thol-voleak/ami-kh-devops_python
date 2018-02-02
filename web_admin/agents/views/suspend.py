@@ -16,6 +16,7 @@ def suspend(request, agent_id):
     url = settings.DOMAIN_NAMES + api_settings.AGENT_STATUS_URL.format(agent_id)
     params = {
         'is_suspended': True,
+        'active_suspend_reason': request.GET.get("active_suspend_reason")
     }
 
     result = ajax_functions._put_method(request, url, "", logger, params)
