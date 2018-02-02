@@ -18,6 +18,9 @@
     .swal-button--confirm {
         background-color: #2ECC71;
     }
+    .swal-button--danger{
+        background-color: rgb(221, 107, 85);;
+    }
 </style>
 
 <div class="panel mb25">
@@ -255,7 +258,8 @@
                 title: "Are you sure you want to delete?",
                 icon: "error",
                 buttons: ["Cancel", "OK"],
-                closeOnClickOutside: false
+                closeOnClickOutside: false,
+                dangerMode: true
             }).then(function(ok){
                 if(ok){
                     var url = e.getAttribute('data-url');
