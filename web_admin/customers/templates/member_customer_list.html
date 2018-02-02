@@ -314,7 +314,7 @@
                                         +'<span> </span>' 
                                         +'<span id="required-description" style="display:none;">*</span></div>'
                                         +'<div>'
-                                        +'<textarea id="input_reason" class="form-control" name="suspend_reason" placeholder="Description"disabled></textarea>'
+                                        +'<textarea id="txt_input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
                                         +'</div>'
                                         +'</div>';
         swal({
@@ -330,7 +330,7 @@
                     var active_suspend_reason = document.getElementById("ddl_active_suspend_reason");
                     var resason_suppend = active_suspend_reason.options[active_suspend_reason.selectedIndex].value;
                     if(active_suspend_reason.options[active_suspend_reason.selectedIndex].value == 'Others') {
-                        resason_suppend = document.getElementById("input_reason").value;
+                        resason_suppend = document.getElementById("txt_input_reason").value;
                     }
 
                     $.ajax({
@@ -363,14 +363,14 @@
         });
         var activeSuspendReason = document.getElementById("ddl_active_suspend_reason");
         var okButton = document.getElementsByClassName("swal-button--confirm")[0];
-        var input_reason = document.getElementById("input_reason");
+        var input_reason = document.getElementById("txt_input_reason");
         activeSuspendReason.addEventListener("change", function(event) {
             if(activeSuspendReason.options[activeSuspendReason.selectedIndex].value == 'Others') {
-                document.getElementById("input_reason").removeAttribute('disabled');
+                document.getElementById("txt_input_reason").removeAttribute('disabled');
                 okButton.setAttribute("disabled", true);
                 document.getElementById('required-description').style.display = 'inline-block';
             } else {
-                document.getElementById("input_reason").setAttribute("disabled", true);
+                document.getElementById("txt_input_reason").setAttribute("disabled", true);
                 okButton.removeAttribute("disabled");
                 document.getElementById('required-description').style.display = 'none';
                 input_reason.value = '';
