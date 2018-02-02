@@ -4,7 +4,7 @@ from bank.views.banks_client import BanksClient
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
-
+from web_admin.api_logger import API_Logger
 from django.shortcuts import render
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -92,6 +92,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = BanksClient.create_bank(
             headers=self._get_headers(), params=params, logger=self.logger
         )
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         if is_success:
             self.logger.info('========== Finished creating bank profile ==========')
