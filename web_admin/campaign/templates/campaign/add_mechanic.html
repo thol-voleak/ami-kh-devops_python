@@ -95,6 +95,7 @@
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
                                             <option value= "event_detail">Event Detail</option>
                                             <option value= "sum_of">Sum of</option>
+                                            <option value= "count_of">Count of</option>
                                         </select>
                                     </div>
                                 </div>
@@ -141,6 +142,8 @@
                                     </div>
                                 </div>
                                 <div id="sum_of_area">
+                                </div>
+                                <div id="count_of_area">
                                 </div>
                             <br>
                             </div>
@@ -373,6 +376,7 @@
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_' + counter + '" counter="' + counter + '" onchange="selectConditionType(this.value, this)">\
                                             <option value= "event_detail">Event Detail</option>\
                                             <option value= "sum_of">Sum of</option>\
+                                            <option value= "count_of">Count of</option>\
                                         </select>\
                                     </div>\
                                 </div>\
@@ -419,6 +423,8 @@
                                     </div>\
                                 </div>\
                                 <div id="sum_of_area">\
+                                </div>\
+                                <div id="count_of_area">\
                                 </div>\
                             <br>\
                             </div></div>';
@@ -884,11 +890,140 @@
             return eventdetailareaHtml;
         };
 
+        // Count of
+
+     var getMoreFilterCountOfButtonHtml = function(conditionNumber) {
+               var addMoreFilterHtml =  '<div class="form-group" id="add_more_filter_area">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3" style="text-align: right;">\
+                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_filter" onclick="addFilterCountOf(this, ' + conditionNumber + ')">\
+                                      <span class="glyphicon glyphicon-plus"></span> Add Filter\
+                                    </button>\
+                                </div>\
+                                </div>';
+               return addMoreFilterHtml;
+        };
+
+     var changeDateTime = function (conditionNumber) {
+        var startElement = document.getElementsByClassName("count-of-start-date-" + conditionNumber)[0];
+        var startDate = document.getElementsByClassName("count-of-start-date-" + conditionNumber)[0].value;
+        var startTime = document.getElementsByClassName("count-of-start-time-" + conditionNumber)[0].value;
+        var endDate = document.getElementsByClassName("count-of-end-date-" + conditionNumber)[0].value;
+        var endTime = document.getElementsByClassName("count-of-end-time-" + conditionNumber)[0].value;
+        if(startDate != "" && startTime != "" && endDate != "" && endTime != "") {
+            var fullStartDate = new Date(startDate + " " + startTime);
+            var fullEndDate = new Date(endDate + " " + endTime);
+            if(fullStartDate > fullEndDate) {
+                startElement.setCustomValidity("Start date or time cannot be after end date and time");
+            } else {
+                startElement.setCustomValidity("");
+            }
+        } else {
+            startElement.setCustomValidity("");
+        }
+     };
+
+      var validateNumber = function (elem, value) {
+            if(value != "" && parseFloat(value) <= 0) {
+                elem.setCustomValidity('This field should be positive.');
+            } else {
+                elem.setCustomValidity('');
+            }
+        };
+
+    var getWithinDateHtml = function(conditionNumber) {
+        var withinDateHtml = '<div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                    <input type="date" onchange="changeDateTime(' + conditionNumber + ')" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
+                                </div>\
+                                <div class="col-xs-2">\
+                                    <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" onchange="changeDateTime(' + conditionNumber + ')" type=time min=00:00 max=23:59 step=60 value="00:00"\
+                                    id="dtp_within_from_time" name="within_from_time_' + conditionNumber + '"\
+                                    value="{{ within_from_time|default_if_none:'00:00' }}"\
+                                    style="height:40px;" required >\
+                                </div> <div style="display: inline-block;margin-top: 23px;">to</div>\
+                            </div>\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                    <input type="date" onchange="changeDateTime(' + conditionNumber + ')" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
+                                </div>\
+                                <div class="col-xs-2">\
+                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" onchange="changeDateTime(' + conditionNumber + ')" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" required >\
+                                </div>\
+                            </div>';
+        return withinDateHtml;
+    };
+
+    var getWithinTimeHtml = function(conditionNumber) {
+        var withinTimeHtml = '<div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                <input min="0" onkeyup="validateNumber(this, this.value)" id="txt_timebox" class="form-control input-rounded" name="txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 18px;" id="lbl_minute">min</div>\
+                              </div>';
+        return withinTimeHtml;
+    };
+
+    var changeWithinOption = function(elem, selectedValue, conditionNumber) {
+         var conditionElem = document.getElementById('div_condition_' + conditionNumber);
+         if(selectedValue == 'date') {
+             conditionElem.querySelector('#within-time-area').innerHTML = '';
+             var withinDateArea = conditionElem.querySelector('#within-date-area');
+             var withinDateDiv = document.createElement('div');
+            withinDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+            var withinDateElem  = withinDateDiv.cloneNode(true);
+            withinDateArea.appendChild(withinDateElem);
+         } else {
+             conditionElem.querySelector('#within-date-area').innerHTML = '';
+             var withinTimeArea = conditionElem.querySelector('#within-time-area');
+             var withinTimeDiv = document.createElement('div');
+            withinTimeDiv.innerHTML = getWithinTimeHtml(conditionNumber);
+            var withinTimeElem  = withinTimeDiv.cloneNode(true);
+            withinTimeArea.appendChild(withinTimeElem);
+         }
+
+    };
+
+     var getCountOfHtml = function(conditionNumber) {
+              var CountOfHtml =  '<div class="form-group">\
+                                      <label class="col-sm-3 control-label">Operator</label>\
+                                      <div class="col-xs-3">\
+                                      <select class="form-control" id="ddl_operator" name="count_of_operator_' + conditionNumber + '">\
+                                          {% for oper in count_of_operators %}\
+                                            <option value= "{{ oper }}">{{ oper }}</option>\
+                                          {% endfor %}\
+                                      </select>\
+                                      </div>\
+                                      </div>\
+                                      <div class="form-group">\
+                                          <label class="col-sm-3 control-label">Count *</label>\
+                                          <div class="col-xs-3">\
+                                              <input min="0" onkeyup="validateNumber(this, this.value)" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
+                                    </div>\
+                                </div>\
+                                <div class="form-group">\
+                                     <label class="col-sm-3 control-label">Within *</label>\
+                                    <div class="col-xs-3">\
+                                         <select class="form-control" id="ddl_within" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ')" name="within_' + conditionNumber + '">\
+                                                <option value= "date">Date</option>\
+                                                <option value= "timebox">Timebox</option>\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <input id="filter_count_of_count" name="filter_count_of_count_' + conditionNumber +'" type="text" value="0" hidden />\
+                                <div id="within-date-area">\
+                                </div>\
+                                <div id="within-time-area"></div>';
+            return CountOfHtml;
+        };
+
         var selectConditionType = function(selectedValue, elem) {
             var conditionNumber = parseInt($(elem).attr('counter'), 10);
             var conditionElem = document.getElementById('div_condition_' + conditionNumber);
             if(selectedValue == 'sum_of') {
                 conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                conditionElem.querySelector('#count_of_area').innerHTML = '';
                 var sumOfArea = conditionElem.querySelector('#sum_of_area');
                 var sumKeyDiv = document.createElement('div');
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
@@ -905,11 +1040,34 @@
                 sumOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'event_detail') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                conditionElem.querySelector('#count_of_area').innerHTML = '';
                 var eventDetailArea = conditionElem.querySelector('#event_detail_area');
                 var eventDetailDiv = document.createElement('div');
                 eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
                 var eventDetailDivElem  = eventDetailDiv.cloneNode(true);
                 eventDetailArea.appendChild(eventDetailDivElem);
+            } else if(selectedValue == 'count_of') {
+                conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                var countOfArea = conditionElem.querySelector('#count_of_area');
+                var countOfDiv = document.createElement('div');
+                countOfDiv.innerHTML = getCountOfHtml(conditionNumber);
+                var countOfDivElem  = countOfDiv.cloneNode(true);
+                countOfArea.appendChild(countOfDivElem);
+                var countOfDateArea = conditionElem.querySelector('#within-date-area');
+                var countOfDateDiv = document.createElement('div');
+                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+                var countOfDateDivElem  = countOfDateDiv.cloneNode(true);
+                countOfDateArea.appendChild(countOfDateDivElem);
+                var filterAreaDiv = document.createElement('div');
+                filterAreaDiv.id = "count-of-filter-area";
+                filterAreaDiv.innerHTML = '';
+                var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
+                countOfArea.appendChild(filterAreaDivElem);
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber, 1);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                countOfArea.appendChild(filterButtonDivElem);
             }
         };
 
@@ -921,6 +1079,25 @@
             filterCount++;
             var filterAreaElem = conditionElem.querySelector('#sum-of-filter-area');
             var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            var newFilterElemDiv = document.createElement('div');
+            newFilterElemDiv.innerHTML = newFilterElementHtml;
+            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            filterAreaElem.appendChild(newFilterElemDivElem);
+            filterCountInput.setAttribute('value', filterCount);
+        };
+
+          var addFilterCountOf = function(elem, conditionNum) {
+            var conditionElem = document.getElementById('div_condition_' + conditionNum);
+            var filterCountInput = conditionElem.querySelector('#filter_count_of_count');
+            var filterCount = filterCountInput.getAttribute('value');
+            filterCount = parseInt(filterCount, 10);
+            filterCount++;
+            var filterAreaElem = conditionElem.querySelector('#count-of-filter-area');
+            if(filterCount == 1) {
+                var newFilterElementHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Filter</label><div class="col-xs-3"></div></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            } else {
+                var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            }
             var newFilterElemDiv = document.createElement('div');
             newFilterElemDiv.innerHTML = newFilterElementHtml;
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
