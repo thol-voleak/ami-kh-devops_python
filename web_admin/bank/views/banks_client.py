@@ -34,7 +34,6 @@ class BanksClient:
 
     @classmethod
     def get_currencies_list(cls, header, logger):
-        logger.info("Stating to get all currency from backend.")
         url = api_settings.GET_ALL_CURRENCY_URL
         is_success, status_code, data = RestFulClient.get(url=url, headers=header, loggers=logger)
 
