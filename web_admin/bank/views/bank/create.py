@@ -4,7 +4,7 @@ from bank.views.banks_client import BanksClient
 from web_admin import setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_ALL_CURRENCY_URL
-
+from web_admin.api_logger import API_Logger
 from django.shortcuts import render
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -35,14 +35,16 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start create bank sofs ==========')
+        self.logger.info('========== Start get currency list ==========')
         is_success, status_code, data = BanksClient.get_currencies_list(header=self._get_headers(), logger=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, response=data, status_code=status_code)
 
         if not is_success:
             messages.error(self.request, data)
             data = []
         context = {'currencies': data}
-        self.logger.info('========== Finished create bank sofs ==========')
+        self.logger.info('========== Finished get currency list ==========')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -92,6 +94,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = BanksClient.create_bank(
             headers=self._get_headers(), params=params, logger=self.logger
         )
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
 
         if is_success:
             self.logger.info('========== Finished creating bank profile ==========')

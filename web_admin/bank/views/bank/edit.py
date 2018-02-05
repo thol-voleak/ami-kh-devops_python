@@ -2,7 +2,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from bank.views.banks_client import BanksClient
 from web_admin import setup_logger, api_settings
 from web_admin.restful_methods import RESTfulMethods
-
+from web_admin.api_logger import API_Logger
 from django.conf import settings
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -34,7 +34,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(EditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start get bank sofs ==========')
+        self.logger.info('========== Start get bank detail ==========')
         context = super(EditView, self).get_context_data(**kwargs)
         bank_id = context['bank_id']
 
@@ -45,10 +45,16 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, bank_detail = BanksClient.get_bank_details(
             params=params, headers=self._get_headers(), logger=self.logger
         )
+        API_Logger.post_logging(loggers=self.logger, params=params, response=bank_detail, status_code=status_code)
+
+        self.logger.info('========== Finished get bank detail ==========')
+
+        self.logger.info('========== Start get currency list ==========')
 
         is_success_currencies, status_code_currencies, currencies = BanksClient.get_currencies_list(
             header=self._get_headers(), logger=self.logger
         )
+        API_Logger.get_logging(loggers=self.logger, response=currencies, status_code=status_code_currencies)
 
         if not is_success:
             messages.error(self.request, status_message)
@@ -58,7 +64,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             currencies = []
 
         context = {'bank': bank_detail, 'currencies': currencies}
-        self.logger.info('========== Finished get bank sofs ==========')
+        self.logger.info('========== Finished get currency list ==========')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -109,6 +115,8 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, success = self._put_method(api_path=self.update_bank_sof_detail_url.format(id=bank_id),
                                          func_description="Bank Profile",
                                          logger=logger, params=params)
+        # API_Logger.put_logging(loggers=self.logger, params=params, response=data)
+
         if success:
             self.logger.info('========== Finished update bank profile ==========')
             messages.add_message(
