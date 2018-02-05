@@ -38,7 +38,7 @@
                           action="{{ request.path }}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Trigger</label>
+                            <label class="col-sm-3 control-label">Trigger *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
                                     {% for item in trigger %}
@@ -90,7 +90,7 @@
                         <div id="condition-group">
                             <div id="div_condition_1">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Condition type</label>
+                                    <label class="col-sm-3 control-label">Condition type *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
                                             <option value= "event_detail">Event Detail</option>
@@ -101,7 +101,7 @@
                                 </div>
                                 <div id="event_detail_area">
                                     <div class="form-group">
-                                    <label class="col-sm-3 control-label">Detail Name</label>
+                                    <label class="col-sm-3 control-label">Detail Name *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_1">
                                             {% for item in detail_names %}
@@ -115,7 +115,7 @@
                                     </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Key Value Type</label>
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>
                                         <div class="col-xs-3">
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
                                                 {% for type in key_value_types %}
@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Operator</label>
+                                        <label class="col-sm-3 control-label">Operator *</label>
                                         <div class="col-xs-3">
                                             <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
                                                 {% for oper in operations %}
@@ -166,7 +166,7 @@
                             <label class="col-sm-3 control-label"><b>Reward</b></label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Type</label>
+                            <label class="col-sm-3 control-label">Reward Type *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
                                     <option value= "fixed_cashback">Fixed Cashback</option>
@@ -192,7 +192,7 @@
                             <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                            <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
                                     <option value= "customer" selected>Customer</option>
@@ -201,7 +201,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Give Rewards to</label>
+                            <label class="col-sm-3 control-label">Give Rewards to *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
                                     <option value= "@@user_id@@">Actor who registered</option>
@@ -261,7 +261,7 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                                    <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
                                             <option value= "customer">Customer</option>
@@ -270,7 +270,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Give Rewards to</label>
+                                    <label class="col-sm-3 control-label">Give Rewards to *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
                                             <option value= "@@user_id@@">Actor who registered</option>
@@ -371,7 +371,7 @@
              var defaultConditionHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>\
                                 <div id="div_condition_' + counter + '">\
                                 <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Condition type</label>\
+                                    <label class="col-sm-3 control-label">Condition type *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_' + counter + '" counter="' + counter + '" onchange="selectConditionType(this.value, this)">\
                                             <option value= "event_detail">Event Detail</option>\
@@ -382,7 +382,7 @@
                                 </div>\
                                 <div id="event_detail_area">\
                                     <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_' + counter + '">\
                                             {% for item in detail_names %}\
@@ -396,7 +396,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -406,7 +406,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -555,7 +555,7 @@
                             <div id="data_send_group">\
                                 <div id="data_tobe_send_1">\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Data type</label>\
+                                        <label class="col-sm-3 control-label">Data type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_reward_data_type" name="reward_data_type" onchange="listenDataType(this, this.options[this.selectedIndex].value)">\
                                                 <option value= "from_database">From Database</option>\
@@ -565,7 +565,7 @@
                                     </div>\
                                     <div id="div_from_database">\
                                         <div class="form-group">\
-                                            <label class="col-sm-3 control-label">Detail Name</label>\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
                                             <div class="col-xs-3">\
                                                 <select class="form-control" id="ddl_reward_detail_name" name="reward_detail_name">\
                                                     {% for item in detail_names %}\
@@ -587,7 +587,7 @@
                                             </div>\
                                         </div>\
                                         <div class="form-group">\
-                                            <label class="col-sm-3 control-label">Key Value Type</label>\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
                                             <div class="col-xs-3">\
                                                 <select class="form-control" id="ddl_reward_key_value_type" name="reward_key_value_type" onchange="listenRewardKeyValType(this, this.options[this.selectedIndex].value)">\
                                                     {% for type in key_value_types %}\
@@ -756,7 +756,7 @@
     // Sum of
         var getSumOfKeyValueHtml = function(conditionNumber) {
               var sumOfKeyValueHtml =  '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Sum Key Name</label>\
+                                    <label class="col-sm-3 control-label">Sum Key Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_sum_key_name" name="sum_key_name_' + conditionNumber + '">\
                                             {% for key_name in sum_key_name %}\
@@ -766,7 +766,7 @@
                                     </div>\
                                 </div>\
                                 <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Operator</label>\
+                                    <label class="col-sm-3 control-label">Operator *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_sum_operator" name="sum_operator_' + conditionNumber +'">\
                                             {% for operator in sum_of_operators %}\
@@ -804,7 +804,7 @@
 
         var getFilterAreaHtml = function(conditionNumber, filterCount) {
              var filterAreaHtml = '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_filter_detail_name" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
                                             {% for item in detail_names %}\
@@ -818,7 +818,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_filter_key_value_type" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -828,7 +828,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_filter_operator" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -848,7 +848,7 @@
 
         var getEventDetailAreaHtml = function(conditionNumber) {
             var eventdetailareaHtml =     '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_' + conditionNumber + '" >\
                                             {% for item in detail_names %}\
@@ -862,7 +862,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -872,7 +872,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -978,21 +978,33 @@
     };
 
      var getCountOfHtml = function(conditionNumber) {
-              var CountOfHtml =  '<div class="form-group">\
-                                      <label class="col-sm-3 control-label">Operator</label>\
-                                      <div class="col-xs-3">\
-                                      <select class="form-control" id="ddl_operator" name="count_of_operator_' + conditionNumber + '">\
-                                          {% for oper in count_of_operators %}\
-                                            <option value= "{{ oper }}">{{ oper }}</option>\
-                                          {% endfor %}\
-                                      </select>\
-                                      </div>\
-                                      </div>\
-                                      <div class="form-group">\
-                                          <label class="col-sm-3 control-label">Count *</label>\
-                                          <div class="col-xs-3">\
-                                              <input min="0" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
+                       var CountOfHtml =  '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Count Key Name *</label>\
+                                    <div class="col-xs-3">\
+                                         <select class="form-control" id="ddl_event_name" name="event_name_' + conditionNumber + '">\
+                                                <option value="register_customer">Register</option>\
+                                                <option value="login">Log-in</option>\
+                                                <option value="create_order">Create order</option>\
+                                                <option value="executed_order">Payment</option>\
+                                                <option value="created_sof">Link Bank</option>\
+                                        </select>\
                                     </div>\
+                                </div>\
+                               <div class="form-group">\
+                                   <label class="col-sm-3 control-label">Operator *</label>\
+                                   <div class="col-xs-3">\
+                                       <select class="form-control" id="ddl_operator" name="count_of_operator_' + conditionNumber + '">\
+                                       {% for oper in count_of_operators %}\
+                                           <option value= "{{ oper }}">{{ oper }}</option>\
+                                        {% endfor %}\
+                                       </select>\
+                                   </div>\
+                               </div>\
+                              <div class="form-group">\
+                                  <label class="col-sm-3 control-label">Count *</label>\
+                                  <div class="col-xs-3">\
+                                      <input min="0" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
+                               </div>\
                                 </div>\
                                 <div class="form-group">\
                                      <label class="col-sm-3 control-label">Within *</label>\

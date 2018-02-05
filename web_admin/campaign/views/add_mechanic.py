@@ -157,6 +157,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             count_of_operator = request.POST.get('count_of_operator_' + suffix)
             count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
             within_type = request.POST.get('within_' + suffix)
+            event_name_filter_counter = request.POST.get('event_name_' + suffix)
 
             if condition_type == 'event_detail':
                 params = {'filter_type': condition_type}
@@ -318,6 +319,18 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                      self.logger.info('========== Finish adding Filter ==========')
                      if not success:
                          return JsonResponse({"status": 3, "msg": message})
+
+                 self.logger.info('========== Start adding Filter ==========')
+                 params = {
+                     'key_name': 'event_name',
+                     'key_value_type': 'text',
+                     'operator': "=",
+                     'key_value': event_name_filter_counter,
+                 }
+                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                 self.logger.info('========== Finish adding Filter ==========')
+                 if not success:
+                     return JsonResponse({"status": 3, "msg": message})
                  for i in range(1, int(count_of_filter_counter) + 1):
                      prefix = str(i)
                      key_value_type = prefix + '_key_value_type_' + suffix
