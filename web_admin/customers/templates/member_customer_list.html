@@ -172,12 +172,12 @@
                     <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
-                    {% if customer.is_permission_detail%}
-                        <button id="btn_detail" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_detail and customer.is_deleted is not True%}
+                        <button id="btn_detail-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
                     {% endif %}
-                    {% if customer.is_permission_update%}
-                        <button id="btn_edit" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_update and customer.is_deleted is not True%}
+                        <button id="btn_edit-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
                     {% endif %}
                     {% if customer.is_permission_delete and customer.is_deleted is not True%}
@@ -190,22 +190,22 @@
                             <span class="small">Delete</span>
                         </button>
                     {%endif%}
-                    {% if customer.is_permission_sof_bank%}
-                        <button id="btn_sof_list" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_sof_bank and customer.is_deleted is not True%}
+                        <button id="btn_sof_list-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
                     {% endif %}
-                    {% if customer.is_permission_identity%}
-                        <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_identity and customer.is_deleted is not True%}
+                        <button id="btn_identities-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
                     {% endif %}
-                    {% if customer.is_permission_suspend%}
+                    {% if customer.is_permission_suspend and customer.is_deleted is not True%}
                         {% if not customer.is_suspended %}
-                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
+                            <button id="btn_status-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Suspend</button>
                         {% else %}
-                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
+                            <button id="btn_status-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Activate</button>
@@ -276,6 +276,11 @@
                             } else if(response.status == 2) {
                                 // success
                                 $('#btn-delete-' + customer_id).remove();
+                                $('#btn_edit-' + customer_id).remove();
+                                $('#btn_detail-' + customer_id).remove();
+                                $('#btn_sof_list-' + customer_id).remove();
+                                $('#btn_status-' + customer_id).remove();
+                                $('#btn_identities-' + customer_id).remove();
                                 $('#is_deleted_'+ customer_id).text("Yes");
                                 $('#id_'+ customer_id).css('text-decoration', 'line-through');
                                 $('#firstname_'+ customer_id).css('text-decoration', 'line-through');
