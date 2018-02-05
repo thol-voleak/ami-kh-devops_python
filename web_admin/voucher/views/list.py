@@ -44,6 +44,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'permissions': permissions,
             'claim_status_list': status_list,
             'hold_status_list': self._get_hold_status_list(),
+            'cash_in_user_type_list': self._get_user_type_cash_in_list(),
+            'cash_in_user_type' : '',
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -58,8 +60,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         expire_from_date = request.POST.get('expiration_date_from')
         expire_to_date = request.POST.get('expiration_date_to')
         hold_status = request.POST.get('hold_status')
+        cash_in_user_type = request.POST.get('user_type_cash_in')
 
         body = {}
+        if cash_in_user_type != '':
+            body['cash_in_user_type'] = cash_in_user_type
         if cash_in_id:
             body['cash_in_user_id'] = int(cash_in_id)
         if cash_out_id:
@@ -120,6 +125,9 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'permissions': permissions,
             'hold_status_list': self._get_hold_status_list(),
             'hold_status': hold_status,
+            'cash_in_user_type_list': self._get_user_type_cash_in_list(),
+            'cash_in_user_type' : cash_in_user_type,
+
         }
         return render(request, self.template_name, context)
 
@@ -136,6 +144,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "All", "value": ""},
             {"name": "Hold", "value": "True"},
             {"name": "Unhold", "value": "False"},
+        ]
+
+    def _get_user_type_cash_in_list(self):
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Agent", "value": "agent"},
+            {"name": "Customer", "value": "customer"},
         ]
 
     def _search_for_vouchers(self, body):

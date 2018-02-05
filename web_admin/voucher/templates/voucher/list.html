@@ -116,10 +116,15 @@
                  <div class="form-group">
                     <label class="col-sm-2 control-label">Cash In User Type</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="user_type_cash_in"
-                               value="Agent"
-                               id="txt_user_type_cash_in" readonly>
+                        <select class="form-control" id="ddl_user_type_cash_in" name="user_type_cash_in" >
+                                {% for item in cash_in_user_type_list %}
+                                {%if item.value == cash_in_user_type%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                     <label class="col-sm-2 control-label">Cash In ID</label>
                     <div class="col-xs-2">
