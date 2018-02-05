@@ -923,14 +923,6 @@
         }
      };
 
-      var validateNumber = function (elem, value) {
-            if(value != "" && parseFloat(value) <= 0) {
-                elem.setCustomValidity('This field should be positive.');
-            } else {
-                elem.setCustomValidity('');
-            }
-        };
-
     var getWithinDateHtml = function(conditionNumber) {
         var withinDateHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
@@ -960,7 +952,7 @@
         var withinTimeHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                <input min="0" onkeyup="validateNumber(this, this.value)" id="txt_timebox" class="form-control input-rounded" name="txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 18px;" id="lbl_minute">min</div>\
+                                <input min="0" id="txt_timebox" class="form-control input-rounded" name="txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 18px;" id="lbl_minute">min</div>\
                               </div>';
         return withinTimeHtml;
     };
@@ -999,7 +991,7 @@
                                       <div class="form-group">\
                                           <label class="col-sm-3 control-label">Count *</label>\
                                           <div class="col-xs-3">\
-                                              <input min="0" onkeyup="validateNumber(this, this.value)" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
+                                              <input min="0" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
                                     </div>\
                                 </div>\
                                 <div class="form-group">\
