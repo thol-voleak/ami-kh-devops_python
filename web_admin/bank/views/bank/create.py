@@ -35,14 +35,16 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.logger.info('========== Start create bank sofs ==========')
+        self.logger.info('========== Start get currency list ==========')
         is_success, status_code, data = BanksClient.get_currencies_list(header=self._get_headers(), logger=self.logger)
+
+        API_Logger.get_logging(loggers=self.logger, response=data, status_code=status_code)
 
         if not is_success:
             messages.error(self.request, data)
             data = []
         context = {'currencies': data}
-        self.logger.info('========== Finished create bank sofs ==========')
+        self.logger.info('========== Finished get currency list ==========')
         return context
 
     def post(self, request, *args, **kwargs):
