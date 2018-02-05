@@ -927,10 +927,10 @@
         var withinDateHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" onchange="changeDateTime(' + conditionNumber + ')" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
+                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
                                 </div>\
                                 <div class="col-xs-2">\
-                                    <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" onchange="changeDateTime(' + conditionNumber + ')" type=time min=00:00 max=23:59 step=60 value="00:00"\
+                                    <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
                                     id="dtp_within_from_time" name="within_from_time_' + conditionNumber + '"\
                                     value="{{ within_from_time|default_if_none:'00:00' }}"\
                                     style="height:40px;" required >\
@@ -939,10 +939,10 @@
                             <div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" onchange="changeDateTime(' + conditionNumber + ')" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
+                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
                                 </div>\
                                 <div class="col-xs-2">\
-                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" onchange="changeDateTime(' + conditionNumber + ')" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" required >\
+                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" required >\
                                 </div>\
                             </div>';
         return withinDateHtml;
