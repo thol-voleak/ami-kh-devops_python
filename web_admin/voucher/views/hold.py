@@ -43,7 +43,6 @@ class UnholdVoucher(TemplateView, GetHeaderMixin):
 
     def post(self, request, voucher_id):
         self.logger.info('========== Start unhold voucher ==========')
-        print("fsadsdbdfghdfghdfghdgh")
         url = settings.DOMAIN_NAMES + UPDATE_HOLD_STATUS.format(voucher_id=voucher_id)
         params = {
             'is_on_hold': False
