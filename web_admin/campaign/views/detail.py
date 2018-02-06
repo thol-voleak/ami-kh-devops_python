@@ -114,6 +114,31 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                     limitation['recipient'] = filter_limit['key_value']
                             i['limitation_list'].append(limitation)
 
+        # Get result for Count Of
+        for i in mechanic:
+            if i.get('is_deleted'):
+                continue
+            for con in i.get('condition_list'):
+                if con.get('filter_type') != 'count_of':
+                    continue
+                if not con.get('filter'):
+                    continue
+                for filter in con['filter'][::]:
+                    if filter.get('key_name') == 'event_name':
+                        con['count_key_name'] = filter.get('key_value')
+                        con['filter'].remove(filter)
+                    elif filter.get('key_name') == 'event_created_timestamp':
+                        if '@@@@event_created_timestamp@@-minutes(' in filter.get('key_value'):
+                            con['within'] = 'Timebox'
+                            con['timebox'] = filter['key_value'].split('@@@@event_created_timestamp@@-minutes(')[1].split(')@@')[0]
+                        elif '@@event_created_timestamp@@' not in filter.get('key_value'):
+                            con['within'] = 'Date'
+                            if filter.get('operator') == '>=':
+                                con['within_start'] = filter.get('key_value')
+                            if filter.get('operator') == '<=':
+                                con['within_end'] = filter.get('key_value')
+                        con['filter'].remove(filter)
+
         context.update({
             'data': data,
             'active_mechanic_count': active_mechanic_count,
