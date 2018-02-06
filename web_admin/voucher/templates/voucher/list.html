@@ -363,16 +363,13 @@
             }
             console.log([success_ids,fail_ids]);
             if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records succesfully update to Hold");
+                showHoldSucessMessage(success_ids + " of records successfully update to Hold");
             }
             if(fail_ids > 0){
                 showHoldFailedMessage(fail_ids + " of records failed update to Hold");
             }
         });
     }
-
-
-
     function unHold(){
         var arr = [];
         success_ids = 0;
@@ -428,10 +425,10 @@
             }
             console.log([success_ids,fail_ids]);
             if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records succesfully update to Hold");
+                showHoldSucessMessage(success_ids + " of records successfully update to Unhold");
             }
             if(fail_ids > 0){
-                showHoldFailedMessage(fail_ids + " of records failed update to Hold");
+                showHoldFailedMessage(fail_ids + " of records failed update to Unhold");
             }
         });
     }
