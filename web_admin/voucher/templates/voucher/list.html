@@ -304,7 +304,7 @@
 
     function hold(){
         var arr = [];
-        var url = '/admin-portal/voucher/hold/1/';
+        var url = '/admin-portal/voucher/hold';
         $('input.IsUnhold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
@@ -336,7 +336,7 @@
     }
     function unHold(){
         var arr = [];
-        var url = '/admin-portal/voucher/unhold/1/';
+        var url = '/admin-portal/voucher/unhold';
         $('input.IsHold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
