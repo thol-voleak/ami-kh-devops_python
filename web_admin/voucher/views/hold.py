@@ -1,6 +1,8 @@
 from django.conf import settings
 from web_admin import api_settings, setup_logger
 from web_admin import ajax_functions
+from web_admin import setup_logger, RestFulClient
+from authentications.apps import InvalidAccessToken
 import logging
 from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
@@ -24,14 +26,33 @@ class HoldVoucher(TemplateView, GetHeaderMixin):
         return super(HoldVoucher, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, voucher_id):
-        self.logger.info('========== Start hold voucher ==========')
-        url = settings.DOMAIN_NAMES + UPDATE_HOLD_STATUS.format(voucher_id=voucher_id)
+        success_count = 0
+        failed_count = 0
+        success_ids = []
+        failed_ids = []
+        ids = request.POST.getlist("ids[]")
         params = {
             'is_on_hold': True
         }
-        result = ajax_functions._put_method(request, url, "", self.logger, params)
-        self.logger.info('========== Finish hold voucher ==========')
-        return result
+        for i in ids:
+            self.logger.info('========== Start hold voucher ==========')
+            url = settings.DOMAIN_NAMES + UPDATE_HOLD_STATUS.format(voucher_id=i)
+            is_success, status_code, status_message, data = RestFulClient.put(url=url,
+                                                                           loggers=self.logger, headers=self._get_headers(),
+                                                                           params=params)
+            if is_success:
+                success_count  += 1
+                success_ids.append(i)
+            elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
+            else:
+                failed_count += 1
+                failed_ids.append(i)
+            self.logger.info('========== Finish hold voucher ==========')
+
+        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count})
 
 class UnholdVoucher(TemplateView, GetHeaderMixin):
     logger = logger
@@ -42,12 +63,31 @@ class UnholdVoucher(TemplateView, GetHeaderMixin):
         return super(UnholdVoucher, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, voucher_id):
-        self.logger.info('========== Start unhold voucher ==========')
-        url = settings.DOMAIN_NAMES + UPDATE_HOLD_STATUS.format(voucher_id=voucher_id)
+        success_count = 0
+        failed_count = 0
+        success_ids = []
+        failed_ids = []
+        ids = request.POST.getlist("ids[]")
         params = {
             'is_on_hold': False
         }
-        result = ajax_functions._put_method(request, url, "", self.logger, params)
-        self.logger.info('========== Finish unhold voucher ==========')
-        return result
+        for i in ids:
+            self.logger.info('========== Start unhold voucher ==========')
+            url = settings.DOMAIN_NAMES + UPDATE_HOLD_STATUS.format(voucher_id=i)
+            is_success, status_code, status_message, data = RestFulClient.put(url=url,
+                                                                           loggers=self.logger, headers=self._get_headers(),
+                                                                           params=params)
+            if is_success:
+                success_count  += 1
+                success_ids.append(i)
+            elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
+            else:
+                failed_count += 1
+                failed_ids.append(i)
+            self.logger.info('========== Finish unhold voucher ==========')
+
+        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count})
 

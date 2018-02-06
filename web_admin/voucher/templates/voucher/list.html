@@ -301,73 +301,35 @@
         var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
         $('#select-all').prop('checked', allChecked);
     });
+
     function hold(){
         var arr = [];
         success_ids = 0;
         fail_ids = 0;
-        var results = [], deferred, deferreds = [];
+        var url = '/admin-portal/voucher/hold/1/';
         $('input.IsUnhold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
         console.log(arr);
-        for(var i = 0; i <arr.length; i++){
-            dict = {};
-            voucher_id = arr[i];
-            var url = '/admin-portal/voucher/hold/'+ voucher_id+'/';
-            deferred = $.ajax({
+        $.ajax({
             url : url,
             type : "POST",
-            data: {"is_on_hold":true},
+            data: {"ids":arr},
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
-            success: function(result) {
-                // 2. Store the results in an array
-                dict.key = voucher_id;
-                dict.value = result;
-                results.push(dict);
+            success: function (response) {
+                for(i=0;i<response.success_ids.length; i++){
+                    key=response.success_ids[i];
+                    $("#voucher-"+key).find('#hold-status').text('Hold');
+                    $("#chk_voucher_"+key).find('.IsUnhold').replaceWith('.IsHold');
                 }
-            })
-            deferreds.push(deferred);
-            console.log(deferreds);
-            // var callapi = callToHold(url);
-            // if(callapi[0] == 1 ){
-            //     console.log("#voucher-id is " + voucher_id);
-            //     $("#voucher-"+voucher_id).find('#hold-status').text('Hold');
-            // }
-            // success_ids = success_ids + callapi[0];
-            // fail_ids = fail_ids + callapi[1];
-        }
-        $.when.apply($, deferreds).then(function() {
-            var success_ids = 0;
-            var fail_ids = 0;
-            console.log(results);
-            for(i=0; i<results.length; i++){
-                var result = results[i];
-                var key = result.key;
-                var value =result.value;
-                console.log(result);
-                console.log(key);
-                console.log(value);
-                if (value.status == 1) {
-                // Logout
-                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                location.reload();
-            } else if (value.status == 2) {
-                // success
-                success_ids = success_ids +1;
-                $("#voucher-"+key).find('#hold-status').text('Unhold');
-            } else {
-                // Failed
-                fail_ids = fail_ids + 1;
-            }
-            }
-            console.log([success_ids,fail_ids]);
-            if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records successfully updated to status Hold");
-            }
-            if(fail_ids > 0){
-                showHoldFailedMessage(fail_ids + " of records failed updated to status Hold");
+                if (response.success_count > 0){
+                    showHoldSucessMessage(response.success_count + " of records succesfully updated to Hold");
+                }
+                if (response.failed_count > 0){
+                    showHoldFailedMessage(response.failed_count + " of records failed updated to Hold");
+                }
             }
         });
     }
@@ -375,164 +337,33 @@
         var arr = [];
         success_ids = 0;
         fail_ids = 0;
-        var results = [], deferred, deferreds = [];
+        var url = '/admin-portal/voucher/unhold/1/';
         $('input.IsHold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
         console.log(arr);
-        for(var i = 0; i <arr.length; i++){
-            dict = {};
-            voucher_id = arr[i];
-            var url = '/admin-portal/voucher/unhold/'+ voucher_id+'/';
-            deferred = $.ajax({
+        $.ajax({
             url : url,
             type : "POST",
-            data: {"is_on_hold":false},
+            data: {"ids":arr},
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
-            success: function(result) {
-                // 2. Store the results in an array
-                dict.key = voucher_id;
-                dict.value = result;
-                results.push(dict);
+            success: function (response) {
+                for(i=0;i<response.success_ids.length; i++){
+                    key=response.success_ids[i];
+                    $("#voucher-"+key).find('#hold-status').text('Unhold');
+                    $("#chk_voucher_"+key).find('.IsHold').replaceWith('.IsUnhold');
                 }
-            })
-            deferreds.push(deferred);
-            console.log(deferreds);
-        }
-        $.when.apply($, deferreds).then(function() {
-            var success_ids = 0;
-            var fail_ids = 0;
-            console.log(results);
-            for(i=0; i<results.length; i++){
-                var result = results[i];
-                var key = result.key;
-                var value =result.value;
-                console.log(result);
-                console.log(key);
-                console.log(value);
-                if (value.status == 1) {
-                // Logout
-                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                location.reload();
-            } else if (value.status == 2) {
-                // success
-                success_ids = success_ids +1;
-                $("#voucher-"+key).find('#hold-status').text('Unhold');
-            } else {
-                // Failed
-                fail_ids = fail_ids + 1;
-            }
-            }
-            console.log([success_ids,fail_ids]);
-            if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records successfully updated to status Unhold");
-            }
-            if(fail_ids > 0){
-                showHoldFailedMessage(fail_ids + " of records failed updated to status Unhold");
+                if (response.success_count > 0){
+                    showHoldSucessMessage(response.success_count + " of records succesfully updated to Unhold");
+                }
+                if (response.failed_count > 0){
+                    showHoldFailedMessage(response.failed_count + " of records failed updated to Unhold");
+                }
             }
         });
     }
-
-    // function callToHold(url){
-    //     var success_hold;
-    //     var fail_hold;
-    //     $.ajax({
-    //         url : url,
-    //         type : "POST",
-    //         data: {"is_on_hold":true},
-    //         beforeSend: function (xhr) {
-    //             xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-    //         },
-    //         success: function (response) {
-    //         if (response.status == 1) {
-    //             // Logout
-    //             var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-    //             location.reload();
-    //         } else if (response.status == 2) {
-    //             // success
-    //             success_hold = 1;
-    //         } else {
-    //             // Failed
-    //             fail_hold = 1;
-    //         }
-    //         }
-    //     });
-    //     return [success_hold, fail_hold];
-    // }
-
-    // function unHold(){
-    //     var arr = [];
-    //     success_ids = 0;
-    //     fail_ids = 0;
-    //     var results = [], deferred, deferreds = [];
-    //     $('input.IsHold:checkbox:checked').each(function () {
-    //         arr.push($(this).val());
-    //     });
-    //     console.log(arr);
-        
-    //     for(var i = 0; i <arr.length; i++){
-    //         voucher_id = arr[i];
-    //         var url = '/admin-portal/voucher/unhold/'+ voucher_id+'/';
-    //         // if(callToUnhold(url)[0]==1){
-    //         //     console.log("#voucher-id is " + voucher_id);
-    //         //     $("#voucher-"+voucher_id).find('#hold-status').text('Unhold');
-    //         // }
-    //         // success_ids = success_ids + callToUnhold(url)[0];
-    //         // fail_ids = fail_ids + callToUnhold(url)[1];
-    //         deferred = $.ajax({
-    //         url : '/admin-portal/voucher/unhold/'+ voucher_id+'/',
-    //         type : "POST",
-    //         data: {"is_on_hold":false},
-    //         beforeSend: function (xhr) {
-    //             xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-    //         },
-    //         success: function(result) {
-    //             // 2. Store the results in an array
-    //             results.push(result);}
-    //         })
-    //         deferreds.push(deferred);
-    //     }
-    //     $.when.apply($, deferreds).then(function() {
-    //         // 3. Process the result array.
-    //         console.log(results);
-    //     });
-    //     console.log([success_ids,fail_ids]);
-    //     if(success_ids > 0){
-    //         showSuccessMessage(success_ids + " of records succesfully update to Unhold");
-    //     }
-    //     if(fail_ids > 0){
-    //         showErrorMessage(fail_ids + " of records failed update to Unhold");
-    //     }
-    // }
-
-    // function callToUnhold(url){
-    //     var success_unhold;
-    //     var fail_unhold;
-    //     $.ajax({
-    //         url : url,
-    //         type : "POST",
-    //         data: {"is_on_hold":false},
-    //         beforeSend: function (xhr) {
-    //             xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-    //         },
-    //         success: function (response) {
-    //         if (response.status == 1) {
-    //             // Logout
-    //             var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-    //             location.reload();
-    //         } else if (response.status == 2) {
-    //             // success
-    //             success_unhold = 1;
-    //         } else {
-    //             // Failed
-    //             fail_unhold = 1;
-    //         }
-    //         }
-    //     });
-    //     return [success_unhold, fail_unhold];
-    // }
 
     function showErrorMessage(msg) {
         $("#alert-msg").text(msg)
