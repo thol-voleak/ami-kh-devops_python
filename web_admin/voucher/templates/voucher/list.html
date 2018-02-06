@@ -304,13 +304,13 @@
 
     function hold(){
         var arr = [];
-        success_ids = 0;
-        fail_ids = 0;
         var url = '/admin-portal/voucher/hold/1/';
         $('input.IsUnhold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
-        console.log(arr);
+        if(arr.length == 0) {
+            return;
+        }
         $.ajax({
             url : url,
             type : "POST",
@@ -319,10 +319,11 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
-                for(i=0;i<response.success_ids.length; i++){
+                for(var i = 0; i < response.success_ids.length; i++){
                     key=response.success_ids[i];
                     $("#voucher-"+key).find('#hold-status').text('Hold');
-                    $("#chk_voucher_"+key).find('.IsUnhold').replaceWith('.IsHold');
+                    $("#chk_voucher_"+key).removeClass('IsUnhold');
+                    $("#chk_voucher_"+key).addClass('IsHold');
                 }
                 if (response.success_count > 0){
                     showHoldSucessMessage(response.success_count + " of records succesfully updated to Hold");
@@ -335,13 +336,13 @@
     }
     function unHold(){
         var arr = [];
-        success_ids = 0;
-        fail_ids = 0;
         var url = '/admin-portal/voucher/unhold/1/';
         $('input.IsHold:checkbox:checked').each(function () {
             arr.push($(this).val());
         });
-        console.log(arr);
+         if(arr.length == 0) {
+            return;
+        }
         $.ajax({
             url : url,
             type : "POST",
@@ -353,7 +354,8 @@
                 for(i=0;i<response.success_ids.length; i++){
                     key=response.success_ids[i];
                     $("#voucher-"+key).find('#hold-status').text('Unhold');
-                    $("#chk_voucher_"+key).find('.IsHold').replaceWith('.IsUnhold');
+                    $("#chk_voucher_"+key).removeClass('IsHold');
+                    $("#chk_voucher_"+key).addClass('IsUnhold');
                 }
                 if (response.success_count > 0){
                     showHoldSucessMessage(response.success_count + " of records succesfully updated to Unhold");
@@ -366,44 +368,33 @@
     }
 
     function showErrorMessage(msg) {
-        $("#alert-msg").text(msg)
+        $("#alert-msg").text(msg);
         $('#alert-client').removeClass("alert-success");
         $('#alert-client').addClass("alert-danger");
-        //$("#alert-client").prop("hidden", false);
-        //$("#alert-client").prop("style", "display: block;");
-
         $("#msg-add-client").prop("hidden", true);
         $("#msg-update-client").prop("hidden", true);
         $("#msg-add-service").prop("hidden", true);
-
         $("#alert-client").show();
-
-
-
         $("html, body").animate({scrollTop: 0}, "slow");
     }
 
     function showSuccessMessage(msg) {
-        $("#alert-msg").text(msg)
+        $("#alert-msg").text(msg);
         $('#alert-client').removeClass("alert-danger");
         $('#alert-client').addClass("alert-success");
-        //$("#alert-client").prop("hidden", false);
-        //$("#alert-client").prop("style", "display: block;");
-
         $("#msg-add-client").prop("hidden", true);
         $("#msg-update-client").prop("hidden", true);
         $("#msg-add-service").prop("hidden", true);
-
         $("#alert-client").show();
         $("html, body").animate({scrollTop: 0}, "slow");
     }
     function showHoldSucessMessage(msg){
-            $("#alert-msg-hold-success").text(msg)
+            $("#alert-msg-hold-success").text(msg);
             $("#alert-client-hold-success").show();
             $("html, body").animate({scrollTop: 0}, "slow");
     }
     function showHoldFailedMessage(msg){
-            $("#alert-msg-hold-failed").text(msg)
+            $("#alert-msg-hold-failed").text(msg);
             $("#alert-client-hold-failed").show();
             $("html, body").animate({scrollTop: 0}, "slow");
     }
