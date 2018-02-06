@@ -80,11 +80,11 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             order_balance_movement = data['order_balance_movements']
             for order in order_balance_movement:
                 order['converted_status'] = BALANCE_MOVEMENT_STATUS_ORDER.get(order['status'], 'UN_KNOWN')
-                if order['action_type'] == "Debit":
+                if order['action_type'].lower() == "debit":
                     total_debit += order['amount']
                     order['debit_amount'] = order['amount']
                     order['credit_amount'] = '-'
-                if order['action_type'] == "Credit":
+                if order['action_type'].lower() == "credit":
                     total_credit += order['amount']
                     order['credit_amount'] = order['amount']
                     order['debit_amount'] = '-'
