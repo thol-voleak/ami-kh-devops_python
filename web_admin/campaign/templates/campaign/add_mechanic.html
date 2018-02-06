@@ -981,7 +981,7 @@
                        var CountOfHtml =  '<div class="form-group">\
                                     <label class="col-sm-3 control-label">Count Key Name *</label>\
                                     <div class="col-xs-3">\
-                                         <select class="form-control" id="ddl_event_name" name="event_name_' + conditionNumber + '">\
+                                         <select class="form-control" id="ddl_count_key_name" name="event_name_' + conditionNumber + '">\
                                                 <option value="register_customer">Register</option>\
                                                 <option value="login">Log-in</option>\
                                                 <option value="create_order">Create order</option>\
@@ -993,7 +993,7 @@
                                <div class="form-group">\
                                    <label class="col-sm-3 control-label">Operator *</label>\
                                    <div class="col-xs-3">\
-                                       <select class="form-control" id="ddl_operator" name="count_of_operator_' + conditionNumber + '">\
+                                       <select class="form-control" id="ddl_count_of_operator" name="count_of_operator_' + conditionNumber + '">\
                                        {% for oper in count_of_operators %}\
                                            <option value= "{{ oper }}">{{ oper }}</option>\
                                         {% endfor %}\
