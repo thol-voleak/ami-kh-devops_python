@@ -284,7 +284,10 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                      count_of_input_end_date = request.POST.get('within_to_' + suffix)
                      count_of_input_start_time = request.POST.get('within_from_time_' + suffix)
                      count_of_input_end_time = request.POST.get('within_to_time_' + suffix)
-
+                     if not count_of_input_start_time:
+                         count_of_input_start_time = '00:00'
+                     if not count_of_input_end_time:
+                         count_of_input_end_time = '00:00'
                      count_of_start_hour = int(count_of_input_start_time[0:2])
                      count_of_start_minute = int(count_of_input_start_time[-2:])
                      count_of_end_hour = int(count_of_input_end_time[0:2])
