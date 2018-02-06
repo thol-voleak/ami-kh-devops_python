@@ -329,6 +329,7 @@
                 }
             })
             deferreds.push(deferred);
+            console.log(deferreds);
             // var callapi = callToHold(url);
             // if(callapi[0] == 1 ){
             //     console.log("#voucher-id is " + voucher_id);
@@ -363,10 +364,10 @@
             }
             console.log([success_ids,fail_ids]);
             if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records successfully update to Hold");
+                showHoldSucessMessage(success_ids + " of records successfully update to status Hold");
             }
             if(fail_ids > 0){
-                showHoldFailedMessage(fail_ids + " of records failed update to Hold");
+                showHoldFailedMessage(fail_ids + " of records failed update to status Hold");
             }
         });
     }
@@ -398,6 +399,7 @@
                 }
             })
             deferreds.push(deferred);
+            console.log(deferreds);
         }
         $.when.apply($, deferreds).then(function() {
             var success_ids = 0;
@@ -425,10 +427,10 @@
             }
             console.log([success_ids,fail_ids]);
             if(success_ids > 0){
-                showHoldSucessMessage(success_ids + " of records successfully update to Unhold");
+                showHoldSucessMessage(success_ids + " of records successfully update to status Unhold");
             }
             if(fail_ids > 0){
-                showHoldFailedMessage(fail_ids + " of records failed update to Unhold");
+                showHoldFailedMessage(fail_ids + " of records failed update to status Unhold");
             }
         });
     }
