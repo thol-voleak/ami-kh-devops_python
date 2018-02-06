@@ -195,11 +195,11 @@
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
-                        <li><a href="#">Hold</a></li>
+                        <li><a onclick="hold()">Hold</a></li>
                         {%endif%}
                         {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
-                        <li><a href="#">Unhold</a></li>
-                        {%endif%}
+                        <li><a onclick="unHold()">Unhold</a></li>
+                        {%endif%
                     </ul>
                 </div>
                 {%endif%}
@@ -223,14 +223,15 @@
                     </thead>
                     <tbody>
                     {% for i in data %}
-                        <tr>
-                            <td><input type="checkbox" name="checkbox-{{ forloop.counter0 }}" id="chk_voucher_{{ i.voucher_id|default_if_none:'' }}"/></td>
+                        <!-- <div > -->
+                        <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
+                            <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
                             <td>{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
-                            <td>{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
+                            <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
                             <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
@@ -242,6 +243,7 @@
                                 {% endif %}
                             </td>
                         </tr>
+                    <!-- </div> -->
                     {% endfor %}
                     </tbody>
                 </table>
@@ -278,18 +280,210 @@
         }
         document.getElementById("submit-form").submit();
     };
-    $('#select_all').click(function(event) {
-  if(this.checked) {
-      // Iterate each checkbox
-      $(':checkbox').each(function() {
-          this.checked = true;
-      });
-  }
-  else {
-    $(':checkbox').each(function() {
-          this.checked = false;
-      });
-  }
-});
+
+
+    $('#select-all').on('change', function() {
+        $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+    });
+    $('.checkboxlist input[type="checkbox"]').on('change', function () {
+        var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
+        $('#select-all').prop('checked', allChecked);
+    });
+    function hold(){
+        var arr = [];
+        success_ids = 0;
+        fail_ids = 0;
+        $('input.IsUnhold:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+        console.log(arr);
+        for(var i = 0; i <arr.length; i++){
+            voucher_id = arr[i];
+            var url = '/admin-portal/voucher/hold/'+ voucher_id+'/';
+            var callapi = callToHold(url);
+            if(callapi[0] == 1 ){
+                console.log("#voucher-id is " + voucher_id);
+                $("#voucher-"+voucher_id).find('#hold-status').text('Hold');
+            }
+            success_ids = success_ids + callapi[0];
+            fail_ids = fail_ids + callapi[1];
+        }
+        console.log([success_ids,fail_ids]);
+        if(success_ids > 0){
+            showSuccessMessage(success_ids + " of records succesfully update to Hold");
+        }
+        if(fail_ids > 0){
+            showErrorMessage(fail_ids + " of records failed update to Hold");
+        }
+    }
+
+    function callToHold(url){
+        var success_hold;
+        var fail_hold;
+        var url1 =url;
+        // $.ajax({
+        //     url : url,
+        //     type : "POST",
+        //     data: {"is_on_hold":true},
+        //     beforeSend: function (xhr) {
+        //         xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        //     },
+        //     success: function (response) {
+        //     if (response.status == 1) {
+        //         // Logout
+        //         var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+        //         location.reload();
+        //     } else if (response.status == 2) {
+        //         // success
+        //         success_hold = 1;
+        //     } else {
+        //         // Failed
+        //         fail_hold = 1;
+        //     }
+        //     }
+        // });
+        // function getData() {
+        //     return $.ajax({
+        //         url : url1,
+        //         type : "POST",
+        //         data: {"is_on_hold":true},
+        //         beforeSend: function (xhr) {
+        //                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        //             },
+        //     });
+        // }
+
+        // function handleData(response /* , textStatus, jqXHR */ ) {
+        //     if (response.status == 1) {
+        //                 // Logout
+        //                 var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+        //                 location.reload();
+        //             } else if (response.status == 2) {
+        //                 // success
+        //                 success_hold = 1;
+        //             } else {
+        //                 // Failed
+        //                 fail_hold = 1;
+        //             }
+        // }
+        // getData().done(handleData);
+        // console.log(getData().done(handleData));
+        response = $.ajax({
+            url : url,
+            type : "POST",
+            data: {"is_on_hold":true},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            dataType: 'json',
+            done: function(response){
+                valid=response;
+                console.log(valid);
+            }
+            })
+        response = JSON.stringify(response);
+        console.log("response is " + response);
+            if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                        location.reload();
+                    } else if (response.status == 2) {
+                        // success
+                        success_hold = 1;
+                    } else {
+                        // Failed
+                        fail_hold = 1;
+                    }
+        return [success_hold, fail_hold];
+    }
+
+    function unHold(){
+        var arr = [];
+        success_ids = 0;
+        fail_ids = 0;
+        $('input.IsHold:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+        console.log(arr);
+        for(var i = 0; i <arr.length; i++){
+            voucher_id = arr[i];
+            var url = '/admin-portal/voucher/unhold/'+ voucher_id+'/';
+            var callapi = callToUnhold(url);
+            console.log("callapi is"+callapi);
+            if(callapi[0] ==1 ){
+                console.log("#voucher-id is " + voucher_id);
+                $("#voucher-"+voucher_id).find('#hold-status').text('Unhold');
+            }
+            success_ids = success_ids + callapi[0];
+            fail_ids = fail_ids + callapi[1];
+        }
+        console.log([success_ids,fail_ids]);
+        if(success_ids > 0){
+            showSuccessMessage(success_ids + " of records succesfully update to Unhold");
+        }
+        if(fail_ids > 0){
+            showErrorMessage(fail_ids + " of records failed update to Unhold");
+        }
+    }
+
+    function callToUnhold(url){
+        var success_unhold;
+        var fail_unhold;
+        $.ajax({
+            url : url,
+            type : "POST",
+            data: {"is_on_hold":false},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+            if (response.status == 1) {
+                // Logout
+                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                location.reload();
+            } else if (response.status == 2) {
+                // success
+                success_unhold = 1;
+            } else {
+                // Failed
+                fail_unhold = 1;
+            }
+            }
+        });
+        return [success_unhold, fail_unhold];
+    }
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-success");
+        $('#alert-client').addClass("alert-danger");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+
+
+
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg)
+        $('#alert-client').removeClass("alert-danger");
+        $('#alert-client').addClass("alert-success");
+        //$("#alert-client").prop("hidden", false);
+        //$("#alert-client").prop("style", "display: block;");
+
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+
+        $("#alert-client").show();
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
 </script>
 {% endblock %}
