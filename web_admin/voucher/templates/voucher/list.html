@@ -303,6 +303,12 @@
     });
 
     function hold(){
+        $("#msg-add-client").hide();
+        $("#msg-update-client").hide();
+        $("#msg-add-service").hide();
+        $("#alert-client").hide();
+        $("#alert-client-hold-success").hide();
+        $("#alert-client-hold-failed").hide();
         var arr = [];
         var url = '/admin-portal/voucher/hold';
         $('input.IsUnhold:checkbox:checked').each(function () {
@@ -335,6 +341,12 @@
         });
     }
     function unHold(){
+        $("#msg-add-client").hide();
+        $("#msg-update-client").hide();
+        $("#msg-add-service").hide();
+        $("#alert-client").hide();
+        $("#alert-client-hold-success").hide();
+        $("#alert-client-hold-failed").hide();
         var arr = [];
         var url = '/admin-portal/voucher/unhold';
         $('input.IsHold:checkbox:checked').each(function () {
