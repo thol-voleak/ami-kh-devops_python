@@ -313,7 +313,7 @@
         var url = '/admin-portal/voucher/hold';
         $('input.IsUnhold:checkbox:checked').each(function () {
             arr.push($(this).val());
-        });
+        }); 
         if(arr.length == 0) {
             return;
         }
@@ -325,17 +325,25 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
-                for(var i = 0; i < response.success_ids.length; i++){
-                    key=response.success_ids[i];
-                    $("#voucher-"+key).find('#hold-status').text('Hold');
-                    $("#chk_voucher_"+key).removeClass('IsUnhold');
-                    $("#chk_voucher_"+key).addClass('IsHold');
+                console.log
+                if(response.invalid_access_token){
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
                 }
-                if (response.success_count > 0){
-                    showHoldSucessMessage(response.success_count + " of records successfully updated to Hold");
-                }
-                if (response.failed_count > 0){
-                    showHoldFailedMessage(response.failed_count + " of records failed update to Hold");
+                else {
+                    for(var i = 0; i < response.success_ids.length; i++){
+                        key=response.success_ids[i];
+                        $("#voucher-"+key).find('#hold-status').text('Hold');
+                        $("#chk_voucher_"+key).removeClass('IsUnhold');
+                        $("#chk_voucher_"+key).addClass('IsHold');
+                    }
+                        if (response.success_count > 0){
+                            showHoldSucessMessage(response.success_count + " of records successfully updated to Hold");
+                        }
+                        if (response.failed_count > 0){
+                            showHoldFailedMessage(response.failed_count + " of records failed update to Hold");
+                        }
                 }
             }
         });
@@ -363,17 +371,24 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
+                if(response.invalid_access_token){
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
+                }
+                else {
                 for(i=0;i<response.success_ids.length; i++){
                     key=response.success_ids[i];
                     $("#voucher-"+key).find('#hold-status').text('Unhold');
                     $("#chk_voucher_"+key).removeClass('IsHold');
                     $("#chk_voucher_"+key).addClass('IsUnhold');
                 }
-                if (response.success_count > 0){
-                    showHoldSucessMessage(response.success_count + " of records successfully updated to Unhold");
-                }
-                if (response.failed_count > 0){
-                    showHoldFailedMessage(response.failed_count + " of records failed update to Unhold");
+                    if (response.success_count > 0){
+                        showHoldSucessMessage(response.success_count + " of records successfully updated to Unhold");
+                    }
+                    if (response.failed_count > 0){
+                        showHoldFailedMessage(response.failed_count + " of records failed update to Unhold");
+                    }
                 }
             }
         });

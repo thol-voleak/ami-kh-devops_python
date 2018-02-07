@@ -20,6 +20,11 @@ class HoldVoucher(TemplateView, GetHeaderMixin):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(HoldVoucher, self).dispatch(request, *args, **kwargs)
 
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def post(self, request):
         success_count = 0
         failed_count = 0
@@ -35,21 +40,21 @@ class HoldVoucher(TemplateView, GetHeaderMixin):
             is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            loggers=self.logger, headers=self._get_headers(),
                                                                            params=params)
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+                self.logger.info("{}".format(data))
+                return JsonResponse({"invalid_access_token":True})
             API_Logger.put_logging(loggers=self.logger, params=params, response=data,
                                    status_code=status_code)
             if is_success:
                 success_count  += 1
                 success_ids.append(i)
-            elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                    status_code == 'invalid_access_token'):
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             else:
                 failed_count += 1
                 failed_ids.append(i)
             self.logger.info('========== Finish hold voucher ==========')
 
-        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count})
+        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count, "invalid_access_token":False})
 
 class UnholdVoucher(TemplateView, GetHeaderMixin):
     logger = logger
@@ -74,19 +79,19 @@ class UnholdVoucher(TemplateView, GetHeaderMixin):
             is_success, status_code, status_message, data = RestFulClient.put(url=url,
                                                                            loggers=self.logger, headers=self._get_headers(),
                                                                            params=params)
+            if (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+                self.logger.info("{}".format(data))
+                return JsonResponse({"invalid_access_token":True})
             API_Logger.put_logging(loggers=self.logger, params=params, response=data,
                                    status_code=status_code)
             if is_success:
                 success_count  += 1
                 success_ids.append(i)
-            elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
-                    status_code == 'invalid_access_token'):
-                self.logger.info("{}".format(data))
-                raise InvalidAccessToken(data)
             else:
                 failed_count += 1
                 failed_ids.append(i)
             self.logger.info('========== Finish unhold voucher ==========')
 
-        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count})
+        return JsonResponse({"success_ids":success_ids, "success_count":success_count, "failed_count":failed_count, "invalid_access_token":False})
 
