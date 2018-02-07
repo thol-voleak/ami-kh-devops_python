@@ -233,7 +233,7 @@
                                 </p>
                                 <p style="margin-bottom:0; margin-left: 10px;">
                                     <label size="2">Operator:</label>
-                                    <span id="lbl_sum_operator">
+                                    <span id="lbl_count_operator">
                                     {%if condition.comparison_list.0.operator == '=' %}
                                     <span>Equal to</span>
                                     {%elif condition.comparison_list.0.operator == '>' %}
@@ -281,7 +281,7 @@
                                 </p>
 
                                     {%for filter in condition.filter %}
-                                        <div id="div_sum_of_filter_{{filter.id}}">
+                                        <div id="div_count_of_filter_{{filter.id}}">
                                             <p style="margin-bottom:0; margin-left: 10px;">
                                         <label size="2">Detail Name:</label>
                                         <span id="lbl_filter_key_name">{{filter.key_name}}</span>
@@ -316,7 +316,7 @@
                                             </p>
                                             {% if condition.filter|length > 1 and forloop.counter < condition.filter|length %}
                                             <p style="margin-left: 10px;">
-                                                <label size="2" id="lbl_sum_of_filter_and_{{forloop.counter}}" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">AND</label>
+                                                <label size="2" id="lbl_count_of_filter_and_{{forloop.counter}}" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">AND</label>
                                             </p>
                                             {% endif %}
                                         </div>
