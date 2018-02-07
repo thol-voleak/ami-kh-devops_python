@@ -325,7 +325,6 @@
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
             success: function (response) {
-                console.log
                 if(response.invalid_access_token){
                     var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
                     window.location.replace(url);
