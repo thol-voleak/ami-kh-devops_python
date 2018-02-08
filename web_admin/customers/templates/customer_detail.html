@@ -476,8 +476,17 @@
                                         <input type="text" class="form-control input-rounded"
                                                 id="txt_kyc_updated_date" value="{{ customer_info.kyc_updated_timestamp|default_if_none:'' }}" readonly/>
                                     </div>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Suspend Reason</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                                id="txt_suspend_reason" value="{{ customer_info.active_suspend_reason|default_if_none:'' }}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
                         <div class="pull-right">
                                 <a href="{% url 'customers:customer-list' %}">
                                     <input id="btn_close" class="btn text-left mb15" type="button"

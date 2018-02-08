@@ -38,7 +38,7 @@
                           action="{{ request.path }}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Trigger</label>
+                            <label class="col-sm-3 control-label">Trigger *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_trigger" name="trigger" onchange="listenTrigger()" required>
                                     {% for item in trigger %}
@@ -90,17 +90,18 @@
                         <div id="condition-group">
                             <div id="div_condition_1">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Condition type</label>
+                                    <label class="col-sm-3 control-label">Condition type *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
                                             <option value= "event_detail">Event Detail</option>
                                             <option value= "sum_of">Sum of</option>
+                                            <option value= "count_of">Count of</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div id="event_detail_area">
                                     <div class="form-group">
-                                    <label class="col-sm-3 control-label">Detail Name</label>
+                                    <label class="col-sm-3 control-label">Detail Name *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_1">
                                             {% for item in detail_names %}
@@ -114,7 +115,7 @@
                                     </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Key Value Type</label>
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>
                                         <div class="col-xs-3">
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
                                                 {% for type in key_value_types %}
@@ -124,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Operator</label>
+                                        <label class="col-sm-3 control-label">Operator *</label>
                                         <div class="col-xs-3">
                                             <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
                                                 {% for oper in operations %}
@@ -141,6 +142,8 @@
                                     </div>
                                 </div>
                                 <div id="sum_of_area">
+                                </div>
+                                <div id="count_of_area">
                                 </div>
                             <br>
                             </div>
@@ -163,11 +166,12 @@
                             <label class="col-sm-3 control-label"><b>Reward</b></label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Type</label>
+                            <label class="col-sm-3 control-label">Reward Type *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
                                     <option value= "fixed_cashback">Fixed Cashback</option>
                                     <option value= "send_notification">Send Notification</option>
+                                    <option value= "suspend_account">Suspend Account</option>
                                 </select>
                             </div>
                         </div>
@@ -188,7 +192,7 @@
                             <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                            <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
                                     <option value= "customer" selected>Customer</option>
@@ -197,7 +201,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Give Rewards to</label>
+                            <label class="col-sm-3 control-label">Give Rewards to *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
                                     <option value= "@@user_id@@">Actor who registered</option>
@@ -250,14 +254,14 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Limit to *</label>
                                     <div class="col-xs-3">
-                                        <input id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
+                                        <input min='0' id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
 
                                     </div>
                                     <span class="recipient-mechanic">/recipient/mechanic</span>
 
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Reward Recipient should be</label>
+                                    <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
                                             <option value= "customer">Customer</option>
@@ -266,7 +270,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Give Rewards to</label>
+                                    <label class="col-sm-3 control-label">Give Rewards to *</label>
                                     <div class="col-xs-3">
                                         <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
                                             <option value= "@@user_id@@">Actor who registered</option>
@@ -333,22 +337,24 @@
                 }
                 keyValue.attr('type', 'text');
             } else {
-                if (JSON.stringify(currentOperator) !== JSON.stringify(fullOps)) {
-                    setDDL(operator, fullOps);
-                }
+                setDDL(operator, fullOps);
                 if (type === 'Numeric') {
                     keyValue.attr('type', 'number');
                 } else if (type === 'Timestamp') {
                     keyValue.attr('type', 'datetime-local');
                 }
             }
+
+            operator.selectedIndex = 0;
         }
 
         function listenOperator(ele, type, operation, fullOps, filterOps) {
+            return;
+
             var keyValueType = $(ele).parent().parent().prev('div').find('select');
             var keyValue = $(ele).parent().parent().next('div').find('input');
             var currentKVType = getCurrentOps(keyValueType);
-            if (type === "Equal to" || type === "Not Equal to") {
+            if (type === "Equal to" || type === "Not Equal to" || type === "Contains") {
                 if (currentKVType.length === 2) {
                     keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
                 }
@@ -365,17 +371,18 @@
              var defaultConditionHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>\
                                 <div id="div_condition_' + counter + '">\
                                 <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Condition type</label>\
+                                    <label class="col-sm-3 control-label">Condition type *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_condition_type" name="condition_type_' + counter + '" counter="' + counter + '" onchange="selectConditionType(this.value, this)">\
                                             <option value= "event_detail">Event Detail</option>\
                                             <option value= "sum_of">Sum of</option>\
+                                            <option value= "count_of">Count of</option>\
                                         </select>\
                                     </div>\
                                 </div>\
                                 <div id="event_detail_area">\
                                     <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_' + counter + '">\
                                             {% for item in detail_names %}\
@@ -389,7 +396,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -399,7 +406,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -416,6 +423,8 @@
                                     </div>\
                                 </div>\
                                 <div id="sum_of_area">\
+                                </div>\
+                                <div id="count_of_area">\
                                 </div>\
                             <br>\
                             </div></div>';
@@ -455,11 +464,16 @@
             var element = document.getElementById(id);
             element.removeAttribute("required");
         }
+        var resetValue = function(id) {
+            var element = document.getElementById(id);
+            element.value = '';
+        };
 
         function listenTrigger() {
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
+            var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
             if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
@@ -474,7 +488,11 @@
                     .html("Actor who registered")
                 )
             } else {
-                $("#lbl_paid_amount").prop('hidden', false);
+                if(rewardTypeSelectedValue == 'suspend_account') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
                     .val("@@payer_user_id@@")
@@ -537,7 +555,7 @@
                             <div id="data_send_group">\
                                 <div id="data_tobe_send_1">\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Data type</label>\
+                                        <label class="col-sm-3 control-label">Data type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_reward_data_type" name="reward_data_type" onchange="listenDataType(this, this.options[this.selectedIndex].value)">\
                                                 <option value= "from_database">From Database</option>\
@@ -547,7 +565,7 @@
                                     </div>\
                                     <div id="div_from_database">\
                                         <div class="form-group">\
-                                            <label class="col-sm-3 control-label">Detail Name</label>\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
                                             <div class="col-xs-3">\
                                                 <select class="form-control" id="ddl_reward_detail_name" name="reward_detail_name">\
                                                     {% for item in detail_names %}\
@@ -569,7 +587,7 @@
                                             </div>\
                                         </div>\
                                         <div class="form-group">\
-                                            <label class="col-sm-3 control-label">Key Value Type</label>\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
                                             <div class="col-xs-3">\
                                                 <select class="form-control" id="ddl_reward_key_value_type" name="reward_key_value_type" onchange="listenRewardKeyValType(this, this.options[this.selectedIndex].value)">\
                                                     {% for type in key_value_types %}\
@@ -597,11 +615,44 @@
                                 </div>\
                             </div>';
 
-        function listenRewardType (rType) {
-            if (rType === 'send_notification') {
+        var reward_recipient_should_be_elem = document.getElementById('ddl_reward_recipient');
+        var give_rewards_to_elem = document.getElementById('ddl_give_reward_to');
 
+        var resetSelectElement = function (selectElement) {
+            var options = selectElement.options;
+
+            // Look for a default selected option
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+
+                if (options[i].defaultSelected) {
+                    selectElement.selectedIndex = i;
+                    return;
+                }
+            }
+
+            selectElement.selectedIndex = 0; // or -1 for no option selected
+        };
+
+        var resetRewardRecipient = function() {
+            resetSelectElement(reward_recipient_should_be_elem);
+            resetSelectElement(give_rewards_to_elem);
+            rewardRecipientShouldBe();
+            giveRewardsTo();
+        };
+
+        // confirm API, confirm paid amount
+        function listenRewardType (rType) {
+            var triggerValue = $("#ddl_trigger").val();
+            if (rType === 'send_notification') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
+                resetRewardRecipient();
                 hideElement('div_amount');
                 setNotRequired('txt_amount');
+                resetValue('txt_amount');
                 hideElement('div_reward_recipient');
                 div_fixed_cashback.innerHTML = '';
 
@@ -612,9 +663,15 @@
                 sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
 
             }   else if (rType === 'fixed_cashback') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    $("#lbl_paid_amount").prop('hidden', true);
+                } else {
+                    $("#lbl_paid_amount").prop('hidden', false);
+                }
+                resetRewardRecipient();
                 hideElement('div_send_to');
                 setNotRequired('txt_send_to');
-
+                resetValue('txt_send_to');
                 div_send_notification.innerHTML = '';
 
                 showElement('div_amount');
@@ -623,6 +680,18 @@
 
                 div_fixed_cashback.innerHTML = div_fixed_cashback_html;
 
+            } else if (rType === 'suspend_account') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                resetRewardRecipient();
+                showElement('div_reward_recipient');
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                div_send_notification.innerHTML = '';
+                div_fixed_cashback.innerHTML = '';
             }
         }
 
@@ -687,7 +756,7 @@
     // Sum of
         var getSumOfKeyValueHtml = function(conditionNumber) {
               var sumOfKeyValueHtml =  '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Sum Key Name</label>\
+                                    <label class="col-sm-3 control-label">Sum Key Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_sum_key_name" name="sum_key_name_' + conditionNumber + '">\
                                             {% for key_name in sum_key_name %}\
@@ -697,7 +766,7 @@
                                     </div>\
                                 </div>\
                                 <div class="form-group">\
-                                    <label class="col-sm-3 control-label">Operator</label>\
+                                    <label class="col-sm-3 control-label">Operator *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_sum_operator" name="sum_operator_' + conditionNumber +'">\
                                             {% for operator in sum_of_operators %}\
@@ -735,7 +804,7 @@
 
         var getFilterAreaHtml = function(conditionNumber, filterCount) {
              var filterAreaHtml = '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_filter_detail_name" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
                                             {% for item in detail_names %}\
@@ -749,7 +818,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_filter_key_value_type" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -759,7 +828,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_filter_operator" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -779,7 +848,7 @@
 
         var getEventDetailAreaHtml = function(conditionNumber) {
             var eventdetailareaHtml =     '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name</label>\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="ddl_detail_name" name="detail_name_' + conditionNumber + '" >\
                                             {% for item in detail_names %}\
@@ -793,7 +862,7 @@
                                     </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type</label>\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
@@ -803,7 +872,7 @@
                                         </div>\
                                     </div>\
                                     <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator</label>\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
@@ -821,11 +890,144 @@
             return eventdetailareaHtml;
         };
 
+        // Count of
+
+     var getMoreFilterCountOfButtonHtml = function(conditionNumber) {
+               var addMoreFilterHtml =  '<div class="form-group" id="add_more_filter_area">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3" style="text-align: right;">\
+                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_filter" onclick="addFilterCountOf(this, ' + conditionNumber + ')">\
+                                      <span class="glyphicon glyphicon-plus"></span> Add Filter\
+                                    </button>\
+                                </div>\
+                                </div>';
+               return addMoreFilterHtml;
+        };
+
+     var changeDateTime = function (conditionNumber) {
+        var startElement = document.getElementsByClassName("count-of-start-date-" + conditionNumber)[0];
+        var startDate = document.getElementsByClassName("count-of-start-date-" + conditionNumber)[0].value;
+        var startTime = document.getElementsByClassName("count-of-start-time-" + conditionNumber)[0].value;
+        var endDate = document.getElementsByClassName("count-of-end-date-" + conditionNumber)[0].value;
+        var endTime = document.getElementsByClassName("count-of-end-time-" + conditionNumber)[0].value;
+        if(startDate != "" && startTime != "" && endDate != "" && endTime != "") {
+            var fullStartDate = new Date(startDate + " " + startTime);
+            var fullEndDate = new Date(endDate + " " + endTime);
+            if(fullStartDate > fullEndDate) {
+                startElement.setCustomValidity("Start date or time cannot be after end date and time");
+            } else {
+                startElement.setCustomValidity("");
+            }
+        } else {
+            startElement.setCustomValidity("");
+        }
+     };
+
+    var getWithinDateHtml = function(conditionNumber) {
+        var withinDateHtml = '<div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
+                                </div>\
+                                <div class="col-xs-2">\
+                                    <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
+                                    id="dtp_within_from_time" name="within_from_time_' + conditionNumber + '"\
+                                    value="{{ within_from_time|default_if_none:'00:00' }}"\
+                                    style="height:40px;">\
+                                </div> <div style="display: inline-block;margin-top: 10px;">to</div>\
+                            </div>\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
+                                </div>\
+                                <div class="col-xs-2">\
+                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
+                                </div>\
+                            </div>';
+        return withinDateHtml;
+    };
+
+    var getWithinTimeHtml = function(conditionNumber) {
+        var withinTimeHtml = '<div class="form-group">\
+                                <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
+                                <div class="col-xs-3">\
+                                <input min="0" id="txt_timebox" class="form-control input-rounded" name="txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 7px;" id="lbl_minute">min</div>\
+                              </div>';
+        return withinTimeHtml;
+    };
+
+    var changeWithinOption = function(elem, selectedValue, conditionNumber) {
+         var conditionElem = document.getElementById('div_condition_' + conditionNumber);
+         if(selectedValue == 'date') {
+             conditionElem.querySelector('#within-time-area').innerHTML = '';
+             var withinDateArea = conditionElem.querySelector('#within-date-area');
+             var withinDateDiv = document.createElement('div');
+            withinDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+            var withinDateElem  = withinDateDiv.cloneNode(true);
+            withinDateArea.appendChild(withinDateElem);
+         } else {
+             conditionElem.querySelector('#within-date-area').innerHTML = '';
+             var withinTimeArea = conditionElem.querySelector('#within-time-area');
+             var withinTimeDiv = document.createElement('div');
+            withinTimeDiv.innerHTML = getWithinTimeHtml(conditionNumber);
+            var withinTimeElem  = withinTimeDiv.cloneNode(true);
+            withinTimeArea.appendChild(withinTimeElem);
+         }
+
+    };
+
+     var getCountOfHtml = function(conditionNumber) {
+                       var CountOfHtml =  '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Count Key Name *</label>\
+                                    <div class="col-xs-3">\
+                                         <select class="form-control" id="ddl_count_key_name" name="event_name_' + conditionNumber + '">\
+                                                <option value="register_customer">Register</option>\
+                                                <option value="login">Log-in</option>\
+                                                <option value="create_order">Create order</option>\
+                                                <option value="executed_order">Payment</option>\
+                                                <option value="created_sof">Link Bank</option>\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                               <div class="form-group">\
+                                   <label class="col-sm-3 control-label">Operator *</label>\
+                                   <div class="col-xs-3">\
+                                       <select class="form-control" id="ddl_count_of_operator" name="count_of_operator_' + conditionNumber + '">\
+                                       {% for oper in count_of_operators %}\
+                                           <option value= "{{ oper }}">{{ oper }}</option>\
+                                        {% endfor %}\
+                                       </select>\
+                                   </div>\
+                               </div>\
+                              <div class="form-group">\
+                                  <label class="col-sm-3 control-label">Count *</label>\
+                                  <div class="col-xs-3">\
+                                      <input min="0" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
+                               </div>\
+                                </div>\
+                                <div class="form-group">\
+                                     <label class="col-sm-3 control-label">Within *</label>\
+                                    <div class="col-xs-3">\
+                                         <select class="form-control" id="ddl_within" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ')" name="within_' + conditionNumber + '">\
+                                                <option value= "date">Date</option>\
+                                                <option value= "timebox">Timebox</option>\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <input id="filter_count_of_count" name="filter_count_of_count_' + conditionNumber +'" type="text" value="0" hidden />\
+                                <div id="within-date-area">\
+                                </div>\
+                                <div id="within-time-area"></div>';
+            return CountOfHtml;
+        };
+
         var selectConditionType = function(selectedValue, elem) {
             var conditionNumber = parseInt($(elem).attr('counter'), 10);
             var conditionElem = document.getElementById('div_condition_' + conditionNumber);
             if(selectedValue == 'sum_of') {
                 conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                conditionElem.querySelector('#count_of_area').innerHTML = '';
                 var sumOfArea = conditionElem.querySelector('#sum_of_area');
                 var sumKeyDiv = document.createElement('div');
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
@@ -842,11 +1044,34 @@
                 sumOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'event_detail') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                conditionElem.querySelector('#count_of_area').innerHTML = '';
                 var eventDetailArea = conditionElem.querySelector('#event_detail_area');
                 var eventDetailDiv = document.createElement('div');
                 eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
                 var eventDetailDivElem  = eventDetailDiv.cloneNode(true);
                 eventDetailArea.appendChild(eventDetailDivElem);
+            } else if(selectedValue == 'count_of') {
+                conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                var countOfArea = conditionElem.querySelector('#count_of_area');
+                var countOfDiv = document.createElement('div');
+                countOfDiv.innerHTML = getCountOfHtml(conditionNumber);
+                var countOfDivElem  = countOfDiv.cloneNode(true);
+                countOfArea.appendChild(countOfDivElem);
+                var countOfDateArea = conditionElem.querySelector('#within-date-area');
+                var countOfDateDiv = document.createElement('div');
+                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+                var countOfDateDivElem  = countOfDateDiv.cloneNode(true);
+                countOfDateArea.appendChild(countOfDateDivElem);
+                var filterAreaDiv = document.createElement('div');
+                filterAreaDiv.id = "count-of-filter-area";
+                filterAreaDiv.innerHTML = '';
+                var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
+                countOfArea.appendChild(filterAreaDivElem);
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber, 1);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                countOfArea.appendChild(filterButtonDivElem);
             }
         };
 
@@ -858,6 +1083,25 @@
             filterCount++;
             var filterAreaElem = conditionElem.querySelector('#sum-of-filter-area');
             var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            var newFilterElemDiv = document.createElement('div');
+            newFilterElemDiv.innerHTML = newFilterElementHtml;
+            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            filterAreaElem.appendChild(newFilterElemDivElem);
+            filterCountInput.setAttribute('value', filterCount);
+        };
+
+          var addFilterCountOf = function(elem, conditionNum) {
+            var conditionElem = document.getElementById('div_condition_' + conditionNum);
+            var filterCountInput = conditionElem.querySelector('#filter_count_of_count');
+            var filterCount = filterCountInput.getAttribute('value');
+            filterCount = parseInt(filterCount, 10);
+            filterCount++;
+            var filterAreaElem = conditionElem.querySelector('#count-of-filter-area');
+            if(filterCount == 1) {
+                var newFilterElementHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Filter</label><div class="col-xs-3"></div></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            } else {
+                var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            }
             var newFilterElemDiv = document.createElement('div');
             newFilterElemDiv.innerHTML = newFilterElementHtml;
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);

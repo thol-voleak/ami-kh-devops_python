@@ -39,12 +39,13 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['dtp_start_date'] = datetime.now().strftime("%Y-%m-%d")
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
         operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
-        freetext_ops = ["Equal to", "Not Equal to"]
+        freetext_ops = ["Equal to", "Not Equal to", "Contains"]
 
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
+        count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -60,6 +61,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }]
         all_terms = list(terms_mapping.objects.all())
         detail_names = self._filter_detail_names(all_terms)
+        username = {'term': 'username', 'description': ''}
+        is_login_success = {'term': 'is_login_success', 'description': ''}
+        detail_names.extend((username, is_login_success))
         trigger = self._filter_trigger(all_terms)
 
         ops = {
@@ -71,6 +75,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
+            'count_of_operators': count_of_operators,
             'sum_key_name': sum_key_name
         }
 
@@ -132,7 +137,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         operations_map = {
             "Less Than": '<', "More Than": '>', "Equal to": '=',
             "Not Equal to": '!=', "Less than or Equal to": '<=',
-            "More than or Equal to": '>='
+            "More than or Equal to": '>=',
+            "Contains": "contains",
         }
         kv_type_map = {
             "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
@@ -147,6 +153,11 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             sum_key_name = request.POST.get('sum_key_name_' + suffix)
             sum_operator = request.POST.get('sum_operator_' + suffix)
             sum_key_value = request.POST.get('sum_key_value_' + suffix)
+            count_count_of = request.POST.get('count_' + suffix)
+            count_of_operator = request.POST.get('count_of_operator_' + suffix)
+            count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
+            within_type = request.POST.get('within_' + suffix)
+            event_name_filter_counter = request.POST.get('event_name_' + suffix)
 
             if condition_type == 'event_detail':
                 params = {'filter_type': condition_type}
@@ -178,7 +189,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
 
-            else:
+            elif condition_type == 'sum_of':
                 # condition_type == 'sum_of'
                 params = {'filter_type': condition_type, 'sum_key_name': sum_key_name}
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
@@ -221,6 +232,128 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     self.logger.info('========== Finish adding Filter ==========')
                     if not success:
                         return JsonResponse({"status": 3, "msg": message})
+            else:
+                 #condition_type == 'count_of'
+                 params = {'filter_type': condition_type}
+                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
+                 self.logger.info('========== Finish adding Condition ==========')
+                 if not success:
+                     return JsonResponse({"status": 3, "msg": message})
+
+                 condition_id = data['id']
+
+                 self.logger.info('========== Start adding Comparison ==========')
+
+                 params = {
+                     'key_name': 'count_result',
+                     'key_value_type': 'numeric',
+                     'operator': operations_map[count_of_operator],
+                     'key_value': count_count_of,
+                 }
+                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
+                 self.logger.info('========== Finish adding Comparison ==========')
+                 if not success:
+                     return JsonResponse({"status": 3, "msg": message})
+                 if within_type == 'timebox':
+                     self.logger.info('========== Start adding Filter ==========')
+                     timebox_minute = request.POST.get('txt_timebox_' + suffix)
+                     params = {
+                         'key_name': 'event_created_timestamp',
+                         'key_value_type': 'timestamp',
+                         'operator': '>=',
+                         'key_value': "@@@@event_created_timestamp@@-minutes(" + timebox_minute + ")@@",
+                     }
+                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                     self.logger.info('========== Finish adding Filter ==========')
+                     if not success:
+                         return JsonResponse({"status": 3, "msg": message})
+
+                     self.logger.info('========== Start adding Filter ==========')
+                     params = {
+                         'key_name': 'event_created_timestamp',
+                         'key_value_type': 'timestamp',
+                         'operator': '<=',
+                         'key_value': "@@event_created_timestamp@@",
+                     }
+                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                     self.logger.info('========== Finish adding Filter ==========')
+                     if not success:
+                         return JsonResponse({"status": 3, "msg": message})
+                 else:
+                     count_of_input_start_date = request.POST.get('within_from_' + suffix)
+                     count_of_input_end_date = request.POST.get('within_to_' + suffix)
+                     count_of_input_start_time = request.POST.get('within_from_time_' + suffix)
+                     count_of_input_end_time = request.POST.get('within_to_time_' + suffix)
+                     if not count_of_input_start_time:
+                         count_of_input_start_time = '00:00'
+                     if not count_of_input_end_time:
+                         count_of_input_end_time = '00:00'
+                     count_of_start_hour = int(count_of_input_start_time[0:2])
+                     count_of_start_minute = int(count_of_input_start_time[-2:])
+                     count_of_end_hour = int(count_of_input_end_time[0:2])
+                     count_of_end_minute = int(count_of_input_end_time[-2:])
+                     count_of_start_date = datetime.strptime(count_of_input_start_date, "%Y-%m-%d")
+                     count_of_start_date = count_of_start_date.replace(hour=count_of_start_hour, minute=count_of_start_minute, second=0)
+                     count_of_end_date = datetime.strptime(count_of_input_end_date, "%Y-%m-%d")
+                     count_of_end_date = count_of_end_date.replace(hour=count_of_end_hour, minute=count_of_end_minute, second=0)
+
+                     count_of_param_start_date = count_of_start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+                     count_of_param_end_date = count_of_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+                     self.logger.info('========== Start adding Filter ==========')
+                     params = {
+                         'key_name': 'event_created_timestamp',
+                         'key_value_type': 'timestamp',
+                         'operator': ">=",
+                         'key_value': count_of_param_start_date,
+                     }
+                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                     self.logger.info('========== Finish adding Filter ==========')
+                     if not success:
+                         return JsonResponse({"status": 3, "msg": message})
+
+                     self.logger.info('========== Start adding Filter ==========')
+                     params = {
+                         'key_name': 'event_created_timestamp',
+                         'key_value_type': 'timestamp',
+                         'operator': "<=",
+                         'key_value': count_of_param_end_date,
+                     }
+                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                     self.logger.info('========== Finish adding Filter ==========')
+                     if not success:
+                         return JsonResponse({"status": 3, "msg": message})
+
+                 self.logger.info('========== Start adding Filter ==========')
+                 params = {
+                     'key_name': 'event_name',
+                     'key_value_type': 'text',
+                     'operator': "=",
+                     'key_value': event_name_filter_counter,
+                 }
+                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                 self.logger.info('========== Finish adding Filter ==========')
+                 if not success:
+                     return JsonResponse({"status": 3, "msg": message})
+                 for i in range(1, int(count_of_filter_counter) + 1):
+                     prefix = str(i)
+                     key_value_type = prefix + '_key_value_type_' + suffix
+                     detail_name = prefix + '_detail_name_' + suffix
+                     operator = prefix + '_operator_' + suffix
+                     key_value = prefix + '_key_value_' + suffix
+
+                     if not request.POST.get(key_value):
+                         continue
+                     self.logger.info('========== Start adding Filter ==========')
+                     params = {
+                         'key_name': request.POST.get(detail_name),
+                         'key_value_type': kv_type_map[request.POST.get(key_value_type)],
+                         'operator': operations_map[request.POST.get(operator)],
+                         'key_value': request.POST.get(key_value),
+                     }
+                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
+                     self.logger.info('========== Finish adding Filter ==========')
+                     if not success:
+                         return JsonResponse({"status": 3, "msg": message})
 
         # add reward
         self.logger.info('========== Start adding Reward ==========')
@@ -349,6 +482,22 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                         "key_value": request.POST.get(reward_key_value),
                         "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
                     })
+        elif reward_type == 'suspend_account':
+            params = {
+                "action_type_id": 4,
+                "data": [
+                    {
+                        'key_name': 'user_id',
+                        'key_value': request.POST.get('give_reward_to'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'user_type',
+                        'key_value': request.POST.get('reward_recipient'),
+                        'key_value_type': 'text'
+                    },
+                ]
+            }
 
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
         action_id = data.get("id", '')

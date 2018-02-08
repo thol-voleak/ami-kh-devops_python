@@ -2,11 +2,48 @@
 {% load static %}
 {% load permissions_filter %}
 {% block content %}
+<style>
+    #btn_add_new_voucher {
+        background-color: #337ab7;
+        border-color: #337ab7;
+        font-size: 14px;
+        border-radius: 3px;
+        position: relative;
+        top: 15px;
+        right: -20px;
+        hover: red !important;
+    }
+    .layout-fixed-header {
+         background-color: white;
+    }
+
+    .main-panel {
+        background-color: white;
+    }
+
+    #btn_add_new_voucher strong {
+        font-weight: bold !important;
+        font-size: 20px;
+    }
+
+    #btn_add_new_voucher span {
+        position: relative;
+        top: -1px;
+    }
+
+</style>
     <div class="col-md-12">
     <div class="panel mb25">
         <div class="panel-heading border mb15">
            <div>
-                <div class="pull-left"><h3>Voucher List</h3></div>
+               <div class="pull-left"><h3>Voucher List</h3></div>
+               {% if permissions.CAN_CREATE_VOUCHER_ACTION %}
+               <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'voucher:create_new_voucher' %}">
+                        <button id="btn_add_new_voucher" class="btn btn-primary btn-block btn-md mb15"><strong>+</strong> <span>Add New Voucher</span></button>
+                    </a>
+               </div>
+               {%endif%}
                <div class="clearfix"></div>
            </div>
         </div>
@@ -42,6 +79,18 @@
                 <strong id="alert-msg"></strong>
             </div>
         </div>
+        <div class="col-xs-12 mb5">
+                <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client-hold-success">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg-hold-success"></strong>
+                </div>
+            </div>
+        <div class="col-xs-12 mb5">
+                <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client-hold-failed">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg-hold-failed"></strong>
+                </div>
+            </div>
 
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'voucher:voucher' %}">
@@ -63,14 +112,31 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <label class="col-sm-2 control-label">Hold Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_hold_status" name="hold_status" >
+                            {% for item in hold_status_list %}
+                                {%if item.value == hold_status%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                  <div class="form-group">
                     <label class="col-sm-2 control-label">Cash In User Type</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="user_type_cash_in"
-                               value="Agent"
-                               id="txt_user_type_cash_in" readonly>
+                        <select class="form-control" id="ddl_user_type_cash_in" name="user_type_cash_in" >
+                                {% for item in cash_in_user_type_list %}
+                                {%if item.value == cash_in_user_type%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                     </div>
                     <label class="col-sm-2 control-label">Cash In ID</label>
                     <div class="col-xs-2">
@@ -135,15 +201,30 @@
                  </div>
             </form>
 
-            <div class="no-more-tables">
+            <div class="no-more-tables" style="position: absolute;">
+                {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION %}
+                <div class="dropdown pull-right" id="ddl_select_action" style="margin-top: -50px;">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
+                        <li><a onclick="hold()">Hold</a></li>
+                        {%endif%}
+                        {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
+                        <li><a onclick="unHold()">Unhold</a></li>
+                        {%endif%}
+                    </ul>
+                </div>
+                {%endif%}
                 <table id='tbl_voucher' class="table table-bordered table-striped mb0">
                     <thead>
                     <tr>
+                        <th><input type="checkbox" name="select-all" id="select-all" /></th>
                         <th id="ddl_voucher_id">Voucher ID</th>
                         <th id="ddl_voucher_type">Voucher Type</th>
                         <th id="ddl_voucher_amount">Voucher Amount</th>
                         <th id="ddl_voucher_fee">Voucher Fee</th>
                         <th id="ddl_status">Claim Status</th>
+                        <th id="ddl_hold_status">Hold Status</th>
                         <th id="ddl_delete_status">Delete Status</th>
                         <th id="ddl_create_date">Create Date</th>
                         <th id="ddl_update_date">Update Date</th>
@@ -154,12 +235,15 @@
                     </thead>
                     <tbody>
                     {% for i in data %}
-                        <tr>
+                        <!-- <div > -->
+                        <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
+                            <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
                             <td>{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
+                            <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
                             <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
@@ -171,6 +255,7 @@
                                 {% endif %}
                             </td>
                         </tr>
+                    <!-- </div> -->
                     {% endfor %}
                     </tbody>
                 </table>
@@ -207,5 +292,137 @@
         }
         document.getElementById("submit-form").submit();
     };
+
+
+    $('#select-all').on('change', function() {
+        $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+    });
+    $('.checkboxlist input[type="checkbox"]').on('change', function () {
+        var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
+        $('#select-all').prop('checked', allChecked);
+    });
+
+    function hold(){
+        $("#msg-add-client").hide();
+        $("#msg-update-client").hide();
+        $("#msg-add-service").hide();
+        $("#alert-client").hide();
+        $("#alert-client-hold-success").hide();
+        $("#alert-client-hold-failed").hide();
+        var arr = [];
+        var url = '/admin-portal/voucher/hold';
+        $('input.IsUnhold:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        }); 
+        if(arr.length == 0) {
+            return;
+        }
+        $.ajax({
+            url : url,
+            type : "POST",
+            data: {"ids":arr},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                if(response.invalid_access_token){
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
+                }
+                else {
+                    for(var i = 0; i < response.success_ids.length; i++){
+                        key=response.success_ids[i];
+                        $("#voucher-"+key).find('#hold-status').text('Hold');
+                        $("#chk_voucher_"+key).removeClass('IsUnhold');
+                        $("#chk_voucher_"+key).addClass('IsHold');
+                    }
+                        if (response.success_count > 0){
+                            showHoldSucessMessage(response.success_count + " of records successfully updated to Hold");
+                        }
+                        if (response.failed_count > 0){
+                            showHoldFailedMessage(response.failed_count + " of records failed update to Hold");
+                        }
+                }
+            }
+        });
+    }
+    function unHold(){
+        $("#msg-add-client").hide();
+        $("#msg-update-client").hide();
+        $("#msg-add-service").hide();
+        $("#alert-client").hide();
+        $("#alert-client-hold-success").hide();
+        $("#alert-client-hold-failed").hide();
+        var arr = [];
+        var url = '/admin-portal/voucher/unhold';
+        $('input.IsHold:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+         if(arr.length == 0) {
+            return;
+        }
+        $.ajax({
+            url : url,
+            type : "POST",
+            data: {"ids":arr},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                if(response.invalid_access_token){
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
+                }
+                else {
+                for(i=0;i<response.success_ids.length; i++){
+                    key=response.success_ids[i];
+                    $("#voucher-"+key).find('#hold-status').text('Unhold');
+                    $("#chk_voucher_"+key).removeClass('IsHold');
+                    $("#chk_voucher_"+key).addClass('IsUnhold');
+                }
+                    if (response.success_count > 0){
+                        showHoldSucessMessage(response.success_count + " of records successfully updated to Unhold");
+                    }
+                    if (response.failed_count > 0){
+                        showHoldFailedMessage(response.failed_count + " of records failed update to Unhold");
+                    }
+                }
+            }
+        });
+    }
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg);
+        $('#alert-client').removeClass("alert-success");
+        $('#alert-client').addClass("alert-danger");
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+        $("#alert-client").show();
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg);
+        $('#alert-client').removeClass("alert-danger");
+        $('#alert-client').addClass("alert-success");
+        $("#msg-add-client").prop("hidden", true);
+        $("#msg-update-client").prop("hidden", true);
+        $("#msg-add-service").prop("hidden", true);
+        $("#alert-client").show();
+        $("html, body").animate({scrollTop: 0}, "slow");
+    }
+    function showHoldSucessMessage(msg){
+            $("#alert-msg-hold-success").text(msg);
+            $("#alert-client-hold-success").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+    }
+    function showHoldFailedMessage(msg){
+            $("#alert-msg-hold-failed").text(msg);
+            $("#alert-client-hold-failed").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+    }
 </script>
 {% endblock %}

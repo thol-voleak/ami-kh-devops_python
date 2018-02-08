@@ -68,11 +68,9 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     action_id = action['id']
                     reward['reward_type'] = action['action_type']['name']
                     reward['id'] = action['action_type']['id']
-                    is_fixed_cashback = True
                     if action['action_type']['id'] == 2:
-                        is_fixed_cashback = False
                         reward['reward_type'] = 'Send Notification'
-                    if is_fixed_cashback:
+                    if action['action_type']['id'] == 1:
                         for j in action['action_data']:
                             if j['key_name'] == 'payee_user.user_id':
                                 if j['key_value'] in self.person.keys():
@@ -81,11 +79,24 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 reward['recipient'] = j['key_value']
                             if j['key_name'] == 'amount':
                                 reward['amount'] = j['key_value']
-                    else:
+                    elif action['action_type']['id'] == 2:
                         for action_data in action['action_data']:
                             if action_data['key_name'] == 'notification_url':
                                 reward['send_to'] = action_data['key_value']
                         reward['data_to_be_sent'] = action['action_data']
+                    elif action['action_type']['id'] == 4:
+                        reward['reward_type'] = 'Suspend Account'
+                        for j in action['action_data']:
+                            if j['key_name'] == 'user_id':
+                                if j['key_value'] in self.person.keys():
+                                    reward['reward_to'] = self.person[j['key_value']]
+                            if j['key_name'] == 'user_type':
+                                if j['key_value'] == 'customer':
+                                    reward['recipient'] = 'Customer'
+                                elif j['key_value'] == 'agent':
+                                    reward['recipient'] = 'Agent'
+                                else:
+                                    reward['recipient'] = j['key_value']
                 if reward != {}:
                     i['reward'] = reward
                 self.logger.info('========== Finish get action detail  ==========')
@@ -102,6 +113,31 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 if filter_limit['key_name'] == 'payee_user.user_type':
                                     limitation['recipient'] = filter_limit['key_value']
                             i['limitation_list'].append(limitation)
+
+        # Get result for Count Of
+        for i in mechanic:
+            if i.get('is_deleted'):
+                continue
+            for con in i.get('condition_list'):
+                if con.get('filter_type') != 'count_of':
+                    continue
+                if not con.get('filter'):
+                    continue
+                for filter in con['filter'][::]:
+                    if filter.get('key_name') == 'event_name':
+                        con['count_key_name'] = filter.get('key_value')
+                        con['filter'].remove(filter)
+                    elif filter.get('key_name') == 'event_created_timestamp':
+                        if '@@@@event_created_timestamp@@-minutes(' in filter.get('key_value'):
+                            con['within'] = 'Timebox'
+                            con['timebox'] = filter['key_value'].split('@@@@event_created_timestamp@@-minutes(')[1].split(')@@')[0]
+                        elif '@@event_created_timestamp@@' not in filter.get('key_value'):
+                            con['within'] = 'Date'
+                            if filter.get('operator') == '>=':
+                                con['within_start'] = filter.get('key_value')
+                            if filter.get('operator') == '<=':
+                                con['within_end'] = filter.get('key_value')
+                        con['filter'].remove(filter)
 
         context.update({
             'data': data,

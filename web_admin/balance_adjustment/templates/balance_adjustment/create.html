@@ -2,10 +2,45 @@
 {% load static %}
 
 {% block content %}
+<style>
+    #lbl_voucher {
+        position: relative;
+        left: -30px;
+        font-size: 14px;
+        padding-left: 22px;
+
+    }
+
+    #lbl_voucher a {
+        position: relative;
+        right: 20px;
+
+    }
+
+    #header-div {
+        height: 130px;
+    }
+
+</style>
     <div class="panel mb25">
+        {% if add_new_voucher is not none %}
+        <div id="header-div" class="panel-heading border">
+            <h3>Balance Adjustment Execute</h3>
+            <div class="col-xs-12">
+            <div id="lbl_voucher" class='alert
+                        alert-info
+                        alert-dismissable'>
+                <button type="button" class="close" onclick="closeMessage()">×</button>
+                <strong>Please input the voucher detail</strong>
+            </div>
+        </div>
+        </div>
+        {%else%}
         <div class="panel-heading border">
             <h3>Balance Adjustment Execute</h3>
         </div>
+        {%endif%}
+
         {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
             <div class="col-xs-12">
@@ -49,6 +84,47 @@
                     <label class="col-sm-2 control-label">Reason for Adjustment</label>
                     <div class="col-sm-8">
                         <input id="txt_reason_for_adjustment" type="text" class="form-control input-rounded" name="reason_for_adjustment" value="{{reason_for_adjustment}}">
+                    </div>
+                </div>
+
+                <div class="panel-heading">
+                    <h4><b>Product Reference</b></h4>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product Name</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_name" type="text" class="form-control input-rounded" name="product_name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ref1</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_ref1" type="text" class="form-control input-rounded" name="product_ref1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ref2</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_ref2" type="text" class="form-control input-rounded" name="product_ref2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ref3</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_ref3" type="text" class="form-control input-rounded" name="product_ref3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ref4</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_ref4" type="text" class="form-control input-rounded" name="product_ref4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ref5</label>
+                    <div class="col-sm-8">
+                        <input id="txt_product_ref5" type="text" class="form-control input-rounded" name="product_ref5">
                     </div>
                 </div>
 
@@ -156,6 +232,13 @@
 {% block body_js %}
 {{ block.super }}
 <script>
+function closeMessage() {
+    $('.alert').hide();
+    var elm = document.getElementById("header-div");
+    elm.removeAttribute("Id");
+}
+
+
 function changeValue() {
     var service = document.getElementById('ddl_service_name').value;
     var obj = eval('(' + service + ')');

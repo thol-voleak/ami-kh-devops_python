@@ -8,6 +8,8 @@ from web_admin import setup_logger
 from web_admin.api_settings import SEARCH_CARD_TYPE
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,4 +38,6 @@ class ListView(GetHeaderMixin, TemplateView):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.post_logging(loggers=self.logger, response=data,
+                                status_code=status_code, is_getting_list=True)
         return data

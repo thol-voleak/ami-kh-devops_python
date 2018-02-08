@@ -1,14 +1,11 @@
 from authentications.apps import InvalidAccessToken
-from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
-
-
 from braces.views import GroupRequiredMixin
-
 from django.views.generic.base import TemplateView
-
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +39,10 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if is_success:
             self.logger.info("Response_content_count:{}".format(len(data)))
-            context['devices'] = data
+            context['devices'] = [i for i in data if i['is_deleted'] == False]
+            context['can_unblock_device'] = self.check_membership(['CAN_DELETE_FRAUD_TICKET'])
             device_count = 0
-            for ticket in data:
+            for ticket in context['devices']:
                 if ticket['action'] == 'register customer':
                     device_count += 1
             context['total_devices'] = device_count

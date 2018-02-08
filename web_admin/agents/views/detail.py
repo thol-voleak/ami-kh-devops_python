@@ -69,7 +69,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return context
 
     def _get_currencies(self, agent_id):
-        self.logger.info("Get currency for [{}] agent Id".format(agent_id))
+        self.logger.info("================== Start getting currency ==================")
         params = {
             'user_id': agent_id,
             'user_type': 2,
@@ -77,6 +77,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "page_index": -1
         }
         data, success = self._post_method(api_path=api_settings.GET_REPORT_AGENT_BALANCE, params=params)
+        self.logger.info("================== Finish getting currency ==================")
         currencies_str = ''
         data = data['cash_sofs']
         if success and data:
@@ -102,7 +103,7 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return context, success
 
     def _get_agent_identity(self, agent_id):
-        self.logger.info("Get agent identity [{}] agent Id".format(agent_id)) # agent_id
+        self.logger.info("================== Start getting agent identity  ================== ")
 
         params = {"agent_id": agent_id}
         data, success = self._post_method(api_path=self.get_agent_identity_url, func_description=None, logger=self.logger, params=params, only_return_data=True)
@@ -110,13 +111,16 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = {
             'agent_identities': data
         }
+        self.logger.info("================== Finish getting agent identity [{}] agent Id ================== ")
         return context, success
 
     def _get_agent_type_name(self, agent_type_id):
-        self.logger.info("Getting agent type list with url [{}]".format(api_settings.AGENT_TYPES_LIST_URL))
+        self.logger.info("================== Start getting agent type list ==================")
         agent_types_list, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                                       func_description="Agent Type List",
                                                       logger=logger)
+        self.logger.info("================== Finish getting agent type list ==================")
+
         if success:
             my_id = int(agent_type_id)
             for x in agent_types_list:
@@ -126,4 +130,5 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             data = 'Unknown', True
         else:
             data = None, False
+
         return data

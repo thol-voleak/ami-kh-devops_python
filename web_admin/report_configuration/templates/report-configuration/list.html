@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Report Configurations</h3>
+        </div>
+    </div>
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-success">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-error">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <div class="panel-body">
+        <div class="row">
+            <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+             <div class="col-md-2" style="font-size: 15px;font-weight: bold; margin-top: -19px;">Service White List</div>
+             <div class="col-md-10" style="border: 1px solid #f7f3f3;">
+                <div style="max-height: 400px; overflow-y: scroll" id="service-whitelist-content-area">
+                    {% for service_group in service_group_list %}
+                        <div style="position: relative;">
+                            <span style="cursor: pointer; position: absolute; top: 9px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}"></span>
+                            <div class="checkbox" style="margin-left: 20px;" id="group-checkbox-{{ service_group.service_group_id }}">
+                                <label>
+                                    <input type="checkbox" id="chk_service_group_id" name="service-group" {% if service_group.is_checked %}checked{% endif %} onchange="checkServiceGroup(this, {{ service_group.service_group_id }})" /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
+                            </div>
+                        </div>
+                        <div id="collapse-{{ service_group.service_group_id }}" group-id="{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
+                            {% for service in  service_group.service_list %}
+                             <div class="checkbox" style="margin-left: 20px;" id='item-checkbox-{{ service.service_id }}'>
+                                <label>
+                                    <input type="checkbox" onchange="checkServiceItem(this, {{ service_group.service_group_id }}, {{ service.service_id }})" id="chk_service_id" name="service" {% if service.is_checked %}checked{% endif %} value="{{ service.service_id }}"><span {% if service.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service.service_name }} ({{ service.service_id }} - {{ service.description }} ){% if service.is_deleted %}(deleted){% endif %}</span></label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+                <select name="checked_list" multiple hidden >
+                    {% for checked_service in checked_service_arr %}
+                        <option value="{{ checked_service }}" selected>{{ checked_service }}</option>
+                    {% endfor %}
+                </select>
+             <select name="checked_list_1" multiple hidden >
+
+                </select>
+        <div class="row pull-right" style="margin-top: 20px;">
+            <a>
+                <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
+            </a>
+        </div>
+        </form>
+        </div>
+    </div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+        $('.collapse').on('hide.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.add("glyphicon-plus");
+            elem.classList.remove("glyphicon-minus");
+        });
+        $('.collapse').on('show.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.remove("glyphicon-plus");
+            elem.classList.add("glyphicon-minus");
+        });
+
+        var checkServiceGroup = function(elem, serviceGroupId) {
+            if($('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').is(':checked')){
+                $('#collapse-' + serviceGroupId + ' #chk_service_id').prop("checked", true);
+                $('#collapse-' + serviceGroupId + ' #chk_service_id').attr("checked", "checked");
+            } else {
+                $('#collapse-' + serviceGroupId + ' #chk_service_id').removeAttr("checked");
+
+            }
+        };
+
+        var checkServiceItem = function(elem, serviceGroupId, serviceId) {
+            if(!elem.checked){
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').prop("checked", false);
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').removeAttr("checked");
+            } else {
+                var checkboxItems = document.getElementById('collapse-' + serviceGroupId).getElementsByTagName('input');
+                var isCheckAll = true;
+                for(var i = 0; i < checkboxItems.length; i++) {
+                    if(!checkboxItems[i].checked) {
+                        isCheckAll =false;
+                        break;
+                    }
+                }
+                if(isCheckAll) {
+                    $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').prop("checked", true);
+                    $('#collapse-' + serviceGroupId + ' #chk_service_id').attr("checked", "checked");
+                }
+            }
+        };
+    </script>
+{% endblock %}

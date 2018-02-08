@@ -18,6 +18,7 @@ def suspend(request, customer_id):
     url = settings.DOMAIN_NAMES + api_settings.SUSPEND_CUSTOMER.format(customer_id)
     params = {
         'is_suspended': 'true',
+        'active_suspend_reason': request.GET.get("active_suspend_reason")
     }
     result = ajax_functions._put_method(request, url, "", logger, params)
     logger.info('========== Finish suspending customer ==========')

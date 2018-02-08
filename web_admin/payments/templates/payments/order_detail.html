@@ -51,14 +51,14 @@
                             <label class="col-sm-4 control-label">Payment Method Name</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="parent_id"
-                                       id="txt_payment_method_name" value="{{ data.payment_method.payment_method_name | default_if_none:'' }}" disabled/>
+                                       id="txt_payment_method_name" value="{{ data.payment_method.name | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Payment Reference</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="password"
-                                       id="txt_payment_reference" value="{{ data.payment_method.payment_method_ref | default_if_none:'' }}" disabled />
+                                       id="txt_payment_reference" value="{{ data.payment_method.ref | default_if_none:'' }}" disabled />
                             </div>
                         </div>
                     </div>
@@ -177,14 +177,14 @@
                             <label class="col-sm-4 control-label">User ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_initiator_user_id" value="{{ data.initiator_user.id | default_if_none:'' }}" disabled/>
+                                       id="txt_initiator_user_id" value="{{ data.initiator.user_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">User Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_initiator_user_type" value="{{ data.initiator_user.type | default_if_none:'' }}" disabled/>
+                                       id="txt_initiator_user_type" value="{{ data.initiator.user_type_name | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -195,14 +195,14 @@
                             <label class="col-sm-4 control-label">Source of Fund ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="date_of_birth"
-                                       id="txt_initiator_source_of_fund_id" value="{{data.initiator_user.sof_id | default_if_none:''}}" disabled/>
+                                       id="txt_initiator_source_of_fund_id" value="{{data.initiator.sof_id | default_if_none:''}}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Source of Fund Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="gender"
-                                       id="txt_initiator_source_of_fund_type" value="{{ data.initiator_user.sof_type_id | default_if_none:'' }}" disabled/>
+                                       id="txt_initiator_source_of_fund_type" value="{{ data.initiator.sof_type_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -217,14 +217,14 @@
                             <label class="col-sm-4 control-label">User ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_payer_user_id" value="{{ data.payer_user.id | default_if_none:'' }}" disabled/>
+                                       id="txt_payer_user_id" value="{{ data.payer.user_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">User Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_payer_user_type" value="{{ data.payer_user.type | default_if_none:'' }}" disabled/>
+                                       id="txt_payer_user_type" value="{{ data.payer.user_type_name | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -233,14 +233,14 @@
                             <label class="col-sm-4 control-label">Source of Fund ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="date_of_birth"
-                                       id="txt_payer_source_of_fund_id" value="{{data.payer_user.sof_id | default_if_none:''}}" disabled/>
+                                       id="txt_payer_source_of_fund_id" value="{{data.payer.sof_id | default_if_none:''}}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Source of Fund Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="gender"
-                                       id="txt_payer_source_of_fund_type" value="{{ data.payer_user.sof_type_id | default_if_none:'' }}" disabled/>
+                                       id="txt_payer_source_of_fund_type" value="{{ data.payer.sof_type_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -255,14 +255,14 @@
                             <label class="col-sm-4 control-label">User ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_payee_user_id" value="{{ data.payee_user.id | default_if_none:'' }}" disabled/>
+                                       id="txt_payee_user_id" value="{{ data.payee.user_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">User Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_payee_user_type" value="{{ data.payee_user.type | default_if_none:'' }}" disabled/>
+                                       id="txt_payee_user_type" value="{{ data.payee.user_type_name | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -271,14 +271,14 @@
                             <label class="col-sm-4 control-label">Source of Fund ID</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="date_of_birth"
-                                       id="txt_payee_source_of_fund_id" value="{{data.payee_user.sof_id | default_if_none:''}}" disabled/>
+                                       id="txt_payee_source_of_fund_id" value="{{data.payee.sof_id | default_if_none:''}}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Source of Fund Type</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="gender"
-                                       id="txt_payee_source_of_fund_type" value="{{ data.payee_user.sof_type_id | default_if_none:'' }}" disabled/>
+                                       id="txt_payee_source_of_fund_type" value="{{ data.payee.sof_type_id | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -303,7 +303,7 @@
                             <label class="col-sm-4 control-label">Product Name</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                       id="txt_product_name" value="{{ data.product.product_name | default_if_none:'' }}" disabled/>
+                                       id="txt_product_name" value="{{ data.product.name | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -318,7 +318,7 @@
                                 <label class="col-sm-4 control-label">Product Reference 1</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                           id="txt_product_reference_1" value="{{ data.product.product_ref1 | default_if_none:'' }}" disabled/>
+                                           id="txt_product_reference_1" value="{{ data.product.ref1 | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -333,7 +333,7 @@
                                 <label class="col-sm-4 control-label">Product Reference 2</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                           id="txt_product_reference_2" value="{{ data.product.product_ref2 | default_if_none:'' }}" disabled/>
+                                           id="txt_product_reference_2" value="{{ data.product.ref2 | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -346,7 +346,7 @@
                                 <label class="col-sm-4 control-label">Product Reference 3</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                            id="txt_product_reference_3" value="{{ data.product.product_ref3 | default_if_none:'' }}" disabled/>
+                                            id="txt_product_reference_3" value="{{ data.product.ref3 | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -359,7 +359,7 @@
                             <label class="col-sm-4 control-label">Product Reference 4</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                        id="txt_product_reference_4" value="{{ data.product.product_ref4 | default_if_none:'' }}" disabled/>
+                                        id="txt_product_reference_4" value="{{ data.product.ref4 | default_if_none:'' }}" disabled/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -372,12 +372,63 @@
                                 <label class="col-sm-4 control-label">Product Reference 5</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                                            id="txt_product_reference_5" value="{{ data.product.product_ref5 | default_if_none:'' }}" disabled/>
+                                            id="txt_product_reference_5" value="{{ data.product.ref5 | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8"></div>
+                            </div>
+                    </div>
+
+                     <div class="row">
+                            <div class="panel-body">
+                                <div style="font-size: 14px;font-weight: bold;margin-bottom: 8px;">Balance Movement</div>
+                                <div class="no-more-tables">
+                                    <table class="table table-bordered table-striped mb0" id="tbl_balance_movement">
+                                        <thead>
+                                        <tr>
+                                            <th id="balance_movement_sof_id">SOF ID</th>
+                                            <th id="balance_movement_order_detail_id">Order Detail ID</th>
+                                            <th id="balance_movement_order_id">Order ID</th>
+                                            <th id="balance_movement_status">Status</th>
+                                            <th id="balance_movement_fee_related">Fee Related</th>
+                                            <th id="balance_movement_debit">Debit</th>
+                                            <th id="balance_movement_credit">Credit</th>
+                                            <th id="balance_movement_created_time">Created Time</th>
+                                            <th id="balance_movement_update_date">Update Time</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in order_balance_movement %}
+                                               <tr id="row-{{ order.order_balance_movement_id }}">
+                                                    <td>{{ order.sof_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.order_balance_movement_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.order_id|default_if_none:'' }}</td>
+                                                    <td>{{ order.converted_status|default_if_none:'' }}</td>
+                                                    <td>{{ order.fee_related|yesno:"Yes,No,''" }}</td>
+                                                    <td>{{ order.debit_amount|default_if_none:'' }}</td>
+                                                    <td>{{ order.credit_amount|default_if_none:'' }}</td>
+                                                    <td>{{ order.created_timestamp|default_if_none:'' }}</td>
+                                                    <td>{{ order.last_updated_timestamp|default_if_none:'' }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% if order_balance_movement|length > 0 %}
+                                            <tr>
+                                                <td colspan="5" style="text-align: center;">Total</td>
+                                                <td><span id="lbl_total_debit">{{ total_debit|default_if_none:'' }}</span></td>
+                                                <td><span id="lbl_total_credit">{{ total_credit|default_if_none:'' }}</span></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            {% endif %}
+                                            {% if order_balance_movement|length == 0 %}
+                                            <tr>
+                                                <td colspan="9" style="text-align: center;">No record Found</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                     </div>
 

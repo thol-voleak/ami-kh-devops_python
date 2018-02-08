@@ -6,6 +6,22 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
+<style>
+
+    .suspend-label-custom {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .swal-button--confirm {
+        background-color: #2ECC71;
+    }
+    .swal-button--danger{
+        background-color: rgb(221, 107, 85);;
+    }
+</style>
 
 <div class="panel mb25">
     <div class="panel-heading border mb15">
@@ -156,12 +172,12 @@
                     <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
-                    {% if customer.is_permission_detail%}
-                        <button id="btn_detail" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_detail and customer.is_deleted is not True%}
+                        <button id="btn_detail-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_detail' customer.id %}'">Detail</button>
                     {% endif %}
-                    {% if customer.is_permission_update%}
-                        <button id="btn_edit" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_update and customer.is_deleted is not True%}
+                        <button id="btn_edit-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_update' customer.id %}'">Edit</button>
                     {% endif %}
                     {% if customer.is_permission_delete and customer.is_deleted is not True%}
@@ -174,22 +190,22 @@
                             <span class="small">Delete</span>
                         </button>
                     {%endif%}
-                    {% if customer.is_permission_sof_bank%}
-                        <button id="btn_sof_list" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_sof_bank and customer.is_deleted is not True%}
+                        <button id="btn_sof_list-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_sof_list' customer.id %}'">SOF Bank</button>
                     {% endif %}
-                    {% if customer.is_permission_identity%}
-                        <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
+                    {% if customer.is_permission_identity and customer.is_deleted is not True%}
+                        <button id="btn_identities-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
                     {% endif %}
-                    {% if customer.is_permission_suspend%}
+                    {% if customer.is_permission_suspend and customer.is_deleted is not True%}
                         {% if not customer.is_suspended %}
-                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
+                            <button id="btn_status-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:suspend-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Suspend</button>
                         {% else %}
-                            <button id="btn_status" class="btn mb5 btn-outline btn-xs btn-danger"
+                            <button id="btn_status-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                     data-url="{% url 'customers:activate-customer' customer.id %}"
                                     data-customer-id='{{ customer.id }}'
                                     onclick="doSuspendOrActivate(this)">Activate</button>
@@ -240,16 +256,12 @@
     function delete_customer(e) {
         swal({
                 title: "Are you sure you want to delete?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+                icon: "error",
+                buttons: ["Cancel", "OK"],
+                closeOnClickOutside: false,
+                dangerMode: true
+            }).then(function(ok){
+                if(ok){
                     var url = e.getAttribute('data-url');
                     var customer_id = e.getAttribute('data-customer-id');
                     $.ajax({
@@ -264,6 +276,11 @@
                             } else if(response.status == 2) {
                                 // success
                                 $('#btn-delete-' + customer_id).remove();
+                                $('#btn_edit-' + customer_id).remove();
+                                $('#btn_detail-' + customer_id).remove();
+                                $('#btn_sof_list-' + customer_id).remove();
+                                $('#btn_status-' + customer_id).remove();
+                                $('#btn_identities-' + customer_id).remove();
                                 $('#is_deleted_'+ customer_id).text("Yes");
                                 $('#id_'+ customer_id).css('text-decoration', 'line-through');
                                 $('#firstname_'+ customer_id).css('text-decoration', 'line-through');
@@ -289,24 +306,46 @@
     }
 
     function suspend(e) {
+        var suspendContentElem = document.createElement("div");
+        suspendContentElem.innerHTML = '<div class="form-group">'
+                                        +'<div class="control-label suspend-label-custom">Suspend Reason *</div>'
+                                        +'<div>'
+                                        +'<select class="form-control" id="ddl_active_suspend_reason" name="active_suspend_reason" >'
+                                        + '<option value="Suspicious Transaction">Suspicious Transaction</option>'
+                                        + '<option value="Requested by Account holder">Requested by Account holder</option>'
+                                        + '<option value="High Risk Account">High Risk Account</option>'
+                                        + '<option value="Others">Others</option>'
+                                        +'</select>'
+                                        +'</div>'
+                                        +'</div>'
+                                        +'<div id="reason-text-area" class="form-group" style="margin-bottom: 40px;">'
+                                        +'<div class="control-label suspend-label-custom">Suspend Reason Description'
+                                        +'<span> </span>' 
+                                        +'<span id="required-description" style="display:none;">*</span></div>'
+                                        +'<div>'
+                                        +'<textarea id="txt_input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'
+                                        +'</div>'
+                                        +'</div>';
         swal({
-                title: "Are you sure you want to suspend?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+          content: suspendContentElem,
+          icon: "warning",
+          title: 'Are you sure you want to suspend?',
+          buttons: ["Cancel", "OK"],
+          closeOnClickOutside: false
+        }).then(function(ok) {
+            if (ok) {
                     var url = e.getAttribute('data-url');
                     var customer_id = e.getAttribute('data-customer-id');
+                    var active_suspend_reason = document.getElementById("ddl_active_suspend_reason");
+                    var resason_suppend = active_suspend_reason.options[active_suspend_reason.selectedIndex].value;
+                    if(active_suspend_reason.options[active_suspend_reason.selectedIndex].value == 'Others') {
+                        resason_suppend = document.getElementById("txt_input_reason").value;
+                    }
+
                     $.ajax({
                         url: url,
                         type: "GET",
-                        data: {},
+                        data: {"active_suspend_reason":resason_suppend},
                         success: function (response) {
                             if(response.status == 1) {
                                 // Logout
@@ -330,22 +369,40 @@
                         }
                     });
                 }
-            });
+        });
+        var activeSuspendReason = document.getElementById("ddl_active_suspend_reason");
+        var okButton = document.getElementsByClassName("swal-button--confirm")[0];
+        var input_reason = document.getElementById("txt_input_reason");
+        activeSuspendReason.addEventListener("change", function(event) {
+            if(activeSuspendReason.options[activeSuspendReason.selectedIndex].value == 'Others') {
+                document.getElementById("txt_input_reason").removeAttribute('disabled');
+                okButton.setAttribute("disabled", true);
+                document.getElementById('required-description').style.display = 'inline-block';
+            } else {
+                document.getElementById("txt_input_reason").setAttribute("disabled", true);
+                okButton.removeAttribute("disabled");
+                document.getElementById('required-description').style.display = 'none';
+                input_reason.value = '';
+            }
+        });
+
+        input_reason.addEventListener("keyup", function(event) {
+            if(input_reason.value == ''){
+                okButton.setAttribute("disabled", true);
+            } else {
+                okButton.removeAttribute("disabled");
+            }
+        })
     }
 
     function activate(e) {
         swal({
                 title: "Are you sure you want to activate?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "OK",
-                cancelButtonText: "Cancel",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+                icon: "info",
+                buttons: ["Cancel", "OK"],
+                closeOnClickOutside: false
+            }).then(function (ok) {
+                if (ok) {
                     var url = e.getAttribute('data-url');
                     console.log(url)
                     var customer_id = e.getAttribute('data-customer-id');
@@ -403,5 +460,5 @@
 
 {% block body_js %}
     {{ block.super }}
-    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 {% endblock %}

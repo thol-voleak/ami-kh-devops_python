@@ -7,7 +7,6 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from django.shortcuts import render
-from authentications.apps import InvalidAccessToken
 from django.views.generic.base import TemplateView
 import logging
 from django.contrib import messages
@@ -20,12 +19,12 @@ IS_SUCCESS = {
 }
 
 STATUS_ORDER = {
-    -1: 'FAIL',
-     0: 'CREATED',
-     1: 'LOCKING',
-     2: 'EXECUTED',
-     3: 'ROLLED_BACK',
-     4: 'TIME_OUT',
+    -1: 'Fail',
+     0: 'Created',
+     1: 'Locking',
+     2: 'Executed',
+     3: 'Rolled back',
+     4: 'Time out',
 }
 
 class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
@@ -49,14 +48,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render payment order ==========')
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
-        data = self.get_services_list()
+        services = self.get_services_list()
+        services.sort(key = lambda service: service['service_name'])
+
         status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
+            {"id": 0, "name": "Created"},
+            {"id": 2, "name": "Executed"},
+            {"id": -1, "name": "Fail"},
+            {"id": 1, "name": "Locking"},
+            {"id": 3, "name": "Rolled back"},
+            {"id": 4, "name": "Time out"},
         ]
         error_list = [
             {"name": "All", "title": "All"},
@@ -67,16 +68,21 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"name": "payment_not_allow", "title": "Payment Not Allow"},
             {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
             {"name": "general_error", "title": "General Error"},
+            {"name": "internal_error", "title": "Internal Error"},
+            {"name": "internal_server_error", "title": "Internal Server Error"},
+            {"name": "internal_call_timeout", "title": "Internal Call Timeout"},
+            {"name": "bad_request", "title": "Bad Request"},
         ]
 
         error_code_id = []
+        status_code_id = []
 
-        context['data'] = data
+        context['services'] = services
         context['search_count'] = 0
         context['status_list'] = status_list
         context['error_list'] = error_list
         context['error_code_id'] = error_code_id
-        context['status_id'] = ''
+        context['status_code_id'] = status_code_id
         context['permissions'] = self._get_has_permissions()
         self.logger.info('========== Finish render payment order ==========')
         return render(request, self.template_name, context)
@@ -85,16 +91,17 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching payment order ==========')
 
         order_id = request.POST.get('order_id')
-        service_name = request.POST.get('service_name')
+        searched_services = request.POST.getlist('service_name')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         self.logger.info('========== Start getting service list ==========')
-        service_list = self.get_services_list()
+        services = self.get_services_list()
+        services.sort(key=lambda service: service['service_name'])
         self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
-        status_id = request.POST.get('status_id')
+        list_status_id = request.POST.getlist('list_status_id')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
@@ -106,13 +113,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                           "payment_not_allow", "cancel_order_not_allow", "general_error"]
             error_code = ["All"]
 
+        list_status_search = []
+        for status in list_status_id:
+            list_status_search.append(int(status))
+        list_status_id = list(list_status_search)
+
         body = {}
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id
-        if service_name:
-            body['service_name'] = service_name
         if user_id and user_id.isdigit():
             body['user_id'] = int(user_id)
         elif user_id:
@@ -121,15 +131,19 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = int(user_type_id)
         if ext_transaction_id:
             body['ext_transaction_id'] = ext_transaction_id
-        if status_id:
-            body['status_id'] = [int(status_id)]
+
+        if list_status_search:
+            body['status_id_list'] = list_status_search
 
         if creation_client_id:
             body['created_client_id'] = creation_client_id
         if execution_client_id:
             body['executed_client_id'] = execution_client_id
         if error_code_search:
-            body['error_code'] = error_code_search
+            body['error_codes'] = error_code_search
+        if searched_services:
+            searched_services = [int(i) for i in searched_services if i.isnumeric()]
+            body['service_id_list'] = searched_services
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -158,13 +172,14 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             count = len(order_list)
 
         status_list = [
-            {"id": -1, "name": "FAIL"},
-            {"id": 0, "name": "CREATED"},
-            {"id": 1, "name": "LOCKING"},
-            {"id": 2, "name": "EXECUTED"},
-            {"id": 3, "name": "ROLLED_BACK"},
-            {"id": 4, "name": "TIME_OUT"},
+            {"id": 0, "name": "Created"},
+            {"id": 2, "name": "Executed"},
+            {"id": -1, "name": "Fail"},
+            {"id": 1, "name": "Locking"},
+            {"id": 3, "name": "Rolled back"},
+            {"id": 4, "name": "Time out"},
         ]
+
         error_list = [
             {"name": "All", "title": "All"},
             {"name": "insufficient_fund", "title": "Insufficient Fund"},
@@ -174,12 +189,16 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             {"name": "payment_not_allow", "title": "Payment Not Allow"},
             {"name": "cancel_order_not_allow", "title": "Cancel Order Not Allow"},
             {"name": "general_error", "title": "General Error"},
+            {"name": "internal_error", "title": "Internal Error"},
+            {"name": "internal_server_error", "title": "Internal Server Error"},
+            {"name": "internal_call_timeout", "title": "Internal Call Timeout"},
+            {"name": "bad_request", "title": "Bad Request"},
         ]
 
         context = {'order_list': orders,
                    'order_id': order_id,
-                   'service_name': service_name,
-                   'data': service_list,
+                   'searched_services': searched_services,
+                   'services': services,
                    'user_type':user_type_id,
                    'user_id': user_id,
                    'search_count': page.get('total_elements', 0),
@@ -195,8 +214,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                    'page_range': calculate_page_range_from_page_info(page),
         }
 
-        if status_id:
-            context['status_id'] = int(status_id)
+        if list_status_id:
+            context['status_code_id'] = list_status_id
         if error_code:
             context['error_code_id'] = error_code
 
@@ -235,10 +254,9 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_services_list(self):
         url = SERVICE_LIST_URL
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
-        if not success:
-            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-                self.logger.info("{}".format('access_token_expire'))
-                raise InvalidAccessToken('access_token_expire')
+        API_Logger.get_logging(loggers=self.logger,
+                               response=data,
+                               status_code=status_code)
         return data
 
     def _get_has_permissions(self):

@@ -1,4 +1,4 @@
-API_VERSION = 'v3.0'
+API_VERSION = 'v3.1'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -208,6 +208,7 @@ GET_BANK_PROFILE_REPORT_PATH = "api-gateway/report/" + API_VERSION + "/banks"
 SEARCH_TICKET = 'api-gateway/report/' + API_VERSION + '/tickets'
 DELETE_FREEZE_CARD_PATH = 'api-gateway/fraud-consultant/' + API_VERSION +'/admin/tickets/{ticket_id}'
 CREATE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/tickets'
+DELETE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/tickets/{ticket_id}'
 
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
@@ -253,4 +254,9 @@ CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_i
 #Remmittance
 GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
 SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
+UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{voucher_id}/status'
 
+#Report Configuration
+GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
+ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
+DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'

@@ -32,10 +32,22 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start render Vouchers List page==========')
         status_list = self._get_status_list()
+        permissions = {}
+        permissions['CAN_CREATE_VOUCHER_ACTION'] = self.check_membership(['CAN_CREATE_VOUCHER_ACTION'])
+
+        permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
+        permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
+
         context = {
+            'permissions': permissions,
             'claim_status_list': status_list,
+            'hold_status_list': self._get_hold_status_list(),
+            'cash_in_user_type_list': self._get_user_type_cash_in_list(),
+            'cash_in_user_type' : '',
         }
+        self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -47,8 +59,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         to_date = request.POST.get('create_date_to')
         expire_from_date = request.POST.get('expiration_date_from')
         expire_to_date = request.POST.get('expiration_date_to')
+        hold_status = request.POST.get('hold_status')
+        cash_in_user_type = request.POST.get('user_type_cash_in')
 
         body = {}
+        if cash_in_user_type != '':
+            body['cash_in_user_type'] = cash_in_user_type
         if cash_in_id:
             body['cash_in_user_id'] = int(cash_in_id)
         if cash_out_id:
@@ -59,6 +75,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['is_used'] = True
         if claim_status == 'False':
             body['is_used'] = False
+        if hold_status != '':
+            body['is_on_hold'] = True if hold_status == 'True' else False
 
         if from_date:
             new_from_created_timestamp = datetime.strptime(from_date, "%Y-%m-%d")
@@ -88,6 +106,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         permissions = {}
         permissions['CAN_VIEW_VOUCHER_DETAILS'] = check_permissions_by_user(self.request.user,
                                                                             'CAN_VIEW_VOUCHER_DETAILS')
+        permissions['CAN_CREATE_VOUCHER_ACTION'] = check_permissions_by_user(self.request.user,
+                                                                            'CAN_CREATE_VOUCHER_ACTION')
+
+        permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
+        permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
         context = {
             'data': data,
             'voucher_id': voucher_id,
@@ -100,6 +123,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'expiration_date_from': expire_from_date,
             'expiration_date_to': expire_to_date,
             'permissions': permissions,
+            'hold_status_list': self._get_hold_status_list(),
+            'hold_status': hold_status,
+            'cash_in_user_type_list': self._get_user_type_cash_in_list(),
+            'cash_in_user_type' : cash_in_user_type,
+
         }
         return render(request, self.template_name, context)
 
@@ -109,6 +137,20 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "All", "value": ""},
             {"name": "Used", "value": "True"},
             {"name": "Unused", "value": "False"},
+        ]
+
+    def _get_hold_status_list(self):
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Hold", "value": "True"},
+            {"name": "Unhold", "value": "False"},
+        ]
+
+    def _get_user_type_cash_in_list(self):
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Agent", "value": "agent"},
+            {"name": "Customer", "value": "customer"},
         ]
 
     def _search_for_vouchers(self, body):

@@ -6,6 +6,8 @@ from django.conf import settings
 from authentications.utils import get_correlation_id_from_username
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin import api_settings, setup_logger, RestFulClient
+from web_admin.api_logger import API_Logger
+
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +40,6 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
         return render(request, self.template_name, context)
 
     def _get_card_type_detail(self, params):
-        self.logger.info('========== Start Get Card Type Detail ==========')
         api_path = api_settings.SEARCH_CARD_TYPE
 
         is_success, status_code, status_message, data = RestFulClient.post(url= api_path,
@@ -46,8 +47,9 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
                                                                            loggers=self.logger,
                                                                            params=params,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
 
-        self.logger.info("data=[{}]".format(data))
         try:
             card_type_detail = data[0]
             timeout_create_card_in_second = int(card_type_detail['timeout_create_card']) / 1000
@@ -56,5 +58,15 @@ class CardTypeDetail(GetHeaderMixin, TemplateView):
                                      'timeout_get_card_detail_in_second': '%g' % timeout_get_card_detail_in_second})
         except IndexError:
             card_type_detail = {}
-        self.logger.info('========== Finish Get Card Type Detail ==========')
+        timeout_update_card_status_in_second = ''
+        if card_type_detail:
+            try:
+                result = int(card_type_detail['timeout_update_card_status']) / 1000
+            except Exception as e:
+                timeout_update_card_status_in_second = ''
+            else:
+                timeout_update_card_status_in_second = result
+        if card_type_detail['timeout_update_card_status'] is not None:
+            card_type_detail.update({'timeout_update_card_status': '%g' % timeout_update_card_status_in_second})
+        
         return card_type_detail
