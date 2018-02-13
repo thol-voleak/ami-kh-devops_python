@@ -32,6 +32,7 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
         return super(SPIUpdate, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start updated SPI url ==========')
         service_command_id = kwargs.get('service_command_id')
         service_id = kwargs.get('service_id')
         command_id = kwargs.get('command_id')
@@ -56,6 +57,7 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
         elif spi_url_option == 'external':
             spi_url = spi_url_value_external
 
+
         if spi_url != "" and spi_url is not None:
             params = {
                 "service_command_id": service_command_id,
@@ -68,18 +70,21 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
                 "read_timeout": 0 if read_timeout == "" else int(read_timeout),
                 "connection_timeout": 0 if connection_timeout == "" else int(connection_timeout)
             }
-
             success, status_code, message, data = self.update_spi(spi_url_id, params)
+
 
             if success:
                 message_level = messages.SUCCESS
                 message_text = 'Updated data successfully'
+                self.logger.info('========== Finish updated SPI url ==========')
             elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
                 self.logger.info("{}".format(status_message))
+                self.logger.info('========== Finish updated SPI url ==========')
                 raise InvalidAccessToken(status_message)
             else:
                 message_level = messages.ERROR
                 message_text = message
+                self.logger.info('========== Finish updated SPI url ==========')
                 return redirect('services:spi_update',
                                 service_command_id=service_command_id,
                                 command_id=command_id,
@@ -88,6 +93,7 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
         else:
             message_level = messages.ERROR
             message_text = "SPI url cannot be empty."
+            self.logger.info('========== Finish updated SPI url ==========')
             return redirect('services:spi_update',
                                 service_command_id=service_command_id,
                                 command_id=command_id,
@@ -151,13 +157,11 @@ class SPIUpdate(TemplateView, GetHeaderMixin):
         return data
 
     def update_spi(self, spi_url_id, params):
-        self.logger.info("========== Start updating SPI URL by service command ==========")
         path = api_settings.SPI_UPDATE_PATH.format(spiUrlId=spi_url_id)
         success, status_code, message, data = RestFulClient.put(
                 url = path,
                 headers=self._get_headers(),
                 loggers=self.logger,
                 params=params)
-        self.logger.info("param is : {}".format(params))
-        self.logger.info("========== Finish update SPI URL by service command ==========")
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
         return success, status_code, message, data
