@@ -105,6 +105,7 @@
                             <th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>
                             <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
                             <th class="col-sm-1" id="lbl_rate">Rate %</th>
+                            <th class="col-sm-1" id="lbl_label">Label</th>
                             <th class="col-sm-1" id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
@@ -120,6 +121,7 @@
                                 <td >{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td >{{ d.amount_type|default_if_none:'' }}</td>
                                 <td>{{ d.rate|default_if_none:'' }}</td>
+                                <td >{{ d.label|default_if_none:'' }}</td>
                                 <td>
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
@@ -199,6 +201,9 @@
                                         disabled
                                     {% endif %}
                                 />
+                            </td>
+                            <td>
+                                <input class="form-control" name="label" id="txt_setting_payment_fee_structure_label"/>
                             </td>
                             <td></td>
                         </tr>

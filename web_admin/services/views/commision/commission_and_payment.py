@@ -285,6 +285,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -337,6 +338,7 @@ class BalanceDistributionsUpdate(View):
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
