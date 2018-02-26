@@ -390,9 +390,8 @@
                                         <tr>
                                             <th id="balance_movement_sof_id">SOF ID</th>
                                             <th id="balance_movement_order_detail_id">Order Detail ID</th>
-                                            <th id="balance_movement_order_id">Order ID</th>
                                             <th id="balance_movement_status">Status</th>
-                                            <th id="balance_movement_fee_related">Fee Related</th>
+                                            <th id="balance_movement_label">Label</th>
                                             <th id="balance_movement_debit">Debit</th>
                                             <th id="balance_movement_credit">Credit</th>
                                             <th id="balance_movement_created_time">Created Time</th>
@@ -404,9 +403,8 @@
                                                <tr id="row-{{ order.order_balance_movement_id }}">
                                                     <td>{{ order.sof_id|default_if_none:'' }}</td>
                                                     <td>{{ order.order_balance_movement_id|default_if_none:'' }}</td>
-                                                    <td>{{ order.order_id|default_if_none:'' }}</td>
                                                     <td>{{ order.converted_status|default_if_none:'' }}</td>
-                                                    <td>{{ order.fee_related|yesno:"Yes,No,''" }}</td>
+                                                    <td>{{ order.label|default_if_none:'-' }}</td>
                                                     <td>{{ order.debit_amount|default_if_none:'' }}</td>
                                                     <td>{{ order.credit_amount|default_if_none:'' }}</td>
                                                     <td>{{ order.created_timestamp|default_if_none:'' }}</td>
@@ -415,7 +413,7 @@
                                             {% endfor %}
                                             {% if order_balance_movement|length > 0 %}
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">Total</td>
+                                                <td colspan="4" style="text-align: center;">Total</td>
                                                 <td><span id="lbl_total_debit">{{ total_debit|default_if_none:'' }}</span></td>
                                                 <td><span id="lbl_total_credit">{{ total_credit|default_if_none:'' }}</span></td>
                                                 <td colspan="2"></td>
