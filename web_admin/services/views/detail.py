@@ -42,6 +42,7 @@ class ServiceDetailForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
             data['service_group_name'] = service_group_name
 
         context = {'service_info': data,
+                   'can_edit_service': self.check_membership(['CAN_EDIT_SERVICE']),
                    'add_service_msg': self.request.session.pop('add_service_msg', None),
                    'update_service_msg': self.request.session.pop('update_service_msg', None)}
         return context
