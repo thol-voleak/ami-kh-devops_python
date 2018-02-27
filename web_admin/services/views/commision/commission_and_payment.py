@@ -294,11 +294,13 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
                                    logger=logger, params=post_data)
 
         if status:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Added Setting Payment, Fee & Bonus Structure successfully'
-            )
+            msg = 'Added Setting Payment, Fee & Bonus Structure successfully'
+            if msg not in [m.message for m in messages.get_messages(request)]:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    msg
+                )
         else:
             messages.add_message(
                 request,
