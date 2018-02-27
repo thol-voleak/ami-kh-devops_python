@@ -92,6 +92,13 @@
                     </li>
                 </ul>
                 {% endif %}
+                {% if request.user|has_permission_name:"CAN_VIEW_BALANCE_SUMMARY"%}
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'balance-summary' %}active{% endif %}">
+                        <a href="{% url 'balances:balance_summary' %}"> <span>Balance Summary</span> </a>
+                    </li>
+                </ul>
+                {% endif %}
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP" or request.user|has_permission_name:"CAN_MANAGE_SERVICE"%}

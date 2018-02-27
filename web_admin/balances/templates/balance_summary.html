@@ -1,0 +1,33 @@
+{% extends "core.html" %}
+{% load static %}
+{% load humanize %}
+{% load permissions_filter %}
+{% block content %}
+<h3>Balance Summary</h3>
+<div class="panel panel-primary " style="background-color: #ecf0f1;">
+    <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
+    </div>
+    <div class="panel-body" style="margin-top: -20px;">
+        <div class="row">
+            <div class="col-md-3">
+                <div>
+                    <div class="widget bg-white"></div>
+                </div>
+                <div>
+                    <div class="widget bg-white"></div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div>
+                    <div class="widget bg-white"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+{%  endblock %}
