@@ -7,7 +7,7 @@
 <style>
     .small-column {
         height: 60px;
-    margin-bottom: 18px;
+        margin-bottom: 18px;
     }
     .bg-blue {
         background-color: #00a2fb;
@@ -18,13 +18,13 @@
 
     .small-column-number {
         margin-top: 5px;
-    font-weight: bold;
-    font-size: 16px;
+        font-weight: bold;
+        font-size: 16px;
     }
 
     .small-column-tile {
         font-size: 15px;
-    font-weight: bold;
+        font-weight: bold;
     }
 
     .small-column-icon {
@@ -35,14 +35,14 @@
 
     .big-column-icon{
         height: 60px;
-    margin-top: 26px;
-    margin-left: 20px;
+        margin-top: 26px;
+        margin-left: 20px;
     }
 
     .big-column-title {
-            margin-top: 15px;
-    padding-left: 20px;
-    font-size: 35px;
+        margin-top: 15px;
+        padding-left: 20px;
+        font-size: 35px;
     }
 
     .unit {
@@ -52,10 +52,10 @@
     }
 
     .big-column-number {
-    color: #76e091;
-    font-size: 23px;
-    font-weight: bold;
-    margin-top: -10px;
+        color: #76e091;
+        font-size: 23px;
+        font-weight: bold;
+        margin-top: -10px;
     }
 
     .btn-arrow-down  {
@@ -72,8 +72,8 @@
 
     .balance-arrow {
         position: absolute;
-    top: -12px;
-    right: -8.5px;
+        top: -12px;
+        right: -8.5px;
     }
 
     .scroll-balance-area {
@@ -84,38 +84,37 @@
         padding-top: 5px;
     }
 
+    .white-text {
+        color: white;
+    }
+
 </style>
 <div style="display: flex; justify-content: center;">
     <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
     <div class="panel-body">
-        <div>
-              <div class="row">
+        <div class="row">
             <div class="col-md-4">
-                <div>
-                    <div class="bg-blue small-column">
+                <div class="bg-blue small-column">
                         <div class="row">
                             <div class="col-md-4">
                                 <img class="small-column-icon" src="{% static 'img/customer.png'%}" />
                             </div>
                             <div class="col-md-8">
-                                <div class="small-column-number">123,456</div>
+                                <div class="small-column-number" id="lbl_member_profile_numbers">123,456</div>
                                 <div class="small-column-tile">MEMBER PROFILE</div>
                             </div>
                         </div>
-                    </div>
                 </div>
-                <div>
-                    <div class="bg-gray small-column" style="margin-bottom: 2px;">
+                <div class="bg-gray small-column" style="margin-bottom: 2px;">
                         <div class="row">
                             <div class="col-md-4">
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
                             <div class="col-md-8">
-                                <div class="small-column-number"><font color="white">123,456</font></div>
+                                <div class="small-column-number"><font color="white" id="id=lbl_member_total_sof_cash">123,456</font></div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-md-8">
@@ -128,71 +127,12 @@
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
                                 <div class="col-md-10 scroll-balance-area">
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">VND</div>
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">USD</div>
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">EU</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-        </div>
-    </div>
-</div>
-</div>
-<div style="display: flex; justify-content: center;">
-    <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
-    <div class="panel-body" style="padding-bottom: 35px;">
-        <div>
-              <div class="row">
-            <div class="col-md-4">
-                    <div class="bg-blue small-column">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
-                            </div>
-                            <div class="col-md-8">
-                                <div class="small-column-number">123,456</div>
-                                <div class="small-column-tile">AGENT PROFILE</div>
-                            </div>
-                        </div>
-                    </div>
-                <div>
-                    <div class="bg-gray small-column" style="margin-bottom: 2px;">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
-                            </div>
-                            <div class="col-md-8">
-                                <div class="small-column-number"><font color="white">123,456</font></div>
-                                <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="bg-white" style="height: 137px;">
-                    <div class="row">
-                        <div class="col-md-2">
-                                <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
-                        </div>
-                        <div class="col-md-10">
-                            <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
-                            <div class="row">
-                                <div class="col-md-10 scroll-balance-area">
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">VND</div>
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">USD</div>
-                                    <div class="big-column-number">10.100.123.456</div>
-                                    <div class="unit">EU</div>
+                                    <div class="big-column-number" id="lbl_member_balance_VND">10,100,123,456</div>
+                                    <div class="unit" id="lbl_member_balance_currency_VND">VND</div>
+                                    <div class="big-column-number" id="lbl_member_balance_USD">10,100,123,456</div>
+                                    <div class="unit" id="lbl_member_balance_currency_USD">USD</div>
+                                    <div class="big-column-number" id="lbl_member_balance_THB">10,100,123,456</div>
+                                    <div class="unit" id="lbl_member_balance_currency_THB">THB</div>
                                 </div>
                             </div>
                         </div>
@@ -201,8 +141,62 @@
             </div>
 
         </div>
+    </div>
+</div>
+</div>
+<div style="display: flex; justify-content: center;">
+    <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
+    <div class="panel-body" style="padding-bottom: 35px;">
+        <div class="row">
+            <div class="col-md-4">
+                    <div class="bg-blue small-column">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
+                            </div>
+                            <div class="col-md-8">
+                                <div class="small-column-number" id="lbl_agent_profile_numbers">123,456</div>
+                                <div class="small-column-tile">AGENT PROFILE</div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="bg-gray small-column" style="margin-bottom: 2px;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
+                            </div>
+                            <div class="col-md-8">
+                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">123,456</div>
+                                <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-8">
+                <div class="bg-white" style="height: 137px;">
+                    <div class="row">
+                        <div class="col-md-2">
+                                <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
+                        </div>
+                        <div class="col-md-10">
+                            <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
+                            <div class="row">
+                                <div class="col-md-10 scroll-balance-area">
+                                    <div class="big-column-number" id="lbl_agent_balance_VND">10,100,123,456</div>
+                                    <div class="unit" id="lbl_agent_balance_currency_VND">VND</div>
+                                    <div class="big-column-number" id="lbl_agent_balance_USD">10,100,123,456</div>
+                                    <div class="unit" id="lbl_agent_balance_currency_USD">USD</div>
+                                    <div class="big-column-number" id="lbl_agent_balance_THB">10,100,123,456</div>
+                                    <div class="unit" id="lbl_agent_balance_currency_THB">THB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-            <button class="btn-arrow-down"><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x"></i></span></button>
+        <button class="btn-arrow-down"><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x"></i></span></button>
 
     </div>
 </div>
