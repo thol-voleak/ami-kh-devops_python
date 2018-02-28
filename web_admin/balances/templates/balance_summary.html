@@ -46,12 +46,12 @@
     }
 
     .unit {
-        padding-left: 23px;
+        padding-left: 3px;
         font-weight: bold;
+        margin-bottom: 10px;
     }
 
     .big-column-number {
-        padding-left: 20px;
     color: #76e091;
     font-size: 23px;
     font-weight: bold;
@@ -75,6 +75,15 @@
     top: -12px;
     right: -8.5px;
     }
+
+    .scroll-balance-area {
+        max-height: 50px;
+        overflow-y: scroll;
+        border: 1px solid #f5efef;
+        margin-left: 31px;
+        padding-top: 5px;
+    }
+
 </style>
 <div style="display: flex; justify-content: center;">
     <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
@@ -117,8 +126,16 @@
                         </div>
                         <div class="col-md-10">
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
-                            <div class="big-column-number">10,100,123,456</div>
-                            <div class="unit">VND</div>
+                            <div class="row">
+                                <div class="col-md-10 scroll-balance-area">
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">VND</div>
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">USD</div>
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">EU</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -135,7 +152,6 @@
         <div>
               <div class="row">
             <div class="col-md-4">
-                <div>
                     <div class="bg-blue small-column">
                         <div class="row">
                             <div class="col-md-4">
@@ -147,7 +163,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
                 <div>
                     <div class="bg-gray small-column" style="margin-bottom: 2px;">
                         <div class="row">
@@ -170,8 +185,16 @@
                         </div>
                         <div class="col-md-10">
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
-                            <div class="big-column-number">10,100,123,456</div>
-                            <div class="unit">VND</div>
+                            <div class="row">
+                                <div class="col-md-10 scroll-balance-area">
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">VND</div>
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">USD</div>
+                                    <div class="big-column-number">10.100.123.456</div>
+                                    <div class="unit">EU</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
