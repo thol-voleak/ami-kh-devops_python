@@ -59,7 +59,7 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE" or request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" %}
+            {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE" or request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" or request.user|has_permission_name:"CAN_VIEW_BALANCE_SUMMARY" %}
             {% check_valid_url url_name 'balances' as is_balance_url %}
             <li class="menu-accordion {% if is_balance_url %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
