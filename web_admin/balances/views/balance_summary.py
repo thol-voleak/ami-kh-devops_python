@@ -26,5 +26,15 @@ class BalanceSummary(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         if not check_permissions_by_user(self.request.user, "CAN_VIEW_BALANCE_SUMMARY"):
             return redirect('web:permission_denied')
+        data = [
+            {'agent_type':'company',
+            'profile':'human',
+            'amount':'1000',
+            'fee':'50',
+            'currency':'vnd'}
+        ]
+        context ={
+            'data': data
+        }
 
-        return render(request, self.template_name, )
+        return render(request, self.template_name, context)

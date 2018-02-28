@@ -69,6 +69,17 @@
     margin-top: 1px;
 
     }
+    .btn-arrow-up  {
+        background-color: white;
+        position: absolute;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        margin-right: 12px;
+    margin-top: 1px;
+
+    }
 
     .balance-arrow {
         position: absolute;
@@ -196,9 +207,33 @@
             </div>
 
         </div>
-        <button class="btn-arrow-down"><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x"></i></span></button>
-
-    </div>
+        <button class="btn-arrow-down" onclick="table_toggle()" ><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x" id="toggle-button"></i></span></button>
+    </div >
+    <div id="toggle-table">
+    <table id='tbl_agent_sof_cash' class="table table-bordered table-striped mb0" >
+        <thead>
+        <tr>
+            <th id="ddl_voucher_id">Agent Type</th>
+            <th id="ddl_voucher_type">Profile</th>
+            <th id="ddl_voucher_amount">Total SOF Cash</th>
+            <th id="ddl_voucher_fee">Balance</th>
+            <th id="ddl_currency">Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in data %}
+            <!-- <div > -->
+            <tr class="checkboxlist">
+                <td>{{ i.agent_type|default_if_none:'' }}</td>
+                <td>{{ i.profile|default_if_none:'' }}</td>
+                <td>{{ i.amount|default_if_none:'' }}</td>
+                <td>{{ i.fee|default_if_none:'' }}</td>
+                <td>{{ i.currency|default_if_none:'' }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
 </div>
 </div>
 
@@ -207,4 +242,28 @@
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
+<script>
+    function table_toggle(){
+    //     if($( "#toggle-button" ).hasClass( "btn-arrow-down" )){
+    //     $('#toggle-table').show();
+    //     $("toggle-button").removeClass("btn-arrow-down");
+    //     $("toggle-button").addClass("btn-arrow-up");
+    // }
+    // else if ($( "#toggle-button" ).hasClass( "btn-arrow-up" )){
+    //     $('#toggle-table').hide();
+    //     $("toggle-button").removeClass("btn-arrow-up");
+    //     $("toggle-button").addClass("btn-arrow-down");
+    // }
+    if ( $( "#toggle-table" ).is( ":hidden" ) ){
+        $( "#toggle-table" ).show();
+        $("#toggle-button").removeClass("fa-angle-down");
+        $("#toggle-button").addClass("fa-angle-up");
+    }
+    else{
+        $( "#toggle-table" ).hide();
+        $("#toggle-button").removeClass("fa-angle-up");
+        $("#toggle-button").addClass("fa-angle-down");
+    }
+}
+</script>
 {%  endblock %}
