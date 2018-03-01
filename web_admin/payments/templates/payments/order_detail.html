@@ -388,6 +388,9 @@
                                     <table class="table table-bordered table-striped mb0" id="tbl_balance_movement">
                                         <thead>
                                         <tr>
+                                            <th id="balance_movement_first_name">First Name</th>
+                                            <th id="balance_movement_last_name">Last Name</th>
+                                            <th id="balance_movement_user_id">User ID</th>
                                             <th id="balance_movement_sof_id">SOF ID</th>
                                             <th id="balance_movement_order_detail_id">Order Detail ID</th>
                                             <th id="balance_movement_status">Status</th>
@@ -401,6 +404,9 @@
                                         <tbody>
                                             {% for order in order_balance_movement %}
                                                <tr id="row-{{ order.order_balance_movement_id }}">
+                                                    <td>{{ order.first_name|default_if_none:'-' }}</td>
+                                                    <td>{{ order.last_name|default_if_none:'-' }}</td>
+                                                    <td>{{ order.user_type.name }}({{ order.user_id }})</td>
                                                     <td>{{ order.sof_id|default_if_none:'' }}</td>
                                                     <td>{{ order.order_balance_movement_id|default_if_none:'' }}</td>
                                                     <td>{{ order.converted_status|default_if_none:'' }}</td>
@@ -413,7 +419,7 @@
                                             {% endfor %}
                                             {% if order_balance_movement|length > 0 %}
                                             <tr>
-                                                <td colspan="4" style="text-align: center;">Total</td>
+                                                <td colspan="7" style="text-align: center;">Total</td>
                                                 <td><span id="lbl_total_debit">{{ total_debit|default_if_none:'' }}</span></td>
                                                 <td><span id="lbl_total_credit">{{ total_credit|default_if_none:'' }}</span></td>
                                                 <td colspan="2"></td>
