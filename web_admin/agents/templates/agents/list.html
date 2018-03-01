@@ -175,6 +175,9 @@
                                 {% if agent.has_permission_view %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                                 {% endif %}
+                                {% if agent.has_permission_management %}
+                                    <button id="btn_management" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='' ">Management</button>
+                                {% endif %}
                                 {% if agent.has_permission_edit %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                                 {% endif %}
