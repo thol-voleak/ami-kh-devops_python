@@ -98,19 +98,21 @@
     .white-text {
         color: white;
     }
-
+    .main-content {
+        min-width: 1150px !important;
+    }
 </style>
 <div style="display: flex; justify-content: center;">
-    <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
+    <div class="panel panel-primary" style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-xs-4">
                 <div class="bg-blue small-column">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <img class="small-column-icon" src="{% static 'img/customer.png'%}" />
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-xs-8">
                                 <div class="small-column-number" id="lbl_member_profile_numbers">{{customer_summary.total_profile|intcomma}}</div>
                                 <div class="small-column-tile">MEMBER PROFILE</div>
                             </div>
@@ -118,26 +120,26 @@
                 </div>
                 <div class="bg-gray small-column" style="margin-bottom: 2px;">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-xs-8">
                                 <div class="small-column-number"><font color="white" id="id=lbl_member_total_sof_cash">{{ cus_total_sofs|intcomma }}</font></div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-xs-8">
                 <div class="bg-white" style="height: 137px;">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-xs-2">
                                 <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
                         </div>
-                        <div class="col-md-10">
+                        <div class="col-xs-10">
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
-                                <div class="col-md-10 scroll-balance-area">
+                                <div class="col-xs-10 scroll-balance-area">
                                     {% for item in cus_sofs %}
                                      <div class="big-column-number" id="lbl_member_balance_VND">{{item.total_balance|intcomma}}</div>
                                      <div class="unit" id="lbl_member_balance_currency_VND">{{item.currency}}</div>
@@ -154,16 +156,16 @@
 </div>
 </div>
 <div style="display: flex; justify-content: center;">
-    <div class="panel panel-primary " style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
+    <div class="panel panel-primary" style="background-color: #ecf0f1; width: 70%; margin-top: 15px;">
     <div class="panel-body" style="padding-bottom: 35px;">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-xs-4">
                     <div class="bg-blue small-column">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-xs-8">
                                 <div class="small-column-number" id="lbl_agent_profile_numbers">123,456</div>
                                 <div class="small-column-tile">AGENT PROFILE</div>
                             </div>
@@ -171,26 +173,26 @@
                     </div>
                 <div class="bg-gray small-column" style="margin-bottom: 2px;">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-xs-8">
                                 <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">123,456</div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
                     </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-xs-8">
                 <div class="bg-white" style="height: 137px;">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-xs-2">
                                 <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
                         </div>
-                        <div class="col-md-10">
+                        <div class="col-xs-10">
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
-                                <div class="col-md-10 scroll-balance-area">
+                                <div class="col-xs-10 scroll-balance-area">
                                     <div class="big-column-number" id="lbl_agent_balance_VND">10,100,123,456</div>
                                     <div class="unit" id="lbl_agent_balance_currency_VND">VND</div>
                                     <div class="big-column-number" id="lbl_agent_balance_USD">10,100,123,456</div>
