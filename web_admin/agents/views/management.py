@@ -51,16 +51,36 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data, success, status_message = self._get_relationships(params=body)
         if success:
             relationships_list = data.get("relationships", [])
+            summary_relationships = list(relationships_list)
+            if len(relationships_list) >10:
+                summary_relationships = relationships_list[:10]
 
             page = data.get("page", {})
             context.update(
-                {'search_count': page.get('total_elements', 0), 'relationships': relationships_list})
+                {'search_count': page.get('total_elements', 0), 
+                'relationships': relationships_list,
+                'summary_relationships': summary_relationships
+                })
         self.logger.info('========== Finish getting Relationships list ==========')
         return render(request, self.template_name, context)
 
     def _get_relationships(self, params):
         self.logger.info('========== Start searching agent ==========')
 
+        api_path = SEARCH_RELATIONSHIP
+        success, status_code, status_message, data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data.get('relationships', []),
+                                status_code=status_code, is_getting_list=True)
+
+        return data, success, status_message
+
+    def _get_summary(self, params):
         api_path = SEARCH_RELATIONSHIP
         success, status_code, status_message, data = RestFulClient.post(
             url=api_path,

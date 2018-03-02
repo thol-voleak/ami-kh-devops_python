@@ -51,10 +51,10 @@
                     {% csrf_token %}
                         <div id="exTab1" class="container"> 
                         <ul  class="nav nav-pills">
-                            <li class="active">
+                            <li id="summary_tab" class="active">
                                 <a  href="#div_summary_management" data-toggle="tab" id="tab_summary"><font size="4">Summary</font></a>
                             </li>
-                            <li>
+                            <li id="realtionships_tab">
                                 <a href="#div_relationships" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
                             </li>
                         </ul>
@@ -67,26 +67,41 @@
                                     <thead>
                                     <tr>
                                         <th id="ddl_campaign_id">Relationship Type</th>
-                                        <th id="ddl_campaign_name">Main ID</th>
+                                        <th id="ddl_campaign_name">Main ID
+                                            <span class="info-tooltip">
+                                                <i class="fa fa-info"></i>
+                                            </span>
+                                        </th>
                                         <th id="ddl_start_date">Main Name</th>
-                                        <th id="ddl_end_date">Sub ID</th>
+                                        <th id="ddl_end_date">Sub ID
+                                            <span class="info-tooltip">
+                                                <i class="fa fa-info"></i>
+                                            </span>
+                                        </th>
                                         <th class="col-sm-2" id="status">Sub Name</th>
                                         <th class="col-sm-2" id="status">Created Date</th>
                                         <th class="col-sm-2" id="status">Modified Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                        {% for summary in summary_relationships %}
                                         <tr>
+                                            <td>{{ summary.relationship_type.name|default_if_none:'' }}</td>
+                                            <td>{{ summary.main_user.user_id|default_if_none:'' }}</td>
                                             <td></td>
+                                            <td>{{ summary.sub_user.user_id|default_if_none:'' }}</td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
+                                            <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
                                         </tr>
+                                        {%endfor%}
                                     </tbody>
                                 </table>
+                                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                                    <a href="#div_relationships" data-toggle="tab" onclick="viewMoreRelationships()">
+                                        <input id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" value="View More"/>
+                                    </a>
+                                </div>
                             </div>
                             </div>
                             <div class="tab-pane" id="div_relationships">
@@ -143,5 +158,11 @@
 
 {% block body_js %}
 <script src="{% static 'scripts/ui/accordion.js' %}"></script>
+<script>
+    var viewMoreRelationships = function() {
+        $('.nav-pills li').removeClass('active');
+        $('.nav-pills #realtionships_tab').addClass('active');
+    };
+</script>
 {{ block.super }}
 {% endblock %}
