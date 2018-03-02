@@ -40,7 +40,20 @@
     .info-tooltip i {
         position: absolute;
         color: #a29e9e;
+        cursor: pointer;
         top: 5px;
+    }
+
+    .popover {
+        max-width: 100%;
+    }
+
+    .role-des {
+        margin-bottom: 15px;
+    }
+
+    .custom-popover {
+        text-align: center;
     }
 </style>
     <div class="panel-body">
@@ -69,13 +82,13 @@
                                         <th id="ddl_campaign_id">Relationship Type</th>
                                         <th id="ddl_campaign_name">Main ID
                                             <span class="info-tooltip">
-                                                <i class="fa fa-info"></i>
+                                                <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
                                             </span>
                                         </th>
                                         <th id="ddl_start_date">Main Name</th>
                                         <th id="ddl_end_date">Sub ID
                                             <span class="info-tooltip">
-                                                <i class="fa fa-info"></i>
+                                                <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
                                             </span>
                                         </th>
                                         <th class="col-sm-2" id="status">Sub Name</th>
@@ -115,13 +128,13 @@
                                                 <th id="relationship_type">Relationship Type</th>
                                                 <th id="main_id">Main ID
                                                     <span class="info-tooltip">
-                                                        <i class="fa fa-info"></i>
+                                                        <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
                                                     </span>
                                                 </th>
                                                 <th id="main_name">Main Name</th>
                                                 <th id="sub_id">Sub ID
                                                     <span class="info-tooltip">
-                                                        <i class="fa fa-info"></i>
+                                                        <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
                                                     </span>
                                                 </th>
                                                 <th id="sub_name">Sub Name</th>
@@ -157,12 +170,27 @@
 {% endblock %}
 
 {% block body_js %}
-<script src="{% static 'scripts/ui/accordion.js' %}"></script>
-<script>
-    var viewMoreRelationships = function() {
-        $('.nav-pills li').removeClass('active');
-        $('.nav-pills #realtionships_tab').addClass('active');
-    };
-</script>
 {{ block.super }}
+    <script src="{% static 'scripts/ui/accordion.js' %}"></script>
+    <script>
+        var viewMoreRelationships = function() {
+            $('.nav-pills li').removeClass('active');
+            $('.nav-pills #realtionships_tab').addClass('active');
+        };
+        $(".pop").popover({ trigger: "manual" , html: true, animation:false})
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 300);
+    });
+    </script>
 {% endblock %}
