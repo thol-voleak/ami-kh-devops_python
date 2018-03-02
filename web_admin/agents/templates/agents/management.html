@@ -32,6 +32,16 @@
         background-color: white;
         color: #616161;
     }
+
+    .info-tooltip {
+        position: relative;
+    }
+
+    .info-tooltip i {
+        position: absolute;
+        color: #a29e9e;
+        top: 5px;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -45,7 +55,7 @@
                                 <a  href="#div_summary_management" data-toggle="tab" id="tab_summary"><font size="4">Summary</font></a>
                             </li>
                             <li>
-                                <a href="#4a" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
+                                <a href="#div_relationships" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
                             </li>
                         </ul>
                         <br>
@@ -79,8 +89,47 @@
                                 </table>
                             </div>
                             </div>
-                            <div class="tab-pane" id="4a">
-                                <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                            <div class="tab-pane" id="div_relationships">
+                                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                                <label class="pull-right" >Total Relationships Found:&nbsp;</label>
+                                 <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped mb0" id="tbl_relationship_management">
+                                            <thead>
+                                            <tr>
+                                                <th id="relationship_type">Relationship Type</th>
+                                                <th id="main_id">Main ID
+                                                    <span class="info-tooltip">
+                                                        <i class="fa fa-info"></i>
+                                                    </span>
+                                                </th>
+                                                <th id="main_name">Main Name</th>
+                                                <th id="sub_id">Sub ID
+                                                    <span class="info-tooltip">
+                                                        <i class="fa fa-info"></i>
+                                                    </span>
+                                                </th>
+                                                <th id="sub_name">Sub Name</th>
+                                                <th id="created_date">Created Date</th>
+                                                <th id="modified_date">Modified Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="agent_table_body">
+                                            {% for relationship in relationships %}
+                                                <tr>
+                                                    <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
+                                                    <td>{{ relationship.main_user.user_id|default_if_none:'' }}</td>
+                                                    <td></td>
+                                                    <td>{{ relationship.sub_user.user_id|default_if_none:'' }}</td>
+                                                    <td></td>
+                                                    <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
+                                                    <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                             </div>
                         </div>

@@ -4,6 +4,11 @@ from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from django.shortcuts import redirect, render
+from web_admin.restful_client import RestFulClient
+from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.api_logger import API_Logger
+from web_admin.api_settings import SEARCH_RELATIONSHIP
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,6 +43,33 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return super(AgentManagement, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        # self.logger.info('========== Start showing Agent Management page ==========')
-        # self.logger.info('========== Finished showing Agent Management page ==========')
-        return render(request, self.template_name)
+        context = super(AgentManagement, self).get_context_data(**kwargs)
+        self.logger.info('========== Start getting Relationships list ==========')
+        body = {}
+        body['user_id'] = int(context['agent_id'])
+
+        data, success, status_message = self._get_relationships(params=body)
+        if success:
+            relationships_list = data.get("relationships", [])
+
+            page = data.get("page", {})
+            context.update(
+                {'search_count': page.get('total_elements', 0), 'relationships': relationships_list})
+        self.logger.info('========== Finish getting Relationships list ==========')
+        return render(request, self.template_name, context)
+
+    def _get_relationships(self, params):
+        self.logger.info('========== Start searching agent ==========')
+
+        api_path = SEARCH_RELATIONSHIP
+        success, status_code, status_message, data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=params)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data.get('relationships', []),
+                                status_code=status_code, is_getting_list=True)
+
+        return data, success, status_message
