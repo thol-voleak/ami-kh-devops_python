@@ -9,10 +9,6 @@
 {% csrf_token %}
 <div class="panel mb25">
 <style type="text/css">
-    body {
-      padding : 10px ;
-      
-    }
 
     #exTab1 .tab-content {
       background-color: white;
@@ -32,6 +28,37 @@
         background-color: white;
         color: #616161;
     }
+
+    .info-tooltip {
+        position: relative;
+    }
+
+    .info-tooltip i {
+        position: absolute;
+        color: #a29e9e;
+        cursor: pointer;
+        top: 5px;
+    }
+
+    .popover {
+        max-width: 100%;
+    }
+
+    .role-des {
+        margin-bottom: 15px;
+    }
+
+    .custom-popover {
+        text-align: center;
+    }
+
+    .main-panel {
+        background-color: white;
+    }
+
+    .layout-fixed-header {
+        background-color: white;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -41,46 +68,133 @@
                     {% csrf_token %}
                         <div id="exTab1" class="container"> 
                         <ul  class="nav nav-pills">
-                            <li class="active">
+                            <li id="summary_tab" class="active">
                                 <a  href="#div_summary_management" data-toggle="tab" id="tab_summary"><font size="4">Summary</font></a>
                             </li>
-                            <li>
-                                <a href="#4a" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
+                            <li id="realtionships_tab">
+                                <a href="#div_relationships" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
                             </li>
                         </ul>
                         <br>
+                        <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
                         <div class="tab-content clearfix">
                             <div class="tab-pane active" id="div_summary_management">
                                 <h4>Reletionships View</h4>
+                                <div class="panel-body">
                                 <div class="no-more-tables">
                                 <table id='tbl_summary_management' class="table table-bordered table-striped mb0">
                                     <thead>
                                     <tr>
                                         <th id="ddl_campaign_id">Relationship Type</th>
-                                        <th id="ddl_campaign_name">Main ID</th>
+                                        <th id="ddl_campaign_name">Main ID
+                                            <span class="info-tooltip">
+                                                <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
+                                            </span>
+                                        </th>
                                         <th id="ddl_start_date">Main Name</th>
-                                        <th id="ddl_end_date">Sub ID</th>
+                                        <th id="ddl_end_date">Sub ID
+                                            <span class="info-tooltip">
+                                                <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
+                                            </span>
+                                        </th>
                                         <th class="col-sm-2" id="status">Sub Name</th>
                                         <th class="col-sm-2" id="status">Created Date</th>
                                         <th class="col-sm-2" id="status">Modified Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                        {% for summary in summary_relationships %}
                                         <tr>
+                                            <td>{{ summary.relationship_type.name|default_if_none:'' }}</td>
+                                            <td>
+                                                {%if agent_id == summary.main_user.user_id %}
+                                                <b><span>agent(</span><a id="{{ summary.main_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.main_user.user_id %}">{{summary.main_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                {%else%}
+                                                <span>agent(</span><a id="{{ summary.main_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.main_user.user_id %}">{{summary.main_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                {%endif%}
+                                            </td>
                                             <td></td>
+                                            <td>
+                                                {%if agent_id == summary.sub_user.user_id%}
+                                                <b><span>agent(</span>
+                                                <a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">{{summary.sub_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                {%else%}
+                                                <span>agent(</span>
+                                                <a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">{{summary.sub_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                {%endif%}
+                                            </td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
+                                            <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
                                         </tr>
+                                        {%endfor%}
                                     </tbody>
                                 </table>
+                                {%if summary_relationships|length > 10 %}
+                                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                                    <a href="#div_relationships" data-toggle="tab" onclick="viewMoreRelationships()">
+                                        <input id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" value="View More"/>
+                                    </a>
+                                </div>
+                                {%endif%}
                             </div>
                             </div>
-                            <div class="tab-pane" id="4a">
-                                <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                            </div>
+                            <div class="tab-pane" id="div_relationships">
+                                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                                <label class="pull-right" >Total Relationships Found:&nbsp;</label>
+                                 <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped mb0" id="tbl_relationship_management">
+                                            <thead>
+                                            <tr>
+                                                <th id="relationship_type">Relationship Type</th>
+                                                <th id="main_id">Main ID
+                                                    <span class="info-tooltip">
+                                                        <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
+                                                    </span>
+                                                </th>
+                                                <th id="main_name">Main Name</th>
+                                                <th id="sub_id">Sub ID
+                                                    <span class="info-tooltip">
+                                                        <i class="fa fa-info pop" data-container="body" data-toggle="popover" data-placement="right" data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>" data-original-title="" title=""></i>
+                                                    </span>
+                                                </th>
+                                                <th id="sub_name">Sub Name</th>
+                                                <th id="created_date">Created Date</th>
+                                                <th id="modified_date">Modified Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="agent_table_body">
+                                            {% for relationship in relationships %}
+                                                <tr>
+                                                    <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
+                                                <td>
+                                                    {%if agent_id == relationship.main_user.user_id %}
+                                                    <b><span>agent(</span><a id="{{ relationship.main_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.main_user.user_id %}">{{relationship.main_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                    {%else%}
+                                                    <span>agent(</span><a id="{{ relationship.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.main_user.user_id %}">{{relationship.main_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                    {%endif%}
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    {%if agent_id == relationship.sub_user.user_id%}
+                                                    <b><span>agent(</span>
+                                                    <a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                    {%else%}
+                                                    <span>agent(</span>
+                                                    <a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                    {%endif%}
+                                                </td>
+                                                    <td></td>
+                                                    <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
+                                                    <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                             </div>
                         </div>
@@ -93,6 +207,27 @@
 {% endblock %}
 
 {% block body_js %}
-<script src="{% static 'scripts/ui/accordion.js' %}"></script>
 {{ block.super }}
+    <script src="{% static 'scripts/ui/accordion.js' %}"></script>
+    <script>
+        var viewMoreRelationships = function() {
+            $('.nav-pills li').removeClass('active');
+            $('.nav-pills #realtionships_tab').addClass('active');
+        };
+        $(".pop").popover({ trigger: "manual" , html: true, animation:false})
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 300);
+    });
+    </script>
 {% endblock %}
