@@ -99,6 +99,15 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         elif status_code.lower() in ["general_error"]:
             error_msg = 'Other error, please contact system administrator'
             return self._handle_error(error_msg, reference_id)
+            # If get error timeout, response as success to client
+        elif status_code.lower() in ["external_call_timeout", "internal_call_timeout","sof_timeout", "timeout"]:
+            self.logger.info('get timeout error from server but considers as success to client')
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Payment is approved successfully'
+            )
+            return redirect('balance_adjustment:balance_adjustment_list')
         elif status_message == 'timeout':
             messages.add_message(
                 request,
