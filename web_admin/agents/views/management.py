@@ -59,7 +59,8 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             context.update(
                 {'search_count': page.get('total_elements', 0), 
                 'relationships': relationships_list,
-                'summary_relationships': summary_relationships
+                'summary_relationships': summary_relationships,
+                'agent_id': int(context['agent_id'])
                 })
         self.logger.info('========== Finish getting Relationships list ==========')
         return render(request, self.template_name, context)

@@ -100,9 +100,23 @@
                                         {% for summary in summary_relationships %}
                                         <tr>
                                             <td>{{ summary.relationship_type.name|default_if_none:'' }}</td>
-                                            <td>{{ summary.main_user.user_id|default_if_none:'' }}</td>
+                                            <td>
+                                                {%if agent_id == summary.main_user.user_id %}
+                                                <b><span>agent(</span><a id="{{ summary.main_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.main_user.user_id %}">{{summary.main_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                {%else%}
+                                                <span>agent(</span><a id="{{ summary.main_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.main_user.user_id %}">{{summary.main_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                {%endif%}
+                                            </td>
                                             <td></td>
-                                            <td>{{ summary.sub_user.user_id|default_if_none:'' }}</td>
+                                            <td>
+                                                {%if agent_id == summary.sub_user.user_id%}
+                                                <b><span>agent(</span>
+                                                <a id="{{ summary.sub_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">{{summary.sub_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                {%else%}
+                                                <span>agent(</span>
+                                                <a id="{{ summary.sub_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">{{summary.sub_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                {%endif%}
+                                            </td>
                                             <td></td>
                                             <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
                                             <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
@@ -110,11 +124,13 @@
                                         {%endfor%}
                                     </tbody>
                                 </table>
+                                {%if summary_relationships|length > 10 %}
                                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                                     <a href="#div_relationships" data-toggle="tab" onclick="viewMoreRelationships()">
                                         <input id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" value="View More"/>
                                     </a>
                                 </div>
+                                {%endif%}
                             </div>
                             </div>
                             <div class="tab-pane" id="div_relationships">
@@ -146,9 +162,23 @@
                                             {% for relationship in relationships %}
                                                 <tr>
                                                     <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
-                                                    <td>{{ relationship.main_user.user_id|default_if_none:'' }}</td>
-                                                    <td></td>
-                                                    <td>{{ relationship.sub_user.user_id|default_if_none:'' }}</td>
+                                                <td>
+                                                    {%if agent_id == relationship.main_user.user_id %}
+                                                    <b><span>agent(</span><a id="{{ relationship.main_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.main_user.user_id %}">{{relationship.main_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                    {%else%}
+                                                    <span>agent(</span><a id="{{ relationship.main_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.main_user.user_id %}">{{relationship.main_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                    {%endif%}
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    {%if agent_id == relationship.sub_user.user_id%}
+                                                    <b><span>agent(</span>
+                                                    <a id="{{ relationship.sub_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span> )</span></b>
+                                                    {%else%}
+                                                    <span>agent(</span>
+                                                    <a id="{{ relationship.sub_user.user_id }}" class="text-info" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span> )</span>
+                                                    {%endif%}
+                                                </td>
                                                     <td></td>
                                                     <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
                                                     <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
