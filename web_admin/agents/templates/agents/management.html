@@ -202,7 +202,7 @@
                                                 </div>
                                             <label class="col-sm-1 control-label">Partner Role</label>
                                             <div class="col-xs-1">
-                                                <select class="form-control" id="ddl_user_type" name="user_type">
+                                                <select class="form-control" id="ddl_relationship_partner_role" name="partner_role">
                                                     <option value=0>-</option>
                                                     <option value=1>Main ID</option>
                                                     <option value=2>Sub ID</option>
@@ -210,13 +210,13 @@
                                             </div>
                                             <label class="col-sm-1 control-label">Partner ID</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control input-rounded"
-                                                       name="creation_client_id"
-                                                       value="{{ creation_client_id|default_if_none:'' }}"
-                                                       id="txt_creation_client_id">
+                                                <input type="number" class="form-control input-rounded"
+                                                       name="relationship_partner_id"
+                                                       value="{{ relationship_partner_id|default_if_none:'' }}"
+                                                       id="txt_relationship_partner_id">
                                             </div>
                                             <div class="col-sm-1">
-                                                    <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                                                    <input id="btn_relationship_search" class="btn btn-success btn-block" type="submit" name="search"
                                                            value="Search">
                                                 </div>
                                         </div>
