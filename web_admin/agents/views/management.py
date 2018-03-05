@@ -80,17 +80,3 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 status_code=status_code, is_getting_list=True)
 
         return data, success, status_message
-
-    def _get_summary(self, params):
-        api_path = SEARCH_RELATIONSHIP
-        success, status_code, status_message, data = RestFulClient.post(
-            url=api_path,
-            headers=self._get_headers(),
-            loggers=self.logger,
-            params=params)
-
-        data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data.get('relationships', []),
-                                status_code=status_code, is_getting_list=True)
-
-        return data, success, status_message
