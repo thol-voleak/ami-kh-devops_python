@@ -50,9 +50,13 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         permissions = {}
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+        default_tab = 0
+        if not permissions['CAN_ACCESS_SUMMARY_TAB']:
+            default_tab = 1
         context.update(
             {'agent_id': int(context['agent_id']),
-             'permissions': permissions
+             'permissions': permissions,
+             'default_tab': default_tab
              })
 
         if permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
