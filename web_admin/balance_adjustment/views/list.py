@@ -36,7 +36,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             {"id": 7, "name": "REJECTING"},
             {"id": 8, "name": "REJECT_FAIL"},
             {"id": 9, "name": "REJECTED"},
-        ]
+            {"id": 10, "name": "TIMEOUT"},
+    ]
 
     def check_membership(self, permission):
         self.logger.info(
