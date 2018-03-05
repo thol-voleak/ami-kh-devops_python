@@ -133,13 +133,16 @@
                                         {%endfor%}
                                     </tbody>
                                 </table>
-                                {%if relationships|length > 10 %}
                                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                                    <a href="#div_relationships" data-toggle="tab" onclick="viewMoreRelationships()">
-                                        <input id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" value="View More"/>
-                                    </a>
+                                    {%if relationships|length > 10 %}<a href="#div_relationships" data-toggle="tab">{% endif %}
+                                        {%if relationships|length <= 10 %}
+                                        <button id="btn_summary_management_view_more" onclick="viewMoreRelationships()" class="btn btn-success btn-block btn-md mb15" type="button" disabled="disabled">View More</button>
+                                        {%else%}
+                                        <button id="btn_summary_management_view_more" onclick="viewMoreRelationships()" class="btn btn-success btn-block btn-md mb15" type="button">View More</button>
+                                        {%endif%}
+                                    {%if relationships|length > 10 %}</a>{% endif %}
                                 </div>
-                                {%endif%}
+                                
                             </div>
                             </div>
                                 {% endif %}
