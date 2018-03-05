@@ -261,7 +261,6 @@
                                                     {%if agent_id == relationship.sub_user.user_id%}
                                                     <b><span>agent(</span><a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span>)</span></b>
                                                     {%else%}
-                                                    <span>agent(</span>
                                                     <span>agent(</span><a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">{{relationship.sub_user.user_id|default_if_none:'' }}</a><span>)</span>
                                                     {%endif%}
                                                 </td>
