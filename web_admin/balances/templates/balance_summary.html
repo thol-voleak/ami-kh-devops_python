@@ -171,7 +171,7 @@
                                 <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
                             </div>
                             <div class="col-xs-8">
-                                <div class="small-column-number" id="lbl_agent_profile_numbers">123,456</div>
+                                <div class="small-column-number" id="lbl_agent_profile_numbers">{{ agent_total_profile|intcomma }}</div>
                                 <div class="small-column-tile">AGENT PROFILE</div>
                             </div>
                         </div>
@@ -182,7 +182,7 @@
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
                             <div class="col-xs-8">
-                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">123,456</div>
+                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">{{ agent_total_sofs|intcomma }}</div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
@@ -198,12 +198,10 @@
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
                                 <div class="col-xs-10 scroll-balance-area">
-                                    <div class="big-column-number" id="lbl_agent_balance_VND">10,100,123,456</div>
-                                    <div class="unit" id="lbl_agent_balance_currency_VND">VND</div>
-                                    <div class="big-column-number" id="lbl_agent_balance_USD">10,100,123,456</div>
-                                    <div class="unit" id="lbl_agent_balance_currency_USD">USD</div>
-                                    <div class="big-column-number" id="lbl_agent_balance_THB">10,100,123,456</div>
-                                    <div class="unit" id="lbl_agent_balance_currency_THB">THB</div>
+                                    {% for item in agent_summary.agent_sof %}
+                                     <div class="big-column-number" id="lbl_agent_balance">{{ item.total_balance|intcomma }}</div>
+                                     <div class="unit" id="lbl_agent_balance_currency">{{item.currency}}</div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>

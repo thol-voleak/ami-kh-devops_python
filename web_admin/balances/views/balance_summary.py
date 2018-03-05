@@ -41,6 +41,13 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start getting customer summary ==========')
         customer_summary = self._get_customer_summary()
         self.logger.info('========== Finish getting customer summary ==========')
+
+        self.logger.info(
+            '========== Start getting agent summary ==========')
+        agent_summary = self._get_agent_summary()
+        self.logger.info(
+            '========== Finish getting agent summary ==========')
+
         data = [
             {'agent_type':'company',
             'profile':'human',
@@ -53,10 +60,34 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         for item in customer_summary['sofs']:
             cus_total_sofs += item.get('total_sof', 0)
 
+        # Create variables for total balance of each currency
+        sofs = agent_summary['agent_types'][0]['sofs']
+        agent_summary['agent_sof'] = []
+
+        for sof in sofs:
+            currency = {'currency': sof['currency'], 'total_balance': 0}
+            agent_summary['agent_sof'].append(currency)
+
+        # Calculate agent_total_sofs and total balance for each currency
+        agent_total_sofs = 0
+        for item in agent_summary['agent_types']:
+            for sof in item['sofs']:
+                agent_total_sofs += sof.get('total_sof', 0)
+                for currency in agent_summary['agent_sof']:
+                    if currency['currency'] == sof['currency']:
+                        currency['total_balance'] += sof['total_balance']
+
+        agent_total_profile = 0
+        for item in agent_summary['agent_types']:
+            agent_total_profile += item.get('total_profile', 0)
+
         context ={
             'data': data,
             'customer_summary': customer_summary,
+            'agent_summary': agent_summary,
             'cus_total_sofs': cus_total_sofs,
+            'agent_total_sofs': agent_total_sofs,
+            'agent_total_profile': agent_total_profile,
             'cus_sofs': customer_summary['sofs']
         }
 
@@ -73,6 +104,22 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params={}, response=data,
                                 status_code=status_code, is_getting_list=False)
 
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            data = {}
+        return data
+
+    def _get_agent_summary(self):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_AGENT_SUMMARY,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params={})
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data,
+                                status_code=status_code, is_getting_list=False)
         if not is_success:
             messages.add_message(
                 self.request,
