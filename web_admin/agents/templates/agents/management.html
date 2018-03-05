@@ -106,6 +106,7 @@
                         <div class="tab-content clearfix">
                             <div class="tab-pane active" id="div_summary_management">
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
+                                <div id="div_relationships_summary">
                                 <h4>Relationships View</h4>
                                 <div class="panel-body">
                                 <div class="no-more-tables">
@@ -167,6 +168,7 @@
                                     {%if relationships|length > 10 %}</a>{% endif %}
                                 </div>
                                 
+                            </div>
                             </div>
                             </div>
                                 {% endif %}
