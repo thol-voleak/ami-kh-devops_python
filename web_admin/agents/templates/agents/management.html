@@ -130,7 +130,7 @@
                                         {%endfor%}
                                     </tbody>
                                 </table>
-                                {%if summary_relationships|length > 10 %}
+                                {%if relationships|length > 10 %}
                                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                                     <a href="#div_relationships" data-toggle="tab" onclick="viewMoreRelationships()">
                                         <input id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" value="View More"/>
@@ -140,6 +140,7 @@
                             </div>
                             </div>
                             </div>
+                            
                             <div class="tab-pane" id="div_relationships">
                                 <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                                 <label class="pull-right" >Total Relationships Found:&nbsp;</label>
