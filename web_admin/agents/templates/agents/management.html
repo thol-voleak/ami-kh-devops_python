@@ -92,9 +92,11 @@
                     {% csrf_token %}
                         <div id="exTab1" class="container"> 
                         <ul  class="nav nav-pills">
+                            {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
                             <li id="summary_tab" class="active">
                                 <a  href="#div_summary_management" data-toggle="tab" id="tab_summary"><font size="4">Summary</font></a>
                             </li>
+                            {% endif %}
                             {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                             <li id="relationships_tab">
                                 <a href="#div_relationships" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
@@ -104,6 +106,7 @@
                         <br>
                         <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
                         <div class="tab-content clearfix">
+                            {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
                             <div class="tab-pane active" id="div_summary_management">
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                                 <div id="div_relationships_summary">
@@ -171,6 +174,7 @@
                             </div>
                                 {% endif %}
                             </div>
+                            {% endif %}
                             {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                             <div class="tab-pane" id="div_relationships">
                                 <div class="panel-heading border">
