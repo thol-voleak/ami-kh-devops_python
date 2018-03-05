@@ -36,7 +36,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             {"id": 7, "name": "REJECTING"},
             {"id": 8, "name": "REJECT_FAIL"},
             {"id": 9, "name": "REJECTED"},
-        ]
+            {"id": 10, "name": "TIMEOUT"},
+            {"id": -9999, "name": "IN_PROGRESS"},
+    ]
 
     def check_membership(self, permission):
         self.logger.info(
@@ -78,7 +80,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         approved_by_id = request.POST.get('approved_by_id')
         payer_sof_type_id = request.POST.get('payer_sof_type_id')
         payee_sof_type_id = request.POST.get('payee_sof_type_id')
-
+        ref_service_group = request.POST.get('ref_service_group')
+        # ref_service_name = request.POST.get('ref_service_name')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -99,6 +102,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['payer_user_sof_type_id'] = int(payer_sof_type_id)
         if payee_sof_type_id.isdigit() and payee_sof_type_id != '0':
             body['payee_user_sof_type_id'] = int(payee_sof_type_id)
+        if ref_service_group.isdigit() and ref_service_group != '0':
+            body['payee_user_sof_type_id'] = int(ref_service_group)
         if ref_order_id:
             body['reference_order_id'] = ref_order_id
         if status_id:
@@ -149,6 +154,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                    'approved_by_id': approved_by_id,
                    'payer_sof_type_id': payer_sof_type_id,
                    'payee_sof_type_id': payee_sof_type_id,
+                   'ref_service_group': ref_service_group,
+                   # 'ref_service_name': ref_service_name,
                    'status_list': self.status_list,
                    'date_from': from_created_timestamp,
                    'date_to': to_created_timestamp,

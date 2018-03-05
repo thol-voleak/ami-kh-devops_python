@@ -3,6 +3,7 @@
 ami-admin-portal
 ami-equator-app-config
 ami-equator-functional-test
+ami-sql-initial-scripts
 
 # Edit Config
 - Update folder config
@@ -68,6 +69,9 @@ source ami-admin-portal/bin/active
 
 - Install library
 pip install -r requirements.txt
+
+- Run initial SQL script (develop branch)
+ami-sql-initial-scripts/1.0/admin-portal/admin_portal.sql
 
 - Run Server
 python manage.py runserver

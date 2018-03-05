@@ -44,25 +44,34 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         context = super(AgentManagement, self).get_context_data(**kwargs)
-        self.logger.info('========== Start getting Relationships list ==========')
         body = {}
         body['user_id'] = int(context['agent_id'])
 
-        data, success, status_message = self._get_relationships(params=body)
-        if success:
-            relationships_list = data.get("relationships", [])
-            summary_relationships = list(relationships_list)
-            if len(relationships_list) >10:
-                summary_relationships = relationships_list[:10]
+        permissions = {}
+        permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
+        context.update(
+            {'agent_id': int(context['agent_id']),
+             'permissions': permissions
+             })
 
-            page = data.get("page", {})
-            context.update(
-                {'search_count': page.get('total_elements', 0), 
-                'relationships': relationships_list,
-                'summary_relationships': summary_relationships,
-                'agent_id': int(context['agent_id'])
-                })
-        self.logger.info('========== Finish getting Relationships list ==========')
+        if permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+            self.logger.info('========== Start getting Relationships list ==========')
+            data, success, status_message = self._get_relationships(params=body)
+            if success:
+                relationships_list = data.get("relationships", [])
+                summary_relationships = list(relationships_list)
+                if len(relationships_list) > 10:
+                    summary_relationships = relationships_list[:10]
+
+                page = data.get("page", {})
+                context.update(
+                    {'search_count': page.get('total_elements', 0),
+                     'relationships': relationships_list,
+                     'summary_relationships': summary_relationships,
+                     })
+
+            self.logger.info('========== Finish getting Relationships list ==========')
+
         return render(request, self.template_name, context)
 
     def _get_relationships(self, params):
