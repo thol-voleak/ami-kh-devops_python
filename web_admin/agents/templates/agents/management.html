@@ -219,10 +219,12 @@
                                                        value="{{ relationship_partner_id|default_if_none:'' }}"
                                                        id="txt_relationship_partner_id">
                                             </div>
+                                            {%if permissions.CAN_SEARCH_RELATIONSHIP%}
                                             <div class="col-sm-1">
                                                     <input id="btn_relationship_search" class="btn btn-success btn-block" type="submit" name="search"
                                                            value="Search">
-                                                </div>
+                                            </div>
+                                            {%endif%}
                                         </div>
                                             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                                             <label class="pull-right" >Total Relationships Found:&nbsp;</label>
