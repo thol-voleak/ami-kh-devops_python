@@ -162,7 +162,9 @@
                                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                                     {%if relationships|length > 10 %}<a href="#div_relationships" data-toggle="tab">{% endif %}
                                         {%if relationships|length <= 10 %}
+                                        <div style="cursor: not-allowed;" >
                                         <button id="btn_summary_management_view_more" onclick="viewMoreRelationships()" class="btn btn-success btn-block btn-md mb15" type="button" disabled="disabled">View More</button>
+                                        </div>
                                         {%else%}
                                         <button id="btn_summary_management_view_more" onclick="viewMoreRelationships()" class="btn btn-success btn-block btn-md mb15" type="button">View More</button>
                                         {%endif%}
