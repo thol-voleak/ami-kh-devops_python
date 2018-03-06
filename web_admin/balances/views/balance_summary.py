@@ -109,7 +109,7 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _get_customer_summary(self):
         url = api_settings.GET_CUSTOMER_BALANCE
-        url = 'http://localhost:7357/get_agent_summary'
+        # url = 'http://localhost:7357/get_agent_summary'
         is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
@@ -124,7 +124,7 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _get_agent_summary(self):
         url = api_settings.GET_AGENT_SUMMARY
-        url = 'http://localhost:7357/get_agent_summary'
+        # url = 'http://localhost:7357/get_agent_summary'
         is_success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
