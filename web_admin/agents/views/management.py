@@ -7,7 +7,9 @@ from django.shortcuts import redirect, render
 from web_admin.restful_client import RestFulClient
 from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.api_logger import API_Logger
-from web_admin.api_settings import SEARCH_RELATIONSHIP
+from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
+from web_admin.get_header_mixins import GetHeaderMixin
+from authentications.apps import InvalidAccessToken
 
 import logging
 
@@ -54,9 +56,19 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         default_tab = 0
         if not permissions['CAN_ACCESS_SUMMARY_TAB']:
             default_tab = 1
+<<<<<<< HEAD
         context.update(
             {'agent_id': int(context['agent_id']),
              'permissions': permissions,
+=======
+        relationship_type_id = []
+        context.update(
+            {'agent_id': int(context['agent_id']),
+             'permissions': permissions,
+             'default_tab': default_tab,
+             'relationship_types': self._get_relationship_types(),
+             'relationship_type_id':relationship_type_id,
+>>>>>>> 67798c55... [EQTR-7404] [UI] Search Relationships Tab from Profile Management Page [reviewed by Will]
              'default_tab': default_tab
              })
 
@@ -81,7 +93,6 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def _get_relationships(self, params):
-        self.logger.info('========== Start searching agent ==========')
 
         api_path = SEARCH_RELATIONSHIP
         success, status_code, status_message, data = RestFulClient.post(
@@ -95,3 +106,69 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                 status_code=status_code, is_getting_list=True)
 
         return data, success, status_message
+    def _get_relationship_types(self):
+        is_success, status_code, data = RestFulClient.get(
+            url=RELATIONSHIP_TYPES_LIST,
+            headers=self._get_headers(),
+            loggers=self.logger)
+        if is_success:
+            for i in data:
+                if i['name'] == 'FL-Agent':
+                    i['name'] = 'Frontline-Agent'
+            return data
+        elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+
+    def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start searching relationship ==========')
+        params = {}
+        permissions = {}
+        permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
+        permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+        permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
+        agent_id = int(kwargs.get('agent_id'))
+        list_relationship_type = request.POST.getlist('list_relationship_type')
+        partner_role = request.POST.get('partner_role')
+        relationship_partner_id = request.POST.get('relationship_partner_id')
+        # params['paging'] = False
+        # params['page_index'] = 0
+        if list_relationship_type:
+            list_relationship_type = [int(i) for i in list_relationship_type]
+            params['relationship_type_ids'] = list_relationship_type
+        if relationship_partner_id:
+            if partner_role == 0:
+                params['user_id'] = relationship_partner_id
+            elif partner_role == 1:
+                params['main_user_id'] = relationship_partner_id
+            elif partner_role == 2:
+                params['sub_user_id'] = relationship_partner_id
+        else:
+            params['user_id'] = agent_id
+
+        data, success, status_message = self._get_relationships(params=params)
+        if success:
+            relationships_list = data.get("relationships", [])
+            summary_relationships = list(relationships_list)
+            if len(relationships_list) > 10:
+                summary_relationships = relationships_list[:10]
+
+            page = data.get("page", {})
+ 
+            context = {
+                    'agent_id':agent_id,
+                    'permissions': permissions,
+                    'search_count': page.get('total_elements', 0),
+                    'relationships': relationships_list,
+                    'summary_relationships': summary_relationships,
+                    'relationship_type_id':list_relationship_type,
+                    'relationship_types': self._get_relationship_types(),
+                    'default_tab': 1
+                }
+        self.logger.info('========== finish search relationship ==========')
+        
+        return render(request, self.template_name, context)
+
+
+
+        

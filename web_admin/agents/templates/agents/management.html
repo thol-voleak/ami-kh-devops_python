@@ -182,7 +182,7 @@
                                 <div class="panel-heading border">
                                         <h3>Relationships View</h3>
                                 </div>
-                                <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
+                                <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent_management' agent_id %}">
                                         {% csrf_token %}
                                         <div class="row">
                                                 <div class="form-group col-md-6">
@@ -201,9 +201,13 @@
                                             <label class="col-sm-2 control-label">Relation Type</label>
                                             <div class="col-sm-2 custom-multiple-select select-status-code" id="select-status-code-area" style="position: relative;">
                                                     <select style="display:none;" id="ddl_relationship_type" onchange="selectMultipleItems('ddl_relationship_type', 'select-status-code', 'select-status-code-area')" data-placeholder="All" multiple class="chosen" name="list_relationship_type">
-                                                            <option value="Parent-Child" >Parent-Child</option>
-                                                            <option value="Admin-Agent">Admin-Agent</option>
-                                                            <option value="FL-Agent">Frontline-Agent</option>
+                                                        {% for i in relationship_types %}
+                                                            {% if i.id in relationship_type_id %}
+                                                                <option value="{{i.id}}" selected>{{ i.name }}</option>
+                                                            {%else%}
+                                                                <option value="{{i.id}}">{{ i.name }}</option>
+                                                            {%endif%}
+                                                        {% endfor %}
                                                     </select>
                                                 </div>
                                             <label class="col-sm-1 control-label">Partner Role</label>
