@@ -56,11 +56,6 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         default_tab = 0
         if not permissions['CAN_ACCESS_SUMMARY_TAB']:
             default_tab = 1
-<<<<<<< HEAD
-        context.update(
-            {'agent_id': int(context['agent_id']),
-             'permissions': permissions,
-=======
         relationship_type_id = []
         context.update(
             {'agent_id': int(context['agent_id']),
@@ -68,7 +63,6 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
              'default_tab': default_tab,
              'relationship_types': self._get_relationship_types(),
              'relationship_type_id':relationship_type_id,
->>>>>>> 67798c55... [EQTR-7404] [UI] Search Relationships Tab from Profile Management Page [reviewed by Will]
              'default_tab': default_tab
              })
 
