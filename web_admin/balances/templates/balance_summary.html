@@ -129,7 +129,7 @@
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
                             <div class="col-xs-8">
-                                <div class="small-column-number"><font color="white" id="id=lbl_member_total_sof_cash">{{ cus_total_sofs|intcomma }}</font></div>
+                                <div class="small-column-number"><font color="white" id="id=lbl_member_total_sof_cash">{{ customer_summary.total_sof_card|intcomma }}</font></div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
                                 <div class="col-xs-10 scroll-balance-area">
-                                    {% for item in cus_sofs %}
+                                    {% for item in customer_summary.sofs %}
                                      <div class="big-column-number" id="lbl_member_balance_VND">{{item.total_balance|intcomma}}</div>
                                      <div class="unit" id="lbl_member_balance_currency_VND">{{item.currency}}</div>
                                     {% endfor %}
@@ -171,7 +171,7 @@
                                 <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
                             </div>
                             <div class="col-xs-8">
-                                <div class="small-column-number" id="lbl_agent_profile_numbers">{{ agent_total_profile|intcomma }}</div>
+                                <div class="small-column-number" id="lbl_agent_profile_numbers">{{ agent_summary.agent_total_profile|intcomma }}</div>
                                 <div class="small-column-tile">AGENT PROFILE</div>
                             </div>
                         </div>
@@ -182,7 +182,7 @@
                                 <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
                             </div>
                             <div class="col-xs-8">
-                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">{{ agent_total_sofs|intcomma }}</div>
+                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">{{ agent_summary.agent_total_sofs|intcomma }}</div>
                                 <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
                             </div>
                         </div>
@@ -198,7 +198,7 @@
                             <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
                             <div class="row">
                                 <div class="col-xs-10 scroll-balance-area">
-                                    {% for item in agent_summary.agent_sof %}
+                                    {% for item in agent_summary.sofs %}
                                      <div class="big-column-number" id="lbl_agent_balance">{{ item.total_balance|intcomma }}</div>
                                      <div class="unit" id="lbl_agent_balance_currency">{{item.currency}}</div>
                                     {% endfor %}

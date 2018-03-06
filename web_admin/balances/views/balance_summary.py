@@ -42,53 +42,52 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         customer_summary = self._get_customer_summary()
         self.logger.info('========== Finish getting customer summary ==========')
 
-        self.logger.info(
-            '========== Start getting agent summary ==========')
-        agent_summary = self._get_agent_summary()
-        self.logger.info(
-            '========== Finish getting agent summary ==========')
-
-        data = [
-            {'agent_type':'company',
-            'profile':'human',
-            'amount':'1000',
-            'fee':'50',
-            'currency':'vnd'}
-        ]
-
         cus_total_sofs = 0
         for item in customer_summary['sofs']:
             cus_total_sofs += item.get('total_sof', 0)
+        customer_summary['total_sof_card'] = cus_total_sofs
 
-        # Create variables for total balance of each currency
+        self.logger.info('========== Start getting agent summary ==========')
+        agent_summary = self._get_agent_summary()
+        self.logger.info('========== Finish getting agent summary ==========')
+
+        # get agent total soft card and currency balance list
         sofs = agent_summary['agent_types'][0]['sofs']
-        agent_summary['agent_sof'] = []
+        agent_summary['sofs'] = []
 
         for sof in sofs:
             currency = {'currency': sof['currency'], 'total_balance': 0}
-            agent_summary['agent_sof'].append(currency)
+            agent_summary['sofs'].append(currency)
 
-        # Calculate agent_total_sofs and total balance for each currency
         agent_total_sofs = 0
         for item in agent_summary['agent_types']:
             for sof in item['sofs']:
                 agent_total_sofs += sof.get('total_sof', 0)
-                for currency in agent_summary['agent_sof']:
+                for currency in agent_summary['sofs']:
                     if currency['currency'] == sof['currency']:
                         currency['total_balance'] += sof['total_balance']
 
+        agent_summary['agent_total_sofs'] = agent_total_sofs
+
+        # get agent profile number
         agent_total_profile = 0
         for item in agent_summary['agent_types']:
             agent_total_profile += item.get('total_profile', 0)
 
+        agent_summary['agent_total_profile'] = agent_total_profile
+
+        data = [
+            {'agent_type': 'company',
+             'profile': 'human',
+             'amount': '1000',
+             'fee': '50',
+             'currency': 'vnd'}
+        ]
+
         context ={
             'data': data,
             'customer_summary': customer_summary,
-            'agent_summary': agent_summary,
-            'cus_total_sofs': cus_total_sofs,
-            'agent_total_sofs': agent_total_sofs,
-            'agent_total_profile': agent_total_profile,
-            'cus_sofs': customer_summary['sofs']
+            'agent_summary': agent_summary
         }
 
         self.logger.info('========== Finish render Balance Summary page ==========')
