@@ -60,7 +60,6 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context.update(
             {'agent_id': int(context['agent_id']),
              'permissions': permissions,
-             'default_tab': default_tab,
              'relationship_types': self._get_relationship_types(),
              'relationship_type_id':relationship_type_id,
              'default_tab': default_tab
