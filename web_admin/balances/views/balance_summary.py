@@ -12,6 +12,7 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 from django.shortcuts import render, redirect
 import logging
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,7 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context ={
             'data': data,
             'customer_summary': customer_summary,
-            'agent_summary': agent_summary
+            'agent_summary': agent_summary,
         }
 
         self.logger.info('========== Finish render Balance Summary page ==========')
