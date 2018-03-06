@@ -67,6 +67,10 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cancel_url = request.POST.get('cancel_url')
         cancel_read_timeout = request.POST.get('cancel_read_timeout')
         provider = request.POST.get('provider')
+        pre_sof_check_status_url = request.POST.get('pre_sof_check_status_url')
+        pre_sof_check_status_read_timeout = request.POST.get('pre_sof_check_status_read_timeout')
+        pre_sof_check_status_max_retry = request.POST.get('pre_sof_check_status_max_retry')
+
 
 
         body = {
@@ -83,6 +87,7 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "credit_url": credit_url,
             "check_status_url": check_status_url,
             "cancel_url": cancel_url,
+            "pre_sof_check_status_url": pre_sof_check_status_url
         }
 
         if pre_sof_order_read_timeout:
@@ -101,6 +106,11 @@ class CreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['check_status_read_timeout'] = int(check_status_read_timeout)
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
+        if pre_sof_check_status_read_timeout:
+            body['pre_sof_check_status_read_timeout'] = int(pre_sof_check_status_read_timeout)
+        if pre_sof_check_status_read_timeout:
+            body['pre_sof_check_status_max_retry'] = int(pre_sof_check_status_max_retry)
+
 
         url = api_settings.CREATE_CARD_DESIGN.format(provider_id=provider)
         success, data = self._create_card_design(url, body)
