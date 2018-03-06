@@ -2,7 +2,7 @@ from braces.views import GroupRequiredMixin
 from django.contrib import messages
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, RestFulClient
-from web_admin.api_settings import BALANCE_ADJUSTMENT_PATH, SERVICE_LIST_URL
+from web_admin.api_settings import BALANCE_ADJUSTMENT_PATH, SERVICE_LIST_URL, SERVICE_GROUP_LIST_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
@@ -53,7 +53,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
     def get(self, request, *args, **kwargs):
         context = super(BalanceAdjustmentListView, self).get_context_data(**kwargs)
         data = self.get_services_list()
+        service_group_list = self.get_service_group_list()
         context['data'] = data
+        context['service_group_list'] = service_group_list
         context['search_count'] = 0
         context['status_list'] = self.status_list
         context['status_id'] = ''
@@ -74,14 +76,15 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         service_list = self.get_services_list()
+        service_group_list = self.get_service_group_list()
 
         status_id = request.POST.get('status_id')
         requested_by_id = request.POST.get('requested_by_id')
         approved_by_id = request.POST.get('approved_by_id')
         payer_sof_type_id = request.POST.get('payer_sof_type_id')
         payee_sof_type_id = request.POST.get('payee_sof_type_id')
-        ref_service_group = request.POST.get('ref_service_group')
-        # ref_service_name = request.POST.get('ref_service_name')
+        reference_service_group_id = request.POST.get('reference_service_group_id')
+        reference_service_id = request.POST.get('reference_service_id')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -102,8 +105,12 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['payer_user_sof_type_id'] = int(payer_sof_type_id)
         if payee_sof_type_id.isdigit() and payee_sof_type_id != '0':
             body['payee_user_sof_type_id'] = int(payee_sof_type_id)
-        if ref_service_group.isdigit() and ref_service_group != '0':
-            body['payee_user_sof_type_id'] = int(ref_service_group)
+        if reference_service_group_id.isdigit() and reference_service_group_id != '0':
+            reference_service_group_id = int(reference_service_group_id)
+            body['reference_service_group_id'] = reference_service_group_id
+        if reference_service_id.isdigit() and reference_service_id != '0':
+            reference_service_id = int(reference_service_id)
+            body['reference_service_id'] = reference_service_id
         if ref_order_id:
             body['reference_order_id'] = ref_order_id
         if status_id:
@@ -142,28 +149,29 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             self.logger.info("Page:{}".format(page))
 
             context = {'order_list': balance_adjustment_reference,
-                   'order_id': order_id,
-                   'service_id': service_id,
-                   'data': service_list,
-                   'payer_user_id': payer_user_id,
-                   'payer_user_type_id':payer_user_type_id,
-                   'payee_user_id': payee_user_id,
-                   'payee_user_type_id':payee_user_type_id,
-                   'search_count': count,
-                   'requested_by_id': requested_by_id,
-                   'approved_by_id': approved_by_id,
-                   'payer_sof_type_id': payer_sof_type_id,
-                   'payee_sof_type_id': payee_sof_type_id,
-                   'ref_service_group': ref_service_group,
-                   # 'ref_service_name': ref_service_name,
-                   'status_list': self.status_list,
-                   'date_from': from_created_timestamp,
-                   'date_to': to_created_timestamp,
-                   'ref_order_id': ref_order_id,
-                   'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page),
-                   'search_count': page['total_elements']
-                   }
+                       'order_id': order_id,
+                       'service_id': service_id,
+                       'data': service_list,
+                       'service_group_list': service_group_list,
+                       'payer_user_id': payer_user_id,
+                       'payer_user_type_id':payer_user_type_id,
+                       'payee_user_id': payee_user_id,
+                       'payee_user_type_id':payee_user_type_id,
+                       'search_count': count,
+                       'requested_by_id': requested_by_id,
+                       'approved_by_id': approved_by_id,
+                       'payer_sof_type_id': payer_sof_type_id,
+                       'payee_sof_type_id': payee_sof_type_id,
+                       'reference_service_group_id': reference_service_group_id,
+                       'reference_service_id': reference_service_id,
+                       'status_list': self.status_list,
+                       'date_from': from_created_timestamp,
+                       'date_to': to_created_timestamp,
+                       'ref_order_id': ref_order_id,
+                       'paginator': page,
+                       'page_range': calculate_page_range_from_page_info(page),
+                       'search_count': page['total_elements']
+                       }
             if status_id:
                 context['status_id'] = int(status_id)
             self.logger.info('========== Finished searching Balance Adjustment ==========')
@@ -174,12 +182,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         elif status_message == 'timeout':
             messages.add_message(request, messages.ERROR, 'Request timed-out, please try again or contact system administrator')
             return redirect('balance_adjustment:balance_adjustment_list')
-
-    # def refine_data(self, data):
-    #     for item in data:
-    #         item['status'] = STATUS_ORDER.get(item['status'])
-    #     return data
-
 
     def get_services_list(self):
         self.logger.info('========== Start Getting services list ==========')
@@ -195,7 +197,23 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             raise InvalidAccessToken(data)
         self.logger.info('========== Finish Get services list ==========')
 
-        return data    
+        return data
+
+    def get_service_group_list(self):
+        url = SERVICE_GROUP_LIST_URL
+        is_success, status_code, data = RestFulClient.get(url, headers=self._get_headers(), loggers=self.logger)
+
+        if is_success:
+            if data is None or data == "":
+                data = []
+        else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
+            data = []
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        return data
+
         
         
         
