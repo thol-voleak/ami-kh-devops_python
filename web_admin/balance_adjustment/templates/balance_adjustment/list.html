@@ -149,7 +149,8 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Ref Service Group</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_reference_service_group_id" name="reference_service_group_id">
+                    <select class="form-control" id="ddl_reference_service_group_id" name="reference_service_group_id"
+                    onchange="onChangeRefServiceGroup()">
                         <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}>All</option>
                          {% for service_group in service_group_list %}
                                     {%if service_group.service_group_id == reference_service_group_id %}
@@ -162,13 +163,14 @@
                 </div>
                 <label class="col-sm-3 control-label">Ref Service Name</label>
                 <div class="col-xs-2">
-                    <select class="form-control" id="ddl_reference_service_id" name="reference_service_id">
+                    <select class="form-control" id="ddl_reference_service_id" name="reference_service_id"
+                    onchange="onChangeRefServiceName()">
                         <option value="" {% if not reference_service_id %}selected="selected"{% endif %}>All</option>
                         {% for service in data %}
                                 {%if service.service_id == reference_service_id %}
-                                <option value="{{service.service_id }}" selected>{{service.service_name }}</option>
+                                <option value="{{service.service_id }}" selected parent-id="{{service.service_group_id}}">{{service.service_name }}</option>
                                 {% else %}
-                                <option value="{{service.service_id }}">{{service.service_name }}</option>
+                                <option value="{{service.service_id }}" parent-id="{{service.service_group_id}}">{{service.service_name }}</option>
                                 {% endif %}
                         {% endfor %}
                     </select>
@@ -243,3 +245,45 @@
     </div>
 </div>
 {% endblock %}
+
+
+{% block body_js %}
+{{ block.super }}
+<script type="text/javascript">
+
+    onFirstLoadingTime();
+
+    function onFirstLoadingTime() {
+        var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
+        var ddlService = document.getElementById("ddl_reference_service_id");
+        var parentId = ddlServiceGroup.value;
+        for (i = 0; i < ddlService.length; i++) {
+            var txt = ddlService.options[i].getAttribute("parent-id");
+            if(null == parentId || "" == parentId) {
+                ddlService.options[i].style.display = "";
+            } else {
+                if(txt !==  parentId && null != txt && "" != txt) {
+                    ddlService.options[i].style.display = "none";
+                } else {
+                    ddlService.options[i].style.display = "";
+                }
+            }
+        }
+    }
+
+    function onChangeRefServiceGroup() {
+        var ddlService = document.getElementById("ddl_reference_service_id");
+        ddlService.value = "";
+        onFirstLoadingTime();
+    }
+
+    function onChangeRefServiceName() {
+        var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
+        var ddlService = document.getElementById("ddl_reference_service_id");
+        var refServiceGroupId = ddlService.options[ddlService.selectedIndex].getAttribute("parent-id");
+        if(null != refServiceGroupId && "" != refServiceGroupId) {
+            ddlServiceGroup.value = refServiceGroupId;
+        }
+    }
+</script>
+{%  endblock %}
