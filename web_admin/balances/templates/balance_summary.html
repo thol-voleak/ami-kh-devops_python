@@ -235,8 +235,10 @@
         {% for item in type.sofs %}
             <!-- <div > -->
             <tr class="checkboxlist">
-                <td>{{ type.name|default_if_none:'' }}</td>
-                <td>{{ type.total_profile|default_if_none:'0' }}</td>
+                {% if forloop.counter == 1 %}
+                <td rowspan="{{ type.sofs|length }}">{{ type.name|default_if_none:'' }}</td>
+                <td rowspan="{{ type.sofs|length }}">{{ type.total_profile|default_if_none:'0' }}</td>
+                {%endif%}
                 <td>{{ item.total_sof|default_if_none:'0' }}</td>
                 <td>{{ item.total_balance|default_if_none:'0' }}</td>
                 <td>{{ item.currency|default_if_none:'' }}</td>
