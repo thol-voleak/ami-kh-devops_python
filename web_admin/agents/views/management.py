@@ -132,10 +132,12 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if relationship_partner_id:
             relationship_partner_id = int(relationship_partner_id)
             if partner_role == '0':
-                params['user_id'] = relationship_partner_id
+                params['user_id'] = agent_id
             elif partner_role == '1':
                 params['main_user_id'] = relationship_partner_id
+                params['sub_user_id'] = agent_id
             elif partner_role == '2':
+                params['main_user_id'] = agent_id
                 params['sub_user_id'] = relationship_partner_id
         else:
             params['user_id'] = agent_id
@@ -159,7 +161,8 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'relationship_type_id':list_relationship_type,
                     'relationship_types': self._get_relationship_types(),
                     'default_tab': 1,
-                    'partner_role': partner_role
+                    'partner_role': partner_role,
+                    'relationship_partner_id':relationship_partner_id or None
                 }
         self.logger.info('========== finish search relationship ==========')
         
