@@ -156,7 +156,8 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'summary_relationships': summary_relationships,
                     'relationship_type_id':list_relationship_type,
                     'relationship_types': self._get_relationship_types(),
-                    'default_tab': 1
+                    'default_tab': 1,
+                    'partner_role': partner_role
                 }
         self.logger.info('========== finish search relationship ==========')
         
