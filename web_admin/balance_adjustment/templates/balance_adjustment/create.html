@@ -80,6 +80,39 @@
                         <input id="txt_ref_order_id" type="text" class="form-control input-rounded" name="ref_order_id" value="{{ref_order_id}}" required>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Ref Service Group </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="ddl_reference_service_group_id" name="reference_service_group_id">
+                            <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}></option>
+                           {% for service_group in service_groups %}
+                                    {%if service_group.service_group_id == reference_service_group_id %}
+                                    <option value="{{service_group.service_group_id }}" selected>{{service_group.service_group_name }}</option>
+                                    {% else %}
+                                    <option value="{{service_group.service_group_id }}">{{service_group.service_group_name }}</option>
+                                    {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Ref Service Name </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="ddl_reference_service_id" name="reference_service_id">
+                            <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}></option>
+                            {% for service in services %}
+                                {%if service.service_id == reference_service_id %}
+                                    <option value="{{service.service_id }}" selected>{{service.service_name }}</option>
+                                {% else %}
+                                    <option value="{{service.service_id }}">{{service.service_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Reason for Adjustment</label>
                     <div class="col-sm-8">

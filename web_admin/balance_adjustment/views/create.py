@@ -36,12 +36,14 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         self.logger.info('========== Start render order balance adjustment ==========')
         context = super(BalanceAdjustmentCreateView, self).get_context_data(**kwargs)
         services = self.get_services_list()
+        service_groups = self.get_service_group_list()
         currencies = self.get_currency_list().get('value')
         self.update_step_to_service(services, currencies)
         add_new_voucher = self.request.session.pop('Add_New_Voucher', None)
         context.update({'add_new_voucher': add_new_voucher})
         context.update({'services': services})
         context.update({'currency': currencies})
+        context.update({'service_groups' : service_groups})
         self.logger.info('========== Finish render order balance adjustment ==========')
         return render(request, self.template_name, context)
 
@@ -66,6 +68,14 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
         service = ast.literal_eval(service)
         service_name = service['service_name']
         service_id = service['service_id']
+
+        ref_service_id = request.POST.get('reference_service_id')
+        ref_service_group_id = request.POST.get('reference_service_group_id')
+        if ref_service_id.isdigit() and ref_service_id != '0':
+            ref_service_id=int(ref_service_id)
+        if ref_service_group_id.isdigit() and ref_service_group_id != '0':
+            ref_service_group_id=int(ref_service_group_id)
+
         user_type = {'customer': 1, 'agent': 2}
         product_name = request.POST.get('product_name')
         product_ref1 = request.POST.get('product_ref1')
@@ -118,6 +128,10 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             },
             "amount": amount
         }
+        if ref_service_group_id:
+            params['ref_service_id'] = ref_service_group_id
+        if ref_service_group_id:
+            params['ref_service_group_id'] = ref_service_group_id
 
         success, status_code, message, data = RestFulClient.post(
             url=self.path,
@@ -148,13 +162,17 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
                 'payee_source_of_fund_id': payee_source_of_fund_id,
                 'amount': request.POST.get('amount'),
                 'service_name': service_name,
+                'reference_service_id':ref_service_id,
+                'reference_service_group_id': ref_service_group_id,
                 'currency': self.get_currency_list().get('value'),
             }
 
             services = self.get_services_list()
+            service_groups = self.get_service_group_list()
             currencies = self.get_currency_list().get('value')
             self.update_step_to_service(services, currencies)
             context.update({'services': services})
+            context.update({'service_groups': service_groups})
 
             if status_code.lower() in ["general_error"]:
                 messages.add_message(
@@ -216,3 +234,18 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             else:
                 step = '1'
             service['step'] = step
+
+    def get_service_group_list(self):
+        url = api_settings.SERVICE_GROUP_LIST_URL
+        is_success, status_code, data = RestFulClient.get(url, headers=self._get_headers(), loggers=self.logger)
+
+        if is_success:
+            if data is None or data == "":
+                data = []
+        else:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
+            data = []
+        self.logger.info('Response_content_count: {}'.format(len(data)))
+        return data
