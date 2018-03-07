@@ -2,16 +2,12 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import setup_logger, api_settings
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
-import logging
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
-from django.contrib import messages
-
-
-logger = logging.getLogger(__name__)
 from django.shortcuts import render, redirect
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -78,30 +74,14 @@ class BalanceSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
             agent_summary['agent_total_profile'] = agent_total_profile
 
-        if is_get_agent_summary_success and is_get_customer_summary_success:
-            context ={
-                'customer_summary': customer_summary,
-                'agent_summary': agent_summary,
-                'is_get_agent_summary_success': 1,
-                'is_get_customer_summary_success': 1
-            }
-        elif is_get_agent_summary_success and not is_get_customer_summary_success:
-            context = {
-                'agent_summary': agent_summary,
-                'is_get_agent_summary_success': 1,
-                'is_get_customer_summary_success': 0
-            }
-        elif not is_get_agent_summary_success and is_get_customer_summary_success:
-            context = {
-                'customer_summary': customer_summary,
-                'is_get_agent_summary_success': 0,
-                'is_get_customer_summary_success': 1
-            }
-        else:
-            context = {
-                'is_get_agent_summary_success': 0,
-                'is_get_customer_summary_success': 0
-            }
+        context = {}
+
+        context['agent_summary'] = agent_summary if is_get_agent_summary_success else {}
+        context['is_get_agent_summary_success'] = is_get_agent_summary_success
+
+        context['customer_summary'] = customer_summary if is_get_customer_summary_success else {}
+        context['is_get_customer_summary_success'] = is_get_customer_summary_success
+
 
         self.logger.info('========== Finish render Balance Summary page ==========')
 
