@@ -130,15 +130,17 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             list_relationship_type = [int(i) for i in list_relationship_type]
             params['relationship_type_ids'] = list_relationship_type
         if relationship_partner_id:
-            if partner_role == 0:
+            relationship_partner_id = int(relationship_partner_id)
+            if partner_role == '0':
                 params['user_id'] = relationship_partner_id
-            elif partner_role == 1:
+            elif partner_role == '1':
                 params['main_user_id'] = relationship_partner_id
-            elif partner_role == 2:
+            elif partner_role == '2':
                 params['sub_user_id'] = relationship_partner_id
         else:
             params['user_id'] = agent_id
 
+        self.logger.info("Params: {} ".format(params))
         data, success, status_message = self._get_relationships(params=params)
         if success:
             relationships_list = data.get("relationships", [])
