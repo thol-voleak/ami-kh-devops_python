@@ -101,11 +101,14 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         return data, success, status_message
     def _get_relationship_types(self):
+        self.logger.info('========== Start getting relationship types ==========')
         is_success, status_code, data = RestFulClient.get(
             url=RELATIONSHIP_TYPES_LIST,
             headers=self._get_headers(),
             loggers=self.logger)
         if is_success:
+            self.logger.info('Response_content: {}'.format(data))
+            self.logger.info('========== finish get relationship types ==========')
             for i in data:
                 if i['name'] == 'FL-Agent':
                     i['name'] = 'Frontline-Agent'
@@ -115,12 +118,13 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             raise InvalidAccessToken(data)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start searching relationship ==========')
         params = {}
         permissions = {}
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
+        relationship_types = self._get_relationship_types()
+        self.logger.info('========== start getting relationship ==========')
         agent_id = int(kwargs.get('agent_id'))
         list_relationship_type = request.POST.getlist('list_relationship_type')
         partner_role = request.POST.get('partner_role')
@@ -147,27 +151,30 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data, success, status_message = self._get_relationships(params=params)
         summary_relationship_count = request.POST.get('count_summary_relationship')
         relationship_count = request.POST.get('count_relationship')
+        if relationship_count:
+            relationship_count = int(relationship_count)
         summary_relationships = []
-        for i in range(0, int(summary_relationship_count)):
-            relationship_type = request.POST.get('relationship_type_' + str(i))
-            main_id = request.POST.get('main_user_id_' + str(i))
-            sub_id = request.POST.get('sub_user_id_' + str(i))
-            created_date = request.POST.get('created_date_' + str(i))
-            modified_date = request.POST.get('modified_date_' + str(i))
-            relationship_item = {
-                'relationship_type': {
-                    'name': relationship_type
-                },
-                'main_user': {
-                    'user_id': int(main_id)
-                },
-                'sub_user': {
-                    'user_id': int(sub_id)
-                },
-                'created_timestamp': created_date,
-                'last_updated_timestamp': modified_date
-            }
-            summary_relationships.append(relationship_item)
+        if summary_relationship_count:
+            for i in range(0, int(summary_relationship_count)):
+                relationship_type = request.POST.get('relationship_type_' + str(i))
+                main_id = request.POST.get('main_user_id_' + str(i))
+                sub_id = request.POST.get('sub_user_id_' + str(i))
+                created_date = request.POST.get('created_date_' + str(i))
+                modified_date = request.POST.get('modified_date_' + str(i))
+                relationship_item = {
+                    'relationship_type': {
+                        'name': relationship_type
+                    },
+                    'main_user': {
+                        'user_id': int(main_id)
+                    },
+                    'sub_user': {
+                        'user_id': int(sub_id)
+                    },
+                    'created_timestamp': created_date,
+                    'last_updated_timestamp': modified_date
+                }
+                summary_relationships.append(relationship_item)
         if success:
             relationships_list = data.get("relationships", [])
             page = data.get("page", {})
@@ -179,11 +186,11 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'relationships': relationships_list,
                     'summary_relationships': summary_relationships,
                     'relationship_type_id':list_relationship_type,
-                    'relationship_types': self._get_relationship_types(),
+                    'relationship_types': relationship_types,
                     'default_tab': 1,
                     'partner_role': partner_role,
                     'relationship_partner_id':relationship_partner_id or None,
-                    'relationship_list_length': int(relationship_count)
+                    'relationship_list_length': relationship_count
                 }
         self.logger.info('========== finish search relationship ==========')
         
