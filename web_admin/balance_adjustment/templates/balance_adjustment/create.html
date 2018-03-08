@@ -84,7 +84,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Ref Service Group </label>
                     <div class="col-sm-8">
-                        <select class="form-control" id="ddl_reference_service_group_id" name="reference_service_group_id">
+                        <select class="form-control" id="ddl_ref_service_group" onchange="onChangeRefServiceGroup()" name="reference_service_group_id">
                             <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}></option>
                            {% for service_group in service_groups %}
                                     {%if service_group.service_group_id == reference_service_group_id %}
@@ -100,13 +100,13 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Ref Service Name </label>
                     <div class="col-sm-8">
-                        <select class="form-control" id="ddl_reference_service_id" name="reference_service_id">
+                        <select class="form-control" id="ddl_ref_service_name" name="reference_service_id" onchange="onChangeRefServiceName()">
                             <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}></option>
                             {% for service in services %}
                                 {%if service.service_id == reference_service_id %}
-                                    <option value="{{service.service_id }}" selected>{{service.service_name }}</option>
+                                    <option parent-id="{{service.service_group_id}}" value="{{service.service_id }}" selected>{{service.service_name }}</option>
                                 {% else %}
-                                    <option value="{{service.service_id }}">{{service.service_name }}</option>
+                                    <option parent-id="{{service.service_group_id}}" value="{{service.service_id }}">{{service.service_name }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -264,7 +264,7 @@
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
-<script>
+<script type="text/javascript">
 function closeMessage() {
     $('.alert').hide();
     var elm = document.getElementById("header-div");
@@ -352,5 +352,47 @@ function changeAmount() {
         amount.value = amount.value.replace(/,/g , '');
     }
 }
+
+
+function onFirstLoadingTime() {
+    var ddlServiceGroup = document.getElementById("ddl_ref_service_group");
+    var ddlService = document.getElementById("ddl_ref_service_name");
+    var parentId = ddlServiceGroup.value;
+    for (i = 0; i < ddlService.length; i++) {
+        var txt = ddlService.options[i].getAttribute("parent-id");
+        if(null == parentId || "" == parentId) {
+            ddlService.options[i].style.display = "";
+        } else {
+            if(txt !==  parentId && null != txt && "" != txt) {
+                ddlService.options[i].style.display = "none";
+            } else {
+                ddlService.options[i].style.display = "";
+            }
+        }
+    }
+}
+
+
+function onChangeRefServiceGroup() {
+    var ddlService = document.getElementById("ddl_ref_service_name");
+    ddlService.value = "";
+    onFirstLoadingTime();
+}
+
+function onChangeRefServiceName() {
+    var ddlServiceGroup = document.getElementById("ddl_ref_service_group");
+    var ddlService = document.getElementById("ddl_ref_service_name");
+    var val = ddlService.value;
+    var refServiceGroupId = ddlService.options[ddlService.selectedIndex].getAttribute("parent-id");
+    var refDdlServiceGroupId = ddlServiceGroup.value;
+    if(null != refServiceGroupId && "" != refServiceGroupId) {
+        ddlServiceGroup.value = refServiceGroupId;
+        if (refServiceGroupId != refDdlServiceGroupId ) {
+            ddlServiceGroup.onchange();
+            ddlService.value= val;
+        }
+    }
+}
+
 </script>
 {%  endblock %}
