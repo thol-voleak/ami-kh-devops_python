@@ -128,10 +128,12 @@ class BalanceAdjustmentCreateView(GroupRequiredMixin, TemplateView, GetHeaderMix
             },
             "amount": amount
         }
+        if ref_service_id:
+            params['reference_service_id'] = ref_service_id
         if ref_service_group_id:
-            params['ref_service_id'] = ref_service_group_id
-        if ref_service_group_id:
-            params['ref_service_group_id'] = ref_service_group_id
+            params['reference_service_group_id'] = ref_service_group_id
+
+        self.logger.info(params)
 
         success, status_code, message, data = RestFulClient.post(
             url=self.path,
