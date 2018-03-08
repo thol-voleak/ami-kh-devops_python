@@ -79,6 +79,7 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     {'search_count': page.get('total_elements', 0),
                      'relationships': relationships_list,
                      'summary_relationships': summary_relationships,
+                     'relationship_list_length': len(relationships_list)
                      })
 
             self.logger.info('========== Finish getting Relationships list ==========')
@@ -145,6 +146,7 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info("Params: {} ".format(params))
         data, success, status_message = self._get_relationships(params=params)
         summary_relationship_count = request.POST.get('count_summary_relationship')
+        relationship_count = request.POST.get('count_relationship')
         summary_relationships = []
         for i in range(0, int(summary_relationship_count)):
             relationship_type = request.POST.get('relationship_type_' + str(i))
@@ -180,7 +182,8 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'relationship_types': self._get_relationship_types(),
                     'default_tab': 1,
                     'partner_role': partner_role,
-                    'relationship_partner_id':relationship_partner_id or None
+                    'relationship_partner_id':relationship_partner_id or None,
+                    'relationship_list_length': int(relationship_count)
                 }
         self.logger.info('========== finish search relationship ==========')
         
