@@ -89,6 +89,14 @@
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post" 
                         action="">
+                    {% for summary in summary_relationships %}
+                            <input name="count_summary_relationship" value="{{ summary_relationships|length }}" hidden>
+                            <input name="relationship_type_{{ forloop.counter0 }}" value="{{ summary.relationship_type.name }}" hidden/>
+                            <input name="main_user_id_{{ forloop.counter0 }}" value="{{ summary.main_user.user_id }}" hidden/>
+                            <input name="sub_user_id_{{ forloop.counter0 }}" value="{{ summary.sub_user.user_id }}" hidden/>
+                            <input name="created_date_{{ forloop.counter0 }}" value="{{ summary.created_timestamp }}" hidden/>
+                            <input name="modified_date_{{ forloop.counter0 }}" value="{{ summary.last_updated_timestamp }}" hidden/>
+                    {%endfor%}
                     {% csrf_token %}
                         <div id="exTab1" class="container"> 
                         <ul  class="nav nav-pills">

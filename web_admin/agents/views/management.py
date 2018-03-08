@@ -144,12 +144,30 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         self.logger.info("Params: {} ".format(params))
         data, success, status_message = self._get_relationships(params=params)
+        summary_relationship_count = request.POST.get('count_summary_relationship')
+        summary_relationships = []
+        for i in range(0, int(summary_relationship_count)):
+            relationship_type = request.POST.get('relationship_type_' + str(i))
+            main_id = request.POST.get('main_user_id_' + str(i))
+            sub_id = request.POST.get('sub_user_id_' + str(i))
+            created_date = request.POST.get('created_date_' + str(i))
+            modified_date = request.POST.get('modified_date_' + str(i))
+            relationship_item = {
+                'relationship_type': {
+                    'name': relationship_type
+                },
+                'main_user': {
+                    'user_id': int(main_id)
+                },
+                'sub_user': {
+                    'user_id': int(sub_id)
+                },
+                'created_timestamp': created_date,
+                'last_updated_timestamp': modified_date
+            }
+            summary_relationships.append(relationship_item)
         if success:
             relationships_list = data.get("relationships", [])
-            summary_relationships = list(relationships_list)
-            if len(relationships_list) > 10:
-                summary_relationships = relationships_list[:10]
-
             page = data.get("page", {})
  
             context = {
