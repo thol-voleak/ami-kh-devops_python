@@ -277,7 +277,6 @@ function changeValue() {
     var obj = eval('(' + service + ')');
     var amount = document.getElementById('txt_amount');
     amount.setAttribute('step', obj.step);
-    $("#txt_amount").val("");
     changeAmount();
 }
 
