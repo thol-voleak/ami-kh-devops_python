@@ -89,7 +89,7 @@
 
     .scroll-balance-area {
         max-height: 50px;
-        overflow-y: scroll;
+        overflow-y: auto;
         border: 1px solid #f5efef;
         margin-left: 31px;
         padding-top: 5px;
@@ -104,6 +104,24 @@
 
     .fa-angle-up {
         top: -14px !important;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar:horizontal {
+        height: 80px;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white; /* should match background, can't be transparent */
+        background-color: rgba(0, 0, 0, .5);
     }
 
 </style>

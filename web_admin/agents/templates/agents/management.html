@@ -195,8 +195,8 @@
                                         {% csrf_token %}
                                         <div class="row" style="margin-top: 20px;">
                                                 <div class="form-group col-md-4">
-                                                    <label class="col-sm-4 control-label">User ID</label>
-                                                    <div class="col-sm-8">
+                                                    <label class="col-sm-5 control-label">User ID</label>
+                                                    <div class="col-sm-7">
                                                         <input type="text" class="form-control input-rounded" name="status" id="txt_relationship_user_id"
                                                                value="agent ({{agent_id|default_if_none:'' }})" readonly/>
                                                     </div>
@@ -204,8 +204,8 @@
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-4">
-                                                <label class="col-sm-4 control-label">Relationship Type</label>
-                                                <div class="col-sm-8">
+                                                <label class="col-sm-5 control-label">Relationship Type</label>
+                                                <div class="col-sm-7">
                                                     <div class="custom-multiple-select select-relationship-code" id="select-relationship-code-area" style="position: relative;">
                                                         <select style="display:none;" id="ddl_relationship_type" onchange="selectMultipleItems('ddl_relationship_type', 'select-relationship-code', 'select-relationship-code-area')" data-placeholder="All" multiple class="chosen" name="list_relationship_type">
                                                             {% for i in relationship_types %}
