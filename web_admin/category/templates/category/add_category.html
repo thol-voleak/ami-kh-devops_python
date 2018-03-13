@@ -1,14 +1,98 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+    <style>
+        .image-area {
+            text-align: center;
+            height: 150px;
+            width: 150px;
+            border: 1px solid #e0dbdb;
+            line-height: 150px;
+            position: relative;
+        }
+
+    .image-area img {
+        position: absolute;
+        top: 0;
+        left: -1px;
+    }
+    </style>
 <div class="panel mb25">
     <div class="panel-heading border">
         <h3>Add Category</h3>
     </div>
 
     <div class="panel-body">
-
+          <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'category:category_add' %}">
+                {% csrf_token %}
+                 <div class="col-sm-12 form-group" style="margin-bottom: 25px;">
+                    <div class="col-sm-2"></div>
+                    <label class="col-sm-2">Enable Category</label>
+                    <div class="col-sm-5">
+                        <label class="switch switch-sm">
+                        <input type="checkbox"
+                               name="category_status"
+                               id="tog_status">
+                        <span class="slider round">
+                            <i class="handle"></i>
+                        </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-2"></div>
+                    <label class="col-sm-2" style="font-size: 20px;">Information</label>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-2"></div>
+                    <label class="col-sm-2">Category Name *</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name" value="{{ name | default_if_none:'' }}" id="txt_category_name" required/>
+                    </div>
+                </div>
+                 <div class="col-sm-12 form-group">
+                     <div class="col-sm-2"></div>
+                    <label class="col-sm-2">Category Description</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name" value="{{ description | default_if_none:'' }}" id="txt_category_description"/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-2"></div>
+                    <label class="col-sm-2">Category Image</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name" value="{{ image_url | default_if_none:'' }}" id="txt_category_image" onblur="updateImage(this.value)"/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-5">
+                        <div class="image-area">
+                             <img id="category_image" alt="No Image Available" src="{{ image_url | default_if_none:'' }}" height="150" width="150">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="pull-right">
+                        <a href="{% url 'category:categories' %}">
+                            <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
+                        </a>
+                        <a>
+                            <input id="btn_add" class="btn btn-success" type="submit" value="Add">
+                        </a>
+                    </div>
+                </div>
+            </form>
     </div>
 </div>
 
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+        var image_category_elm = document.getElementById('category_image');
+        var updateImage = function(url) {
+            image_category_elm.src = url;
+        };
+    </script>
 {% endblock %}
