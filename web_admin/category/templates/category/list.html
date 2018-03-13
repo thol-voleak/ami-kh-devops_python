@@ -15,6 +15,14 @@
             top: 0;
             left: -1px;
         }
+        .image-table {
+            text-align: center;
+            height: 75px;
+            width: 75px;
+            border: 1px solid #e0dbdb;
+            line-height: 75px;
+            position: relative;
+        }
         .panel-heading a:after {
             font-family:'Glyphicons Halflings';
             content:"\e114";
@@ -24,28 +32,39 @@
         .panel-heading a.collapsed:after {
             content:"\e080";
         }
+
+        .header-background {
+            background-color: #e4e1e1;
+        }
     </style>
 <div class="panel mb25">
     <div class="panel-heading">
-        <h3>Category</h3>
+        <h3>Categories</h3>
+        
+    </div>
+    <div class="row">
+            <div class="pull-right">
+                <a href="{% url 'category:category_add' %}">
+                    <input id="btn_add_category" class="btn btn-success text-left mb15" type="submit"
+                           value="+ Add Category"/>
+                </a>
+            </div>
     </div>
 
     <div class="panel-body">
         <div class="row">
-            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <a class="bold">Collapse All</a>
+                <span>|</span>
+                <a>Expand All</a>
+                <br>
+            </div>
             <div class="col-sm-9">
-                <div class="row">
-                    <div class="pull-right">
-                        <a href="{% url 'category:category_add' %}">
-                            <input id="btn_add_category" class="btn btn-success text-left mb15" type="submit"
-                                   value="+ Add Category"/>
-                        </a>
-                    </div>
-                </div>
+                
                 <div class="row" style="margin-bottom: 15px;">
                     <label class="col-sm-2" >Enable Category</label>
-                     <div class="col-sm-1">
-                         <label class="switch switch-sm">
+                    <div class="col-sm-1">
+                        <label class="switch switch-sm">
                         <input type="checkbox" onchange="changeCategoryStatus(this)"
                                name="category_status" {% if is_active %}checked{% endif %}
                                id="tog_status">
@@ -53,8 +72,8 @@
                             <i class="handle"></i>
                         </span>
                         </label>
-                     </div>
-                     <div class="col-sm-2" id="category_status_text">
+                    </div>
+                    <div class="col-sm-2" id="category_status_text">
                         No
                     </div>
                 </div>
@@ -110,10 +129,69 @@
                       </h4>
                     </div>
                     <div id="collapse2" class="panel-collapse collapse in">
-                      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                      commodo consequat.</div>
+                      <div class="panel-body" style="margin-top:44px; border:none;">
+                        <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col" class="header-background">Product ID</th>
+                                  <th scope="col" class="header-background">Product Name</th>
+                                  <th scope="col" class="header-background">Product Description</th>
+                                  <th scope="col" class="header-background">Product Image</th>
+                                  <th scope="col" class="header-background">Product Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>Mark</td>
+                                  <td>Otto</td>
+                                  <td><div class="image-table"><img id="category_image" alt="No Image" src="{{ image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                  <td>
+                                        <label class="switch switch-sm">
+                                        <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                               name="category_status" {% if is_active %}checked{% endif %}
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        </label>
+                                </td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">2</th>
+                                  <td>Jacob</td>
+                                  <td>Thornton</td>
+                                  <td><div class="image-table"><img id="category_image" alt="No Image" src="{{ image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                <td>
+                                        <label class="switch switch-sm">
+                                        <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                               name="category_status" {% if is_active %}checked{% endif %}
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        </label>
+                                </td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">3</th>
+                                  <td>Larry</td>
+                                  <td>the Bird</td>
+                                  <td><div class="image-table"><img id="category_image" alt="No Image" src="{{ image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                <td>
+                                        <label class="switch switch-sm">
+                                        <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                               name="category_status" {% if is_active %}checked{% endif %}
+                                               id="tog_status">
+                                        <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                        </label>
+                                </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                      </div>
                     </div>
                   </div>
                     </div>

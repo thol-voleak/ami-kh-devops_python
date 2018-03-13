@@ -8,6 +8,7 @@ from django.conf import settings
 from authentications.apps import InvalidAccessToken
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from web_admin.api_logger import API_Logger
 import logging
 
 
@@ -32,8 +33,30 @@ class CategoryList(TemplateView, GetHeaderMixin):
         return super(CategoryList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        categories = self.get_category()
+        print(categories)
         return render(request, self.template_name)
 
-    def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start create category ==========')
+    # def post(self, request, *args, **kwargs):
+    #     self.logger.info('========== Start create category ==========')
+
+    def get_category(self):
+        api_path = api_settings.GET_CATEGORY
+
+        body = {
+            "paging": False
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('cards', []),
+                                status_code=status_code, is_getting_list=True)
+
+        return data, success, status_message
+
 
