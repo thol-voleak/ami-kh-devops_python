@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'rule_configuration',
     'voucher',
     'report_configuration',
+    'product',
+    'category',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -106,7 +108,7 @@ TEMPLATES = [
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
                               'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
                               'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
-                              'rule_configuration', 'report_configuration')],
+                              'rule_configuration', 'report_configuration','product', 'category')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -327,6 +329,16 @@ LOGGING = {
             'propagate': True,
         },
         'report_configuration': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'product': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'category': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
