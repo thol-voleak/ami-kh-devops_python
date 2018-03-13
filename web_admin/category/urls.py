@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import url
-
+from .views.add_category import AddCategory
 
 app_name = 'category'
 
 urlpatterns = [
-    # url(r'^orders/$', login_required(PaymentOrderView.as_view(), login_url='authentications:login'), name="payment_order"),
-    # url(r'^orders/(?P<order_id>[0-9A-Za-z]+)/details$', login_required(OrderDetailView.as_view(), login_url='authentications:login'), name="order_detail"),
+    url(r'^add$', login_required(AddCategory.as_view(), login_url='authentications:login'), name="category_add"),
 ]
