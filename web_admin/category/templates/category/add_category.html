@@ -21,8 +21,17 @@
     <div class="panel-heading border">
         <h3>Add Category</h3>
     </div>
-
-    <div class="panel-body">
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-success">
+                <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+        <div class="panel-body">
           <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'category:category_add' %}">
                 {% csrf_token %}
                  <div class="col-sm-12 form-group" style="margin-bottom: 25px;">
