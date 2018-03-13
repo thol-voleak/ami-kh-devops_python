@@ -10,15 +10,11 @@
             line-height: 150px;
             position: relative;
         }
-
-    .image-area img {
-        position: absolute;
-        top: 0;
-        left: -1px;
-    }
-    </style>
-<div class="panel mb25">
-    <style type="text/css">
+        .image-area img {
+            position: absolute;
+            top: 0;
+            left: -1px;
+        }
         .panel-heading a:after {
             font-family:'Glyphicons Halflings';
             content:"\e114";
@@ -29,6 +25,7 @@
             content:"\e080";
         }
     </style>
+<div class="panel mb25">
     <div class="panel-heading">
         <h3>Category</h3>
     </div>
@@ -45,21 +42,21 @@
                         </a>
                     </div>
                 </div>
-                <div class="row">
-                            <label class="col-sm-2">Enable Category</label>
-                             <div class="col-sm-1">
-                                 <label class="switch switch-sm">
-                                <input type="checkbox" onchange="changeCategoryStatus(this)"
-                                       name="category_status" {% if is_active %}checked{% endif %}
-                                       id="tog_status">
-                                <span class="slider round">
-                                    <i class="handle"></i>
-                                </span>
-                                </label>
-                             </div>
-                             <div class="col-sm-2" id="category_status_text">
-                                No
-                            </div>
+                <div class="row" style="margin-bottom: 15px;">
+                    <label class="col-sm-2" >Enable Category</label>
+                     <div class="col-sm-1">
+                         <label class="switch switch-sm">
+                        <input type="checkbox" onchange="changeCategoryStatus(this)"
+                               name="category_status" {% if is_active %}checked{% endif %}
+                               id="tog_status">
+                        <span class="slider round">
+                            <i class="handle"></i>
+                        </span>
+                        </label>
+                     </div>
+                     <div class="col-sm-2" id="category_status_text">
+                        No
+                    </div>
                 </div>
                 <div class="panel-group" id="accordion">
                   <div class="panel panel-default">
