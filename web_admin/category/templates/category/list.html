@@ -1,20 +1,145 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+    <style>
+        .image-area {
+            text-align: center;
+            height: 150px;
+            width: 150px;
+            border: 1px solid #e0dbdb;
+            line-height: 150px;
+            position: relative;
+        }
+
+    .image-area img {
+        position: absolute;
+        top: 0;
+        left: -1px;
+    }
+    </style>
 <div class="panel mb25">
+    <style type="text/css">
+        .panel-heading a:after {
+            font-family:'Glyphicons Halflings';
+            content:"\e114";
+            float: right;
+            color: grey;
+        }
+        .panel-heading a.collapsed:after {
+            content:"\e080";
+        }
+    </style>
     <div class="panel-heading">
         <h3>Category</h3>
     </div>
 
     <div class="panel-body">
-		<div class="pull-right">
-			<a href="{% url 'category:category_add' %}">
-                <input id="btn_add_category" class="btn btn-success text-left mb15" type="submit"
-                       value="+ Add Category"/>
-            </a>
-		</div>
-
-    </div>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="pull-right">
+                        <a href="{% url 'category:category_add' %}">
+                            <input id="btn_add_category" class="btn btn-success text-left mb15" type="submit"
+                                   value="+ Add Category"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                            <label class="col-sm-2">Enable Category</label>
+                             <div class="col-sm-1">
+                                 <label class="switch switch-sm">
+                                <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                       name="category_status" {% if is_active %}checked{% endif %}
+                                       id="tog_status">
+                                <span class="slider round">
+                                    <i class="handle"></i>
+                                </span>
+                                </label>
+                             </div>
+                             <div class="col-sm-2" id="category_status_text">
+                                No
+                            </div>
+                </div>
+                <div class="panel-group" id="accordion">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="" href="#collapse1">Information</a>
+                      </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3">Category ID</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="" id="txt_category_name" required/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3">Category Name</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="" id="txt_category_name" required/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3">Category Description</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="" id="txt_category_name" required/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3">Category Image</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ image_url | default_if_none:'' }}" id="txt_category_image" onblur="updateImage(this.value)"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-5">
+                                    <div class="image-area">
+                                         <img id="category_image" alt="No Image Available" src="{{ image_url | default_if_none:'' }}" height="150" width="150">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="" href="#collapse2">
+                        Products in Category</a>
+                      </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse in">
+                      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                      commodo consequat.</div>
+                    </div>
+                  </div>
+                    </div>
+                </div>        
 </div>
 
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+        var image_category_elm = document.getElementById('category_image');
+        var status_text_elm = document.getElementById('category_status_text');
+        var updateImage = function(url) {
+            image_category_elm.src = url;
+        };
+
+        var changeCategoryStatus = function (e) {
+            if ($(e).is(':checked')){
+                status_text_elm.innerText = 'Yes'
+            } else {
+                status_text_elm.innerText = 'No'
+            }
+        }
+    </script>
 {% endblock %}
