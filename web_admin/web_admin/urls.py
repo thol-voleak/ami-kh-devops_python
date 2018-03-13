@@ -51,4 +51,5 @@ urlpatterns = [
     url(r'^admin-portal/rule-configuration/', include('rule_configuration.urls')),
     url(r'^admin-portal/voucher/', include('voucher.urls')),
     url(r'^admin-portal/report-configuration/', include('report_configuration.urls')),
+    url(r'^admin-portal/product_configuration/', include('product_configuration.urls')),
 ]
