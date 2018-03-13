@@ -63,7 +63,7 @@ class AddCategory(TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data, status_code=status_code)
         if success:
             self.logger.info('========== Finish create category ==========')
-            messages.success(request, 'Added successfully')
+            messages.success(request, 'Added Successfully')
             return render(request, self.template_name)
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             self.logger.info("{}".format(status_message))
