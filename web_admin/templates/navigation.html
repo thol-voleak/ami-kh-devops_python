@@ -126,7 +126,7 @@
                 <a href="javascript:;"> <i class="fa fa-sitemap"></i> <span>Product Configuration</span> </a>
                 <ul class="sub-menu">
                     <li class="class={% if is_categories_url %} active{% endif %}">
-                        <a href="#"> <span>Categories</span> </a>
+                        <a href="{% url 'category:categories' %}"> <span>Categories</span> </a>
                     </li>
                     <li class="class={% if is_products_url %} active{% endif %}">
                         <a href="#"> <span>Products</span> </a>
