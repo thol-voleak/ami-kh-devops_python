@@ -33,15 +33,23 @@ class CategoryList(TemplateView, GetHeaderMixin):
         return super(CategoryList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        categories = self.get_category()
-        print(categories)
-        return render(request, self.template_name)
+        categories = self.get_categories()
+        default_category = categories[0]['categories'][0]
+        category_id = default_category['id']
+        category_detail = self.get_category_detail(category_id)
+        products = self.get_products(category_id)
+        print(products[0]['products'])
+        context = ({
+            'category_detail': category_detail[0]['categories'][0],
+            'products': products[0]['products']
+        })
+        return render(request, self.template_name, context)
 
     # def post(self, request, *args, **kwargs):
     #     self.logger.info('========== Start create category ==========')
 
-    def get_category(self):
-        api_path = api_settings.GET_CATEGORY
+    def get_categories(self):
+        api_path = api_settings.GET_CATEGORIES
 
         body = {
             "paging": False
@@ -54,7 +62,46 @@ class CategoryList(TemplateView, GetHeaderMixin):
                                                                            timeout=settings.GLOBAL_TIMEOUT)
 
         data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('cards', []),
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                status_code=status_code, is_getting_list=True)
+
+        return data, success, status_message
+
+    def get_category_detail(self, category_id):
+        api_path = api_settings.GET_CATEGORIES
+
+        body = {
+            "id": category_id
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                status_code=status_code, is_getting_list=True)
+
+        return data, success, status_message
+
+    def get_products(self, category_id):
+        api_path = api_settings.GET_PRODUCTS
+
+        body = {
+            "category_id": category_id,
+            "paging": False
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body,
                                 status_code=status_code, is_getting_list=True)
 
         return data, success, status_message

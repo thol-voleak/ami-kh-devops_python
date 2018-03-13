@@ -6,6 +6,6 @@ from .views.list import CategoryList
 app_name = 'category'
 
 urlpatterns = [
-    url(r'^categories/$', login_required(CategoryList.as_view(), login_url='authentications:login'), name="categories"),
+    url(r'^$', login_required(CategoryList.as_view(), login_url='authentications:login'), name="categories"),
     url(r'^create$', login_required(AddCategory.as_view(), login_url='authentications:login'), name="category_add"),
 ]
