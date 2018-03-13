@@ -41,7 +41,7 @@
                             <label class="col-sm-2">Enable Category</label>
                              <div class="col-sm-1">
                                  <label class="switch switch-sm">
-                                <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                <input type="checkbox"
                                        name="category_status" {% if is_active %}checked{% endif %}
                                        id="tog_enable">
                                 <span class="slider round">
@@ -49,7 +49,6 @@
                                 </span>
                                 </label>
                              </div>
-                             <div class="col-sm-2" id="lbl_status">No</div>
                         </div>
                     </div>
                 </div>
@@ -105,17 +104,9 @@
 {{ block.super }}
     <script>
         var image_category_elm = document.getElementById('img_Image');
-        var status_text_elm = document.getElementById('lbl_status');
         var updateImage = function(url) {
             image_category_elm.src = url;
         };
 
-        var changeCategoryStatus = function (e) {
-            if ($(e).is(':checked')){
-                status_text_elm.innerText = 'Yes'
-            } else {
-                status_text_elm.innerText = 'No'
-            }
-        }
     </script>
 {% endblock %}
