@@ -122,14 +122,17 @@
                 </ul>
             </li>
             {% endif %}
+            {% check_valid_url url_name 'product,category' as is_product_configuration_urls %}
             <li class="menu-accordion class={% if is_product_configuration_urls %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-sitemap"></i> <span>Product Configuration</span> </a>
                 <ul class="sub-menu">
+                    {% check_valid_url url_name 'category' as is_categories_url %}
                     <li class="class={% if is_categories_url %} active{% endif %}">
                         <a href="{% url 'category:categories' %}"> <span>Categories</span> </a>
                     </li>
+                    {% check_valid_url url_name 'product' as is_products_url %}
                     <li class="class={% if is_products_url %} active{% endif %}">
-                        <a href="#"> <span>Products</span> </a>
+                        <a href="{% url 'product:product_list' %}"> <span>Products</span> </a>
                     </li>
                 </ul>
             </li>
