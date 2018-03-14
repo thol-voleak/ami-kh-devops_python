@@ -50,8 +50,8 @@
                     {% for category in list_category %}
                     <div style="position: relative;">
                         <div class="row">
-                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
-                            <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="toggle-sign-{{ category.id }}"></span>
+                            <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
+                            <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
                             <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
@@ -181,19 +181,20 @@
 {% block body_js %}
 {{ block.super }}
     <script>
+        $('#action-category-{{category_detail.id}}').show();
         var showAction = function(category_id) {
             $('.action-area').hide();
             $('#action-category-' + category_id).show();
         };
 
         $('.collapse-list').on('hide.bs.collapse', function () {
-            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            var elem = document.getElementById('btn_category_expand_' + $(this).attr('group-id'));
             elem.classList.add("glyphicon-plus");
             elem.classList.remove("glyphicon-minus");
         });
 
         $('.collapse-list').on('show.bs.collapse', function () {
-            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            var elem = document.getElementById('btn_category_expand_' + $(this).attr('group-id'));
             elem.classList.remove("glyphicon-plus");
             elem.classList.add("glyphicon-minus");
         });
