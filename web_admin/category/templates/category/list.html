@@ -24,79 +24,6 @@
             position: relative;
         }
 
-        body {
-          color: #6a6c6f;
-          background-color: #f1f3f6;
-        }
-
-        .panel-default>.panel-heading {
-          color: #333;
-          background-color: #fff;
-          border-color: #e4e5e7;
-          padding: 0;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .panel-default>.panel-heading a {
-          display: block;
-          padding: 10px 15px;
-        }
-
-        .panel-default>.panel-heading a:after {
-          content: "";
-          position: relative;
-          top: 1px;
-          display: inline-block;
-          font-family: 'Glyphicons Halflings';
-          font-style: normal;
-          font-weight: 400;
-          line-height: 1;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          float: right;
-          transition: transform .25s linear;
-          -webkit-transition: -webkit-transform .25s linear;
-        }
-
-        .panel-default>.panel-heading a[aria-expanded="true"] {
-          background-color: #eee;
-        }
-
-        .panel-default>.panel-heading a[aria-expanded="false"]:after {
-          content: "\e113";
-          -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
-        }
-
-        .panel-default>.panel-heading a[aria-expanded="true"]:after {
-          content: "\e114";
-          -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
-        }
-
-        .accordion-option {
-          width: 100%;
-          float: left;
-          clear: both;
-          margin: 15px 0;
-        }
-
-        .accordion-option .title {
-          font-size: 20px;
-          font-weight: bold;
-          float: left;
-          padding: 0;
-          margin: 0;
-        }
-
-        .accordion-option .toggle-accordion {
-          float: right;
-          font-size: 16px;
-          color: #6a6c6f;
-        }
     </style>
 <div class="panel mb25">
     <div class="panel-heading">
@@ -142,7 +69,6 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                
                 <div class="row">
                     <label class="col-sm-2" >Enable Category</label>
                     <div class="col-sm-1">
@@ -156,22 +82,17 @@
                         </label>
                     </div>
                 </div>
-                <div class="container col-xs-12">
-                  <div class="accordion-option">
-                    <a href="javascript:void(0)" class="toggle-accordion active" accordion-id="#accordion"></a>
-                  </div>
-                  <div class="clearfix"></div>
-                  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-                      <div class="panel-heading" role="tab" id="headingOne">
-                        <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                          Information
-                        </a>
+                <div class="panel-group" id="accordion">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" onclick="ChangeActionInfor()">
+                        Information</a>
+                        <div class="pull-right" ><i id="icon-infor" class="fa fa-angle-up"></i></div>
                       </h4>
-                      </div>
-                      <div id="collapseOne" class="panel-collapse collapse in " role="tabpanel" aria-labelledby="headingOne">
-                        <div class="panel-body">
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                      <div class="panel-body">
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
                                 <div class="col-sm-5">
@@ -204,19 +125,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                       </div>
                     </div>
-                    <div class="panel panel-default">
-                      <div class="panel-heading" role="tab" id="headingTwo">
-                        <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                          Products in Category
-                        </a>
-                      </h4>
-                      </div>
-                      <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
-                        <div class="panel-body" style="margin-top:44px; border:none;">
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                          <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" onclick="ChangeActionProduct()">
+                            Products in Category</a>
+                            <div class="pull-right"><i id="icon-product" class="fa fa-angle-down"></i></div>
+                          </h4>
+                        </div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                          <div class="panel-body" style="margin-top:44px; border:none;">
                             <table class="table table-striped">
                               <thead>
                                 <tr>
@@ -248,11 +169,11 @@
                                 {%endfor%}
                               </tbody>
                             </table>
+
+                          </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                </div>      
+                </div>     
 </div>
 
 
@@ -292,6 +213,7 @@
             $(aId + ' .panel-collapse.in').collapse('hide');
             $('#list_category .collapse.in').collapse('hide');
         }
+
         function collapse(argument) {
             var accordionId = $(".toggle-accordion").attr("accordion-id");
             if (argument== 'Collapse'){
@@ -309,6 +231,31 @@
 
                 openAllPanels(accordionId);
             } 
+        }
+        function ChangeActionInfor(){
+            var infor_button  = document.getElementById('collapse1')
+            // var product_button  = document.getElementById('collapse2')
+            if ( infor_button.classList.contains('in') ){
+                $("#icon-infor").removeClass("fa-angle-up");
+                $("#icon-infor").addClass("fa-angle-down");
+            }
+            else{
+                $("#icon-infor").removeClass("fa-angle-down");
+                $("#icon-infor").addClass("fa-angle-up");
+            }
+        }
+
+        function ChangeActionProduct(){
+            // var infor_button  = document.getElementById('collapse1')
+            var product_button  = document.getElementById('collapse2')
+            if ( product_button.classList.contains('in') ){
+                $("#icon-product").removeClass("fa-angle-up");
+                $("#icon-product").addClass("fa-angle-down");
+            }
+            else{
+                $("#icon-product").removeClass("fa-angle-down");
+                $("#icon-product").addClass("fa-angle-up");
+            }
         }
     </script>
 {% endblock %}
