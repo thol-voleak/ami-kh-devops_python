@@ -122,8 +122,16 @@
                 <div style="max-height: 400px; overflow-y: scroll; margin-top:10px;" id="list_category">
                     {% for category in list_category %}
                     <div style="position: relative;">
-                        <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="toggle-sign-{{ category.id }}"></span>
-                        <span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span>
+                        <div class="row">
+                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
+                            <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="toggle-sign-{{ category.id }}"></span>
+                            <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span></a>
+                        </div>
+                        <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
+                                <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
+                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
+                        </div>
+                        </div>
                     </div>
                     <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse in collapse-list" style="margin-left: 20px;">
                         {% for product in  category.product %}
@@ -252,6 +260,11 @@
 {% block body_js %}
 {{ block.super }}
     <script>
+        var showAction = function(category_id) {
+            $('.action-area').hide();
+            $('#action-category-' + category_id).show();
+        };
+
         $('.collapse-list').on('hide.bs.collapse', function () {
             var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
             elem.classList.add("glyphicon-plus");

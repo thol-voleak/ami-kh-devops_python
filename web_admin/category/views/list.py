@@ -33,6 +33,7 @@ class CategoryList(TemplateView, GetHeaderMixin):
         return super(CategoryList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        self.logger.info('========== Start render category page ==========')
         context = super(CategoryList, self).get_context_data(**kwargs)
         categories = self.get_categories()
         list_category = categories[0].get('categories')
@@ -44,8 +45,10 @@ class CategoryList(TemplateView, GetHeaderMixin):
                 category['product'] = product_in_category[0].get('products')
                 category['product_count'] = len(category['product'])
             context['list_category'] = list_category
+        #### TEST DATA ####
         #     print(list_category[0])
-        # list_category = [{'id': 168, 'name': 'TC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0}]
+        # list_category = [{'id': 168, 'name': 'TC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
+        #                 {'id': 169, 'name': 'TC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0}]
         # context['list_category'] = list_category
         ############################################################
 
@@ -54,18 +57,17 @@ class CategoryList(TemplateView, GetHeaderMixin):
 
         category_detail = self.get_category_detail(category_id)
         products_default = self.get_products(category_id)
-        print(products_default)
+        
 
         context.update({
             'category_detail': category_detail[0]['categories'][0],
             'products': products_default[0].get('products'),
         })
+        self.logger.info('========== Finish render category page ==========')
         return render(request, self.template_name, context)
 
-    # def post(self, request, *args, **kwargs):
-    #     self.logger.info('========== Start create category ==========')
-
     def get_categories(self):
+        self.logger.info('========== Start get category list ==========')
         api_path = api_settings.GET_CATEGORIES
 
         body = {
@@ -81,10 +83,12 @@ class CategoryList(TemplateView, GetHeaderMixin):
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body,
                                 status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get category list ==========')
 
         return data, success, status_message
 
     def get_category_detail(self, category_id):
+        self.logger.info('========== Start get category detail ==========')
         api_path = api_settings.GET_CATEGORIES
 
         body = {
@@ -100,10 +104,12 @@ class CategoryList(TemplateView, GetHeaderMixin):
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body,
                                 status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get category detail ==========')
 
         return data, success, status_message
 
     def get_products(self, category_id):
+        self.logger.info('========== Start get list product ==========')
         api_path = api_settings.GET_PRODUCTS
 
         body = {
@@ -120,6 +126,7 @@ class CategoryList(TemplateView, GetHeaderMixin):
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body,
                                 status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get list product ==========')
 
         return data, success, status_message
 
