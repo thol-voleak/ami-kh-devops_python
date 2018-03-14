@@ -28,7 +28,8 @@ class CreateView(TemplateView, RESTfulMethods):
         # Set default data
         product = {
             "is_active": True,
-            "is_allow_price_range": True
+            "is_allow_price_range": True,
+            "denomination": ['']
         }
         context['product'] = product
 
@@ -50,6 +51,7 @@ class CreateView(TemplateView, RESTfulMethods):
         min_price = float(min_price) if is_allow_price_range and min_price else None
         cbo_agent_types = request.POST.getlist('cbo_agent_types')
         cbo_agent_types = list(map(int, cbo_agent_types))  # convert list string to list int
+        denomination = request.POST.getlist('denomination')
 
         params = {
             "is_active": is_active,
@@ -60,7 +62,8 @@ class CreateView(TemplateView, RESTfulMethods):
             "payment_service_id": payment_service_id,
             "is_allow_price_range": is_allow_price_range,
             "max_price": max_price,
-            "min_price": min_price
+            "min_price": min_price,
+            "denomination": denomination
         }
 
         messages.success(request, 'Added Successfully')

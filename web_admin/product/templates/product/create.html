@@ -133,24 +133,17 @@
                         </div>
                     </div>
 
+                    {% for item in product.denomination %}
                     <div class="form-group denomination">
-                        <label class="col-sm-3 control-label">Denomination Set</label>
+                        <label class="col-sm-3 control-label">{% if forloop.first %}Denomination Set{% endif %}</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="denomination[]">
+                            <input type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
+                        </div>
+                        <div class="col-sm-2">
+                            <i class="fa fa-trash remove-denomination"></i>
                         </div>
                     </div>
-
-                    <div class="denomination-template" style="display: none;">
-                        <div class="form-group denomination">
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control input-rounded" name="denomination[]">
-                            </div>
-                            <div class="col-sm-2">
-                                <i class="fa fa-trash remove-denomination"></i>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
@@ -186,6 +179,12 @@
     top: 2px;
     cursor: pointer;
 }
+.denomination .remove-denomination {
+    display: none;
+}
+.denomination + .denomination .remove-denomination {
+    display: inline-block;
+}
 </style>
 <script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
 <script src="/admin-portal/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -194,14 +193,22 @@
 <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
 <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
 <script>
+    jQuery.fn.outerHTML = function(s) {
+        return s
+            ? this.before(s).remove()
+            : jQuery("<p>").append(this.eq(0).clone()).html();
+    };
+
     $(document).ready(function () {
         $(document).on("click", ".remove-denomination", function () {
             $(this).closest(".form-group").remove();
         });
 
         $(".add-denomination").click(function () {
-            var template = $(".denomination-template").html();
-            $(".denomination-template").before(template);
+            var template = $(".denomination").last().clone().wrap('<div>').parent().html();
+            $(".denomination").last().after(template);
+            $(".denomination").last().find("label").text("");
+            $(".denomination").last().find("input").val("");
         });
 
         $("#txt-product-image").on("keyup paste change", function () {
