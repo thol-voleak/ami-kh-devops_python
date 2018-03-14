@@ -33,7 +33,7 @@
     <div class="row">
             <div class="pull-right">
                 <a href="{% url 'category:category_add' %}">
-                    <input id="btn_add_category" class="btn btn-success text-left mb15" type="submit"
+                    <input id="btn_add" class="btn btn-success text-left mb15" type="submit"
                            value="+ Add Category"/>
                 </a>
             </div>
@@ -55,8 +55,8 @@
                             <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
-                                <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
-                                <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
+                                <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
+                                <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
                         </div>
                         </div>
                     </div>
@@ -86,17 +86,17 @@
                   <div class="panel panel-default">
                     <div class="panel-heading">
                       <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" onclick="ChangeActionInfor()">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#btn_information_expand" onclick="ChangeActionInfor()">
                         Information</a>
                         <div class="pull-right" ><i id="icon-infor" class="fa fa-angle-up"></i></div>
                       </h4>
                     </div>
-                    <div id="collapse1" class="panel-collapse collapse in">
+                    <div id="btn_information_expand" class="panel-collapse collapse in">
                       <div class="panel-body">
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.id | default_if_none:'' }}" id="txt_category_name" required/>
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.id | default_if_none:'' }}" id="txt_category_id" required/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
@@ -108,20 +108,20 @@
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Description</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.description | default_if_none:'' }}" id="txt_category_name" required/>
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.description | default_if_none:'' }}" id="txt_category_description" required/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Image</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image" onblur="updateImage(this.value)"/>
+                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <div class="col-sm-4"></div>
                                 <div class="col-sm-5">
                                     <div class="image-area">
-                                         <img id="category_image" alt="No Image Available" src="{{ category_detail.image_url | default_if_none:'' }}" height="150" width="150">
+                                         <img id="img_category_image" alt="No Image Available" src="{{ category_detail.image_url | default_if_none:'' }}" height="150" width="150">
                                     </div>
                                 </div>
                             </div>
@@ -131,14 +131,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                           <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" onclick="ChangeActionProduct()">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#btn_product_expand" onclick="ChangeActionProduct()">
                             Products in Category</a>
                             <div class="pull-right"><i id="icon-product" class="fa fa-angle-down"></i></div>
                           </h4>
                         </div>
-                        <div id="collapse2" class="panel-collapse collapse">
+                        <div id="btn_product_expand" class="panel-collapse collapse">
                           <div class="panel-body" style="margin-top:44px; border:none;">
-                            <table class="table table-striped">
+                            <table class="table table-striped" id="tbl_products">
                               <thead>
                                 <tr>
                                   <th scope="col" class="header-background">Product ID</th>
@@ -154,12 +154,12 @@
                                   <th scope="row">{{ i.id }}</th>
                                   <td>{{ i.name }}</td>
                                   <td>{{ i.description }}</td>
-                                  <td><div class="image-table"><img id="category_image" alt="No Image Available" src="{{ i.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                  <td><div class="image-table"><img id="img_product_image" alt="No Image Available" src="{{ i.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
                                   <td>
                                         <label class="switch switch-sm">
                                         <input type="checkbox" onchange="changeCategoryStatus(this)"
                                                name="category_status" {% if i.is_active %}checked{% endif %}
-                                               id="tog_status">
+                                               id="tog_product_status">
                                         <span class="slider round">
                                             <i class="handle"></i>
                                         </span>
@@ -233,7 +233,7 @@
             } 
         }
         function ChangeActionInfor(){
-            var infor_button  = document.getElementById('collapse1')
+            var infor_button  = document.getElementById('btn_information_expand')
             // var product_button  = document.getElementById('collapse2')
             if ( infor_button.classList.contains('in') ){
                 $("#icon-infor").removeClass("fa-angle-up");
@@ -247,7 +247,7 @@
 
         function ChangeActionProduct(){
             // var infor_button  = document.getElementById('collapse1')
-            var product_button  = document.getElementById('collapse2')
+            var product_button  = document.getElementById('btn_product_expand')
             if ( product_button.classList.contains('in') ){
                 $("#icon-product").removeClass("fa-angle-up");
                 $("#icon-product").addClass("fa-angle-down");
