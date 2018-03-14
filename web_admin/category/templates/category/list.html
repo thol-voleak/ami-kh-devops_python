@@ -23,33 +23,79 @@
             line-height: 75px;
             position: relative;
         }
-/*        .panel-before a:after {
-            font-family:'Glyphicons Halflings';
-            content:"\e114";
-            float: right;
-            color: grey;
+
+        body {
+          color: #6a6c6f;
+          background-color: #f1f3f6;
         }
 
-        .panel-heading a:after {
-            font-family:'Glyphicons Halflings';
-            content:"\e080";
-            float: right;
-            color: grey;
-        }*/
-
-        .panel-heading a:after {
-            font-family:'Glyphicons Halflings';
-            content:"\e114";
-            float: right;
-            color: grey;
+        .panel-default>.panel-heading {
+          color: #333;
+          background-color: #fff;
+          border-color: #e4e5e7;
+          padding: 0;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
         }
 
-        .panel-heading a.collapsed:after {
-            content:"\e080";
+        .panel-default>.panel-heading a {
+          display: block;
+          padding: 10px 15px;
         }
 
-        .header-background {
-            background-color: #e4e1e1;
+        .panel-default>.panel-heading a:after {
+          content: "";
+          position: relative;
+          top: 1px;
+          display: inline-block;
+          font-family: 'Glyphicons Halflings';
+          font-style: normal;
+          font-weight: 400;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          float: right;
+          transition: transform .25s linear;
+          -webkit-transition: -webkit-transform .25s linear;
+        }
+
+        .panel-default>.panel-heading a[aria-expanded="true"] {
+          background-color: #eee;
+        }
+
+        .panel-default>.panel-heading a[aria-expanded="false"]:after {
+          content: "\e113";
+          -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+        }
+
+        .panel-default>.panel-heading a[aria-expanded="true"]:after {
+          content: "\e114";
+          -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+        }
+
+        .accordion-option {
+          width: 100%;
+          float: left;
+          clear: both;
+          margin: 15px 0;
+        }
+
+        .accordion-option .title {
+          font-size: 20px;
+          font-weight: bold;
+          float: left;
+          padding: 0;
+          margin: 0;
+        }
+
+        .accordion-option .toggle-accordion {
+          float: right;
+          font-size: 16px;
+          color: #6a6c6f;
         }
     </style>
 <div class="panel mb25">
@@ -68,20 +114,28 @@
 
     <div class="panel-body">
         <div class="row">
-            <div class="col-sm-3">
-                <a class="bold" onclick="collapse('Collapse')" id="btn_collapse_all">Collapse All</a>
+            <div class="col-sm-4">
+                <a  onclick="collapse('Collapse')" id="btn_collapse_all">Collapse All</a>
                 <span>|</span>
-                <a onclick="collapse('Expand')" id="btn_expand_all">Expand All</a>
+                <a onclick="collapse('Expand')" id="btn_expand_all" class="bold">Expand All</a>
                 <br>
-                <div style="max-height: 400px; overflow-y: scroll" id="list_category">
+                <div style="max-height: 400px; overflow-y: scroll; margin-top:10px;" id="list_category">
                     {% for category in list_category %}
-                    <span>{{category.name}} ({{category.product_count}})</span>
+                    <div style="position: relative;">
+                        <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="toggle-sign-{{ category.id }}"></span>
+                        <span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span>
+                    </div>
+                    <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse in collapse-list" style="margin-left: 20px;">
+                        {% for product in  category.product %}
+                        <span>{{product.name}}</span>
+                        {%endfor%}
+                    </div>
                     {%endfor%}
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-8">
                 
-                <div class="row" style="margin-bottom: 15px;">
+                <div class="row">
                     <label class="col-sm-2" >Enable Category</label>
                     <div class="col-sm-1">
                         <label class="switch switch-sm">
@@ -94,14 +148,21 @@
                         </label>
                     </div>
                 </div>
-                <div class="panel-group" id="accordion">
-                  <div class="panel panel-default">
-                    <div class="panel-heading panel-before" id="information-heading">
-                      <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="" href="#information">Information</a>
+                <div class="container col-xs-12">
+                  <div class="accordion-option">
+                    <a href="javascript:void(0)" class="toggle-accordion active" accordion-id="#accordion"></a>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                      <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Information
+                        </a>
                       </h4>
-                    </div>
-                    <div id="information" class="panel-collapse collapse out">
+                      </div>
+                      <div id="collapseOne" class="panel-collapse collapse in " role="tabpanel" aria-labelledby="headingOne">
                         <div class="panel-body">
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
@@ -136,18 +197,19 @@
                                 </div>
                             </div>
                         </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="panel panel-default">
-                    <div class="panel-heading panel-before" id="product-heading">
-                      <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="" href="#product">
-                        Products in Category</a>
+                    <div class="panel panel-default">
+                      <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                          Products in Category
+                        </a>
                       </h4>
-                    </div>
-                    <div id="product" class="panel-collapse collapse out">
-                      <div class="panel-body" style="margin-top:44px; border:none;">
-                        <table class="table table-striped">
+                      </div>
+                      <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body" style="margin-top:44px; border:none;">
+                            <table class="table table-striped">
                               <thead>
                                 <tr>
                                   <th scope="col" class="header-background">Product ID</th>
@@ -163,7 +225,7 @@
                                   <th scope="row">{{ i.id }}</th>
                                   <td>{{ i.name }}</td>
                                   <td>{{ i.description }}</td>
-                                  <td><div class="image-table"><img id="category_image" alt="No Image" src="{{ i.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                  <td><div class="image-table"><img id="category_image" alt="No Image Available" src="{{ i.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
                                   <td>
                                         <label class="switch switch-sm">
                                         <input type="checkbox" onchange="changeCategoryStatus(this)"
@@ -178,11 +240,11 @@
                                 {%endfor%}
                               </tbody>
                             </table>
+                        </div>
                       </div>
                     </div>
                   </div>
-                    </div>
-                </div>        
+                </div>      
 </div>
 
 
@@ -190,51 +252,50 @@
 {% block body_js %}
 {{ block.super }}
     <script>
+        $('.collapse-list').on('hide.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.add("glyphicon-plus");
+            elem.classList.remove("glyphicon-minus");
+        });
+
+        $('.collapse-list').on('show.bs.collapse', function () {
+            var elem = document.getElementById('toggle-sign-' + $(this).attr('group-id'));
+            elem.classList.remove("glyphicon-plus");
+            elem.classList.add("glyphicon-minus");
+        });
+
         var image_category_elm = document.getElementById('category_image');
         var status_text_elm = document.getElementById('category_status_text');
         var updateImage = function(url) {
             image_category_elm.src = url;
         };
 
+        var openAllPanels = function(aId) {
+            $(aId + ' .panel-collapse:not(".in")').collapse('show');
+            $('#list_category .collapse:not(".in")').collapse('show');
+            
+        }
+        var closeAllPanels = function(aId) {
+            $(aId + ' .panel-collapse.in').collapse('hide');
+            $('#list_category .collapse.in').collapse('hide');
+        }
         function collapse(argument) {
-            if(argument == 'Collapse') {
+            var accordionId = $(".toggle-accordion").attr("accordion-id");
+            if (argument== 'Collapse'){
                 var collapse_button = document.getElementById('btn_collapse_all')
                 var expand_button = document.getElementById('btn_expand_all')
-                var product = document.getElementById('product')
-                var information = document.getElementById('information')
-                var product_heading = document.getElementById('product-heading')
-                var information_heading = document.getElementById('information-heading')
-                
-                information.classList.remove("in");
-                product.classList.remove("in");
-                information.classList.add("out");
-                product.classList.add("out");
-                // information_heading.classList.remove("panel-before");
-                // information_heading.classList.add("panel-after");
-                // product_heading.classList.remove("panel-before");
-                // product_heading.classList.add("panel-after");
-
                 expand_button.classList.remove("bold");
                 collapse_button.classList.add("bold");
 
-            } else {
+                closeAllPanels(accordionId);
+            }else {
                 var collapse_button = document.getElementById('btn_collapse_all')
                 var expand_button = document.getElementById('btn_expand_all')
-                var product = document.getElementById('product')
-                var information = document.getElementById('information')
-                var product_heading = document.getElementById('product-heading')
-                var information_heading = document.getElementById('information-heading')
-
-                information.classList.add("in");
-                product.classList.add("in");
-                information.classList.remove("out");
-                product.classList.remove("out");
-                // information_heading.classList.remove("panel-before");
-                // product_heading.classList.add("panel-after");
-
                 expand_button.classList.add("bold");
                 collapse_button.classList.remove("bold");
-            }
+
+                openAllPanels(accordionId);
+            } 
         }
     </script>
 {% endblock %}
