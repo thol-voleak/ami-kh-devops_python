@@ -34,11 +34,10 @@ class CategoryList(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         categories = self.get_categories()
-        default_category = categories[0]['categories'][0]
+        default_category = categories[0].get('categories')[0]
         category_id = default_category['id']
         category_detail = self.get_category_detail(category_id)
         products = self.get_products(category_id)
-        print(products[0]['products'])
         context = ({
             'category_detail': category_detail[0]['categories'][0],
             'products': products[0]['products']

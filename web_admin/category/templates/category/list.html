@@ -23,14 +23,29 @@
             line-height: 75px;
             position: relative;
         }
-        .panel-heading a:after {
+/*        .panel-before a:after {
             font-family:'Glyphicons Halflings';
             content:"\e114";
             float: right;
             color: grey;
         }
-        .panel-heading a.collapsed:after {
+
+        .panel-heading a:after {
+            font-family:'Glyphicons Halflings';
             content:"\e080";
+            float: right;
+            color: grey;
+        }*/
+
+        .panel-heading a:after {
+            font-family:'Glyphicons Halflings';
+            content:"\e080";
+            float: right;
+            color: grey;
+        }
+
+        .panel-heading a.collapsed:after {
+            content:"\e114";
         }
 
         .header-background {
@@ -54,9 +69,9 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-3">
-                <a class="bold">Collapse All</a>
+                <a class="bold" onclick="collapse('Collapse')" id="btn_collapse_all">Collapse All</a>
                 <span>|</span>
-                <a>Expand All</a>
+                <a onclick="collapse('Expand')" id="btn_expand_all">Expand All</a>
                 <br>
             </div>
             <div class="col-sm-9">
@@ -76,12 +91,12 @@
                 </div>
                 <div class="panel-group" id="accordion">
                   <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel-heading panel-before" id="information-heading">
                       <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="" href="#collapse1">Information</a>
+                        <a data-toggle="collapse" data-parent="" href="#information">Information</a>
                       </h4>
                     </div>
-                    <div id="collapse1" class="panel-collapse collapse in">
+                    <div id="information" class="panel-collapse collapse out">
                         <div class="panel-body">
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
@@ -119,13 +134,13 @@
                     </div>
                   </div>
                   <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel-heading panel-before" id="product-heading">
                       <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="" href="#collapse2">
+                        <a data-toggle="collapse" data-parent="" href="#product">
                         Products in Category</a>
                       </h4>
                     </div>
-                    <div id="collapse2" class="panel-collapse collapse in">
+                    <div id="product" class="panel-collapse collapse out">
                       <div class="panel-body" style="margin-top:44px; border:none;">
                         <table class="table table-striped">
                               <thead>
@@ -175,5 +190,46 @@
         var updateImage = function(url) {
             image_category_elm.src = url;
         };
+
+        function collapse(argument) {
+            if(argument == 'Collapse') {
+                var collapse_button = document.getElementById('btn_collapse_all')
+                var expand_button = document.getElementById('btn_expand_all')
+                var product = document.getElementById('product')
+                var information = document.getElementById('information')
+                var product_heading = document.getElementById('product-heading')
+                var information_heading = document.getElementById('information-heading')
+                
+                information.classList.remove("in");
+                product.classList.remove("in");
+                information.classList.add("out");
+                product.classList.add("out");
+                // information_heading.classList.remove("panel-before");
+                // information_heading.classList.add("panel-after");
+                // product_heading.classList.remove("panel-before");
+                // product_heading.classList.add("panel-after");
+
+                expand_button.classList.remove("bold");
+                collapse_button.classList.add("bold");
+
+            } else {
+                var collapse_button = document.getElementById('btn_collapse_all')
+                var expand_button = document.getElementById('btn_expand_all')
+                var product = document.getElementById('product')
+                var information = document.getElementById('information')
+                var product_heading = document.getElementById('product-heading')
+                var information_heading = document.getElementById('information-heading')
+
+                information.classList.add("in");
+                product.classList.add("in");
+                information.classList.remove("out");
+                product.classList.remove("out");
+                // information_heading.classList.remove("panel-before");
+                // product_heading.classList.add("panel-after");
+
+                expand_button.classList.add("bold");
+                collapse_button.classList.remove("bold");
+            }
+        }
     </script>
 {% endblock %}
