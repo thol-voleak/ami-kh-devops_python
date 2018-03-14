@@ -68,8 +68,6 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     action_id = action['id']
                     reward['reward_type'] = action['action_type']['name']
                     reward['id'] = action['action_type']['id']
-                    if action['action_type']['id'] == 2:
-                        reward['reward_type'] = 'Send Notification'
                     if action['action_type']['id'] == 1:
                         for j in action['action_data']:
                             if j['key_name'] == 'payee_user.user_id':
@@ -80,6 +78,9 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                             if j['key_name'] == 'amount':
                                 reward['amount'] = j['key_value']
                     elif action['action_type']['id'] == 2:
+                        reward['reward_type'] = 'Send Notification'
+                        reward['reward_to'] = action['user_id']
+                        reward['recipient'] = action['user_type']
                         for action_data in action['action_data']:
                             if action_data['key_name'] == 'notification_url':
                                 reward['send_to'] = action_data['key_value']
@@ -107,10 +108,10 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     for limitation in limitation:
                         if not limitation['is_deleted']:
                             for filter_limit in limitation['filters']:
-                                if filter_limit['key_name'] == 'payee_user.user_id':
+                                if filter_limit['key_name'] == 'user_id':
                                     if filter_limit['key_value'] in self.person.keys():
                                         limitation['reward_to'] = self.person[filter_limit['key_value']]
-                                if filter_limit['key_name'] == 'payee_user.user_type':
+                                if filter_limit['key_name'] == 'user_type':
                                     limitation['recipient'] = filter_limit['key_value']
                             i['limitation_list'].append(limitation)
 
