@@ -362,6 +362,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if reward_type == 'fixed_cashback':
             params = {
                 'action_type_id':1,
+                'user_id': request.POST.get('give_reward_to'),
+                'user_type': request.POST.get('reward_recipient'),
                 'data':[
                     {
                         'key_name':'product_service_id',
@@ -442,6 +444,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
             params = {
                 "action_type_id": 2,
+                'user_id': request.POST.get('give_reward_to'),
+                'user_type': request.POST.get('reward_recipient'),
                 "data": [
                     {
                         "key_name": "notification_url",
@@ -485,6 +489,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         elif reward_type == 'suspend_account':
             params = {
                 "action_type_id": 4,
+                'user_id':  request.POST.get('give_reward_to'),
+                'user_type': request.POST.get('reward_recipient'),
                 "data": [
                     {
                         'key_name': 'user_id',
@@ -515,13 +521,13 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "value": limit_to,
             "filters": [
                 {
-                    'key_name': 'payee_user.user_type',
+                    'key_name': 'user_type',
                     'key_value': request.POST.get('reward_recipient'),
                     'key_value_type': 'text',
                     "operator": "="
                 },
                 {
-                    'key_name': 'payee_user.user_id',
+                    'key_name': 'user_id',
                     'key_value': request.POST.get('give_reward_to'),
                     'key_value_type': 'numeric',
                     "operator": "="
