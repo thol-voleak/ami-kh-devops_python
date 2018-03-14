@@ -266,3 +266,8 @@ DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/tr
 # Balance
 GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summaries/sofs/cash'
 GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs/cash'
+
+# Category
+ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories'
+GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/categories'
+GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
