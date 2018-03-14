@@ -188,6 +188,10 @@
                                     <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
                                 {% endif %}
+                                {% if agent.has_permission_individual_wallet %}
+                                    <button id="btn_individual_wallet_view" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent_transaction_history' agent.id %}'">Individual Wallet View</button>
+                                {% endif %}
                                 {% if agent.has_permission_smartcard %}
                                     <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent-smartcard' agent.id %}'">SmartCard</button>

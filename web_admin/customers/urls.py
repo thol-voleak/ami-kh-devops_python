@@ -10,6 +10,7 @@ from .views.api_customers import activate, delete_customer
 from .views.reset_identity_password import reset_password
 from .views.blocked_devices import BlockedDevicesList
 from .views.unblock_devices import unblock
+from .views.transaction_history import TransactionHistoryView
 
 app_name = 'customers'
 
@@ -19,6 +20,8 @@ urlpatterns = [
     url(r'^(?P<customerId>[0-9A-Za-z]+)/update/$', login_required(UpdateView.as_view(), login_url='authentications:login'), name="customer_update"),
     url(r'^(?P<customerId>[0-9A-Za-z]+)/sofs/bank/$', login_required(CustomerSOFListView.as_view(), login_url='authentications:login'), name="customer_sof_list"),
     url(r'^(?P<customerId>[0-9A-Za-z]+)/identities/$', login_required(CustomerIdentitiesListView.as_view(), login_url='authentications:login'), name="customer_identities"),
+    url(r'^(?P<customerId>[0-9A-Za-z]+)/transaction-histories/$',login_required(TransactionHistoryView.as_view(), login_url='authentications:login'),name="customer_transaction_history"),
+
     url(r'^suspend/(?P<customer_id>[0-9A-Za-z]+)/$', login_required(suspend, login_url='authentications:login'),
         name="suspend-customer"),
     url(r'^activate/(?P<customer_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'),

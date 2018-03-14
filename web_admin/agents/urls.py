@@ -1,6 +1,7 @@
 from .views.list import ListView
 from .views.agent_identities import AgentIdentitiesView
 from .views.add_agent_identity import AddAgentIdentities
+from .views.transaction_history import TransactionHistoryView
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from .views.registration import AgentRegistration
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/identities/$', login_required(AgentIdentitiesView.as_view(), login_url='authentications:login'), name="agent_identities"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/identities/add/$', login_required(AddAgentIdentities.as_view(), login_url='authentications:login'), name="add_agent_identity"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/identities/(?P<identity_id>[0-9A-Za-z]+)/$', login_required(reset_password, login_url='authentications:login'), name="reset-identity-password"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/transaction-histories/$', login_required(TransactionHistoryView.as_view(), login_url='authentications:login'), name="agent_transaction_history"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/smardcards/$', login_required(SmartCardView.as_view(), login_url='authentications:login'), name="agent-smartcard"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/sofs/cash/$', login_required(SOFCashView.as_view(), login_url='authentications:login'), name="agent-sofcash"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/sofs/banks/$', login_required(SOFBankView.as_view(), login_url='authentications:login'), name="agent-sofbank"),

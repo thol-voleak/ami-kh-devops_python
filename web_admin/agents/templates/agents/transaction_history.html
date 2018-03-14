@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Individual Wallet View</h3>
+    </div>
+    <div class="alert alert-success" id="msg-update-success" hidden>
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="col-xs-12">
+            <div class="alert alert-success alert-dismissable" id="msg-roles">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <div id="ajax-messages">
+        {% if msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-success
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% if delete_msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-success
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ delete_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        {% if msg_failed is not None %}
+            <div class="col-xs-12">
+                <div class='alert
+                            alert-danger
+                            alert-dismissable' id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg_failed }}</strong>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">SOF Type</label>
+                        <div class="col-sm-1">
+                            <select class="form-control" name="sof_type_id"
+                                            id="ddl_sof_type">
+                                    {% for sof_type in choices.sof_types %}
+                                       {% if sof_type.sof_type == 'cash' %} <option value="{{ sof_type.sof_type_id }}"  selected >{{ sof_type.sof_type }}</option> {% endif %}
+                                    {% endfor %}
+                            </select>
+                        </div>
+                        <label class="col-sm-1 control-label">SOF ID</label>
+                        <div class="col-sm-1">
+                            <input id="txt_sof_id" type="number" class="form-control input-rounded" name="sof_id" value="{{ search_by.sof_id }}">
+                        </div>
+                        <label class="col-sm-1 control-label">From</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="from_created_timestamp"
+                                   value="{{ from_created_timestamp|default_if_none:'' }}"
+                                   id="dtp_from">
+                        </div>
+                        <label class="col-sm-1 control-label">To</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="to_created_timestamp"
+                                   value="{{ to_created_timestamp|default_if_none:'' }}"
+                                   id="dtp_to">
+                        </div>
+                        <div class="pull-right">
+                            <div class="col-sm-6">
+                                <a href="#">
+                                    <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
+                                </a>
+
+                            </div>
+                            <div class="col-sm-2">
+                                <a href="#">
+                                    <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped mb0" id="tbl_agent_transaction_history">
+                                <thead>
+                                    <tr>
+                                        <th id="order_id">Order ID</th>
+                                        <th id="order_status">Order Status</th>
+                                        <th id="external_id">External ID</th>
+                                        <th id="command">Command</th>
+                                        <th id="order_detail_id">Order Detail ID</th>
+                                        <th id="order_detail_status">Order Detail Status</th>
+                                        <th id="sof_type">Sof Type</th>
+                                        <th id="sof_id">Sof ID</th>
+                                        <th id="service_name">Service Name</th>
+                                        <th id="debit">Debit (-)</th>
+                                        <th id="credit">Credit (+)</th>
+                                        <th id="currency">Currency</th>
+                                        <th id="post_balance">Post-Balance</th>
+                                        <th id="created_date">Created Date</th>
+                                        <th id="action">Action</th>
+                                    </tr>
+                                </thead>
+                                    <tbody>
+                                    {% for row in list %}
+                                        <tr>
+                                            <td>{{ row.order_id|default_if_none:'' }}</td>
+                                            <td>{{ row.order_status|default_if_none:'' }}</td>
+                                            <td>{{ row.external_id|default_if_none:'' }}</td>
+                                            <td>{{ row.command|default_if_none:'' }}</td>
+                                            <td>{{ row.order_detail_id|default_if_none:'' }}</td>
+                                            <td>{{ row.order_detail_status|default_if_none:'' }}</td>
+                                            <td>{{ row.sof_type|default_if_none:'' }}</td>
+                                            <td>{{ row.sof_id|default_if_none:'' }}</td>
+                                            <td>{{ row.service_name|default_if_none:'' }}</td>
+                                            <td>{% if row.action_type == 'Debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+                                            <td>{% if row.action_type == 'Credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+{#                                                {% if permissions.is_perm_view_transaction_history_detail %}#}
+{#                                                    <td class="col-sm-1">#}
+{#                                                        <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'agent:agent_transaction_history_detail' row.order_id %}'">Detail</button>#}
+{#                                                    </td>#}
+{#                                                {% endif %}#}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

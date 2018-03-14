@@ -231,6 +231,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             has_permission_sofcash = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFCASH')
             has_permission_sofbank = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_SOFBANK')
             has_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_AGENTS')
+            has_permission_individual_wallet = check_permissions_by_user(self.request.user, 'CAN_VIEW_AGENT_INDIVIDUAL_WALLET')
             has_permission_management = self.check_membership(['CAN_VIEW_PROFILE_MANAGEMENT'])
             agents = data.get('agents', [])
             for i in agents:
@@ -238,6 +239,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 i['has_permission_edit'] = has_permission_edit
                 i['has_permission_delete'] = has_permission_delete
                 i['has_permission_identity'] = has_permission_identity
+                i['has_permission_individual_wallet'] = has_permission_individual_wallet
                 i['has_permission_smartcard'] = has_permission_smartcard
                 i['has_permission_sofcash'] = has_permission_sofcash
                 i['has_permission_sofbank'] = has_permission_sofbank
