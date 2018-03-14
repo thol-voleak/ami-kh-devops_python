@@ -75,7 +75,7 @@
                 <br>
                 <div style="max-height: 400px; overflow-y: scroll" id="list_category">
                     {% for category in list_category %}
-                    {{category.name}} ({{category.product_count}})
+                    <span>{{category.name}} ({{category.product_count}})</span>
                     {%endfor%}
                 </div>
             </div>
