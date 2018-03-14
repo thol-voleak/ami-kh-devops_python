@@ -121,7 +121,7 @@
                                 <div class="col-sm-4"></div>
                                 <div class="col-sm-5">
                                     <div class="image-area">
-                                         <img id="img_category_image" alt="No Image Available" src="{{ category_detail.image_url | default_if_none:'' }}" height="150" width="150">
+                                         <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150">
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@
                                   <th scope="row">{{ i.id }}</th>
                                   <td>{{ i.name }}</td>
                                   <td>{{ i.description }}</td>
-                                  <td><div class="image-table"><img id="img_product_image" alt="No Image Available" src="{{ i.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
+                                  <td><div class="image-table"><img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150"></div></td>
                                   <td>
                                         <label class="switch switch-sm">
                                         <input type="checkbox" onchange="changeCategoryStatus(this)"
