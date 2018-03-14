@@ -33,14 +33,29 @@ class CategoryList(TemplateView, GetHeaderMixin):
         return super(CategoryList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        context = super(CategoryList, self).get_context_data(**kwargs)
         categories = self.get_categories()
+        list_category = categories[0].get('categories')
+
+        ## Get all list category and list product for each category 
+        if list_category is not None:
+            for category in list_category:
+                product_in_category = self.get_products(category['id'])
+                category['product'] = product_in_category[0].get('products')
+                category['product_count'] = len(category['product'])
+            context['list_category'] = list_category
+            print(list_category)
+        ############################################################
+
         default_category = categories[0].get('categories')[0]
         category_id = default_category['id']
+
         category_detail = self.get_category_detail(category_id)
-        products = self.get_products(category_id)
-        context = ({
+        products_default = self.get_products(category_id)
+
+        context.update({
             'category_detail': category_detail[0]['categories'][0],
-            'products': products[0]['products']
+            'products': products_default[0].get('products'),
         })
         return render(request, self.template_name, context)
 
