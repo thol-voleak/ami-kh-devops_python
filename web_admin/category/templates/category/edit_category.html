@@ -135,12 +135,12 @@
                               <th scope="row">{{ i.id }}</th>
                               <td>{{ i.name }}</td>
                               <td>{{ i.description }}</td>
-                              <td><div class="image-table"><img id="category_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
+                              <td><div class="image-table"><img id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
                               <td>
                                     <label class="switch switch-sm">
                                     <input type="checkbox" onchange="changeProductStatus({{ i.id }}, this, {{ i.tem_pro }})"
                                            name="product_status" {% if i.is_active %}checked{% endif %}
-                                           id="tog_status">
+                                           id="tog_product_enable">
                                     <span class="slider round">
                                         <i class="handle"></i>
                                     </span>
@@ -176,9 +176,7 @@
             $("#alert-msg").text(msg);
             $('#alert-client').removeClass("alert-success");
             $('#alert-client').addClass("alert-danger");
-            $("#msg-add-client").prop("hidden", true);
-            $("#msg-update-client").prop("hidden", true);
-            $("#msg-add-service").prop("hidden", true);
+            $("#msg-success").prop("hidden", true);
             $("#alert-client").show();
             $("html, body").animate({scrollTop: 0}, "slow");
         }
@@ -187,9 +185,7 @@
             $("#alert-msg").text(msg);
             $('#alert-client').removeClass("alert-danger");
             $('#alert-client').addClass("alert-success");
-            $("#msg-add-client").prop("hidden", true);
-            $("#msg-update-client").prop("hidden", true);
-            $("#msg-add-service").prop("hidden", true);
+            $("#msg-success").prop("hidden", true);
             $("#alert-client").show();
             $("html, body").animate({scrollTop: 0}, "slow");
         }

@@ -38,9 +38,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
         self.logger.info('========== Start get category  detail ==========')
         category_detail = self.get_category_detail(category_id)
         self.logger.info('========== Finish get category  detail ==========')
-        self.logger.info('========== Start  product list of category ==========')
+        self.logger.info('========== Start getting product list of category ==========')
         product_in_category = self.get_products(category_id)
-        self.logger.info('========== Finish get get product list of category ==========')
+        self.logger.info('========== Finish getting product list of category ==========')
         context.update({
             "category": category_detail,
             'products': product_in_category
@@ -80,9 +80,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
             self.logger.info('========== Start get category  detail ==========')
             category_detail = self.get_category_detail(category_id)
             self.logger.info('========== Finish get category  detail ==========')
-            self.logger.info('========== Start  product list of category ==========')
+            self.logger.info('========== Start getting product list of category ==========')
             product_in_category = self.get_products(category_id)
-            self.logger.info('========== Finish get get product list of category ==========')
+            self.logger.info('========== Finish getting product list of category ==========')
             context.update({
                 "category": category_detail,
                 'products': product_in_category
@@ -97,9 +97,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
             self.logger.info('========== Start get category  detail ==========')
             category_detail = self.get_category_detail(category_id)
             self.logger.info('========== Finish get category  detail ==========')
-            self.logger.info('========== Start  product list of category ==========')
+            self.logger.info('========== Start getting product list of category ==========')
             product_in_category = self.get_products(category_id)
-            self.logger.info('========== Finish get get product list of category ==========')
+            self.logger.info('========== Finish getting product list of category ==========')
             context.update({
                 "category": category_detail,
                 'products': product_in_category
