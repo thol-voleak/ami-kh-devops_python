@@ -86,7 +86,7 @@
                         <div class="row">
                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
                             <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
-                            <a id="category-{{category.id}}" onclick="getData({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</span></a>
+                            <a id="category-{{category.id}}" onclick="getData({{category.id}})" style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
                                 <a href="{% url 'category:category_edit' category.id %}">
