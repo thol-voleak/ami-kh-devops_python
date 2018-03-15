@@ -100,7 +100,7 @@
                                     {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Edit</button>
                                     {% endif %} -->
-                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Detail</button>
+                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'product:product_detail' i.id %}';">Detail</button>
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info">Edit</button>
                                 </td>
                             </tr>
