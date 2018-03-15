@@ -152,14 +152,14 @@
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Image</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
+                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url"/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <div class="col-sm-4"></div>
                                 <div class="col-sm-5">
                                     <div class="image-area">
-                                         <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150">
+                                         <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category_detail.image_url | default_if_none:'' }}" height="150" width="150">
                                     </div>
                                 </div>
                             </div>
@@ -237,11 +237,7 @@
             elem.classList.add("glyphicon-minus");
         });
 
-        var image_category_elm = document.getElementById('txt_category_image_url');
         var status_text_elm = document.getElementById('category_status_text');
-        var updateImage = function(url) {
-            image_category_elm.src = url;
-        };
 
         var openAllPanels = function(aId) {
             $(aId + ' .panel-collapse:not(".in")').collapse('show');

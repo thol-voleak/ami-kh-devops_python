@@ -3,19 +3,10 @@
 {% block content %}
     <style>
         .image-area {
-            text-align: center;
             height: 150px;
             width: 150px;
-            border: 1px solid #e0dbdb;
             line-height: 150px;
-            position: relative;
         }
-
-    .image-area img {
-        position: absolute;
-        top: 0;
-        left: -1px;
-    }
     </style>
 <div class="panel mb25">
     <div class="panel-heading border">
@@ -36,11 +27,11 @@
                 {% csrf_token %}
                  <div class="col-sm-12 form-group" style="margin-bottom: 25px;">
                     <div class="col-sm-2"></div>
-                    <div class="col-sm-9">
+                    <label class="col-sm-2 control-label">Enable Category</label>
+                    <div class="col-sm-8">
                         <div class="row">
-                            <label class="col-sm-2">Enable Category</label>
                              <div class="col-sm-1">
-                                 <label class="switch switch-sm">
+                                 <label class="switch switch-sm" style="margin-top: 6px;">
                                 <input type="checkbox"
                                        name="category_status" {% if is_active %}checked{% endif %}
                                        id="tog_enable">
@@ -54,25 +45,25 @@
                 </div>
                 <div class="col-sm-12 form-group">
                     <div class="col-sm-2"></div>
-                    <label class="col-sm-2" style="font-size: 20px;">Information</label>
+                    <label class="col-sm-2 control-label" style="font-size: 20px;">Information</label>
                 </div>
                 <div class="col-sm-12 form-group">
                     <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Name *</label>
+                    <label class="col-sm-2 control-label">Category Name *</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control input-rounded" name="category_name" value="{{ name | default_if_none:'' }}" id="txt_category_name" required/>
                     </div>
                 </div>
                  <div class="col-sm-12 form-group">
                      <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Description</label>
+                    <label class="col-sm-2 control-label">Category Description</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control input-rounded" name="category_description" value="{{ description | default_if_none:'' }}" id="txt_category_description"/>
                     </div>
                 </div>
                 <div class="col-sm-12 form-group">
                     <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Image</label>
+                    <label class="col-sm-2 control-label">Category Image</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control input-rounded" name="category_image" value="{{ image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
                     </div>
