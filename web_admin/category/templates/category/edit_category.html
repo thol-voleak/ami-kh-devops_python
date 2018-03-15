@@ -55,6 +55,12 @@
         </div>
         {% endif %}
     {% endfor %}
+      <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+      </div>
         <div class="panel-body">
           <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'category:category_edit' category.id %}">
                 {% csrf_token %}
@@ -145,7 +151,7 @@
                               <td><div class="image-table"><img id="category_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
                               <td>
                                     <label class="switch switch-sm">
-                                    <input type="checkbox" onchange="changeProductStatus({{ i.id }}, '{{ i.is_active }}')"
+                                    <input type="checkbox" onchange="changeProductStatus({{ i.id }}, this, {{ i.tem_pro }})"
                                            name="product_status" {% if i.is_active %}checked{% endif %}
                                            id="tog_status">
                                     <span class="slider round">
@@ -178,13 +184,68 @@
 {% block body_js %}
 {{ block.super }}
     <script>
+
+         function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-success");
+            $('#alert-client').addClass("alert-danger");
+            $("#msg-add-client").prop("hidden", true);
+            $("#msg-update-client").prop("hidden", true);
+            $("#msg-add-service").prop("hidden", true);
+            $("#alert-client").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-danger");
+            $('#alert-client').addClass("alert-success");
+            $("#msg-add-client").prop("hidden", true);
+            $("#msg-update-client").prop("hidden", true);
+            $("#msg-add-service").prop("hidden", true);
+            $("#alert-client").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
         var image_category_elm = document.getElementById('img_Image');
         var updateImage = function(url) {
             image_category_elm.src = url;
         };
-        var changeProductStatus = function(product_id, product_status) {
-            console.log(product_id);
-            console.log(product_status);
+        var changeProductStatus = function(product_id, elem, product) {
+            var updatedStatus;
+            if ($(elem).is(':checked')){
+                updatedStatus = true;
+            } else {
+                updatedStatus = false;
+            }
+            var url = '/admin-portal/category/product/'+ product_id + '/status/update';
+                   $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {'product_id': product_id, 'product_status': updatedStatus},
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            if(updatedStatus) {
+                                 showSuccessMessage('Product ID'+ ' '+ product_id +' ' + 'is now active');
+                            } else {
+                                 showSuccessMessage('Product ID'+ ' '+ product_id +' ' + 'is now inactive');
+                            }
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                });
         };
 
         var toggle = function(type) {

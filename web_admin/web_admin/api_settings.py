@@ -276,3 +276,5 @@ EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{categor
 GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
 ADD_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products'
 ADD_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agent-types/relations'
+UPDATE_PRODUCT_STATUS_IN_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
+GET_PRODUCT_DETAIL = 'api-gateway/report/' + API_VERSION + '/products'
