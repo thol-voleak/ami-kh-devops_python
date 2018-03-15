@@ -57,7 +57,7 @@ class CategoryList(TemplateView, GetHeaderMixin):
 
             context['list_category'] = list_category
         ############################################################
-        
+        ####### First data ########
         if categories[0].get('categories'):
             default_category = categories[0].get('categories')[0]
             category_id = default_category['id']
@@ -69,6 +69,7 @@ class CategoryList(TemplateView, GetHeaderMixin):
                     'category_detail': category_detail[0]['categories'][0],
                     'products': products_default[0].get('products'),
                 })
+        ############################################################# 
         self.logger.info('========== Finish render category page ==========')
         return render(request, self.template_name, context)
 
