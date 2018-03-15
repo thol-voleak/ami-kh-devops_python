@@ -78,13 +78,14 @@
                         <div class="row">
                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
                             <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
-                            <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span></a>
+                            <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
                                 <a href="{% url 'category:category_edit' category.id %}">
                                     <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
                                 </a>
                                 <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
+                                <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Detail</button>
                         </div>
                         </div>
                     </div>

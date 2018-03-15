@@ -36,21 +36,25 @@ class CategoryList(TemplateView, GetHeaderMixin):
         self.logger.info('========== Start render category page ==========')
         context = super(CategoryList, self).get_context_data(**kwargs)
         categories = self.get_categories()
+
         list_category = categories[0].get('categories')
 
+        all_list_product = self.get_all_list_products() 
+        all_list_product = all_list_product[0].get('products')
+
         ## Get all list category and list product for each category 
-        if list_category is not None:
-            for category in list_category:
-                product_in_category = self.get_products(category['id'])
-                category['product'] = product_in_category[0].get('products')
-                category['product_count'] = len(category['product'])
+        if list_category:
+            for category_unit in list_category:
+                product_list = []
+                for product_unit in all_list_product:
+                    if all_list_product: 
+                        if product_unit['category_id'] == category_unit['id']:
+                            product_list.append(product_unit)
+                category_unit['product'] = product_list
+
             context['list_category'] = list_category
-        #### TEST DATA ####
-        # list_category = [{'id': 309, 'name': 'TC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
-        #                 {'id': 22, 'name': 'TC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
-        #                 ]
-        # context['list_category'] = list_category
         ############################################################
+        
         if categories[0].get('categories'):
             default_category = categories[0].get('categories')[0]
             category_id = default_category['id']
@@ -113,6 +117,27 @@ class CategoryList(TemplateView, GetHeaderMixin):
 
         body = {
             "category_id": category_id,
+            "paging": False
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get list product ==========')
+
+        return data, success, status_message
+
+    def get_all_list_products(self):
+        self.logger.info('========== Start get list product ==========')
+        api_path = api_settings.GET_PRODUCTS
+
+        body = {
             "paging": False
         }
 
