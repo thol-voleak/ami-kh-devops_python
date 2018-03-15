@@ -81,7 +81,9 @@
                             <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product_count}})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
-                                <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
+                                <a href="{% url 'category:category_edit' category.id %}">
+                                    <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
+                                </a>
                                 <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
                         </div>
                         </div>

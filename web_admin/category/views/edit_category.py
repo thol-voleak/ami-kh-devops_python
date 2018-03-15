@@ -41,10 +41,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
         self.logger.info('========== Start  product list of category ==========')
         product_in_category = self.get_products(category_id)
         self.logger.info('========== Finish get get product list of category ==========')
-        product_list = product_in_category[0]
         context.update({
-            "category": category_detail[0],
-            'products': product_list
+            "category": category_detail,
+            'products': product_in_category
         })
         return render(request, self.template_name, context)
 
@@ -84,10 +83,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
             self.logger.info('========== Start  product list of category ==========')
             product_in_category = self.get_products(category_id)
             self.logger.info('========== Finish get get product list of category ==========')
-            product_list = product_in_category[0]
             context.update({
-                "category": category_detail[0],
-                'products': product_list
+                "category": category_detail,
+                'products': product_in_category
             })
             messages.success(request, 'Edited Successfully')
             return render(request, self.template_name, context)
@@ -102,10 +100,9 @@ class EditCategory(TemplateView, GetHeaderMixin):
             self.logger.info('========== Start  product list of category ==========')
             product_in_category = self.get_products(category_id)
             self.logger.info('========== Finish get get product list of category ==========')
-            product_list = product_in_category[0]
             context.update({
-                "category": category_detail[0],
-                'products': product_list
+                "category": category_detail,
+                'products': product_in_category
             })
             return render(request, self.template_name, context)
 
@@ -126,7 +123,7 @@ class EditCategory(TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data,
                                 status_code=status_code, is_getting_list=False)
 
-        return data, success, status_message
+        return data
 
     def get_products(self, category_id):
         api_path = api_settings.GET_PRODUCTS
@@ -146,7 +143,7 @@ class EditCategory(TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data,
                                 status_code=status_code, is_getting_list=True)
 
-        return data, success, status_message
+        return data
 
 
 
