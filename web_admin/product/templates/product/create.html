@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Product Name *</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="name" value="{{ product.name }}">
+                            <input type="text" class="form-control input-rounded" required name="name" value="{{ product.name }}">
                         </div>
                     </div>
 
@@ -122,14 +122,14 @@
                     <div class="form-group price-range">
                         <label class="col-sm-3 control-label">Maximum Price</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="max_price" value="{{ product.max_price | default_if_none:'' }}">
+                            <input type="number" class="form-control input-rounded" name="max_price" value="{{ product.max_price | default_if_none:'' }}">
                         </div>
                     </div>
 
                     <div class="form-group price-range">
                         <label class="col-sm-3 control-label">Minimum Price</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="min_price" value="{{ product.min_price | default_if_none:'' }}">
+                            <input type="number" class="form-control input-rounded" name="min_price" value="{{ product.min_price | default_if_none:'' }}">
                         </div>
                     </div>
 

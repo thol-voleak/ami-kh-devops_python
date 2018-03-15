@@ -270,5 +270,9 @@ GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs
 # Category
 ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories'
 GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/categories'
-GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
 EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{category_id}'
+
+# Product
+GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
+ADD_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products'
+ADD_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agent-types/relations'

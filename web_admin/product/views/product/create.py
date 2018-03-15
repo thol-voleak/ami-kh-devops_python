@@ -4,7 +4,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import setup_logger
 from web_admin import api_settings, RestFulClient
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 import logging
 
@@ -27,7 +27,7 @@ class CreateView(TemplateView, RESTfulMethods):
 
         # Set default data
         product = {
-            "is_active": True,
+            "is_active": False,
             "is_allow_price_range": True,
             "denomination": ['']
         }
@@ -66,12 +66,30 @@ class CreateView(TemplateView, RESTfulMethods):
             "denomination": denomination
         }
 
-        messages.success(request, 'Added Successfully')
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.ADD_PRODUCT, headers=self._get_headers(), loggers=self.logger, params=params
+        )
 
-        context = {'product': params}
-        context['cbo_agent_types'] = cbo_agent_types;
-        self.set_ui_list(context)
-        return render(request, self.template_name, context)
+        if not is_success:
+            messages.error(request, status_message)
+            context = {'product': params}
+            context['cbo_agent_types'] = cbo_agent_types;
+            self.set_ui_list(context)
+            return render(request, self.template_name, context)
+
+        product_id = data['id']
+        for agent_type_id in cbo_agent_types:
+            body = {
+                "product_id": product_id,
+                "agent_type_id": agent_type_id
+            }
+
+            is_success, status_code, status_message, data = RestFulClient.post(
+                url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
+            )
+
+        messages.success(request, "Added Successfully")
+        return redirect('product:product_create')
 
     def set_ui_list(self, context):
         # Get list category
@@ -85,3 +103,8 @@ class CreateView(TemplateView, RESTfulMethods):
         # Get list agent type
         data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL, logger=logger)
         context['agent_types'] = data
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+        return self._headers
