@@ -35,6 +35,11 @@
             top: 0;
             left: -1px;
         }
+
+        .category-arrow {
+            position: absolute;
+            left: 4px;
+        }
     </style>
 <div class="panel mb25">
     <div class="panel-heading border">
@@ -54,7 +59,7 @@
           <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'category:category_edit' category.id %}">
                 {% csrf_token %}
                  <div class="col-sm-12 form-group" style="margin-bottom: 25px;">
-                    <div class="col-sm-2"></div>
+                    <div class="col-sm-1"></div>
                     <div class="col-sm-9">
                         <div class="row">
                             <label class="col-sm-2">Enable Category</label>
@@ -72,49 +77,56 @@
                     </div>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <div class="col-sm-2"></div>
+                    <div class="col-sm-1"></div>
                     <label class="col-sm-2" style="font-size: 20px;">Information</label>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category ID</label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control input-rounded" name="category_id" value="{{ category.id | default_if_none:'' }}" id="txt_category_id" readonly/>
+                    <div class="col-sm-8">
+                        <div id="btn_information_expand" class="btn-arrow-down pull-right" onclick="toggle('info')" style="outline: none;border-radius: 50%;height: 27px;width: 27px;border: 1px solid grey; cursor: pointer;"><span style="position: relative;"><i class="category-arrow fa fa-angle-up fa-2x" id="info-chev"></i></span></div>
                     </div>
                 </div>
-                <div class="col-sm-12 form-group">
-                    <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Name *</label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control input-rounded" name="category_name" value="{{ category.name | default_if_none:'' }}" id="txt_category_name" required/>
+                <div id="toggle-category-info">
+                    <div class="col-sm-12 form-group">
+                        <div class="col-sm-1"></div>
+                        <label class="col-sm-2">Category ID</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control input-rounded" name="category_id" value="{{ category.id | default_if_none:'' }}" id="txt_category_id" readonly/>
+                        </div>
                     </div>
-                </div>
-                 <div class="col-sm-12 form-group">
-                     <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Description</label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control input-rounded" name="category_description" value="{{ category.description | default_if_none:'' }}" id="txt_category_description"/>
+                    <div class="col-sm-12 form-group">
+                        <div class="col-sm-1"></div>
+                        <label class="col-sm-2">Category Name *</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control input-rounded" name="category_name" value="{{ category.name | default_if_none:'' }}" id="txt_category_name" required/>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <div class="col-sm-2"></div>
-                    <label class="col-sm-2">Category Image</label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control input-rounded" name="category_image" value="{{ category.image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
+                     <div class="col-sm-12 form-group">
+                         <div class="col-sm-1"></div>
+                        <label class="col-sm-2">Category Description</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control input-rounded" name="category_description" value="{{ category.description | default_if_none:'' }}" id="txt_category_description"/>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <div class="col-sm-4"></div>
-                    <div class="col-sm-5">
-                        <div class="image-area">
-                             <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150">
+                    <div class="col-sm-12 form-group">
+                        <div class="col-sm-1"></div>
+                        <label class="col-sm-2">Category Image</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control input-rounded" name="category_image" value="{{ category.image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 form-group">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-5">
+                            <div class="image-area">
+                                 <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-12" style="display: flex; justify-content: center;">
-                    <div class="panel-body" style="margin-top:20px;border-top: 1px solid #b9b4b4 !important; width: 80%;">
+                    <div class="panel-body" style="margin-top:20px;border-top: 1px solid #b9b4b4 !important; width: 81.75%;">
                     <label class="col-sm-5" style="font-size: 20px;margin-bottom: 20px;">Products in Category</label>
-                    <table class="table table-striped" id="tbl_products">
+                    <div id="btn_products_expand" class="btn-arrow-down pull-right" onclick="toggle('product')" style="outline: none;border-radius: 50%;height: 27px;width: 27px;border: 1px solid grey; cursor: pointer;"><span style="position: relative;"><i id='product-chev' class="category-arrow fa fa-angle-up fa-2x"></i></span></div>
+                    <div id="toggle-product-list">
+                         <table class="table table-striped" id="tbl_products">
                           <thead>
                             <tr>
                               <th scope="col" class="header-background">Product ID</th>
@@ -145,6 +157,7 @@
                             {%endfor%}
                           </tbody>
                         </table>
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
@@ -172,6 +185,32 @@
         var changeProductStatus = function(product_id, product_status) {
             console.log(product_id);
             console.log(product_status);
+        };
+
+        var toggle = function(type) {
+            if(type == 'info') {
+                if ( $( "#toggle-category-info" ).is( ":hidden" ) ){
+                    $( "#toggle-category-info" ).show();
+                    $("#info-chev").removeClass("fa-angle-down");
+                    $("#info-chev").addClass("fa-angle-up");
+                }
+                else{
+                    $( "#toggle-category-info" ).hide();
+                    $("#info-chev").removeClass("fa-angle-up");
+                    $("#info-chev").addClass("fa-angle-down");
+                }
+            }  else if(type == 'product'){
+                if ( $( "#toggle-product-list" ).is( ":hidden" ) ){
+                    $( "#toggle-product-list" ).show();
+                    $("#product-chev").removeClass("fa-angle-down");
+                    $("#product-chev").addClass("fa-angle-up");
+                }
+                else{
+                    $( "#toggle-product-list" ).hide();
+                    $("#product-chev").removeClass("fa-angle-up");
+                    $("#product-chev").addClass("fa-angle-down");
+                }
+            }
         };
     </script>
 {% endblock %}
