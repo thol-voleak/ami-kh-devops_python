@@ -54,8 +54,16 @@
 <div class="panel mb25">
     <div class="panel-heading">
         <h3>Categories</h3>
-        
+
     </div>
+
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" hidden id="msg-categories">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
     <div class="row">
             <div class="pull-right">
                 <a href="{% url 'category:category_add' %}">
@@ -84,8 +92,9 @@
                                 <a href="{% url 'category:category_edit' category.id %}">
                                     <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
                                 </a>
-                                <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
-                                <button id="btn_category_delete" class="btn btn-outline mb5 btn-xs btn-danger ">Detail</button>
+                                <button id="btn_category_delete" onclick="deleteCategory(this)"
+                                        data-category-id="{{ category.id }}"  data-product-count="{{ category.product|length }}" data-url="{% url 'category:category_delete' category.id %}"
+                                        class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
                         </div>
                         </div>
                     </div>
@@ -286,6 +295,73 @@
                 $("#icon-product").removeClass("fa-angle-down");
                 $("#icon-product").addClass("fa-angle-up");
             }
+        }
+
+        function deleteCategory(e) {
+            if (e.getAttribute('data-product-count') !== '0') {
+                showErrorMessage('Can delete if all products are empty under the category');
+                return
+            }
+
+            swal({
+                    title: "Are you sure you want delete selected item?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var url = e.getAttribute('data-url');
+                        console.log(url);
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            data: {},
+                            dataType: "json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            },
+                            success: function (response) {
+                                if(response.status == 1) {
+                                    // Logout
+                                    var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                                    window.location.replace(url);
+                                } else if(response.status == 2) {
+                                    // success
+                                    var id = e.getAttribute('data-category-id');
+                                    $('#category-' + id).parent().parent().remove();
+                                    showSuccessMessage('Deleted Successfully');
+                                } else {
+                                    // Failed
+                                    showErrorMessage(response.msg);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            var m = $('#msg-categories');
+            m.removeClass("alert-success");
+            m.addClass("alert-danger");
+            m.prop("hidden", false);
+            m.fadeIn(1000);
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            var m = $('#msg-categories');
+            m.removeClass("alert-danger");
+            m.addClass("alert-success");
+            m.prop("hidden", false);
+            m.fadeIn(1000);
         }
     </script>
 {% endblock %}

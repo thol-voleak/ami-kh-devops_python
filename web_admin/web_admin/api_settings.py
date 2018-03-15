@@ -271,6 +271,7 @@ GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs
 ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories'
 GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/categories'
 EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{category_id}'
+DELETE_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{category_id}'
 
 # Product
 GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'

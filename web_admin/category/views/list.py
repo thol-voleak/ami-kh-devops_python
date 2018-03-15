@@ -44,7 +44,10 @@ class CategoryList(TemplateView, GetHeaderMixin):
 
         ## Get all list category and list product for each category 
         if list_category:
-            for category_unit in list_category:
+            for category_unit in list_category[::]:
+                if category_unit['is_deleted']:
+                    list_category.remove(category_unit)
+                    continue
                 product_list = []
                 for product_unit in all_list_product:
                     if all_list_product: 
