@@ -85,7 +85,7 @@
                     <div style="position: relative;">
                         <div class="row">
                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
-                            <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
+                            <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
                             <a id="category-{{category.id}}" onclick="getData({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
@@ -98,7 +98,7 @@
                         </div>
                         </div>
                     </div>
-                    <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse in collapse-list" style="margin-left: 20px;">
+                    <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse collapse-list" style="margin-left: 20px;">
                         {% for product in  category.product %}
                         <span>{{product.name}}</span>
                         {%endfor%}
@@ -130,7 +130,7 @@
                       </h4>
                     </div>
                     <div id="btn_information_expand" class="panel-collapse collapse in">
-                      <div class="panel-body">
+                        <div class="panel-body">
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
                                 <div class="col-sm-5">
@@ -163,7 +163,7 @@
                                     </div>
                                 </div>
                             </div>
-                      </div>
+                        </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
@@ -359,15 +359,15 @@
             if (argument== 'Collapse'){
                 var collapse_button = document.getElementById('btn_collapse_all')
                 var expand_button = document.getElementById('btn_expand_all')
-                expand_button.classList.remove("bold");
-                collapse_button.classList.add("bold");
+                expand_button.classList.add("bold");
+                collapse_button.classList.remove("bold");
 
                 closeAllPanels(accordionId);
             }else {
                 var collapse_button = document.getElementById('btn_collapse_all')
                 var expand_button = document.getElementById('btn_expand_all')
-                expand_button.classList.add("bold");
-                collapse_button.classList.remove("bold");
+                expand_button.classList.remove("bold");
+                collapse_button.classList.add("bold");
 
                 openAllPanels(accordionId);
             } 
