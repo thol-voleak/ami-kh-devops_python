@@ -93,7 +93,7 @@
                                     <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
                                 </a>
                                 <button id="btn_category_delete" onclick="deleteCategory(this)"
-                                        data-category-id="{{ category.id }}"  data-product-count="{{ category.product|length }}" data-url="{% url 'category:category_delete' category.id %}"
+                                        data-category-id="{{ category.id }}" data-url="{% url 'category:category_delete' category.id %}"
                                         class="btn btn-outline mb5 btn-xs btn-danger ">Delete</button>
                         </div>
                         </div>
@@ -294,11 +294,6 @@
         }
 
         function deleteCategory(e) {
-            if (e.getAttribute('data-product-count') !== '0') {
-                showErrorMessage('Can delete if all products are empty under the category');
-                return
-            }
-
             swal({
                     title: "Are you sure you want to delete selected item?",
                     type: "warning",
