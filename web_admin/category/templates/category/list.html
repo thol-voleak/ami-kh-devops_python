@@ -86,7 +86,7 @@
                         <div class="row">
                             <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
                             <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
-                            <a id="category-{{category.id}}" onclick="showAction({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</span></a>
+                            <a id="category-{{category.id}}" onclick="getData({{category.id}})"><span style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</span></a>
                         </div>
                         <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
                                 <a href="{% url 'category:category_edit' category.id %}">
@@ -186,7 +186,7 @@
                                   <th scope="col" class="header-background">Product Status</th>
                                 </tr>
                               </thead>
-                              <tbody>
+                              <tbody id='table-body'>
                                 {%for i in products%}
                                 <tr>
                                   <th scope="row">{{ i.id }}</th>
@@ -219,10 +219,115 @@
 {% block body_js %}
 {{ block.super }}
     <script>
+
+            function ChangeActionInfor(){
+            var infor_button  = document.getElementById('btn_information_expand')
+            // var product_button  = document.getElementById('collapse2')
+            if ( infor_button.classList.contains('in') ){
+                $("#icon-infor").removeClass("fa-angle-up");
+                $("#icon-infor").addClass("fa-angle-down");
+            }
+            else{
+                $("#icon-infor").removeClass("fa-angle-down");
+                $("#icon-infor").addClass("fa-angle-up");
+            }
+        }
+
+        function ChangeActionProduct(){
+            // var infor_button  = document.getElementById('collapse1')
+            var product_button  = document.getElementById('btn_product_expand')
+            if ( product_button.classList.contains('in') ){
+                $("#icon-product").removeClass("fa-angle-up");
+                $("#icon-product").addClass("fa-angle-down");
+            }
+            else{
+                $("#icon-product").removeClass("fa-angle-down");
+                $("#icon-product").addClass("fa-angle-up");
+            }
+        }
+        var renderTableBody = function(product) {
+            var toggle_column = '<td>'
+                                        +'<label class="switch switch-sm">'
+                                        +'<input type="checkbox" onchange="changeCategoryStatus(this)"'
+                                               +'name="category_status"'
+                                               +'id="tog_product_status">'
+                                        +'<span class="slider round">'
+                                            +'<i class="handle"></i>'
+                                        +'</span>'
+                                        +'</label>'
+                                    +'</td>';
+            if(product.is_active) {
+                toggle_column = '<td>'
+                    +'<label class="switch switch-sm">'
+                    +'<input type="checkbox" onchange="changeCategoryStatus(this)"'
+                           +'name="category_status" checked'
+                           +'id="tog_product_status">'
+                    +'<span class="slider round">'
+                        +'<i class="handle"></i>'
+                    +'</span>'
+                    +'</label>'
+                +'</td>'
+            }
+            var errorImage = "this.src='{% static 'img/no-image.png' %}'";
+            return '<th scope="row">' + product.id + '</th>'
+                                  +'<td>' + product.name + '</td>'
+                                  +'<td>' + product.description + '</td>'
+                                  +'<td><div class="image-table"><img id="img_Image" onerror="' + errorImage + '" src="' + product.image_url + '" height="75" width="75"></div></td>'
+                                  + toggle_column;
+        };
+
         $('#action-category-{{category_detail.id}}').show();
-        var showAction = function(category_id) {
+        var getData = function(category_id) {
             $('.action-area').hide();
             $('#action-category-' + category_id).show();
+            var url = '/admin-portal/category/get_category_data/'+ category_id+'/';
+            console.log(url)
+            console.log('Start get category data')
+            console.log(category_id)
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'categoryId': category_id},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                if (response.status == 1) {
+                    // Logout
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                    location.reload();
+                } else if (response.status == 2) {
+                    // success
+                    console.log(response)
+                    var category_detail = response.category_detail.categories[0];
+                    var product_list = response.product_list.products;
+                    document.getElementById('txt_category_id').value = category_detail.id;
+                    document.getElementById('txt_category_name').value = category_detail.name;
+                    document.getElementById('txt_category_description').value = category_detail.description;
+                    document.getElementById('txt_category_image_url').value = category_detail.image_url;
+                    document.getElementById('category-'+ category_detail.id).textContent = category_detail.name +'('+product_list.length + ')';
+                    if (category_detail.is_active){
+                        document.getElementById('tog_status').checked = true;
+                    } else{
+                        document.getElementById('tog_status').checked = false;
+                    }
+                    var table_product = document.getElementById('table-body');
+                    table_product.innerHTML = '';                    
+                    for(var i = 0; i < product_list.length; i++) {
+                        var rowHTML = renderTableBody(product_list[i]);
+                        var rowElm = document.createElement('tr');
+                        rowElm.innerHTML = rowHTML;
+                        table_product.appendChild(rowElm)
+                    }
+                } else {
+                    // Failed
+                }
+                },
+                error: function (msg) {
+                console.log('Error to get category data' + category_id);
+                showErrorMessage(JSON.stringify(msg));
+                }
+            });
         };
 
         $('.collapse-list').on('hide.bs.collapse', function () {
@@ -266,31 +371,6 @@
 
                 openAllPanels(accordionId);
             } 
-        }
-        function ChangeActionInfor(){
-            var infor_button  = document.getElementById('btn_information_expand')
-            // var product_button  = document.getElementById('collapse2')
-            if ( infor_button.classList.contains('in') ){
-                $("#icon-infor").removeClass("fa-angle-up");
-                $("#icon-infor").addClass("fa-angle-down");
-            }
-            else{
-                $("#icon-infor").removeClass("fa-angle-down");
-                $("#icon-infor").addClass("fa-angle-up");
-            }
-        }
-
-        function ChangeActionProduct(){
-            // var infor_button  = document.getElementById('collapse1')
-            var product_button  = document.getElementById('btn_product_expand')
-            if ( product_button.classList.contains('in') ){
-                $("#icon-product").removeClass("fa-angle-up");
-                $("#icon-product").addClass("fa-angle-down");
-            }
-            else{
-                $("#icon-product").removeClass("fa-angle-down");
-                $("#icon-product").addClass("fa-angle-up");
-            }
         }
 
         function deleteCategory(e) {

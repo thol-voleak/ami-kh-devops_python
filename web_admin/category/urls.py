@@ -5,6 +5,7 @@ from .views.edit_category import EditCategory
 from .views.delete_category import delete
 from .views.list import CategoryList
 from .views.update_product_status import UpdateProductStatusOfCategory
+from .views.category_data import CategoryData
 
 app_name = 'category'
 
@@ -15,4 +16,5 @@ urlpatterns = [
     url(r'^product/(?P<categoryId>[0-9A-Za-z]+)/status/update$',
         login_required(UpdateProductStatusOfCategory.as_view(), login_url='authentications:login'), name="update_product_status_in_category"),
     url(r'^delete/(?P<categoryId>[0-9A-Za-z]+)/$', login_required(delete, login_url='authentications:login'), name="category_delete"),
+    url(r'^get_category_data/(?P<categoryId>[0-9A-Za-z]+)/$', login_required(CategoryData.as_view(), login_url='authentications:login'), name="get_category_data"),
 ]
