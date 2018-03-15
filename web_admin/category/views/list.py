@@ -46,23 +46,22 @@ class CategoryList(TemplateView, GetHeaderMixin):
                 category['product_count'] = len(category['product'])
             context['list_category'] = list_category
         #### TEST DATA ####
-        #     print(list_category[0])
-        # list_category = [{'id': 168, 'name': 'TC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
-        #                 {'id': 169, 'name': 'TC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0}]
+        # list_category = [{'id': 309, 'name': 'TC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpevTC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
+        #                 {'id': 22, 'name': 'TC_EQP_04387_ulzhrndpev', 'description': 'description TC_EQP_04387_ulzhrndpev', 'image_url': 'http://fooimage/TC_EQP_04387_ulzhrndpev', 'is_active': True, 'is_deleted': True, 'created_timestamp': '2018-03-14T07:18:36Z', 'last_updated_timestamp': '2018-03-14T07:18:36Z', 'product': [], 'product_count': 0},
+        #                 ]
         # context['list_category'] = list_category
         ############################################################
+        if categories[0].get('categories'):
+            default_category = categories[0].get('categories')[0]
+            category_id = default_category['id']
+            if category_id: 
+                category_detail = self.get_category_detail(category_id)
+                products_default = self.get_products(category_id)
 
-        default_category = categories[0].get('categories')[0]
-        category_id = default_category['id']
-
-        category_detail = self.get_category_detail(category_id)
-        products_default = self.get_products(category_id)
-        
-
-        context.update({
-            'category_detail': category_detail[0]['categories'][0],
-            'products': products_default[0].get('products'),
-        })
+                context.update({
+                    'category_detail': category_detail[0]['categories'][0],
+                    'products': products_default[0].get('products'),
+                })
         self.logger.info('========== Finish render category page ==========')
         return render(request, self.template_name, context)
 
