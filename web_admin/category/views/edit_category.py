@@ -118,7 +118,7 @@ class EditCategory(TemplateView, GetHeaderMixin):
                                                                         loggers=self.logger,
                                                                         params=body,
                                                                         timeout=settings.GLOBAL_TIMEOUT)
-        if data.get('categories'):
+        if data and data.get('categories'):
             data = data.get('categories')[0]
         else:
             data = {}
@@ -140,8 +140,10 @@ class EditCategory(TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            params=body,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-
-        data = data.get('products') or {}
+        if data and data.get('products'):
+            data = data.get('products')
+        else:
+            data = {}
         API_Logger.post_logging(loggers=self.logger, params=body, response=data,
                                 status_code=status_code, is_getting_list=True)
 
