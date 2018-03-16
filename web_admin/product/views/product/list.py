@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
-    group_required = "CAN_SEARCH_CUSTOMER"
+    group_required = "CAN_MANAGE_PRODUCT"
     login_url = 'web:permission_denied'
     raise_exception = False
 
@@ -35,6 +35,12 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        permissions = {}
+        permissions['CAN_ADD_PRODUCT'] = self.check_membership(["CAN_ADD_PRODUCT"])
+        permissions['CAN_EDIT_PRODUCT'] = self.check_membership(["CAN_EDIT_PRODUCT"])
+        permissions['CAN_DELETE_PRODUCT'] = self.check_membership(["CAN_DELETE_PRODUCT"])
+        permissions['CAN_VIEW_PRODUCT'] = self.check_membership(["CAN_VIEW_PRODUCT"])
+
         params = {}
         products = {}
         is_success = False
@@ -107,6 +113,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
 
         context['data'] = products
+        context['permissions'] = permissions
             
         self.logger.info('========== Finished searching products ==========')
         return render(request, self.template_name, context)

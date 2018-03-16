@@ -14,11 +14,12 @@ from web_admin.api_settings import     GET_PRODUCT_DETAIL, GET_CATEGORIES, SERVI
 logger = logging.getLogger(__name__)
 
 
-class ProductDetail(TemplateView, GetHeaderMixin): # GroupRequiredMixin
+class ProductDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "product/detail.html"
-    #group_required = "CAN_VIEW_VOUCHER_DETAILS"
+    group_required = "CAN_VIEW_PRODUCT"
     login_url = 'web:permission_denied'
+    raise_exception = False
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -26,10 +27,10 @@ class ProductDetail(TemplateView, GetHeaderMixin): # GroupRequiredMixin
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(ProductDetail, self).dispatch(request, *args, **kwargs)
 
-    # def check_membership(self, permission):
-    #     self.logger.info(
-    #         "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-    #     return check_permissions_by_user(self.request.user, permission[0])
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start getting product details ==========')

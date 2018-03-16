@@ -104,8 +104,7 @@
                                   data-target="#collapse-{{ category.id }}"
                                   id="btn_category_expand_{{ category.id }}"></span>
                             <a id="category-{{ category.id }}" onclick="getData({{ category.id }})"
-                               style="margin-left: 20px;" class="bold">{{ category.name }}
-                                ({{ category.product |length }})</a>
+                               style="margin-left: 20px;" class="bold">{{ category.name }} ({{ category.product |length }})</a>
                         </div>
                         <div class="col-sm-4 action-area" id="action-category-{{ category.id }}" hidden>
                             <a href="{% url 'category:category_edit' category.id %}">
@@ -123,7 +122,7 @@
                 <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse collapse-list"
                      style="margin-left: 20px;">
                     {% for product in  category.product %}
-                        <span>{{ product.name }}</span>
+                        <div>{{ product.name }}</div>
                     {% endfor %}
                 </div>
             {% endfor %}
