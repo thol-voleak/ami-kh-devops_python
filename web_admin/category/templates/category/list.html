@@ -86,11 +86,11 @@
                     {% for category in list_category %}
                     <div style="position: relative;">
                         <div class="row">
-                            <div class="col-sm-7" style="word-wrap: break-word;margin-bottom: 10px;">
+                            <div class="col-sm-8" style="word-wrap: break-word;margin-bottom: 10px;">
                             <span style="cursor: pointer; position: absolute; top: 3px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ category.id }}" id="btn_category_expand_{{ category.id }}"></span>
                             <a id="category-{{category.id}}" onclick="getData({{category.id}})" style="margin-left: 20px;" class="bold">{{category.name}} ({{category.product |length }})</a>
                         </div>
-                        <div class="col-sm-5 action-area" id="action-category-{{category.id}}" hidden>
+                        <div class="col-sm-4 action-area" id="action-category-{{category.id}}" hidden>
                                 <a href="{% url 'category:category_edit' category.id %}">
                                     <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-info ">Edit</button>
                                 </a>
@@ -303,10 +303,10 @@
                     console.log(response)
                     var category_detail = response.category_detail.categories[0];
                     var product_list = response.product_list.products;
-                    document.getElementById('txt_category_id').value = category_detail.id;
-                    document.getElementById('txt_category_name').value = category_detail.name;
-                    document.getElementById('txt_category_description').value = category_detail.description;
-                    document.getElementById('txt_category_image_url').value = category_detail.image_url;
+                    document.getElementById('txt_category_id').setAttribute('value', category_detail.id);
+                    document.getElementById('txt_category_name').setAttribute('value', category_detail.name);
+                    document.getElementById('txt_category_description').setAttribute('value', category_detail.description);
+                    document.getElementById('txt_category_image_url').setAttribute('value', category_detail.image_url);
                     document.getElementById('category-'+ category_detail.id).textContent = category_detail.name + ' '+'('+product_list.length + ')';
                     if (category_detail.is_active){
                         document.getElementById('tog_status').checked = true;
