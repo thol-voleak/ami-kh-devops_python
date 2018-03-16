@@ -134,25 +134,25 @@
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category ID</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.id | default_if_none:'' }}" id="txt_category_id" disabled />
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.id | default_if_none:'' }}" id="txt_category_id" readonly />
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Name</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.name | default_if_none:'' }}" id="txt_category_name" disabled/>
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.name | default_if_none:'' }}" id="txt_category_name" readonly/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Description</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.description | default_if_none:'' }}" id="txt_category_description" disabled/>
+                                    <input type="text" class="form-control input-rounded" name="provider_name" value="{{ category_detail.description | default_if_none:'' }}" id="txt_category_description" readonly/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
                                 <label class="col-sm-3">Category Image</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url" disabled/>
+                                    <input type="text" class="form-control input-rounded" name="category_image" value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url" readonly/>
                                 </div>
                             </div>
                             <div class="col-sm-12 form-group">
