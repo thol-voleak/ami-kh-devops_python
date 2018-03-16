@@ -102,7 +102,7 @@
                         <div class="col-sm-1"></div>
                         <label class="col-sm-2 control-label">Category Image</label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control input-rounded" name="category_image" value="{{ category.image_url | default_if_none:'' }}" id="txt_category_image_url" onblur="updateImage(this.value)"/>
+                            <input type="text" class="form-control input-rounded" name="category_image" value="{{ category.image_url | default_if_none:'' }}" id="txt_category_image_url"/>
                         </div>
                     </div>
                     <div class="col-sm-12 form-group">
@@ -189,10 +189,10 @@
             $("#alert-client").show();
             $("html, body").animate({scrollTop: 0}, "slow");
         }
-        var image_category_elm = document.getElementById('img_Image');
-        var updateImage = function(url) {
-            image_category_elm.src = url;
-        };
+          $("#txt_category_image_url").on("keyup paste change", function () {
+            var url = $(this).val();
+            $("#img_Image").attr("src", url);
+        });
         var changeProductStatus = function(product_id, elem) {
             var updatedStatus;
             if ($(elem).is(':checked')){
