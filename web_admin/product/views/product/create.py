@@ -5,14 +5,16 @@ from web_admin import setup_logger
 from web_admin import api_settings, RestFulClient
 from django.contrib import messages
 from django.shortcuts import render, redirect
-
+from braces.views import GroupRequiredMixin
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
+class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "product/create.html"
+    group_required = "CAN_ADD_PRODUCT"
+    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
 
@@ -108,3 +110,8 @@ class CreateView(TemplateView, RESTfulMethods):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
         return self._headers
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])

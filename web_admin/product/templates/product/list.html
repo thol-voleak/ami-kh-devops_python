@@ -6,11 +6,13 @@
     <div class="panel-heading">
         <h3>Products</h3>
     </div>
+    {% if permissions.CAN_ADD_PRODUCT %}
     <div class="text-right mb15">
         <a href="{% url 'product:product_create' %}" id="btn_add" class="btn btn-primary btn-sm">
             <i class="fa fa-plus"></i> Add Product
         </a>
     </div>
+    {% endif %}
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'product:products' %}">
             <div class="form-group">
@@ -112,14 +114,12 @@
                                         {%endif%}
                                     </label> </td>
                                 <td>
-                                    <!-- {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
-                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
-                                    {% endif %}
-                                    {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
-                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Edit</button>
-                                    {% endif %} -->
+                                    {% if permissions.CAN_VIEW_PRODUCT %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'product:product_detail' i.id %}';">Detail</button>
+                                    {%endif%}
+                                    {% if permissions.CAN_EDIT_PRODUCT %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary" onclick="location.href='{% url 'product:product_edit' i.id %}'">Edit</button>
+                                    {%endif%}
                                 </td>
                             </tr>
                         <!-- </div> -->
