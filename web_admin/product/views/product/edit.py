@@ -11,31 +11,33 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
-    template_name = "product/create.html"
+class EditView(TemplateView, RESTfulMethods):
+    template_name = "product/edit.html"
     raise_exception = False
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(CreateView, self).dispatch(request, *args, **kwargs)
+        return super(EditView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = {}
-        self.set_ui_list(context)
+        product_id = self.kwargs['product_id']
 
-        # Set default data
-        product = {
-            "is_active": False,
-            "is_allow_price_range": True,
-            "denomination": ['']
-        }
-        context['product'] = product
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.GET_PRODUCT_DETAIL, headers=self._get_headers(), loggers=self.logger, params={"id": product_id, 'paging': False}
+        )
+
+        context = {"product": data['products'][0]}
+
+        context['cbo_agent_types'] = self.get_agent_type(product_id)
+
+        self.set_ui_list(context)
 
         return context
 
     def post(self, request, *args, **kwargs):
+        product_id = self.kwargs['product_id']
         is_active = request.POST.get('is_active') == 'on'
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -54,6 +56,7 @@ class CreateView(TemplateView, RESTfulMethods):
         denomination = request.POST.getlist('denomination')
 
         params = {
+            "id": product_id,
             "is_active": is_active,
             "name": name,
             "description": description,
@@ -66,30 +69,21 @@ class CreateView(TemplateView, RESTfulMethods):
             "denomination": denomination
         }
 
-        is_success, status_code, status_message, data = RestFulClient.post(
-            url=api_settings.ADD_PRODUCT, headers=self._get_headers(), loggers=self.logger, params=params
+        is_success, status_code, status_message, data = RestFulClient.put(
+            url=api_settings.EDIT_PRODUCT.format(product_id=product_id), headers=self._get_headers(), loggers=self.logger, params=params
         )
 
         if not is_success:
             messages.error(request, status_message)
-            context = {'product': params}
-            context['cbo_agent_types'] = cbo_agent_types
-            self.set_ui_list(context)
-            return render(request, self.template_name, context)
+        else:
+            self.delete_agent_types(product_id)
+            self.mapping_product_agent_types(product_id, cbo_agent_types)
+            messages.success(request, "Edited Successfully")
 
-        product_id = data['id']
-        for agent_type_id in cbo_agent_types:
-            body = {
-                "product_id": product_id,
-                "agent_type_id": agent_type_id
-            }
-
-            is_success, status_code, status_message, data = RestFulClient.post(
-                url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
-            )
-
-        messages.success(request, "Added Successfully")
-        return redirect('product:product_create')
+        context = {'product': params}
+        context['cbo_agent_types'] = cbo_agent_types
+        self.set_ui_list(context)
+        return render(request, self.template_name, context)
 
     def set_ui_list(self, context):
         # Get list category
@@ -103,6 +97,45 @@ class CreateView(TemplateView, RESTfulMethods):
         # Get list agent type
         data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL, logger=logger)
         context['agent_types'] = data
+
+    def get_agent_type(self, product_id):
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger,
+            params={'product_id': product_id}
+        )
+
+        relations = data['relations']
+        agent_types = []
+        for item in relations:
+            agent_type_id = item['agent_type_id']
+            agent_types.append(agent_type_id)
+
+        return agent_types
+
+    def delete_agent_types(self, product_id):
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger,
+            params={'product_id': product_id}
+        )
+
+        relations = data['relations']
+        for item in relations:
+            product_agent_type_relation_id = item['id']
+            RestFulClient.delete(
+                url=api_settings.DELETE_PRODUCT_AGENT_TYPE_RELATION.format(product_agent_type_relation_id=product_agent_type_relation_id), headers=self._get_headers(), loggers=self.logger,
+                params={}
+            )
+
+    def mapping_product_agent_types(self, product_id, agent_types):
+        for agent_type_id in agent_types:
+            body = {
+                "product_id": product_id,
+                "agent_type_id": agent_type_id
+            }
+
+            RestFulClient.post(
+                url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
+            )
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
