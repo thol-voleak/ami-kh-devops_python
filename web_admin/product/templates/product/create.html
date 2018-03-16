@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Enable Product</label>
                         <div class="col-sm-7">
-                            <label class="switch switch-sm">
+                            <label class="switch switch-sm" id="lbl_toggle_is_active">
                                 <input type="checkbox" name="is_active" {% if product.is_active %}checked{% endif %}/>
                                 <span class="slider round"><i class="handle"></i></span>
                             </label>
@@ -49,35 +49,35 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Product Name *</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" required name="name" value="{{ product.name }}">
+                            <input type="text" class="form-control input-rounded" required id="txt_name" name="name" value="{{ product.name }}">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Product Description</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="description" value="{{ product.description }}">
+                            <input type="text" class="form-control input-rounded" id="txt_description" name="description" value="{{ product.description }}">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Product Image</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" id="txt-product-image" name="image_url" value="{{ product.image_url }}">
+                            <input type="text" class="form-control input-rounded" id="txt_image_url" name="image_url" value="{{ product.image_url }}">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
                         <div class="col-sm-7">
-                            <img src="{{ product.image_url }}" id="img-product-image" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
+                            <img src="{{ product.image_url }}" id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Category Name</label>
                         <div class="col-sm-7">
-                            <select class="form-control" name="category_id">
+                            <select class="form-control" id="ddl_category_id" name="category_id">
                                 <option value="">-</option>
                                 {% for item in categories %}
                                     <option value="{{ item.id }}" {% if item.id == product.category_id %}selected{% endif %}>{{ item.name }}</option>
@@ -89,7 +89,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Payment Service</label>
                         <div class="col-sm-7">
-                            <select class="form-control" name="payment_service_id">
+                            <select class="form-control" id="ddl_payment_service_id" name="payment_service_id">
                                 <option value="">-</option>
                                 {% for item in services %}
                                     <option value="{{ item.service_id }}" {% if item.service_id == product.payment_service_id %}selected{% endif %}>{{ item.service_name }}</option>
@@ -101,7 +101,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Apply Agent Type</label>
                         <div class="col-sm-7">
-                            <select data-placeholder="-" multiple class="chosen" name="cbo_agent_types">
+                            <select data-placeholder="-" multiple class="chosen" id="ddl_cbo_agent_types" name="cbo_agent_types">
                                 {% for item in agent_types %}
                                     <option value="{{ item.id }}" {% if item.id in cbo_agent_types %}selected{% endif %}>{{ item.name }}</option>
                                 {% endfor %}
@@ -112,7 +112,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Allow Price Range</label>
                         <div class="col-sm-7">
-                            <label class="switch switch-sm">
+                            <label class="switch switch-sm" id="lbl_toggle_price_range">
                                 <input type="checkbox" id="toggle-price-range" name="is_allow_price_range" {% if product.is_allow_price_range %}checked{% endif %}/>
                                 <span class="slider round"><i class="handle"></i></span>
                             </label>
@@ -122,14 +122,14 @@
                     <div class="form-group price-range">
                         <label class="col-sm-3 control-label">Maximum Price</label>
                         <div class="col-sm-7">
-                            <input type="number" class="form-control input-rounded" name="max_price" value="{{ product.max_price | default_if_none:'' }}">
+                            <input type="number" class="form-control input-rounded" id="txt_max_price" name="max_price" value="{{ product.max_price | default_if_none:'' }}">
                         </div>
                     </div>
 
                     <div class="form-group price-range">
                         <label class="col-sm-3 control-label">Minimum Price</label>
                         <div class="col-sm-7">
-                            <input type="number" class="form-control input-rounded" name="min_price" value="{{ product.min_price | default_if_none:'' }}">
+                            <input type="number" class="form-control input-rounded" id="txt_min_price" name="min_price" value="{{ product.min_price | default_if_none:'' }}">
                         </div>
                     </div>
 
@@ -150,15 +150,15 @@
                         <div class="col-sm-7">
                         </div>
                         <div class="col-sm-2">
-                            <i class="fa fa-plus add-denomination"></i>
+                            <i id="btn_denomination_add" class="fa fa-plus add-denomination"></i>
                         </div>
                     </div>
 
                     <div class="pull-right">
-                        <a href="">
-                            <input class="btn text-left mb15" type="button" value="Cancel"/>
+                        <a href="{% url 'product:products' %}">
+                            <input class="btn text-left mb15" type="button" id="btn_cancel" value="Cancel"/>
                          </a>
-                        <input class="btn btn-success text-left mb15" type="submit" value="Add"/>
+                        <input id="btn_add" class="btn btn-success text-left mb15" type="submit" value="Add"/>
                     </div>
                 </form>
             </div>
@@ -211,9 +211,9 @@
             $(".denomination").last().find("input").val("");
         });
 
-        $("#txt-product-image").on("keyup paste change", function () {
+        $("#txt_image_url").on("keyup paste change", function () {
             var url = $(this).val();
-            $("#img-product-image").attr("src", url);
+            $("#img_product_image").attr("src", url);
         });
 
         $("#toggle-price-range").change(function () {
