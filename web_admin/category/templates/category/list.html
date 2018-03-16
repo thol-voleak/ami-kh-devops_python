@@ -19,7 +19,6 @@
             text-align: center;
             height: 75px;
             width: 75px;
-            border: 1px solid #e0dbdb;
             line-height: 75px;
             position: relative;
         }
@@ -310,6 +309,7 @@
                     document.getElementById('txt_category_name').setAttribute('value', category_detail.name);
                     document.getElementById('txt_category_description').setAttribute('value', category_detail.description);
                     document.getElementById('txt_category_image_url').setAttribute('value', category_detail.image_url);
+                    document.getElementById('img_Image').setAttribute('src', category_detail.image_url);
                     document.getElementById('category-'+ category_detail.id).textContent = category_detail.name + ' '+'('+product_list.length + ')';
                     if (category_detail.is_active){
                         document.getElementById('tog_status').checked = true;
