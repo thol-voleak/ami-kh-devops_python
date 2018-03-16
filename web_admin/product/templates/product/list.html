@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Product Status</label>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <select class="form-control" id="ddl_product_status" name="product_status">
                             <option value='' {%if product_status == None%}selected="selected"{%endif%}>All</option>
                             <option value='True'{%if product_status == True%}selected="selected"{%endif%}>True</option>
@@ -55,7 +55,7 @@
                     </select>
                 </div>
                 <label class="col-sm-2 control-label">Category Status</label>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <select class="form-control" id="ddl_category_status" name="category_status">
                             <option value='' {%if category_status == None%}selected="selected"{%endif%}>-</option>
                             <option value='True'{%if category_status == True%}selected="selected"{%endif%}>True</option>
@@ -63,11 +63,9 @@
                     </select>
                 </div>
             </div>
-            
-
             <div class="form-group">
                 <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                <div class="col-xs-1">
+                <div class="col-xs-1 pull-right">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
                 </div>
@@ -97,7 +95,22 @@
                                 <td>{{ i.name|default_if_none:'' }}</td>
                                 <td>{{ i.description|default_if_none:'' }}</td>
                                 <td><img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></td>
-                                <td>{{ i.is_active|yesno:"Used,Unused,''"  }}</td>
+                                <td><label class="switch switch-sm">
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               id="tog_status" checked disabled>
+                                        <span class="slider round" >
+                                            <i class="handle" style="cursor: not-allowed;"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               style="cursor: not-allowed;"
+                                               id="tog_status" disabled>
+                                        <span class="slider round">
+                                            <i class="handle" style="cursor: not-allowed;"></i>
+                                        </span>
+                                        {%endif%}
+                                    </label> </td>
                                 <td>
                                     <!-- {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
@@ -106,7 +119,7 @@
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Edit</button>
                                     {% endif %} -->
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'product:product_detail' i.id %}';">Detail</button>
-                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-info">Edit</button>
+                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</button>
                                 </td>
                             </tr>
                         <!-- </div> -->
