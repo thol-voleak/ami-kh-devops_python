@@ -191,7 +191,7 @@
                               <tbody id='table-body'>
                                 {%for i in products%}
                                 <tr>
-                                  <th scope="row">{{ i.id }}</th>
+                                  <td scope="row">{{ i.id }}</td>
                                   <td>{{ i.name }}</td>
                                   <td>{{ i.description }}</td>
                                   <td><div class="image-table"><img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
@@ -271,7 +271,7 @@
                 +'</td>'
             }
             var errorImage = "this.src='{% static 'img/no-image.png' %}'";
-            return '<th scope="row">' + product.id + '</th>'
+            return '<td scope="row">' + product.id + '</td>'
                                   +'<td>' + product.name + '</td>'
                                   +'<td>' + product.description + '</td>'
                                   +'<td><div class="image-table"><img id="img_Image" onerror="' + errorImage + '" src="' + product.image_url + '" height="75" width="75"></div></td>'
@@ -307,7 +307,7 @@
                     document.getElementById('txt_category_name').value = category_detail.name;
                     document.getElementById('txt_category_description').value = category_detail.description;
                     document.getElementById('txt_category_image_url').value = category_detail.image_url;
-                    document.getElementById('category-'+ category_detail.id).textContent = category_detail.name +'('+product_list.length + ')';
+                    document.getElementById('category-'+ category_detail.id).textContent = category_detail.name + ' '+'('+product_list.length + ')';
                     if (category_detail.is_active){
                         document.getElementById('tog_status').checked = true;
                     } else{

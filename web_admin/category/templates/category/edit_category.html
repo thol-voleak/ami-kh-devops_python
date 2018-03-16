@@ -132,7 +132,7 @@
                           <tbody>
                             {%for i in products%}
                             <tr>
-                              <th scope="row">{{ i.id }}</th>
+                              <td scope="row">{{ i.id }}</td>
                               <td>{{ i.name }}</td>
                               <td>{{ i.description }}</td>
                               <td><div class="image-table"><img id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
