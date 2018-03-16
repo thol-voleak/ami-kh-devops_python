@@ -443,6 +443,7 @@
                                     var id = e.getAttribute('data-category-id');
                                     $('#category-' + id).parent().parent().remove();
                                     showSuccessMessage('Deleted Successfully');
+                                    $('a[id*=category-]:visible')[0].click();
                                 } else {
                                     // Failed
                                     showErrorMessage(response.msg);
