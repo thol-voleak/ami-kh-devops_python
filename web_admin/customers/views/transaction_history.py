@@ -12,6 +12,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SOF_TYPES_URL
 from web_admin.global_constants import UserType
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.api_settings import CASH_SOFS_URL
 
 import logging
 
@@ -42,8 +43,9 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start getting customer transaction history ==========')
         context = super(TransactionHistoryView, self).get_context_data(**kwargs)
         user_id = context['customerId']
+        user_type = UserType.CUSTOMER.value
         data = self._get_choices_types()
-
+        cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
         # Set first load default time for Context
         from_created_timestamp = datetime.now()
         to_created_timestamp = datetime.now()
@@ -60,6 +62,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'permissions': permissions,
             "user_id": user_id,
             "user_type_id": UserType.CUSTOMER.value,
+            'cash_sof_list': cash_sof_list,
             'from_created_timestamp': new_from_created_timestamp,
             'to_created_timestamp': new_to_created_timestamp
         }
@@ -72,3 +75,21 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
         return {'sof_types': data}
+
+    def _get_cash_sof_list(self, user_id, user_type):
+        self.logger.info('========== Start getting cash sof list ==========')
+        body = {}
+        body['user_id'] = int(user_id)
+        body['user_type'] = int(user_type)
+        success, status_code, status_message, data = RestFulClient.post(url=CASH_SOFS_URL, headers=self._get_headers(),
+                                                                        params=body, loggers=self.logger)
+        data = data or {}
+        API_Logger.post_logging(
+            loggers=self.logger,
+            params=body,
+            response=data.get('cash_sofs', []),
+            status_code=status_code,
+            is_getting_list=True
+        )
+        self.logger.info('========== Finish getting cash sof list ==========')
+        return data
