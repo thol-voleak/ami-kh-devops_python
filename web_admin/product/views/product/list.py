@@ -100,7 +100,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                     params=params)
             self.logger.info("Params: {} ".format(params))
         if is_success:
-            products = data['products']
+            products = [p for p in data['products'] if not p['is_deleted']]
             page = data['page']
             count = len(products)
             self.logger.info("Response_content_count:{}".format(count))

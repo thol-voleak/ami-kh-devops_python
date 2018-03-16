@@ -2,10 +2,25 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .open .dropdown-menu {
+        padding-left: 15px;
+        min-width: 121px;
+    }
+
+</style>
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading">
         <h3>Products</h3>
     </div>
+
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" hidden id="msg-product">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+
     {% if permissions.CAN_ADD_PRODUCT %}
     <div class="text-right mb15">
         <a href="{% url 'product:product_create' %}" id="btn_add" class="btn btn-primary btn-sm">
@@ -75,6 +90,17 @@
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
+        <div class="form-group">
+            <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Action
+                    <span class="caret"></span>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" onclick="deleteProduct()">Delete Product</a>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
                 <table id='tbl_product' class="table table-bordered table-striped mb0">
                         <thead>
@@ -91,8 +117,8 @@
                         <tbody>
                         {% for i in data %}
                             <!-- <div > -->
-                            <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
-                                <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
+                            <tr class="checkboxlist" id="product-{{ i.id|default_if_none:'' }}">
+                                <td><input type="checkbox" name="checkbox" class="select_to" id="chk_product_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}"/></td>
                                 <td>{{ i.id|default_if_none:'' }}</td>
                                 <td>{{ i.name|default_if_none:'' }}</td>
                                 <td>{{ i.description|default_if_none:'' }}</td>
@@ -137,4 +163,89 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+    $('#select-all').on('change', function() {
+        $('.checkboxlist input.select_to').prop('checked', this.checked);
+    });
+    $('.checkboxlist input.select_to').on('change', function () {
+        var allChecked = $('.checkboxlist input.select_to:checkbox:checked').length === $('.checkboxlist input.select_to').length;
+        $('#select-all').prop('checked', allChecked);
+    });
+
+    function deleteProduct(){
+        $("#msg-product").hide();
+        var arr = [];
+        var url = '/admin-portal/product/delete/';
+        $('input.select_to:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+        if(arr.length === 0) {
+            return;
+        }
+
+        swal({
+            title: "Are you sure you want to delete selected items?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#2ECC71",
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: true,
+            closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {"ids": arr},
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if (response.invalid_access_token) {
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/product/";
+                                window.location.replace(url);
+                                location.reload();
+                            }
+                            else {
+                                if (response.failed_count === 0) {
+                                    showSuccessMessage("Deleted Successfully");
+                                } else {
+                                    showErrorMessage(response.success_ids.length + " Successful Delete, " + response.failed_count + " Failed Delete");
+                                }
+
+                                for (i = 0; i < response.success_ids.length; i++) {
+                                    $('#product-' + response.success_ids[i]).remove();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        )
+    }
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg);
+        var m = $('#msg-product');
+        m.removeClass("alert-success");
+        m.addClass("alert-danger");
+        m.prop("hidden", false);
+        m.fadeIn(1000);
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg);
+        var m = $('#msg-product');
+        m.removeClass("alert-danger");
+        m.addClass("alert-success");
+        m.prop("hidden", false);
+        m.fadeIn(1000);
+    }
+
+</script>
 {% endblock %}
