@@ -39,7 +39,7 @@ class UpdateProductStatusOfCategory(TemplateView, GetHeaderMixin):
         product_detail = self.get_product_detail(product_id)
         logger.info('========== Finish getting product detail ==========')
         body = {
-            'is_active': True if product_status == 'true' else False,
+            'is_active': product_status,
             "name": product_detail['name'],
             "description": product_detail['description'],
             "image_url": product_detail['image_url'],

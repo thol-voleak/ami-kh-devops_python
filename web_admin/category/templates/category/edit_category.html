@@ -138,7 +138,7 @@
                               <td><div class="image-table"><img id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
                               <td>
                                     <label class="switch switch-sm">
-                                    <input type="checkbox" onchange="changeProductStatus({{ i.id }}, this, {{ i.tem_pro }})"
+                                    <input type="checkbox" onClick="changeProductStatus({{ i.id }}, this)"
                                            name="product_status" {% if i.is_active %}checked{% endif %}
                                            id="tog_product_enable">
                                     <span class="slider round">
@@ -193,7 +193,7 @@
         var updateImage = function(url) {
             image_category_elm.src = url;
         };
-        var changeProductStatus = function(product_id, elem, product) {
+        var changeProductStatus = function(product_id, elem) {
             var updatedStatus;
             if ($(elem).is(':checked')){
                 updatedStatus = true;
