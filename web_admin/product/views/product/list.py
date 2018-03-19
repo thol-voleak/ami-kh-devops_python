@@ -2,6 +2,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin import api_settings, setup_logger
 
 from django.views.generic.base import TemplateView
+from django.conf import settings
 from django.shortcuts import render
 from datetime import datetime , timedelta
 from braces.views import GroupRequiredMixin
@@ -9,6 +10,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.restful_client import RestFulClient
 from authentications.apps import InvalidAccessToken
+from web_admin.api_logger import API_Logger
 
 
 import logging
@@ -47,18 +49,20 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         status_code = ''
         url = api_settings.GET_PRODUCTS
         context = super(ListView, self).get_context_data(**kwargs)
-        #set default date
+        categories = self._list_categories()
+        if categories:
+            categories = categories['categories']
+        categories.insert(0, {'name':'All'})
+        context['categories'] = categories
         self.logger.info('========== Start searching Customer ==========')
         opening_page_index = request.GET.get('current_page_index')
         product_id = request.GET.get('product_id')
         category_id = request.GET.get('category_id')
+        print("category id is : {}".format(category_id))
         product_name = request.GET.get('product_name')
-        category_name = request.GET.get('category_name')
         product_status = request.GET.get('product_status')
-        category_status = request.GET.get('category_status')
         if product_id is None and category_id is None \
-           and product_name is None and category_name is None \
-           and product_status is None and category_status is None:
+           and product_name is None and product_status is None:
            products = {}
            context['search_count'] = 0
         else:
@@ -75,9 +79,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if product_name:
                 params['name'] = product_name
                 context['product_name'] = product_name
-            if category_name:
-                params['category_name'] = category_name
-                context['category_name'] = category_name
             if product_status and isinstance(product_status, str):
                 if product_status.lower() == "true":
                     product_status = True
@@ -85,13 +86,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     product_status = False
                 params['is_active'] = product_status
                 context['product_status'] = product_status
-            # if category_status and isinstance(category_status, str):
-            #     if category_status.lower() == "true":
-            #         category_status = True
-            #     else:
-            #         category_status = False
-            #     params['category_status'] = category_status
-            #     context['category_status'] = category_status
             self.logger.info("Params: {} ".format(params))
             is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= url,
@@ -117,3 +111,27 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             
         self.logger.info('========== Finished searching products ==========')
         return render(request, self.template_name, context)
+
+    def _list_categories(self):
+        self.logger.info('========== Start get category list ==========')
+        api_path = api_settings.GET_CATEGORIES
+
+        body = {
+            "paging": False
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get category list ==========')
+
+        if success:
+            return data
+        else:
+            return None
