@@ -221,6 +221,7 @@
                                 for (i = 0; i < response.success_ids.length; i++) {
                                     $('#product-' + response.success_ids[i]).remove();
                                 }
+                                $('#lbl_total').text($('#lbl_total').text() - response.success_ids.length);
                             }
                         }
                     });
