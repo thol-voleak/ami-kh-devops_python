@@ -147,7 +147,7 @@
                             <input type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
                         </div>
                         <div class="col-sm-2">
-                            <i class="fa fa-trash remove-denomination"></i>
+                            <input class="btn btn-outline btn-primary remove-denomination" type="button" value="Delete"/>
                         </div>
                     </div>
                     {% endfor %}
@@ -157,11 +157,11 @@
                         <div class="col-sm-7">
                         </div>
                         <div class="col-sm-2">
-                            <i id="btn_denomination_add" class="fa fa-plus add-denomination"></i>
+                            <input id="btn_denomination_add" class="btn btn-outline btn-primary add-denomination" style="width: 69px;" type="button" value="Add"/>
                         </div>
                     </div>
 
-                    <div class="pull-right">
+                    <div class="pull-right" style="margin-top: 15px;">
                         <a href="{% url 'product:products' %}">
                             <input class="btn text-left mb15" type="button" id="btn_cancel" value="Cancel"/>
                          </a>
@@ -179,12 +179,6 @@
 }
 .chosen-container-multi .chosen-choices {
     padding-left: 15px;
-}
-.form-group .fa-trash, .form-group .fa-plus {
-    font-size: 30px;
-    position: relative;
-    top: 2px;
-    cursor: pointer;
 }
 .denomination .remove-denomination {
     display: none;
@@ -215,7 +209,7 @@
             var template = $(".denomination").last().clone().wrap('<div>').parent().html();
             $(".denomination").last().after(template);
             $(".denomination").last().find("label").text("");
-            $(".denomination").last().find("input").val("");
+            $(".denomination").last().find("input.form-control").val("");
         });
 
         $("#txt_image_url").on("keyup paste change", function () {
