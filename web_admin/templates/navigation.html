@@ -122,15 +122,17 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_PRODUCT" or user.is_authenticated %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_CATEGORY" or request.user|has_permission_name:"CAN_MANAGE_PRODUCT"%}
             {% check_valid_url url_name 'product,category' as is_product_configuration_urls %}
             <li class="menu-accordion class={% if is_product_configuration_urls %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-sitemap"></i> <span>Product Configuration</span> </a>
                 <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_CATEGORY"%}
                     {% check_valid_url url_name 'category' as is_categories_url %}
                     <li class="class={% if is_categories_url %} active{% endif %}">
                         <a href="{% url 'category:categories' %}"> <span>Categories</span> </a>
                     </li>
+                    {% endif %}
                     {% if request.user|has_permission_name:"CAN_MANAGE_PRODUCT"%}
                     {% check_valid_url url_name 'product' as is_products_url %}
                     <li class="class={% if is_products_url %} active{% endif %}">

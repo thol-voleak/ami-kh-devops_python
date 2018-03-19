@@ -15,12 +15,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CategoryList(TemplateView, GetHeaderMixin):
+class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+
+    group_required = "CAN_MANAGE_CATEGORY"
+    login_url = 'web:permission_denied'
+    raise_exception = False
 
     template_name = "category/list.html"
     logger = logger
-    login_url = 'web:permission_denied'
-    raise_exception = False
 
     def check_membership(self, permission):
         self.logger.info(
