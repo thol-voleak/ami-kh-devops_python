@@ -65,7 +65,7 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post" action="">
+                <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'agents:agent_transaction_history' agent_id %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="col-sm-1 control-label">SOF Type</label>
@@ -90,36 +90,32 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <label class="col-sm-1 control-label">From</label>
-                        <div class="col-sm-2">
+                        <label class="col-xs-1 control-label">From</label>
+                        <div class="col-xs-2">
                             <input type="date" class="form-control input-rounded"
                                    name="from_created_timestamp"
                                    value="{{ from_created_timestamp|default_if_none:'' }}"
                                    id="dtp_from">
                         </div>
-                        <label class="col-sm-1 control-label">To</label>
-                        <div class="col-sm-2">
+                        <label class="col-xs-1 control-label">To</label>
+                        <div class="col-xs-2">
                             <input type="date" class="form-control input-rounded"
                                    name="to_created_timestamp"
                                    value="{{ to_created_timestamp|default_if_none:'' }}"
                                    id="dtp_to">
                         </div>
-                        <div class="pull-right">
-                            <div class="col-sm-6">
-                                <a href="#">
-                                    <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
-                                </a>
-
-                            </div>
-                            <div class="col-sm-2">
-                                <a href="#">
-                                    <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
-                                </a>
-                            </div>
+                        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                        <div class="col-xs-1">
+                            <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                         </div>
-
+                        <div class="col-xs-1">
+                            <a href="#">
+                                <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
+                            </a>
+                        </div>
+                        <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                        <label class="pull-right" >Total:&nbsp;</label>
                     </div>
-
                     <div class="form-group">
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped mb0" id="tbl_agent_transaction_history">
@@ -142,21 +138,24 @@
                                         <th id="action">Action</th>
                                     </tr>
                                 </thead>
-                                    <tbody>
+                                <tbody>
                                     {% for row in list %}
                                         <tr>
                                             <td>{{ row.order_id|default_if_none:'' }}</td>
-                                            <td>{{ row.order_status|default_if_none:'' }}</td>
-                                            <td>{{ row.external_id|default_if_none:'' }}</td>
-                                            <td>{{ row.command|default_if_none:'' }}</td>
+                                            <td>{{ row.order_status_name|default_if_none:'' }}</td>
+                                            <td>{{ row.ext_transaction_id|default_if_none:'' }}</td>
+                                            <td>{{ row.command_name|default_if_none:'' }}</td>
                                             <td>{{ row.order_detail_id|default_if_none:'' }}</td>
-                                            <td>{{ row.order_detail_status|default_if_none:'' }}</td>
-                                            <td>{{ row.sof_type|default_if_none:'' }}</td>
+                                            <td>{{ row.order_detail_status_name|default_if_none:'' }}</td>
+                                            <td>{{ row.sof_type_name|default_if_none:'' }}</td>
                                             <td>{{ row.sof_id|default_if_none:'' }}</td>
                                             <td>{{ row.service_name|default_if_none:'' }}</td>
                                             <td>{% if row.action_type == 'Debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
                                             <td>{% if row.action_type == 'Credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
-{#                                                {% if permissions.is_perm_view_transaction_history_detail %}#}
+                                            <td>{{ row.currency|default_if_none:'' }}</td>
+                                            <td>{{ row.post_balance|default_if_none:'' }}</td>
+                                            <td>{{ row.created_timestamp|default_if_none:'' }}</td>
+                                            {#                                                {% if permissions.is_perm_view_transaction_history_detail %}#}
 {#                                                    <td class="col-sm-1">#}
 {#                                                        <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'agent:agent_transaction_history_detail' row.order_id %}'">Detail</button>#}
 {#                                                    </td>#}
@@ -167,6 +166,8 @@
                             </table>
                         </div>
                     </div>
+                    {% include "pagination.html" %}
+
                 </form>
             </div>
         </div>
