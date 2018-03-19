@@ -33,14 +33,14 @@
             <div class="form-group">
                     <label class="col-sm-2 control-label">Product ID</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control input-rounded"
+                        <input type="number" class="form-control input-rounded"
                                name="product_id"
                                value="{{ product_id|default_if_none:'' }}"
                                id="txt_product_id">
                     </div>
                     <label class="col-sm-2 control-label">Category ID</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control input-rounded"
+                        <input type="number" class="form-control input-rounded"
                                name="category_id"
                                value="{{ category_id|default_if_none:'' }}"
                                id="txt_category_id">
@@ -59,7 +59,7 @@
                     <input type="text" class="form-control input-rounded"
                            name="category_name"
                            value="{{ category_name|default_if_none:'' }}"
-                           id="txt_approved_rejected_by">
+                           id="txt_category_name">
                 </div>
             </div>
             <div class="form-group">
