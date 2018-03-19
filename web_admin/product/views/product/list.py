@@ -54,11 +54,10 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             categories = categories['categories']
         categories.insert(0, {'name':'All'})
         context['categories'] = categories
-        self.logger.info('========== Start searching Customer ==========')
+        self.logger.info('========== Start searching products ==========')
         opening_page_index = request.GET.get('current_page_index')
         product_id = request.GET.get('product_id')
         category_id = request.GET.get('category_id')
-        print("category id is : {}".format(category_id))
         product_name = request.GET.get('product_name')
         product_status = request.GET.get('product_status')
         if product_id is None and category_id is None \
