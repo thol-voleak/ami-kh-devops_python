@@ -36,7 +36,7 @@
                         <label class="col-sm-3 control-label">Enable Product</label>
                         <div class="col-sm-7">
                             <label class="switch switch-sm" id="lbl_toggle_is_active">
-                                <input type="checkbox" name="is_active" {% if product.is_active %}checked{% endif %}/>
+                                <input type="checkbox" id="is_active" name="is_active" {% if product.is_active %}checked{% endif %}/>
                                 <span class="slider round"><i class="handle"></i></span>
                             </label>
                         </div>
@@ -120,7 +120,7 @@
                         <label class="col-sm-3 control-label">Allow Price Range</label>
                         <div class="col-sm-7">
                             <label class="switch switch-sm" id="lbl_toggle_price_range">
-                                <input type="checkbox" id="toggle-price-range" name="is_allow_price_range" {% if product.is_allow_price_range %}checked{% endif %}/>
+                                <input type="checkbox" id="is_allow_price_range" name="is_allow_price_range" {% if product.is_allow_price_range %}checked{% endif %}/>
                                 <span class="slider round"><i class="handle"></i></span>
                             </label>
                         </div>
@@ -144,10 +144,10 @@
                     <div class="form-group denomination">
                         <label class="col-sm-3 control-label">{% if forloop.first %}Denomination Set{% endif %}</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
+                            <input type="text" class="form-control input-rounded" id="txt_denomination" name="denomination" value="{{ item }}">
                         </div>
                         <div class="col-sm-2">
-                            <input class="btn btn-outline btn-primary remove-denomination" type="button" value="Delete"/>
+                            <input class="btn btn-outline btn-primary remove-denomination" id="btn_remove_denomination" type="button" value="Delete"/>
                         </div>
                     </div>
                     {% endfor %}
@@ -157,7 +157,7 @@
                         <div class="col-sm-7">
                         </div>
                         <div class="col-sm-2">
-                            <input id="btn_denomination_add" class="btn btn-outline btn-primary add-denomination" style="width: 69px;" type="button" value="Add"/>
+                            <input id="btn_add_denomination" class="btn btn-outline btn-primary add-denomination" style="width: 69px;" type="button" value="Add"/>
                         </div>
                     </div>
 
@@ -194,12 +194,6 @@
 <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
 <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
 <script>
-    jQuery.fn.outerHTML = function(s) {
-        return s
-            ? this.before(s).remove()
-            : jQuery("<p>").append(this.eq(0).clone()).html();
-    };
-
     $(document).ready(function () {
         $(document).on("click", ".remove-denomination", function () {
             $(this).closest(".form-group").remove();
@@ -217,7 +211,7 @@
             $("#img_product_image").attr("src", url);
         });
 
-        $("#toggle-price-range").change(function () {
+        $("#is_allow_price_range").change(function () {
             var isChecked = $(this).prop("checked");
             if (isChecked) {
                 $(".form-group.price-range").show();
@@ -226,7 +220,7 @@
             }
         });
 
-        $("#toggle-price-range").change();
+        $("#is_allow_price_range").change();
     });
 </script>
 {% endblock %}
