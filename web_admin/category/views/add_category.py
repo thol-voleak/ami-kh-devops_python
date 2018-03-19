@@ -6,6 +6,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin import api_settings
 from authentications.apps import InvalidAccessToken
 from django.shortcuts import render
+from braces.views import GroupRequiredMixin
 from django.contrib import messages
 from web_admin.api_logger import API_Logger
 import logging
@@ -14,10 +15,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class AddCategory(TemplateView, GetHeaderMixin):
+class AddCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "category/add_category.html"
     logger = logger
+    group_required = "CAN_ADD_CATEGORY"
     login_url = 'web:permission_denied'
     raise_exception = False
 

@@ -35,8 +35,17 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return super(CategoryList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start render category page ==========')
         context = super(CategoryList, self).get_context_data(**kwargs)
+
+        permissions = {}
+        permissions['CAN_ADD_CATEGORY'] = self.check_membership(["CAN_ADD_CATEGORY"])
+        permissions['CAN_EDIT_CATEGORY'] = self.check_membership(["CAN_EDIT_CATEGORY"])
+        permissions['CAN_DELETE_CATEGORY'] = self.check_membership(["CAN_DELETE_CATEGORY"])
+        self.logger.info('========== Start render category page ==========')
+
+        context.update({
+            'permissions': permissions
+        })
         categories = self.get_categories()
 
         list_category = categories[0].get('categories')

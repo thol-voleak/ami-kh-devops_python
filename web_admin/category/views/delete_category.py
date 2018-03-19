@@ -7,7 +7,8 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 
 
 def delete(request, categoryId):
-
+    if not check_permissions_by_user(request.user, 'CAN_DELETE_CATEGORY'):
+        return
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)

@@ -84,6 +84,7 @@
             <strong id="alert-msg"></strong>
         </div>
     </div>
+    {% if permissions.CAN_ADD_CATEGORY %}
     <div class="row">
         <div class="pull-right">
             <a href="{% url 'category:category_add' %}">
@@ -92,6 +93,7 @@
             </a>
         </div>
     </div>
+    {% endif %}
 
     <div class="panel-body">
     <div class="row">
@@ -116,15 +118,19 @@
                                style="margin-left: 20px;" class="bold category-name">{{ category.name }} ({{ category.product |length }})</a>
                         </div>
                         <div class="col-sm-4 action-area" id="action-category-{{ category.id }}" hidden>
+                            {% if permissions.CAN_EDIT_CATEGORY %}
                             <a href="{% url 'category:category_edit' category.id %}">
                                 <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit
                                 </button>
                             </a>
+                            {% endif %}
+                            {% if permissions.CAN_DELETE_CATEGORY %}
                             <button id="btn_category_delete" onclick="deleteCategory(this)"
                                     data-category-id="{{ category.id }}"
                                     data-url="{% url 'category:category_delete' category.id %}"
                                     class="btn btn-outline mb5 btn-xs btn-danger ">Delete
                             </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ from authentications.apps import InvalidAccessToken
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib import messages
+from braces.views import GroupRequiredMixin
 from web_admin.api_logger import API_Logger
 import logging
 
@@ -15,10 +16,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditCategory(TemplateView, GetHeaderMixin):
+class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "category/edit_category.html"
     logger = logger
+    group_required = "CAN_EDIT_CATEGORY"
     login_url = 'web:permission_denied'
     raise_exception = False
 
