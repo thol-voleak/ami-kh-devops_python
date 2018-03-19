@@ -90,6 +90,7 @@
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
+        {% if permissions.CAN_DELETE_PRODUCT %}
         <div class="form-group">
             <div class="dropdown">
                 <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -101,6 +102,7 @@
                 </div>
             </div>
         </div>
+        {%endif%}
         <div class="table-responsive">
                 <table id='tbl_product' class="table table-bordered table-striped mb0">
                         <thead>
