@@ -61,6 +61,16 @@
             position: absolute;
         }
 
+        .handle {
+            cursor: not-allowed !important;
+        }
+
+        .active-category {
+            background-color: #b7deec;
+            border-radius: 3px;
+            padding: 5px;
+        }
+
     </style>
     <div class="panel mb25">
     <div class="panel-heading">
@@ -74,7 +84,6 @@
             <strong id="alert-msg"></strong>
         </div>
     </div>
-
     <div class="row">
         <div class="pull-right">
             <a href="{% url 'category:category_add' %}">
@@ -104,7 +113,7 @@
                                   data-target="#collapse-{{ category.id }}"
                                   id="btn_category_expand_{{ category.id }}"></span>
                             <a id="category-{{ category.id }}" onclick="getData({{ category.id }})"
-                               style="margin-left: 20px;" class="bold">{{ category.name }} ({{ category.product |length }})</a>
+                               style="margin-left: 20px;" class="bold category-name">{{ category.name }} ({{ category.product |length }})</a>
                         </div>
                         <div class="col-sm-4 action-area" id="action-category-{{ category.id }}" hidden>
                             <a href="{% url 'category:category_edit' category.id %}">
@@ -192,7 +201,7 @@
                     <div class="col-sm-5">
                         <div class="image-area">
                             <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'"
-                                 src="{{ category_detail.image_url | default_if_none:'' }}" height="150" width="150">
+                                 src="{{ category_detail.image_url | default_if_none:'' }}" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;">
                         </div>
                     </div>
                 </div>
@@ -230,7 +239,7 @@
                                 <div class="image-table"><img id="img_Image"
                                                               onerror="this.src='{% static 'img/no-image.png' %}'"
                                                               src="{{ category.image_url | default_if_none:'' }}"
-                                                              height="75" width="75"></div>
+                                                              style="width: 75px; height: 75px; border: 1px solid #c0c0c0;"></div>
                             </td>
                             <td>
                                 <label class="switch switch-sm">
@@ -314,9 +323,12 @@
         };
 
         $('#action-category-{{category_detail.id}}').show();
+        $('#category-{{ category_detail.id }}').addClass('active-category');
         var getData = function (category_id) {
             $('.action-area').hide();
+            $('.category-name').removeClass('active-category');
             $('#action-category-' + category_id).show();
+            $('#category-' + category_id).addClass('active-category');
             var url = '/admin-portal/category/get_category_data/' + category_id + '/';
             console.log(url)
             console.log('Start get category data')

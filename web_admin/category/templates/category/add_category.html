@@ -72,7 +72,7 @@
                     <div class="col-sm-4"></div>
                     <div class="col-sm-5">
                         <div class="image-area">
-                             <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ image_url | default_if_none:'' }}" height="150" width="150">
+                             <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ image_url | default_if_none:'' }}" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;">
                         </div>
                     </div>
                 </div>
