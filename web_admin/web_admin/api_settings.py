@@ -166,6 +166,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
+BALANCE_MOVEMENT_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/orders/balance-movements'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{card_id}/status'
 
