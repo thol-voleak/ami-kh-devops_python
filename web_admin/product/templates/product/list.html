@@ -33,14 +33,14 @@
             <div class="form-group">
                     <label class="col-sm-2 control-label">Product ID</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control input-rounded"
+                        <input type="number" class="form-control input-rounded"
                                name="product_id"
                                value="{{ product_id|default_if_none:'' }}"
                                id="txt_product_id">
                     </div>
                     <label class="col-sm-2 control-label">Category ID</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control input-rounded"
+                        <input type="number" class="form-control input-rounded"
                                name="category_id"
                                value="{{ category_id|default_if_none:'' }}"
                                id="txt_category_id">
@@ -59,7 +59,7 @@
                     <input type="text" class="form-control input-rounded"
                            name="category_name"
                            value="{{ category_name|default_if_none:'' }}"
-                           id="txt_approved_rejected_by">
+                           id="txt_category_name">
                 </div>
             </div>
             <div class="form-group">
@@ -90,6 +90,7 @@
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
+        {% if permissions.CAN_DELETE_PRODUCT %}
         <div class="form-group">
             <div class="dropdown" id="ddl_select_action">
                 <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -101,6 +102,7 @@
                 </div>
             </div>
         </div>
+        {%endif%}
         <div class="table-responsive">
                 <table id='tbl_product' class="table table-bordered table-striped mb0">
                         <thead>

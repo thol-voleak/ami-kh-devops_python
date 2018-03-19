@@ -109,7 +109,7 @@
                         <div class="col-sm-3"></div>
                         <div class="col-sm-5">
                             <div class="image-area">
-                                 <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" height="150" width="150">
+                                 <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ category.image_url | default_if_none:'' }}" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;">
                             </div>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                               <td scope="row">{{ i.id }}</td>
                               <td>{{ i.name }}</td>
                               <td>{{ i.description }}</td>
-                              <td><div class="image-table"><img id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></div></td>
+                              <td><div class="image-table"><img id="img_product_image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" style="width: 75px; height: 75px; border: 1px solid #c0c0c0;"></div></td>
                               <td>
                                     <label class="switch switch-sm">
                                     <input type="checkbox" onClick="changeProductStatus({{ i.id }}, this)"
