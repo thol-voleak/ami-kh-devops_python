@@ -105,7 +105,7 @@
                 <table id='tbl_product' class="table table-bordered table-striped mb0">
                         <thead>
                         <tr>
-                            <th><input type="checkbox" name="select-all" id="select-all" /></th>
+                            <th><input type="checkbox" name="select-all" id="chk_all" /></th>
                             <th id="">Product ID</th>
                             <th id="">Product Name</th>
                             <th id="">Product Description</th>
@@ -167,12 +167,12 @@
 {% block body_js %}
 {{ block.super }}
 <script>
-    $('#select-all').on('change', function() {
+    $('#chk_all').on('change', function() {
         $('.checkboxlist input.select_to').prop('checked', this.checked);
     });
     $('.checkboxlist input.select_to').on('change', function () {
         var allChecked = $('.checkboxlist input.select_to:checkbox:checked').length === $('.checkboxlist input.select_to').length;
-        $('#select-all').prop('checked', allChecked);
+        $('#chk_all').prop('checked', allChecked);
     });
 
     function deleteProduct(){
