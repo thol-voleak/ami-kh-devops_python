@@ -110,7 +110,7 @@
                         </div>
                         <div class="col-xs-1">
                             <a href="#">
-                                <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
+                                <input id="btn_back" class="btn text-left mb15" type="button" value="Back" onclick="location.href='{% url 'agents:agent-list' %}'"/>
                             </a>
                         </div>
                         <label class="pull-right" id="lbl_total">{{ search_count }}</label>

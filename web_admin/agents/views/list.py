@@ -52,17 +52,22 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         email = None
         primary_mobile_number = None
         kyc_status = None
+        agent_id = None
 
         # Build Body
         body = {}
         body['paging'] = True
         body['page_index'] = 1
         redirect_from_delete =  self.request.session.pop('agent_redirect_from_delete', None)
-        if redirect_from_delete:
+
+        redirect_from_wallet_view = self.request.session.pop('agent_redirect_from_wallet_view', None)
+        if redirect_from_delete or redirect_from_wallet_view:
+            agent_id = self.request.session.pop('agent_id', None)
             unique_reference = self.request.session.pop('agent_unique_reference', None)
             email = self.request.session.pop('agent_email', None)
             primary_mobile_number = self.request.session.pop('agent_primary_mobile_number', None)
             kyc_status = self.request.session.pop('agent_kyc_status', None)
+
             if request.session['agent_from'] != '':
                 from_created_timestamp = datetime.strptime(request.session['agent_from'], "%Y-%m-%dT%H:%M:%SZ")
                 new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -96,6 +101,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['to_created_timestamp'] = new_to_created_timestamp
 
 
+        if agent_id:
+            body.update({'id' : int(agent_id)})
+            context.update({'id': int(agent_id)})
         if unique_reference:
             body.update({'unique_reference' : unique_reference})
         if email:
@@ -112,7 +120,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context.update({'unique_reference': unique_reference,
                         'email': email,
                         'primary_mobile_number': primary_mobile_number,
-                        'kyc_status': kyc_status,
+                        'kyc_status': body.get('kyc_status', None),
                         'has_permission_search': check_permissions_by_user(self.request.user,"CAN_SEARCH_AGENT")
                         })
 
@@ -130,9 +138,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page)})
 
-        self.update_session(request, None, unique_reference, email, primary_mobile_number, kyc_status,
+        self.update_session(request, None, agent_id, unique_reference, email, primary_mobile_number, kyc_status,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                            to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"), False)
+                            to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"), False, False)
 
         self.logger.info('========== Finished showing Agent List page ==========')
         return render(request, self.template_name, context)
@@ -202,10 +210,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context.update(
                 {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
         context['has_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
-        self.update_session(request, None, unique_reference, email,
+        self.update_session(request, None, agent_id, unique_reference, email,
                             primary_mobile_number, kyc_status,
                             new_from_created_timestamp,
-                            new_to_created_timestamp, False)
+                            new_to_created_timestamp, False, False)
         return render(request, self.template_name, context)
 
     def _get_agents(self, params):
@@ -249,9 +257,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Finished searching agent ==========')
         return data, success, status_message
 
-    def update_session(self, request, message=None, unique_reference=None, email=None, primary_mobile_number=None,
-                       kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False):
+    def update_session(self, request, message=None,id=None , unique_reference=None, email=None, primary_mobile_number=None,
+                       kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False, redirect_from_wallet_view = False):
         request.session['agent_message'] = message
+        request.session['agent_id'] = id
         request.session['agent_unique_reference'] = unique_reference
         request.session['agent_email'] = email
         request.session['agent_primary_mobile_number'] = primary_mobile_number
@@ -259,4 +268,5 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         request.session['agent_from'] = from_created_timestamp
         request.session['agent_to'] = to_created_timestamp
         request.session['agent_redirect_from_delete'] = redirect_from_delete
+        request.session['agent_redirect_from_wallet_view'] = redirect_from_wallet_view
 

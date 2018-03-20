@@ -68,7 +68,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'from_created_timestamp': new_from_created_timestamp,
             'to_created_timestamp': new_to_created_timestamp
         }
-
+        request.session['agent_redirect_from_wallet_view'] = True
         self.logger.info('========== Finished getting agent transaction history ==========')
         return render(request, self.template_name, context)
 
