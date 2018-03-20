@@ -67,7 +67,8 @@ class CategoryData(TemplateView, GetHeaderMixin):
 
         body = {
             "category_id": category_id,
-            "paging": False
+            "paging": False,
+            "is_deleted": False
         }
 
         success, status_code, status_message, data = RestFulClient.post(url=api_path,

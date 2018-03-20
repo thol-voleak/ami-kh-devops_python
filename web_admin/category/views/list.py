@@ -130,7 +130,8 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         body = {
             "category_id": category_id,
-            "paging": False
+            "paging": False,
+            "is_deleted": False
         }
 
         success, status_code, status_message, data = RestFulClient.post(url=api_path,
@@ -151,7 +152,8 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         api_path = api_settings.GET_PRODUCTS
 
         body = {
-            "paging": False
+            "paging": False,
+            "is_deleted": False
         }
 
         success, status_code, status_message, data = RestFulClient.post(url=api_path,
