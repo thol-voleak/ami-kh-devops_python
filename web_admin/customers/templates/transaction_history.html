@@ -154,11 +154,15 @@
                                     <td>{{ row.currency|default_if_none:'' }}</td>
                                     <td>{{ row.post_balance|default_if_none:'' }}</td>
                                     <td>{{ row.created_timestamp|default_if_none:'' }}</td>
-                                    {#                                                {% if permissions.is_perm_view_transaction_history_detail %}#}
-                                    {#                                                    <td class="col-sm-1">#}
-                                    {#                                                        <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'customer:customer_transaction_history_detail' row.order_id %}'">Detail</button>#}
-                                    {#                                                    </td>#}
-                                    {#                                                {% endif %}#}
+                                    <td class="col-sm-3">
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-info"
+                                           role="button"
+                                           id="btn_detail"
+                                           href="{% url 'payments:order_detail' row.order_id %}">
+                                            <span class="small">Detail</span>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
