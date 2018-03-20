@@ -52,8 +52,10 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         categories = self._list_categories()
         if categories:
             categories = categories['categories']
-        categories.insert(0, {'name':'All'})
-        context['categories'] = categories
+            categories.insert(0, {'name':'All'})
+            context['categories'] = categories
+        else:
+            context['categories'] = [{'name':'All'}]
         self.logger.info('========== Start searching products ==========')
         opening_page_index = request.GET.get('current_page_index')
         product_id = request.GET.get('product_id')

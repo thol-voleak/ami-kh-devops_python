@@ -12,22 +12,22 @@
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading">
         <h3>Products</h3>
-    </div>
-
-    <div class="col-xs-12 mb5">
-        <div class="alert alert-success alert-dismissable" hidden id="msg-product">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <strong id="alert-msg"></strong>
+        <div class="col-xs-12 mb5">
+                <div class="alert alert-success alert-dismissable" hidden id="msg-product">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg"></strong>
+                </div>
         </div>
+        {% if permissions.CAN_ADD_PRODUCT %}
+        <!-- style="margin-top: 15px;margin-right: 15px;" -->
+        <div class="pull-right">
+                <a href="{% url 'product:product_create' %}">
+                    <button id="btn_add_product" class="btn btn-success btn-block btn-md mb15"><strong>+</strong> <span>Add New Product</span></button>
+                </a>
+           </div>
+        {% endif %}
     </div>
-
-    {% if permissions.CAN_ADD_PRODUCT %}
-    <div class="text-right mb15">
-        <a href="{% url 'product:product_create' %}" id="btn_add" class="btn btn-success btn-sm">
-            <i class="fa fa-plus"></i> Add Product
-        </a>
-    </div>
-    {% endif %}
+    <div class="clearfix"></div>
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'product:products' %}">
             <div class="form-group">
@@ -41,15 +41,13 @@
                     <label class="col-sm-2 control-label">Category Name</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="ddl_category_name" name="category_id" >
-                            {% if categories %}
-                                {% for category in categories %}
-                                    {% if category.id == category_id %}
-                                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
-                                    {% else %}
-                                            <option value="{{ category.id }}">{{ category.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
+                            {% for category in categories %}
+                                {% if category.id == category_id %}
+                                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                                {% else %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
