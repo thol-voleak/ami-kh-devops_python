@@ -30,7 +30,11 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             url=api_settings.GET_PRODUCT_DETAIL, headers=self._get_headers(), loggers=self.logger, params={"id": product_id, 'paging': False}
         )
 
-        context = {"product": data['products'][0]}
+        product = data['products'][0]
+        if not product['denomination']:
+            product['denomination'] = ['']
+
+        context = {"product": product}
 
         context['cbo_agent_types'] = self.get_agent_type(product_id)
 
@@ -56,6 +60,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         cbo_agent_types = request.POST.getlist('cbo_agent_types')
         cbo_agent_types = list(map(int, cbo_agent_types))  # convert list string to list int
         denomination = request.POST.getlist('denomination')
+        denomination = self.filter_empty_denomination(denomination);
 
         params = {
             "id": product_id,
@@ -86,6 +91,12 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['cbo_agent_types'] = cbo_agent_types
         self.set_ui_list(context)
         return render(request, self.template_name, context)
+
+    def filter_empty_denomination(self, denominations):
+        denominations = list(filter(None, denominations))
+        if not denominations:
+            denominations = ['']
+        return denominations
 
     def set_ui_list(self, context):
         # Get list category

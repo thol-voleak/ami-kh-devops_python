@@ -54,6 +54,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         cbo_agent_types = request.POST.getlist('cbo_agent_types')
         cbo_agent_types = list(map(int, cbo_agent_types))  # convert list string to list int
         denomination = request.POST.getlist('denomination')
+        denomination = self.filter_empty_denomination(denomination);
 
         params = {
             "is_active": is_active,
@@ -92,6 +93,12 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         messages.success(request, "Added Successfully")
         return redirect('product:product_create')
+
+    def filter_empty_denomination(self, denominations):
+        denominations = list(filter(None, denominations))
+        if not denominations:
+            denominations = ['']
+        return denominations
 
     def set_ui_list(self, context):
         # Get list category
