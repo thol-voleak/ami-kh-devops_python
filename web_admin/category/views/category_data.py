@@ -26,11 +26,14 @@ class CategoryData(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start get category data ==========')
         category_id = request.POST.get("categoryId")
-        category_detail, success, message = self.get_category_detail(category_id)
+        category_detail, success, message, status_code = self.get_category_detail(category_id)
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            return JsonResponse({"status": "1"})
         if success:
             product_list, success, message = self.get_products(category_id)
             self.logger.info('========== Finish get category data ==========')
             return JsonResponse({"status":"2", "category_detail":category_detail, "product_list": product_list})
+
 
     def get_category_detail(self, category_id):
         self.logger.info('========== Start get category detail ==========')
@@ -47,10 +50,12 @@ class CategoryData(TemplateView, GetHeaderMixin):
                                                                            timeout=settings.GLOBAL_TIMEOUT)
 
         data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=body,
-                                status_code=status_code, is_getting_list=False, response=data)
+        if status_code not in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            API_Logger.post_logging(loggers=self.logger, params=body,
+                                    status_code=status_code, is_getting_list=False, response=data)
+
         self.logger.info('========== Finish get category detail ==========')
-        return data, success, status_message
+        return data, success, status_message, status_code
 
     def get_products(self, category_id):
         self.logger.info('========== Start get list product ==========')
