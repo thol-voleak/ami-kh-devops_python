@@ -87,6 +87,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     product_status = False
                 params['is_active'] = product_status
                 context['product_status'] = product_status
+            params['is_deleted'] = False
             self.logger.info("Params: {} ".format(params))
             is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= url,
@@ -95,19 +96,18 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                     params=params)
             self.logger.info("Params: {} ".format(params))
         if is_success:
-            products = [p for p in data['products'] if not p['is_deleted']]
+            products = data['products']
             page = data['page']
             count = len(products)
             self.logger.info("Response_content_count:{}".format(count))
             context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
             context['search_count'] = page['total_elements']
+            context['data'] = products
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{}".format(data))
             raise InvalidAccessToken(data)
 
-
-        context['data'] = products
         context['permissions'] = permissions
             
         self.logger.info('========== Finished searching products ==========')
