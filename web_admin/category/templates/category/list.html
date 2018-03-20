@@ -355,25 +355,31 @@
                         // success
                         console.log(response)
                         var category_detail = response.category_detail.categories[0];
-                        var product_list = response.product_list.products;
+                        var product_list = response.product_list;
                         document.getElementById('txt_category_id').setAttribute('value', category_detail.id);
                         document.getElementById('txt_category_name').setAttribute('value', category_detail.name);
                         document.getElementById('txt_category_description').setAttribute('value', category_detail.description);
                         document.getElementById('txt_category_image_url').setAttribute('value', category_detail.image_url);
                         document.getElementById('img_Image').setAttribute('src', category_detail.image_url);
                         document.getElementById('category-' + category_detail.id).textContent = category_detail.name + ' ' + '(' + product_list.length + ')';
+
                         if (category_detail.is_active) {
                             document.getElementById('tog_status').checked = true;
                         } else {
                             document.getElementById('tog_status').checked = false;
                         }
                         var table_product = document.getElementById('table-body');
+                        var collapse_product_list = document.getElementById('collapse-' + category_detail.id);
                         table_product.innerHTML = '';
+                        collapse_product_list.innerHTML = '';
                         for (var i = 0; i < product_list.length; i++) {
                             var rowHTML = renderTableBody(product_list[i]);
                             var rowElm = document.createElement('tr');
                             rowElm.innerHTML = rowHTML;
-                            table_product.appendChild(rowElm)
+                            table_product.appendChild(rowElm);
+                            var productElm = document.createElement('div');
+                            productElm.innerText = product_list[i].name;
+                            collapse_product_list.appendChild(productElm);
                         }
                     } else {
                         // Failed

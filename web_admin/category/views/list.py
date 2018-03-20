@@ -53,7 +53,7 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         all_list_product = self.get_all_list_products() 
         all_list_product = all_list_product[0].get('products')
 
-        ## Get all list category and list product for each category 
+        # Get all list category and list product for each category
         if list_category:
             for category_unit in list_category[::]:
                 if category_unit['is_deleted']:
@@ -62,17 +62,16 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 product_list = []
                 for product_unit in all_list_product:
                     if all_list_product: 
-                        if product_unit['category_id'] == category_unit['id']:
+                        if not product_unit['is_deleted'] and product_unit['category_id'] == category_unit['id']:
                             product_list.append(product_unit)
                 category_unit['product'] = product_list
 
             context['list_category'] = list_category
-        ############################################################
-        ####### First data ########
-        if categories[0].get('categories'):
+
+            # get default category to view
             default_category = categories[0].get('categories')[0]
             category_id = default_category['id']
-            if category_id: 
+            if category_id:
                 category_detail = self.get_category_detail(category_id)
                 products_default = self.get_products(category_id)
 
@@ -80,7 +79,6 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'category_detail': category_detail[0]['categories'][0],
                     'products': products_default[0].get('products'),
                 })
-        ############################################################# 
         self.logger.info('========== Finish render category page ==========')
         return render(request, self.template_name, context)
 

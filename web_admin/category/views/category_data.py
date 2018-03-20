@@ -31,8 +31,12 @@ class CategoryData(TemplateView, GetHeaderMixin):
             return JsonResponse({"status": "1"})
         if success:
             product_list, success, message = self.get_products(category_id)
+            active_product = []
+            for product in product_list.get('products'):
+                if not product['is_deleted']:
+                    active_product.append(product)
             self.logger.info('========== Finish get category data ==========')
-            return JsonResponse({"status":"2", "category_detail":category_detail, "product_list": product_list})
+            return JsonResponse({"status":"2", "category_detail":category_detail, "product_list": active_product})
 
 
     def get_category_detail(self, category_id):

@@ -42,10 +42,14 @@ class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish get category  detail ==========')
         self.logger.info('========== Start getting product list of category ==========')
         product_in_category = self.get_products(category_id)
+        active_product = []
+        for product in product_in_category:
+            if not product['is_deleted']:
+                active_product.append(product)
         self.logger.info('========== Finish getting product list of category ==========')
         context.update({
             "category": category_detail,
-            'products': product_in_category
+            'products': active_product
         })
         return render(request, self.template_name, context)
 
@@ -84,10 +88,14 @@ class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             self.logger.info('========== Finish get category  detail ==========')
             self.logger.info('========== Start getting product list of category ==========')
             product_in_category = self.get_products(category_id)
+            active_product = []
+            for product in product_in_category:
+                if not product['is_deleted']:
+                    active_product.append(product)
             self.logger.info('========== Finish getting product list of category ==========')
             context.update({
                 "category": category_detail,
-                'products': product_in_category
+                'products': active_product
             })
             messages.success(request, 'Edited Successfully')
             return render(request, self.template_name, context)
@@ -101,10 +109,14 @@ class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             self.logger.info('========== Finish get category  detail ==========')
             self.logger.info('========== Start getting product list of category ==========')
             product_in_category = self.get_products(category_id)
+            active_product = []
+            for product in product_in_category:
+                if not product['is_deleted']:
+                    active_product.append(product)
             self.logger.info('========== Finish getting product list of category ==========')
             context.update({
                 "category": category_detail,
-                'products': product_in_category
+                'products': active_product
             })
             return render(request, self.template_name, context)
 
