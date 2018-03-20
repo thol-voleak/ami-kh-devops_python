@@ -13,6 +13,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SOF_TYPES_URL
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CASH_SOFS_URL
+from django.contrib import messages
 
 import logging
 
@@ -35,6 +36,10 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     template_name = 'agents/transaction_history.html'
     logger = logger
+    dateUIFormat = "%Y-%m-%d"
+    paymentScopeName = 'payment'
+    walletViewTransactionHistoryInDaysKey = 'wallet_view_transaction_history_in_days'
+
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -128,18 +133,67 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['sof_type_id'] = int(sof_type_id)
         body['user_type_id'] = UserType.AGENT.value
         body['user_id'] = user_id
-        if from_created_timestamp is not '':
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-
-        if to_created_timestamp is not '':
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
 
         context = {}
+        # validate required search date criteria
+        if from_created_timestamp is '' or to_created_timestamp is '':
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Please specify the to and from date search criteria'
+            )
+
+            context.update(
+                {'search_count': 0,
+                 'list': [],
+                 'choices': choices,
+                 'sof_type_id': sof_type_id,
+                 'sof_id': sof_id,
+                 'cash_sof_list': cash_sof_list,
+                 'paginator': {},
+                 'agent_id': user_id,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp
+                 }
+            )
+            return render(request, self.template_name, context)
+
+        # validate date range
+        walletViewInDay = self._getWalletViewInDay()
+        diffDay = self._getDiffDaysFromUIDateValue(from_created_timestamp, to_created_timestamp)
+        if diffDay < 0 or diffDay > int(walletViewInDay):
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Time range over '+ walletViewInDay + ' days is not allowed'
+            )
+
+            context.update(
+                {'search_count': 0,
+                 'list': [],
+                 'choices': choices,
+                 'sof_type_id': sof_type_id,
+                 'sof_id': sof_id,
+                 'cash_sof_list': cash_sof_list,
+                 'paginator': {},
+                 'agent_id': user_id,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp
+                 }
+            )
+
+            return render(request, self.template_name, context)
+
+        # build date range critera for service
+        new_from_created_timestamp = datetime.strptime(from_created_timestamp, self.dateUIFormat)
+        new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+        body['from_created_timestamp'] = new_from_created_timestamp
+
+        new_to_created_timestamp = datetime.strptime(to_created_timestamp, self.dateUIFormat)
+        new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+        new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+        body['to_created_timestamp'] = new_to_created_timestamp
+
         data, success, status_message = self._get_transaction_history_list(body)
         if success:
             order_balance_movements = data.get("order_balance_movements", [])
@@ -201,3 +255,17 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             i['sof_type_name'] = SOF_TYPE.get(i['sof_type_id'])
         return data
 
+    def _getWalletViewInDay(self):
+        url = api_settings.CONFIGURATION_DETAIL_URL.format(scope=self.paymentScopeName,
+                                                           key=self.walletViewTransactionHistoryInDaysKey)
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if success:
+            return data.get("value")
+        else:
+            return None
+
+    def _getDiffDaysFromUIDateValue(self, fromDate, toDate):
+        from_created_timestamp_as_datetime = datetime.strptime(fromDate, self.dateUIFormat)
+        to_created_timestamp_as_datetime = datetime.strptime(toDate, self.dateUIFormat)
+        detal = to_created_timestamp_as_datetime - from_created_timestamp_as_datetime
+        return detal.days
