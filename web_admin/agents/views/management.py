@@ -149,6 +149,9 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         self.logger.info("Params: {} ".format(params))
         data, success, status_message = self._get_relationships(params=params)
+
+
+
         summary_relationship_count = request.POST.get('count_summary_relationship')
         relationship_count = request.POST.get('count_relationship')
         if relationship_count:
@@ -161,15 +164,23 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 sub_id = request.POST.get('sub_user_id_' + str(i))
                 created_date = request.POST.get('created_date_' + str(i))
                 modified_date = request.POST.get('modified_date_' + str(i))
+                main_first_name = request.POST.get('main_user_first_name_' + str(i))
+                main_last_name = request.POST.get('main_user_last_name' + str(i))
+                sub_first_name = request.POST.get('sub_user_first_name_' + str(i))
+                sub_last_name = request.POST.get('sub_user_last_name' + str(i))
                 relationship_item = {
                     'relationship_type': {
                         'name': relationship_type
                     },
                     'main_user': {
-                        'user_id': int(main_id)
+                        'user_id': int(main_id),
+                        'first_name': main_first_name,
+                        'last_name': main_last_name
                     },
                     'sub_user': {
-                        'user_id': int(sub_id)
+                        'user_id': int(sub_id),
+                        'first_name': sub_first_name,
+                        'last_name': sub_last_name
                     },
                     'created_timestamp': created_date,
                     'last_updated_timestamp': modified_date
@@ -192,6 +203,10 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     'relationship_partner_id':relationship_partner_id or None,
                     'relationship_list_length': relationship_count
                 }
+
+            # import pdb;
+            # pdb.set_trace()
+
         self.logger.info('========== finish search relationship ==========')
         
         return render(request, self.template_name, context)

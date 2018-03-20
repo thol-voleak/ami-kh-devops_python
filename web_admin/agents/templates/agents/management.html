@@ -97,6 +97,10 @@
                             <input name="sub_user_id_{{ forloop.counter0 }}" value="{{ summary.sub_user.user_id }}" hidden/>
                             <input name="created_date_{{ forloop.counter0 }}" value="{{ summary.created_timestamp }}" hidden/>
                             <input name="modified_date_{{ forloop.counter0 }}" value="{{ summary.last_updated_timestamp }}" hidden/>
+                            <input name="main_user_first_name_{{ f_orloop.counter0 }}" value="{{ summary.main_user.first_name }}" hidden/>
+                            <input name="main_user_last_name{{ forloop.counter0 }}" value="{{ summary.main_user.last_name }}" hidden/>
+                            <input name="sub_user_first_name_{{ f_orloop.counter0 }}" value="{{ summary.sub_user.first_name }}" hidden/>
+                            <input name="sub_user_last_name{{ forloop.counter0 }}" value="{{ summary.sub_user.last_name }}" hidden/>
                     {%endfor%}
                     {% csrf_token %}
                         <div id="exTab1" class="container"> 
