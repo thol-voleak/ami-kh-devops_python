@@ -8,6 +8,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.restful_client import RestFulClient
 from django.conf import settings
 import logging
+from django.http import JsonResponse
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,9 @@ class UpdateProductStatusOfCategory(TemplateView, GetHeaderMixin):
         product_status_get = request.POST.get('product_status')
         product_status = True if product_status_get == 'true' else False
         logger.info('========== Start getting product detail ==========')
-        product_detail = self.get_product_detail(product_id)
+        product_detail, status_code = self.get_product_detail(product_id)
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            return JsonResponse({"status": "1"})
         logger.info('========== Finish getting product detail ==========')
         body = {
             'is_active': product_status,
@@ -75,8 +78,8 @@ class UpdateProductStatusOfCategory(TemplateView, GetHeaderMixin):
                                                                         params=body,
                                                                         timeout=settings.GLOBAL_TIMEOUT)
 
-        data = data.get('products')[0] or {}
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
-                                status_code=status_code, is_getting_list=False)
-
-        return data
+        if status_code not in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            data = data.get('products')[0] or {}
+            API_Logger.post_logging(loggers=self.logger, params=body, response=data,
+                                    status_code=status_code, is_getting_list=False)
+        return data, status_code
