@@ -96,7 +96,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Payment Service</label>
                         <div class="col-sm-7">
-                            <select class="form-control" id="ddl_category_name" name="payment_service_id">
+                            <select class="form-control" id="ddl_payment_service" name="payment_service_id">
                                 <option value="">-</option>
                                 {% for item in services %}
                                     <option value="{{ item.service_id }}" {% if item.service_id == product.payment_service_id %}selected{% endif %}>{{ item.service_name }}</option>
