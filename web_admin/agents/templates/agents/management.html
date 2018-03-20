@@ -153,7 +153,7 @@
                                                 <a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a>
                                                 {%endif%}
                                             </td>
-                                            <td></td>
+                                            <td>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</td>
                                             <td>
                                                 {%if agent_id == summary.sub_user.user_id%}
                                                 <b><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></b>
@@ -161,7 +161,7 @@
                                                 <a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a>
                                                 {%endif%}
                                             </td>
-                                            <td></td>
+                                            <td>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</td>
                                             <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
                                             <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
                                         </tr>
@@ -287,7 +287,7 @@
                                                     <a id="{{ relationship.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.main_user.user_id %}">agent ({{relationship.main_user.user_id|default_if_none:'' }})</a>
                                                     {%endif%}
                                                 </td>
-                                                <td></td>
+                                                <td>{{relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name}}</td>
                                                 <td>
                                                     {%if agent_id == relationship.sub_user.user_id%}
                                                     <b><a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a></b>
@@ -295,7 +295,7 @@
                                                     <a id="{{ relationship.sub_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a>
                                                     {%endif%}
                                                 </td>
-                                                    <td></td>
+                                                    <td>{{relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name}}</td>
                                                     <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
                                                     <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
                                                 </tr>
