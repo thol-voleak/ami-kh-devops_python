@@ -37,22 +37,36 @@ class ProductDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(ProductDetail, self).get_context_data(**kwargs)
         product_id = context['product_id']
         data = self.get_product_detail(product_id)
-        category_name = "Unknown"
+        category_name = ""
+        service_name = ""
         if data:
-            category_id = data.get('category_id')
-            category_name = self.get_category_name(category_id)
+            category_id = data.get('category_id', None)
+            if category_id:
+                category_name = self.get_category_name(category_id)
 
-            payment_service_id = data.get('payment_service_id')
-            service_name = self.get_service_name(payment_service_id)
+            payment_service_id = data.get('payment_service_id', None)
+            if payment_service_id:
+                service_name = self.get_service_name(payment_service_id)
 
             agent_types = self.get_agent_type(product_id)
 
         self.logger.info('========== Fisnish getting product details ==========')
+
+        has_denomination = False
+        if len(data["denomination"]) >= 1:
+            has_denomination = True
+
+        has_agent_types = False
+        if len(agent_types) >= 1:
+            has_agent_types = True
+
         context.update({
             'product': data,
             'category_name': category_name,
             'service_name': service_name,
             'agent_types': agent_types,
+            'has_denomination': has_denomination,
+            'has_agent_types': has_agent_types,
         })
 
         return render(request, self.template_name, context)

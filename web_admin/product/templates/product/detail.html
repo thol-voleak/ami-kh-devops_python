@@ -37,7 +37,7 @@
                         <div class="col-sm-7">
                             <label class="switch switch-sm">
                                 <input id="tog_enable" disabled readonly type="checkbox" name="is_active" {% if product.is_active %}checked{% endif %}/>
-                                <span class="slider round"><i class="handle"></i></span>
+                                <span class="slider round"><i class="handle" style="cursor: not-allowed !important;"></i></span>
                             </label>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                        <label class="col-sm-3 control-label">Apply Agent Type</label>
                        <div class="col-sm-7">
                           <div class="chosen-container chosen-container-multi" style="width: 100%;" title="">
-                             <ul class="chosen-choices" id="txt_apply_agent_type">
+                             <ul class="chosen-choices" id="txt_apply_agent_type" {% if not has_agent_types %}style="background:rgb(238,238,238)"{%endif%}>
                                  {% for item in agent_types %}
                                  <li class="search-choice"><span>{{item}}</span><a class="search-choice-close" data-option-array-index="{{forloop.counter}}"></a></li>
                                  {% endfor %}
@@ -111,7 +111,7 @@
                         <div class="col-sm-7">
                             <label class="switch switch-sm">
                                 <input disabled readonly type="checkbox" id="tog_allow_price_range" name="is_allow_price_range" {% if product.is_allow_price_range %}checked{% endif %}/>
-                                <span class="slider round"><i class="handle"></i></span>
+                                <span class="slider round"><i class="handle" style="cursor: not-allowed !important;"></i></span>
                             </label>
                         </div>
                     </div>
@@ -133,14 +133,25 @@
                     </div>
                     {% endif %}
 
-                    {% for item in product.denomination %}
-                    <div class="form-group denomination">
-                        <label class="col-sm-3 control-label">{% if forloop.first %}Denomination Set{% endif %}</label>
-                        <div class="col-sm-7">
-                            <input readonly id="txt_denomination_set_{{forloop.counter}}" type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
+                    {% if has_denomination %}
+                        {% for item in product.denomination %}
+                        <div class="form-group denomination">
+                            <label class="col-sm-3 control-label">{% if forloop.first %}Denomination Set{% endif %}</label>
+                            <div class="col-sm-7">
+                                <input readonly id="txt_denomination_set_{{forloop.counter}}" type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
+                            </div>
                         </div>
-                    </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {%else%}
+                        <div class="form-group denomination">
+                            <label class="col-sm-3 control-label">Denomination Set</label>
+                            <div class="col-sm-7">
+                                <input readonly id="txt_denomination_set_0" type="text" class="form-control input-rounded" name="denomination" value="">
+                            </div>
+                        </div>
+                    {%endif%}
+
+
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
