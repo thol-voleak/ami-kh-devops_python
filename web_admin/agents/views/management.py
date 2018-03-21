@@ -165,9 +165,9 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 created_date = request.POST.get('created_date_' + str(i))
                 modified_date = request.POST.get('modified_date_' + str(i))
                 main_first_name = request.POST.get('main_user_first_name_' + str(i))
-                main_last_name = request.POST.get('main_user_last_name' + str(i))
+                main_last_name = request.POST.get('main_user_last_name_' + str(i))
                 sub_first_name = request.POST.get('sub_user_first_name_' + str(i))
-                sub_last_name = request.POST.get('sub_user_last_name' + str(i))
+                sub_last_name = request.POST.get('sub_user_last_name_' + str(i))
                 relationship_item = {
                     'relationship_type': {
                         'name': relationship_type
