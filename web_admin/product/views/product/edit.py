@@ -152,7 +152,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return agent_types
 
     def delete_agent_types(self, product_id):
-        self.logger.info('========== Start get agent types ==========')
+        self.logger.info('========== Start get product - agent types relations ==========')
         params = {'product_id': product_id}
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger,
@@ -160,7 +160,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         )
         API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code,
                                 is_getting_list=False)
-        self.logger.info('========== Finished get agent types ==========')
+        self.logger.info('========== Finished get product - agent types relations ==========')
 
         relations = data['relations']
         for item in relations:
