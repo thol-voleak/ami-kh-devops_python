@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
 import logging
+from web_admin.api_logger import API_Logger
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,8 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return context
 
     def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start creating product ==========')
+
         is_active = request.POST.get('is_active') == 'on'
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -73,12 +76,16 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             url=api_settings.ADD_PRODUCT, headers=self._get_headers(), loggers=self.logger, params=params
         )
 
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+
         if not is_success:
             messages.error(request, status_message)
             context = {'product': params}
             context['cbo_agent_types'] = cbo_agent_types
             self.set_ui_list(context)
             return render(request, self.template_name, context)
+
+        self.logger.info('========== Finished creating product ==========')
 
         product_id = data['id']
         for agent_type_id in cbo_agent_types:
@@ -87,9 +94,15 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 "agent_type_id": agent_type_id
             }
 
+            self.logger.info('========== Start creating product agent type mapping ==========')
+
             is_success, status_code, status_message, data = RestFulClient.post(
                 url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
             )
+
+            API_Logger.put_logging(loggers=self.logger, params=body, response=data, status_code=status_code)
+
+            self.logger.info('========== Finished creating product agent type mapping ==========')
 
         messages.success(request, "Added Successfully")
         return redirect('product:product_create')
@@ -101,17 +114,26 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return denominations
 
     def set_ui_list(self, context):
-        # Get list category
-        data, success = self._post_method(api_path=api_settings.GET_CATEGORIES, logger=logger)
+        self.logger.info('========== Start get category list ==========')
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.GET_CATEGORIES, headers=self._get_headers(), loggers=self.logger, params={}
+        )
         context['categories'] = data['categories']
+        self.logger.info('========== Finished get category list ==========')
 
-        # Get list service
-        data, success = self._get_method(api_path=api_settings.SERVICE_LIST_URL, logger=logger)
+        self.logger.info('========== Start get service list ==========')
+        is_success, status_code, data = RestFulClient.get(
+            url=api_settings.SERVICE_LIST_URL, headers=self._get_headers(), loggers=self.logger
+        )
         context['services'] = data
+        self.logger.info('========== Finished get service list ==========')
 
-        # Get list agent type
-        data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL, logger=logger)
+        self.logger.info('========== Start get agent type list ==========')
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=api_settings.AGENT_TYPES_LIST_URL, headers=self._get_headers(), loggers=self.logger, params={}
+        )
         context['agent_types'] = data
+        self.logger.info('========== Finished get agent type list ==========')
 
     def _get_headers(self):
         if getattr(self, '_headers', None) is None:
