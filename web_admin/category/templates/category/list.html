@@ -466,8 +466,7 @@
                                     // success
                                     var id = e.getAttribute('data-category-id');
                                     $('#category-' + id).parent().parent().remove();
-                                    var collapse_product_list = document.getElementById('collapse-' + id);
-                                    collapse_product_list.innerHTML = '';
+                                    $('#collapse-' + id).remove();
                                     showSuccessMessage('Deleted Successfully');
                                     $('a[id*=category-]:visible')[0].click();
                                 } else {
