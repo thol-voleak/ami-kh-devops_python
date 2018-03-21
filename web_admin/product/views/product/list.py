@@ -51,7 +51,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(ListView, self).get_context_data(**kwargs)
         categories = self._list_categories()
         if categories:
-            categories = categories['categories']
             categories.insert(0, {'name':'All'})
             context['categories'] = categories
         else:
@@ -88,7 +87,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 params['is_active'] = product_status
                 context['product_status'] = product_status
             params['is_deleted'] = False
-            self.logger.info("Params: {} ".format(params))
             is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= url,
                                                     headers=self._get_headers(),
@@ -126,13 +124,15 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            params=body,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-
-        data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=body,
-                                status_code=status_code, is_getting_list=True)
-        self.logger.info('========== Finish get category list ==========')
-
+        self.logger.info("Params: {} ".format(body))
         if success:
+            data = data['categories']
+            self.logger.info("Response_content_count:{}".format(len(data)))
+            self.logger.info('========== Finish get category list ==========')
             return data
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
         else:
             return None
