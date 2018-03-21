@@ -140,10 +140,10 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger, params=params
         )
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code, is_getting_list=False)
+        relations = data['relations']
+        API_Logger.post_logging(loggers=self.logger, params=params, response=relations, status_code=status_code, is_getting_list=True)
         self.logger.info('========== Finished get product - agent types relations ==========')
 
-        relations = data['relations']
         agent_types = []
         for item in relations:
             agent_type_id = item['agent_type_id']
