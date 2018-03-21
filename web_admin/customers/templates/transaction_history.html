@@ -149,8 +149,8 @@
                                     <td>{{ row.sof_type_name|default_if_none:'' }}</td>
                                     <td>{{ row.sof_id|default_if_none:'' }}</td>
                                     <td>{{ row.service_name|default_if_none:'' }}</td>
-                                    <td>{% if row.action_type == 'Debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
-                                    <td>{% if row.action_type == 'Credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+                                    <td>{% if row.action_type|lower == 'debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+                                    <td>{% if row.action_type|lower == 'credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
                                     <td>{{ row.currency|default_if_none:'' }}</td>
                                     <td>{{ row.post_balance|default_if_none:'' }}</td>
                                     <td>{{ row.created_timestamp|default_if_none:'' }}</td>
