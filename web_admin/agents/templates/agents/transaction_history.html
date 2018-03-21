@@ -156,6 +156,7 @@
                                             <td>{{ row.post_balance|default_if_none:'' }}</td>
                                             <td>{{ row.created_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-3">
+                                                {% if row.has_permission_view_payment_order_detail %}
                                                 <a type="button"
                                                    class="btn btn-outline btn-xs btn-info"
                                                    role="button"
@@ -163,6 +164,7 @@
                                                    href="{% url 'payments:order_detail' row.order_id %}">
                                                     <span class="small">Detail</span>
                                                 </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}

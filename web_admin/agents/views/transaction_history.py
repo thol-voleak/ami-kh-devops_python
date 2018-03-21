@@ -200,6 +200,9 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             if order_balance_movements is not None:
                 result_data = self.format_data(order_balance_movements)
+                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                for i in order_balance_movements:
+                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
             else:
                 result_data = order_balance_movements
 

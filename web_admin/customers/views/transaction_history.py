@@ -108,7 +108,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         opening_page_index = request.POST.get('current_page_index')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
-
+        
         user_type = UserType.CUSTOMER.value
         cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
         choices = self._get_choices_types()
@@ -186,10 +186,14 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         data, success, status_message = self._get_transaction_history_list(body)
         if success:
+
             order_balance_movements = data.get("order_balance_movements", [])
 
             if order_balance_movements is not None:
                 result_data = self.format_data(order_balance_movements)
+                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                for i in order_balance_movements:
+                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
             else:
                 result_data = order_balance_movements
 
