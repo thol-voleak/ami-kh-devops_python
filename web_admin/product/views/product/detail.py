@@ -123,9 +123,12 @@ class ProductDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return data['categories'][0]['name']
 
     def get_service_name(self, service_id):
+        self.logger.info('========== Start getting service name ==========')
         url = SERVICE_DETAIL_URL.format(service_id)
         success, status_code, data = RestFulClient.get(url=url, loggers=self.logger,
                                                        headers=self._get_headers())
+        
+        self.logger.info('========== End getting service name ==========')
 
         if not success:
             messages.add_message(
