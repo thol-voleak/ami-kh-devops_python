@@ -118,8 +118,10 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.GET_CATEGORIES, headers=self._get_headers(), loggers=self.logger, params={}
         )
-        API_Logger.post_logging(loggers=self.logger, params={}, response=data, status_code=status_code, is_getting_list=False)
-        context['categories'] = data['categories']
+        categories = data['categories']
+        categories = [x for x in categories if not x['is_deleted']]
+        context['categories'] = categories
+        API_Logger.post_logging(loggers=self.logger, params={}, response=categories, status_code=status_code, is_getting_list=True)
         self.logger.info('========== Finished get category list ==========')
 
         self.logger.info('========== Start get service list ==========')
