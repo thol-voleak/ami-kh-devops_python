@@ -50,8 +50,6 @@ class ProductDelete(TemplateView, GetHeaderMixin):
             headers=self._get_headers()
         )
 
-        API_Logger.delete_logging(loggers=self.logger,
-                                  status_code=status_code)
         self.logger.info('========== Finish deleting product [{}] =========='.format(product_id))
 
         return success, status_code, message
