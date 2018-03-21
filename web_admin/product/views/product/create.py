@@ -76,7 +76,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             url=api_settings.ADD_PRODUCT, headers=self._get_headers(), loggers=self.logger, params=params
         )
 
-        API_Logger.put_logging(loggers=self.logger, params=params, response=data, status_code=status_code)
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code, is_getting_list=False)
 
         if not is_success:
             messages.error(request, status_message)
@@ -100,7 +100,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
             )
 
-            API_Logger.put_logging(loggers=self.logger, params=body, response=data, status_code=status_code)
+            API_Logger.post_logging(loggers=self.logger, params=body, response=data, status_code=status_code, is_getting_list=False)
 
             self.logger.info('========== Finished creating product agent type mapping ==========')
 
@@ -118,13 +118,17 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.GET_CATEGORIES, headers=self._get_headers(), loggers=self.logger, params={}
         )
-        context['categories'] = data['categories']
+        categories = data['categories']
+        categories = [x for x in categories if not x['is_deleted']]
+        context['categories'] = categories
+        API_Logger.post_logging(loggers=self.logger, params={}, response=categories, status_code=status_code, is_getting_list=True)
         self.logger.info('========== Finished get category list ==========')
 
         self.logger.info('========== Start get service list ==========')
         is_success, status_code, data = RestFulClient.get(
             url=api_settings.SERVICE_LIST_URL, headers=self._get_headers(), loggers=self.logger
         )
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data, status_code=status_code)
         context['services'] = data
         self.logger.info('========== Finished get service list ==========')
 
@@ -132,6 +136,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.AGENT_TYPES_LIST_URL, headers=self._get_headers(), loggers=self.logger, params={}
         )
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data, status_code=status_code, is_getting_list=True)
         context['agent_types'] = data
         self.logger.info('========== Finished get agent type list ==========')
 

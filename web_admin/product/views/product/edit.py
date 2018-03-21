@@ -28,9 +28,11 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         product_id = self.kwargs['product_id']
 
         self.logger.info('========== Start get product details ==========')
+        params = {"id": product_id, 'paging': False}
         is_success, status_code, status_message, data = RestFulClient.post(
-            url=api_settings.GET_PRODUCT_DETAIL, headers=self._get_headers(), loggers=self.logger, params={"id": product_id, 'paging': False}
+            url=api_settings.GET_PRODUCT_DETAIL, headers=self._get_headers(), loggers=self.logger, params=params
         )
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code, is_getting_list=False)
         self.logger.info('========== Finished get product details ==========')
 
         product = data['products'][0]
@@ -110,13 +112,17 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.GET_CATEGORIES, headers=self._get_headers(), loggers=self.logger, params={}
         )
-        context['categories'] = data['categories']
+        categories = data['categories']
+        categories = [x for x in categories if not x['is_deleted']]
+        context['categories'] = categories
+        API_Logger.post_logging(loggers=self.logger, params={}, response=categories, status_code=status_code, is_getting_list=True)
         self.logger.info('========== Finished get category list ==========')
 
         self.logger.info('========== Start get service list ==========')
         is_success, status_code, data = RestFulClient.get(
             url=api_settings.SERVICE_LIST_URL, headers=self._get_headers(), loggers=self.logger
         )
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data, status_code=status_code)
         context['services'] = data
         self.logger.info('========== Finished get service list ==========')
 
@@ -124,18 +130,20 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.AGENT_TYPES_LIST_URL, headers=self._get_headers(), loggers=self.logger, params={}
         )
+        API_Logger.post_logging(loggers=self.logger, params={}, response=data, status_code=status_code, is_getting_list=True)
         context['agent_types'] = data
         self.logger.info('========== Finished get agent type list ==========')
 
     def get_agent_type(self, product_id):
-        self.logger.info('========== Start get agent types ==========')
+        self.logger.info('========== Start get product - agent types relations ==========')
+        params = {'product_id': product_id}
         is_success, status_code, status_message, data = RestFulClient.post(
-            url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger,
-            params={'product_id': product_id}
+            url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger, params=params
         )
-        self.logger.info('========== Finished get agent types ==========')
-
         relations = data['relations']
+        API_Logger.post_logging(loggers=self.logger, params=params, response=relations, status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finished get product - agent types relations ==========')
+
         agent_types = []
         for item in relations:
             agent_type_id = item['agent_type_id']
@@ -144,21 +152,25 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return agent_types
 
     def delete_agent_types(self, product_id):
-        self.logger.info('========== Start get agent types ==========')
+        self.logger.info('========== Start get product - agent types relations ==========')
+        params = {'product_id': product_id}
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.PRODUCT_AGENT_TYPE, headers=self._get_headers(), loggers=self.logger,
-            params={'product_id': product_id}
+            params=params
         )
-        self.logger.info('========== Finished get agent types ==========')
+        API_Logger.post_logging(loggers=self.logger, params=params, response=data, status_code=status_code,
+                                is_getting_list=False)
+        self.logger.info('========== Finished get product - agent types relations ==========')
 
         relations = data['relations']
         for item in relations:
             product_agent_type_relation_id = item['id']
             self.logger.info('========== Start delete agent type relation ==========')
-            RestFulClient.delete(
+            is_success, status_code, status_message = RestFulClient.delete(
                 url=api_settings.DELETE_PRODUCT_AGENT_TYPE_RELATION.format(product_agent_type_relation_id=product_agent_type_relation_id), headers=self._get_headers(), loggers=self.logger,
                 params={}
             )
+            API_Logger.delete_logging(loggers=self.logger, params={}, response={}, status_code=status_code)
             self.logger.info('========== Finished delete agent type relation ==========')
 
     def mapping_product_agent_types(self, product_id, agent_types):
@@ -172,7 +184,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             is_success, status_code, status_message, data = RestFulClient.post(
                 url=api_settings.ADD_PRODUCT_AGENT_RELATION, headers=self._get_headers(), loggers=self.logger, params=body
             )
-            API_Logger.put_logging(loggers=self.logger, params=body, response=data, status_code=status_code)
+            API_Logger.post_logging(loggers=self.logger, params=body, response=data, status_code=status_code, is_getting_list=False)
             self.logger.info('========== Finished creating product agent type mapping ==========')
 
     def _get_headers(self):

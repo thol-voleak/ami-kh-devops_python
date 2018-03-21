@@ -109,8 +109,8 @@
                             <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                         </div>
                         <div class="col-xs-1">
-                            <a href="#">
-                                <input id="btn_back" class="btn text-left mb15" type="button" value="Back" onclick="location.href='{% url 'agents:agent-list' %}'"/>
+                            <a href="{{ request.META.HTTP_REFERER }}">
+                                <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
                             </a>
                         </div>
                         <label class="pull-right" id="lbl_total">{{ search_count }}</label>
@@ -138,7 +138,7 @@
                                         <th id="action">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                    <tbody>
                                     {% for row in list %}
                                         <tr>
                                             <td>{{ row.order_id|default_if_none:'' }}</td>
@@ -150,12 +150,13 @@
                                             <td>{{ row.sof_type_name|default_if_none:'' }}</td>
                                             <td>{{ row.sof_id|default_if_none:'' }}</td>
                                             <td>{{ row.service_name|default_if_none:'' }}</td>
-                                            <td>{% if row.action_type == 'Debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
-                                            <td>{% if row.action_type == 'Credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+                                            <td>{% if row.action_type|lower == 'debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
+                                            <td>{% if row.action_type|lower == 'credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
                                             <td>{{ row.currency|default_if_none:'' }}</td>
                                             <td>{{ row.post_balance|default_if_none:'' }}</td>
                                             <td>{{ row.created_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-3">
+                                                {% if row.has_permission_view_payment_order_detail %}
                                                 <a type="button"
                                                    class="btn btn-outline btn-xs btn-info"
                                                    role="button"
@@ -163,6 +164,7 @@
                                                    href="{% url 'payments:order_detail' row.order_id %}">
                                                     <span class="small">Detail</span>
                                                 </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}
