@@ -6,8 +6,13 @@ class UserType(Enum):
     AGENT = 2
     SYSTEM_ADMIN = 3
 
+class SOFType(Enum):
+    BANK = 1
+    CASH = 2
+    CARD = 3
+
 ORDER_STATUS = {
-    0:"Created",
+    0:'Created',
     2:'Executed',
     -1:'Fail',
     1:'Locking',
@@ -17,7 +22,7 @@ ORDER_STATUS = {
 }
 
 ORDER_DETAIL_STATUS = {
-    0:"Created",
+    0:'Created',
     2:'Executed',
     -1:'Fail',
     1:'Locking',
@@ -26,7 +31,7 @@ ORDER_DETAIL_STATUS = {
 }
 
 SOF_TYPE = {
-    1:"Bank",
+    1:'Bank',
     2:'Cash',
     3:'Card'
 }

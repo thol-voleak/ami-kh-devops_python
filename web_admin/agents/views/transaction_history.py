@@ -17,7 +17,7 @@ from django.contrib import messages
 
 import logging
 
-from web_admin.global_constants import UserType, ORDER_STATUS, ORDER_DETAIL_STATUS, SOF_TYPE
+from web_admin.global_constants import UserType, ORDER_STATUS, ORDER_DETAIL_STATUS, SOF_TYPE, SOFType
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -49,31 +49,76 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start getting agent transaction history ==========')
         context = super(TransactionHistoryView, self).get_context_data(**kwargs)
-        agent_id = context['agent_id']
+        user_id = context['agent_id']
         choices = self._get_choices_types()
         user_type = UserType.AGENT.value
         cash_sof_list = self._get_cash_sof_list(agent_id, user_type).get('cash_sofs', [])
+
+        permissions = {
+        }
+
+        body = {}
+        body['paging'] = True
+        body['page_index'] = 1
+
+        context = {
+        }
+
+        request.session['agent_redirect_from_wallet_view'] = True
+
         # Set first load default time for Context
         from_created_timestamp = datetime.now()
         to_created_timestamp = datetime.now()
         from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
         to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+        body['from_created_timestamp'] = new_from_created_timestamp
         new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
+        context['from_created_timestamp'] = new_from_created_timestamp
+
+        body['to_created_timestamp'] = new_to_created_timestamp
         new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+        context['to_created_timestamp'] = new_to_created_timestamp
 
-        permissions = {
-        }
+        body['sof_type_id'] = SOFType.CASH.value
+        body['user_type_id'] = UserType.AGENT.value
+        body['user_id'] = user_id
 
-        context = {
-            "search_count": 0,
-            "choices": choices,
-            'permissions': permissions,
-            'agent_id': agent_id,
-            'cash_sof_list': cash_sof_list,
-            'from_created_timestamp': new_from_created_timestamp,
-            'to_created_timestamp': new_to_created_timestamp
-        }
-        request.session['agent_redirect_from_wallet_view'] = True
+        data, success, status_message = self._get_transaction_history_list(body)
+        if success:
+            order_balance_movements = data.get("order_balance_movements", [])
+
+            if order_balance_movements is not None:
+                result_data = self.format_data(order_balance_movements)
+                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                     'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                for i in order_balance_movements:
+                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+            else:
+                result_data = order_balance_movements
+
+            page = data.get("page", {})
+            self.logger.info("Page: {}".format(page))
+            context.update(
+                {'search_count': page.get('total_elements', 0),
+                 'list': result_data,
+                 'choices': choices,
+                 'cash_sof_list': cash_sof_list,
+                 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page),
+                 'agent_id': user_id
+                 }
+            )
+        else:
+            context.update(
+                {'search_count': 0,
+                 'data': [],
+                 'paginator': {},
+                 'agent_id': user_id
+                 }
+            )
+
         self.logger.info('========== Finished getting agent transaction history ==========')
         return render(request, self.template_name, context)
 
