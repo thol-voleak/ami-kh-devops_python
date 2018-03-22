@@ -212,10 +212,12 @@
                             else {
                                 if (response.failed_count === 0) {
                                     showSuccessMessage("Deleted Successfully");
-                                    if (document.getElementById('chk_all').checked) {
-                                        $('#btn_search').click();
-                                    }
-                                    $('#chk_all').prop('checked', false);
+                                    setTimeout(function(){
+                                        if (document.getElementById('chk_all').checked) {
+                                            $('#btn_search').click();
+                                        }
+                                    }, 10000);
+
                                 } else {
                                     showErrorMessage(response.success_ids.length + " Successful Delete, " + response.failed_count + " Failed Delete");
                                 }
