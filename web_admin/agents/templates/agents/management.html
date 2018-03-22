@@ -83,6 +83,58 @@
         width: 175%;
         border-top: 0.5px solid grey;
     }
+
+    .portfolio-panel-empty {
+        border: 1px dashed #c0c0c0;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .category-group {
+        border: 1px solid #d0d0d0;
+    }
+    .category-group + .category-group {
+        border-top: none;
+    }
+    .category-group-title {
+        padding: 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    .expand-collapse {
+        display: inline-block;
+        border: 1px solid #808080;
+        border-radius: 50%;
+        height: 23px;
+        width: 23px;
+        text-align: center;
+    }
+    .expand-collapse i {
+        font-size: 20px;
+    }
+    .expand-collapse i.fa-angle-up {
+        display: none;
+    }
+    .category-group-body {
+        border-top: 1px solid #d0d0d0;
+        padding: 15px;
+        display: none;
+    }
+    .category-group-body .checkbox {
+        padding-top: 0px;
+    }
+    .category-group.open .expand-collapse i.fa-angle-up {
+        display: inline-block;
+    }
+    .category-group.open .expand-collapse i.fa-angle-down {
+        display: none;
+    }
+    .category-group.open .category-group-body {
+        display: block;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -110,6 +162,9 @@
                                 <a  href="#div_summary_management" data-toggle="tab" id="tab_summary"><font size="4">Summary</font></a>
                             </li>
                             {% endif %}
+                            <li id="product_configuration_tab" {% if default_tab == 2 %}class="active" {% endif %}>
+                                <a href="#div_product_configuration" data-toggle="tab" aria-expanded="true"><font size="4">Product Configuration</font></a>
+                            </li>
                             {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                             <li id="relationships_tab" {% if default_tab == 1 %}class="active" {% endif %}>
                                 <a href="#div_relationships" data-toggle="tab" id="tab_relationships"><font size="4">Relationships</font></a>
@@ -121,6 +176,50 @@
                         <div class="tab-content clearfix">
                             {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
                             <div class="tab-pane {% if default_tab == 0 %}active{% endif %}" id="div_summary_management">
+                                <div>
+                                    <h4>Product Portfolio</h4>
+                                    <div class="portfolio-panel-empty">
+                                        <div>
+                                            <div><b>Please Add Product Configuration</b></div>
+                                            <div style="margin-top: 10px;">
+                                                <button class="btn btn-success btn-md" onclick="$('#product_configuration_tab a').click()" type="button">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="portfolio-panel">
+                                        <div class="category-group open">
+                                            <div class="category-group-title">
+                                                <b>Category Name 1</b>
+                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
+                                            </div>
+                                            <div class="category-group-body">
+                                                <div class="product">
+                                                    <label><input checked disabled type="checkbox"/> Product Name 1</label>
+                                                </div>
+                                                <div class="product">
+                                                    <label><input checked disabled type="checkbox"/> Product Name 2</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="category-group">
+                                            <div class="category-group-title">
+                                                <b>Category Name 2</b>
+                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
+                                            </div>
+                                            <div class="category-group-body">
+                                                <div class="product">
+                                                    <label><input checked disabled type="checkbox"/> Product Name 3</label>
+                                                </div>
+                                                <div class="product">
+                                                    <label><input checked disabled type="checkbox"/> Product Name 4</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right; margin-top: 15px;">
+                                            <button class="btn btn-success btn-md" onclick="$('#product_configuration_tab a').click()" type="button">Edit</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                                 <div id="div_relationships_summary">
                                 <h4>Relationships View</h4>
@@ -190,6 +289,47 @@
                                 {% endif %}
                             </div>
                             {% endif %}
+                            <div class="tab-pane {% if default_tab == 2 %}active{% endif %}" id="div_product_configuration">
+                                <div>
+                                    <h4>Product Portfolio</h4>
+                                    <div class="portfolio-panel">
+                                        <div class="category-group open">
+                                            <div class="category-group-title">
+                                                <b>Category Name 1</b>
+                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
+                                            </div>
+                                            <div class="category-group-body">
+                                                <div class="product">
+                                                    <label><input checked type="checkbox"/> Product Name 1</label>
+                                                </div>
+                                                <div class="product">
+                                                    <label><input checked type="checkbox"/> Product Name 2</label>
+                                                </div>
+                                                <div class="product">
+                                                    <label><input type="checkbox"/> Product Name 3</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="category-group open">
+                                            <div class="category-group-title">
+                                                <b>Category Name 2</b>
+                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
+                                            </div>
+                                            <div class="category-group-body">
+                                                <div class="product">
+                                                    <label><input type="checkbox"/> Product Name 4</label>
+                                                </div>
+                                                <div class="product">
+                                                    <label><input type="checkbox"/> Product Name 5</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right; margin-top: 15px;">
+                                        <button class="btn btn-success btn-md" id="btn_save" type="button"> Save <i class="fa fa-spinner fa-spin" style="display: none;"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                             {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                             <div class="tab-pane  {% if default_tab == 1 %}active{% endif %}" id="div_relationships">
                                 <div class="panel-heading" style="margin-top: -30px;">
@@ -392,6 +532,14 @@
             $('#txt_relationship_partner_id').attr('disabled', 'disabled');
             $('#txt_relationship_partner_id').val('');
         }
+    });
+    $(document).ready(function () {
+        $(".category-group-title").click(function () {
+            $(this).parent().toggleClass("open");
+        });
+        $("#btn_save").click(function () {
+            $(this).find("i.fa-spinner").show();
+        });
     });
     </script>
 {% endblock %}
