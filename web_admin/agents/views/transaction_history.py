@@ -52,7 +52,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         user_id = context['agent_id']
         choices = self._get_choices_types()
         user_type = UserType.AGENT.value
-        cash_sof_list = self._get_cash_sof_list(agent_id, user_type).get('cash_sofs', [])
+        cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
 
         permissions = {
         }
