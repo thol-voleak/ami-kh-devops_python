@@ -91,10 +91,9 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             agent_products = self.get_products_by_agent(int(context['agent_id']))
             all_products = self.get_all_products()
             all_catelogies = self.get_all_categories()
-            acceptable_product = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
-            print(acceptable_product)
+            product_objs = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
             context.update({
-                'acceptable_product': acceptable_product,
+                'product_objs': product_objs,
             })
         self.logger.info('========== Finish getting product portfolio ==========')
         return render(request, self.template_name, context)
@@ -130,7 +129,14 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if p['product_id'] not in checked_id:
                 p['is_checked'] = False
 
-        return acceptable_product
+        product_objs = {}
+        for p in acceptable_product:
+            if p['category_name'] not in product_objs:
+                product_objs[p['category_name']] = []
+            else:
+                product_objs[p['category_name']].append(p)
+
+        return product_objs
 
     def get_agent_type_by_agent_id(self, id):
         api_path = api_settings.AGENT_DETAIL_PATH
