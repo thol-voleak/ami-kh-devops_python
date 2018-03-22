@@ -83,8 +83,67 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                      })
 
             self.logger.info('========== Finish getting Relationships list ==========')
+        self.logger.info('========== Start getting product portfolio ==========')
 
+        agent_type = self.get_agent_type_by_agent_id(int(context['agent_id']))
+        if isinstance(agent_type, int):
+            agent_type_products = self.get_products_by_agent_type(agent_type)
+            agent_products = self.get_products_by_agent(int(context['agent_id']))
+            all_products = self.get_all_products()
+            all_catelogies = self.get_all_categories()
+            checked_product, unchecked_product = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
+            context.update({
+                'checked_product': checked_product,
+                'unchecked_product': unchecked_product
+            })
+        self.logger.info('========== Finish getting product portfolio ==========')
         return render(request, self.template_name, context)
+
+    def _create_product_relation(self, agent_products, agent_type_products, all_products, all_categories):
+        products = []
+        for atp in agent_type_products:
+            for p in all_products:
+                if atp['product_id'] != p['id']:
+                    continue
+                atp['product_name'] = p['name']
+
+                for c in all_categories:
+                    if p['category_id'] != c['id']:
+                        continue
+                    if c['is_deleted']:
+                        break
+                    atp['category_name'] = c['name']
+                    products.append(atp)
+                    break
+                break
+
+        checked_product = []
+        for ap in agent_products:
+            for p in products:
+                if ap['product_id'] == p['id']:
+                    checked_product.append(ap)
+                    break
+
+        unchecked_product = [p for p in products if p not in checked_product]
+        return checked_product, unchecked_product
+
+    def get_agent_type_by_agent_id(self, id):
+        api_path = api_settings.AGENT_DETAIL_PATH
+
+        body = {
+            "id": id,
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('agents', []),
+                                status_code=status_code, is_getting_list=True)
+        data = data or {}
+        return data.get('agents')[0]['agent_type_id']
 
     def _get_relationships(self, params):
 
@@ -211,6 +270,77 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         
         return render(request, self.template_name, context)
 
+    def get_products_by_agent(self, id):
+        api_path = api_settings.GET_PRODUCT_AGENT_RELATION
 
+        body = {
+            "agent_id": id,
+        }
 
-        
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('relations', []),
+                                status_code=status_code, is_getting_list=True)
+        data = data or {}
+        return data.get('relations', [])
+
+    def get_products_by_agent_type(self, id):
+        api_path = api_settings.PRODUCT_AGENT_TYPE
+
+        body = {
+            "agent_type_id": id,
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=body)
+
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('relations', []),
+                                status_code=status_code, is_getting_list=True)
+        data = data or {}
+
+        return data.get('relations', [])
+
+    def get_all_products(self):
+        api_path = api_settings.GET_PRODUCTS
+
+        body = {
+            "paging": False,
+            "is_deleted": False,
+            "is_active": True
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('products', []),
+                                status_code=status_code, is_getting_list=True)
+        data = data or {}
+        return data.get('products', [])
+
+    def get_all_categories(self):
+        api_path = api_settings.GET_CATEGORIES
+
+        body = {
+            "paging": False,
+            "is_active": True
+        }
+
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('categories', []),
+                                status_code=status_code, is_getting_list=True)
+        data = data or {}
+
+        return data.get('categories', [])

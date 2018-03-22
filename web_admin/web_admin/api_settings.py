@@ -284,3 +284,4 @@ PRODUCT_AGENT_TYPE = 'api-gateway/report/' + API_VERSION + '/products/agent-type
 EDIT_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
 DELETE_PRODUCT_AGENT_TYPE_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agent-types/relations/{product_agent_type_relation_id}'
 DELETE_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
+GET_PRODUCT_AGENT_RELATION = 'api-gateway/report/' + API_VERSION + '/products/agents/relations'
