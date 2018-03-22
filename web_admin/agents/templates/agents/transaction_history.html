@@ -109,7 +109,7 @@
                             <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                         </div>
                         <div class="col-xs-1">
-                            <a href="{{ request.META.HTTP_REFERER }}">
+                            <a href="{% url 'customers:customer-list' %}">
                                 <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
                             </a>
                         </div>
