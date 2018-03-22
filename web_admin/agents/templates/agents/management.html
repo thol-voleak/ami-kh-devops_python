@@ -326,7 +326,7 @@
                                         </div>
                                     </div>
                                     <div style="text-align: right; margin-top: 15px;">
-                                        <button class="btn btn-success btn-md" type="button">Save</button>
+                                        <button class="btn btn-success btn-md" id="btn_save" type="button"> Save <i class="fa fa-spinner fa-spin" style="display: none;"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -536,6 +536,9 @@
     $(document).ready(function () {
         $(".category-group-title").click(function () {
             $(this).parent().toggleClass("open");
+        });
+        $("#btn_save").click(function () {
+            $(this).find("i.fa-spinner").show();
         });
     });
     </script>
