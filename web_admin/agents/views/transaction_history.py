@@ -165,7 +165,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             messages.add_message(
                 request,
                 messages.ERROR,
-                'Time range over '+ walletViewInDay + ' days is not allowed'
+                'Time range over '+ walletViewInDay + ' day(s) is not allowed'
             )
 
             context.update(
