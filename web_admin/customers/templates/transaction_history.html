@@ -142,8 +142,8 @@
                                 <tr>
                                     <td>{{ row.order_id|default_if_none:'' }}</td>
                                     <td>{{ row.order_status_name|default_if_none:'' }}</td>
-                                    <td>{{ row.external_id|default_if_none:'' }}</td>
-                                    <td>{{ row.command|default_if_none:'' }}</td>
+                                    <td>{{ row.ext_transaction_id|default_if_none:'' }}</td>
+                                    <td>{{ row.command_name|default_if_none:'' }}</td>
                                     <td>{{ row.order_detail_id|default_if_none:'' }}</td>
                                     <td>{{ row.order_detail_status_name|default_if_none:'' }}</td>
                                     <td>{{ row.sof_type_name|default_if_none:'' }}</td>
