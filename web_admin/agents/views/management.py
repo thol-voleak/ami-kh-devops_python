@@ -91,10 +91,9 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             agent_products = self.get_products_by_agent(int(context['agent_id']))
             all_products = self.get_all_products()
             all_catelogies = self.get_all_categories()
-            checked_product, unchecked_product = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
+            product_objs = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
             context.update({
-                'checked_product': checked_product,
-                'unchecked_product': unchecked_product
+                'product_objs': product_objs,
             })
         self.logger.info('========== Finish getting product portfolio ==========')
         return render(request, self.template_name, context)
@@ -117,15 +116,27 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     break
                 break
 
-        checked_product = []
+        objs = []
         for ap in agent_products:
             for p in products:
                 if ap['product_id'] == p['id']:
-                    checked_product.append(ap)
+                    ap['is_checked'] = True
+                    objs.append(ap)
                     break
 
-        unchecked_product = [p for p in products if p not in checked_product]
-        return checked_product, unchecked_product
+        for p in products:
+            if p not in objs:
+                p['is_checked'] = False
+                objs.append(p)
+
+        product_objs = {}
+        for obj in objs:
+            if obj['category_name'] not in product_objs:
+                product_objs[obj['category_name']] = []
+            else:
+                product_objs[obj['category_name']].append(obj)
+
+        return product_objs
 
     def get_agent_type_by_agent_id(self, id):
         api_path = api_settings.AGENT_DETAIL_PATH
