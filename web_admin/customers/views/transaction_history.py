@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView
 
 from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SOF_TYPES_URL
-from web_admin.global_constants import UserType
+from web_admin.global_constants import UserType, SOFType
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CASH_SOFS_URL
 from django.contrib import messages
@@ -51,26 +51,67 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         user_type = UserType.CUSTOMER.value
         choices = self._get_choices_types()
         cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
+
+        body = {}
+        body['paging'] = True
+        body['page_index'] = 1
+
         # Set first load default time for Context
         from_created_timestamp = datetime.now()
         to_created_timestamp = datetime.now()
         from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
         to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+        body['from_created_timestamp'] = new_from_created_timestamp
         new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
-        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+        context['from_created_timestamp'] = new_from_created_timestamp
 
+        body['to_created_timestamp'] = new_to_created_timestamp
+        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+        context['to_created_timestamp'] = new_to_created_timestamp
+
+        body['sof_type_id'] = SOFType.CASH.value
+        body['user_type_id'] = UserType.CUSTOMER.value
+        body['user_id'] = user_id
+
+        data, success, status_message = self._get_transaction_history_list(body)
+        if success:
+
+            order_balance_movements = data.get("order_balance_movements", [])
+
+            if order_balance_movements is not None:
+                result_data = self.format_data(order_balance_movements)
+                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                     'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                for i in order_balance_movements:
+                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+            else:
+                result_data = order_balance_movements
+
+            page = data.get("page", {})
+            self.logger.info("Page: {}".format(page))
+            context.update(
+                {'search_count': page.get('total_elements', 0),
+                 'list': result_data,
+                 'choices': choices,
+                 'cash_sof_list': cash_sof_list,
+                 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page),
+                 'user_id': user_id
+                 }
+            )
+        else:
+            context.update(
+                {'search_count': 0,
+                 'data': [],
+                 'paginator': {},
+                 'user_id': user_id
+                 }
+            )
         permissions = {
         }
 
-        context = {
-            "choices": choices,
-            'permissions': permissions,
-            "user_id": user_id,
-            "user_type_id": UserType.CUSTOMER.value,
-            'cash_sof_list': cash_sof_list,
-            'from_created_timestamp': new_from_created_timestamp,
-            'to_created_timestamp': new_to_created_timestamp
-        }
         request.session['customer_redirect_from_wallet_view'] = True
         self.logger.info('========== Finished getting customer transaction history ==========')
         return render(request, self.template_name, context)
@@ -219,7 +260,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': 0,
                  'data': [],
                  'paginator': {},
-                 'agent_id': user_id
+                 'user_id': user_id
                  }
             )
         self.logger.info('========== End search customer transaction history ==========')
