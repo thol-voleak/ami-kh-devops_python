@@ -439,7 +439,15 @@
                     </div>
 
                     <div class="pull-right">
-                        <a href="{% url 'payments:payment_order' %}">
+                        {% if page_from == 'agent' %}
+                            <a href="{% url 'agents:agent_transaction_history' agent_id %}">
+                        {% elif page_from == 'customer' %}
+                            <a href="{% url 'customers:customer_transaction_history' customer_id %}">
+                        {% elif page_from == 'order_list' %}
+                            <a href="{% url 'payments:payment_order' %}">
+                        {% else %}
+                            <a href="{% url 'payments:payment_order' %}">
+                        {% endif %}
                             <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
                         </a>
                     </div>

@@ -65,6 +65,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         }
 
         request.session['agent_redirect_from_wallet_view'] = True
+        request.session['page_from'] = 'agent'
+        request.session['agent_id'] = user_id
 
         # Set first load default time for Context
         from_created_timestamp = datetime.now()

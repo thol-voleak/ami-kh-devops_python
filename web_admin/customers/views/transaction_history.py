@@ -55,6 +55,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {}
         body['paging'] = True
         body['page_index'] = 1
+        request.session['page_from'] = 'customer'
+        request.session['customer_id'] = user_id
 
         # Set first load default time for Context
         from_created_timestamp = datetime.now()
