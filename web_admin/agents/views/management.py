@@ -122,17 +122,17 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     break
                 break
 
-        # verify if applicable product is applied
         checked_id = [i['product_id'] for i in checked_products_of_agent]
+
+        product_objs = {}
         for p in applicable_product:
+            # verify if applicable product is applied
             if p['product_id'] not in checked_id:
                 p['is_checked'] = False
             else:
                 p['is_checked'] = True
 
-        # categorize products
-        product_objs = {}
-        for p in applicable_product:
+            # categorize products
             if p['category_name'] not in product_objs:
                 product_objs[p['category_name']] = []
             else:
