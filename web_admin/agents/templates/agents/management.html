@@ -188,32 +188,21 @@
                                     </div>
                                     <div class="portfolio-panel">
                                         <div class="category-group open">
-                                            <div class="category-group-title">
-                                                <b>Category Name 1</b>
-                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
-                                            </div>
-                                            <div class="category-group-body">
-                                                <div class="product">
-                                                    <label><input checked disabled type="checkbox"/> Product Name 1</label>
+                                            {% for category in applicable_categories %}
+                                                <div class="category-group-title">
+                                                    <b>{{ category }}</b>
+                                                    <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
                                                 </div>
-                                                <div class="product">
-                                                    <label><input checked disabled type="checkbox"/> Product Name 2</label>
+                                                <div class="category-group-body">
+                                                    {% for product in  category %}
+                                                        {% if product.is_checked %}
+                                                            <div class="product">
+                                                                <label><input checked disabled type="checkbox"/> {{ product.product_name }}</label>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="category-group">
-                                            <div class="category-group-title">
-                                                <b>Category Name 2</b>
-                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
-                                            </div>
-                                            <div class="category-group-body">
-                                                <div class="product">
-                                                    <label><input checked disabled type="checkbox"/> Product Name 3</label>
-                                                </div>
-                                                <div class="product">
-                                                    <label><input checked disabled type="checkbox"/> Product Name 4</label>
-                                                </div>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                         <div style="text-align: right; margin-top: 15px;">
                                             <button class="btn btn-success btn-md" onclick="$('#product_configuration_tab a').click()" type="button">Edit</button>
@@ -294,39 +283,25 @@
                                     <h4>Product Portfolio</h4>
                                     <div class="portfolio-panel">
                                         <div class="category-group open">
-                                            <div class="category-group-title">
-                                                <b>Category Name 1</b>
-                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
-                                            </div>
-                                            <div class="category-group-body">
-                                                <div class="product">
-                                                    <label><input checked type="checkbox"/> Product Name 1</label>
+                                            {% for category in applicable_categories %}
+                                                <div class="category-group-title">
+                                                    <b>{{ category }}</b>
+                                                    <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
                                                 </div>
-                                                <div class="product">
-                                                    <label><input checked type="checkbox"/> Product Name 2</label>
+                                                <div class="category-group-body">
+                                                    {% for product in category %}
+                                                        {% if product.is_checked %}
+                                                            <div class="product">
+                                                                <label><input checked disabled type="checkbox" onchange="toggleProductFromAgent({{ product.id }}, this)"/> {{ product.product_name }}</label>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 </div>
-                                                <div class="product">
-                                                    <label><input type="checkbox"/> Product Name 3</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="category-group open">
-                                            <div class="category-group-title">
-                                                <b>Category Name 2</b>
-                                                <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
-                                            </div>
-                                            <div class="category-group-body">
-                                                <div class="product">
-                                                    <label><input type="checkbox"/> Product Name 4</label>
-                                                </div>
-                                                <div class="product">
-                                                    <label><input type="checkbox"/> Product Name 5</label>
-                                                </div>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                     <div style="text-align: right; margin-top: 15px;">
-                                        <button class="btn btn-success btn-md" id="btn_save" type="button"> Save <i class="fa fa-spinner fa-spin" style="display: none;"></i></button>
+                                        <button class="btn btn-success btn-md" id="btn_save" type="button" onclick="saveProductToAgent()"> Save <i class="fa fa-spinner fa-spin" style="display: none;"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -541,5 +516,32 @@
             $(this).find("i.fa-spinner").show();
         });
     });
+    var addIdList = [];
+    var copyList = addIdList.slice();
+    var toggleProductFromAgent = function(productId, elem) {
+        if($(elm).is(':checked')) {
+            if(copyList.indexOf(productId) !== -1) {
+                copyList.push(productId);
+            }
+        } else {
+            copyList.splice(copyList.indexOf(productId), 1);
+        }
+    };
+
+    var saveProductToAgent = function() {
+        var newAddedList = [];
+        var newRemovedList = [];
+        for(var i = 0; i < addIdList.length; i++) {
+            if(copyList.indexOf(addIdList[i]) == -1) {
+                newRemovedList.push(addIdList[i]);
+            }
+        }
+        for(var i = 0; i < copyList.length; i++) {
+            if(addIdList.indexOf(copyList[i]) == -1) {
+                newAddedList.push(copyList[i]);
+            }
+        }
+    };
+
     </script>
 {% endblock %}

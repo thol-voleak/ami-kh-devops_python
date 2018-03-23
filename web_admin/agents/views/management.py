@@ -87,20 +87,26 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         agent_type = self.get_agent_type_by_agent_id(int(context['agent_id']))
         if isinstance(agent_type, int):
-            agent_type_products = self.get_products_by_agent_type(agent_type)
-            agent_products = self.get_products_by_agent(int(context['agent_id']))
+            applicable_products_of_agent = self.get_products_by_agent_type(agent_type)
+            checked_products_of_agent = self.get_products_by_agent(int(context['agent_id']))
+
+            # get all products to get product name
             all_products = self.get_all_products()
+
+            # get all categories to get category name
             all_catelogies = self.get_all_categories()
-            product_objs = self._create_product_relation(agent_products, agent_type_products, all_products, all_catelogies)
+
+            applicable_categories = self._create_product_relation(checked_products_of_agent, applicable_products_of_agent, all_products, all_catelogies)
             context.update({
-                'product_objs': product_objs,
+                'applicable_categories': applicable_categories,
             })
         self.logger.info('========== Finish getting product portfolio ==========')
         return render(request, self.template_name, context)
 
-    def _create_product_relation(self, agent_products, agent_type_products, all_products, all_categories):
-        acceptable_product = []
-        for atp in agent_type_products:
+    def _create_product_relation(self, checked_products_of_agent, applicable_products_of_agent, all_products, all_categories):
+        # get all applicable products
+        applicable_product = []
+        for atp in applicable_products_of_agent:
             for p in all_products:
                 if atp['product_id'] != p['id']:
                     continue
@@ -112,25 +118,21 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     if c['is_deleted']:
                         break
                     atp['category_name'] = c['name']
-                    acceptable_product.append(atp)
+                    applicable_product.append(atp)
                     break
                 break
 
-        checked_product = []
-        for ap in agent_products:
-            for p in acceptable_product:
-                if ap['product_id'] == p['id']:
-                    p['is_checked'] = True
-                    checked_product.append(ap)
-                    break
-
-        checked_id = [i['product_id'] for i in checked_product]
-        for p in acceptable_product:
+        # verify if applicable product is applied
+        checked_id = [i['product_id'] for i in checked_products_of_agent]
+        for p in applicable_product:
             if p['product_id'] not in checked_id:
                 p['is_checked'] = False
+            else:
+                p['is_checked'] = True
 
+        # categorize products
         product_objs = {}
-        for p in acceptable_product:
+        for p in applicable_product:
             if p['category_name'] not in product_objs:
                 product_objs[p['category_name']] = []
             else:
