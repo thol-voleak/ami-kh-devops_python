@@ -188,13 +188,13 @@
                                     </div>
                                     <div class="portfolio-panel">
                                         <div class="category-group open">
-                                            {% for category in applicable_categories %}
+                                            {% for category, products in applicable_categories.items %}
                                                 <div class="category-group-title">
                                                     <b>{{ category }}</b>
                                                     <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
                                                 </div>
                                                 <div class="category-group-body">
-                                                    {% for product in  category %}
+                                                    {% for product in  products %}
                                                         {% if product.is_checked %}
                                                             <div class="product">
                                                                 <label><input checked disabled type="checkbox"/> {{ product.product_name }}</label>
@@ -283,18 +283,16 @@
                                     <h4>Product Portfolio</h4>
                                     <div class="portfolio-panel">
                                         <div class="category-group open">
-                                            {% for category in applicable_categories %}
+                                            {% for category, products in applicable_categories.items %}
                                                 <div class="category-group-title">
                                                     <b>{{ category }}</b>
                                                     <div class="expand-collapse"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
                                                 </div>
                                                 <div class="category-group-body">
-                                                    {% for product in category %}
-                                                        {% if product.is_checked %}
+                                                    {% for product in products %}
                                                             <div class="product">
-                                                                <label><input checked disabled type="checkbox" onchange="toggleProductFromAgent({{ product.id }}, this)"/> {{ product.product_name }}</label>
+                                                                <label><input {% if product.is_checked %}checked{% endif %} type="checkbox" onchange="toggleProductFromAgent({{ product.id }}, this)"/> {{ product.product_name }}</label>
                                                             </div>
-                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% endfor %}

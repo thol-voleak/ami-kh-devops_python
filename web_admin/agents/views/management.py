@@ -124,7 +124,7 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         checked_id = [i['product_id'] for i in checked_products_of_agent]
 
-        product_objs = {}
+        applicable_categories = {}
         for p in applicable_product:
             # verify if applicable product is applied
             if p['product_id'] not in checked_id:
@@ -133,12 +133,12 @@ class AgentManagement(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 p['is_checked'] = True
 
             # categorize products
-            if p['category_name'] not in product_objs:
-                product_objs[p['category_name']] = []
+            if p['category_name'] not in applicable_categories:
+                applicable_categories[p['category_name']] = []
             else:
-                product_objs[p['category_name']].append(p)
+                applicable_categories[p['category_name']].append(p)
 
-        return product_objs
+        return applicable_categories
 
     def get_agent_type_by_agent_id(self, id):
         api_path = api_settings.AGENT_DETAIL_PATH
