@@ -53,4 +53,5 @@ urlpatterns = [
     url(r'^admin-portal/report-configuration/', include('report_configuration.urls')),
     url(r'^admin-portal/category/', include('category.urls')),
     url(r'^admin-portal/product/', include('product.urls')),
+    url(r'^admin-portal/shop-type/', include('shop_type.urls')),
 ]

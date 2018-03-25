@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="panel-heading">
+        <h3>Shop Types</h3>
+        <div class="pull-right">
+            <a href="{% url 'shop_type:create' %}">
+                <button class="btn btn-success btn-block btn-md"><strong>+</strong> <span>Add New Shop Type</span></button>
+            </a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Shop Types</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>Description</td>
+                        <td>
+                            <button class="btn btn-outline btn-xs btn-info" onclick="location.href='{% url 'shop_type:detail' 123 %}';">Detail</button>
+                            <button class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'shop_type:edit' 123 %}'">Edit</button>
+                            <button class="btn btn-outline btn-xs btn-danger" onclick="location.href='{% url 'shop_type:delete' 123 %}'">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</div>
+{% endblock %}
