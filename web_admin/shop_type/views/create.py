@@ -33,3 +33,8 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info(
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
         return check_permissions_by_user(self.request.user, permission[0])
+
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        context = {'form': form}
+        return render(request, self.template_name, context)

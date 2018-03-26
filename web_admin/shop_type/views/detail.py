@@ -32,4 +32,7 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
         return check_permissions_by_user(self.request.user, permission[0])
 
-
+    def get(self, request, *args, **kwargs):
+        form = {"id": 123, "name": "Name", "description": "Description"}
+        context = {'form': form}
+        return render(request, self.template_name, context)

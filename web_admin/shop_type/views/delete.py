@@ -1,3 +1,5 @@
+from django.shortcuts import render
+
 from authentications.utils import get_correlation_id_from_username
 from web_admin import setup_logger
 from web_admin.restful_client import RestFulClient
@@ -22,3 +24,13 @@ class DeleteView(TemplateView, GetHeaderMixin):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(DeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = {"id": 123, "name": "Name", "description": "Description"}
+        context = {'form': form}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        context = {'form': form}
+        return render(request, self.template_name, context)
