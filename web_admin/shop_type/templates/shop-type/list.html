@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div class="panel mb25">
     <div class="panel-heading">
         <h3>Shop Types</h3>
 
@@ -38,15 +38,16 @@
                         {% if i.is_deleted %}
                         <td><del>{{i.name}}</del></td>
                         <td><del>{{i.description}}</del></td>
+                        <td></td>
                         {%else%}
                         <td>{{i.name}}</td>
                         <td>{{i.description}}</td>
-                        {%endif%}
                         <td>
-                            <button id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href=''">Detail</button>
-                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href=''">Edit</button>
+                            <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop_type:shop_type_detail' i.id %}">Detail</a>
+                            <a id="btn_edit" class="btn btn-outline btn-xs btn-primary">Edit</a>
                             <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop_type:shop_type_delete' i.id %}">Delete</a>
                         </td>
+                        {%endif%}
                     </tr>
                     {%endfor%}
                 </tbody>

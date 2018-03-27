@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Shop Categories</h3>
+
+        {% include "message.html" %}
+
+        <div class="pull-right">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop_category:shop_category_create' %}">
+                <strong>+</strong> <span>Add New Shop Category</span>
+            </a>
+        </div>
+    </div>
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
+        {% csrf_token %}
+        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+        <div class="col-xs-1" hidden>
+            <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search" >
+        </div>
+        <div class="clearfix"></div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="tbl_shop_categories" class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th>Shop Categories</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td>Description</td>
+                            <td>
+                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href='{% url 'shop_category:shop_category_detail' 123 %}';">Detail</a>
+                                <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'shop_category:shop_category_edit' 123 %}'">Edit</a>
+                                <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" onclick="location.href='{% url 'shop_category:shop_category_delete' 123 %}'">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
+        </div>
+    </form>
+</div>
+{% endblock %}

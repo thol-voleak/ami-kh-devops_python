@@ -3,7 +3,7 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading mb15">
-        <h3>Edit Shop Type</h3>
+        <h3>Add New Shop Category</h3>
     </div>
 
     {% include "message.html" %}
@@ -11,12 +11,12 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form id="submit-form" class="form-horizontal" role="form" method="post">
-                    {% include "shop-type/form-content.html" %}
+                <form class="form-horizontal" role="form" method="post">
+                    {% include "shop-category/form-content.html" %}
 
                     <div class="pull-right">
-                        <a id="btn_cancel" class="btn" href="{% url 'shop_type:shop_type_list' %}">Cancel</a>
-                        <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
+                        <a id="btn_cancel" class="btn" href="{% url 'shop_category:shop_category_list' %}">Cancel</a>
+                        <input id="btn_add" class="btn btn-success" type="submit" value="Add"/>
                     </div>
                 </form>
             </div>

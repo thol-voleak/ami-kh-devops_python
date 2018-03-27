@@ -66,7 +66,7 @@ class DeleteView(TemplateView, GetHeaderMixin):
         self.logger.info('========== Start getting shop type detail ==========')
         params = {'id': id}
         success, status_code, message, data = RestFulClient.post(
-            url=api_settings.GET_LIST_SHOP_TYPE,
+            url=api_settings.GET_SHOP_TYPE_DETAIL,
             params=params, loggers=self.logger,
             headers=self._get_headers()
         )

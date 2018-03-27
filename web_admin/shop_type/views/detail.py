@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger, api_settings
+from web_admin import setup_logger, api_settings, settings
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -33,6 +33,28 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
-        form = {"id": 123, "name": "Name", "description": "Description"}
-        context = {'form': form}
+        self.logger.info('========== Start render shop type detail ==========')
+        context = super(DetailView, self).get_context_data(**kwargs)
+        shop_type_id = int(context['id'])
+        shop_type_detail = self.get_shop_type_detail(shop_type_id)
+        context.update({
+            'form': shop_type_detail['shop_types'][0]
+        })
+        self.logger.info('========== Finish render shop type detail ==========')
         return render(request, self.template_name, context)
+
+    def get_shop_type_detail(self, shop_type_id):
+        url = api_settings.GET_SHOP_TYPE_DETAIL
+        body = {
+            "id": shop_type_id
+        }
+        self.logger.info('========== Start get shop type detail ==========')
+        success, status_code, status_message, data = RestFulClient.post(url=url,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get shop type detail ==========')
+        return data
