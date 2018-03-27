@@ -10,6 +10,12 @@
             </a>
         </div>
     </div>
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{%url 'shop_type:shop_type_list' %}">
+        {% csrf_token %}
+    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+    <div class="col-xs-1" hidden>
+        <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search" >
+    </div>
     <div class="clearfix"></div>
     <div class="panel-body">
         <div class="table-responsive">
@@ -22,19 +28,22 @@
                 </tr>
                 </thead>
                 <tbody>
+                    {%for i in shop_types%}
                     <tr>
-                        <td>Name</td>
-                        <td>Description</td>
+                        <td>{{i.name}}</td>
+                        <td>{{i.description}}</td>
                         <td>
-                            <button class="btn btn-outline btn-xs btn-info" onclick="location.href=''">Detail</button>
-                            <button class="btn btn-outline btn-xs btn-primary" onclick="location.href=''">Edit</button>
-                            <button class="btn btn-outline btn-xs btn-danger" onclick="location.href=''">Delete</button>
+                            <button id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href=''">Detail</button>
+                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href=''">Edit</button>
+                            <button id="btn_delete" class="btn btn-outline btn-xs btn-danger" onclick="location.href=''">Delete</button>
                         </td>
                     </tr>
+                    {%endfor%}
                 </tbody>
             </table>
         </div>
         {% include "pagination.html" %}
     </div>
+    </form>
 </div>
 {% endblock %}
