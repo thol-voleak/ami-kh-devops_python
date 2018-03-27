@@ -43,7 +43,7 @@
                         <td>{{i.name}}</td>
                         <td>{{i.description}}</td>
                         <td>
-                            <button id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href=''">Detail</button>
+                            <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop_type:shop_type_detail' i.id %}">Detail</a>
                             <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href='{% url 'shop_type:shop_type_edit' i.id %}'>Edit</a>
                             <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop_type:shop_type_delete' i.id %}">Delete</a>
                         </td>
