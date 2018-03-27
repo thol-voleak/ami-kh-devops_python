@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block body_stylesheet %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'vendor/chosen_v1.4.0/chosen.min.css' %}?{% now "U" %}">
+    {% csrf_token %}
+    <div class="panel mb25">
+        <style type="text/css">
+
+            #exTab1 .tab-content {
+                background-color: white;
+                padding: 5px 15px;
+            }
+
+            #exTab1 .nav-pills > li > a {
+                border-radius: 0;
+            }
+
+            .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+                border-bottom: 4px solid #ea3f35;
+                background-color: white;
+                color: #ea3f35;
+            }
+
+            .nav-pills > li > a, .nav-pills > li > a:hover, .nav-pills > li > a:focus {
+                background-color: white;
+                color: #616161;
+            }
+
+            .info-tooltip {
+                position: relative;
+            }
+
+            .info-tooltip i {
+                position: absolute;
+                color: #a29e9e;
+                cursor: pointer;
+                top: 5px;
+            }
+
+            .popover {
+                max-width: 100%;
+            }
+
+            .role-des {
+                margin-bottom: 15px;
+            }
+
+            .custom-popover {
+                text-align: center;
+            }
+
+            .main-panel {
+                background-color: white;
+            }
+
+            .layout-fixed-header {
+                background-color: white;
+            }
+
+            .chosen-container {
+                position: absolute;
+            }
+
+            .chosen-choices {
+                max-height: 191px !important;
+                overflow-y: scroll !important;
+            }
+
+            .custom-multiple-select .chosen-container {
+                position: relative !important;
+            }
+
+            .custom-multiple-select .chosen-choices {
+                max-height: 100px !important;
+                overflow-y: scroll !important;
+            }
+
+            .select-service .chosen-drop {
+                width: 175%;
+                border-top: 0.5px solid grey;
+            }
+        </style>
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <div id="exTab1" class="container">
+                        {% include "agents/management_tab_menu.html" with active_tab='relationship' permissions=permissions agent_id=agent_id %}
+                        <br>
+                        <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
+                        <div class="tab-content clearfix">
+                            {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
+                                <div class="tab-pane active"
+                                     id="div_relationships">
+                                    <div class="panel-heading" style="margin-top: -30px;">
+                                        <h3>Relationships View</h3>
+                                    </div>
+                                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                                          action="{% url 'agents:agent_management_relationship' agent_id %}">
+                                        {% csrf_token %}
+                                        <div class="row" style="margin-top: 20px;">
+                                            <div class="form-group col-md-4">
+                                                <label class="col-sm-5 control-label">User ID</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control input-rounded" name="status"
+                                                           id="txt_relationship_user_id"
+                                                           value="agent ({{ agent_id|default_if_none:'' }})" readonly/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-md-4">
+                                                <label class="col-sm-5 control-label">Relationship Type</label>
+                                                <div class="col-sm-7">
+                                                    <div class="custom-multiple-select select-relationship-code"
+                                                         id="select-relationship-code-area" style="position: relative;">
+                                                        <select style="display:none;" id="ddl_relationship_type"
+                                                                onchange="selectMultipleItems('ddl_relationship_type', 'select-relationship-code', 'select-relationship-code-area')"
+                                                                data-placeholder="All" multiple class="chosen"
+                                                                name="list_relationship_type">
+                                                            {% for i in relationship_types %}
+                                                                {% if i.id in relationship_type_id %}
+                                                                    <option value="{{ i.id }}"
+                                                                            selected>{{ i.name }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ i.id }}">{{ i.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label class="col-sm-4 control-label">Partner Role&nbsp;
+                                                    <span class="info-tooltip">
+                                                        <i class="fa fa-info pop" data-container="body"
+                                                           data-toggle="popover" data-placement="right"
+                                                           data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
+                                                           data-original-title="" title=""></i>
+                                                    </span>
+                                                </label>
+                                                <div class="col-sm-6">
+                                                    <select class="form-control" id="ddl_relationship_partner_role" name="partner_role">
+                                                        <option value=0 {% if partner_role == '0' %}selected="selected"{% endif %}>-</option>
+                                                        <option value=1 {% if partner_role == '1' %}selected="selected"{% endif %}>Main ID</option>
+                                                        <option value=2 {% if partner_role == '2' %}selected="selected"{% endif %}>Sub ID</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="col-sm-4 control-label">Partner ID</label>
+                                                <div class="col-sm-8">
+                                                    <input type="number" class="form-control input-rounded"
+                                                           name="relationship_partner_id"
+                                                           value="{{ relationship_partner_id|default_if_none:'' }}"
+                                                           id="txt_relationship_partner_id" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                {% if permissions.CAN_SEARCH_RELATIONSHIP %}
+                                                    <div class="col-sm-8">
+                                                        <input id="btn_relationship_search"
+                                                               class="btn btn-success btn-block" type="submit"
+                                                               name="search"
+                                                               value="Search">
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                                        <label class="pull-right">Total Relationships Found:&nbsp;</label>
+                                    </form>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped mb0"
+                                                   id="tbl_relationship_management">
+                                                <thead>
+                                                <tr>
+                                                    <th id="relationship_type">Relationship Type</th>
+                                                    <th id="main_id">Main ID
+                                                        <span class="info-tooltip">
+                                                        <i class="fa fa-info pop" data-container="body"
+                                                           data-toggle="popover" data-placement="right"
+                                                           data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
+                                                           data-original-title="" title=""></i>
+                                                    </span>
+                                                    </th>
+                                                    <th id="main_name">Main Name</th>
+                                                    <th id="sub_id">Sub ID
+                                                        <span class="info-tooltip">
+                                                        <i class="fa fa-info pop" data-container="body"
+                                                           data-toggle="popover" data-placement="right"
+                                                           data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
+                                                           data-original-title="" title=""></i>
+                                                    </span>
+                                                    </th>
+                                                    <th id="sub_name">Sub Name</th>
+                                                    <th id="created_date">Created Date</th>
+                                                    <th id="modified_date">Modified Date</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="agent_table_body">
+                                                   {% for relationship in relationships %}
+                                                        <tr>
+                                                            <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
+                                                        <td>
+                                                            {%if agent_id == relationship.main_user.user_id %}
+                                                            <b><a id="{{ relationship.main_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{relationship.main_user.user_id|default_if_none:'' }})</a></b>
+                                                            {%else%}
+                                                            <a id="{{ relationship.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{relationship.main_user.user_id|default_if_none:'' }})</a>
+                                                            {%endif%}
+                                                        </td>
+                                                        <td>{{relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name}}</td>
+                                                        <td>
+                                                            {%if agent_id == relationship.sub_user.user_id%}
+                                                            <b><a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a></b>
+                                                            {%else%}
+                                                            <a id="{{ relationship.sub_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a>
+                                                            {%endif%}
+                                                        </td>
+                                                            <td>{{relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name}}</td>
+                                                            <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
+                                                            <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+    <script src="{% static 'scripts/ui/accordion.js' %}"></script>
+    <script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="/admin-portal/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
+    <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
+    <script>
+        var viewMoreRelationships = function () {
+            $('.nav-pills li').removeClass('active');
+            $('.nav-pills #relationships_tab').addClass('active');
+        };
+        $(".pop").popover({trigger: "manual", html: true, animation: false})
+            .on("mouseenter", function () {
+                var _this = this;
+                $(this).popover("show");
+                $(".popover").on("mouseleave", function () {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 300);
+        });
+
+        var isAllSelected = function (selectedValues) {
+            for (var i = 0; i < selectedValues.length; i++) {
+                if (selectedValues[i] == 'All') {
+                    return true;
+                }
+            }
+            return false;
+        };
+        var selectMultipleItems = function (selectId, selectClass, selectAreaId) {
+            var selectedValues = $('#' + selectId).val();
+            if (selectedValues == null) {
+                selectedValues = [];
+            }
+            if (isAllSelected(selectedValues)) {
+                var selectedDropdown = document.getElementById(selectAreaId);
+                var selectedNode = selectedDropdown.getElementsByClassName("search-choice");
+                for (var i = 0; i < selectedNode.length; i++) {
+                    if (selectedNode[i].childNodes[0].innerText !== 'All') {
+                        selectedNode[i].childNodes[1].click();
+                    }
+                }
+                $('.' + selectClass + ' .chosen-drop .chosen-results li').each(function (index, elm) {
+                    $(elm).removeClass('active-result');
+                    $(elm).removeClass('highlighted');
+                    $(elm).addClass('result-selected');
+                });
+            }
+        };
+        $('#ddl_relationship_type').on("chosen:showing_dropdown", function () {
+            selectMultipleItems('ddl_relationship_type', 'select-relationship-code', 'select-relationship-code-area')
+        });
+        if ($('#ddl_relationship_partner_role').val() != 0) {
+            $('#txt_relationship_partner_id').removeAttr('disabled');
+        }
+        $('#ddl_relationship_partner_role').on('change', function () {
+            if ($('#ddl_relationship_partner_role').val() != 0) {
+                $('#txt_relationship_partner_id').removeAttr('disabled');
+            }
+            else {
+                $('#txt_relationship_partner_id').attr('disabled', 'disabled');
+                $('#txt_relationship_partner_id').val('');
+            }
+        });
+    </script>
+{% endblock %}
