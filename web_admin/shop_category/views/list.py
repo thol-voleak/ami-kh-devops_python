@@ -56,7 +56,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        context = super(ShopTypeList, self).get_context_data(**kwargs)
+        context = super(ListView, self).get_context_data(**kwargs)
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
