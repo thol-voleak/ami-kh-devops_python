@@ -55,6 +55,24 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         return render(request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+        context = super(ShopTypeList, self).get_context_data(**kwargs)
+        opening_page_index = request.POST.get('current_page_index')
+
+        body = {}
+        body['paging'] = True
+        body['page_index'] = int(opening_page_index)
+
+        shop_categories = self.get_shop_categories(body)
+        page = shop_categories.get("page", {})
+
+        context.update({
+            'shop_types': shop_categories['shop_categories'],
+            'paginator': page,
+            'page_range': calculate_page_range_from_page_info(page)
+        })
+        return render(request, self.template_name, context)
+
     def get_shop_categories(self, body):
         url = api_settings.GET_LIST_SHOP_CATEGORIES
         self.logger.info('========== Start get shop categories list ==========')
