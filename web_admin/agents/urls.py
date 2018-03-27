@@ -17,6 +17,7 @@ from .views.suspend import suspend
 from .views.activate import activate
 from .views.management_summary import AgentManagementSummary
 from .views.management_relationship import AgentManagementRelationship
+from .views.management_product import AgentManagementProduct
 
 app_name = 'agents'
 
@@ -39,5 +40,8 @@ urlpatterns = [
     url(r'^activate/(?P<agent_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'), name="agent_activate"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/summary$', login_required(AgentManagementSummary.as_view(), login_url='authentications:login'), name="agent_management_summary"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/relationship', login_required(AgentManagementRelationship.as_view(), login_url='authentications:login'), name="agent_management_relationship"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/product',
+        login_required(AgentManagementProduct.as_view(), login_url='authentications:login'),
+        name="agent_management_product"),
 
 ]

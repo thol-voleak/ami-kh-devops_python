@@ -83,6 +83,58 @@
         width: 175%;
         border-top: 0.5px solid grey;
     }
+
+    .portfolio-panel-empty {
+        border: 1px dashed #c0c0c0;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .category-group {
+        border: 1px solid #d0d0d0;
+    }
+    .category-group + .category-group {
+        border-top: none;
+    }
+    .category-group-title {
+        padding: 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    .expand-collapse {
+        display: inline-block;
+        border: 1px solid #808080;
+        border-radius: 50%;
+        height: 23px;
+        width: 23px;
+        text-align: center;
+    }
+    .expand-collapse i {
+        font-size: 20px;
+    }
+    .expand-collapse i.fa-angle-up {
+        display: none;
+    }
+    .category-group-body {
+        border-top: 1px solid #d0d0d0;
+        padding: 15px;
+        display: none;
+    }
+    .category-group-body .checkbox {
+        padding-top: 0px;
+    }
+    .category-group.open .expand-collapse i.fa-angle-up {
+        display: inline-block;
+    }
+    .category-group.open .expand-collapse i.fa-angle-down {
+        display: none;
+    }
+    .category-group.open .category-group-body {
+        display: block;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -95,6 +147,42 @@
                         {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
                             <div class="tab-pane active"
                                  id="div_summary_management">
+                                <div>
+                                    <h4>Product Portfolio</h4>
+                                    {% if not applicable_categories %}
+                                    <div class="portfolio-panel-empty">
+                                        <div>
+                                            <div id="lbl_summary_product_add"><b>Please Add Product Configuration</b></div>
+                                            <div style="margin-top: 10px;">
+                                                <button class="btn btn-success btn-md" type="button" id="btn_summary_product_add">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="portfolio-panel">
+                                        <div class="category-group open">
+                                            {% for category, products in applicable_categories.items %}
+                                                <div class="category-group-title">
+                                                    <b><span id="lbl_summary_product_category_{{ products.0.category_id }}"></span>{{ category }}</b>
+                                                    <div class="expand-collapse" id="btn_summary_product_category_expand_{{ products.0.category_id }}"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
+                                                </div>
+                                                <div class="category-group-body">
+                                                    {% for product in  products %}
+                                                        {% if product.is_checked %}
+                                                            <div class="product">
+                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.id }}"/><span id="lbl_summary_product_{{ product.id }}">{{ product.product_name }}</span></label>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div style="text-align: right; margin-top: 15px;">
+                                            <button class="btn btn-success btn-md" type="button" id="btn_summary_product_edit">Edit</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                                     <div id="div_relationships_summary">
                                         <h4>Relationships View</h4>
@@ -184,10 +272,6 @@
 {% block body_js %}
 {{ block.super }}
     <script>
-        var viewMoreRelationships = function() {
-            $('.nav-pills li').removeClass('active');
-            $('.nav-pills #relationships_tab').addClass('active');
-        };
         $(".pop").popover({ trigger: "manual" , html: true, animation:false})
         .on("mouseenter", function () {
             var _this = this;
@@ -202,6 +286,14 @@
                     $(_this).popover("hide");
                 }
             }, 300);
-    });
+        });
+         $(document).ready(function () {
+            $(".category-group-title").click(function () {
+                $(this).parent().toggleClass("open");
+            });
+            $("#btn_save").click(function () {
+                $(this).find("i.fa-spinner").show();
+            });
+        });
     </script>
 {% endblock %}

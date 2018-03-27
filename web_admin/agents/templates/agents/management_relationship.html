@@ -252,10 +252,6 @@
     <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
     <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
     <script>
-        var viewMoreRelationships = function () {
-            $('.nav-pills li').removeClass('active');
-            $('.nav-pills #relationships_tab').addClass('active');
-        };
         $(".pop").popover({trigger: "manual", html: true, animation: false})
             .on("mouseenter", function () {
                 var _this = this;
