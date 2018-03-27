@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class ShopTypeList(TemplateView, GetHeaderMixin):
 
-    template_name = "shop_type/list.html"
+    template_name = "shop-type/list.html"
     logger = logger
 
     def check_membership(self, permission):

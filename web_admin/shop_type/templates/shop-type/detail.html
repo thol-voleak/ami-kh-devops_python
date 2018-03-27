@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Shop Type Detail</h3>
+    </div>
+
+    {% include "message.html" %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form">
+                    {% include "shop-type/form-content.html" with is_readonly=True %}
+
+                    <div class="pull-right">
+                        <a id="btn_cancel" class="btn" href="{% url 'shop_type:shop_type_list' %}">Cancel</a>
+                        <a id="btn_edit" class="btn btn-success" href="{% url 'shop_type:shop_type_edit' form.id %}">Edit</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
