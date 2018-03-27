@@ -40,7 +40,7 @@ class ShopTypeList(TemplateView, GetHeaderMixin):
         }
 
         shop_types = self.get_shop_type(body)
-        print(shop_types)
+        
         page = shop_types.get("page", {})
         context.update({
             'shop_types': shop_types['shop_types'],
@@ -57,7 +57,7 @@ class ShopTypeList(TemplateView, GetHeaderMixin):
         body = {}
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
-        
+
         shop_types = self.get_shop_type(body)
         page = shop_types.get("page", {})
 
