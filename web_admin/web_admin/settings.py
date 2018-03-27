@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'product',
     'category',
     'shop_type',
+    'shop_category',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -345,6 +346,11 @@ LOGGING = {
             'propagate': True,
         },
         'shop_type': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'shop_category': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

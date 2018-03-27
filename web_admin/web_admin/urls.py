@@ -54,4 +54,5 @@ urlpatterns = [
     url(r'^admin-portal/category/', include('category.urls')),
     url(r'^admin-portal/product/', include('product.urls')),
     url(r'^admin-portal/shop-types/', include('shop_type.urls')),
+    url(r'^admin-portal/shop-categories/', include('shop_category.urls')),
 ]
