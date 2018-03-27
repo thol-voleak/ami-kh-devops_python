@@ -4,9 +4,16 @@
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading">
         <h3>Shop Types</h3>
+
+        {% include "message.html" %}
+        
         <div class="pull-right">
             <a href="">
-                <button id="btn_add" class="btn btn-success btn-block btn-md"><strong>+</strong> <span>Add New Shop Type</span></button>
+                <button id="btn_add" class="btn btn-success btn-block btn-md">
+                    <a href="{% url "shop_type:shop_type_create" %}">
+                        <strong>+</strong> <span>Add New Shop Type</span>
+                    </a>
+                </button>
             </a>
         </div>
     </div>
