@@ -288,3 +288,4 @@ DELETE_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_
 # Shop-type
 SHOP_TYPE_CREATE = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types'
 GET_LIST_SHOP_TYPE = 'api-gateway/report/' + API_VERSION + '/shop-types'
+GET_SHOP_TYPE_DETAIL = 'api-gateway/report/' + API_VERSION + '/shop-types'
