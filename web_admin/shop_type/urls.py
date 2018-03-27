@@ -10,9 +10,9 @@ from shop_type.views.list import ListView
 app_name = 'shop_type'
 
 urlpatterns = [
-    url(r'^$', login_required(ListView.as_view(), login_url='authentications:login'), name="list"),
-    url(r'^create/$', login_required(CreateView.as_view(), login_url='authentications:login'), name="create"),
-    url(r'^(?P<id>[0-9A-Za-z]+)/edit/$', login_required(EditView.as_view(), login_url='authentications:login'), name="edit"),
-    url(r'^(?P<id>[0-9A-Za-z]+)/detail/$', login_required(DetailView.as_view(), login_url='authentications:login'), name="detail"),
-    url(r'^(?P<id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='authentications:login'), name="delete"),
+    url(r'^$', login_required(ListView.as_view(), login_url='authentications:login'), name="shop_type_list"),
+    url(r'^create/$', login_required(CreateView.as_view(), login_url='authentications:login'), name="shop_type_create"),
+    url(r'^(?P<id>[0-9A-Za-z]+)/edit/$', login_required(EditView.as_view(), login_url='authentications:login'), name="shop_type_edit"),
+    url(r'^(?P<id>[0-9A-Za-z]+)/detail/$', login_required(DetailView.as_view(), login_url='authentications:login'), name="shop_type_detail"),
+    url(r'^(?P<id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='authentications:login'), name="shop_type_delete"),
 ]

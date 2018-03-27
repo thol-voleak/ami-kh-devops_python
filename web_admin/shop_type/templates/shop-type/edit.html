@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'vendor/chosen_v1.4.0/chosen.min.css' %}?{% now "U" %}">
 <div class="panel mb25">
     <div class="panel-heading border mb15">
         <h3>Edit Shop Type</h3>
@@ -16,7 +15,7 @@
                     {% include "shop-type/form-content.html" %}
 
                     <div class="pull-right">
-                        <a id="btn_cancel" class="btn" href="{% url 'shop_type:list' %}">Cancel</a>
+                        <a id="btn_cancel" class="btn" href="{% url 'shop_type:shop_type_list' %}">Cancel</a>
                         <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
                     </div>
                 </form>

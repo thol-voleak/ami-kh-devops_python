@@ -8,7 +8,7 @@
         {% include "message.html" %}
 
         <div class="pull-right">
-            <a href="{% url 'shop_type:create' %}">
+            <a href="{% url 'shop_type:shop_type_create' %}">
                 <button id="btn_add" class="btn btn-success btn-block btn-md"><strong>+</strong> <span>Add New Shop Type</span></button>
             </a>
         </div>
@@ -29,9 +29,9 @@
                         <td>Name</td>
                         <td>Description</td>
                         <td>
-                            <button id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href='{% url 'shop_type:detail' 123 %}';">Detail</button>
-                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'shop_type:edit' 123 %}'">Edit</button>
-                            <button id="btn_delete" class="btn btn-outline btn-xs btn-danger" onclick="location.href='{% url 'shop_type:delete' 123 %}'">Delete</button>
+                            <button id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href='{% url 'shop_type:shop_type_detail' 123 %}';">Detail</button>
+                            <button id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'shop_type:shop_type_edit' 123 %}'">Edit</button>
+                            <button id="btn_delete" class="btn btn-outline btn-xs btn-danger" onclick="location.href='{% url 'shop_type:shop_type_delete' 123 %}'">Delete</button>
                         </td>
                     </tr>
                 </tbody>
