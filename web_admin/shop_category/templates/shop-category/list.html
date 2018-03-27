@@ -31,15 +31,23 @@
                     </tr>
                     </thead>
                     <tbody>
+                        {%for i in shop_categories%}
                         <tr>
-                            <td>Name</td>
-                            <td>Description</td>
+                            {%if i.is_deleted %}
+                            <td><del>{{i.name}}</del></td>
+                            <td><del>{{i.description}}</del></td>
+                            <td></td>
+                            {%else%}
+                            <td>{{i.name}}</td>
+                            <td>{{i.description}}</td>
                             <td>
                                 <a id="btn_detail" class="btn btn-outline btn-xs btn-info" onclick="location.href='{% url 'shop_category:shop_category_detail' 123 %}';">Detail</a>
                                 <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" onclick="location.href='{% url 'shop_category:shop_category_edit' 123 %}'">Edit</a>
                                 <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" onclick="location.href='{% url 'shop_category:shop_category_delete' 123 %}'">Delete</a>
                             </td>
+                            {%endif%}
                         </tr>
+                        {%endfor%}
                     </tbody>
                 </table>
             </div>
