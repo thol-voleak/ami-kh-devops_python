@@ -38,15 +38,16 @@
                         {% if i.is_deleted %}
                         <td><del>{{i.name}}</del></td>
                         <td><del>{{i.description}}</del></td>
+                        <td></td>
                         {%else%}
                         <td>{{i.name}}</td>
                         <td>{{i.description}}</td>
-                        {%endif%}
                         <td>
                             <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop_type:shop_type_detail' i.id %}">Detail</a>
                             <a id="btn_edit" class="btn btn-outline btn-xs btn-primary">Edit</a>
                             <a id="btn_delete" class="btn btn-outline btn-xs btn-danger">Delete</a>
                         </td>
+                        {%endif%}
                     </tr>
                     {%endfor%}
                 </tbody>
