@@ -1,0 +1,12 @@
+<ul  class="nav nav-pills">
+    {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
+    <li id="summary_tab" {% if active_tab == 'summary' %}class="active" {% endif %}>
+        <a  href="{% url 'agents:agent_management_summary' agent_id %}" id="tab_summary"><font size="4">Summary</font></a>
+    </li>
+    {% endif %}
+    {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
+    <li id="relationships_tab" {% if active_tab == 'relationship' %}class="active" {% endif %}>
+        <a href="{% url 'agents:agent_management_relationship' agent_id %}" id="tab_relationships"><font size="4">Relationships</font></a>
+    </li>
+    {% endif %}
+</ul>

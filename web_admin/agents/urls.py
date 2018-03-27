@@ -15,7 +15,8 @@ from .views.sof_bank import SOFBankView
 from .views.delete_smartcard import SmartCardDelete
 from .views.suspend import suspend
 from .views.activate import activate
-from .views.management import AgentManagement
+from .views.management_summary import AgentManagementSummary
+from .views.management_relationship import AgentManagementRelationship
 
 app_name = 'agents'
 
@@ -36,6 +37,7 @@ urlpatterns = [
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/smardcards/(?P<smartcard_id>[0-9A-Za-z]+)$', login_required(SmartCardDelete.as_view(), login_url='authentications:login'), name="delete_agent_smartcard"),
     url(r'^suspend/(?P<agent_id>[0-9A-Za-z]+)/$', login_required(suspend, login_url='authentications:login'), name="agent_suspend"),
     url(r'^activate/(?P<agent_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'), name="agent_activate"),
-    url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/$', login_required(AgentManagement.as_view(), login_url='authentications:login'), name="agent_management"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/summary$', login_required(AgentManagementSummary.as_view(), login_url='authentications:login'), name="agent_management_summary"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/management/relationship', login_required(AgentManagementRelationship.as_view(), login_url='authentications:login'), name="agent_management_relationship"),
 
 ]
