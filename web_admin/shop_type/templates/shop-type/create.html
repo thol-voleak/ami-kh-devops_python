@@ -13,7 +13,7 @@
                       action="{% url 'shop_type:shop_type_create' %}">
                     {% include "shop-type/form-content.html" %}
                     <div class="pull-right">
-                        <button class="btn btn-default" id="btn_cancel"><a href="{% url 'shop_type:shop_type_list' %}">Cancel</a></button>
+                        <a href="{% url 'shop_type:shop_type_list' %}" class="btn btn-default" id="btn_cancel">Cancel</a>
                         <button class="btn btn-success" id="btn_add" type="submit">Add</button>
                     </div>
                 </form>
