@@ -53,11 +53,12 @@ def _create_product_relation(self, agent_id):
             atp['product_name'] = p['name']
 
             for c in all_categories:
-                if p['category_id'] != c['id']:
+                if p['product_category'].get('id', None) != c['id']:
                     continue
                 if c['is_deleted']:
                     break
                 atp['category_name'] = c['name']
+                atp['category_id'] = p['product_category'].get('id', None)
                 applicable_product.append(atp)
                 break
             break
@@ -74,11 +75,17 @@ def _create_product_relation(self, agent_id):
 
         # categorize products
         if p['category_name'] not in applicable_categories:
-            applicable_categories[p['category_name']] = []
+            applicable_categories[p['category_name']] = [p]
         else:
             applicable_categories[p['category_name']].append(p)
+    applied_category = {}
+    if applicable_categories:
+        for category in applicable_categories:
+            applied_products = [product for product in applicable_categories[category] if product['is_checked']]
+            if applied_products:
+                applied_category[category] = applied_products
 
-    return applicable_categories
+    return applicable_categories, applied_category
 
 def get_products_by_agent(self, id):
     api_path = api_settings.GET_PRODUCT_AGENT_RELATION
