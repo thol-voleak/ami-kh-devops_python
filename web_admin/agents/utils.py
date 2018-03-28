@@ -31,9 +31,9 @@ def _create_product_relation(self, agent_id):
         applicable_products_of_agent = get_products_by_agent_type(self, agent_type)
         self.logger.info('========== Finish getting all applicable product by agent type ==========')
 
-        self.logger.info('========== Start getting applied product by agent type  ==========')
+        self.logger.info('========== Start getting applied product by agent id  ==========')
         checked_products_of_agent = get_products_by_agent(self, agent_id)
-        self.logger.info('========== Finish getting applied product by agent type ==========')
+        self.logger.info('========== Finish getting applied product by agent id ==========')
 
         # get all products to get product name
         self.logger.info('========== Start getting all products  ==========')
