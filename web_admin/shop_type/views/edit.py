@@ -47,8 +47,11 @@ class EditView(TemplateView):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=params)
+        self.logger.info("Params: {} ".format(params))
         if is_success:
-            context['form'] = data['shop_types'][0]
+            data = data['shop_types'][0]
+            self.logger.info('Response_content: {}'.format(data))
+            context['form'] = data
             self.logger.info('========== Finish get shop type detail ==========')
             return context
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
@@ -69,6 +72,7 @@ class EditView(TemplateView):
         is_success, status_code, status_message, data = RestFulClient.put(url,
                                                                           self._get_headers(),
                                                                           self.logger, params)
+        self.logger.info("Params: {} ".format(params))
         if is_success:
             messages.add_message(
                 request,
