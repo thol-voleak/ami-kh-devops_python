@@ -2,6 +2,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
+from authentications.apps import InvalidAccessToken
 from web_admin import setup_logger
 from web_admin import api_settings, RestFulClient
 from django.contrib import messages
@@ -12,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditView(GroupRequiredMixin, TemplateView):
+class EditView(TemplateView):
     template_name = "shop-type/edit.html"
     raise_exception = False
     logger = logger
