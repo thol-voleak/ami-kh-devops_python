@@ -53,4 +53,6 @@ class CreateView(TemplateView, RESTfulMethods):
         list_shop_category = get_all_shop_category()
         context['list_shop_category'] = list_shop_category
 
+        # TODO: call create shop API
+
         return render(request, self.template_name, context)

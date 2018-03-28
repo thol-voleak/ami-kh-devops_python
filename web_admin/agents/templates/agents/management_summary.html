@@ -149,7 +149,7 @@
                                  id="div_summary_management">
                                 <div>
                                     <h4>Product Portfolio</h4>
-                                    {% if not applicable_categories %}
+                                    {% if not applied_category %}
                                     <div class="portfolio-panel-empty">
                                         <div>
                                             <div id="lbl_summary_product_add"><b>Please Add Product Configuration</b></div>
@@ -160,7 +160,7 @@
                                     </div>
                                     {% else %}
                                     <div class="portfolio-panel">
-                                        {% for category, products in applicable_categories.items %}
+                                        {% for category, products in applied_category.items %}
                                             <div class="category-group open">
                                                 <div class="category-group-title">
                                                     <b><span id="lbl_summary_product_category_{{ products.0.category_id }}"></span>{{ category }}</b>

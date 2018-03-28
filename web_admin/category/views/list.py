@@ -62,7 +62,7 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 product_list = []
                 for product_unit in all_list_product:
                     if all_list_product: 
-                        if not product_unit['is_deleted'] and product_unit['category_id'] == category_unit['id']:
+                        if not product_unit['is_deleted'] and product_unit['product_category'].get('id') == category_unit['id']:
                             product_list.append(product_unit)
                 category_unit['product'] = product_list
 

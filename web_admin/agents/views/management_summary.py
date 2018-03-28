@@ -67,9 +67,9 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             self.logger.info('========== Finish getting Relationships list ==========')
         self.logger.info('========== Start getting product portfolio ==========')
 
-        applicable_categories = _create_product_relation(self, int(context['agent_id']))
+        applicable_categories, applied_category = _create_product_relation(self, int(context['agent_id']))
         context.update({
-            'applicable_categories': applicable_categories,
+            'applied_category': applied_category,
         })
 
         self.logger.info('========== Finish getting product portfolio ==========')
