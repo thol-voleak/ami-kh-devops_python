@@ -52,6 +52,7 @@ class ShopTypeList(TemplateView, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         context = super(ShopTypeList, self).get_context_data(**kwargs)
+        self.logger.info('========== Start render pagination shop type list ==========')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
@@ -66,6 +67,7 @@ class ShopTypeList(TemplateView, GetHeaderMixin):
             'paginator': page,
             'page_range': calculate_page_range_from_page_info(page)
         })
+        self.logger.info('========== Finish render pagination shop type list ==========')
         return render(request, self.template_name, context)
 
 
@@ -77,7 +79,11 @@ class ShopTypeList(TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            params=body,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-        API_Logger.post_logging(loggers=self.logger, params=body,response=data.get('shop_types'),
+        if data is None:
+            data = {}
+            data['shop_types'] = []
+
+        API_Logger.post_logging(loggers=self.logger, params=body,response=data['shop_types'],
                                 status_code=status_code, is_getting_list=True)
         self.logger.info('========== Finish get shop type list ==========')
         return data
