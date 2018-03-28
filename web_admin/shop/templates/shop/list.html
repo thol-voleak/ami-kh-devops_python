@@ -25,7 +25,9 @@
                 <div class="col-md-2">
                     <select class="form-control" name="shop_category" >
                         <option value="">All</option>
-                        <option value='123' {%if form.shop_category == '123'%}selected{%endif%}>Shop Category Name</option>
+                        {% for item in list_shop_category %}
+                        <option value="{{ item.id }}" {%if form.shop_category == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -38,7 +40,9 @@
                 <div class="col-md-2">
                     <select class="form-control" name="shop_type" >
                         <option value="">All</option>
-                        <option value='123' {%if form.shop_type == '123'%}selected{%endif%}>Shop Type Name</option>
+                        {% for item in list_shop_type %}
+                        <option value="{{ item.id }}" {%if form.shop_type == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
