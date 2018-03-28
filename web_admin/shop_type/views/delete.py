@@ -25,7 +25,6 @@ class DeleteView(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         context = super(DeleteView, self).get_context_data(**kwargs)
-        self.logger.info('========== User go to Delete shop type page ==========')
         id = context.get('id')
         if not id:
             return redirect('shop_type:shop_type_list')

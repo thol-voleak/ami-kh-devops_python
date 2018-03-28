@@ -28,7 +28,6 @@ class CreateView(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
-        self.logger.info('========== User go to Add New Shop Type page ==========')
         return render(request, self.template_name, context)
 
     def post(self, request):
