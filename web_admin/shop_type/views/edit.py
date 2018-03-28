@@ -16,7 +16,7 @@ class EditView(GroupRequiredMixin, TemplateView):
     template_name = "shop-type/edit.html"
     raise_exception = False
     logger = logger
-    group_required = "CAN_EDIT_PRODUCT"
+    # group_required = "CAN_EDIT_PRODUCT"
     login_url = 'web:permission_denied'
 
     def dispatch(self, request, *args, **kwargs):
@@ -29,10 +29,10 @@ class EditView(GroupRequiredMixin, TemplateView):
             self._headers = get_auth_header(self.request.user)
         return self._headers
 
-    def check_membership(self, permission):
-        self.logger.info(
-            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-        return check_permissions_by_user(self.request.user, permission[0])
+    # def check_membership(self, permission):
+    #     self.logger.info(
+    #         "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+    #     return check_permissions_by_user(self.request.user, permission[0])
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start get shop type detail ==========')
