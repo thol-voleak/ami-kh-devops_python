@@ -67,6 +67,7 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         agent_id = request.session.get('agent_id',None)
         customer_id = request.session.get('customer_id',None)
         request.session['redirect_from_detail'] = True
+        agent_wallet_url =request.session.get('agent_wallet_url',None)
 
         body = {
             'order_id': order_id
@@ -100,6 +101,7 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['page_from'] = page_from
         context['agent_id'] = agent_id
         context['customer_id'] = customer_id
+        context['agent_wallet_url'] = agent_wallet_url
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)
 

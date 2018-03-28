@@ -53,74 +53,217 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         choices = self._get_choices_types()
         user_type = UserType.AGENT.value
         cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
+        sof_id = request.GET.get('sof_id')
+        sof_type_id = request.GET.get('sof_type_id')
+        opening_page_index = request.GET.get('current_page_index')
+        from_created_timestamp = request.GET.get('from_created_timestamp')
+        to_created_timestamp = request.GET.get('to_created_timestamp')
 
-        permissions = {
-        }
+        if sof_id is None and sof_type_id is None and opening_page_index is None and from_created_timestamp is None and to_created_timestamp is None:
+            permissions = {
+            }
 
-        body = {}
-        body['paging'] = True
-        body['page_index'] = 1
+            body = {}
+            body['paging'] = True
+            body['page_index'] = 1
 
-        context = {
-        }
+            context = {
+            }
 
-        request.session['agent_redirect_from_wallet_view'] = True
-        request.session['page_from'] = 'agent'
-        request.session['agent_id'] = user_id
+            request.session['agent_redirect_from_wallet_view'] = True
+            request.session['page_from'] = 'agent'
+            request.session['agent_id'] = user_id
 
-        # Set first load default time for Context
-        from_created_timestamp = datetime.now()
-        to_created_timestamp = datetime.now()
-        from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
-        to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
-        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
-        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
-        body['from_created_timestamp'] = new_from_created_timestamp
-        new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
-        context['from_created_timestamp'] = new_from_created_timestamp
+            # Set first load default time for Context
+            from_created_timestamp = datetime.now()
+            to_created_timestamp = datetime.now()
+            from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
+            to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+            new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+            body['from_created_timestamp'] = new_from_created_timestamp
+            new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
+            context['from_created_timestamp'] = new_from_created_timestamp
 
-        body['to_created_timestamp'] = new_to_created_timestamp
-        new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
-        context['to_created_timestamp'] = new_to_created_timestamp
+            body['to_created_timestamp'] = new_to_created_timestamp
+            new_to_created_timestamp = to_created_timestamp.strftime("%Y-%m-%d")
+            context['to_created_timestamp'] = new_to_created_timestamp
 
-        body['sof_type_id'] = SOFType.CASH.value
-        body['user_type_id'] = UserType.AGENT.value
-        body['user_id'] = user_id
+            body['sof_type_id'] = SOFType.CASH.value
+            body['user_type_id'] = UserType.AGENT.value
+            body['user_id'] = user_id
 
-        data, success, status_message = self._get_transaction_history_list(body)
-        if success:
-            order_balance_movements = data.get("order_balance_movements", [])
+            data, success, status_message = self._get_transaction_history_list(body)
+            if success:
+                order_balance_movements = data.get("order_balance_movements", [])
 
-            if order_balance_movements is not None:
-                result_data = self.format_data(order_balance_movements)
-                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
-                                                                                     'CAN_VIEW_PAYMENT_ORDER_DETAIL')
-                for i in order_balance_movements:
-                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                if order_balance_movements is not None:
+                    result_data = self.format_data(order_balance_movements)
+                    has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                         'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                    for i in order_balance_movements:
+                        i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                else:
+                    result_data = order_balance_movements
+
+                page = data.get("page", {})
+                self.logger.info("Page: {}".format(page))
+                context.update(
+                    {'search_count': page.get('total_elements', 0),
+                     'list': result_data,
+                     'choices': choices,
+                     'cash_sof_list': cash_sof_list,
+                     'paginator': page,
+                     'page_range': calculate_page_range_from_page_info(page),
+                     'agent_id': user_id
+                     }
+                )
             else:
-                result_data = order_balance_movements
+                context.update(
+                    {'search_count': 0,
+                     'data': [],
+                     'paginator': {},
+                     'agent_id': user_id
+                     }
+                )
+        else :
+            user_type = UserType.AGENT.value
+            cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
+            choices = self._get_choices_types()
 
-            page = data.get("page", {})
-            self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'list': result_data,
-                 'choices': choices,
-                 'cash_sof_list': cash_sof_list,
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 'agent_id': user_id
-                 }
-            )
-        else:
-            context.update(
-                {'search_count': 0,
-                 'data': [],
-                 'paginator': {},
-                 'agent_id': user_id
-                 }
-            )
+            body = {}
+            body['paging'] = True
+            body['page_index'] = int(opening_page_index)
+            if sof_id is not '' and sof_id is not None:
+                sof_id = int(sof_id)
+                body['sof_id'] = sof_id
+            if sof_type_id is not '' and sof_type_id is not None:
+                body['sof_type_id'] = int(sof_type_id)
+            body['user_type_id'] = UserType.AGENT.value
+            body['user_id'] = user_id
 
+            context = {}
+            # validate required search date criteria
+            if from_created_timestamp is '' or to_created_timestamp is '':
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'Please specify the to and from date search criteria'
+                )
+
+                context.update(
+                    {'search_count': 0,
+                     'list': [],
+                     'choices': choices,
+                     'sof_type_id': sof_type_id,
+                     'sof_id': sof_id,
+                     'cash_sof_list': cash_sof_list,
+                     'paginator': {},
+                     'agent_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp
+                     }
+                )
+                return render(request, self.template_name, context)
+            diffDay = self._getDiffDaysFromUIDateValue(from_created_timestamp, to_created_timestamp)
+
+            # validate fromDate less than or equals to toDate
+            if diffDay < 0:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'The from date should be before or equal to the to date'
+                )
+
+                context.update(
+                    {'search_count': 0,
+                     'list': [],
+                     'choices': choices,
+                     'sof_type_id': sof_type_id,
+                     'sof_id': sof_id,
+                     'cash_sof_list': cash_sof_list,
+                     'paginator': {},
+                     'agent_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp
+                     }
+                )
+
+                return render(request, self.template_name, context)
+
+            # validate date range
+            walletViewInDay = self._getWalletViewInDay()
+            if diffDay > int(walletViewInDay):
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'Time range over ' + walletViewInDay + ' day(s) is not allowed'
+                )
+
+                context.update(
+                    {'search_count': 0,
+                     'list': [],
+                     'choices': choices,
+                     'sof_type_id': sof_type_id,
+                     'sof_id': sof_id,
+                     'cash_sof_list': cash_sof_list,
+                     'paginator': {},
+                     'agent_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp
+                     }
+                )
+
+                return render(request, self.template_name, context)
+            # build date range critera for service
+            new_from_created_timestamp = datetime.strptime(from_created_timestamp, self.dateUIFormat)
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_from_created_timestamp
+
+            new_to_created_timestamp = datetime.strptime(to_created_timestamp, self.dateUIFormat)
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_created_timestamp'] = new_to_created_timestamp
+
+            data, success, status_message = self._get_transaction_history_list(body)
+            if success:
+                order_balance_movements = data.get("order_balance_movements", [])
+
+                if order_balance_movements is not None:
+                    result_data = self.format_data(order_balance_movements)
+                    has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                         'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                    for i in order_balance_movements:
+                        i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                else:
+                    result_data = order_balance_movements
+
+                page = data.get("page", {})
+                self.logger.info("Page: {}".format(page))
+                context.update(
+                    {'search_count': page.get('total_elements', 0),
+                     'list': result_data,
+                     'choices': choices,
+                     'sof_type_id': sof_type_id,
+                     'sof_id': sof_id,
+                     'cash_sof_list': cash_sof_list,
+                     'paginator': page,
+                     'page_range': calculate_page_range_from_page_info(page),
+                     'agent_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp
+                     }
+                )
+            else:
+                context.update(
+                    {'search_count': 0,
+                     'data': [],
+                     'paginator': {},
+                     'agent_id': user_id
+                     }
+                )
+            self.logger.info('========== End search transaction history ==========')
+        request.session['agent_wallet_url'] = request.build_absolute_uri()
         self.logger.info('========== Finished getting agent transaction history ==========')
         return render(request, self.template_name, context)
 
@@ -154,156 +297,6 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Finish getting cash sof list ==========')
 
         return data
-
-
-    def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start search transaction history ==========')
-        context = super(TransactionHistoryView, self).get_context_data(**kwargs)
-        user_id = context['agent_id']
-        sof_id = request.POST.get('sof_id')
-        sof_type_id = request.POST.get('sof_type_id')
-        opening_page_index = request.POST.get('current_page_index')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
-
-        user_type = UserType.AGENT.value
-        cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
-        choices = self._get_choices_types()
-
-        body = {}
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
-        if sof_id is not '' and sof_id is not None:
-            sof_id = int(sof_id)
-            body['sof_id'] = sof_id
-        if sof_type_id is not '' and sof_type_id is not None:
-            body['sof_type_id'] = int(sof_type_id)
-        body['user_type_id'] = UserType.AGENT.value
-        body['user_id'] = user_id
-
-        context = {}
-        # validate required search date criteria
-        if from_created_timestamp is '' or to_created_timestamp is '':
-            messages.add_message(
-                request,
-                messages.ERROR,
-                'Please specify the to and from date search criteria'
-            )
-
-            context.update(
-                {'search_count': 0,
-                 'list': [],
-                 'choices': choices,
-                 'sof_type_id': sof_type_id,
-                 'sof_id': sof_id,
-                 'cash_sof_list': cash_sof_list,
-                 'paginator': {},
-                 'agent_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
-            return render(request, self.template_name, context)
-
-        diffDay = self._getDiffDaysFromUIDateValue(from_created_timestamp, to_created_timestamp)
-
-        # validate fromDate less than or equals to toDate
-        if diffDay < 0:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                'The from date should be before or equal to the to date'
-            )
-
-            context.update(
-                {'search_count': 0,
-                 'list': [],
-                 'choices': choices,
-                 'sof_type_id': sof_type_id,
-                 'sof_id': sof_id,
-                 'cash_sof_list': cash_sof_list,
-                 'paginator': {},
-                 'agent_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
-
-            return render(request, self.template_name, context)
-
-        # validate date range
-        walletViewInDay = self._getWalletViewInDay()
-        if diffDay > int(walletViewInDay):
-            messages.add_message(
-                request,
-                messages.ERROR,
-                'Time range over '+ walletViewInDay + ' day(s) is not allowed'
-            )
-
-            context.update(
-                {'search_count': 0,
-                 'list': [],
-                 'choices': choices,
-                 'sof_type_id': sof_type_id,
-                 'sof_id': sof_id,
-                 'cash_sof_list': cash_sof_list,
-                 'paginator': {},
-                 'agent_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
-
-            return render(request, self.template_name, context)
-
-        # build date range critera for service
-        new_from_created_timestamp = datetime.strptime(from_created_timestamp, self.dateUIFormat)
-        new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-        body['from_created_timestamp'] = new_from_created_timestamp
-
-        new_to_created_timestamp = datetime.strptime(to_created_timestamp, self.dateUIFormat)
-        new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-        new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-        body['to_created_timestamp'] = new_to_created_timestamp
-
-        data, success, status_message = self._get_transaction_history_list(body)
-        if success:
-            order_balance_movements = data.get("order_balance_movements", [])
-
-            if order_balance_movements is not None:
-                result_data = self.format_data(order_balance_movements)
-                has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_PAYMENT_ORDER_DETAIL')
-                for i in order_balance_movements:
-                    i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
-            else:
-                result_data = order_balance_movements
-
-            page = data.get("page", {})
-            self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'list': result_data,
-                 'choices': choices,
-                 'sof_type_id': sof_type_id,
-                 'sof_id': sof_id,
-                 'cash_sof_list': cash_sof_list,
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 'agent_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
-        else:
-            context.update(
-                {'search_count': 0,
-                 'data': [],
-                 'paginator': {},
-                 'agent_id': user_id
-                 }
-            )
-        self.logger.info('========== End search transaction history ==========')
-        return render(request, self.template_name, context)
 
     def _get_transaction_history_list(self, body):
         api_path = api_settings.BALANCE_MOVEMENT_LIST_PATH

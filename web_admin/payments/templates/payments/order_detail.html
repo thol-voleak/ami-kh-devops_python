@@ -440,7 +440,7 @@
 
                     <div class="pull-right">
                         {% if page_from == 'agent' %}
-                            <a href="{% url 'agents:agent_transaction_history' agent_id %}">
+                            <a href="{{agent_wallet_url}}">
                         {% elif page_from == 'customer' %}
                             <a href="{% url 'customers:customer_transaction_history' customer_id %}">
                         {% elif page_from == 'order_list' %}
