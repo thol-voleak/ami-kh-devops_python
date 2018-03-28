@@ -39,11 +39,13 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
-        form = {"id": 123, "name": "Name", "description": "Description"}
+        id = kwargs['id']
+        form = {"id": id, "name": "Name", "description": "Description"}
         context = {'form': form}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        id = kwargs['id']
         form = request.POST
         context = {'form': form}
         return render(request, self.template_name, context)
