@@ -2,7 +2,7 @@ from braces.views import GroupRequiredMixin
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
@@ -111,10 +111,17 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             raise InvalidAccessToken(data)
 
     def post(self, request, *args, **kwargs):
+        context = super(AgentManagementRelationship, self).get_context_data(**kwargs)
         params = {}
         permissions = {}
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+        if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+            if not permissions['CAN_ACCESS_SUMMARY_TAB']:
+                return redirect('agents:agent_management_product', agent_id=int(context['agent_id']))
+            else:
+                return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
+
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         relationship_types = self._get_relationship_types()
         self.logger.info('========== start getting relationship ==========')

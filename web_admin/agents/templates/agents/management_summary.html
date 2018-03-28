@@ -140,7 +140,7 @@
         <div class="row no-margin">
             <div class="col-lg-12">
                 <div id="exTab1" class="container">
-                    {% include "agents/management_tab_menu.html" with active_tab='summary' permissions=permissions agent_id=agent_id %}
+                    {% include "agents/management_tab_menu.html" with active_tab='summary'%}
                     <br>
                     <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
                     <div class="tab-content clearfix">
@@ -154,14 +154,14 @@
                                         <div>
                                             <div id="lbl_summary_product_add"><b>Please Add Product Configuration</b></div>
                                             <div style="margin-top: 10px;">
-                                                <button class="btn btn-success btn-md" type="button" id="btn_summary_product_add">Add</button>
+                                                <button class="btn btn-success btn-md" onclick="location.href='{% url 'agents:agent_management_product' agent_id%}'" type="button" id="btn_summary_product_add">Add</button>
                                             </div>
                                         </div>
                                     </div>
                                     {% else %}
                                     <div class="portfolio-panel">
-                                        <div class="category-group open">
-                                            {% for category, products in applicable_categories.items %}
+                                        {% for category, products in applicable_categories.items %}
+                                            <div class="category-group open">
                                                 <div class="category-group-title">
                                                     <b><span id="lbl_summary_product_category_{{ products.0.category_id }}"></span>{{ category }}</b>
                                                     <div class="expand-collapse" id="btn_summary_product_category_expand_{{ products.0.category_id }}"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
@@ -170,15 +170,15 @@
                                                     {% for product in  products %}
                                                         {% if product.is_checked %}
                                                             <div class="product">
-                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.id }}"/><span id="lbl_summary_product_{{ product.id }}">{{ product.product_name }}</span></label>
+                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}">{{ product.product_name }}</span></label>
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </div>
-                                            {% endfor %}
-                                        </div>
+                                            </div>
+                                        {% endfor %}
                                         <div style="text-align: right; margin-top: 15px;">
-                                            <button class="btn btn-success btn-md" type="button" id="btn_summary_product_edit">Edit</button>
+                                            <button class="btn btn-success btn-md" onclick="location.href='{% url 'agents:agent_management_product' agent_id%}'" type="button" id="btn_summary_product_edit">Edit</button>
                                         </div>
                                     </div>
                                     {% endif %}
