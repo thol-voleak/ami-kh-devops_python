@@ -50,10 +50,8 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         permissions = {}
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
-        if permissions['CAN_ACCESS_SUMMARY_TAB']:
-            pass
-        elif permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
-            return redirect('agents:agent_management_relationship',agent_id=int(context['agent_id']))
+        if not permissions['CAN_ACCESS_SUMMARY_TAB']:
+            return redirect('agents:agent_management_product',agent_id=int(context['agent_id']))
 
         context.update(
             {'agent_id': int(context['agent_id']),
