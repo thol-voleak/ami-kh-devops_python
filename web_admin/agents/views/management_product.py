@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin.get_header_mixins import GetHeaderMixin
+from django.contrib import messages
 from agents.utils import _create_product_relation
 import logging
 
@@ -75,11 +76,12 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         newly_added_product = [product_id for product_id in new_checked_product_id_list if product_id not in old_checked_product_id_list]
         newly_deleted_product = [product_id for product_id in old_checked_product_id_list if product_id not in new_checked_product_id_list]
-
+        is_all_success = True
         if newly_added_product:
             for product_id in newly_added_product:
                 self.logger.info('========== Start adding relation between product and agent ==========')
-                self.add_product_agent_relation({'product_id': product_id, 'agent_id': agent_id})
+                success = self.add_product_agent_relation({'product_id': product_id, 'agent_id': agent_id})
+                is_all_success = is_all_success and success
                 self.logger.info('========== Finish adding relation between product and agent ==========')
 
         if newly_deleted_product:
@@ -89,10 +91,13 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 self.logger.info('========== Finished get product - agent relation ==========')
                 if relation_id:
                     self.logger.info('========== Start deleting relation between product and agent ==========')
-                    self.delete_product_agent_relation(relation_id)
+                    success = self.delete_product_agent_relation(relation_id)
+                    is_all_success = is_all_success and success
                     self.logger.info('========== Finish deleting relation between product and agent ==========')
 
         self.logger.info('========== Finish updating relation between product and agent ==========')
+        if is_all_success:
+            messages.success(request, "Saved Successfully")
         return redirect("agents:agent_management_product", agent_id=agent_id)
 
     def add_product_agent_relation(self, body_request):
@@ -103,6 +108,7 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            params=body_request, loggers=self.logger)
         API_Logger.post_logging(loggers=self.logger, params=body_request, response=data,
                                 status_code=status_code)
+        return is_success
 
     def delete_product_agent_relation(self, relation_id):
         url = api_settings.DELETE_PRODUCT_AGENT_RELATION.format(relation_id=relation_id)
@@ -112,6 +118,7 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                              params={}, loggers=self.logger)
         self.logger.info("Params: {} ".format({}))
         API_Logger.delete_logging(loggers=self.logger, status_code=status_code)
+        return is_success
 
     def get_relation_id_of_product(self, body_request):
         is_success, status_code, status_message, data = RestFulClient.post(
