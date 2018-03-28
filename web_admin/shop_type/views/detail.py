@@ -14,12 +14,9 @@ from web_admin.api_settings import     GET_PRODUCT_DETAIL, GET_CATEGORIES, SERVI
 logger = logging.getLogger(__name__)
 
 
-class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+class DetailView(TemplateView, GetHeaderMixin):
 
     template_name = "shop-type/detail.html"
-    group_required = "CAN_VIEW_PRODUCT"
-    login_url = 'web:permission_denied'
-    raise_exception = False
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -33,14 +30,12 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
-        self.logger.info('========== Start render shop type detail ==========')
         context = super(DetailView, self).get_context_data(**kwargs)
         shop_type_id = int(context['id'])
         shop_type_detail = self.get_shop_type_detail(shop_type_id)
         context.update({
             'form': shop_type_detail['shop_types'][0]
         })
-        self.logger.info('========== Finish render shop type detail ==========')
         return render(request, self.template_name, context)
 
     def get_shop_type_detail(self, shop_type_id):

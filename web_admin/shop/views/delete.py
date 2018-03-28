@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 class DeleteView(TemplateView, GetHeaderMixin):
 
     template_name = "shop/delete.html"
-    login_url = 'web:permission_denied'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):

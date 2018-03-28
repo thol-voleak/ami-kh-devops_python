@@ -18,11 +18,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+class ListView(TemplateView, GetHeaderMixin):
     template_name = 'shop-category/list.html'
-    group_required = "CAN_MANAGE_PRODUCT"
-    login_url = 'web:permission_denied'
-    raise_exception = False
     logger = logger
 
     def check_membership(self, permission):

@@ -61,7 +61,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                                                           self._get_headers(),
                                                                           self.logger, params)
         API_Logger.put_logging(loggers=self.logger, params=params, response=data,
-                                status_code=status_code, is_getting_list=False)
+                                status_code=status_code)
         if is_success:
             messages.add_message(
                 request,
@@ -69,7 +69,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'Updated data successfully'
             )
             self.logger.info('========== Finish update shop category ==========')
-            return redirect('shop_type:shop_type_list')
+            return redirect('shop_category:shop_category_list')
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{} for {} username".format(status_message, self.request.user))

@@ -13,11 +13,9 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+class DetailView(TemplateView, GetHeaderMixin):
 
     template_name = "shop/detail.html"
-    group_required = "CAN_VIEW_PRODUCT"
-    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
 
@@ -25,11 +23,6 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(DetailView, self).dispatch(request, *args, **kwargs)
-
-    def check_membership(self, permission):
-        self.logger.info(
-            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-        return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
         id = kwargs['id']

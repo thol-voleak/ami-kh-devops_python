@@ -294,7 +294,7 @@ EDIT_SHOP_TYPE = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types/{shop_t
 
 GET_LIST_SHOP_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/shop-categories'
 GET_DETAIL_SHOP_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/shop-categories'
-EDIT_SHOP_CATEGORIES = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types/{shop_category_id}'
+EDIT_SHOP_CATEGORIES = 'api-gateway/agent/' + API_VERSION + '/admin/shop-categories/{shop_category_id}'
 GET_PRODUCT_AGENT_RELATION = 'api-gateway/report/' + API_VERSION + '/products/agents/relations'
 CREATE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations'
 DELETE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations/{relation_id}'
