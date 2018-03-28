@@ -64,7 +64,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "name": name,
             "description": description,
             "image_url": image_url,
-            "category_id": category_id,
+            "product_category_id": category_id,
             "payment_service_id": payment_service_id,
             "is_allow_price_range": is_allow_price_range,
             "max_price": max_price,

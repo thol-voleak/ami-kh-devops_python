@@ -50,7 +50,7 @@ class UpdateProductStatusOfCategory(TemplateView, GetHeaderMixin):
             "min_price": 0 if not product_detail['min_price'] else float(product_detail['min_price']),
             "max_price": 0 if not product_detail['max_price'] else float(product_detail['max_price']),
             "is_allow_price_range": product_detail['is_allow_price_range'],
-            "category_id": product_detail['product_category'].get('id', None),
+            "product_category_id": product_detail['product_category'].get('id', None),
             "payment_service_id": product_detail['payment_service_id']
         }
         if product_status:
