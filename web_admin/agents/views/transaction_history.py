@@ -263,7 +263,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      }
                 )
             self.logger.info('========== End search transaction history ==========')
-        request.session['agent_wallet_url'] = request.build_absolute_uri()
+        request.session['back_wallet_url'] = request.build_absolute_uri()
         self.logger.info('========== Finished getting agent transaction history ==========')
         return render(request, self.template_name, context)
 
