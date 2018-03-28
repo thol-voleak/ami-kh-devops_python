@@ -39,6 +39,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if not product['denomination']:
             product['denomination'] = ['']
 
+        product['category_id'] = product['product_category']['id']
         context = {"product": product}
 
         context['cbo_agent_types'] = self.get_agent_type(product_id)
@@ -95,7 +96,6 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             self.delete_agent_types(product_id)
             self.mapping_product_agent_types(product_id, cbo_agent_types)
             messages.success(request, "Edited Successfully")
-
         context = {'product': params}
         context['cbo_agent_types'] = cbo_agent_types
         self.set_ui_list(context)

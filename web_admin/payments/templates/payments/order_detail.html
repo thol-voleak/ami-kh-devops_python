@@ -439,10 +439,8 @@
                     </div>
 
                     <div class="pull-right">
-                        {% if page_from == 'agent' %}
-                            <a href="{{agent_wallet_url}}">
-                        {% elif page_from == 'customer' %}
-                            <a href="{% url 'customers:customer_transaction_history' customer_id %}">
+                        {% if page_from == 'agent' or page_from == 'customer'  %}
+                            <a href="{{back_wallet_url}}">
                         {% elif page_from == 'order_list' %}
                             <a href="{% url 'payments:payment_order' %}">
                         {% else %}

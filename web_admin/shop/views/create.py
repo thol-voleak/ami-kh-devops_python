@@ -1,3 +1,4 @@
+from shop.utils import get_all_shop_type, get_all_shop_category, get_system_country
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
@@ -27,7 +28,29 @@ class CreateView(TemplateView, RESTfulMethods):
             self._headers = get_auth_header(self.request.user)
         return self._headers
 
+    def get(self, request, *args, **kwargs):
+        form = {}
+        context = {'form': form}
+
+        list_shop_type = get_all_shop_type()
+        context['list_shop_type'] = list_shop_type
+
+        list_shop_category = get_all_shop_category()
+        context['list_shop_category'] = list_shop_category
+
+        country = get_system_country()
+        form['country'] = country
+
+        return render(request, self.template_name, context)
+
     def post(self, request, *args, **kwargs):
         form = request.POST
         context = {'form': form}
+
+        list_shop_type = get_all_shop_type()
+        context['list_shop_type'] = list_shop_type
+
+        list_shop_category = get_all_shop_category()
+        context['list_shop_category'] = list_shop_category
+
         return render(request, self.template_name, context)

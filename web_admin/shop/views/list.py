@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from shop.utils import get_all_shop_type, get_all_shop_category
 from web_admin import api_settings, setup_logger
 
 from django.views.generic.base import TemplateView
@@ -31,4 +32,13 @@ class ListView(TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         form = request.GET;
         context = {"form": form}
+
+        list_shop_type = get_all_shop_type()
+        context['list_shop_type'] = list_shop_type
+
+        list_shop_category = get_all_shop_category()
+        context['list_shop_category'] = list_shop_category
+
+        # TODO: get shop list from API
+
         return render(request, self.template_name, context)
