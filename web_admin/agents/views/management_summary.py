@@ -32,16 +32,6 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
         return check_permissions_by_user(self.request.user, permission[0])
 
-    def check_membership(self, permission):
-        self.logger.info(
-            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-        return check_permissions_by_user(self.request.user, permission[0])
-
-    def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(AgentManagementSummary, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         context = super(AgentManagementSummary, self).get_context_data(**kwargs)
         body = {}
