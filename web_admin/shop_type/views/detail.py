@@ -54,7 +54,11 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            loggers=self.logger,
                                                                            params=body,
                                                                            timeout=settings.GLOBAL_TIMEOUT)
-        API_Logger.post_logging(loggers=self.logger, params=body,
-                                status_code=status_code, is_getting_list=True)
+        if data is None:
+            data = {}
+            data['shop_types'] = []
+            
+        API_Logger.post_logging(loggers=self.logger, params=body,response=data['shop_types'],
+                                status_code=status_code, is_getting_list=False)
         self.logger.info('========== Finish get shop type detail ==========')
         return data

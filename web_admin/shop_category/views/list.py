@@ -37,7 +37,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        self.logger.info('========== Start render shop categories page ==========')
         body = {
             "paging": True,
             "page_index": 1
@@ -51,13 +50,11 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'paginator': page,
             'page_range': calculate_page_range_from_page_info(page)
         })
-        self.logger.info('========== Finish render shop categories page ==========')
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        self.logger.info('========== Start render pagination shop categories list ==========')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
@@ -72,7 +69,6 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'paginator': page,
             'page_range': calculate_page_range_from_page_info(page)
         })
-        self.logger.info('========== Finish render pagination shop categories list ==========')
         return render(request, self.template_name, context)
 
     def get_shop_categories(self, body):
@@ -86,6 +82,9 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if data is None:
             data = {}
             data['shop_categories'] = []
+        else:
+            page = data.get("page", {})
+            self.logger.info('Total element: {}'.format(page.get('total_elements', 0)))
 
         API_Logger.post_logging(loggers=self.logger, params=body,response=data['shop_categories'],
                                 status_code=status_code, is_getting_list=True)

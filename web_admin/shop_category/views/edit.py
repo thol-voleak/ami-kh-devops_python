@@ -49,3 +49,23 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         form = request.POST
         context = {'form': form}
         return render(request, self.template_name, context)
+
+    def get_shop_category_detail(self, shop_category_id):
+        url = api_settings.GET_SHOP_TYPE_DETAIL
+        body = {
+            "id": shop_category_id
+        }
+        self.logger.info('========== Start get shop type detail ==========')
+        success, status_code, status_message, data = RestFulClient.post(url=url,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body,
+                                                                           timeout=settings.GLOBAL_TIMEOUT)
+        if data is None:
+            data = {}
+            data['shop_categories'] = []
+
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data['shop_categories'],
+                                status_code=status_code, is_getting_list=True)
+        self.logger.info('========== Finish get shop type detail ==========')
+        return data

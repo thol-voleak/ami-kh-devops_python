@@ -42,7 +42,7 @@
                             <td>{{i.description}}</td>
                             <td>
                                 <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop_category:shop_category_detail' 123 %}">Detail</a>
-                                <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop_category:shop_category_edit' 123 %}">Edit</a>
+                                <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop_category:shop_category_edit' i.id %}">Edit</a>
                                 <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop_category:shop_category_delete' 123 %}">Delete</a>
                             </td>
                             {%endif%}
