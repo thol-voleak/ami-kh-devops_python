@@ -192,10 +192,35 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             )
             return render(request, self.template_name, context)
 
+        diffDay = self._getDiffDaysFromUIDateValue(from_created_timestamp, to_created_timestamp)
+
+        # validate fromDate less than or equals to toDate
+        if diffDay < 0:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'The from date should be before or equal to the to date'
+            )
+
+            context.update(
+                {'search_count': 0,
+                 'list': [],
+                 'choices': choices,
+                 'sof_type_id': sof_type_id,
+                 'sof_id': sof_id,
+                 'cash_sof_list': cash_sof_list,
+                 'paginator': {},
+                 'user_id': user_id,
+                 'from_created_timestamp': from_created_timestamp,
+                 'to_created_timestamp': to_created_timestamp
+                 }
+            )
+
+            return render(request, self.template_name, context)
+
         # validate date range
         walletViewInDay = self._getWalletViewInDay()
-        diffDay = self._getDiffDaysFromUIDateValue(from_created_timestamp, to_created_timestamp)
-        if diffDay < 0 or diffDay > int(walletViewInDay):
+        if diffDay > int(walletViewInDay):
             messages.add_message(
                 request,
                 messages.ERROR,
