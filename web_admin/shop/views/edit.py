@@ -12,12 +12,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class EditView(TemplateView, RESTfulMethods):
     template_name = "shop/edit.html"
     raise_exception = False
     logger = logger
-    group_required = "CAN_EDIT_PRODUCT"
-    login_url = 'web:permission_denied'
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -32,11 +30,6 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if getattr(self, '_headers', None) is None:
             self._headers = get_auth_header(self.request.user)
         return self._headers
-
-    def check_membership(self, permission):
-        self.logger.info(
-            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-        return check_permissions_by_user(self.request.user, permission[0])
 
     def get(self, request, *args, **kwargs):
         id = kwargs['id']
