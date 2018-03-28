@@ -14,10 +14,10 @@ def get_agent_type_by_agent_id(self, id):
         headers=self._get_headers(),
         loggers=self.logger,
         params=body)
+    data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
                             response=data.get('agents', []),
                             status_code=status_code, is_getting_list=True)
-    data = data or {}
     if data.get('agents'):
         return data.get('agents')[0]['agent_type_id']
 
@@ -91,10 +91,10 @@ def get_products_by_agent(self, id):
                                                                     headers=self._get_headers(),
                                                                     loggers=self.logger,
                                                                     params=body)
+    data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
                             response=data.get('relations', []),
                             status_code=status_code, is_getting_list=True)
-    data = data or {}
     return data.get('relations', [])
 
 def get_products_by_agent_type(self, id):
@@ -110,10 +110,10 @@ def get_products_by_agent_type(self, id):
         loggers=self.logger,
         params=body)
 
+    data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
                             response=data.get('relations', []),
                             status_code=status_code, is_getting_list=True)
-    data = data or {}
 
     return data.get('relations', [])
 
@@ -130,10 +130,10 @@ def get_all_products(self):
                                                                     headers=self._get_headers(),
                                                                     loggers=self.logger,
                                                                     params=body)
+    data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
                             response=data.get('products', []),
                             status_code=status_code, is_getting_list=True)
-    data = data or {}
     return data.get('products', [])
 
 def get_all_categories(self):
@@ -148,9 +148,9 @@ def get_all_categories(self):
                                                                     headers=self._get_headers(),
                                                                     loggers=self.logger,
                                                                     params=body)
+    data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
                             response=data.get('categories', []),
                             status_code=status_code, is_getting_list=True)
-    data = data or {}
 
     return data.get('categories', [])
