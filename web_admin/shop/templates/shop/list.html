@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Shops Management</h3>
+
+        {% include "message.html" %}
+
+        <div class="pull-right">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}">
+                <strong>+</strong> <span>Add New Shop</span>
+            </a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
+            <div class="row">
+                <label class="col-md-2 control-label">Shop ID</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                </div>
+                <label class="col-md-2 control-label">Shop Category</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="shop_category" >
+                        <option value="">All</option>
+                        <option value='123' {%if form.shop_category == '123'%}selected{%endif%}>Shop Category Name</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <label class="col-md-2 control-label">Shop Name</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
+                </div>
+                <label class="col-md-2 control-label">Shop Type</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="shop_type" >
+                        <option value="">All</option>
+                        <option value='123' {%if form.shop_type == '123'%}selected{%endif%}>Shop Type Name</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <label class="col-md-2 control-label">Relationship Manager Name</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="relationship_manager" value="{{ form.relationship_manager }}"/>
+                </div>
+                <label class="col-md-2 control-label">Owner (ID)</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="owner_id" value="{{ form.owner_id }}"/>
+                </div>
+                <div class="col-md-2">
+                    <input id="btn_search" class="btn btn-success" type="submit" value="Search">
+                </div>
+            </div>
+            <div style="margin-top: 15px; text-align: right">
+                Total Shops Found:&nbsp;<span id="lbl_total">123</span>
+            </div>
+            <div class="table-responsive" style="margin-top: 10px;">
+                <table id="tbl_shops" class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th>Shop ID</th>
+                        <th>Shop Type</th>
+                        <th>Shop Category</th>
+                        <th>Shop Name</th>
+                        <th>City</th>
+                        <th>District</th>
+                        <th>Relationship Manager Name</th>
+                        <td>Owner</td>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>123</td>
+                            <td>Shop Type</td>
+                            <td>Shop Category</td>
+                            <td>Shop Name</td>
+                            <td>City</td>
+                            <td>District</td>
+                            <td>Relationship Manager Name</td>
+                            <td>
+                                <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' 12345 %}">12345</a>
+                            </td>
+                            <td>
+                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
+                                <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' 123 %}">Edit</a>
+                                <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' 123 %}">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
+        </form>
+    </div>
+</div>
+{% endblock %}
