@@ -4,7 +4,8 @@
 {% block content %}
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3>Commission And Payment Method</h3>
+            <h3 class="not_in_review">Commission And Payment Method</h3>
+            <h3 class="in_review" style="display:none">REVIEW PAGE</h3>
         </div>
 
         <div id="ajax-messages">
@@ -47,11 +48,11 @@
                 </div>
             </div>
 
-            <div class="panel-heading">
+            <div class="panel-heading not_in_review">
                 <h4>I. Fee & Bonus</h4>
             </div>
 
-            <div class="form-inline">
+            <div class="form-inline not_in_review">
                 <label class="col-sm-2 control-label">Fee:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -67,7 +68,7 @@
                 </div>
             </div>
             <br/>
-            <div class="form-inline">
+            <div class="form-inline not_in_review">
                 <label class="col-sm-2 control-label">Bonus:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -84,7 +85,8 @@
             </div>
 
             <div class="panel-heading">
-                <h4>II. Setting Payment, Fee & Bonus Structure</h4>
+                <h4 class="not_in_review">II. Setting Payment, Fee & Bonus Structure</h4>
+                <h4 style="display: none" class="in_review">Setting Payment, Fee & Bonus Structure</h4>
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
             </div>
 
@@ -93,7 +95,7 @@
                   id="payment_and_fee_stucture_form">
 
                 {% csrf_token %}
-                <div class="form-group table-responsive row">
+                <div class="form-group table-responsive row not_in_review">
                     <table class="table table-bordered table-striped datatable editable-datatable  mb0"
                            id="tbl_setting_payment_fee_structure">
                         <thead>
@@ -125,13 +127,11 @@
                                 <td>
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
-                                            id="btn_setting_payment_fee_structure_edit">Edit
-                                    </button>
+                                            id="btn_setting_payment_fee_structure_edit">Edit</button>
                                     <button type="button"
                                             class="delete btn btn-outline btn-xs btn-danger text-info small"
                                             id="btn_setting_payment_fee_structure_delete"
-                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete
-                                    </button>
+                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -152,8 +152,6 @@
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-
-
                             <td>
                                 <select name="specific_actor_id" id="ddl_setting_payment_fee_structure_specific_id" class="form-control"
                                     {% if choices.actor_types.0.actor_type != 'Specific ID' %}
@@ -166,9 +164,6 @@
                                         {% endfor %}
                                 </select>
                             </td>
-
-
-
                             <td>
                                 <select class="form-control" name="sof_type_id"
                                         id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund')">
@@ -211,10 +206,20 @@
                 </div>
 
 
-                <div class="form-group pull-right">
+                <div class="form-group pull-right in_review" style="display: none">
+                    <a href="#">
+                        <input id="btn_setting_payment_fee_structure_review_back" class="btn" type="button"
+                               value="Back"/>
+                    </a>
+                </div>
+                <div class="form-group pull-right not_in_review">
                     <a href="#">
                         <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
                                value="Add"/>
+                    </a>
+                    <a href="#">
+                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="button"
+                               value="Review"/>
                     </a>
                     <br/>
                     <br/>
@@ -222,6 +227,7 @@
                         <input id="btn_back" class="btn" type="button" value="Back"/>
                     </a>
                 </div>
+
             </form>
 
             <!--<div class="panel-heading" hidden>-->
@@ -616,7 +622,6 @@
             }
         }
 
-
         function changeSpecificActorTypeRelativeAdd(actorType) {
             specificActorId = $(actorType).parent().next().find("#ddl_agent_hier_fee_specific_id");//ddl_agent_hier_fee_specific_id
             specificSoFId = $(actorType).parent().next().next().next().find("#ddl_agent_hier_fee_spec_src_fund_add");
@@ -758,6 +763,18 @@
             });
         }
 
+        function onClickReviewBtn() {
+            renderReviewTableDiv("#tbl_setting_payment_fee_structure")
+            $(".not_in_review").hide()
+            $(".in_review").show()
+        }
+
+        function onClickReviewBackBtn() {
+            $("#div_tbl_setting_payment_fee_structure_review").remove()
+            $(".not_in_review").show()
+            $(".in_review").hide()
+        }
+
         // Edit row features
         $(document).ready(function () {
             //var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
@@ -789,8 +806,8 @@
                  $(this).removeAttr( "style" );
             });
 
+            $("#btn_setting_payment_fee_structure_review").click(onClickReviewBtn)
+            $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
         });
-
-
     </script>
 {%  endblock %}

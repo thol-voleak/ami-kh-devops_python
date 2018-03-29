@@ -8,6 +8,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
+from agents.utils import check_permission_agent_management
 
 import logging
 
@@ -37,9 +38,13 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         body['user_id'] = int(context['agent_id'])
 
         permissions = {}
-        permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
-        permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+        permissions = check_permission_agent_management(self)
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
+        if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+            if not permissions['CAN_ACCESS_SUMMARY_TAB']:
+                return redirect('agents:agent_management_product', agent_id=int(context['agent_id']))
+            else:
+                return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
         relationship_type_id = []
         context.update(
             {'agent_id': int(context['agent_id']),
@@ -104,14 +109,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(AgentManagementRelationship, self).get_context_data(**kwargs)
         params = {}
         permissions = {}
-        permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
-        permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
-        if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
-            if not permissions['CAN_ACCESS_SUMMARY_TAB']:
-                return redirect('agents:agent_management_product', agent_id=int(context['agent_id']))
-            else:
-                return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
-
+        permissions = check_permission_agent_management(self)
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         relationship_types = self._get_relationship_types()
         self.logger.info('========== start getting relationship ==========')

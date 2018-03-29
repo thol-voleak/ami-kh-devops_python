@@ -48,7 +48,7 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         })
         categories = self.get_categories()
 
-        list_category = categories[0].get('categories')
+        list_category = categories[0].get('product_categories')
 
         all_list_product = self.get_all_list_products() 
         all_list_product = all_list_product[0].get('products')
@@ -69,14 +69,14 @@ class CategoryList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             context['list_category'] = list_category
 
             # get default category to view
-            default_category = categories[0].get('categories')[0]
+            default_category = categories[0].get('product_categories')[0]
             category_id = default_category['id']
             if category_id:
                 category_detail = self.get_category_detail(category_id)
                 products_default = self.get_products(category_id)
 
                 context.update({
-                    'category_detail': category_detail[0]['categories'][0],
+                    'category_detail': category_detail[0]['product_categories'][0],
                     'products': products_default[0].get('products'),
                 })
         self.logger.info('========== Finish render category page ==========')

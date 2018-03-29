@@ -39,7 +39,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if not product['denomination']:
             product['denomination'] = ['']
 
-        product['category_id'] = product['product_category']['id']
+        product['product_category_id'] = product['product_category']['id']
         context = {"product": product}
 
         context['cbo_agent_types'] = self.get_agent_type(product_id)
@@ -55,8 +55,8 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         name = request.POST.get('name')
         description = request.POST.get('description')
         image_url = request.POST.get('image_url')
-        category_id = request.POST.get('category_id')
-        category_id = int(category_id) if category_id else None
+        product_category_id = request.POST.get('product_category_id')
+        product_category_id = int(product_category_id) if product_category_id else None
         payment_service_id = request.POST.get('payment_service_id')
         payment_service_id = int(payment_service_id) if payment_service_id else None
         is_allow_price_range = request.POST.get('is_allow_price_range') == 'on'
@@ -75,7 +75,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             "name": name,
             "description": description,
             "image_url": image_url,
-            "category_id": category_id,
+            "product_category_id": product_category_id,
             "payment_service_id": payment_service_id,
             "is_allow_price_range": is_allow_price_range,
             "max_price": max_price,
@@ -112,7 +112,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_success, status_code, status_message, data = RestFulClient.post(
             url=api_settings.GET_CATEGORIES, headers=self._get_headers(), loggers=self.logger, params={}
         )
-        categories = data['categories']
+        categories = data['product_categories']
         categories = [x for x in categories if not x['is_deleted']]
         context['categories'] = categories
         API_Logger.post_logging(loggers=self.logger, params={}, response=categories, status_code=status_code, is_getting_list=True)

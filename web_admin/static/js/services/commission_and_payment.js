@@ -595,3 +595,66 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     onBindingButtonsDeleteEvent();
 }
 
+function collectTableData(tableSelector) {
+    var parentDiv = $(tableSelector)
+    var tr_list = $(parentDiv.selector+" tbody").children()
+    var tableData = new Array()
+    for(i = 0; i < $(tr_list).size()-1; i++) {
+        // btn_text = $(tr_list).eq(i).find("button").eq(0).text()
+        // if (!btn_text) return true;
+        var rowData = new Array();
+        $($(tr_list).eq(i).children()).each(function(index) {
+            if ($(this).children().eq(0).is("select")) {
+                tdValue = $( this ).children().eq(0).children("option").filter(":selected").text()
+            } else if ($(this).children().eq(0).is("input")) {
+                tdValue = $(this).children().eq(0).val()
+            } else if ($(this).children().eq(0).is(":button")) {
+                return true;
+            } else {
+                tdValue = this.innerHTML
+            }
+            rowData[index] = tdValue
+        });
+        tableData[i] = rowData
+    };
+    return tableData
+}
+
+function renderTableData(tableData) {
+    var tbody = "<tbody>"
+    $(tableData).each(function(rowIndex) {
+        tbody += "<tr>"
+        $(this).each(function(colIndex) {
+            tbody += "<td>"+ this + "</td>"
+        });
+        tbody += "</tr>"
+    });
+    tbody += "</tbody>"
+
+    return tbody
+}
+
+function renderTableHeader(tableSelector) {
+    var parentDiv = $(tableSelector)
+    var tr_list = $(parentDiv.selector+" thead tr").children()
+    var rowData = new Array();
+    var thead = "<thead>"
+    for(i = 0; i < $(tr_list).size()-1; i++) {
+        thead += "<th class=\""+$(tr_list).eq(i).attr("class")+"\">"+$(tr_list).eq(i).text()+"</th>"
+    }
+    thead += "</thead>"
+    return thead
+}
+
+function renderReviewTableDiv(tableSelector) {
+    var tableData = collectTableData(tableSelector)
+    var reviewContent = renderTableHeader(tableSelector) + renderTableData(tableData)
+
+    var renderedDiv = "<div id=\"div_"+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"form-group table-responsive row in_review\"> "
+                        +   "<div class=\"dataTables_wrapper no-footer\">"
+                        +       " <table id=\""+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"table table-bordered table-striped datatable editable-datatable  mb0 dataTable no-footer\">" + reviewContent
+                        +       "</table> "
+                        +   "</div>"
+                        + "</div>"
+    $(tableSelector).parent().parent().after(renderedDiv)
+}

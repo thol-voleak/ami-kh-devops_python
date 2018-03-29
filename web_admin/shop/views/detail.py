@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from shop.utils import get_shop_details, convert_shop_to_form
 from web_admin import setup_logger, api_settings
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
@@ -25,7 +26,8 @@ class DetailView(TemplateView, GetHeaderMixin):
         return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        id = kwargs['id']
-        form = {"id": id, "name": "Name", "description": "Description"}
+        shop_id = kwargs['id']
+        shop = get_shop_details(self, shop_id)
+        form = convert_shop_to_form(shop)
         context = {'form': form}
         return render(request, self.template_name, context)

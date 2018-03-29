@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from authentications.utils import get_correlation_id_from_username
+from shop.utils import get_shop_details, convert_shop_to_form
 from web_admin import setup_logger
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
@@ -26,12 +27,14 @@ class DeleteView(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         id = kwargs['id']
-        form = {"id": id, "name": "Name", "description": "Description"}
+        shop = get_shop_details(self, id)
+        form = convert_shop_to_form(shop)
         context = {'form': form}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         id = kwargs['id']
+        # TODO: call delete API
         form = request.POST
         context = {'form': form}
         return render(request, self.template_name, context)

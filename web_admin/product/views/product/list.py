@@ -126,7 +126,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                            timeout=settings.GLOBAL_TIMEOUT)
         self.logger.info("Params: {} ".format(body))
         if success:
-            data = data['categories']
+            data = data['product_categories']
             self.logger.info("Response_content_count:{}".format(len(data)))
             self.logger.info('========== Finish get category list ==========')
             return data

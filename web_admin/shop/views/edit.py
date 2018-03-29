@@ -1,3 +1,4 @@
+from shop.utils import get_shop_details, convert_shop_to_form, convert_form_to_shop
 from web_admin.api_logger import API_Logger
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
@@ -33,12 +34,15 @@ class EditView(TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         id = kwargs['id']
-        form = {"id": id, "name": "Name", "description": "Description"}
+        shop = get_shop_details(self, id)
+        form = convert_shop_to_form(shop)
         context = {'form': form}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         id = kwargs['id']
         form = request.POST
+        shop = convert_form_to_shop(form)
+        # TODO: call API
         context = {'form': form}
         return render(request, self.template_name, context)

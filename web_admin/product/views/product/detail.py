@@ -120,7 +120,7 @@ class ProductDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             return str(category_id)
-        return data['categories'][0]['name']
+        return data['product_categories'][0]['name']
 
     def get_service_name(self, service_id):
         self.logger.info('========== Start getting service name ==========')

@@ -157,7 +157,14 @@ def get_all_categories(self):
                                                                     params=body)
     data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
-                            response=data.get('categories', []),
+                            response=data.get('product_categories', []),
                             status_code=status_code, is_getting_list=True)
 
-    return data.get('categories', [])
+    return data.get('product_categories', [])
+
+
+def check_permission_agent_management(self):
+    permissions = {}
+    permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
+    permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+    return permissions

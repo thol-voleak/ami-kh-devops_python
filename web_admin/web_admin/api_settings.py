@@ -269,10 +269,10 @@ GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summ
 GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs/cash'
 
 # Category
-ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories'
-GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/categories'
-EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{category_id}'
-DELETE_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/categories/{category_id}'
+ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories'
+GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/product-categories'
+EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
+DELETE_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
 
 # Product
 GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
@@ -302,3 +302,4 @@ CREATE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/pro
 DELETE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations/{relation_id}'
 
 SEARCH_SHOP = 'api-gateway/report/' + API_VERSION + '/shops/'
+GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'

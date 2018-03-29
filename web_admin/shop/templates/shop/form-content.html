@@ -1,20 +1,21 @@
 {% csrf_token %}
 
 <input type="hidden" name="id" value="{{ form.id }}" />
+<input type="hidden" name="agent_id" value="{{ form.agent_id }}" />
 
 <h4>Shop Details</h4>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Acquisition Source</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="acquisition_source" value="{{ form.acquisition_source }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_acquisition_source" name="acquisition_source" value="{{ form.acquisition_source }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Shop Name *</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="name" value="{{ form.name }}" required {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_shop_name" name="name" value="{{ form.name }}" required {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
@@ -22,9 +23,9 @@
     <label class="col-sm-3 control-label">Shop Type</label>
     <div class="col-sm-7">
         {% if is_readonly %}
-            <input type="text" class="form-control" value="{{ form.shop_type.name }}" readonly />
+            <input type="text" class="form-control" id="ddl_shop_type" value="{{ form.shop_type.name }}" readonly />
         {% else %}
-            <select class="form-control" name="shop_type_id" >
+            <select class="form-control" id="ddl_shop_type" name="shop_type_id" >
                 <option value=""></option>
                 {% for item in list_shop_type %}
                 <option value="{{ item.id }}" {%if form.shop_type_id == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
@@ -38,9 +39,9 @@
     <label class="col-sm-3 control-label">Shop Category</label>
     <div class="col-sm-7">
         {% if is_readonly %}
-            <input type="text" class="form-control" value="{{ form.shop_category.name }}" readonly />
+            <input type="text" class="form-control" id="ddl_shop_category" value="{{ form.shop_category.name }}" readonly />
         {% else %}
-            <select class="form-control" name="shop_category_id" {% if is_readonly %}readonly{% endif %} >
+            <select class="form-control" id="ddl_shop_category" name="shop_category_id" {% if is_readonly %}readonly{% endif %} >
                 <option value=""></option>
                 {% for item in list_shop_category %}
                 <option value="{{ item.id }}" {%if form.shop_category_id == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
@@ -53,70 +54,70 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">Country</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="country" value="{{ form.country }}" readonly />
+        <input type="text" class="form-control" id="txt_country" name="country" value="{{ form.country }}" readonly />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Postal Code</label>
     <div class="col-sm-7">
-        <input type="number" class="form-control" name="postal_code" value="{{ form.postal_code }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="number" class="form-control" id="txt_postal_code" name="postal_code" value="{{ form.postal_code }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Province</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="province" value="{{ form.province }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_province" name="province" value="{{ form.province }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">City</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="city" value="{{ form.city }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_city" name="city" value="{{ form.city }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">District</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="district" value="{{ form.district }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_district" name="district" value="{{ form.district }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Commune</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="commune" value="{{ form.commune }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_commune" name="commune" value="{{ form.commune }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Address</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="address" value="{{ form.address }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_address" name="address" value="{{ form.address }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Landmark</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="landmark" value="{{ form.landmark }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_landmark" name="landmark" value="{{ form.landmark }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Latitude</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="latitude" value="{{ form.latitude }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_latitude" name="latitude" value="{{ form.latitude }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Longitude</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="longitude" value="{{ form.longitude }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_longitude" name="longitude" value="{{ form.longitude }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
@@ -216,56 +217,56 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">Relationship Manager ID</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="relationship_manager_id" value="{{ form.relationship_manager_id }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_relationship_manager_id" name="relationship_manager_id" value="{{ form.relationship_manager_id }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Relationship Manager Name</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="relationship_manager_name" value="{{ form.relationship_manager_name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_relationship_manager_name" name="relationship_manager_name" value="{{ form.relationship_manager_name }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Relationship Manager Email</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="relationship_manager_email" value="{{ form.relationship_manager_email }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_relationship_manager_email" name="relationship_manager_email" value="{{ form.relationship_manager_email }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Acquiring Sales Executive Name</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="acquiring_sales_executive_name" value="{{ form.acquiring_sales_executive_name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_acquiring_sales_executive_name" name="acquiring_sales_executive_name" value="{{ form.acquiring_sales_executive_name }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Sales Region</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="sales_region" value="{{ form.sales_region }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_sales_region" name="sales_region" value="{{ form.sales_region }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Account Manager Name</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="account_manager_name" value="{{ form.account_manager_name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_account_manager_name" name="account_manager_name" value="{{ form.account_manager_name }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Reference 1</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="ref1" value="{{ form.ref1 }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_reference_1" name="ref1" value="{{ form.ref1 }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-sm-3 control-label">Reference 2</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control" name="ref2" value="{{ form.ref2 }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control" id="txt_reference_2" name="ref2" value="{{ form.ref2 }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
 

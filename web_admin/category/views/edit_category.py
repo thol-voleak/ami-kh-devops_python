@@ -132,8 +132,8 @@ class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                         loggers=self.logger,
                                                                         params=body,
                                                                         timeout=settings.GLOBAL_TIMEOUT)
-        if data and data.get('categories'):
-            data = data.get('categories')[0]
+        if data and data.get('product_categories'):
+            data = data.get('product_categories')[0]
         else:
             data = {}
         API_Logger.post_logging(loggers=self.logger, params=body, response=data,

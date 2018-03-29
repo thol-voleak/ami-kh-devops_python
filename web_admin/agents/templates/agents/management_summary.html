@@ -135,6 +135,13 @@
     .category-group.open .category-group-body {
         display: block;
     }
+    hr {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    #exTab1 {
+        max-width: 100%;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -163,14 +170,14 @@
                                         {% for category, products in applied_category.items %}
                                             <div class="category-group open">
                                                 <div class="category-group-title">
-                                                    <b><span id="lbl_summary_product_category_{{ products.0.category_id }}"></span>{{ category }}</b>
+                                                    <b><span id="lbl_summary_product_category_{{ products.0.category_id }}">{{ category }}</span></b>
                                                     <div class="expand-collapse" id="btn_summary_product_category_expand_{{ products.0.category_id }}"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up"></i></div>
                                                 </div>
                                                 <div class="category-group-body">
                                                     {% for product in  products %}
                                                         {% if product.is_checked %}
                                                             <div class="product">
-                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}">{{ product.product_name }}</span></label>
+                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}" style="margin-left: 7px;">{{ product.product_name }}</span></label>
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -183,10 +190,13 @@
                                     </div>
                                     {% endif %}
                                 </div>
+
+                                <hr>
+
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                                     <div id="div_relationships_summary">
                                         <h4>Relationships View</h4>
-                                        <div class="panel-body">
+                                        <div>
                                             <div class="no-more-tables">
                                                 <table id='tbl_summary_management'
                                                        class="table table-bordered table-striped mb0">
@@ -241,16 +251,16 @@
                                                     {%endfor%}
                                                     </tbody>
                                                 </table>
-                                                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                                                <div class="text-right" style="margin-top: 15px;">
                                                     {% if relationship_list_length > 10 %}
                                                         <a href="{% url 'agents:agent_management_relationship' agent_id %}">
                                                     {% endif %}
                                                     {% if relationship_list_length <= 10 %}
-                                                        <div style="cursor: not-allowed;">
-                                                            <button id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button" disabled="disabled">View More</button>
+                                                        <div style="cursor: not-allowed; display: inline-block">
+                                                            <button id="btn_summary_management_view_more" class="btn btn-success btn-md" type="button" disabled="disabled">View More</button>
                                                         </div>
                                                     {% else %}
-                                                        <button id="btn_summary_management_view_more" class="btn btn-success btn-block btn-md mb15" type="button">View More</button>
+                                                        <button id="btn_summary_management_view_more" class="btn btn-success btn-md" type="button">View More</button>
                                                     {% endif %}
                                                     {% if relationship_list_length > 10 %}</a>{% endif %}
                                                 </div>
@@ -259,6 +269,57 @@
                                         </div>
                                     </div>
                                 {% endif %}
+
+                                <hr>
+
+                                <div>
+                                    <h4>Shop Management</h4>
+                                    <div class="portfolio-panel-empty">
+                                        <div>
+                                            <div><b>Please Add a Shop</b></div>
+                                            <div style="margin-top: 10px;">
+                                                <a class="btn btn-success btn-md" href="" >Add</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped mb0">
+                                            <thead>
+                                            <tr>
+                                                <th>Shop ID</th>
+                                                <th>Shop Type</th>
+                                                <th>Shop Category</th>
+                                                <th>Shop Name</th>
+                                                <th>City</th>
+                                                <th>District</th>
+                                                <th>Relationship Manager Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>123</td>
+                                                    <td>Shop Type</td>
+                                                    <td>Shop Category</td>
+                                                    <td>Shop Name</td>
+                                                    <td>City</td>
+                                                    <td>District</td>
+                                                    <td>Relationship Manager Name</td>
+                                                    <td>
+                                                        <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
+                                                        <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;">Add Shop</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-right" style="margin-top: 10px;">
+                                            <a class="btn btn-success btn-md" href="" >View More</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         {% endif %}
                     </div>
