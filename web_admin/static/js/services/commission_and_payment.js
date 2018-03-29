@@ -4,6 +4,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     var oTable;
 
     function restoreRow(oTable, nRow) {
+        
+        $('#' + tableId).append($("#tr_row_for_edit"));
+        
         var aData = oTable.fnGetData(nRow);
         var jqTds = $('>td', nRow);
 
@@ -200,10 +203,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             {getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit',aData[4]);}
 
         // Action Buttons
-        var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
         var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
-        jqTds[8].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
+        jqTds[8].innerHTML = htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
 
@@ -282,53 +284,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             nEditing = nRow;
         }
         else {
-            // Request to server
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                    "fee_tier_id": fee_tier_id,
-                    "action_type": $(jqSelects[0]).find(":selected").html(),
-                    "actor_type": $(jqSelects[1]).find(":selected").html(),
-                    "specific_actor_id": $(jqSelects[2]).find(":selected").html(),
-                    "sof_type_id": $(jqSelects[3]).find(":selected").val(),
-                    "specific_sof": $(jqSelects[4]).find(":selected").html(),
-                    "amount_type": $(jqSelects[5]).find(":selected").html(),
-                    "rate": jqInputs[0].value,
-                    "label": jqInputs[1].value
-                },
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
-                },
-                success: function (response) {
-
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        // success
-                        console.log('Updated Setting Payment, Fee & Bonus Structure successfully');
-                        saveRow(oTable, nRow);
-                        addMessage("Updated Setting Payment, Fee & Bonus Structure successfully");
-                    } else {
-                        // Failed
-                        console.log('Updated Setting Payment & Fee Structure got error!');
-                        addErrorMessage(response.msg);
+            saveRow(oTable, nRow); // save client only
                     }
-
-                    $("body").find("th").each(function () {
-                    $(this).removeAttr( "style" );
-            });
-                },
-                error: function (err) {
-                    var json = JSON.stringify(err);
-
-                    addErrorMessage("Edit error!");
-                }
-            });
-        }
     }
 
     // Setting Bonus Table
@@ -525,13 +482,18 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             /* Get the row as a parent of the link that was clicked on */
             var nRow = $(this).parents('tr')[0];
 
+            if(typeof $(nRow)[0] !== 'undefined' && typeof $(nRow)[0].id !== 'undefined' && $(nRow)[0].id === '') {
+                console.log("Cancel a new row on temporary");
+                oTable.fnDeleteRow(nRow, null, true);
+            } else {
             restoreRow(oTable, nEditing);
             nEditing = nRow;
 
             $("body").find("th").each(function () {
                $(this).removeAttr( "style" );
             });
-            // location.reload();
+            }
+            $('#' + tableId).append($("#tr_row_for_edit"));
         });
     }
 
@@ -541,7 +503,54 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             e.preventDefault();
 
             var nRow = $(this).parents('tr')[0];
+            //nRow.remove();
             oTable.fnDeleteRow(nRow,null, true);
+            $('#' + tableId).append($("#tr_row_for_edit"));
+        });
+    }
+
+    function onBindingButtonsAddEvent() {
+        $('#' + tableId).on('click', '#btn_setting_payment_fee_structure_add', function (e) {
+            e.preventDefault();
+            
+            //TODO $("#mForm")[0].valid();
+            
+            var data = [
+                $("#ddl_setting_payment_fee_structure_dc").val(),
+                $("#ddl_setting_payment_fee_structure_actor").val(),
+                $("#ddl_setting_payment_fee_structure_specific_id").val(), 
+                $("#ddl_setting_payment_fee_structure_source_of_fund option:selected").text(),
+                $("#ddl_setting_payment_fee_structure_specific_source_of_fund option:selected").text(),
+                $("#ddl_setting_payment_fee_structure_from_amount").val(),
+                $("#txt_setting_payment_fee_structure_rate").val(),
+                $("#txt_setting_payment_fee_structure_label").val(),
+                ""];
+            oTable.fnAddData(data, true);
+            
+            // Move to last element
+            $('#' + tableId).append($("#tr_row_for_edit"));
+            
+            // Add edit and delete button
+            var nRow = $("#tr_row_for_edit").prev();
+            editRow(oTable, nRow);
+            
+            // Clear input data
+            $("#tr_row_for_edit").find("select").each(function () {
+                $(this).val($(this).find("option:first").val());
+                $(this).trigger('change');
+            });
+            $("#tr_row_for_edit").find("input").each(function () {
+                if('text' === $(this)[0].type) {
+                    $(this).val("");
+                }
+            });
+        });
+    }
+    
+    function onBindingButtonsReviewEvent() {
+        $(document).on('click', '#btn_setting_payment_fee_structure_review', function (e) {
+            e.preventDefault();
+            console.log("btn_setting_payment_fee_structure_review on click");
         });
     }
 
@@ -554,8 +563,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             var nRow = $(this).parents('tr')[0];
 
             if (nEditing !== null && nEditing !== nRow) {
-                /* Currently editing - but not this row - restore the old before continuing to edit mode */
-                restoreRow(oTable, nEditing);
                 editRow(oTable, nRow);
                 nEditing = nRow;
             } else if (nEditing === nRow && this.innerHTML === 'Save') {
@@ -580,6 +587,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                $(this).removeAttr( "style" );
             });
 
+            $('#' + tableId).append($("#tr_row_for_edit"));
+            
             return false;
         });
     }
@@ -593,6 +602,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
     onBindingButtonsEditEvent();
     onBindingButtonsDeleteEvent();
+    onBindingButtonsAddEvent();
+    onBindingButtonsReviewEvent();
 }
 
 function collectTableData(tableSelector) {
