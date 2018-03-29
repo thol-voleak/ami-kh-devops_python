@@ -15,11 +15,11 @@
     </div>
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
-            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
+            <input id="current_page_index" name="current_page_index" type="hidden" value="1"/>
             <div class="row">
                 <label class="col-md-2 control-label">Shop ID</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                    <input type="number" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
                 </div>
                 <label class="col-md-2 control-label">Shop Category</label>
                 <div class="col-md-2">
@@ -53,7 +53,7 @@
                 </div>
                 <label class="col-md-2 control-label">Owner (ID)</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="owner_id" value="{{ form.owner_id }}"/>
+                    <input type="number" class="form-control" name="owner_id" value="{{ form.owner_id }}"/>
                 </div>
                 <div class="col-md-2">
                     <input id="btn_search" class="btn btn-success" type="submit" value="Search">
@@ -78,23 +78,44 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>123</td>
-                            <td>Shop Type</td>
-                            <td>Shop Category</td>
-                            <td>Shop Name</td>
-                            <td>City</td>
-                            <td>District</td>
-                            <td>Relationship Manager Name</td>
-                            <td>
-                                <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' 12345 %}">12345</a>
-                            </td>
-                            <td>
-                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
-                                <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' 123 %}">Edit</a>
-                                <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' 123 %}">Delete</a>
-                            </td>
-                        </tr>
+
+                        {% for shop in shops %}
+                            <tr>
+                            {% if not shop.is_deleted %}
+                                <td>{{ shop.id }}</td>
+                                <td>{{ shop.shop_type.name }}</td>
+                                <td>{{ shop.shop_category.name }}</td>
+                                <td>{{ shop.name }}</td>
+                                <td>{{ shop.address.city }}</td>
+                                <td>{{ shop.address.district }}</td>
+                                <td>{{ shop.relationship_manager_name }}</td>
+                                <td>
+                                    {% if shop.agent_id %}
+                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent({{ shop.agent_id }})</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
+                                    <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' 123 %}">Edit</a>
+                                    <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' 123 %}">Delete</a>
+                                </td>
+                            {% else %}
+                                <td><del>{{ shop.id }}</del></td>
+                                <td><del>{{ shop.shop_type.name }}</del></td>
+                                <td><del>{{ shop.shop_category.name }}</del></td>
+                                <td><del>{{ shop.name }}</del></td>
+                                <td><del>{{ shop.address.city }}</del></td>
+                                <td><del>{{ shop.address.district }}</del></td>
+                                <td><del>{{ shop.relationship_manager_name }}</del></td>
+                                <td><del>
+                                    {% if shop.agent_id %}
+                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent({{ shop.agent_id }})</a>
+                                    {% endif %}
+                                </del></td>
+                                <td></td>
+                            {% endif %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

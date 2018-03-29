@@ -5,34 +5,39 @@ from web_admin import api_settings
 
 def get_all_shop_type(self):
     api_path = api_settings.GET_LIST_SHOP_TYPE
+    params = {'paging': False}
     success, status_code, status_message, data = RestFulClient.post(
         url=api_path,
         headers=self._get_headers(),
-        loggers=self.logger)
+        loggers=self.logger,
+        params=params
+    )
 
     data = data or {}
     API_Logger.post_logging(loggers=self.logger,
                             response=data.get('shop_types', []),
                             status_code=status_code,
                             is_getting_list=True,
-                            params={'paging': False, 'is_deleted': False})
-    return data.get('shop_types', [])
+                            params=params)
+    return [i for i in data.get('shop_types', []) if not i.get('is_deleted')]
 
 def get_all_shop_category(self):
     api_path = api_settings.GET_LIST_SHOP_CATEGORIES
+    params = {'paging': False}
     success, status_code, status_message, data = RestFulClient.post(
         url=api_path,
         headers=self._get_headers(),
-        loggers=self.logger)
+        loggers=self.logger,
+        params=params
+    )
 
     data = data or {}
     API_Logger.post_logging(loggers=self.logger,
                             response=data.get('shop_categories', []),
                             status_code=status_code,
                             is_getting_list=True,
-                            params={'paging': False, 'is_deleted': False})
-    return data.get('shop_categories', [])
-
+                            params=params)
+    return [i for i in  data.get('shop_categories', []) if not i.get('is_deleted')]
 
 def get_system_country():
     # TODO
