@@ -120,8 +120,8 @@ def convert_shop_to_form(shop):
     form["acquiring_sales_executive_name"] = shop["acquiring_sales_executive_name"]
     form["sales_region"] = shop["sales_region"]
     form["account_manager_name"] = shop["account_manager_name"]
-    # form["reference_1"] = shop["reference_1"]
-    # form["reference_2"] = shop["reference_2"]
+    form["ref1"] = shop["ref1"]
+    form["ref2"] = shop["ref2"]
     return form
 
 
@@ -160,8 +160,8 @@ def convert_form_to_shop(form):
     shop["acquiring_sales_executive_name"] = form["acquiring_sales_executive_name"]
     shop["sales_region"] = form["sales_region"]
     shop["account_manager_name"] = form["account_manager_name"]
-    # shop["reference_1"] = form["reference_1"]
-    # shop["reference_2"] = form["reference_2"]
+    shop["ref1"] = form["ref1"]
+    shop["ref2"] = form["ref2"]
     return shop
 
 
