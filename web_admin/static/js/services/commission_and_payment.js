@@ -544,6 +544,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                     $(this).val("");
                 }
             });
+            $("#tr_row_for_edit").find("#ddl_setting_payment_fee_structure_specific_source_of_fund").val("");
         });
     }
     
