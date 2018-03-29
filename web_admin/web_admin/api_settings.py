@@ -270,7 +270,7 @@ GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs
 
 # Category
 ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories'
-GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/categories'
+GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/product-categories'
 EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
 DELETE_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
 

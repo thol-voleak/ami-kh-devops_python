@@ -354,7 +354,7 @@
                     } else if (response.status == 2) {
                         // success
                         console.log(response)
-                        var category_detail = response.category_detail.categories[0];
+                        var category_detail = response.category_detail.product_categories[0];
                         var product_list = response.product_list;
                         document.getElementById('txt_category_id').setAttribute('value', category_detail.id);
                         document.getElementById('txt_category_name').setAttribute('value', category_detail.name);

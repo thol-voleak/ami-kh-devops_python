@@ -157,7 +157,7 @@ def get_all_categories(self):
                                                                     params=body)
     data = data or {}
     API_Logger.post_logging(loggers=self.logger, params=body,
-                            response=data.get('categories', []),
+                            response=data.get('product_categories', []),
                             status_code=status_code, is_getting_list=True)
 
-    return data.get('categories', [])
+    return data.get('product_categories', [])
