@@ -40,6 +40,11 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
+        if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+            if not permissions['CAN_ACCESS_SUMMARY_TAB']:
+                return redirect('agents:agent_management_product', agent_id=int(context['agent_id']))
+            else:
+                return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
         relationship_type_id = []
         context.update(
             {'agent_id': int(context['agent_id']),
@@ -106,12 +111,6 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions = {}
         permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
         permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
-        if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
-            if not permissions['CAN_ACCESS_SUMMARY_TAB']:
-                return redirect('agents:agent_management_product', agent_id=int(context['agent_id']))
-            else:
-                return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
-
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         relationship_types = self._get_relationship_types()
         self.logger.info('========== start getting relationship ==========')
