@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel">
+    <div class="panel-heading">
+        <h3>Add Existing Shop</h3>
+
+        {% include "message.html" %}
+
+        <div class="pull-right">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}">
+                <strong>+</strong> <span>Create New Shop</span>
+            </a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
+            <div class="row" style="margin-top: 15px;">
+                <label class="col-md-1 control-label">Shop ID</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                </div>
+                <label class="col-md-1 control-label">Shop Name</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
+                </div>
+                <div class="col-md-2">
+                    <input id="btn_search" class="btn btn-success" type="submit" value="Search">
+                </div>
+            </div>
+            <div class="table-responsive" style="margin-top: 30px;">
+                <table id="tbl_shops" class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th>Shop ID</th>
+                        <th>Shop Type</th>
+                        <th>Shop Name</th>
+                        <th>City</th>
+                        <th>District</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>123</td>
+                            <td>Shop Type</td>
+                            <td>Shop Name</td>
+                            <td>City</td>
+                            <td>District</td>
+                            <td>
+                                <a id="btn_link" class="btn btn-outline btn-xs btn-primary" href="">Link</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
+        </form>
+        <div class="text-right" style="margin-top: 20px;">
+            <a id="btn_back" class="btn btn-default" href="">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
