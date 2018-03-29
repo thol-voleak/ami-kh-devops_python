@@ -4,8 +4,8 @@
 {% block content %}
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3 class="not_in_preview">Commission And Payment Method</h3>
-            <h3 class="in_preview" style="display:none">REVIEW PAGE</h3>
+            <h3 class="not_in_review">Commission And Payment Method</h3>
+            <h3 class="in_review" style="display:none">REVIEW PAGE</h3>
         </div>
 
         <div id="ajax-messages">
@@ -48,11 +48,11 @@
                 </div>
             </div>
 
-            <div class="panel-heading not_in_preview">
+            <div class="panel-heading not_in_review">
                 <h4>I. Fee & Bonus</h4>
             </div>
 
-            <div class="form-inline not_in_preview">
+            <div class="form-inline not_in_review">
                 <label class="col-sm-2 control-label">Fee:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -68,7 +68,7 @@
                 </div>
             </div>
             <br/>
-            <div class="form-inline not_in_preview">
+            <div class="form-inline not_in_review">
                 <label class="col-sm-2 control-label">Bonus:</label>
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -85,8 +85,8 @@
             </div>
 
             <div class="panel-heading">
-                <h4 class="not_in_preview">II. Setting Payment, Fee & Bonus Structure</h4>
-                <h4 style="display: none" class="in_preview">Setting Payment, Fee & Bonus Structure</h4>
+                <h4 class="not_in_review">II. Setting Payment, Fee & Bonus Structure</h4>
+                <h4 style="display: none" class="in_review">Setting Payment, Fee & Bonus Structure</h4>
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
             </div>
 
@@ -95,7 +95,7 @@
                   id="payment_and_fee_stucture_form">
 
                 {% csrf_token %}
-                <div class="form-group table-responsive row not_in_preview">
+                <div class="form-group table-responsive row not_in_review">
                     <table class="table table-bordered table-striped datatable editable-datatable  mb0"
                            id="tbl_setting_payment_fee_structure">
                         <thead>
@@ -206,20 +206,20 @@
                 </div>
 
 
-                <div class="form-group pull-right in_preview" style="display: none">
+                <div class="form-group pull-right in_review" style="display: none">
                     <a href="#">
-                        <input id="btn_setting_payment_fee_structure_preview_back" class="btn" type="button"
+                        <input id="btn_setting_payment_fee_structure_review_back" class="btn" type="button"
                                value="Back"/>
                     </a>
                 </div>
-                <div class="form-group pull-right not_in_preview">
+                <div class="form-group pull-right not_in_review">
                     <a href="#">
                         <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
                                value="Add"/>
                     </a>
                     <a href="#">
-                        <input id="btn_setting_payment_fee_structure_preview" class="btn btn-success" type="button"
-                               value="Preview"/>
+                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="button"
+                               value="Review"/>
                     </a>
                     <br/>
                     <br/>
@@ -762,17 +762,17 @@
                 }
             });
         }
-        
-        function onClickPreviewBtn() {
-            renderPreviewTableDiv("#tbl_setting_payment_fee_structure")
-            $(".not_in_preview").hide()
-            $(".in_preview").show()
+
+        function onClickReviewBtn() {
+            renderReviewTableDiv("#tbl_setting_payment_fee_structure")
+            $(".not_in_review").hide()
+            $(".in_review").show()
         }
 
-        function onClickPreviewBackBtn() {
-            $("#div_tbl_setting_payment_fee_structure_preview").remove()
-            $(".not_in_preview").show()
-            $(".in_preview").hide()
+        function onClickReviewBackBtn() {
+            $("#div_tbl_setting_payment_fee_structure_review").remove()
+            $(".not_in_review").show()
+            $(".in_review").hide()
         }
 
         // Edit row features
@@ -806,8 +806,8 @@
                  $(this).removeAttr( "style" );
             });
 
-            $("#btn_setting_payment_fee_structure_preview").click(onClickPreviewBtn)
-            $("#btn_setting_payment_fee_structure_preview_back").click(onClickPreviewBackBtn)
+            $("#btn_setting_payment_fee_structure_review").click(onClickReviewBtn)
+            $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
         });
     </script>
 {%  endblock %}

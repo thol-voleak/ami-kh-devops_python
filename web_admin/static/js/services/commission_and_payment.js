@@ -646,13 +646,13 @@ function renderTableHeader(tableSelector) {
     return thead
 }
 
-function renderPreviewTableDiv(tableSelector) {
+function renderReviewTableDiv(tableSelector) {
     var tableData = collectTableData(tableSelector)
     var reviewContent = renderTableHeader(tableSelector) + renderTableData(tableData)
 
-    var renderedDiv = "<div id=\"div_"+ tableSelector.substring(1,tableSelector.length) + "_preview\" class=\"form-group table-responsive row in_preview\"> "
+    var renderedDiv = "<div id=\"div_"+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"form-group table-responsive row in_review\"> "
                         +   "<div class=\"dataTables_wrapper no-footer\">"
-                        +       " <table id=\""+ tableSelector.substring(1,tableSelector.length) + "_preview\" class=\"table table-bordered table-striped datatable editable-datatable  mb0 dataTable no-footer\">" + reviewContent
+                        +       " <table id=\""+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"table table-bordered table-striped datatable editable-datatable  mb0 dataTable no-footer\">" + reviewContent
                         +       "</table> "
                         +   "</div>"
                         + "</div>"
