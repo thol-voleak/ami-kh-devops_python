@@ -1,6 +1,6 @@
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
-from web_admin import api_settings
+from web_admin import api_settings, settings
 
 
 def get_all_shop_type(self):
@@ -39,52 +39,27 @@ def get_system_country(self):
     return "VN"
 
 
-def get_shop_details(self, id):
-    # TODO
-    return {
-        "id": 0,
-        "agent_id": 0,
-        "shop_type": {
-          "id": "string",
-          "name": "string"
-        },
-        "shop_category": {
-          "id": "string",
-          "name": "string"
-        },
-        "name": "string",
-        "address": {
-          "address": "string",
-          "city": "string",
-          "province": "string",
-          "district": "string",
-          "commune": "string",
-          "country": "string",
-          "landmark": "string",
-          "latitude": "string",
-          "longitude": "string"
-        },
-        "relationship_manager_id": "string",
-        "acquisition_source": "string",
-        "postal_code": "string",
-        "representative_first_name": "string",
-        "representative_middle_name": "string",
-        "representative_last_name": "string",
-        "representative_mobile_number": "string",
-        "representative_telephone_number": "string",
-        "representative_email": "string",
-        "shop_mobile_number": "string",
-        "shop_telephone_number": "string",
-        "shop_email": "string",
-        "relationship_manager_name": "string",
-        "relationship_manager_email": "string",
-        "acquiring_sales_executive_name": "string",
-        "sales_region": "string",
-        "account_manager_name": "string",
-        "is_deleted": True,
-        "created_timestamp": "2018-03-23T06:23:26.176Z",
-        "last_updated_timestamp": "2018-03-23T06:23:26.176Z"
+def get_shop_details(self, shop_id):
+    url = api_settings.GET_DETAIL_SHOP
+    body = {
+        "id": shop_id
     }
+    self.logger.info('========== Start get shop detail ==========')
+    success, status_code, status_message, data = RestFulClient.post(url=url,
+                                                                       headers=self._get_headers(),
+                                                                       loggers=self.logger,
+                                                                       params=body,
+                                                                       timeout=settings.GLOBAL_TIMEOUT)
+    if data is None:
+        data = {}
+    else:
+        data = data['shops'][0]
+
+    API_Logger.post_logging(loggers=self.logger, params=body,response=data,
+                            status_code=status_code, is_getting_list=False)
+    self.logger.info('========== Finish get shop detail ==========')
+    # TODO
+    return data
 
 
 def convert_shop_to_form(shop):
@@ -93,8 +68,10 @@ def convert_shop_to_form(shop):
     form["agent_id"] = shop["agent_id"]
     form["acquisition_source"] = shop["acquisition_source"]
     form["name"] = shop["name"]
-    form["shop_type_id"] = shop["shop_type"]["id"]
-    form["shop_category_id"] = shop["shop_category"]["id"]
+    if shop["shop_type"]:
+        form["shop_type_id"] = shop["shop_type"]["id"]
+    if shop["shop_category"]:
+        form["shop_category_id"] = shop["shop_category"]["id"]
     form["country"] = shop["address"]["country"]
     form["postal_code"] = shop["postal_code"]
     form["province"] = shop["address"]["province"]
