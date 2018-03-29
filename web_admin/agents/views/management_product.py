@@ -38,6 +38,8 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         body['user_id'] = int(context['agent_id'])
 
         permissions = check_permission_agent_management(self)
+        if not permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB']:
+            return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
 
         context.update(
             {'agent_id': int(context['agent_id']),

@@ -39,7 +39,13 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         permissions = check_permission_agent_management(self)
         if not permissions['CAN_ACCESS_SUMMARY_TAB']:
-            return redirect('agents:agent_management_product',agent_id=int(context['agent_id']))
+            if permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB']:
+                return redirect('agents:agent_management_product',agent_id=int(context['agent_id']))
+            elif permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+                return redirect('agents:agent_management_relationship', agent_id=int(context['agent_id']))
+            else:
+                return redirect('agents:agent_management_shop', agent_id=int(context['agent_id']))
+
 
         context.update(
             {'agent_id': int(context['agent_id']),
@@ -63,14 +69,15 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                      })
 
             self.logger.info('========== Finish getting Relationships list ==========')
-        self.logger.info('========== Start getting product portfolio ==========')
+        if permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB']:
+            self.logger.info('========== Start getting product portfolio ==========')
 
-        applicable_categories, applied_category = _create_product_relation(self, int(context['agent_id']))
-        context.update({
-            'applied_category': applied_category,
-        })
+            applicable_categories, applied_category = _create_product_relation(self, int(context['agent_id']))
+            context.update({
+                'applied_category': applied_category,
+            })
 
-        self.logger.info('========== Finish getting product portfolio ==========')
+            self.logger.info('========== Finish getting product portfolio ==========')
         return render(request, self.template_name, context)
 
     def _get_relationships(self, params):

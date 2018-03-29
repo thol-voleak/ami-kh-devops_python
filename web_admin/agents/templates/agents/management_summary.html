@@ -154,6 +154,7 @@
                         {% if permissions.CAN_ACCESS_SUMMARY_TAB %}
                             <div class="tab-pane active"
                                  id="div_summary_management">
+                                {% if permissions.CAN_ACCESS_PRODUCT_CONFIGURATION_TAB %}
                                 <div>
                                     <h4>Product Portfolio</h4>
                                     {% if not applied_category %}
@@ -192,7 +193,7 @@
                                 </div>
 
                                 <hr>
-
+                                {% endif %}
                                 {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
                                     <div id="div_relationships_summary">
                                         <h4>Relationships View</h4>
