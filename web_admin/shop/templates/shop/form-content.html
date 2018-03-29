@@ -28,7 +28,7 @@
             <select class="form-control" id="ddl_shop_type" name="shop_type_id" >
                 <option value=""></option>
                 {% for item in list_shop_type %}
-                <option value="{{ item.id }}" {%if form.shop_type_id == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
+                <option value="{{ item.id }}" {%if form.shop_type_id == item.id %}selected{%endif%}>{{ item.name }}</option>
                 {% endfor %}
             </select>
         {% endif %}
@@ -44,7 +44,7 @@
             <select class="form-control" id="ddl_shop_category" name="shop_category_id" {% if is_readonly %}readonly{% endif %} >
                 <option value=""></option>
                 {% for item in list_shop_category %}
-                <option value="{{ item.id }}" {%if form.shop_category_id == item.id|slugify %}selected{%endif%}>{{ item.name }}</option>
+                <option value="{{ item.id }}" {%if form.shop_category_id == item.id %}selected{%endif%}>{{ item.name }}</option>
                 {% endfor %}
             </select>
         {% endif %}
