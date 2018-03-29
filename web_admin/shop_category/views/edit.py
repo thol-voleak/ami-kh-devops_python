@@ -12,11 +12,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class EditView(TemplateView, RESTfulMethods):
     template_name = "shop-category/edit.html"
     raise_exception = False
     logger = logger
-    group_required = "CAN_EDIT_PRODUCT"
     login_url = 'web:permission_denied'
 
     def dispatch(self, request, *args, **kwargs):
@@ -81,7 +80,6 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {
             "id": shop_category_id
         }
-        self.logger.info('========== Start get shop type detail ==========')
         success, status_code, status_message, data = RestFulClient.post(url=url,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
