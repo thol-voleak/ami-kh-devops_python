@@ -278,7 +278,7 @@
                                         <div>
                                             <div><b>Please Add a Shop</b></div>
                                             <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" href="" >Add</a>
+                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}" >Add</a>
                                             </div>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;">Add Shop</td>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}'">Add Shop</td>
                                                 </tr>
                                             </tbody>
                                         </table>
