@@ -167,4 +167,5 @@ def check_permission_agent_management(self):
     permissions = {}
     permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
     permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+    permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB'] = self.check_membership(['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB'])
     return permissions

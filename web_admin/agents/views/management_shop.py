@@ -7,7 +7,7 @@ from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
-from agents.utils import _create_product_relation
+from agents.utils import check_permission_agent_management
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,8 +29,6 @@ class AgentManagementShop(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         agent_id = kwargs['agent_id']
-        permissions = {}
-        permissions['CAN_ACCESS_RELATIONSHIP_TAB'] = self.check_membership(['CAN_ACCESS_RELATIONSHIP_TAB'])
-        permissions['CAN_ACCESS_SUMMARY_TAB'] = self.check_membership(['CAN_ACCESS_SUMMARY_TAB'])
+        permissions = check_permission_agent_management(self)
         context = {"agent_id": agent_id, "permissions": permissions}
         return render(request, self.template_name, context)
