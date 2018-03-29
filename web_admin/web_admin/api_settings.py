@@ -301,4 +301,5 @@ GET_PRODUCT_AGENT_RELATION = 'api-gateway/report/' + API_VERSION + '/products/ag
 CREATE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations'
 DELETE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations/{relation_id}'
 
+SEARCH_SHOP = 'api-gateway/report/' + API_VERSION + '/shops/'
 GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'

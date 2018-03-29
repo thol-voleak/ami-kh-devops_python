@@ -177,7 +177,7 @@
                                                     {% for product in  products %}
                                                         {% if product.is_checked %}
                                                             <div class="product">
-                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}">{{ product.product_name }}</span></label>
+                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}" style="margin-left: 7px;">{{ product.product_name }}</span></label>
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -278,7 +278,7 @@
                                         <div>
                                             <div><b>Please Add a Shop</b></div>
                                             <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" href="" >Add</a>
+                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}" >Add</a>
                                             </div>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;">Add Shop</td>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}'">Add Shop</td>
                                                 </tr>
                                             </tbody>
                                         </table>
