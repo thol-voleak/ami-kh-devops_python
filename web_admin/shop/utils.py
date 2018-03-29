@@ -74,9 +74,9 @@ def convert_shop_to_form(shop):
     form["acquisition_source"] = shop["acquisition_source"]
     form["name"] = shop["name"]
     if shop["shop_type"]:
-        form["shop_type_id"] = shop["shop_type"]["id"]
+        form["shop_type"] = shop["shop_type"]
     if shop["shop_category"]:
-        form["shop_category_id"] = shop["shop_category"]["id"]
+        form["shop_category"] = shop["shop_category"]
     form["country"] = shop["address"]["country"]
     form["postal_code"] = shop["postal_code"]
     form["province"] = shop["address"]["province"]

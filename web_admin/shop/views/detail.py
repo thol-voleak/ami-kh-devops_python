@@ -29,5 +29,6 @@ class DetailView(TemplateView, GetHeaderMixin):
         shop_id = int(kwargs['id'])
         shop = get_shop_details(self, shop_id)
         form = convert_shop_to_form(shop)
+        print(form)
         context = {'form': form}
         return render(request, self.template_name, context)
