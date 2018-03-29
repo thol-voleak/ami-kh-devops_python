@@ -74,7 +74,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 context['product_id'] = product_id
             if category_id:
                 category_id = int(category_id)
-                params['category_id'] = category_id
+                params['product_category_id'] = category_id
                 context['category_id'] = category_id
             if product_name:
                 params['name'] = product_name
