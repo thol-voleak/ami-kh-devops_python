@@ -69,7 +69,8 @@ class ListView(TemplateView, GetHeaderMixin):
         context.update({
             'shops': shops.get('shops', []),
             'paginator': page,
-            'page_range': calculate_page_range_from_page_info(page)
+            'page_range': calculate_page_range_from_page_info(page),
+            'total_result': page.get('total_elements', 0)
         })
 
         return render(request, self.template_name, context)
