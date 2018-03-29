@@ -41,10 +41,10 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if not permissions['CAN_ACCESS_SUMMARY_TAB']:
             if permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB']:
                 return redirect('agents:agent_management_product',agent_id=int(context['agent_id']))
-            elif permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
-                return redirect('agents:agent_management_relationship', agent_id=int(context['agent_id']))
             else:
                 return redirect('agents:agent_management_shop', agent_id=int(context['agent_id']))
+            # else permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
+            #     return redirect('agents:agent_management_relationship', agent_id=int(context['agent_id']))
 
 
         context.update(
