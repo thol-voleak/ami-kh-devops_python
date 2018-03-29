@@ -145,7 +145,7 @@ class EditCategory(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         api_path = api_settings.GET_PRODUCTS
 
         body = {
-            "category_id": category_id,
+            "product_category_id": category_id,
             "paging": False,
             "is_deleted": False
         }
