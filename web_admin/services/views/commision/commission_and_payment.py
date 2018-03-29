@@ -285,6 +285,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -293,11 +294,13 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
                                    logger=logger, params=post_data)
 
         if status:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Added Setting Payment, Fee & Bonus Structure successfully'
-            )
+            msg = 'Added Setting Payment, Fee & Bonus Structure successfully'
+            if msg not in [m.message for m in messages.get_messages(request)]:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    msg
+                )
         else:
             messages.add_message(
                 request,
@@ -337,6 +340,7 @@ class BalanceDistributionsUpdate(View):
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 

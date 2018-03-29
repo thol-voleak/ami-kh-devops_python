@@ -253,6 +253,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         if success:
             request.session['agent_update_msg'] = 'Updated data successfully'
             previous_page = request.POST.get('previous_page')
-            return HttpResponseRedirect(previous_page)
-        request.session['agent_update_msg_failed'] = data
-        return redirect(request.META['HTTP_REFERER'])
+            if previous_page:
+                return HttpResponseRedirect(previous_page)
+            return redirect('agents:agent-list')
+        else:
+            request.session['agent_update_msg_failed'] = data
+            return redirect(request.META['HTTP_REFERER'])

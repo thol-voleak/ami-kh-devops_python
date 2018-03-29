@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .open .dropdown-menu {
+        padding-left: 15px;
+        min-width: 121px;
+    }
+
+</style>
+<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="panel-heading">
+        <h3>Products</h3>
+        <div class="col-xs-12 mb5">
+                <div class="alert alert-success alert-dismissable" hidden id="msg-product">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg"></strong>
+                </div>
+        </div>
+        {% if permissions.CAN_ADD_PRODUCT %}
+        <!-- style="margin-top: 15px;margin-right: 15px;" -->
+        <div class="pull-right">
+                <a href="{% url 'product:product_create' %}">
+                    <button id="btn_add_product" class="btn btn-success btn-block btn-md mb15"><strong>+</strong> <span>Add New Product</span></button>
+                </a>
+           </div>
+        {% endif %}
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'product:products' %}">
+            <div class="form-group">
+                    <label class="col-sm-2 control-label">Product ID</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control input-rounded"
+                               name="product_id"
+                               value="{{ product_id|default_if_none:'' }}"
+                               id="txt_product_id">
+                    </div>
+                    <label class="col-sm-2 control-label">Category Name</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="ddl_category_name" name="category_id" >
+                            {% for category in categories %}
+                                {% if category.id == category_id %}
+                                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                                {% else %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Product Name</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control input-rounded"
+                           name="product_name"
+                           value="{{ product_name|default_if_none:'' }}"
+                           id="txt_product_name">
+                </div>
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-4">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Product Status</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="ddl_product_status" name="product_status">
+                            <option value='' {%if product_status == None%}selected="selected"{%endif%}>All</option>
+                            <option value='True'{%if product_status == True%}selected="selected"{%endif%}>True</option>
+                            <option value='False' {%if product_status == False%}selected="selected"{%endif%}>False</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-4">
+                </div>
+            </div>
+            <div class="form-group">
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                <div class="col-xs-1 pull-right">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                               value="Search">
+                </div>
+            </div>
+            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+            <label class="pull-right" >Total records found:&nbsp;</label>
+        </form>
+        {% if permissions.CAN_DELETE_PRODUCT %}
+        <div class="form-group">
+            <div class="dropdown" id="ddl_select_action">
+                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Action
+                    <span class="caret"></span>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" onclick="deleteProduct()">Delete Product</a>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        <div class="table-responsive">
+                <table id='tbl_product' class="table table-bordered table-striped mb0">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" name="select-all" id="chk_all" /></th>
+                            <th id="">Product ID</th>
+                            <th id="">Product Name</th>
+                            <th id="">Product Description</th>
+                            <th id="">Product Image</th>
+                            <th id="">Product Status</th>
+                            <th id="">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in data %}
+                            <!-- <div > -->
+                            <tr class="checkboxlist" id="product-{{ i.id|default_if_none:'' }}">
+                                <td><input type="checkbox" name="checkbox" class="select_to" id="chk_product_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}"/></td>
+                                <td>{{ i.id|default_if_none:'' }}</td>
+                                <td>{{ i.name|default_if_none:'' }}</td>
+                                <td>{{ i.description|default_if_none:'' }}</td>
+                                <td><img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'" src="{{ i.image_url | default_if_none:'' }}" height="75" width="75"></td>
+                                <td><label class="switch switch-sm">
+                                        {%if i.is_active%}
+                                        <input type="checkbox"
+                                               id="tog_status" checked disabled>
+                                        <span class="slider round" >
+                                            <i class="handle" style="cursor: not-allowed;"></i>
+                                        </span>
+                                        {%else%}
+                                        <input type="checkbox"
+                                               style="cursor: not-allowed;"
+                                               id="tog_status" disabled>
+                                        <span class="slider round">
+                                            <i class="handle" style="cursor: not-allowed;"></i>
+                                        </span>
+                                        {%endif%}
+                                    </label> </td>
+                                <td>
+                                    {% if permissions.CAN_VIEW_PRODUCT %}
+                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'product:product_detail' i.id %}';">Detail</button>
+                                    {%endif%}
+                                    {% if permissions.CAN_EDIT_PRODUCT %}
+                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary" onclick="location.href='{% url 'product:product_edit' i.id %}'">Edit</button>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                        <!-- </div> -->
+                        {% endfor %}
+                        </tbody>
+                    </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+    <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+    $('#chk_all').on('change', function() {
+        $('.checkboxlist input.select_to').prop('checked', this.checked);
+    });
+    $('.checkboxlist input.select_to').on('change', function () {
+        var allChecked = $('.checkboxlist input.select_to:checkbox:checked').length === $('.checkboxlist input.select_to').length;
+        $('#chk_all').prop('checked', allChecked);
+    });
+
+    function deleteProduct(){
+        $("#msg-product").hide();
+        var arr = [];
+        var url = '/admin-portal/product/delete/';
+        $('input.select_to:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+        if(arr.length === 0) {
+            return;
+        }
+
+        swal({
+            title: "Are you sure you want to delete selected items?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#2ECC71",
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: true,
+            closeOnCancel: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {"ids": arr},
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if (response.invalid_access_token) {
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/product/";
+                                window.location.replace(url);
+                                location.reload();
+                            }
+                            else {
+                                if (response.failed_count === 0) {
+                                    showSuccessMessage("Deleted Successfully");
+                                    {# page length: 50 #}
+                                    if (response.success_ids.length >= 50) {
+                                        location.reload();
+                                    }
+                                    $('#chk_all').prop('checked', false);
+                                } else {
+                                    showErrorMessage(response.success_ids.length + " Successful Delete, " + response.failed_count + " Failed Delete");
+                                }
+
+                                for (i = 0; i < response.success_ids.length; i++) {
+                                    $('#product-' + response.success_ids[i]).remove();
+                                }
+                                $('#lbl_total').text($('#lbl_total').text() - response.success_ids.length);
+                            }
+                        }
+                    });
+                }
+            }
+        )
+    }
+
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg);
+        var m = $('#msg-product');
+        m.removeClass("alert-success");
+        m.addClass("alert-danger");
+        m.prop("hidden", false);
+        m.fadeIn(1000);
+    }
+
+    function showSuccessMessage(msg) {
+        $("#alert-msg").text(msg);
+        var m = $('#msg-product');
+        m.removeClass("alert-danger");
+        m.addClass("alert-success");
+        m.prop("hidden", false);
+        m.fadeIn(1000);
+    }
+
+</script>
+{% endblock %}

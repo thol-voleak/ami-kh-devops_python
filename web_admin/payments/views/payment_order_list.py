@@ -50,7 +50,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(PaymentOrderView, self).get_context_data(**kwargs)
         services = self.get_services_list()
         services.sort(key = lambda service: service['service_name'])
-
+        request.session['page_from'] = 'order_list'
         status_list = [
             {"id": 0, "name": "Created"},
             {"id": 2, "name": "Executed"},

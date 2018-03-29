@@ -63,6 +63,12 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start getting order detail ==========')
         context = super(OrderDetailView, self).get_context_data(**kwargs)
         order_id = context['order_id']
+        page_from = request.session.get('page_from')
+        agent_id = request.session.get('agent_id',None)
+        customer_id = request.session.get('customer_id',None)
+        request.session['redirect_from_detail'] = True
+        back_wallet_url =request.session.get('back_wallet_url',None)
+
         body = {
             'order_id': order_id
         }
@@ -92,6 +98,10 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['order_balance_movement'] = order_balance_movement
         context['total_credit'] = total_credit
         context['total_debit'] = total_debit
+        context['page_from'] = page_from
+        context['agent_id'] = agent_id
+        context['customer_id'] = customer_id
+        context['back_wallet_url'] = back_wallet_url
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)
 

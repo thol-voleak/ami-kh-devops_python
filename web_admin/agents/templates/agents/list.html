@@ -175,6 +175,9 @@
                                 {% if agent.has_permission_view %}
                                     <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info " onclick="location.href='{% url 'agents:agent_detail' agent.id %}'">Detail</button>
                                 {% endif %}
+                                {% if agent.has_permission_management %}
+                                    <button id="btn_management" class="btn btn-outline mb5 btn-xs btn-primary" onclick="location.href='{% url 'agents:agent_management_summary' agent.id %}' ">Management</button>
+                                {% endif %}
                                 {% if agent.has_permission_edit %}
                                     <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary " onclick="location.href='{% url 'agents:agent_update' agent.id %}'">Edit</button>
                                 {% endif %}
@@ -184,6 +187,10 @@
                                 {% if agent.has_permission_identity %}
                                     <button id="btn_identities" class="btn mb5 btn-outline btn-xs btn-primary"
                                             onclick="location.href='{% url 'agents:agent_identities' agent.id %}'">Identities</button>
+                                {% endif %}
+                                {% if agent.has_permission_individual_wallet %}
+                                    <button id="btn_individual_wallet_view" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            onclick="location.href='{% url 'agents:agent_transaction_history' agent.id %}'">Individual Wallet View</button>
                                 {% endif %}
                                 {% if agent.has_permission_smartcard %}
                                     <button id="btn_smartcard" class="btn mb5 btn-outline btn-xs btn-primary"

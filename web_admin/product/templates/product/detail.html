@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'vendor/chosen_v1.4.0/chosen.min.css' %}?{% now "U" %}">
+<div class="panel mb25">
+    <div class="panel-heading border mb15">
+        <h3>Product Detail</h3>
+    </div>
+
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+         <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+         </div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+         <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-error">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+         </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Enable Product</label>
+                        <div class="col-sm-7">
+                            <label class="switch switch-sm">
+                                <input id="tog_enable" disabled readonly type="checkbox" name="is_active" {% if product.is_active %}checked{% endif %}/>
+                                <span class="slider round"><i class="handle" style="cursor: not-allowed !important;"></i></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" style="font-size: 150%;">Information</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Product ID</label>
+                        <div class="col-sm-7">
+                            <input readonly type="text" id="txt_product_id" class="form-control input-rounded" name="name" value="{{ product.id }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Product Name *</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_product_name" type="text" class="form-control input-rounded" name="name" value="{{ product.name }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Product Description</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_product_description" type="text" class="form-control input-rounded" name="description" value="{{ product.description }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Product Image</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_product_image" type="text" class="form-control input-rounded" id="txt-product-image" name="image_url" value="{{ product.image_url }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-7">
+                            <img src="{{ product.image_url }}" id="img_image" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Category Name</label>
+                        <div class="col-sm-7">
+                            <input id="txt_category_name" readonly type="text" class="form-control input-rounded" name="name" value="{{ product.product_category.name }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Payment Service</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_payment_service" type="text" class="form-control input-rounded" name="name" value="{{ service_name }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                       <label class="col-sm-3 control-label">Apply Agent Type</label>
+                       <div class="col-sm-7">
+                          <div class="chosen-container chosen-container-multi" style="width: 100%;" title="">
+                             <ul class="chosen-choices" id="txt_apply_agent_type" {% if not has_agent_types %}style="background:rgb(238,238,238)"{%endif%}>
+                                 {% for item in agent_types %}
+                                 <li class="search-choice"><span>{{item}}</span><a class="search-choice-close" data-option-array-index="{{forloop.counter}}"></a></li>
+                                 {% endfor %}
+                             </ul>
+                          </div>
+                       </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Allow Price Range</label>
+                        <div class="col-sm-7">
+                            <label class="switch switch-sm">
+                                <input disabled readonly type="checkbox" id="tog_allow_price_range" name="is_allow_price_range" {% if product.is_allow_price_range %}checked{% endif %}/>
+                                <span class="slider round"><i class="handle" style="cursor: not-allowed !important;"></i></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {% if product.is_allow_price_range %}
+
+                    <div class="form-group price-range">
+                        <label class="col-sm-3 control-label">Maximum Price</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_maximum_price" type="text" class="form-control input-rounded" name="max_price" value="{{ product.max_price | default_if_none:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group price-range">
+                        <label class="col-sm-3 control-label">Minimum Price</label>
+                        <div class="col-sm-7">
+                            <input readonly id="txt_minimum_price" type="text" class="form-control input-rounded" name="min_price" value="{{ product.min_price | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if has_denomination %}
+                        {% for item in product.denomination %}
+                        <div class="form-group denomination">
+                            <label class="col-sm-3 control-label">{% if forloop.first %}Denomination Set{% endif %}</label>
+                            <div class="col-sm-7">
+                                <input readonly id="txt_denomination_set_{{forloop.counter}}" type="text" class="form-control input-rounded" name="denomination" value="{{ item }}">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {%else%}
+                        <div class="form-group denomination">
+                            <label class="col-sm-3 control-label">Denomination Set</label>
+                            <div class="col-sm-7">
+                                <input readonly id="txt_denomination_set_0" type="text" class="form-control input-rounded" name="denomination" value="">
+                            </div>
+                        </div>
+                    {%endif%}
+
+
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-7">
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <input readonly class="btn btn-default text-left mb15" type="button" id="btn_cancel" value="Cancel" onclick="location.href='{% url 'product:products' %}';"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.switch {
+    position: relative;
+    top: 5px;
+}
+.chosen-container-multi .chosen-choices {
+    padding-left: 15px;
+}
+.form-group .fa-trash, .form-group .fa-plus {
+    font-size: 30px;
+    position: relative;
+    top: 2px;
+    cursor: pointer;
+}
+</style>
+<script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
+<script src="/admin-portal/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
+<script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
+<script src="{% static 'scripts/pages/form-custom.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".remove-denomination", function () {
+            $(this).closest(".form-group").remove();
+        });
+
+        $(".add-denomination").click(function () {
+            var template = $(".denomination-template").html();
+            $(".denomination-template").before(template);
+        });
+
+        $("#txt-product-image").on("keyup paste change", function () {
+            var url = $(this).val();
+            $("#img-product-image").attr("src", url);
+        });
+
+        $("#toggle-price-range").change(function () {
+            var isChecked = $(this).prop("checked");
+            if (isChecked) {
+                $(".form-group.price-range").show();
+            } else {
+                $(".form-group.price-range").hide();
+            }
+        });
+
+        $("#toggle-price-range").change();
+    });
+</script>
+{% endblock %}

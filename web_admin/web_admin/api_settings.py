@@ -55,6 +55,8 @@ AGENT_SMARTCARD_PATH = 'api-gateway/report/'+API_VERSION+'/agents/smartcards'
 ADD_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards'
 DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{}/smartcards/{}'
 AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
+SEARCH_RELATIONSHIP = 'api-gateway/report/'+API_VERSION+'/agents/relationships'
+RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationship-types'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -164,6 +166,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
+BALANCE_MOVEMENT_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/orders/balance-movements'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{card_id}/status'
 
@@ -260,3 +263,43 @@ UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{vouche
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
 ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
 DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
+
+# Balance
+GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summaries/sofs/cash'
+GET_AGENT_SUMMARY= 'api-gateway/report/' + API_VERSION + '/agents/summaries/sofs/cash'
+
+# Category
+ADD_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories'
+GET_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/product-categories'
+EDIT_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
+DELETE_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/product-categories/{category_id}'
+
+# Product
+GET_PRODUCTS = 'api-gateway/report/' + API_VERSION + '/products'
+ADD_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products'
+ADD_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agent-types/relations'
+UPDATE_PRODUCT_STATUS_IN_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
+GET_PRODUCT_DETAIL = 'api-gateway/report/' + API_VERSION + '/products'
+PRODUCT_AGENT_TYPE = 'api-gateway/report/' + API_VERSION + '/products/agent-types/relations'
+EDIT_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
+DELETE_PRODUCT_AGENT_TYPE_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agent-types/relations/{product_agent_type_relation_id}'
+DELETE_PRODUCT = 'api-gateway/agent/' + API_VERSION + '/admin/products/{product_id}'
+
+# Shop-type
+SHOP_TYPE_CREATE = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types'
+SHOP_TYPE_DELETE = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types/{shop_type_id}'
+GET_SHOP_TYPE_DETAIL = 'api-gateway/report/' + API_VERSION + '/shop-types'
+GET_LIST_SHOP_TYPE = 'api-gateway/report/' + API_VERSION + '/shop-types'
+EDIT_SHOP_TYPE = 'api-gateway/agent/' + API_VERSION + '/admin/shop-types/{shop_type_id}'
+
+GET_LIST_SHOP_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/shop-categories'
+GET_DETAIL_SHOP_CATEGORIES = 'api-gateway/report/' + API_VERSION + '/shop-categories'
+CREATE_SHOP_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/shop-categories/'
+EDIT_SHOP_CATEGORIES = 'api-gateway/agent/' + API_VERSION + '/admin/shop-categories/{shop_category_id}'
+DELETE_SHOP_CATEGORY = 'api-gateway/agent/' + API_VERSION + '/admin/shop-categories/{shop_category_id}'
+GET_PRODUCT_AGENT_RELATION = 'api-gateway/report/' + API_VERSION + '/products/agents/relations'
+CREATE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations'
+DELETE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/products/agents/relations/{relation_id}'
+
+SEARCH_SHOP = 'api-gateway/report/' + API_VERSION + '/shops/'
+GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'

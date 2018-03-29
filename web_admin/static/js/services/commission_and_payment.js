@@ -89,6 +89,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlIDSpecificID = 'id=\'';
         var htmlIDSOFTypes = 'id=\'';
         var htmlIDSpecificSOF = 'id=\'';
+        var htmlIDLabel = 'id=\'';
         var htmlIDRate = 'id=\'';
         var htmlIDAmount = 'id=\'';
 
@@ -116,6 +117,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDSpecificSOF += 'ddl_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
+            htmlIDLabel += 'txt_setting_payment_fee_structure_label_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
@@ -159,6 +161,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         htmlIDSOFTypes += '\'';
         htmlIDSpecificSOF += '\'';
         htmlIDAmount += '\'';
+        htmlIDLabel += '\'';
         htmlIDRate += '\'';
         htmlIDBtnSave += '\'';
         htmlIDBtnCancel += '\'';
@@ -185,6 +188,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'label\' required value=\'' + aData[7] + '\'>';
 
         // Master: Specific SOF Dropdown
         var htmlDDSpecificSOFs = '';
@@ -199,7 +203,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlButtonSave = '<button type=\'button\' ' + htmlIDBtnSave + ' class=\'btn btn-outline btn-xs edit btn-primary text-info small\'>Save</button>';
         var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
-        jqTds[7].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
+        jqTds[8].innerHTML = htmlButtonSave + '&nbsp;' + htmlButtonCancel;
 
         onBindingButtonsCancelEvent();
 
@@ -225,6 +229,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         oTable.fnUpdate(spec_SOF, nRow, 4, false);      // Specific SOF
         oTable.fnUpdate($(jqSelects[5]).find(":selected").html(), nRow, 5, false);      // Amount Type
         oTable.fnUpdate(jqInputs[0].value, nRow, 6, false);                             // Rate
+        oTable.fnUpdate(jqInputs[1].value, nRow, 7, false);                             // Label
 
         // Build up HTML ID Element
         var htmlIDBtnEdit = 'id=\'';
@@ -254,7 +259,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlButtonEdit = '<button ' + htmlIDBtnEdit + 'type=\'button\' class=\'edit btn btn-outline btn-xs btn-primary edit text-info small\'>Edit</button>';
         var htmlButtonDelete = '&nbsp;<button ' + htmlIDBtnDelete + htmlEventBtnDelete + 'type=\'button\' class=\'btn btn-outline btn-xs delete btn-danger text-info small\'>Delete</button>';
 
-        oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 7, false);
+        oTable.fnUpdate(htmlButtonEdit + htmlButtonDelete, nRow, 8, false);
         oTable.fnDraw();
 
         onBindingButtonsDeleteEvent();
@@ -289,7 +294,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                     "sof_type_id": $(jqSelects[3]).find(":selected").val(),
                     "specific_sof": $(jqSelects[4]).find(":selected").html(),
                     "amount_type": $(jqSelects[5]).find(":selected").html(),
-                    "rate": jqInputs[0].value
+                    "rate": jqInputs[0].value,
+                    "label": jqInputs[1].value
                 },
                 dataType: "json",
                 beforeSend: function (xhr) {
@@ -589,3 +595,66 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     onBindingButtonsDeleteEvent();
 }
 
+function collectTableData(tableSelector) {
+    var parentDiv = $(tableSelector)
+    var tr_list = $(parentDiv.selector+" tbody").children()
+    var tableData = new Array()
+    for(i = 0; i < $(tr_list).size()-1; i++) {
+        // btn_text = $(tr_list).eq(i).find("button").eq(0).text()
+        // if (!btn_text) return true;
+        var rowData = new Array();
+        $($(tr_list).eq(i).children()).each(function(index) {
+            if ($(this).children().eq(0).is("select")) {
+                tdValue = $( this ).children().eq(0).children("option").filter(":selected").text()
+            } else if ($(this).children().eq(0).is("input")) {
+                tdValue = $(this).children().eq(0).val()
+            } else if ($(this).children().eq(0).is(":button")) {
+                return true;
+            } else {
+                tdValue = this.innerHTML
+            }
+            rowData[index] = tdValue
+        });
+        tableData[i] = rowData
+    };
+    return tableData
+}
+
+function renderTableData(tableData) {
+    var tbody = "<tbody>"
+    $(tableData).each(function(rowIndex) {
+        tbody += "<tr>"
+        $(this).each(function(colIndex) {
+            tbody += "<td>"+ this + "</td>"
+        });
+        tbody += "</tr>"
+    });
+    tbody += "</tbody>"
+
+    return tbody
+}
+
+function renderTableHeader(tableSelector) {
+    var parentDiv = $(tableSelector)
+    var tr_list = $(parentDiv.selector+" thead tr").children()
+    var rowData = new Array();
+    var thead = "<thead>"
+    for(i = 0; i < $(tr_list).size()-1; i++) {
+        thead += "<th class=\""+$(tr_list).eq(i).attr("class")+"\">"+$(tr_list).eq(i).text()+"</th>"
+    }
+    thead += "</thead>"
+    return thead
+}
+
+function renderReviewTableDiv(tableSelector) {
+    var tableData = collectTableData(tableSelector)
+    var reviewContent = renderTableHeader(tableSelector) + renderTableData(tableData)
+
+    var renderedDiv = "<div id=\"div_"+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"form-group table-responsive row in_review\"> "
+                        +   "<div class=\"dataTables_wrapper no-footer\">"
+                        +       " <table id=\""+ tableSelector.substring(1,tableSelector.length) + "_review\" class=\"table table-bordered table-striped datatable editable-datatable  mb0 dataTable no-footer\">" + reviewContent
+                        +       "</table> "
+                        +   "</div>"
+                        + "</div>"
+    $(tableSelector).parent().parent().after(renderedDiv)
+}

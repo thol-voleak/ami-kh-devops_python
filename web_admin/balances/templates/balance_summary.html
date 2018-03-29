@@ -1,0 +1,307 @@
+{% extends "core.html" %}
+{% load static %}
+{% load humanize %}
+{% load permissions_filter %}
+{% block content %}
+<h3>Balance Summary</h3>
+<style>
+    .small-column {
+        height: 60px;
+        margin-bottom: 18px;
+    }
+    .bg-blue {
+        background-color: #00a2fb;
+    }
+    .bg-gray {
+        background-color: #48516b;
+    }
+
+    .small-column-number {
+        margin-top: 5px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .small-column-tile {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .small-column-icon {
+        height: 46px;
+        margin-top: 5px;
+        margin-left: 16px;
+    }
+
+    .big-column-icon{
+        height: 60px;
+        margin-top: 26px;
+        margin-left: 20px;
+    }
+
+    .big-column-title {
+        margin-top: 15px;
+        padding-left: 20px;
+        font-size: 35px;
+    }
+
+    .unit {
+        padding-left: 3px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .big-column-number {
+        color: #76e091;
+        font-size: 23px;
+        font-weight: bold;
+        margin-top: -10px;
+    }
+
+    .btn-arrow-down  {
+        background-color: white;
+        position: absolute;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        margin-right: 12px;
+    margin-top: 1px;
+
+    }
+    .btn-arrow-up  {
+        background-color: white;
+        position: absolute;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        margin-right: 12px;
+    margin-top: 1px;
+
+    }
+
+    .balance-arrow {
+        position: absolute;
+        top: -12px;
+        right: -8.5px;
+    }
+
+    .scroll-balance-area {
+        max-height: 50px;
+        overflow-y: auto;
+        border: 1px solid #f5efef;
+        margin-left: 31px;
+        padding-top: 5px;
+    }
+
+    .white-text {
+        color: white;
+    }
+    .main-content {
+        min-width: 1150px !important;
+    }
+
+    .fa-angle-up {
+        top: -14px !important;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar:horizontal {
+        height: 80px;
+    }
+
+    .scroll-balance-area::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white; /* should match background, can't be transparent */
+        background-color: rgba(0, 0, 0, .5);
+    }
+
+</style>
+<div style="display: flex; justify-content: center;">
+    <div class="panel panel-primary" style="background-color: #d6d3d3; width: 70%; margin-top: 15px;">
+    {% if is_get_customer_summary_success %}
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-4">
+                <div class="bg-blue small-column">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <img class="small-column-icon" src="{% static 'img/customer.png'%}" />
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="small-column-number" id="lbl_member_profile_numbers">{{customer_summary.total_profile|intcomma}}</div>
+                                <div class="small-column-tile">MEMBER PROFILE</div>
+                            </div>
+                        </div>
+                </div>
+                <div class="bg-gray small-column" style="margin-bottom: 2px;">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="small-column-number"><font color="white" id="id=lbl_member_total_sof_cash">{{ customer_summary.total_sof_card|intcomma }}</font></div>
+                                <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-xs-8">
+                <div class="bg-white" style="height: 137px;">
+                    <div class="row">
+                        <div class="col-xs-2">
+                                <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
+                        </div>
+                        <div class="col-xs-10">
+                            <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
+                            <div class="row">
+                                <div class="col-xs-10 scroll-balance-area">
+                                    {% for item in customer_summary.sofs %}
+                                     <div class="big-column-number" id="lbl_member_balance_VND">{{item.total_balance|intcomma}}</div>
+                                     <div class="unit" id="lbl_member_balance_currency_VND">{{item.currency}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div style="display: flex;height: 170px;justify-content: center;align-items: center;flex-direction: column;">
+            <div style="font-size: 20px;color: white;">Error loading information, please try again</div>
+            <div><i class="fa fa-warning" style="font-size: 40px;margin-right: 15px;color: white;"></i></div>
+        </div>
+    {% endif %}
+</div>
+</div>
+<div style="display: flex; justify-content: center;">
+    <div class="panel panel-primary" style="background-color: #d6d3d3; width: 70%; margin-top: 15px;">
+    {% if is_get_agent_summary_success %}
+    <div class="panel-body" style="padding-bottom: 35px;">
+        <div class="row">
+            <div class="col-xs-4">
+                    <div class="bg-blue small-column">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <img class="small-column-icon" src="{% static 'img/agent.png'%}" />
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="small-column-number" id="lbl_agent_profile_numbers">{{ agent_summary.agent_total_profile|intcomma }}</div>
+                                <div class="small-column-tile">AGENT PROFILE</div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="bg-gray small-column" style="margin-bottom: 2px;">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <img class="small-column-icon" src="{% static 'img/wallet-with-card-sticking-out.png'%}" />
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="small-column-number white-text" id="lbl_agent_total_sof_cash">{{ agent_summary.agent_total_sofs|intcomma }}</div>
+                                <div class="small-column-tile"><font color="white">TOTAL SOF CASH</font></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-xs-8">
+                <div class="bg-white" style="height: 137px;">
+                    <div class="row">
+                        <div class="col-xs-2">
+                                <img class="big-column-icon" src="{% static 'img/coins.png'%}" />
+                        </div>
+                        <div class="col-xs-10">
+                            <div class="big-column-title" ><font color="#acacac">BALANCE</font></div>
+                            <div class="row">
+                                <div class="col-xs-10 scroll-balance-area">
+                                    {% for item in agent_summary.sofs %}
+                                     <div class="big-column-number" id="lbl_agent_balance">{{ item.total_balance|intcomma }}</div>
+                                     <div class="unit" id="lbl_agent_balance_currency">{{item.currency}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <button class="btn-arrow-down" onclick="table_toggle()" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x" id="toggle-button"></i></span></button>
+    </div >
+    <div id="toggle-table" hidden>
+    <table id='tbl_agent_sof_cash' class="table table-bordered table-striped mb0" >
+        <thead>
+        <tr>
+            <th id="ddl_voucher_id">Agent Type</th>
+            <th id="ddl_voucher_type">Profile</th>
+            <th id="ddl_voucher_amount">Total SOF Cash</th>
+            <th id="ddl_voucher_fee">Balance</th>
+            <th id="ddl_currency">Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for type in agent_summary.agent_types %}
+        {% for item in type.sofs %}
+            <!-- <div > -->
+            <tr class="checkboxlist">
+                {% if forloop.counter == 1 %}
+                <td rowspan="{{ type.sofs|length }}">{{ type.name|default_if_none:'' }}</td>
+                <td rowspan="{{ type.sofs|length }}">{{ type.total_profile|default_if_none:'0' }}</td>
+                {%endif%}
+                <td>{{ item.total_sof|default_if_none:'0' }}</td>
+                <td>{{ item.total_balance|default_if_none:'0' }}</td>
+                <td>{{ item.currency|default_if_none:'' }}</td>
+            </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+    {% else %}
+        <div style="display: flex;height: 170px;justify-content: center;align-items: center;flex-direction: column;">
+            <div style="font-size: 20px;color: white;">Error loading information, please try again</div>
+            <div><i class="fa fa-warning" style="font-size: 40px;margin-right: 15px;color: white;"></i></div>
+        </div>
+    {% endif %}
+</div>
+</div>
+
+
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+    function table_toggle(){
+    //     if($( "#toggle-button" ).hasClass( "btn-arrow-down" )){
+    //     $('#toggle-table').show();
+    //     $("toggle-button").removeClass("btn-arrow-down");
+    //     $("toggle-button").addClass("btn-arrow-up");
+    // }
+    // else if ($( "#toggle-button" ).hasClass( "btn-arrow-up" )){
+    //     $('#toggle-table').hide();
+    //     $("toggle-button").removeClass("btn-arrow-up");
+    //     $("toggle-button").addClass("btn-arrow-down");
+    // }
+    if ( $( "#toggle-table" ).is( ":hidden" ) ){
+        $( "#toggle-table" ).show();
+        $("#toggle-button").removeClass("fa-angle-down");
+        $("#toggle-button").addClass("fa-angle-up");
+    }
+    else{
+        $( "#toggle-table" ).hide();
+        $("#toggle-button").removeClass("fa-angle-up");
+        $("#toggle-button").addClass("fa-angle-down");
+    }
+}
+</script>
+{%  endblock %}

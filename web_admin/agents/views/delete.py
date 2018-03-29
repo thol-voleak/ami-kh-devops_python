@@ -52,22 +52,17 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
 
         self.logger.info('========== Finish Deleting Agent ==========')
         if success:
+            request.session['agent_delete_msg'] = 'Deleted data successfully'
             previous_page = request.POST.get('previous_page')
-            if previous_page is not None:
-
+            if previous_page:
                 # Forward update case to detail after execute delete action.
                 if "update" in previous_page:
                     previous_page = previous_page.replace('update/', '', 1)
-
-                request.session['agent_delete_msg'] = 'Deleted data successfully'
-
                 return HttpResponseRedirect(previous_page)
-            else:
-                redirect('agents:agent-list')
         else:
             request.session['agent_message'] = 'Delete agent fail. Please try again or contact support.'
             request.session['agent_redirect_from_delete'] = True
-            return redirect('agents:agent-list')
+        return redirect('agents:agent-list')
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Delete Agent page ==========')

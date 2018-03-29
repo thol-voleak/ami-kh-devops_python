@@ -1,0 +1,501 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <style>
+        .image-area {
+            text-align: center;
+            height: 150px;
+            width: 150px;
+            line-height: 150px;
+            position: relative;
+        }
+
+        .image-area img {
+            position: absolute;
+            top: 0;
+            left: -1px;
+        }
+
+        .image-table {
+            text-align: center;
+            height: 75px;
+            width: 75px;
+            line-height: 75px;
+            position: relative;
+        }
+
+        .scroll-balance-area {
+            max-height: 50px;
+            overflow-y: auto;
+            border: 1px solid #f5efef;
+            margin-left: 31px;
+            padding-top: 5px;
+        }
+
+        .scroll-balance-area::-webkit-scrollbar {
+            -webkit-appearance: none;
+        }
+
+        .scroll-balance-area::-webkit-scrollbar:vertical {
+            width: 11px;
+        }
+
+        .scroll-balance-area::-webkit-scrollbar:horizontal {
+            height: 1px;
+        }
+
+        .scroll-balance-area::-webkit-scrollbar-thumb {
+            border-radius: 8px;
+            border: 2px solid white; /* should match background, can't be transparent */
+            background-color: rgba(0, 0, 0, .5);
+        }
+
+        .fa-angle-up {
+            left: 4px;
+            top: -2px;
+            position: absolute;
+        }
+
+        .fa-angle-down {
+            left: 4px;
+            position: absolute;
+        }
+
+        .handle {
+            cursor: not-allowed !important;
+        }
+
+        .active-category {
+            background-color: #b7deec;
+            border-radius: 3px;
+            padding: 5px;
+        }
+
+    </style>
+    <div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Categories</h3>
+
+    </div>
+
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" hidden id="msg-categories">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+    {% if permissions.CAN_ADD_CATEGORY %}
+    <div class="row">
+        <div class="pull-right">
+            <a href="{% url 'category:category_add' %}">
+                <input id="btn_add" class="btn btn-success text-left mb15" type="submit"
+                       value="+ Add Category"/>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="panel-body">
+    <div class="row">
+    <div class="col-sm-4">
+        <div>
+            <a onclick="collapse('Collapse')" id="btn_collapse_all">Collapse All</a>
+            <span>|</span>
+            <a onclick="collapse('Expand')" id="btn_expand_all" class="bold">Expand All</a>
+        </div>
+        <br>
+        <div style="max-height: 600px; overflow-y: scroll; margin-top:-10px; margin-left: 0px; border:none;"
+             id="list_category" class="scroll-balance-area">
+            {% for category in list_category %}
+                <div style="position: relative;">
+                    <div class="row">
+                        <div class="col-sm-8" style="word-wrap: break-word;margin-bottom: 10px;">
+                            <span style="cursor: pointer; position: absolute; top: 3px;"
+                                  class="glyphicon glyphicon-plus" data-toggle="collapse"
+                                  data-target="#collapse-{{ category.id }}"
+                                  id="btn_category_expand_{{ category.id }}"></span>
+                            <a id="category-{{ category.id }}" onclick="getData({{ category.id }})"
+                               style="margin-left: 20px;" class="bold category-name">{{ category.name }} ({{ category.product |length }})</a>
+                        </div>
+                        <div class="col-sm-4 action-area" id="action-category-{{ category.id }}" hidden>
+                            {% if permissions.CAN_EDIT_CATEGORY %}
+                            <a href="{% url 'category:category_edit' category.id %}">
+                                <button id="btn_category_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit
+                                </button>
+                            </a>
+                            {% endif %}
+                            {% if permissions.CAN_DELETE_CATEGORY %}
+                            <button id="btn_category_delete" onclick="deleteCategory(this)"
+                                    data-category-id="{{ category.id }}"
+                                    data-url="{% url 'category:category_delete' category.id %}"
+                                    class="btn btn-outline mb5 btn-xs btn-danger ">Delete
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="collapse-{{ category.id }}" group-id="{{ category.id }}" class="collapse collapse-list"
+                     style="margin-left: 20px;">
+                    {% for product in  category.product %}
+                        <div>{{ product.name }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="col-sm-12 form-group">
+            <label class="col-sm-3">Enable Category</label>
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="switch switch-sm">
+                            <input type="checkbox"
+                                   name="category_status" {% if category_detail.is_active %}checked{% endif %}
+                                   id="tog_status" disabled>
+                            <span class="slider round">
+                                    <i class="handle"></i>
+                                </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 form-group">
+            <label class="col-sm-5" style="font-size: 20px;">Information</label>
+            <div class="col-sm-7">
+                <div id="btn_information_expand" class="btn-arrow-down pull-right" onclick="toggle('info')"
+                     style="outline: none;border-radius: 50%;height: 27px;width: 27px;border: 1px solid grey; cursor: pointer;">
+                    <span style="position: relative;"><i class="category-arrow fa fa-angle-up fa-2x" id="info-chev"></i></span>
+                </div>
+            </div>
+        </div>
+        <div id="toggle-category-info">
+            <div class="panel-body form-horizontal">
+                <div class="col-sm-12 form-group">
+                    <label class="col-sm-3 control-label">Category ID</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name"
+                               value="{{ category_detail.id | default_if_none:'' }}" id="txt_category_id" readonly/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <label class="col-sm-3 control-label">Category Name</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name"
+                               value="{{ category_detail.name | default_if_none:'' }}" id="txt_category_name" readonly/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <label class="col-sm-3 control-label">Category Description</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="provider_name"
+                               value="{{ category_detail.description | default_if_none:'' }}"
+                               id="txt_category_description" readonly/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <label class="col-sm-3 control-label">Category Image</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control input-rounded" name="category_image"
+                               value="{{ category_detail.image_url | default_if_none:'' }}" id="txt_category_image_url"
+                               readonly/>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-5">
+                        <div class="image-area">
+                            <img id="img_Image" onerror="this.src='{% static 'img/no-image.png' %}'"
+                                 src="{{ category_detail.image_url | default_if_none:'' }}" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 form-group" style="border-top: 1px solid #dad6d6;">
+        </div>
+        <div class="col-sm-12 form-group">
+            <label class="col-sm-5" style="font-size: 19px;margin-bottom: 20px;">Products in Category</label>
+            <div class="col-sm-7">
+                <div id="btn_product_expand" class="btn-arrow-down pull-right" onclick="toggle('product')"
+                 style="outline: none;border-radius: 50%;height: 27px;width: 27px;border: 1px solid grey; cursor: pointer;">
+                <span style="position: relative;"><i id='product-chev' class="category-arrow fa fa-angle-down fa-2x"></i></span></div>
+            </div>
+        </div>
+        <div id="toggle-product-list" hidden>
+            <div class="panel-body" style="margin-top:44px; border:none;">
+                <table class="table table-striped table-bordered" id="tbl_products">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="header-background">Product ID</th>
+                        <th scope="col" class="header-background">Product Name</th>
+                        <th scope="col" class="header-background">Product Description</th>
+                        <th scope="col" class="header-background">Product Image</th>
+                        <th scope="col" class="header-background">Product Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id='table-body'>
+                    {% for i in products %}
+                        <tr>
+                            <td scope="row">{{ i.id }}</td>
+                            <td>{{ i.name }}</td>
+                            <td>{{ i.description }}</td>
+                            <td>
+                                <div class="image-table"><img id="img_Image"
+                                                              onerror="this.src='{% static 'img/no-image.png' %}'"
+                                                              src="{{ category.image_url | default_if_none:'' }}"
+                                                              style="width: 75px; height: 75px; border: 1px solid #c0c0c0;"></div>
+                            </td>
+                            <td>
+                                <label class="switch switch-sm">
+                                    <input type="checkbox" onchange="changeCategoryStatus(this)"
+                                           name="category_status" {% if i.is_active %}checked{% endif %}
+                                           id="tog_product_status" disabled>
+                                    <span class="slider round">
+                                            <i class="handle"></i>
+                                        </span>
+                                </label>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block body_js %}
+    {{ block.super }}
+    <script>
+
+        var toggle = function (type) {
+            if (type == 'info') {
+                if ($("#toggle-category-info").is(":hidden")) {
+                    $("#toggle-category-info").show();
+                    $("#info-chev").removeClass("fa-angle-down");
+                    $("#info-chev").addClass("fa-angle-up");
+                }
+                else {
+                    $("#toggle-category-info").hide();
+                    $("#info-chev").removeClass("fa-angle-up");
+                    $("#info-chev").addClass("fa-angle-down");
+                }
+            } else if (type == 'product') {
+                if ($("#toggle-product-list").is(":hidden")) {
+                    $("#toggle-product-list").show();
+                    $("#product-chev").removeClass("fa-angle-down");
+                    $("#product-chev").addClass("fa-angle-up");
+                }
+                else {
+                    $("#toggle-product-list").hide();
+                    $("#product-chev").removeClass("fa-angle-up");
+                    $("#product-chev").addClass("fa-angle-down");
+                }
+            }
+        };
+        var renderTableBody = function (product) {
+            var toggle_column = '<td>'
+                + '<label class="switch switch-sm">'
+                + '<input type="checkbox" onchange="changeCategoryStatus(this)"'
+                + 'name="category_status"'
+                + 'id="tog_product_status" disabled >'
+                + '<span class="slider round">'
+                + '<i class="handle"></i>'
+                + '</span>'
+                + '</label>'
+                + '</td>';
+            if (product.is_active) {
+                toggle_column = '<td>'
+                    + '<label class="switch switch-sm">'
+                    + '<input type="checkbox" onchange="changeCategoryStatus(this)"'
+                    + 'name="category_status" checked '
+                    + 'id="tog_product_status" disabled >'
+                    + '<span class="slider round">'
+                    + '<i class="handle"></i>'
+                    + '</span>'
+                    + '</label>'
+                    + '</td>'
+            }
+            var errorImage = "this.src='{% static 'img/no-image.png' %}'";
+            return '<td scope="row">' + product.id + '</td>'
+                + '<td>' + product.name + '</td>'
+                + '<td>' + product.description + '</td>'
+                + '<td><div class="image-table"><img id="img_Image" onerror="' + errorImage + '" src="' + product.image_url + '" height="75" width="75"></div></td>'
+                + toggle_column;
+        };
+
+        $('#action-category-{{category_detail.id}}').show();
+        $('#category-{{ category_detail.id }}').addClass('active-category');
+        var getData = function (category_id) {
+            $('.action-area').hide();
+            $('.category-name').removeClass('active-category');
+            $('#action-category-' + category_id).show();
+            $('#category-' + category_id).addClass('active-category');
+            var url = '/admin-portal/category/get_category_data/' + category_id + '/';
+            console.log(url)
+            console.log('Start get category data')
+            console.log(category_id)
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'categoryId': category_id},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                        location.reload();
+                    } else if (response.status == 2) {
+                        // success
+                        console.log(response)
+                        var category_detail = response.category_detail.product_categories[0];
+                        var product_list = response.product_list;
+                        document.getElementById('txt_category_id').setAttribute('value', category_detail.id);
+                        document.getElementById('txt_category_name').setAttribute('value', category_detail.name);
+                        document.getElementById('txt_category_description').setAttribute('value', category_detail.description);
+                        document.getElementById('txt_category_image_url').setAttribute('value', category_detail.image_url);
+                        document.getElementById('img_Image').setAttribute('src', category_detail.image_url);
+                        document.getElementById('category-' + category_detail.id).textContent = category_detail.name + ' ' + '(' + product_list.length + ')';
+
+                        if (category_detail.is_active) {
+                            document.getElementById('tog_status').checked = true;
+                        } else {
+                            document.getElementById('tog_status').checked = false;
+                        }
+                        var table_product = document.getElementById('table-body');
+                        var collapse_product_list = document.getElementById('collapse-' + category_detail.id);
+                        table_product.innerHTML = '';
+                        collapse_product_list.innerHTML = '';
+                        for (var i = 0; i < product_list.length; i++) {
+                            var rowHTML = renderTableBody(product_list[i]);
+                            var rowElm = document.createElement('tr');
+                            rowElm.innerHTML = rowHTML;
+                            table_product.appendChild(rowElm);
+                            var productElm = document.createElement('div');
+                            productElm.innerText = product_list[i].name;
+                            collapse_product_list.appendChild(productElm);
+                        }
+                    } else {
+                        // Failed
+                    }
+                },
+                error: function (msg) {
+                    console.log('Error to get category data' + category_id);
+                    showErrorMessage(JSON.stringify(msg));
+                }
+            });
+        };
+
+        $('.collapse-list').on('hide.bs.collapse', function () {
+            var elem = document.getElementById('btn_category_expand_' + $(this).attr('group-id'));
+            elem.classList.add("glyphicon-plus");
+            elem.classList.remove("glyphicon-minus");
+        });
+
+        $('.collapse-list').on('show.bs.collapse', function () {
+            var elem = document.getElementById('btn_category_expand_' + $(this).attr('group-id'));
+            elem.classList.remove("glyphicon-plus");
+            elem.classList.add("glyphicon-minus");
+        });
+
+        var status_text_elm = document.getElementById('category_status_text');
+
+        var openAllPanels = function (aId) {
+            $(aId + ' .panel-collapse:not(".in")').collapse('show');
+            $('#list_category .collapse:not(".in")').collapse('show');
+
+        }
+        var closeAllPanels = function (aId) {
+            $(aId + ' .panel-collapse.in').collapse('hide');
+            $('#list_category .collapse.in').collapse('hide');
+        }
+
+        function collapse(argument) {
+            var accordionId = $(".toggle-accordion").attr("accordion-id");
+            if (argument == 'Collapse') {
+                var collapse_button = document.getElementById('btn_collapse_all')
+                var expand_button = document.getElementById('btn_expand_all')
+                expand_button.classList.add("bold");
+                collapse_button.classList.remove("bold");
+
+                closeAllPanels(accordionId);
+            } else {
+                var collapse_button = document.getElementById('btn_collapse_all')
+                var expand_button = document.getElementById('btn_expand_all')
+                expand_button.classList.remove("bold");
+                collapse_button.classList.add("bold");
+
+                openAllPanels(accordionId);
+            }
+        }
+
+        function deleteCategory(e) {
+            swal({
+                    title: "Are you sure you want to delete selected item?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var url = e.getAttribute('data-url');
+                        console.log(url);
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            data: {},
+                            dataType: "json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            },
+                            success: function (response) {
+                                if (response.status == 1) {
+                                    // Logout
+                                    location.reload();
+                                } else if (response.status == 2) {
+                                    // success
+                                    var id = e.getAttribute('data-category-id');
+                                    $('#category-' + id).parent().parent().remove();
+                                    $('#collapse-' + id).remove();
+                                    showSuccessMessage('Deleted Successfully');
+                                    $('a[id*=category-]:visible')[0].click();
+                                } else {
+                                    // Failed
+                                    showErrorMessage(response.msg);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            var m = $('#msg-categories');
+            m.removeClass("alert-success");
+            m.addClass("alert-danger");
+            m.prop("hidden", false);
+            m.fadeIn(1000);
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            var m = $('#msg-categories');
+            m.removeClass("alert-danger");
+            m.addClass("alert-success");
+            m.prop("hidden", false);
+            m.fadeIn(1000);
+        }
+    </script>
+{% endblock %}
