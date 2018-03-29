@@ -177,7 +177,7 @@
                                                     {% for product in  products %}
                                                         {% if product.is_checked %}
                                                             <div class="product">
-                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}">{{ product.product_name }}</span></label>
+                                                                <label><input checked disabled type="checkbox" id="chk_summary_product_{{ product.product_id }}"/><span id="lbl_summary_product_{{ product.product_id }}" style="margin-left: 7px;">{{ product.product_name }}</span></label>
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
