@@ -91,7 +91,7 @@
                                 <td>{{ shop.relationship_manager_name }}</td>
                                 <td>
                                     {% if shop.agent_id %}
-                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent({{ shop.agent_id }})</a>
+                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent ({{ shop.agent_id }})</a>
                                     {% endif %}
                                 </td>
                                 <td>
