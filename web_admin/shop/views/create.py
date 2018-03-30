@@ -1,3 +1,5 @@
+from django.urls import reverse
+
 from shop.utils import get_all_shop_type, get_all_shop_category, get_system_country, convert_form_to_shop
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
@@ -9,6 +11,7 @@ from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
 import logging
 from web_admin.api_logger import API_Logger
+from web_admin.utils import get_back_url
 
 logger = logging.getLogger(__name__)
 
@@ -56,4 +59,9 @@ class CreateView(TemplateView, RESTfulMethods):
         shop = convert_form_to_shop(form)
         # TODO: call create shop API
 
+        # IF SUCCESS
+        messages.success(request, "Added Successfully")
+        return redirect(get_back_url(request, reverse('shop:shop_list')))
+
+        # IF FAIL
         return render(request, self.template_name, context)
