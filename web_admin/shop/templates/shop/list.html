@@ -96,8 +96,8 @@
                                 </td>
                                 <td>
                                     <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}">Detail</a>
-                                    <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' 123 %}">Edit</a>
-                                    <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' 123 %}">Delete</a>
+                                    <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' shop.id %}">Edit</a>
+                                    <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' shop.id %}">Delete</a>
                                 </td>
                             {% else %}
                                 <td><del>{{ shop.id }}</del></td>
