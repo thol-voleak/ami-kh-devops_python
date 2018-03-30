@@ -90,7 +90,7 @@
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
             </div>
 
-            <form method="POST" class="form-horizontal" role="form" id="mForm"
+            <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)"
                   action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}"
                   id="payment_and_fee_stucture_form">
 
@@ -219,7 +219,7 @@
                 </div>
                 <div class="form-group pull-right not_in_review">
                     <a>
-                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="button" value="Review"/>
+                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="submit" value="Review"/>
                     </a>
                     <br/>
                     <br/>
@@ -736,16 +736,19 @@
             });
         }
 
-        function onClickReviewBtn() {
-            renderReviewTableDiv("#tbl_setting_payment_fee_structure")
-            $(".not_in_review").hide()
-            $(".in_review").show()
-        }
-
         function onClickReviewBackBtn() {
             $("#div_tbl_setting_payment_fee_structure_review").remove()
             $(".not_in_review").show()
             $(".in_review").hide()
+        }
+        
+        function validate(form) {
+            if($('#mForm')[0].checkValidity()) {
+                renderReviewTableDiv("#tbl_setting_payment_fee_structure");
+                $(".not_in_review").hide();
+                $(".in_review").show();
+            }
+            return false;
         }
 
         // Edit row features
@@ -779,7 +782,6 @@
                  $(this).removeAttr( "style" );
             });
 
-            $("#btn_setting_payment_fee_structure_review").click(onClickReviewBtn)
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
         });
     </script>

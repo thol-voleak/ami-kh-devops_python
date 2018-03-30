@@ -547,13 +547,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             $("#tr_row_for_edit").find("#ddl_setting_payment_fee_structure_specific_source_of_fund").val("");
         });
     }
-    
-    function onBindingButtonsReviewEvent() {
-        $(document).on('click', '#btn_setting_payment_fee_structure_review', function (e) {
-            e.preventDefault();
-            console.log("btn_setting_payment_fee_structure_review on click");
-        });
-    }
 
     function onBindingButtonsEditEvent() {
 
@@ -604,7 +597,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     onBindingButtonsEditEvent();
     onBindingButtonsDeleteEvent();
     onBindingButtonsAddEvent();
-    onBindingButtonsReviewEvent();
 }
 
 function collectTableData(tableSelector) {
