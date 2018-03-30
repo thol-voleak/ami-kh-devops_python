@@ -661,3 +661,54 @@ function renderReviewTableDiv(tableSelector) {
                         + "</div>"
     $(tableSelector).parent().parent().after(renderedDiv)
 }
+
+function getSofTypeValueByName(m_sof_types, sof_type_name) {
+    var sofTypeArr = $.grep(m_sof_types, function (sofType, index) {
+        return sofType.sof_type == sof_type_name;
+    })
+    if($(sofTypeArr).length == 0 ) {
+        return null;
+    }
+    return (sofTypeArr[0].sof_type_id);
+}
+
+function collectTableDataForSave(tableSelector, m_sof_types) {
+    var table = $(tableSelector);
+    var tableRows = $(table).find("tbody tr");
+    var len = $(tableRows).length;
+    var tdValue;
+    var data = [];
+    $.each(tableRows, function (index, row) {
+        var rowData = [];
+        if (index < len - 1) {
+            $(row).find("td").each(function (i, td) {
+                if ($(td).children().eq(0).is("select")) {
+                    tdValue = $(td).children().eq(0).children("option").filter(":selected").text();
+                } else if ($(td).children().eq(0).is("input")) {
+                    tdValue = $(td).children().eq(0).val();
+                } else if ($(td).children().eq(0).is(":button")) {
+                    return true;
+                }
+                else {
+                    tdValue = $(td).html();
+                }
+                rowData.push(tdValue);
+            })
+
+            var rowDataObj = {
+                "balance_distribution_id": $(row).attr("data-id"),
+                "action_type": rowData[0],
+                "actor_type": rowData[1],
+                "specific_actor_id": rowData[2],
+                "sof_type_id": getSofTypeValueByName(m_sof_types, rowData[3]),
+                "specific_sof": rowData[4],
+                "amount_type": rowData[5],
+                "rate": rowData[6],
+                "label": rowData[7]
+            };
+
+            data.push(rowDataObj);
+        }
+    })
+    return data;
+}

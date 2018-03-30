@@ -751,6 +751,66 @@
             return false;
         }
 
+
+        function onClickSaveBtn() {
+            var current_fee_tier_id = {{ fee_tier_id  }};
+            var m_sof_types = {{ choices.sof_types|safe }};
+            var url = "{% url 'services:payment_and_fee_stucture_multi_update' fee_tier_id%}";
+            var balanceDistributionDataList = [];
+            var tableData = collectTableDataForSave("#tbl_setting_payment_fee_structure", m_sof_types);
+            $.each(tableData, function (index, rowData) {
+                var balanceDistributionData = {
+                    "fee_tier_id": current_fee_tier_id,
+                    "balance_distribution_id": rowData.balance_distribution_id,
+                    "action_type": rowData.action_type,
+                    "actor_type": rowData.actor_type,
+                    "specific_actor_id": rowData.specific_actor_id,
+                    "sof_type_id": rowData.sof_type_id,
+                    "specific_sof": rowData.specific_sof,
+                    "amount_type": rowData.amount_type,
+                    "rate": rowData.rate,
+                    "label": rowData.label
+                }
+                balanceDistributionDataList.push(balanceDistributionData);
+            })
+            var data = {"balance_distributions": JSON.stringify(balanceDistributionDataList)};
+//            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        // success
+                        //Reload page
+                        window.location.href = window.location.href;
+                    } else {
+                        // Failed
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+
+                    addErrorMessage("Edit error!");
+                }
+            });
+
+            return false;
+        }
+
         // Edit row features
         $(document).ready(function () {
             //var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
@@ -783,6 +843,8 @@
             });
 
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
+            $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
+
         });
     </script>
 {%  endblock %}
