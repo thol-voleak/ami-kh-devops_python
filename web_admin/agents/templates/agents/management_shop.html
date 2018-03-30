@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load permissions_filter %}
+{% load common_tags %}
 {% block body_stylesheet %}
 {{ block.super }}
 {% endblock %}
@@ -44,7 +45,7 @@
                      <div class="tab-pane active">
                         <h4>Shop Management</h4>
                          <div class="text-right">
-                            <a id="btn_add" class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}">
+                            <a id="btn_add" class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}">
                                 <strong>+</strong> <span>Add Shop</span>
                             </a>
                         </div>
@@ -77,7 +78,7 @@
                                             <td>District</td>
                                             <td>Relationship Manager Name</td>
                                             <td>
-                                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
+                                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
                                                 <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
                                             </td>
                                         </tr>

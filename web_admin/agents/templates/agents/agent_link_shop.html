@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load common_tags %}
 {% block content %}
 <div class="panel">
     <div class="panel-heading">
@@ -8,13 +9,14 @@
         {% include "message.html" %}
 
         <div class="pull-right">
-            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?back_url={% current_url_encoded_for_back %}">
                 <strong>+</strong> <span>Create New Shop</span>
             </a>
         </div>
     </div>
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+            <input name="back_url" type="hidden" value="{{ form.back_url }}"/>
             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
             <div class="row" style="margin-top: 15px;">
                 <label class="col-md-1 control-label">Shop ID</label>
@@ -58,7 +60,7 @@
             {% include "pagination.html" %}
         </form>
         <div class="text-right" style="margin-top: 20px;">
-            <a id="btn_back" class="btn btn-default" href="">Back</a>
+            <a id="btn_back" class="btn btn-default" href="{% get_back_url %}">Back</a>
         </div>
     </div>
 </div>

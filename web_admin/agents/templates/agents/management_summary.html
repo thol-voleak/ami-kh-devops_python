@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load common_tags %}
 {% load permissions_filter %}
 {% block body_stylesheet %}
 {{ block.super }}
@@ -277,7 +278,7 @@
                                         <div>
                                             <div><b>Please Add a Shop</b></div>
                                             <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}" >Add</a>
+                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
                                             </div>
                                         </div>
                                     </div>
@@ -310,7 +311,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}'">Add Shop</td>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}'">Add Shop</td>
                                                 </tr>
                                             </tbody>
                                         </table>
