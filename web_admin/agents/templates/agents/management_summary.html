@@ -230,22 +230,20 @@
                                                     {% for summary in summary_relationships %}
                                                         <tr>
                                                             <td>{{ summary.relationship_type.name|default_if_none:'' }}</td>
-                                                            <td>
-                                                                {%if agent_id == summary.main_user.user_id %}
-                                                                <b><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></b>
-                                                                {%else%}
-                                                                <a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a>
-                                                                {%endif%}
-                                                            </td>
-                                                            <td>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</td>
-                                                            <td>
-                                                                {%if agent_id == summary.sub_user.user_id%}
-                                                                <b><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></b>
-                                                                {%else%}
-                                                                <a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a>
-                                                                {%endif%}
-                                                            </td>
-                                                            <td>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</td>
+                                                            {%if agent_id == summary.main_user.user_id %}
+                                                                <td><b><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></b></td>
+                                                                <td><b>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</b></td>
+                                                            {%else%}
+                                                                <td><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></td>
+                                                                <td>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</td>
+                                                            {%endif%}
+                                                            {%if agent_id == summary.sub_user.user_id%}
+                                                                <td><b><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></b></td>
+                                                                <td><b>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</b></td>
+                                                            {%else%}
+                                                                <td><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></td>
+                                                                <td>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</td>
+                                                            {%endif%}
                                                             <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
                                                             <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
                                                         </tr>
