@@ -762,7 +762,7 @@
                 var balanceDistributionData = {
                     "fee_tier_id": current_fee_tier_id,
                     "balance_distribution_id": rowData.balance_distribution_id,
-                    "action_type": rowData.action_type,
+                    "action_type": (rowData.action_type == "credit") ? "Credit" : "Debit",
                     "actor_type": rowData.actor_type,
                     "specific_actor_id": rowData.specific_actor_id,
                     "sof_type_id": rowData.sof_type_id,
