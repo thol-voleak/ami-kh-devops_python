@@ -15,17 +15,17 @@
         </div>
     </div>
     <div class="panel-body">
-        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
-            <input name="back_url" type="hidden" value="{{ form.back_url }}"/>
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
             <div class="row" style="margin-top: 15px;">
                 <label class="col-md-1 control-label">Shop ID</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                    <input type="text" class="form-control" name="shop_id" value=""/>
                 </div>
                 <label class="col-md-1 control-label">Shop Name</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
+                    <input type="text" class="form-control" name="shop_name" value=""/>
                 </div>
                 <div class="col-md-2">
                     <input id="btn_search" class="btn btn-success" type="submit" value="Search">

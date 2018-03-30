@@ -33,3 +33,9 @@ class AgentLinkShop(TemplateView, GetHeaderMixin):
         form = request.GET
         context = {"form": form}
         return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        context = {'form': form}
+
+        return render(request, self.template_name, context)
