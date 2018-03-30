@@ -122,10 +122,10 @@ def convert_form_to_shop(form):
     address["longitude"] = form["longitude"]
 
     shop = {}
-    shop["agent_id"] = int(form["agent_id"])
-    shop["shop_type_id"] = int(form["shop_type_id"])
+    shop["agent_id"] = int(form["agent_id"]) if form["agent_id"] else None
+    shop["shop_type_id"] = int(form["shop_type_id"]) if form["shop_type_id"] else None
     shop["name"] = form["name"]
-    shop["shop_category_id"] = int(form["shop_category_id"])
+    shop["shop_category_id"] = int(form["shop_category_id"]) if form["shop_category_id"] else None
     shop["address"] = address
     shop["relationship_manager_id"] = form["relationship_manager_id"]
     shop["acquisition_source"] = form["acquisition_source"]
