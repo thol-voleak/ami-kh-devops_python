@@ -513,8 +513,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         $('#' + tableId).on('click', '#btn_setting_payment_fee_structure_add', function (e) {
             e.preventDefault();
             
-            //TODO $("#mForm")[0].valid();
-            
             var data = [
                 $("#ddl_setting_payment_fee_structure_dc").val(),
                 $("#ddl_setting_payment_fee_structure_actor").val(),
@@ -545,6 +543,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 }
             });
             $("#tr_row_for_edit").find("#ddl_setting_payment_fee_structure_specific_source_of_fund").val("");
+            $('#txt_setting_payment_fee_structure_rate').removeAttr('required');
         });
     }
 
