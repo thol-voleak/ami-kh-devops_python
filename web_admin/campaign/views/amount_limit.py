@@ -63,13 +63,19 @@ class AmountLimit(TemplateView, GetHeaderMixin):
                 'Added data successfully'
             )
             return redirect('campaign:amount_limit', campaign_id=campaign_id)
+        elif status_message == 'timeout':
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Sorry, Request timeout. Please try again'
+            )
         else:
             context = {
                 'rule_amount_limit_info': params,
                 'error_msg': ''
             }
-            self.logger.info('========== Finished adding rule limit ==========')
-            return render(request, 'campaign/amount_limit.html', context)
+        self.logger.info('========== Finished adding rule limit ==========')
+        return render(request, 'campaign/amount_limit.html', context)
 
     def get_campaign_detail(self, campaign_id):
         url = GET_CAMPAIGNS_DETAIL.format(bak_rule_id=campaign_id)
