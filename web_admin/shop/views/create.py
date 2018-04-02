@@ -1,6 +1,7 @@
 from django.urls import reverse
 
-from shop.utils import get_all_shop_type, get_all_shop_category, get_system_country, convert_form_to_shop
+from shop.utils import get_all_shop_type, get_all_shop_category, get_system_country, convert_form_to_shop, \
+    get_agent_detail
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
@@ -33,6 +34,17 @@ class CreateView(TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         form = {}
+
+        agent_id = request.GET["agent_id"]
+        if agent_id:
+            agent = get_agent_detail(self, int(agent_id))
+            form["representative_first_name"] = agent["firstname"]
+            form["representative_last_name"] = agent["lastname"]
+            form["representative_mobile_number"] = agent["primary_mobile_number"]
+            form["representative_email"] = agent["email"]
+            form["shop_mobile_number"] = agent["primary_mobile_number"]
+            form["shop_email"] = agent["email"]
+
         context = {'form': form}
 
         list_shop_type = get_all_shop_type(self)

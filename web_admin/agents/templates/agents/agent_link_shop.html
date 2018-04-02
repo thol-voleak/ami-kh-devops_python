@@ -9,7 +9,7 @@
         {% include "message.html" %}
 
         <div class="pull-right">
-            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?back_url={% current_url_encoded_for_back %}">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ form.agent_id }}&back_url={% current_url_encoded_for_back %}">
                 <strong>+</strong> <span>Create New Shop</span>
             </a>
         </div>
@@ -17,6 +17,7 @@
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
             {% csrf_token %}
+            <input type="hidden" name="agent_id" value="{{ form.agent_id }}" />
             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
             <div class="row" style="margin-top: 15px;">
                 <label class="col-md-1 control-label">Shop ID</label>
