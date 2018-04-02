@@ -937,7 +937,7 @@ class MultiBalanceDistributionsUpdate(TemplateView):
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
-                "Updated Setting Payment, Fee & Bonus Structure successfully"
+                "Saved Setting Payment, Fee & Bonus Structure successfully"
             )
         self.logger.info("========== Finished updating Setting Payment, Fee & Bonus Structure ==========")
         return response
