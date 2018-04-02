@@ -35,7 +35,7 @@ class CreateView(TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         form = {}
 
-        agent_id = request.GET["agent_id"]
+        agent_id = request.GET.get("agent_id")
         if agent_id:
             agent = get_agent_detail(self, int(agent_id))
             form["representative_first_name"] = agent["firstname"]
