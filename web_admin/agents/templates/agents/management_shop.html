@@ -50,9 +50,10 @@
                             </a>
                         </div>
                         <form method="get">
-                            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
+                            <button type="submit" id="btn_search" value="Search" hidden></button>
+                            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ current_page_index|default:'1' }}"/>
                             <div style="margin-top: 15px; text-align: right">
-                                Total Shops Found:&nbsp;<span id="lbl_total">123</span>
+                                Total Shops Found:&nbsp;<span id="lbl_total">{{ total_result }}</span>
                             </div>
                             <div class="table-responsive" style="margin-top: 10px;">
                                 <table id="tbl_shops" class="table table-bordered table-striped mb0">
@@ -69,19 +70,21 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>123</td>
-                                            <td>Shop Type</td>
-                                            <td>Shop Category</td>
-                                            <td>Shop Name</td>
-                                            <td>City</td>
-                                            <td>District</td>
-                                            <td>Relationship Manager Name</td>
-                                            <td>
-                                                <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 1 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
-                                                <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
-                                            </td>
-                                        </tr>
+                                        {% for shop in shops %}
+                                            <tr>
+                                                <td>{{ shop.id|default_if_none:'' }}</td>
+                                                <td>{{ shop.shop_type.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.shop_category.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.address.city|default_if_none:'' }}</td>
+                                                <td>{{ shop.address.district|default_if_none:'' }}</td>
+                                                <td>{{ shop.relationship_manager_name|default_if_none:'' }}</td>
+                                                <td>
+                                                    <a id="btn_detail" style="margin-bottom: 3px;" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                    <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
