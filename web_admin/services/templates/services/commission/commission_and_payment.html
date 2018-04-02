@@ -147,7 +147,7 @@
                             <td>
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund')">
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund',this)">
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -157,7 +157,7 @@
                                     {% if choices.actor_types.0.actor_type != 'Specific ID' %}
                                         disabled
                                     {% endif %}
-                                    onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund')" type="number" autocomplete="off" >
+                                    onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)" type="number" autocomplete="off" >
                                         <option value=""></option>
                                         {% for id in specific_ids %}
                                             <option value="{{ id }}">{{ id }}</option>
@@ -166,7 +166,7 @@
                             </td>
                             <td>
                                 <select class="form-control" name="sof_type_id"
-                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund')">
+                                        id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)">
                                     {% for sof_type in choices.sof_types %}
                                         <option value="{{ sof_type.sof_type_id }}">{{ sof_type.sof_type }}</option>
                                     {% endfor %}
@@ -185,7 +185,7 @@
                             <td>
                                 <select class="form-control" name="amount_type"
                                         id="ddl_setting_payment_fee_structure_from_amount"
-                                        onchange="changeAmountType('#ddl_setting_payment_fee_structure_from_amount', '#txt_setting_payment_fee_structure_rate')">
+                                        onchange="changeAmountType('#ddl_setting_payment_fee_structure_from_amount', '#txt_setting_payment_fee_structure_rate', this)">
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
@@ -221,6 +221,8 @@
                     <a>
                         <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="submit" value="Review"/>
                     </a>
+                    <br/>
+                    <br/>
                     <a href="{% url 'services:fee_tier_list' service_id=service_id command_id=command_id service_command_id=service_command_id %}">
                         <input id="btn_back" class="btn" type="button" value="Back"/>
                     </a>
@@ -359,21 +361,21 @@
     <script>
         var csrf_token = "{{ csrf_token }}";
         function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
-            var actor = document.getElementById(actor);
-            var specific_id = document.getElementById(specific_id);
-            var sof = document.getElementById(sof);
-            var specific_sof = document.getElementById(specific_sof);
+            var cTr = $(selected_value).closest("tr");
+            var actor = cTr.find("#" + actor + " option:selected").text();
+            var specific_id = cTr.find("#" + specific_id + " option:selected").text();
+            var sof = cTr.find("#" + sof + " option:selected").val();
+            var specific_sof = cTr.find("#" + specific_sof);
 
-            if (actor.value !== 'Specific ID') {
-                return
+            if (actor !== 'Specific ID') {
+                return;
             }
 
-            if (specific_id.value === '') {
-                return
+            if (specific_id === '') {
+                return;
             }
 
-            url = $('#data-specific-sof-list-url').attr('data-specific-sof-list-url') + specific_id.value + '/' + sof.value;
-            //url = $('#Setting_Bonus_Form').attr('action') + specific_id.value + '/' + sof.value;
+            url = $('#data-specific-sof-list-url').attr('data-specific-sof-list-url') + specific_id + '/' + sof;
             $.ajax({
                 url: url,
                 type: "GET",
@@ -388,21 +390,18 @@
                         window.location.replace(url);
                     } else if (response.status == 2) {
                         //clear list
-                        var len = specific_sof.options.length;
-                        for (i=0; i<len; i++){
-                            specific_sof.remove(0);
-                        }
+                        specific_sof.empty();
+                        
                         // add item
                         var jsonOptions = response.data;
-                        jsonOptions.forEach(function (item) {
-                            var option = document.createElement('option');
-                            option.value = item.id;
-                            option.text = item.id;
-                            if(typeof selected_value !== 'undefined')
-                                if (option.value == selected_value)
-                                    {option.setAttribute("selected", "selected");}
-                            specific_sof.add(option,0);
-                        });
+                        if(typeof jsonOptions.length !== 'undefined') {
+                            $.each(jsonOptions, function(key, value) {
+                              specific_sof
+                                  .append($("<option></option>")
+                                  .attr("value",key)
+                                  .text(key)); 
+                            });
+                        }
                     } else {
                         addErrorMessage(response.msg);
                     }
@@ -551,17 +550,17 @@
                 '</div>')
         }
 
-        function changeSpecificActorType(actorType, specificActorId, specificSoFId) {
-            if ($(actorType).find(":selected").html() == "Specific ID") {
-                $(specificActorId).prop('disabled', false);
-                $(specificActorId).prop('required', true);
-                $(specificSoFId).prop('disabled', false);
-                $(specificSoFId).prop('required', true);
+        function changeSpecificActorType(actorType, specificActorId, specificSoFId,selectObject) {
+            if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID") {
+                $(selectObject).closest("tr").find(specificActorId).prop('disabled', false);
+                $(selectObject).closest("tr").find(specificActorId).prop('required', true);
+                $(selectObject).closest("tr").find(specificSoFId).prop('disabled', false);
+                $(selectObject).closest("tr").find(specificSoFId).prop('required', true);
             } else {
-                $(specificActorId).prop('disabled', true);
-                $(specificActorId).val("");
-                $(specificSoFId).prop('disabled', true);
-                $(specificSoFId).val("");
+                $(selectObject).closest("tr").find(specificActorId).prop('disabled', true);
+                $(selectObject).closest("tr").find(specificActorId).val("");
+                $(selectObject).closest("tr").find(specificSoFId).prop('disabled', true);
+                $(selectObject).closest("tr").find(specificSoFId).val("");
             }
         }
 
@@ -610,14 +609,13 @@
             }
         }
 
-        function changeAmountType(AmountType, Rate) {
-
-            if ($(AmountType).find(":selected").html().indexOf("Rate") >= 0) {
-                $(Rate).prop('disabled', false);
-                $(Rate).prop('required', true);
+        function changeAmountType(AmountType, Rate, selectObject) {
+            if ($(selectObject).find(":selected").html().indexOf("Rate") >= 0) {
+                $(selectObject).closest("tr").find(Rate).prop('disabled', false);
+                $(selectObject).closest("tr").find(Rate).prop('required', true);
             } else {
-                $(Rate).prop('disabled', true);
-                $(Rate).val("");
+                $(selectObject).closest("tr").find(Rate).prop('disabled', true);
+                $(selectObject).closest("tr").find(Rate).val("");
             }
         }
 
@@ -760,7 +758,7 @@
                 var balanceDistributionData = {
                     "fee_tier_id": current_fee_tier_id,
                     "balance_distribution_id": rowData.balance_distribution_id,
-                    "action_type": rowData.action_type,
+                    "action_type": (rowData.action_type == "credit") ? "Credit" : "Debit",
                     "actor_type": rowData.actor_type,
                     "specific_actor_id": rowData.specific_actor_id,
                     "sof_type_id": rowData.sof_type_id,
@@ -843,11 +841,7 @@
 
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
             $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
-            $("#btn_setting_payment_fee_structure_review").click(function () {
-                    //remove message
-                    $("#ajax-messages").empty();
-                }
-            );
+
         });
     </script>
 {%  endblock %}

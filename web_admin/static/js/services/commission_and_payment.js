@@ -124,9 +124,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit')\"";
-            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit', this)\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit',this)\"";
+            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit', this)\"";
 
         } else if (tableId == 'tbl_setting_bonus') {
             htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
@@ -139,7 +139,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnSave += 'btn_setting_bonus_save';
             htmlIDBtnCancel += 'btn_setting_bonus_cancel';
 
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit', this)\"";
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#ddl_setting_bonus_specific_id_edit', '#ddl_setting_bonus_spec_src_fund_edit')\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
 
@@ -154,7 +154,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnSave += 'btn_bonus_save';
             htmlIDBtnCancel += 'btn_bonus_cancel';
 
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit')\"";
+            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit', this)\"";
             htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#ddl_bonus_specific_id_edit', '#ddl_bonus_specific_source_of_fund_edit')\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_bonus_amount_edit', '#txt_bonus_rate_edit')\"";
         }
