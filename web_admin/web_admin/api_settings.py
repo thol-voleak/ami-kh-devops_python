@@ -306,3 +306,4 @@ DELETE_PRODUCT_AGENT_RELATION = 'api-gateway/agent/' + API_VERSION + '/admin/pro
 SEARCH_SHOP = 'api-gateway/report/' + API_VERSION + '/shops/'
 GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'
 DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
+EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'

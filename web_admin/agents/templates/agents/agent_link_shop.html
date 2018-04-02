@@ -21,9 +21,9 @@
             <div class="row" style="margin-top: 15px;">
                 <label class="col-md-1 control-label">Shop ID</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                    <input type="number" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
                 </div>
-                <label class="col-md-1 control-label">Shop Name</label>
+                <label class="col-md-2 control-label">Shop Name</label>
                 <div class="col-md-2">
                     <input type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
                 </div>
@@ -31,36 +31,61 @@
                     <input id="btn_search" class="btn btn-success" type="submit" value="Search">
                 </div>
             </div>
-            <div class="table-responsive" style="margin-top: 30px;">
-                <table id="tbl_shops" class="table table-bordered table-striped mb0">
-                    <thead>
-                    <tr>
-                        <th>Shop ID</th>
-                        <th>Shop Type</th>
-                        <th>Shop Name</th>
-                        <th>City</th>
-                        <th>District</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        </form>
+        <div class="table-responsive" style="margin-top: 30px;">
+            <table id="tbl_shops" class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Shop ID</th>
+                    <th>Shop Type</th>
+                    <th>Shop Name</th>
+                    <th>City</th>
+                    <th>District</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for shop in shop_list %}
                         <tr>
-                            <td>123</td>
-                            <td>Shop Type</td>
-                            <td>Shop Name</td>
-                            <td>City</td>
-                            <td>District</td>
+                            <td>{{ shop.id|default_if_none:'' }}</td>
+                            <td>{{ shop.shop_type.name|default_if_none:'' }}</td>
+                            <td>{{ shop.name|default_if_none:'' }}</td>
+                            <td>{{ shop.address.city|default_if_none:'' }}</td>
+                            <td>{{ shop.address.district|default_if_none:'' }}</td>
                             <td>
-                                <a id="btn_link" class="btn btn-outline btn-xs btn-primary" href="">Link</a>
+                                <div id="link_button_{{ shop.id }}" {% if shop.agent_id %} style="cursor: not-allowed;"{% endif %}>
+                                    <button id="btn_link" class="btn btn-outline btn-xs btn-primary" {% if shop.agent_id %}disabled {% else %} onclick="linkShopToAgent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" {% endif %}>Link</button>
+                                </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
-        </form>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         <div class="text-right" style="margin-top: 20px;">
-            <a id="btn_back" class="btn btn-default" href="{% get_back_url %}">Back</a>
+            {% url 'agents:agent_management_summary' agent_id as agent_management_summary_url %}
+            <a id="btn_back" class="btn btn-default" href="{% get_back_url agent_management_summary_url %}">Back</a>
         </div>
     </div>
 </div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+           function linkShopToAgent(shopId, agentId, shopName) {
+                swal({
+                    title: "Confirm linkage with " + shopName + " ?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    closeOnConfirm: true
+                },
+                function () {
+                    var url = '/admin-portal/agents/' + agentId + '/shop/' + shopId + '/link';
+                    window.location.replace(url);
+                });
+           }
+    </script>
 {% endblock %}

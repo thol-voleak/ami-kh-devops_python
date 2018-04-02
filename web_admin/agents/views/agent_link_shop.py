@@ -8,10 +8,9 @@ from django.shortcuts import render
 from datetime import datetime , timedelta
 from braces.views import GroupRequiredMixin
 from web_admin.get_header_mixins import GetHeaderMixin
-from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.restful_client import RestFulClient
-from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
+from shop.utils import search_shop
 
 
 import logging
@@ -40,4 +39,17 @@ class AgentLinkShop(TemplateView, GetHeaderMixin):
         form = request.POST
         context = {'form': form, "agent_id": agent_id}
 
+        params = {
+            "paging": False,
+            "is_deleted": False
+        }
+
+        if form['shop_id']:
+            params['id'] = form['shop_id']
+
+        if form['shop_name']:
+            params['name'] = form['shop_name']
+
+        shops = search_shop(self, params)
+        context['shop_list'] = shops['shops']
         return render(request, self.template_name, context)
