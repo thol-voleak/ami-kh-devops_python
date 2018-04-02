@@ -15,7 +15,7 @@
 <div class="panel mb25">
 
     <div class="panel-heading border">
-        <h4>Add Rule Limits</h4>
+        <label id="lbl_title"><h4>Add Rule Limits</h4></label>
     </div>
     {% include "message.html" %}
     <div class="panel-body">
@@ -26,7 +26,7 @@
                     {% csrf_token %}
                     <br/>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Rule ID</label>
+                        <label class="col-sm-2 control-label" id="lbl_rule_id">Rule ID</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="campaign.id"
                                    id="txt_rule_id" disabled
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Rule Name</label>
+                        <label class="col-sm-2 control-label" id="lbl_rule_name">Rule Name</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control input-rounded" name="campaign.name"
                                    id="txt_rule_name" disabled
@@ -42,23 +42,23 @@
                         </div>
                     </div>
                     <div class="panel-heading">
-                        <h5><b>Amount Limitation</b></h5>
+                        <lable id="lbl_amount_limitation"><h5><b>Amount Limitation</b></h5></lable>
                     </div>
                     <div class="form-group">
                         <div class="col-xs-3" style="padding-left: 45px">
-                            <input min='0' id="txt_limit_to" class="form-control input-rounded" name="limit_to_value" required>
+                            <input min='0' id="txt_limit_value" class="form-control input-rounded" name="limit_to_value" required>
                         </div>
-                        <span class="col-sm-3 recipient-campaign">/recipient/campaign</span>
+                        <span class="col-sm-3 recipient-campaign" id="lbl_url">/recipient/campaign</span>
                         <div class="col-sm-3">
-                            <input id="btn_rule_amount_limit_add" class="btn btn-success text-left mb15" style="width: 69px;" type="submit" value="Add"/>
+                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="submit" value="Add"/>
                         </div>
                     </div>
 
                     <div class="panel-heading">
-                        <h5><b>Current Amount Limitation</b></h5>
+                        <label id="lbl_current_limitations"><h5><b>Current Amount Limitation</b></h5></label>
                     </div>
                     <div class="table-responsive">
-                        <table id='tbl_limit' class="table table-bordered table-striped ml30" style="width: 50%">
+                        <table id='tbl_current_limitations' class="table table-bordered table-striped ml30" style="width: 50%">
                             <thead>
                             <tr>
                                 <th>Limit To</th>
@@ -74,7 +74,7 @@
                                             </td>
                                             <td>
                                                 <div class="col-sm-2">
-                                                    <input class="btn btn-outline btn-primary remove-denomination" id="btn_denomination_delete" type="button" value="Delete"/>
+                                                    <input class="btn btn-outline btn-primary remove-denomination" id="btn_delete" type="button" value="Delete"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="form-group pull-right">
                         <a href="{% url 'campaign:campaign_detail' campaign_id %}">
-                            <input id="btn_dismiss" class="btn text-left mb15" type="button"
+                            <input id="btn_Back" class="btn text-left mb15" type="button"
                                    value="Back"/>
                         </a>
                     </div>
