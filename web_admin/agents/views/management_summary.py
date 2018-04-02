@@ -8,6 +8,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from agents.utils import _create_product_relation, check_permission_agent_management
+from shop.utils import search_shop
 
 import logging
 
@@ -78,6 +79,14 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             })
 
             self.logger.info('========== Finish getting product portfolio ==========')
+
+        self.logger.info('========== Start getting shop management ==========')
+        shops = search_shop(self, {'agent_id': int(context['agent_id']), "paging": False})
+        context.update({
+            'shops': shops.get('shops', []),
+        })
+        self.logger.info('========== Finish getting shop management ==========')
+
         return render(request, self.template_name, context)
 
     def _get_relationships(self, params):

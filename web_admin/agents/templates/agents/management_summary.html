@@ -273,19 +273,20 @@
                                 {% endif %}
 
                                 <hr>
-
-                                <div>
+                                <div id="div_shop_management">
                                     <h4>Shop Management</h4>
+                                    {% if not shops %}
                                     <div class="portfolio-panel-empty">
                                         <div>
                                             <div><b>Please Add a Shop</b></div>
                                             <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
+                                                <a class="btn btn-success btn-md" id="btn_noshop_add" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
                                             </div>
                                         </div>
                                     </div>
+                                    {% else %}
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped mb0">
+                                        <table class="table table-bordered table-striped mb0" id="tbl_shop">
                                             <thead>
                                             <tr>
                                                 <th>Shop ID</th>
@@ -299,28 +300,37 @@
                                             </tr>
                                             </thead>
                                             <tbody>
+                                                {% for shop in shops|slice:":5" %}
                                                 <tr>
-                                                    <td>123</td>
-                                                    <td>Shop Type</td>
-                                                    <td>Shop Category</td>
-                                                    <td>Shop Name</td>
-                                                    <td>City</td>
-                                                    <td>District</td>
-                                                    <td>Relationship Manager Name</td>
+                                                    <td>{{ shop.id }}</td>
+                                                    <td>{{ shop.shop_type.name }}</td>
+                                                    <td>{{ shop.shop_category.name }}</td>
+                                                    <td>{{ shop.name }}</td>
+                                                    <td>{{ shop.address.city }}</td>
+                                                    <td>{{ shop.address.district }}</td>
+                                                    <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
-                                                        <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 1 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
-                                                        <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
+                                                        <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 1 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                        <a id="btn_shop_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
                                                     </td>
                                                 </tr>
+                                                {% endfor %}
                                                 <tr>
-                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}'">Add Shop</td>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" id="btn_add_shop" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}'">Add Shop</td>
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        {% if shops|length > 5 %}
                                         <div class="text-right" style="margin-top: 10px;">
-                                            <a class="btn btn-success btn-md" href="{% url 'agents:agent_management_shop' agent_id %}" >View More</a>
+                                            <a class="btn btn-success btn-md" href="{% url 'agents:agent_management_shop' agent_id %}" id="btn_shop_management_view_more">View More</a>
                                         </div>
+                                        {% else %}
+                                        <div class="text-right" style="margin-top: 10px;">
+                                            <a class="btn btn-success btn-md" disabled id="btn_shop_management_view_more">View More</a>
+                                        </div>
+                                        {% endif %}
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endif %}
