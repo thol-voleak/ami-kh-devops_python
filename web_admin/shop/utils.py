@@ -1,6 +1,9 @@
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin import api_settings, settings
+from web_admin.get_header_mixins import GetHeaderMixin as get_header
+
+
 
 
 def get_all_shop_type(self):
@@ -40,8 +43,20 @@ def get_all_shop_category(self):
     return [i for i in  data.get('shop_categories', []) if not i.get('is_deleted')]
 
 def get_system_country(self):
-    # TODO
-    return "VN"
+    self.logger.info('========== Start get country code ==========')
+    is_success, status_code, data = RestFulClient.get(
+                                        url=api_settings.ADD_COUNTRY_CODE_URL,
+                                        headers=self._get_headers(),
+                                        loggers=self.logger
+                                        )
+    if data is None:
+        data = {}
+    API_Logger.get_logging(loggers=self.logger, params={}, response=data, status_code=status_code)
+    self.logger.info('========== Finish get country code ==========')
+
+    return data['value']
+
+
 
 
 def get_shop_details(self, shop_id):
@@ -69,14 +84,16 @@ def get_shop_details(self, shop_id):
 
 def convert_shop_to_form(shop):
     form = {}
-    form["id"] = shop["id"]
-    form["agent_id"] = shop["agent_id"]
+    form["id"] = str(shop["id"])
+    form["agent_id"] = str(shop["agent_id"])
     form["acquisition_source"] = shop["acquisition_source"]
     form["name"] = shop["name"]
     if shop["shop_type"]:
-        form["shop_type_id"] = shop["shop_type"]["id"]
+        form["shop_type_id"] = str(shop["shop_type"]["id"])
+        form["shop_type_name"] = shop["shop_type"]["name"]
     if shop["shop_category"]:
-        form["shop_category_id"] = shop["shop_category"]["id"]
+        form["shop_category_id"] = str(shop["shop_category"]["id"])
+        form["shop_category_name"] = shop["shop_category"]["name"]
     form["country"] = shop["address"]["country"]
     form["postal_code"] = shop["postal_code"]
     form["province"] = shop["address"]["province"]
@@ -120,10 +137,10 @@ def convert_form_to_shop(form):
     address["longitude"] = form["longitude"]
 
     shop = {}
-    shop["agent_id"] = form["agent_id"]
-    shop["shop_type_id"] = form["shop_type_id"]
+    shop["agent_id"] = int(form["agent_id"]) if form["agent_id"] else None
+    shop["shop_type_id"] = int(form["shop_type_id"]) if form["shop_type_id"] else None
     shop["name"] = form["name"]
-    shop["shop_category_id"] = form["shop_category_id"]
+    shop["shop_category_id"] = int(form["shop_category_id"]) if form["shop_category_id"] else None
     shop["address"] = address
     shop["relationship_manager_id"] = form["relationship_manager_id"]
     shop["acquisition_source"] = form["acquisition_source"]
@@ -147,64 +164,40 @@ def convert_form_to_shop(form):
     return shop
 
 
-def get_agent_detail(id):
-    # TODO
-    return {
-        "id": id,
-        "agent_type_id": 0,
-        "parent_id": 0,
-        "grand_parent_id": 0,
-        "last_name": "last_name",
-        "firstname": "firstname",
-        "date_of_birth": "2018-03-23T06:03:44.634Z",
-        "gender": "string",
-        "national": "string",
-        "primary_identify_id": "string",
-        "primary_identify_type": "string",
-        "primary_place_of_issue": "string",
-        "primary_issue_date": "2018-03-23T06:03:44.634Z",
-        "primary_expire_date": "2018-03-23T06:03:44.634Z",
-        "nationality": "string",
-        "country": "string",
-        "province": "string",
-        "city": "string",
-        "district": "string",
-        "commune": "string",
-        "address": "string",
-        "landmark": "string",
-        "longitude": "string",
-        "latitude": "string",
-        "permanent_country": "string",
-        "permanent_province": "string",
-        "permanent_city": "string",
-        "permanent_district": "string",
-        "permanent_commune": "string",
-        "permanent_address": "string",
-        "permanent_landmark": "string",
-        "permanent_longitude": "string",
-        "permanent_latitude": "string",
-        "email": "email",
-        "kyc_status": True,
-        "kyc_remark": "string",
-        "kyc_level": "string",
-        "kyc_updated_timestamp": "2018-03-23T06:03:44.634Z",
-        "primary_mobile_number": "primary_mobile_number",
-        "secondary_mobile_number": "string",
-        "tertiary_mobile_number": "string",
-        "unique_reference": "string",
-        "bank": {
-          "name": "string",
-          "branch_city": "string",
-          "branch_area": "string",
-          "account_number": "string"
-        },
-        "contract": {
-          "type": "string",
-          "number": 0,
-          "sign_date": "string",
-          "issue_date": "string",
-          "expired_date": "string",
-          "extended_type": "string",
-          "day_of_period_reconciliation": "string"
-        }
-    }
+def get_agent_detail(self, id):
+    self.logger.info('========== Start get country code ==========')
+    api_path = api_settings.AGENT_DETAIL_PATH
+    params = {'id': id}
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=params
+    )
+    data = data or {}
+    self.logger.info('========== Finish get country code ==========')
+    
+    return data['agents'][0]
+
+
+def search_shop(self, params):
+    self.logger.info('========== Start searching shop ==========')
+    api_path = api_settings.SEARCH_SHOP
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=params
+    )
+
+    data = data or {}
+    page = data.get("page", {})
+    self.logger.info(
+        'Total element: {}'.format(page.get('total_elements', 0)))
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data.get('shops', []),
+                            status_code=status_code,
+                            is_getting_list=True,
+                            params=params)
+    self.logger.info('========== Finish searching shop ==========')
+    return data

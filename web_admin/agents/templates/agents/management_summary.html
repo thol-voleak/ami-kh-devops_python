@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load common_tags %}
 {% load permissions_filter %}
 {% block body_stylesheet %}
 {{ block.super }}
@@ -97,6 +98,8 @@
         border-top: none;
     }
     .category-group-title {
+        color: #232222;
+        background-color: #e7e6e6;
         padding: 10px;
         display: flex;
         flex-wrap: nowrap;
@@ -230,22 +233,20 @@
                                                     {% for summary in summary_relationships %}
                                                         <tr>
                                                             <td>{{ summary.relationship_type.name|default_if_none:'' }}</td>
-                                                            <td>
-                                                                {%if agent_id == summary.main_user.user_id %}
-                                                                <b><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></b>
-                                                                {%else%}
-                                                                <a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a>
-                                                                {%endif%}
-                                                            </td>
-                                                            <td>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</td>
-                                                            <td>
-                                                                {%if agent_id == summary.sub_user.user_id%}
-                                                                <b><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></b>
-                                                                {%else%}
-                                                                <a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a>
-                                                                {%endif%}
-                                                            </td>
-                                                            <td>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</td>
+                                                            {%if agent_id == summary.main_user.user_id %}
+                                                                <td><b><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></b></td>
+                                                                <td><b>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</b></td>
+                                                            {%else%}
+                                                                <td><a id="{{ summary.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.main_user.user_id %}">agent ({{summary.main_user.user_id|default_if_none:'' }})</a></td>
+                                                                <td>{{summary.main_user.first_name|add:" "|add:summary.main_user.last_name}}</td>
+                                                            {%endif%}
+                                                            {%if agent_id == summary.sub_user.user_id%}
+                                                                <td><b><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></b></td>
+                                                                <td><b>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</b></td>
+                                                            {%else%}
+                                                                <td><a id="{{ summary.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' summary.sub_user.user_id %}">agent ({{summary.sub_user.user_id|default_if_none:'' }})</a></td>
+                                                                <td>{{summary.sub_user.first_name|add:" "|add:summary.sub_user.last_name}}</td>
+                                                            {%endif%}
                                                             <td>{{ summary.created_timestamp|default_if_none:'' }}</td>
                                                             <td>{{ summary.last_updated_timestamp|default_if_none:'' }}</td>
                                                         </tr>
@@ -279,7 +280,7 @@
                                         <div>
                                             <div><b>Please Add a Shop</b></div>
                                             <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}" >Add</a>
+                                                <a class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
                                             </div>
                                         </div>
                                     </div>
@@ -307,12 +308,12 @@
                                                     <td>District</td>
                                                     <td>Relationship Manager Name</td>
                                                     <td>
-                                                        <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 123 %}">Detail</a>
+                                                        <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 1 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
                                                         <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}'">Add Shop</td>
+                                                    <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}'">Add Shop</td>
                                                 </tr>
                                             </tbody>
                                         </table>

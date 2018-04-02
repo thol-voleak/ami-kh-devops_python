@@ -23,7 +23,7 @@
     <label class="col-sm-3 control-label">Shop Type</label>
     <div class="col-sm-7">
         {% if is_readonly %}
-            <input type="text" class="form-control" id="ddl_shop_type" value="{{ form.shop_type.name }}" readonly />
+            <input type="text" class="form-control" id="txt_shop_type" name="shop_type_name" value="{{ form.shop_type_name }}" readonly />
         {% else %}
             <select class="form-control" id="ddl_shop_type" name="shop_type_id" >
                 <option value=""></option>
@@ -39,7 +39,7 @@
     <label class="col-sm-3 control-label">Shop Category</label>
     <div class="col-sm-7">
         {% if is_readonly %}
-            <input type="text" class="form-control" id="ddl_shop_category" value="{{ form.shop_category.name }}" readonly />
+            <input type="text" class="form-control" id="txt_shop_category" name="shop_category_name" value="{{ form.shop_category_name }}" readonly />
         {% else %}
             <select class="form-control" id="ddl_shop_category" name="shop_category_id" {% if is_readonly %}readonly{% endif %} >
                 <option value=""></option>

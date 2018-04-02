@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load common_tags %}
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading">
@@ -15,7 +16,8 @@
                     {% include "shop/form-content.html" with is_readonly=True %}
 
                     <div class="pull-right">
-                        <a id="btn_cancel" class="btn" href="{% url 'shop:shop_list' %}">Cancel</a>
+                        {% url 'shop:shop_list' as shop_list_url %}
+                        <a id="btn_cancel" class="btn" href="{% get_back_url shop_list_url %}">Cancel</a>
                         <a id="btn_edit" class="btn btn-success" href="{% url 'shop:shop_edit' form.id %}">Edit</a>
                     </div>
                 </form>

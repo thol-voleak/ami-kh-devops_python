@@ -90,7 +90,7 @@
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
             </div>
 
-            <form method="POST" class="form-horizontal" role="form"
+            <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)"
                   action="{% url 'services:payment_and_fee_stucture' service_id command_id service_command_id fee_tier_id %}"
                   id="payment_and_fee_stucture_form">
 
@@ -130,12 +130,12 @@
                                             id="btn_setting_payment_fee_structure_edit">Edit</button>
                                     <button type="button"
                                             class="delete btn btn-outline btn-xs btn-danger text-info small"
-                                            id="btn_setting_payment_fee_structure_delete"
-                                            onclick="deleteDistribution('{{ d.balance_distribution_id }}')">Delete</button>
+                                            id="btn_setting_payment_fee_structure_delete">Delete
+                                        </button>
                                 </td>
                             </tr>
                         {% endfor %}
-                        <tr>
+                        <tr id="tr_row_for_edit">
                             <td>
                                 <select class="form-control" name="action_type"
                                         id="ddl_setting_payment_fee_structure_dc">
@@ -191,7 +191,6 @@
                                     {% endfor %}
                                 </select>
                             <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate"
-                                       required
                                     {% if 'Rate' not in choices.amount_types.0.amount_type %}
                                         disabled
                                     {% endif %}
@@ -200,14 +199,16 @@
                             <td>
                                 <input class="form-control" name="label" id="txt_setting_payment_fee_structure_label"/>
                             </td>
-                            <td></td>
+                            <td>
+                                <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="button" value="Add">
+                            </td>
                         </tr>
                     </table>
                 </div>
 
 
                 <div class="form-group pull-right in_review" style="display: none">
-                    <a href="#">
+                    <a>
                         <input id="btn_setting_payment_fee_structure_review_back" class="btn" type="button"
                                value="Back"/>
                     </a>
@@ -217,13 +218,8 @@
                     </a>
                 </div>
                 <div class="form-group pull-right not_in_review">
-                    <a href="#">
-                        <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="submit"
-                               value="Add"/>
-                    </a>
-                    <a href="#">
-                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="button"
-                               value="Review"/>
+                    <a>
+                        <input id="btn_setting_payment_fee_structure_review" class="btn btn-success" type="submit" value="Review"/>
                     </a>
                     <br/>
                     <br/>
@@ -415,33 +411,6 @@
                 },
                 error: function () {
                     addErrorMessage("Can not get specific SOF list ");
-                }
-            });
-        }
-
-        function deleteDistribution(distributionId) {
-            var url = $('#payment_and_fee_stucture_form').attr('action') + distributionId;
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                dataType: "json",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
-                },
-                success: function (response) {
-                    if (response.status == 1) {
-                        // Logout
-                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
-                        window.location.replace(url);
-                    } else if (response.status == 2) {
-                        $('#balance-distribution-' + distributionId).remove();
-                        addMessage("Deleted data successfully");
-                    } else {
-                        addErrorMessage(response.msg);
-                    }
-                },
-                error: function () {
-                    addErrorMessage("Delete failed!");
                 }
             });
         }
@@ -767,16 +736,80 @@
             });
         }
 
-        function onClickReviewBtn() {
-            renderReviewTableDiv("#tbl_setting_payment_fee_structure")
-            $(".not_in_review").hide()
-            $(".in_review").show()
-        }
-
         function onClickReviewBackBtn() {
             $("#div_tbl_setting_payment_fee_structure_review").remove()
             $(".not_in_review").show()
             $(".in_review").hide()
+        }
+        
+        function validate(form) {
+            if($('#mForm')[0].checkValidity()) {
+                renderReviewTableDiv("#tbl_setting_payment_fee_structure");
+                $(".not_in_review").hide();
+                $(".in_review").show();
+            }
+            return false;
+        }
+
+
+        function onClickSaveBtn() {
+            var current_fee_tier_id = {{ fee_tier_id  }};
+            var m_sof_types = {{ choices.sof_types|safe }};
+            var url = "{% url 'services:payment_and_fee_stucture_multi_update' fee_tier_id%}";
+            var balanceDistributionDataList = [];
+            var tableData = collectTableDataForSave("#tbl_setting_payment_fee_structure", m_sof_types);
+            $.each(tableData, function (index, rowData) {
+                var balanceDistributionData = {
+                    "fee_tier_id": current_fee_tier_id,
+                    "balance_distribution_id": rowData.balance_distribution_id,
+                    "action_type": (rowData.action_type == "credit") ? "Credit" : "Debit",
+                    "actor_type": rowData.actor_type,
+                    "specific_actor_id": rowData.specific_actor_id,
+                    "sof_type_id": rowData.sof_type_id,
+                    "specific_sof": rowData.specific_sof,
+                    "amount_type": rowData.amount_type,
+                    "rate": rowData.rate,
+                    "label": rowData.label
+                }
+                balanceDistributionDataList.push(balanceDistributionData);
+            })
+            var data = {"balance_distributions": JSON.stringify(balanceDistributionDataList)};
+//            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        // success
+                        //Reload page
+                        window.location.href = window.location.href;
+                    } else {
+                        // Failed
+                        onClickReviewBackBtn();
+                        addErrorMessage(response.msg);
+                    }
+
+                    $("body").find("th").each(function () {
+                        $(this).removeAttr( "style" );
+                    });
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+
+                    addErrorMessage("Edit error!");
+                }
+            });
+
+            return false;
         }
 
         // Edit row features
@@ -810,8 +843,9 @@
                  $(this).removeAttr( "style" );
             });
 
-            $("#btn_setting_payment_fee_structure_review").click(onClickReviewBtn)
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
+            $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
+
         });
     </script>
 {%  endblock %}

@@ -19,7 +19,7 @@
             <div class="row">
                 <label class="col-md-2 control-label">Shop ID</label>
                 <div class="col-md-2">
-                    <input type="number" class="form-control" id='txt_shop_id' name="shop_id" value="{{ form.shop_id }}"/>
+                    <input type="number" min=0 class="form-control" id='txt_shop_id' name="shop_id" value="{{ form.shop_id }}"/>
                 </div>
                 <label class="col-md-2 control-label">Shop Category</label>
                 <div class="col-md-2">
@@ -53,7 +53,7 @@
                 </div>
                 <label class="col-md-2 control-label">Owner (ID)</label>
                 <div class="col-md-2">
-                    <input type="number" class="form-control" id='txt_owner_id' name="owner_id" value="{{ form.owner_id }}"/>
+                    <input type="number" min=0 class="form-control" id='txt_owner_id' name="owner_id" value="{{ form.owner_id }}"/>
                 </div>
                 <div class="col-md-2">
                     <input id="btn_search" class="btn btn-success" type="submit" value="Search">
@@ -73,7 +73,7 @@
                         <th>City</th>
                         <th>District</th>
                         <th>Relationship Manager Name</th>
-                        <td>Owner</td>
+                        <th>Owner</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -91,13 +91,13 @@
                                 <td>{{ shop.relationship_manager_name }}</td>
                                 <td>
                                     {% if shop.agent_id %}
-                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent({{ shop.agent_id }})</a>
+                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent ({{ shop.agent_id }})</a>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}">Detail</a>
-                                    <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' 123 %}">Edit</a>
-                                    <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' 123 %}">Delete</a>
+                                    <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' shop.id %}">Edit</a>
+                                    <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' shop.id %}">Delete</a>
                                 </td>
                             {% else %}
                                 <td><del>{{ shop.id }}</del></td>
@@ -109,7 +109,7 @@
                                 <td><del>{{ shop.relationship_manager_name }}</del></td>
                                 <td><del>
                                     {% if shop.agent_id %}
-                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent({{ shop.agent_id }})</a>
+                                        <a style="text-decoration: underline;" href="{% url 'agents:agent_management_summary' shop.agent_id %}">agent ({{ shop.agent_id }})</a>
                                     {% endif %}
                                 </del></td>
                                 <td></td>

@@ -17,7 +17,8 @@ from .views.commision.commission_and_payment import (BalanceDistributionsUpdate,
                                            SettingBonusView,
                                            AgentBonusDistributionsUpdate,
                                            AgentFeeView,
-                                           AgentBonusDistributions)
+                                           AgentBonusDistributions,
+                                           MultiBalanceDistributionsUpdate)
 from .views.create import CreateView
 from .views.commision.delete_agent_bonus import DeleteAgentBonus
 from .views.commision.delete_setting_bonus import DeleteSettingBonus
@@ -143,6 +144,11 @@ urlpatterns = [
     url(r'^bank_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(bank_sofs, login_url='authentications:login'), name="bank_sofs"),
     url(r'^cash_sofs/(?P<user_id>[0-9A-Za-z]+)/$', login_required(cash_sofs, login_url='authentications:login'), name="cash_sofs"),
     url(r'^(?P<service_id>[0-9A-Za-z]+)/commands/(?P<command_id>[0-9A-Za-z]+)/service-command/(?P<service_command_id>[0-9A-Za-z]+)/tiers/(?P<fee_tier_id>[0-9A-Za-z]+)/commission-and-payment/setting-bonus/(?P<user_id>[0-9A-Za-z]+)/(?P<sof_type>[0-9A-Za-z]+)$',
-        login_required(GetSpecificSOF.as_view(),login_url='authentications:login'),name="get_specific_sof")
+        login_required(GetSpecificSOF.as_view(),login_url='authentications:login'),name="get_specific_sof"),
+
+    url(r'^update-multi-balance-distributions/(?P<fee_tier_id>[0-9A-Za-z]+)/$',
+        login_required(MultiBalanceDistributionsUpdate.as_view(), login_url='authentications:login'),
+        name="payment_and_fee_stucture_multi_update"),
+
 ]
 
