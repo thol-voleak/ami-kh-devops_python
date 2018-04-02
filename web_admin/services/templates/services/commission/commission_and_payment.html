@@ -733,23 +733,34 @@
         }
 
         function onClickReviewBackBtn() {
-            $("#div_tbl_setting_payment_fee_structure_review").remove()
-            $(".not_in_review").show()
+            $("#div_tbl_setting_payment_fee_structure_review").remove();
+            window.location.hash = '';
+            $(".not_in_review").show();
             $(".in_review").hide()
         }
-        
+
         function validate(form) {
             if($('#mForm')[0].checkValidity()) {
                 renderReviewTableDiv("#tbl_setting_payment_fee_structure");
-                $(".not_in_review").hide();
-                $(".in_review").show();
+                window.location.hash = 'review'
             }
             return false;
         }
+        window.onhashchange = function() {
+            if (location.hash.length > 0) {
+                $(".not_in_review").hide();
+                $(".in_review").show();
+            } else {
+                $("#div_tbl_setting_payment_fee_structure_review").remove();
+                $(".not_in_review").show();
+                $(".in_review").hide()
+            }
+        };
 
 
         function onClickSaveBtn() {
             var current_fee_tier_id = {{ fee_tier_id  }};
+            window.location.hash = '';
             var m_sof_types = {{ choices.sof_types|safe }};
             var url = "{% url 'services:payment_and_fee_stucture_multi_update' fee_tier_id%}";
             var balanceDistributionDataList = [];
@@ -787,7 +798,7 @@
                     } else if (response.status == 2) {
                         // success
                         //Reload page
-                        window.location.href = window.location.href;
+                        location.reload();
                     } else {
                         // Failed
                         onClickReviewBackBtn();
