@@ -87,7 +87,8 @@ class AgentManagementProduct(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         self.logger.info('========== Finish updating relation between product and agent ==========')
         if is_all_success:
-            messages.success(request, "Saved Successfully")
+            if newly_added_product or newly_deleted_product:
+                messages.success(request, "Saved Successfully")
         return redirect("agents:agent_management_product", agent_id=agent_id)
 
     def add_product_agent_relation(self, body_request):

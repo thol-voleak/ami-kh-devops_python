@@ -40,6 +40,8 @@
         border-top: none;
     }
     .category-group-title {
+        color: #232222;
+        background-color: #e7e6e6;
         padding: 10px;
         display: flex;
         flex-wrap: nowrap;
@@ -78,6 +80,10 @@
     .category-group.open .category-group-body {
         display: block;
     }
+
+    .alert-success {
+        margin-top: 10px;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -110,7 +116,7 @@
                                 {% endfor %}
                             </div>
                             <div style="text-align: right; margin-top: 15px;">
-                                <button class="btn btn-success btn-md" id="btn_save" type="submit">Save<i class="fa fa-spinner fa-spin" style="display: none;"></i></button>
+                                <button class="btn btn-success btn-md" id="btn_save" type="submit">Save</button>
                             </div>
                             <select name="old-selected-product-list" multiple hidden>
                                 {% for category, products in applicable_categories.items %}
