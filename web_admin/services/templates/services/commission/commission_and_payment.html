@@ -843,7 +843,11 @@
 
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
             $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
-
+            $("#btn_setting_payment_fee_structure_review").click(function () {
+                    //remove message
+                    $("#ajax-messages").empty();
+                }
+            );
         });
     </script>
 {%  endblock %}
