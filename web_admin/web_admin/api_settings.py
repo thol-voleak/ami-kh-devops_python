@@ -236,6 +236,8 @@ CREATE_REWARD =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_i
 CREATE_LIMITATION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}/limits'
 GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions/{bak_action_id}/limits'
 CREATE_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters'
+GET_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
+CREATE_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
 
 # Rule Engine
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
