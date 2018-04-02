@@ -30,14 +30,14 @@ class AgentLinkShop(TemplateView, GetHeaderMixin):
         return super(AgentLinkShop, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        form = {}
         agent_id = kwargs["agent_id"]
-        form["agent_id"] = agent_id
-        context = {"form": form}
+        form = {}
+        context = {"form": form, "agent_id": agent_id}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        agent_id = kwargs["agent_id"]
         form = request.POST
-        context = {'form': form}
+        context = {'form': form, "agent_id": agent_id}
 
         return render(request, self.template_name, context)

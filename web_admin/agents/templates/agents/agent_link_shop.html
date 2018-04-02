@@ -9,7 +9,7 @@
         {% include "message.html" %}
 
         <div class="pull-right">
-            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ form.agent_id }}&back_url={% current_url_encoded_for_back %}">
+            <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ agent_id }}&back_url={% current_url_encoded_for_back %}">
                 <strong>+</strong> <span>Create New Shop</span>
             </a>
         </div>
@@ -17,16 +17,15 @@
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
             {% csrf_token %}
-            <input type="hidden" name="agent_id" value="{{ form.agent_id }}" />
             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
             <div class="row" style="margin-top: 15px;">
                 <label class="col-md-1 control-label">Shop ID</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_id" value=""/>
+                    <input type="text" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
                 </div>
                 <label class="col-md-1 control-label">Shop Name</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" name="shop_name" value=""/>
+                    <input type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
                 </div>
                 <div class="col-md-2">
                     <input id="btn_search" class="btn btn-success" type="submit" value="Search">
@@ -58,7 +57,6 @@
                     </tbody>
                 </table>
             </div>
-            {% include "pagination.html" %}
         </form>
         <div class="text-right" style="margin-top: 20px;">
             <a id="btn_back" class="btn btn-default" href="{% get_back_url %}">Back</a>
