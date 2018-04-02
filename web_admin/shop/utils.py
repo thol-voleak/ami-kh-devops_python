@@ -178,3 +178,26 @@ def get_agent_detail(self, id):
     self.logger.info('========== Finish get country code ==========')
     
     return data['agents'][0]
+
+
+def search_shop(self, params):
+    self.logger.info('========== Start searching shop ==========')
+    api_path = api_settings.SEARCH_SHOP
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=params
+    )
+
+    data = data or {}
+    page = data.get("page", {})
+    self.logger.info(
+        'Total element: {}'.format(page.get('total_elements', 0)))
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data.get('shops', []),
+                            status_code=status_code,
+                            is_getting_list=True,
+                            params=params)
+    self.logger.info('========== Finish searching shop ==========')
+    return data
