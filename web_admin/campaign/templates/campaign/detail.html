@@ -1,6 +1,7 @@
 {% extends "core.html" %}
 {% load static %}
 {% load permissions_filter %}
+{% load humanize %}
 
 {% block content %}
 {% for message in messages %}
@@ -45,14 +46,21 @@
             <label>Campaign Description:</label>
             <span id="lbl_campaign_description">{{data.description}}</span>
         </p>
-        <p style="margin-bottom:0; ,">
+        <p style="margin-bottom:0;">
             <label size="2">Start Date: </label>
             <span id="lbl_campaign_start_date">{{data.start_active_timestamp}}</span>
         </p>
-        <p><font size="2"></font>
+        <p style="margin-bottom:0;"><font size="2"></font>
         <label>End Date:</label>
         <span id="lbl_campaign_end_date">{{data.end_active_timestamp}}</span>
         </p>
+
+        {% for i in limit_values %}
+        <p><font size="2"></font>
+        <label>Amount Limit:</label>
+        <span id="lbl_campaign_amount_limit">{{i|intcomma|default_if_none:''}} /recipient/campaign</span>
+        </p>
+        {% endfor %}
     </div>
 </div>
 
