@@ -85,14 +85,14 @@ def get_shop_details(self, shop_id):
 def convert_shop_to_form(shop):
     form = {}
     form["id"] = str(shop["id"])
-    form["agent_id"] = str(shop["agent_id"])
+    form["agent_id"] = str(shop["agent_id"]) if shop["agent_id"] else ""
     form["acquisition_source"] = shop["acquisition_source"]
     form["name"] = shop["name"]
     if shop["shop_type"]:
-        form["shop_type_id"] = str(shop["shop_type"]["id"])
+        form["shop_type_id"] = str(shop["shop_type"]["id"]) if shop["shop_type"]["id"] else ""
         form["shop_type_name"] = shop["shop_type"]["name"]
     if shop["shop_category"]:
-        form["shop_category_id"] = str(shop["shop_category"]["id"])
+        form["shop_category_id"] = str(shop["shop_category"]["id"]) if shop["shop_category"]["id"] else ""
         form["shop_category_name"] = shop["shop_category"]["name"]
     form["country"] = shop["address"]["country"]
     form["postal_code"] = shop["postal_code"]
@@ -137,10 +137,10 @@ def convert_form_to_shop(form):
     address["longitude"] = form["longitude"]
 
     shop = {}
-    shop["agent_id"] = int(form["agent_id"]) if form["agent_id"] else None
-    shop["shop_type_id"] = int(form["shop_type_id"]) if form["shop_type_id"] else None
+    shop["agent_id"] = int(form["agent_id"]) if form.get("agent_id", None) else None
+    shop["shop_type_id"] = int(form["shop_type_id"]) if form.get("shop_type_id", None) else None
     shop["name"] = form["name"]
-    shop["shop_category_id"] = int(form["shop_category_id"]) if form["shop_category_id"] else None
+    shop["shop_category_id"] = int(form["shop_category_id"]) if form.get("shop_category_id", None) else None
     shop["address"] = address
     shop["relationship_manager_id"] = form["relationship_manager_id"]
     shop["acquisition_source"] = form["acquisition_source"]

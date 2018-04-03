@@ -6,7 +6,7 @@ from django.contrib import messages
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
-from shop.utils import get_shop_details
+from shop.utils import get_shop_details, convert_shop_to_form, convert_form_to_shop
 from django.http import HttpResponseRedirect
 
 import logging
@@ -29,48 +29,10 @@ class LinkAgentToShop(TemplateView, GetHeaderMixin):
         shop_id = context['shop_id']
         shop_detail = get_shop_details(self, int(shop_id))
         self.logger.info('========== Start link shop to Agent ==========')
-        shop_type_id = None
-        if shop_detail['shop_type']:
-            shop_type_id = shop_detail['shop_type'].get('id', None)
-
-        shop_category_id = None
-        if shop_detail['shop_category']:
-            shop_category_id = shop_detail['shop_category'].get('id', None)
-
-        params = {
-              "agent_id": int(agent_id),
-              "shop_type_id": shop_type_id,
-              "name": shop_detail['name'],
-              "shop_category_id": shop_category_id,
-              "address": {
-                "address": shop_detail['address'].get('address'),
-                "city": shop_detail['address'].get('city'),
-                "province": shop_detail['address'].get('province'),
-                "district": shop_detail['address'].get('district'),
-                "commune": shop_detail['address'].get('commune'),
-                "country": shop_detail['address'].get('country'),
-                "landmark": shop_detail['address'].get('landmark'),
-                "latitude": shop_detail['address'].get('latitude'),
-                "longitude": shop_detail['address'].get('longitude')
-              },
-              "relationship_manager_id": shop_detail.get('relationship_manager_id'),
-              "acquisition_source": shop_detail.get('acquisition_source'),
-              "postal_code": shop_detail.get('postal_code'),
-              "representative_first_name": shop_detail.get('representative_first_name'),
-              "representative_middle_name": shop_detail.get('representative_middle_name'),
-              "representative_last_name": shop_detail.get('representative_last_name'),
-              "representative_mobile_number": shop_detail.get('representative_mobile_number'),
-              "representative_telephone_number": shop_detail.get('representative_telephone_number'),
-              "representative_email": shop_detail.get('representative_email'),
-              "shop_mobile_number": shop_detail.get('shop_mobile_number'),
-              "shop_telephone_number": shop_detail.get('shop_telephone_number'),
-              "shop_email": shop_detail.get('shop_email'),
-              "relationship_manager_name": shop_detail.get('relationship_manager_name'),
-              "relationship_manager_email": shop_detail.get('relationship_manager_email'),
-              "acquiring_sales_executive_name": shop_detail.get('acquiring_sales_executive_name'),
-              "sales_region": shop_detail.get('sales_region'),
-              "account_manager_name": shop_detail.get('account_manager_name')
-        }
+        form = convert_shop_to_form(shop_detail)
+        converted_shop = convert_form_to_shop(form)
+        converted_shop['agent_id'] = int(agent_id)
+        params = converted_shop
         url = api_settings.EDIT_SHOP.format(shop_id=shop_id)
         is_success, status_code, status_message, data = RestFulClient.put(url,
                                                                           self._get_headers(),
