@@ -39,6 +39,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         context = super(CampaignDetail, self).get_context_data(**kwargs)
         self.logger.info('========== Start get campaign detail ==========')
+        permissions = {'CAN_ADD_RULE_LIMIT': self.check_membership(["CAN_ADD_RULE_LIMIT"])}
+
         campaign_id = context['campaign_id']
         data = self.get_detail_campaign(campaign_id)
         amount_limit = self.get_campaign_amount_limit(campaign_id)
@@ -152,7 +154,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'mechanic': mechanic,
             'len_mechanic': len(mechanic),
             'limit_values': limit_values,
-            'count_limit_values': count_limit_values
+            'count_limit_values': count_limit_values,
+            'permissions': permissions
         })
 
         self.logger.info('========== Finish get mechanic list ==========')

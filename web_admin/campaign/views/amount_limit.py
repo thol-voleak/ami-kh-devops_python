@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import RestFulClient
 from web_admin import setup_logger
 from web_admin.api_logger import API_Logger
@@ -14,12 +14,17 @@ from web_admin.get_header_mixins import GetHeaderMixin
 
 logger = logging.getLogger(__name__)
 
-class AmountLimit(TemplateView, GetHeaderMixin):
-    # group_required = "CAN_ADD_RULE_LIMIT"
-    # login_url = 'web:permission_denied'
-
+class AmountLimit(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "campaign/amount_limit.html"
+    group_required = "CAN_ADD_RULE_LIMIT"
+    login_url = 'web:permission_denied'
+    raise_exception = False
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

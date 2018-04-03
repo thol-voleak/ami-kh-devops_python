@@ -72,9 +72,11 @@
 </div>
 
 {%if len_mechanic != 0 %}
+    {%if permissions.CAN_ADD_RULE_LIMIT %}
     <a href="{% url 'campaign:amount_limit' campaign_id %}">
         <input id="btn_add_rule_limit" class="btn btn-info mb15" type="submit" value="Add Rule Limits">
     </a>
+    {%endif%}
     {% for i in mechanic %}
         {% if not i.is_deleted %}
         <div id="mechanic_{{ i.id }}">
