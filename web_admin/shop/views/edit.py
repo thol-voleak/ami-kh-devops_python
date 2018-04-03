@@ -8,6 +8,8 @@ from web_admin import api_settings, RestFulClient
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
+from django.urls import reverse
+from web_admin.utils import get_back_url
 import logging
 
 logger = logging.getLogger(__name__)
@@ -48,9 +50,20 @@ class EditView(TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        id = kwargs['id']
         form = request.POST
+        shop_id = kwargs['id']
         shop = convert_form_to_shop(form)
-        # TODO: call API
-        context = {'form': form}
-        return render(request, self.template_name, context)
+
+        url = api_settings.EDIT_SHOP.format(shop_id=shop_id)
+        is_success, status_code, status_message, data = RestFulClient.put(url,
+                                                                          self._get_headers(),
+                                                                          self.logger, params=shop)
+        if is_success:
+            API_Logger.put_logging(loggers=self.logger, params=shop, response=data,
+                               status_code=status_code)
+            messages.success(request, "Updated data successfully")
+            return redirect(get_back_url(request, reverse('shop:shop_list')))
+        else:
+            context = {'form': form}
+            messages.error(request, status_message)
+            return render(request, self.template_name, context)
