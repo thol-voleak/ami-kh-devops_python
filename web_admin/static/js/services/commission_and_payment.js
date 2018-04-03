@@ -234,7 +234,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                                 htmlDDSpecificSOF += '<option value="' + value.id + '"' + htmlSelected + '>' + value.id + '</option>';
                             });
                         }
-                        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
+                        if(jqTds[4].innerHTML.indexOf("select") !== -1) {
+                            jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
+                        }
                     }
                 }
             });
