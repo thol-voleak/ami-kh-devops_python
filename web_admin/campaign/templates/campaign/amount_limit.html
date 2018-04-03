@@ -20,6 +20,12 @@
         <label id="lbl_title"><h4>Add Rule Limits</h4></label>
     </div>
     {% include "message.html" %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
@@ -48,11 +54,11 @@
                     </div>
                     <div class="form-group">
                         <div class="col-xs-3" style="padding-left: 45px">
-                            <input min='0' id="txt_limit_value" class="form-control input-rounded" name="limit_to_value" required>
+                            <input type="number" step="any" id="txt_limit_value" class="form-control input-rounded" name="limit_to_value" required>
                         </div>
                         <span class="col-sm-3 recipient-campaign" id="lbl_url">/recipient/campaign</span>
                         <div class="col-sm-3">
-                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="submit" value="Add"/>
+                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="button" value="Add" onClick="submitForm(this)"/>
                         </div>
                     </div>
 
@@ -97,3 +103,22 @@
     </div>
 </div>
 {% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+
+function submitForm(e) {
+
+    var amount_limit = document.getElementById("txt_limit_value");
+    var amount = parseFloat(amount_limit.value) || 0.0;
+    if (amount <= 0) {
+        $('#alert-client').css('display', 'block');
+        $('#alert-client #alert-msg').text('Cannot set zero or negative limitations');
+    } else {
+        $("#alert-client").hide();
+        document.getElementById('submit-form').submit();
+    }
+}
+
+</script>
+{%  endblock %}
