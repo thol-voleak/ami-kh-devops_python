@@ -806,7 +806,6 @@
                     } else if (response.status == 2) {
                         // success
                         //Reload page
-                        window.location.hash = '';
                         location.reload();
                     } else {
                         // Failed
@@ -858,7 +857,7 @@
             $("body").find("th").each(function () {
                  $(this).removeAttr( "style" );
             });
-
+            window.location.hash = '';
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
             $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
             $("#btn_setting_payment_fee_structure_review").click(function () {

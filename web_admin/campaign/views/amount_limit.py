@@ -74,11 +74,14 @@ class AmountLimit(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 messages.ERROR,
                 'Sorry, Request timeout. Please try again'
             )
+            return redirect('campaign:amount_limit', campaign_id=campaign_id)
         else:
-            context = {
-                'rule_amount_limit_info': params,
-                'error_msg': ''
-            }
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Sorry, Add amount limitation Failed. Please try again'
+            )
+            return redirect('campaign:amount_limit', campaign_id=campaign_id)
         self.logger.info('========== Finished adding rule limit ==========')
         return render(request, 'campaign/amount_limit.html', context)
 
