@@ -2,10 +2,9 @@ from braces.views import GroupRequiredMixin
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.get_header_mixins import GetHeaderMixin
-from django.contrib import messages
 from agents.utils import check_permission_agent_management
 from shop.utils import search_shop
 import logging
@@ -13,8 +12,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class AgentManagementShop(TemplateView, GetHeaderMixin):
+class AgentManagementShop(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     template_name = "agents/management_shop.html"
+    group_required = "CAN_VIEW_PROFILE_MANAGEMENT"
+    login_url = 'web:permission_denied'
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -30,6 +31,10 @@ class AgentManagementShop(TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         agent_id = kwargs['agent_id']
         permissions = check_permission_agent_management(self)
+        if not permissions['CAN_ACCESS_SHOP_MANAGEMENT_TAB']:
+            return redirect('agents:agent_management_summary',
+                            agent_id=int(agent_id))
+
         context = {"agent_id": agent_id, "permissions": permissions}
         opening_page_index = request.GET.get('current_page_index', 1)
 

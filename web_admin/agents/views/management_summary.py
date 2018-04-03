@@ -70,6 +70,7 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                      })
 
             self.logger.info('========== Finish getting Relationships list ==========')
+
         if permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB']:
             self.logger.info('========== Start getting product portfolio ==========')
 
@@ -80,12 +81,13 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
             self.logger.info('========== Finish getting product portfolio ==========')
 
-        self.logger.info('========== Start getting shop management ==========')
-        shops = search_shop(self, {'agent_id': int(context['agent_id']), "paging": False})
-        context.update({
-            'shops': shops.get('shops', []),
-        })
-        self.logger.info('========== Finish getting shop management ==========')
+        if permissions['CAN_ACCESS_SHOP_MANAGEMENT_TAB']:
+            self.logger.info('========== Start getting shop management ==========')
+            shops = search_shop(self, {'agent_id': int(context['agent_id']), "paging": False})
+            context.update({
+                'shops': shops.get('shops', []),
+            })
+            self.logger.info('========== Finish getting shop management ==========')
 
         return render(request, self.template_name, context)
 

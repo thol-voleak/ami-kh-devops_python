@@ -272,11 +272,12 @@
                                     </div>
                                 {% endif %}
 
+                                {% if permissions.CAN_ACCESS_SHOP_MANAGEMENT_TAB %}
                                 <hr>
                                 <div id="div_shop_management">
                                     <h4>Shop Management</h4>
                                     {% if not shops %}
-                                    {% if request.user|has_permission_name:"CAN_LINK_SHOP"%}
+                                    {% if request.user|has_permission_name:"CAN_LINK_SHOP" %}
                                         <div class="portfolio-panel-empty">
                                             <div>
                                                 <div><b>Please Add a Shop</b></div>
@@ -336,6 +337,7 @@
                                     </div>
                                     {% endif %}
                                 </div>
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
