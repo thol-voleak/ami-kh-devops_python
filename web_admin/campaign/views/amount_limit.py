@@ -60,7 +60,7 @@ class AmountLimit(TemplateView, GetHeaderMixin):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Added data successfully'
+                'Amount Limit Added'
             )
             return redirect('campaign:amount_limit', campaign_id=campaign_id)
         elif status_message == 'timeout':

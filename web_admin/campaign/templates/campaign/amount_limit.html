@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
+
 {% block body_stylesheet %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
@@ -70,7 +72,7 @@
                                     {% for i in current_amount_limit %}
                                         <tr>
                                             <td>
-                                                {{ i.limit_value | default_if_none:'' }} /recipient/campaign
+                                                {{ i.limit_value | intcomma | default_if_none:'' }} /recipient/campaign
                                             </td>
                                             <td>
                                                 <div class="col-sm-2">
@@ -85,7 +87,7 @@
                     </div>
                     <div class="form-group pull-right">
                         <a href="{% url 'campaign:campaign_detail' campaign_id %}">
-                            <input id="btn_Back" class="btn text-left mb15" type="button"
+                            <input id="btn_back" class="btn text-left mb15" type="button"
                                    value="Back"/>
                         </a>
                     </div>
