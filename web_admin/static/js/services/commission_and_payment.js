@@ -63,15 +63,62 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
         // Master: SOFTypes Dropdown
         var htmlDDSOFTypes = '';
+        var sofTypeId = '';
         jQuery.each(m_sof_types, function() {
             if (aData[3].toLowerCase() == this.sof_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';
+                sofTypeId = this.sof_type_id;
             } else {
                 htmlSelected = ' ';
             }
 
             htmlDDSOFTypes += '<option value="' + this.sof_type_id + '"' + htmlSelected + '>' + this.sof_type + '</option>';
         });
+        
+        // Master: Specific SOF
+        var htmlDDSpecificSOF = '';
+        if(aData[1] === 'Specific ID' && aData[2] !== '') {
+            $.ajax({
+                url: $('#data-specific-sof-list-url').attr('data-specific-sof-list-url') + aData[2] + '/' + sofTypeId,
+                type: "GET",
+                dataType: "json",
+                async: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                },
+                success: function (response) {
+                    if (response.status == 1) {
+                        // Logout
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
+                        window.location.replace(url);
+                    } else if (response.status == 2) {
+                        
+                        // add item
+                        var jsonOptions = response.data;
+                        if(typeof jsonOptions.length !== 'undefined') {
+                            $.each(jsonOptions, function(key, value) {
+                                if (aData[4].toLowerCase() == value.id) {
+                                    htmlSelected = ' selected=\"selected\" ';
+                                } else {
+                                    htmlSelected = ' ';
+                                }
+                                htmlDDSpecificSOF += '<option value="' + value.id + '"' + htmlSelected + '>' + value.id + '</option>';
+                            });
+                        } else if(typeof jsonOptions.bank_sofs !== 'undefined' && typeof jsonOptions.bank_sofs.length !== 'undefined') {
+                            jsonOptions = jsonOptions.bank_sofs;
+                            $.each(jsonOptions, function(key, value) {
+                                if (aData[4].toLowerCase() == value.id) {
+                                    htmlSelected = ' selected=\"selected\" ';
+                                } else {
+                                    htmlSelected = ' ';
+                                }
+                                htmlDDSpecificSOF += '<option value="' + value.id + '"' + htmlSelected + '>' + value.id + '</option>';
+                            });
+                        }
+                    }
+                }
+            });
+        }
 
         // Master: AmountTypes Dropdown
         var htmlDDAmountTypes = '';
@@ -188,7 +235,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\'>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
         jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
+        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\'>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
         jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'label\' required value=\'' + aData[7] + '\'>';

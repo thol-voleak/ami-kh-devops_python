@@ -398,8 +398,16 @@
                             $.each(jsonOptions, function(key, value) {
                               specific_sof
                                   .append($("<option></option>")
-                                  .attr("value",key)
-                                  .text(key)); 
+                                  .attr("value",value.id)
+                                  .text(value.id)); 
+                            });
+                        } else if(typeof jsonOptions.bank_sofs !== 'undefined' && typeof jsonOptions.bank_sofs.length !== 'undefined') {
+                            jsonOptions = jsonOptions.bank_sofs;
+                            $.each(jsonOptions, function(key, value) {
+                              specific_sof
+                                  .append($("<option></option>")
+                                  .attr("value",value.id)
+                                  .text(value.id)); 
                             });
                         }
                     } else {
