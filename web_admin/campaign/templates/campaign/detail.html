@@ -58,9 +58,16 @@
         {% for i in limit_values %}
         <p><font size="2"></font>
         <label>Amount Limit:</label>
-        <span id="lbl_campaign_amount_limit">{{i|intcomma|default_if_none:''}} /recipient/campaign</span>
+        <span id="lbl_campaign_amount_limit_{{ i }}">{{i|intcomma|default_if_none:''}} /recipient/campaign</span>
         </p>
         {% endfor %}
+
+        {% if count_limit_values == 0 %}
+        <p><font size="2"></font>
+        <label>Amount Limit:</label>
+        <span id="lbl_campaign_amount_limit"> /recipient/campaign</span>
+        </p>
+        {% endif %}
     </div>
 </div>
 

@@ -43,11 +43,13 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data = self.get_detail_campaign(campaign_id)
         amount_limit = self.get_campaign_amount_limit(campaign_id)
         mechanic = self.get_mechanic_list(campaign_id)
-        count = 0
+        counter = 0
         active_mechanic_count = 0
         limit_values = []
+        count_limit_values = 0;
         for i in amount_limit:
             limit_values.append(i.get('limit_value'))
+            count_limit_values += 1
 
         for i in mechanic:
             reward = {}
@@ -149,7 +151,8 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'active_mechanic_count': active_mechanic_count,
             'mechanic': mechanic,
             'len_mechanic': len(mechanic),
-            'limit_values': limit_values
+            'limit_values': limit_values,
+            'count_limit_values': count_limit_values
         })
 
         self.logger.info('========== Finish get mechanic list ==========')
