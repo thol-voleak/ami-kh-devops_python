@@ -769,7 +769,7 @@
                 var balanceDistributionData = {
                     "fee_tier_id": current_fee_tier_id,
                     "balance_distribution_id": rowData.balance_distribution_id,
-                    "action_type": (rowData.action_type == "credit") ? "Credit" : "Debit",
+                    "action_type": rowData.action_type,
                     "actor_type": rowData.actor_type,
                     "specific_actor_id": rowData.specific_actor_id,
                     "sof_type_id": rowData.sof_type_id,
@@ -852,7 +852,11 @@
 
             $("#btn_setting_payment_fee_structure_review_back").click(onClickReviewBackBtn)
             $("#btn_setting_payment_fee_structure_review_save").click(onClickSaveBtn)
-
+            $("#btn_setting_payment_fee_structure_review").click(function () {
+                    //remove message
+                    $("#ajax-messages").empty();
+                }
+            );
         });
     </script>
 {%  endblock %}
