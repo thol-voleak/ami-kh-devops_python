@@ -58,7 +58,7 @@
                         </div>
                         <span class="col-sm-3 recipient-campaign" id="lbl_url">/recipient/campaign</span>
                         <div class="col-sm-3">
-                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="button" value="Add" onClick="submitForm(this)"/>
+                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="submit" value="Add"/>
                         </div>
                     </div>
 
@@ -76,16 +76,23 @@
                             <tbody>
                                 {% if current_amount_limit %}
                                     {% for i in current_amount_limit %}
+                                        {% if not i.is_deleted %}
                                         <tr>
                                             <td>
-                                                {{ i.limit_value | intcomma | floatformat:2 | default_if_none:'' }} /recipient/campaign
+                                                {{ i.limit_value | floatformat:2 | intcomma | default_if_none:'' }} /recipient/campaign
                                             </td>
                                             <td>
                                                 <div class="col-sm-2">
-                                                    <input class="btn btn-outline btn-primary remove-denomination" id="btn_delete" type="button" value="Delete"/>
+                                                    <input class="btn btn-outline btn-primary remove-denomination"
+                                                           id="btn_delete"
+                                                           data-campaign-id="{{ campaign.id }}"
+                                                           data-limit-id="{{ i.id }}"
+                                                           data-url="{% url 'campaign:delete-amount-limit' campaign.id i.id %}"
+                                                           type="button" value="Delete"/>
                                                 </div>
                                             </td>
                                         </tr>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endif %}
                             </tbody>
@@ -104,21 +111,89 @@
 </div>
 {% endblock %}
 {% block body_js %}
-{{ block.super }}
-<script>
+    {{ block.super }}
+    <script>
 
-function submitForm(e) {
+        var AmountLimit = function () {
+            var deleteLimit = function (e) {
+                var url = $(e).data('url');
+                var campaignId = $(e).data('campaign-id');
+                var limitId = $(e).data('limit-id');
 
-    var amount_limit = document.getElementById("txt_limit_value");
-    var amount = parseFloat(amount_limit.value) || 0.0;
-    if (amount <= 0) {
-        $('#alert-client').css('display', 'block');
-        $('#alert-client #alert-msg').text('Cannot set zero or negative limitations');
-    } else {
-        $("#alert-client").hide();
-        document.getElementById('submit-form').submit();
-    }
-}
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+                    success: function (response) {
+                        if (response.status === 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                            window.location.replace(url);
+                        } else if (response.status === 2) {
+                            // success
+                            $(e).closest('tr').remove();
+                            showSuccessMessage('Amount Limit Deleted');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        var message = JSON.stringify(msg);
+                        console.error('Error delete amount limit id ' + limitId + 'for campaign id ' + campaignId + ' ' + message);
+                        showErrorMessage(message);
+                    }
+                });
+            };
 
-</script>
-{%  endblock %}
+            var showErrorMessage = function (msg) {
+                $(".alert").hide();
+                $("#alert-msg").text(msg);
+                $('#alert-client')
+                    .removeClass("alert-success")
+                    .addClass("alert-danger")
+                    .show();
+                $("html, body").animate({scrollLeft: 0}, 100).animate({scrollTop: 0}, "slow");
+            };
+
+            var showSuccessMessage = function (msg) {
+                $(".alert").hide();
+                $("#alert-msg").text(msg);
+                $('#alert-client')
+                    .removeClass("alert-danger")
+                    .addClass("alert-success")
+                    .show();
+                $("html, body").animate({scrollLeft: 0}, 100).animate({scrollTop: 0}, "slow");
+            };
+
+            var submitForm = function (e) {
+                var amount_limit = $('#txt_limit_value');
+                var amount = parseFloat(amount_limit.val()) || 0.0;
+                $('.alert').hide();
+                if (amount <= 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showErrorMessage('Cannot set zero or negative limitations');
+                }
+            };
+
+            return {
+                init: function () {
+                    $(function () {
+                        $('#tbl_current_limitations').on('click', '#btn_delete', function () {
+                            deleteLimit(this);
+                        });
+
+                        $('#submit-form').on('submit', function(e){
+                            submitForm(e);
+                        });
+                    });
+                }
+
+            }
+        }();
+        // init page
+        AmountLimit.init();
+
+    </script>
+{% endblock %}

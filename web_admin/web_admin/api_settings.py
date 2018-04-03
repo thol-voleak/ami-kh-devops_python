@@ -238,6 +238,7 @@ GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rul
 CREATE_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters'
 GET_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
 CREATE_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
+DELETE_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits/{rule_limit_id}'
 
 # Rule Engine
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
