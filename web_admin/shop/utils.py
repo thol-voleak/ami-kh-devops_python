@@ -173,7 +173,7 @@ def get_agent_detail(self, id):
         loggers=self.logger,
         params=params
     )
-    return success, status_code, status_message, data
+    return data['agents'][0]
 
 
 def search_shop(self, params):
