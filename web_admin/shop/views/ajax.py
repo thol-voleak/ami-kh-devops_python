@@ -33,14 +33,15 @@ class Agent_Detail(TemplateView, GetHeaderMixin):
         api_path = api_settings.AGENT_DETAIL_PATH
         id = kwargs['id']
         params = {'id': id}
-        self.logger.info("Params: {} ".format(params))
         success, status_code, status_message, data = RestFulClient.post(
                                                         url=api_path,
                                                         headers=self._get_headers(),
                                                         loggers=self.logger,
                                                         params=params
                                                         )
+        self.logger.info("Params: {} ".format(params))
         if success:
+            self.logger.info("{}".format(data))
             self.logger.info('========== Finish get agent detail ==========')
             if len(data['agents']) == 0:
                 return JsonResponse({'wrong_agent': True})

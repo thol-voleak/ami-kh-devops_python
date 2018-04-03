@@ -289,8 +289,9 @@
             type: "GET",
             success: function (response) {
                 if(response.wrong_agent){
-                    $("#alert-msg").text("Agent ID does not exist");
-                    $("#msg-error").fadeIn();
+                    $("#alert-msg-failed").text("Agent ID does not exist");
+                    $("#alert-client-failed").show();
+                    $("html, body").animate({scrollTop: 0}, "slow");
                 }
                 else if(response.invalid_access_token){
                     var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/shops/create/";
