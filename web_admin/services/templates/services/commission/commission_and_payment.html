@@ -570,6 +570,9 @@
                 $(selectObject).closest("tr").find(specificSoFId).prop('disabled', true);
                 $(selectObject).closest("tr").find(specificSoFId).val("");
             }
+            
+            $("#ddl_setting_payment_fee_structure_specific_id").prop('required', false);
+            $("#ddl_setting_payment_fee_structure_specific_source_of_fund").prop('required', false);
         }
 
         function changeSpecificActorTypeRelative(actorType) {
