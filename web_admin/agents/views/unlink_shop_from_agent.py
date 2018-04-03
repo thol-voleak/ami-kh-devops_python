@@ -1,6 +1,6 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
-
+from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -14,9 +14,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class UnLinkAgentToShop(TemplateView, GetHeaderMixin):
+class UnLinkAgentToShop(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+    group_required = "CAN_UNLINK_SHOP"
+    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

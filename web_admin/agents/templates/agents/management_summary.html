@@ -319,7 +319,9 @@
                                                     <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
                                                         <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                        {% if request.user|has_permission_name:"CAN_UNLINK_SHOP"%}
                                                         <button id="btn_shop_unlink" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" class="btn btn-outline btn-xs btn-danger" href="">Unlink</button>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
