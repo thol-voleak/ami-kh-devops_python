@@ -276,14 +276,16 @@
                                 <div id="div_shop_management">
                                     <h4>Shop Management</h4>
                                     {% if not shops %}
-                                    <div class="portfolio-panel-empty">
-                                        <div>
-                                            <div><b>Please Add a Shop</b></div>
-                                            <div style="margin-top: 10px;">
-                                                <a class="btn btn-success btn-md" id="btn_noshop_add" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
+                                    {% if request.user|has_permission_name:"CAN_LINK_SHOP"%}
+                                        <div class="portfolio-panel-empty">
+                                            <div>
+                                                <div><b>Please Add a Shop</b></div>
+                                                <div style="margin-top: 10px;">
+                                                    <a class="btn btn-success btn-md" id="btn_noshop_add" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}" >Add</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                     {% else %}
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped mb0" id="tbl_shops">
@@ -315,9 +317,11 @@
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
+                                                {% if request.user|has_permission_name:"CAN_LINK_SHOP"%}
                                                 <tr>
                                                     <td colspan="8" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" id="btn_add_shop" onclick="window.location='{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}'">Add Shop</td>
                                                 </tr>
+                                                {% endif %}
                                             </tbody>
                                         </table>
                                         {% if shops|length > 5 %}

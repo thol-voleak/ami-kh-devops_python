@@ -44,11 +44,13 @@
                 <div class="tab-content clearfix">
                      <div class="tab-pane active">
                         <h4>Shop Management</h4>
-                         <div class="text-right">
-                            <a id="btn_add_shop" class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}">
-                                <strong>+</strong> <span>Add Shop</span>
-                            </a>
-                        </div>
+                         {% if request.user|has_permission_name:"CAN_LINK_SHOP"%}
+                             <div class="text-right">
+                                <a id="btn_add_shop" class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}">
+                                    <strong>+</strong> <span>Add Shop</span>
+                                </a>
+                            </div>
+                         {% endif %}
                         <form method="get">
                             <button type="submit" id="btn_search" value="Search" hidden></button>
                             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ current_page_index|default:'1' }}"/>
