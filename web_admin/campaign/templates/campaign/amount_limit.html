@@ -78,7 +78,7 @@
                                     {% for i in current_amount_limit %}
                                         <tr>
                                             <td>
-                                                {{ i.limit_value | float:2 | intcomma | default_if_none:'' }} /recipient/campaign
+                                                {{ i.limit_value | intcomma | floatformat:2 | default_if_none:'' }} /recipient/campaign
                                             </td>
                                             <td>
                                                 <div class="col-sm-2">
