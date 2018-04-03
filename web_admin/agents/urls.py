@@ -21,6 +21,8 @@ from .views.management_summary import AgentManagementSummary
 from .views.management_relationship import AgentManagementRelationship
 from .views.management_product import AgentManagementProduct
 from .views.link_agent_to_shop import LinkAgentToShop
+from .views.unlink_shop_from_agent import UnLinkAgentToShop
+
 
 app_name = 'agents'
 
@@ -48,4 +50,6 @@ urlpatterns = [
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/link-shop', login_required(AgentLinkShop.as_view(), login_url='authentications:login'), name="agent_link_shop"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/shop/(?P<shop_id>[0-9A-Za-z]+)/link',
         login_required(LinkAgentToShop.as_view(), login_url='authentications:login'), name="link_agent_shop"),
+    url(r'^(?P<agent_id>[0-9A-Za-z]+)/shop/(?P<shop_id>[0-9A-Za-z]+)/unlink',
+        login_required(UnLinkAgentToShop.as_view(), login_url='authentications:login'), name="unlink_agent_shop"),
 ]

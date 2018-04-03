@@ -145,12 +145,17 @@
     #exTab1 {
         max-width: 100%;
     }
+
+     .alert-success {
+        margin-top: 10px;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
                 <div id="exTab1" class="container">
                     {% include "agents/management_tab_menu.html" with active_tab='summary'%}
+                    {% include "message.html" %}
                     <br>
                     <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
                     <div class="tab-content clearfix">
@@ -314,7 +319,7 @@
                                                     <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
                                                         <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
-                                                        <a id="btn_shop_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
+                                                        <button id="btn_shop_unlink" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" class="btn btn-outline btn-xs btn-danger" href="">Unlink</button>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -374,5 +379,21 @@
                 $(this).find("i.fa-spinner").show();
             });
         });
+
+        function unlinkshopfromagent(shopId, agentId, shopName) {
+            swal({
+                title: "Confirm remove link with " + shopName + "?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            },
+            function () {
+                var url = '/admin-portal/agents/' + agentId + '/shop/' + shopId + '/unlink';
+                window.location.replace(url);
+            });
+       }
     </script>
 {% endblock %}

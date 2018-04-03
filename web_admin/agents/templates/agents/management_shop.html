@@ -32,6 +32,9 @@
         background-color: white;
         color: #616161;
     }
+    .alert-success {
+        margin-top: 10px;
+    }
 </style>
     <div class="panel-body">
         <div class="row no-margin">
@@ -54,7 +57,8 @@
                         <form method="get">
                             <button type="submit" id="btn_search" value="Search" hidden></button>
                             <input id="current_page_index" name="current_page_index" type="hidden" value="{{ current_page_index|default:'1' }}"/>
-                            <div style="margin-top: 15px; text-align: right">
+                        </form>
+                         <div style="margin-top: 15px; text-align: right">
                                 Total Shops Found:&nbsp;<span id="lbl_total">{{ total_result }}</span>
                             </div>
                             <div class="table-responsive" style="margin-top: 10px;">
@@ -82,8 +86,8 @@
                                                 <td>{{ shop.address.district|default_if_none:'' }}</td>
                                                 <td>{{ shop.relationship_manager_name|default_if_none:'' }}</td>
                                                 <td>
-                                                    <a id="btn_detail" style="margin-bottom: 3px;" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
-                                                    <a id="btn_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
+                                                    <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                    <button id="btn_unlink" class="btn btn-outline btn-xs btn-danger" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')">Unlink</button>
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -91,8 +95,7 @@
                                 </table>
                             </div>
                             {% include "pagination.html" %}
-                        </form>
-                    </div>
+                        </div>
                 </div>
             </div>
             </div>
@@ -103,4 +106,21 @@
 
 {% block body_js %}
 {{ block.super }}
+    <script>
+       function unlinkshopfromagent(shopId, agentId, shopName) {
+        swal({
+            title: "Confirm remove link with " + shopName + "?",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            closeOnConfirm: true
+        },
+        function () {
+            var url = '/admin-portal/agents/' + agentId + '/shop/' + shopId + '/unlink';
+            window.location.replace(url);
+        });
+       }
+    </script>
 {% endblock %}
