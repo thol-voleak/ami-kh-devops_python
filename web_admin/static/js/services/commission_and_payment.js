@@ -16,8 +16,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
         oTable.fnDraw();
         $("body").find("th").each(function () {
-               $(this).removeAttr( "style" );
-            });
+           $(this).removeAttr( "style" );
+        });
     }
 
     function editRow(oTable, nRow) {
@@ -253,8 +253,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
         jqTds[8].innerHTML = htmlButtonCancel;
-
-        onBindingButtonsCancelEvent();
 
         $("body").find("th").each(function () {
                $(this).removeAttr( "style" );
@@ -533,12 +531,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 console.log("Cancel a new row on temporary");
                 oTable.fnDeleteRow(nRow, null, true);
             } else {
-            restoreRow(oTable, nEditing);
-            nEditing = nRow;
-
-            $("body").find("th").each(function () {
-               $(this).removeAttr( "style" );
-            });
+                nEditing = nRow;
+                restoreRow(oTable, nEditing);
+                $("body").find("th").each(function () {
+                   $(this).removeAttr( "style" );
+                });
             }
             $('#' + tableId).append($("#tr_row_for_edit"));
         });
@@ -644,6 +641,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     onBindingButtonsEditEvent();
     onBindingButtonsDeleteEvent();
     onBindingButtonsAddEvent();
+    onBindingButtonsCancelEvent();
 }
 
 function collectTableData(tableSelector) {
