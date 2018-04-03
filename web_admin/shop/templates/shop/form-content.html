@@ -300,9 +300,13 @@
                 }
                 else{
                 document.getElementById('txt_first_name').setAttribute('value', response.firstname);
+                $("#txt_first_name").val(response.firstname);
                 document.getElementById('txt_last_name').setAttribute('value', response.lastname);
+                $("#txt_last_name").val(response.lastname);
                 document.getElementById('txt_details_mobile_number').setAttribute('value', response.primary_mobile_number);
+                $("#txt_details_mobile_number").val(response.primary_mobile_number);
                 document.getElementById('txt_details_email_address').setAttribute('value', response.email);
+                $("#txt_details_email_address").val(response.email);
                 }
             }
         });
@@ -330,7 +334,9 @@
                 }
                 else{
                 document.getElementById('txt_shop_details_mobile_number').setAttribute('value', response.primary_mobile_number);
+                $("#txt_shop_details_mobile_number").val(response.primary_mobile_number);
                 document.getElementById('txt_shop_details_email_address').setAttribute('value', response.email);
+                $("#txt_shop_details_email_address").val(response.email);
                 }
             }
         });
