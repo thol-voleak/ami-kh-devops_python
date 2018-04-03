@@ -286,7 +286,7 @@
                                     </div>
                                     {% else %}
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped mb0" id="tbl_shop">
+                                        <table class="table table-bordered table-striped mb0" id="tbl_shops">
                                             <thead>
                                             <tr>
                                                 <th>Shop ID</th>
@@ -310,7 +310,7 @@
                                                     <td>{{ shop.address.district }}</td>
                                                     <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
-                                                        <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' 1 %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                        <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
                                                         <a id="btn_shop_unlink" class="btn btn-outline btn-xs btn-danger" href="">Unlink</a>
                                                     </td>
                                                 </tr>
