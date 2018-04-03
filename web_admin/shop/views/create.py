@@ -68,12 +68,32 @@ class CreateView(TemplateView, RESTfulMethods):
         list_shop_category = get_all_shop_category(self)
         context['list_shop_category'] = list_shop_category
 
+        self.logger.info('========== Start Adding new shop ==========')
+
         shop = convert_form_to_shop(form)
-        # TODO: call create shop API
+        success, status_code, message, data = RestFulClient.post(
+            url=api_settings.CREATE_SHOP,
+            params=shop, loggers=self.logger,
+            headers=self._get_headers()
+        )
+        self.logger.info("Params: {} ".format(shop))
+        if success:
+            self.logger.info('========== Finish Adding new shop ==========')
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Added data successfully'
+            )
+            return redirect(get_back_url(request, reverse('shop:shop_list')))
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{} for {} username".format(status_message, self.request.user))
+            raise InvalidAccessToken(status_message)
+        else:
+            return render(request, self.template_name, context)
+
 
         # IF SUCCESS
-        messages.success(request, "Added Successfully")
-        return redirect(get_back_url(request, reverse('shop:shop_list')))
+        # messages.success(request, "Added Successfully")
 
         # IF FAIL
-        return render(request, self.template_name, context)

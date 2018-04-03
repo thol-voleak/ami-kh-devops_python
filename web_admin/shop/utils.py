@@ -165,7 +165,6 @@ def convert_form_to_shop(form):
 
 
 def get_agent_detail(self, id):
-    self.logger.info('========== Start get country code ==========')
     api_path = api_settings.AGENT_DETAIL_PATH
     params = {'id': id}
     success, status_code, status_message, data = RestFulClient.post(
@@ -174,10 +173,7 @@ def get_agent_detail(self, id):
         loggers=self.logger,
         params=params
     )
-    data = data or {}
-    self.logger.info('========== Finish get country code ==========')
-    
-    return data['agents'][0]
+    return success, status_code, status_message, data
 
 
 def search_shop(self, params):
