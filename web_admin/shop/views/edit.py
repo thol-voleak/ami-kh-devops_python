@@ -15,10 +15,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditView(TemplateView, RESTfulMethods):
+class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_EDIT_SHOP"
     template_name = "shop/edit.html"
+    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -41,7 +48,6 @@ class EditView(TemplateView, RESTfulMethods):
         list_shop_type = get_all_shop_type(self)
         list_shop_category = get_all_shop_category(self)
         form = convert_shop_to_form(shop)
-        print(form)
         context.update({
             'form': form,
             'list_shop_type': list_shop_type,
@@ -53,7 +59,7 @@ class EditView(TemplateView, RESTfulMethods):
         form = request.POST
         shop_id = kwargs['id']
         shop = convert_form_to_shop(form)
-
+        self.logger.info('========== Start update shop ==========')
         url = api_settings.EDIT_SHOP.format(shop_id=shop_id)
         is_success, status_code, status_message, data = RestFulClient.put(url,
                                                                           self._get_headers(),
@@ -61,9 +67,11 @@ class EditView(TemplateView, RESTfulMethods):
         if is_success:
             API_Logger.put_logging(loggers=self.logger, params=shop, response=data,
                                status_code=status_code)
+            self.logger.info('========== Finish update shop ==========')
             messages.success(request, "Updated data successfully")
             return redirect(get_back_url(request, reverse('shop:shop_list')))
         else:
             context = {'form': form}
             messages.error(request, status_message)
+            self.logger.info('========== Finish update shop ==========')
             return render(request, self.template_name, context)

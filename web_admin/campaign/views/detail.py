@@ -50,8 +50,9 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         limit_values = []
         count_limit_values = 0;
         for i in amount_limit:
-            limit_values.append(i.get('limit_value'))
-            count_limit_values += 1
+            if not i['is_deleted']:
+                limit_values.append(i.get('limit_value'))
+                count_limit_values += 1
 
         for i in mechanic:
             reward = {}

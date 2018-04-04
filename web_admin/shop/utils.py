@@ -7,6 +7,7 @@ from web_admin.get_header_mixins import GetHeaderMixin as get_header
 
 
 def get_all_shop_type(self):
+    self.logger.info('========== Start get all shop type ==========')
     api_path = api_settings.GET_LIST_SHOP_TYPE
     params = {'paging': False}
     success, status_code, status_message, data = RestFulClient.post(
@@ -22,11 +23,13 @@ def get_all_shop_type(self):
                             status_code=status_code,
                             is_getting_list=True,
                             params=params)
+    self.logger.info('========== Finish get all shop type ==========')
     return [i for i in data.get('shop_types', []) if not i.get('is_deleted')]
 
 def get_all_shop_category(self):
     api_path = api_settings.GET_LIST_SHOP_CATEGORIES
     params = {'paging': False}
+    self.logger.info('========== Start get all shop category ==========')
     success, status_code, status_message, data = RestFulClient.post(
         url=api_path,
         headers=self._get_headers(),
@@ -40,6 +43,7 @@ def get_all_shop_category(self):
                             status_code=status_code,
                             is_getting_list=True,
                             params=params)
+    self.logger.info('========== Finish get all shop category ==========')
     return [i for i in  data.get('shop_categories', []) if not i.get('is_deleted')]
 
 def get_system_country(self):

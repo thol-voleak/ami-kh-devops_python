@@ -7,12 +7,13 @@
         <h3>Add Existing Shop</h3>
 
         {% include "message.html" %}
-
-        <div class="pull-right">
-            <a id="btn_create_new_shop" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ agent_id }}&back_url={% current_url_encoded_for_back %}">
-                <strong>+</strong> <span>Create New Shop</span>
-            </a>
-        </div>
+        {% if permissions.CAN_ADD_SHOP %}
+            <div class="pull-right">
+                <a id="btn_create_new_shop" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ agent_id }}&back_url={% current_url_encoded_for_back %}">
+                    <strong>+</strong> <span>Create New Shop</span>
+                </a>
+            </div>
+        {%endif%}
     </div>
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
@@ -76,9 +77,8 @@
                 swal({
                     title: "Confirm linkage with " + shopName + "?",
                     text: "",
-                    type: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
+                    confirmButtonColor: "#2ECC71",
                     confirmButtonText: "OK",
                     closeOnConfirm: true
                 },

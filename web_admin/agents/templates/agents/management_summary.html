@@ -318,7 +318,9 @@
                                                     <td>{{ shop.address.district }}</td>
                                                     <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
+                                                        {% if request.user|has_permission_name:"CAN_VIEW_SHOP"%}
                                                         <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                        {%endif%}
                                                         {% if request.user|has_permission_name:"CAN_UNLINK_SHOP"%}
                                                         <button id="btn_shop_unlink" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" class="btn btn-outline btn-xs btn-danger" href="">Unlink</button>
                                                         {% endif %}
@@ -337,7 +339,7 @@
                                             <a class="btn btn-success btn-md" href="{% url 'agents:agent_management_shop' agent_id %}" id="btn_shop_management_view_more">View More</a>
                                         </div>
                                         {% else %}
-                                        <div class="text-right" style="margin-top: 10px;">
+                                        <div class="text-right" style="margin-top: 10px; cursor: not-allowed;">
                                             <a class="btn btn-success btn-md" disabled id="btn_shop_management_view_more">View More</a>
                                         </div>
                                         {% endif %}
@@ -386,9 +388,8 @@
             swal({
                 title: "Confirm remove link with " + shopName + "?",
                 text: "",
-                type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
+                confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
                 closeOnConfirm: true
             },

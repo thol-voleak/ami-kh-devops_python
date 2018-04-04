@@ -6,12 +6,13 @@
         <h3>Shops Management</h3>
 
         {% include "message.html" %}
-
-        <div class="pull-right">
-            <a id="btn_add_new_shop" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}">
-                <strong>+</strong> <span>Add New Shop</span>
-            </a>
-        </div>
+        {% if permissions.CAN_ADD_SHOP %}
+            <div class="pull-right">
+                <a id="btn_add_new_shop" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}">
+                    <strong>+</strong> <span>Add New Shop</span>
+                </a>
+            </div>
+        {%endif%}
     </div>
     <div class="panel-body">
         <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
@@ -95,9 +96,15 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {% if permissions.CAN_VIEW_SHOP %}
                                     <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}">Detail</a>
+                                    {%endif%}
+                                    {% if permissions.CAN_EDIT_SHOP %}
                                     <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href="{% url 'shop:shop_edit' shop.id %}">Edit</a>
+                                    {%endif%}
+                                    {% if permissions.CAN_DELETE_SHOP %}
                                     <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop:shop_delete' shop.id %}">Delete</a>
+                                    {%endif%}
                                 </td>
                             {% else %}
                                 <td><del>{{ shop.id }}</del></td>
