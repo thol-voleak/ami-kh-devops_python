@@ -142,7 +142,7 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
+            {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST" or request.user|has_permission_name:"CAN_MANAGE_SHOP"%}
                 {% check_valid_url url_name 'agent_type,agents' as is_agent_urls %}
                 <li class="menu-accordion {% if is_agent_urls or '/shop' in  request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-id-card-o" aria-hidden="true"></i> <span>Agents</span> </a>
