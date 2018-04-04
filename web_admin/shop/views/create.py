@@ -54,13 +54,9 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             form["shop_email"] = agent["email"]
 
         context = {'form': form}
-        self.logger.info('========== Start get shop types ==========')
         list_shop_type = get_all_shop_type(self)
-        self.logger.info('========== Finish get shop types ==========')
         context['list_shop_type'] = list_shop_type
-        self.logger.info('========== Start get shop categories ==========')
         list_shop_category = get_all_shop_category(self)
-        self.logger.info('========== Finish get shop categories ==========')
         context['list_shop_category'] = list_shop_category
 
         country = get_system_country(self)
