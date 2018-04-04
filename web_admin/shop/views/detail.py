@@ -32,8 +32,10 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        permissions = {}
+        permissions['CAN_EDIT_SHOP'] = self.check_membership(["CAN_EDIT_SHOP"])
         shop_id = int(kwargs['id'])
         shop = get_shop_details(self, shop_id)
         form = convert_shop_to_form(shop)
-        context = {'form': form}
+        context = {'form': form, 'permissions':permissions}
         return render(request, self.template_name, context)

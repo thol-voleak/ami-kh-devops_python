@@ -275,10 +275,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                <hr>
                                 {% endif %}
 
                                 {% if permissions.CAN_ACCESS_SHOP_MANAGEMENT_TAB %}
-                                <hr>
                                 <div id="div_shop_management">
                                     <h4>Shop Management</h4>
                                     {% if not shops %}
@@ -318,7 +318,9 @@
                                                     <td>{{ shop.address.district }}</td>
                                                     <td>{{ shop.relationship_manager_name }}</td>
                                                     <td>
+                                                        {% if request.user|has_permission_name:"CAN_VIEW_SHOP"%}
                                                         <a id="btn_shop_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                        {%endif%}
                                                         {% if request.user|has_permission_name:"CAN_UNLINK_SHOP"%}
                                                         <button id="btn_shop_unlink" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" class="btn btn-outline btn-xs btn-danger" href="">Unlink</button>
                                                         {% endif %}
