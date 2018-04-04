@@ -19,9 +19,15 @@ logger = logging.getLogger(__name__)
 
 
 class CreateView(TemplateView, RESTfulMethods):
+    group_required = "CAN_ADD_SHOP"
     template_name = "shop/create.html"
     raise_exception = False
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -47,11 +53,13 @@ class CreateView(TemplateView, RESTfulMethods):
             form["shop_email"] = agent["email"]
 
         context = {'form': form}
-
+        self.logger.info('========== Start get shop types ==========')
         list_shop_type = get_all_shop_type(self)
+        self.logger.info('========== Finish get shop types ==========')
         context['list_shop_type'] = list_shop_type
-
+        self.logger.info('========== Start get shop categories ==========')
         list_shop_category = get_all_shop_category(self)
+        self.logger.info('========== Finish get shop categories ==========')
         context['list_shop_category'] = list_shop_category
 
         country = get_system_country(self)

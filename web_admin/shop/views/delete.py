@@ -17,9 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 class DeleteView(TemplateView, GetHeaderMixin):
-
+    group_required = "CAN_DELETE_SHOP"
     template_name = "shop/delete.html"
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)

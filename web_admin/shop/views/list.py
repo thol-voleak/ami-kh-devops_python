@@ -13,9 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 class ListView(TemplateView, GetHeaderMixin):
+    group_required = "CAN_MANAGE_SHOP"
     template_name = 'shop/list.html'
     raise_exception = False
     logger = logger
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -23,6 +29,11 @@ class ListView(TemplateView, GetHeaderMixin):
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        permissions = {}
+        permissions['CAN_ADD_SHOP'] = self.check_membership(["CAN_ADD_SHOP"])
+        permissions['CAN_EDIT_SHOP'] = self.check_membership(["CAN_EDIT_SHOP"])
+        permissions['CAN_DELETE_SHOP'] = self.check_membership(["CAN_DELETE_SHOP"])
+        permissions['CAN_VIEW_SHOP'] = self.check_membership(["CAN_VIEW_SHOP"])
         form = request.GET
         context = {"form": form}
         self.logger.info('========== Start getting all shop types ==========')

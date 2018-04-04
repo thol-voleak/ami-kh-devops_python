@@ -180,9 +180,12 @@
                     </li>
                 </ul>
                 <ul class="sub-menu">
-                    <li class="class={% if '/shops/' in  request.path %} active{% endif %}">
-                        <a href="{% url 'shop:shop_list' %}"> <span>Shops Management</span> </a>
-                    </li>
+                    {% if request.user|has_permission_name:"CAN_MANAGE_SHOP"%}
+                        {% check_valid_url url_name 'agents' as is_agent_url %}
+                        <li class="class={% if '/shops/' in  request.path %} active{% endif %}">
+                            <a href="{% url 'shop:shop_list' %}"> <span>Shops Management</span> </a>
+                        </li>
+                    {% endif %}
                 </ul>
 
             </li>
