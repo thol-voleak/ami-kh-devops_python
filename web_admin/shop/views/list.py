@@ -71,6 +71,7 @@ class ListView(TemplateView, GetHeaderMixin):
 
         shops = search_shop(self, params)
         page = shops.get('page', {})
+        context['permissions'] = permissions
         context.update({
             'shops': shops.get('shops', []),
             'paginator': page,
