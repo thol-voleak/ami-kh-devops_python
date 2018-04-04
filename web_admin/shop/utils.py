@@ -1,7 +1,7 @@
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin import api_settings, settings
-from web_admin.get_header_mixins import GetHeaderMixin as get_header
+from authentications.apps import InvalidAccessToken
 
 
 
@@ -177,7 +177,11 @@ def get_agent_detail(self, id):
         loggers=self.logger,
         params=params
     )
-    return data['agents'][0]
+    if success:
+        return data['agents'][0]
+    elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+        raise InvalidAccessToken(status_message)
 
 
 def search_shop(self, params):
