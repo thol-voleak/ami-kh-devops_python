@@ -18,9 +18,10 @@ from web_admin.utils import get_back_url
 logger = logging.getLogger(__name__)
 
 
-class CreateView(TemplateView, RESTfulMethods):
+class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_ADD_SHOP"
     template_name = "shop/create.html"
+    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
 

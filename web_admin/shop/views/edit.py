@@ -15,9 +15,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class EditView(TemplateView, RESTfulMethods):
+class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_EDIT_SHOP"
     template_name = "shop/edit.html"
+    login_url = 'web:permission_denied'
     raise_exception = False
     logger = logger
 

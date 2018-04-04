@@ -1,6 +1,7 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from shop.utils import get_all_shop_type, get_all_shop_category, search_shop
 from web_admin import api_settings, setup_logger
+from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -12,10 +13,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ListView(TemplateView, GetHeaderMixin):
+class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     group_required = "CAN_MANAGE_SHOP"
-    template_name = 'shop/list.html'
+    login_url = 'web:permission_denied'
     raise_exception = False
+    template_name = 'shop/list.html'
     logger = logger
 
     def check_membership(self, permission):

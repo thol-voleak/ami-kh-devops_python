@@ -14,11 +14,17 @@ from django.contrib import messages
 logger = logging.getLogger(__name__)
 
 
-class DetailView(TemplateView, GetHeaderMixin):
-
+class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
+    group_required = "CAN_VIEW_SHOP"
     template_name = "shop/detail.html"
     raise_exception = False
     logger = logger
+    login_url = 'web:permission_denied'
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
