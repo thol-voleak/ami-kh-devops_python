@@ -51,4 +51,9 @@ urlpatterns = [
     url(r'^admin-portal/rule-configuration/', include('rule_configuration.urls')),
     url(r'^admin-portal/voucher/', include('voucher.urls')),
     url(r'^admin-portal/report-configuration/', include('report_configuration.urls')),
+    url(r'^admin-portal/category/', include('category.urls')),
+    url(r'^admin-portal/product/', include('product.urls')),
+    url(r'^admin-portal/shop-types/', include('shop_type.urls')),
+    url(r'^admin-portal/shop-categories/', include('shop_category.urls')),
+    url(r'^admin-portal/shops/', include('shop.urls')),
 ]

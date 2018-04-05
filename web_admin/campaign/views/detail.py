@@ -8,7 +8,7 @@ from django.shortcuts import render
 import logging
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
-from web_admin.api_settings import GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST, GET_LIMITION_LIST, GET_CONDITION_FILTER
+from web_admin.api_settings import GET_RULE_AMOUNT_LIMIT, GET_CAMPAIGNS_DETAIL, GET_MECHANIC_LIST, GET_CONDITION_LIST, GET_COMPARISON_LIST, GET_CONDITION_DETAIL, GET_REWARD_LIST, GET_LIMITION_LIST, GET_CONDITION_FILTER
 
 logger = logging.getLogger(__name__)
 
@@ -39,11 +39,20 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         context = super(CampaignDetail, self).get_context_data(**kwargs)
         self.logger.info('========== Start get campaign detail ==========')
+        permissions = {'CAN_ADD_RULE_LIMIT': self.check_membership(["CAN_ADD_RULE_LIMIT"])}
+
         campaign_id = context['campaign_id']
         data = self.get_detail_campaign(campaign_id)
+        amount_limit = self.get_campaign_amount_limit(campaign_id)
         mechanic = self.get_mechanic_list(campaign_id)
-        count = 0
+        counter = 0
         active_mechanic_count = 0
+        limit_values = []
+        count_limit_values = 0;
+        for i in amount_limit:
+            if not i['is_deleted']:
+                limit_values.append(i.get('limit_value'))
+                count_limit_values += 1
 
         for i in mechanic:
             reward = {}
@@ -144,7 +153,10 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'data': data,
             'active_mechanic_count': active_mechanic_count,
             'mechanic': mechanic,
-            'len_mechanic': len(mechanic)
+            'len_mechanic': len(mechanic),
+            'limit_values': limit_values,
+            'count_limit_values': count_limit_values,
+            'permissions': permissions
         })
 
         self.logger.info('========== Finish get mechanic list ==========')
@@ -214,4 +226,12 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                status_code=status_code)
         return data
 
+    def get_campaign_amount_limit(self, campaign_id):
+        url = settings.DOMAIN_NAMES + GET_RULE_AMOUNT_LIMIT.format(rule_id=campaign_id)
+        self.logger.info('========== Start get campaign amount limit ==========')
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        self.logger.info('========== Finish get campaign amount limit ==========')
+        return data
 

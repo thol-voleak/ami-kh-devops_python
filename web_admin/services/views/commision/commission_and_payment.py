@@ -1,4 +1,5 @@
 import logging
+import json
 from web_admin.api_settings import SEARCH_AGENT
 from multiprocessing.pool import ThreadPool
 from django.conf import settings
@@ -79,8 +80,6 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         #context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         #context['agents'] = agents
-
-
 
         self.logger.info('========== Finish getting Balance Movement ==========')
         return context
@@ -285,6 +284,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -293,11 +293,13 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
                                    logger=logger, params=post_data)
 
         if status:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Added Setting Payment, Fee & Bonus Structure successfully'
-            )
+            msg = 'Added Setting Payment, Fee & Bonus Structure successfully'
+            if msg not in [m.message for m in messages.get_messages(request)]:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    msg
+                )
         else:
             messages.add_message(
                 request,
@@ -337,6 +339,7 @@ class BalanceDistributionsUpdate(View):
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
+            "label": data.get("label"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -892,3 +895,49 @@ class AgentBonusDistributions(TemplateView, GetCommandNameAndServiceNameMixin, R
                         service_command_id=service_command_id,
                         fee_tier_id=tf_fee_tier_id)
 
+class MultiBalanceDistributionsUpdate(TemplateView):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(MultiBalanceDistributionsUpdate, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.logger.info("========== Start updating Setting Payment, Fee & Bonus Structure ==========")
+        fee_tier_id = kwargs.get('fee_tier_id')
+        url = api_settings.TIER_DETAIL_URL.format(fee_tier_id=fee_tier_id)
+
+        data = request.POST.copy()
+        balanceDistributionList = json.loads(data.get("balance_distributions"))
+        putDataList = []
+        for balanceDistributionData in balanceDistributionList:
+            self.logger.info(balanceDistributionData.get("fee_tier_id"))
+            data = {
+                "fee_tier_id": balanceDistributionData.get("fee_tier_id"),
+                "balance_distribution_id": balanceDistributionData.get("balance_distribution_id"),
+                "action_type": balanceDistributionData.get("action_type"),
+                "actor_type": balanceDistributionData.get("actor_type"),
+                "specific_actor_id": balanceDistributionData.get("specific_actor_id"),
+                "sof_type_id": balanceDistributionData.get("sof_type_id"),
+                "specific_sof": balanceDistributionData.get("specific_sof"),
+                "amount_type": balanceDistributionData.get("amount_type"),
+                "rate": balanceDistributionData.get("rate"),
+                "label": balanceDistributionData.get("label")
+            }
+
+            putDataList.append(data)
+
+        body = {
+            "balance_distributions": putDataList
+        }
+
+        response = ajax_functions._put_method(request, url, "", self.logger, body)
+        if response.status_code == 200:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                "Saved Setting Payment, Fee & Bonus Structure successfully"
+            )
+        self.logger.info("========== Finished updating Setting Payment, Fee & Bonus Structure ==========")
+        return response

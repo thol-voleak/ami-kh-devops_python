@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% load common_tags %}
+{% block content %}
+<div class="panel">
+    <div class="panel-heading">
+        <h3>Add Existing Shop</h3>
+
+        {% include "message.html" %}
+        {% if permissions.CAN_ADD_SHOP %}
+            <div class="pull-right">
+                <a id="btn_create_new_shop" class="btn btn-success btn-block btn-md" href="{% url 'shop:shop_create' %}?agent_id={{ agent_id }}&back_url={% current_url_encoded_for_back %}">
+                    <strong>+</strong> <span>Create New Shop</span>
+                </a>
+            </div>
+        {%endif%}
+    </div>
+    <div class="panel-body">
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ form.current_page_index|default:'1' }}"/>
+            <div class="row" style="margin-top: 15px;">
+                <label class="col-md-1 control-label">Shop ID</label>
+                <div class="col-md-2">
+                    <input id="txt_shop_id" type="number" class="form-control" name="shop_id" value="{{ form.shop_id }}"/>
+                </div>
+                <label class="col-md-2 control-label">Shop Name</label>
+                <div class="col-md-2">
+                    <input  id="txt_shop_name" type="text" class="form-control" name="shop_name" value="{{ form.shop_name }}"/>
+                </div>
+                <div class="col-md-2">
+                    <input id="btn_search" class="btn btn-success" type="submit" value="Search">
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive" style="margin-top: 30px;">
+            <table id="tbl_shops" class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Shop ID</th>
+                    <th>Shop Type</th>
+                    <th>Shop Name</th>
+                    <th>City</th>
+                    <th>District</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for shop in shop_list %}
+                        <tr>
+                            <td>{{ shop.id|default_if_none:'' }}</td>
+                            <td>{{ shop.shop_type.name|default_if_none:'' }}</td>
+                            <td>{{ shop.name|default_if_none:'' }}</td>
+                            <td>{{ shop.address.city|default_if_none:'' }}</td>
+                            <td>{{ shop.address.district|default_if_none:'' }}</td>
+                            <td>
+                                <div id="link_button_{{ shop.id }}" {% if shop.agent_id %} style="cursor: not-allowed;"{% endif %}>
+                                    <button id="btn_link" class="btn btn-outline btn-xs btn-primary" {% if shop.agent_id %}disabled {% else %} onclick="linkShopToAgent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')" {% endif %}>Link</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-right" style="margin-top: 20px;">
+            {% url 'agents:agent_management_summary' agent_id as agent_management_summary_url %}
+            <a id="btn_back" class="btn btn-default" href="{% get_back_url agent_management_summary_url %}">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+    <script>
+           function linkShopToAgent(shopId, agentId, shopName) {
+                swal({
+                    title: "Confirm linkage with " + shopName + "?",
+                    text: "",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "OK",
+                    closeOnConfirm: true
+                },
+                function () {
+                    var url = '/admin-portal/agents/' + agentId + '/shop/' + shopId + '/link';
+                    window.location.replace(url);
+                });
+           }
+    </script>
+{% endblock %}

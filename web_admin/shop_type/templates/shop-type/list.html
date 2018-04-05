@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading">
+        <h3>Shop Types</h3>
+
+        {% include "message.html" %}
+        
+        <div class="pull-right">
+            <a href="">
+                <a id="btn_add" class="btn btn-success btn-block btn-md" href="{% url "shop_type:shop_type_create" %}">
+                    <strong>+</strong> <span>Add New Shop Type</span>
+                </a>
+            </a>
+        </div>
+    </div>
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post" action="{%url 'shop_type:shop_type_list' %}">
+        {% csrf_token %}
+    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+    <div class="col-xs-1" hidden>
+        <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search" >
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table id="tbl_shop_types" class="table table-bordered table-striped mb0">
+                <thead>
+                <tr>
+                    <th>Shop Types</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {%for i in shop_types%}
+                    <tr>
+                        {% if i.is_deleted %}
+                        <td><del>{{i.name}}</del></td>
+                        <td><del>{{i.description}}</del></td>
+                        <td></td>
+                        {%else%}
+                        <td>{{i.name}}</td>
+                        <td>{{i.description}}</td>
+                        <td>
+                            <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop_type:shop_type_detail' i.id %}">Detail</a>
+                            <a id="btn_edit" class="btn btn-outline btn-xs btn-primary" href='{% url 'shop_type:shop_type_edit' i.id %}'>Edit</a>
+                            <a id="btn_delete" class="btn btn-outline btn-xs btn-danger" href="{% url 'shop_type:shop_type_delete' i.id %}">Delete</a>
+                        </td>
+                        {%endif%}
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+    </form>
+</div>
+{% endblock %}

@@ -59,7 +59,7 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE" or request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" %}
+            {% if request.user|has_permission_name:"SYS_MANAGE_COUNTRYCODE" or request.user|has_permission_name:"SYS_VIEW_CURRENCY" or request.user|has_permission_name:"SYS_MANAGE_COMPANY_BALANCE" or request.user|has_permission_name:"CAN_VIEW_BALANCE_SUMMARY" %}
             {% check_valid_url url_name 'balances' as is_balance_url %}
             <li class="menu-accordion {% if is_balance_url %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-money"></i> <span>Balances</span> </a>
@@ -92,6 +92,13 @@
                     </li>
                 </ul>
                 {% endif %}
+                {% if request.user|has_permission_name:"CAN_VIEW_BALANCE_SUMMARY"%}
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'balance_summary' %}active{% endif %}">
+                        <a href="{% url 'balances:balance_summary' %}"> <span>Balance Summary</span> </a>
+                    </li>
+                </ul>
+                {% endif %}
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP" or request.user|has_permission_name:"CAN_MANAGE_SERVICE"%}
@@ -115,9 +122,29 @@
                 </ul>
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST"%}
+            {% if request.user|has_permission_name:"CAN_MANAGE_CATEGORY" or request.user|has_permission_name:"CAN_MANAGE_PRODUCT"%}
+            {% check_valid_url url_name 'product,category' as is_product_configuration_urls %}
+            <li class="menu-accordion class={% if is_product_configuration_urls %} open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-sitemap"></i> <span>Product Configuration</span> </a>
+                <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_CATEGORY"%}
+                    {% check_valid_url url_name 'category' as is_categories_url %}
+                    <li class="class={% if is_categories_url %} active{% endif %}">
+                        <a href="{% url 'category:categories' %}"> <span>Categories</span> </a>
+                    </li>
+                    {% endif %}
+                    {% if request.user|has_permission_name:"CAN_MANAGE_PRODUCT"%}
+                    {% check_valid_url url_name 'product' as is_products_url %}
+                    <li class="class={% if is_products_url %} active{% endif %}">
+                        <a href="{% url 'product:products' %}"> <span>Products</span> </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE" or request.user|has_permission_name:"CAN_MANAGE_AGENT_REGISTRATION" or request.user|has_permission_name:"CAN_VIEW_AGENT_LIST" or request.user|has_permission_name:"CAN_MANAGE_SHOP"%}
                 {% check_valid_url url_name 'agent_type,agents' as is_agent_urls %}
-                <li class="menu-accordion {% if is_agent_urls %}open{% endif %}">
+                <li class="menu-accordion {% if is_agent_urls or '/shop' in  request.path %}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-id-card-o" aria-hidden="true"></i> <span>Agents</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"CAN_MANAGE_AGENT_TYPE"%}
@@ -140,6 +167,24 @@
                         <li class="class={% if is_agent_url and 'registration' not in request.path %} active{% endif %}">
                         <a href="{% url 'agents:agent-list' %}"> <span>Agent Profile</span> </a>
                     </li>
+                    {% endif %}
+                </ul>
+                <ul class="sub-menu">
+                    <li class="class={% if 'shop_type' in  url_name %} active{% endif %}">
+                        <a href="{% url 'shop_type:shop_type_list' %}"> <span>Shop Types</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    <li class="class={% if 'shop_category' in  url_name %} active{% endif %}">
+                        <a href="{% url 'shop_category:shop_category_list' %}"> <span>Shop Categories</span> </a>
+                    </li>
+                </ul>
+                <ul class="sub-menu">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_SHOP"%}
+                        {% check_valid_url url_name 'agents' as is_agent_url %}
+                        <li class="class={% if '/shops/' in  request.path %} active{% endif %}">
+                            <a href="{% url 'shop:shop_list' %}"> <span>Shops Management</span> </a>
+                        </li>
                     {% endif %}
                 </ul>
 

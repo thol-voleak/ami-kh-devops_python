@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <style>
+        .recipient-campaign {
+            position: relative;
+            top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="panel mb25">
+
+    <div class="panel-heading border">
+        <label id="lbl_title"><h4>Add Rule Limits</h4></label>
+    </div>
+    {% include "message.html" %}
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{{ request.path }}">
+                    {% csrf_token %}
+                    <br/>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="lbl_rule_id">Rule ID</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="campaign.id"
+                                   id="txt_rule_id" disabled
+                                   value="{{ campaign.id | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="lbl_rule_name">Rule Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control input-rounded" name="campaign.name"
+                                   id="txt_rule_name" disabled
+                                   value="{{ campaign.name | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="panel-heading">
+                        <lable id="lbl_amount_limitation"><h5><b>Amount Limitation</b></h5></lable>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3" style="padding-left: 45px">
+                            <input type="number" step="any" id="txt_limit_value" class="form-control input-rounded" name="limit_to_value" required>
+                        </div>
+                        <span class="col-sm-3 recipient-campaign" id="lbl_url">/recipient/campaign</span>
+                        <div class="col-sm-3">
+                            <input id="btn_add" class="btn btn-success text-left mb15" style="width: 69px;" type="submit" value="Add"/>
+                        </div>
+                    </div>
+
+                    <div class="panel-heading">
+                        <label id="lbl_current_limitations"><h5><b>Current Amount Limitation</b></h5></label>
+                    </div>
+                    <div class="table-responsive">
+                        <table id='tbl_current_limitations' class="table table-bordered table-striped ml30" style="width: 50%">
+                            <thead>
+                            <tr>
+                                <th>Limit To</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% if current_amount_limit %}
+                                    {% for i in current_amount_limit %}
+                                        {% if not i.is_deleted %}
+                                        <tr>
+                                            <td>
+                                                {{ i.limit_value | floatformat:2 | intcomma | default_if_none:'' }} /recipient/campaign
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-2">
+                                                    <input class="btn btn-outline btn-primary remove-denomination"
+                                                           id="btn_delete"
+                                                           data-campaign-id="{{ campaign.id }}"
+                                                           data-limit-id="{{ i.id }}"
+                                                           data-url="{% url 'campaign:delete-amount-limit' campaign.id i.id %}"
+                                                           type="button" value="Delete"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group pull-right">
+                        <a href="{% url 'campaign:campaign_detail' campaign_id %}">
+                            <input id="btn_back" class="btn text-left mb15" type="button"
+                                   value="Back"/>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+    {{ block.super }}
+    <script>
+
+        var AmountLimit = function () {
+            var deleteLimit = function (e) {
+                var url = $(e).data('url');
+                var campaignId = $(e).data('campaign-id');
+                var limitId = $(e).data('limit-id');
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+                    success: function (response) {
+                        if (response.status === 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/customers/";
+                            window.location.replace(url);
+                        } else if (response.status === 2) {
+                            // success
+                            $(e).closest('tr').remove();
+                            showSuccessMessage('Amount Limit Deleted');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        var message = JSON.stringify(msg);
+                        console.error('Error delete amount limit id ' + limitId + 'for campaign id ' + campaignId + ' ' + message);
+                        showErrorMessage(message);
+                    }
+                });
+            };
+
+            var showErrorMessage = function (msg) {
+                $(".alert").hide();
+                $("#alert-msg").text(msg);
+                $('#alert-client')
+                    .removeClass("alert-success")
+                    .addClass("alert-danger")
+                    .show();
+                $("html, body").animate({scrollLeft: 0}, 100).animate({scrollTop: 0}, "slow");
+            };
+
+            var showSuccessMessage = function (msg) {
+                $(".alert").hide();
+                $("#alert-msg").text(msg);
+                $('#alert-client')
+                    .removeClass("alert-danger")
+                    .addClass("alert-success")
+                    .show();
+                $("html, body").animate({scrollLeft: 0}, 100).animate({scrollTop: 0}, "slow");
+            };
+
+            var submitForm = function (e) {
+                var amount_limit = $('#txt_limit_value');
+                var amount = parseFloat(amount_limit.val()) || 0.0;
+                $('.alert').hide();
+                if (amount <= 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showErrorMessage('Cannot set zero or negative limitations');
+                }
+            };
+
+            return {
+                init: function () {
+                    $(function () {
+                        $('#tbl_current_limitations').on('click', '#btn_delete', function () {
+                            deleteLimit(this);
+                        });
+
+                        $('#submit-form').on('submit', function(e){
+                            submitForm(e);
+                        });
+                    });
+                }
+
+            }
+        }();
+        // init page
+        AmountLimit.init();
+
+    </script>
+{% endblock %}

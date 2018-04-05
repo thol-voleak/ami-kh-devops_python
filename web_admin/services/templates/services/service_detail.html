@@ -73,9 +73,11 @@
                         <a href="{% url 'services:services_list' %}">
                             <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
                         </a>
+                        {% if can_edit_service %}
                         <a href="{% url 'services:update_service' service_info.service_id %}">
                             <input id="btn_edit" class="btn btn-success" type="button" value="Edit">
                         </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>

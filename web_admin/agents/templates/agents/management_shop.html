@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% load common_tags %}
+{% block body_stylesheet %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="panel mb25">
+<style type="text/css">
+    #exTab1 {
+        max-width: 100%;
+    }
+
+    #exTab1 .tab-content {
+      background-color: white;
+      padding : 5px 15px;
+    }
+
+    #exTab1 .nav-pills > li > a {
+      border-radius: 0;
+    }
+
+    .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus{
+        border-bottom: 4px solid #ea3f35;
+        background-color: white;
+        color: #ea3f35;
+    }
+     .nav-pills > li > a, .nav-pills > li > a:hover, .nav-pills > li > a:focus{
+        background-color: white;
+        color: #616161;
+    }
+    .alert-success {
+        margin-top: 10px;
+    }
+</style>
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <div id="exTab1" class="container">
+                    {% include "agents/management_tab_menu.html" with active_tab='shop'%}
+                    {% include "message.html" %}
+                <br>
+                <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
+                <div class="tab-content clearfix">
+                     <div class="tab-pane active">
+                        <h4>Shop Management</h4>
+                         {% if request.user|has_permission_name:"CAN_LINK_SHOP"%}
+                             <div class="text-right">
+                                <a id="btn_add_shop" class="btn btn-success btn-md" href="{% url 'agents:agent_link_shop' agent_id %}?back_url={% current_url_encoded_for_back %}">
+                                    <strong>+</strong> <span>Add Shop</span>
+                                </a>
+                            </div>
+                         {% endif %}
+                        <form method="get">
+                            <button type="submit" id="btn_search" value="Search" hidden></button>
+                            <input id="current_page_index" name="current_page_index" type="hidden" value="{{ current_page_index|default:'1' }}"/>
+                        </form>
+                         <div style="margin-top: 15px; text-align: right">
+                                Total Shops Found:&nbsp;<span id="lbl_total">{{ total_result }}</span>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 10px;">
+                                <table id="tbl_shops" class="table table-bordered table-striped mb0">
+                                    <thead>
+                                    <tr>
+                                        <th>Shop ID</th>
+                                        <th>Shop Type</th>
+                                        <th>Shop Category</th>
+                                        <th>Shop Name</th>
+                                        <th>City</th>
+                                        <th>District</th>
+                                        <th>Relationship Manager Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for shop in shops %}
+                                            <tr>
+                                                <td>{{ shop.id|default_if_none:'' }}</td>
+                                                <td>{{ shop.shop_type.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.shop_category.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.name|default_if_none:'' }}</td>
+                                                <td>{{ shop.address.city|default_if_none:'' }}</td>
+                                                <td>{{ shop.address.district|default_if_none:'' }}</td>
+                                                <td>{{ shop.relationship_manager_name|default_if_none:'' }}</td>
+                                                <td>
+                                                    {% if request.user|has_permission_name:"CAN_VIEW_SHOP"%}
+                                                    <a id="btn_detail" class="btn btn-outline btn-xs btn-info" href="{% url 'shop:shop_detail' shop.id %}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                                    {% endif %}
+                                                    {% if request.user|has_permission_name:"CAN_UNLINK_SHOP"%}
+                                                    <button id="btn_shop_unlink" class="btn btn-outline btn-xs btn-danger" onclick="unlinkshopfromagent('{{ shop.id }}', '{{ agent_id }}', '{{ shop.name }}')">Unlink</button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% include "pagination.html" %}
+                        </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body_js %}
+{{ block.super }}
+    <script>
+       function unlinkshopfromagent(shopId, agentId, shopName) {
+        swal({
+            title: "Confirm remove link with " + shopName + "?",
+            text: "",
+            showCancelButton: true,
+            confirmButtonColor: "#2ECC71",
+            confirmButtonText: "OK",
+            closeOnConfirm: true
+        },
+        function () {
+            var url = '/admin-portal/agents/' + agentId + '/shop/' + shopId + '/unlink';
+            window.location.replace(url);
+        });
+       }
+    </script>
+{% endblock %}

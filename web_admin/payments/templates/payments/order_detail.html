@@ -388,11 +388,14 @@
                                     <table class="table table-bordered table-striped mb0" id="tbl_balance_movement">
                                         <thead>
                                         <tr>
+                                            <th id="balance_movement_first_name">First Name</th>
+                                            <th id="balance_movement_last_name">Last Name</th>
+                                            <th id="balance_movement_user_id">User ID</th>
                                             <th id="balance_movement_sof_id">SOF ID</th>
                                             <th id="balance_movement_order_detail_id">Order Detail ID</th>
-                                            <th id="balance_movement_order_id">Order ID</th>
                                             <th id="balance_movement_status">Status</th>
-                                            <th id="balance_movement_fee_related">Fee Related</th>
+                                            <th id="balance_movement_from_amount">From Amount</th>
+                                            <th id="balance_movement_label">Label</th>
                                             <th id="balance_movement_debit">Debit</th>
                                             <th id="balance_movement_credit">Credit</th>
                                             <th id="balance_movement_created_time">Created Time</th>
@@ -402,11 +405,14 @@
                                         <tbody>
                                             {% for order in order_balance_movement %}
                                                <tr id="row-{{ order.order_balance_movement_id }}">
+                                                    <td>{{ order.first_name|default_if_none:'-' }}</td>
+                                                    <td>{{ order.last_name|default_if_none:'-' }}</td>
+                                                    <td>{{ order.user_type.name }}({{ order.user_id }})</td>
                                                     <td>{{ order.sof_id|default_if_none:'' }}</td>
                                                     <td>{{ order.order_balance_movement_id|default_if_none:'' }}</td>
-                                                    <td>{{ order.order_id|default_if_none:'' }}</td>
                                                     <td>{{ order.converted_status|default_if_none:'' }}</td>
-                                                    <td>{{ order.fee_related|yesno:"Yes,No,''" }}</td>
+                                                    <td>{{ order.amount_type|default_if_none:'-' }}</td>
+                                                    <td>{{ order.label|default_if_none:'-' }}</td>
                                                     <td>{{ order.debit_amount|default_if_none:'' }}</td>
                                                     <td>{{ order.credit_amount|default_if_none:'' }}</td>
                                                     <td>{{ order.created_timestamp|default_if_none:'' }}</td>
@@ -415,7 +421,7 @@
                                             {% endfor %}
                                             {% if order_balance_movement|length > 0 %}
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">Total</td>
+                                                <td colspan="8" style="text-align: center;">Total</td>
                                                 <td><span id="lbl_total_debit">{{ total_debit|default_if_none:'' }}</span></td>
                                                 <td><span id="lbl_total_credit">{{ total_credit|default_if_none:'' }}</span></td>
                                                 <td colspan="2"></td>
@@ -433,7 +439,13 @@
                     </div>
 
                     <div class="pull-right">
-                        <a href="{% url 'payments:payment_order' %}">
+                        {% if page_from == 'agent' or page_from == 'customer'  %}
+                            <a href="{{back_wallet_url}}">
+                        {% elif page_from == 'order_list' %}
+                            <a href="{% url 'payments:payment_order' %}">
+                        {% else %}
+                            <a href="{% url 'payments:payment_order' %}">
+                        {% endif %}
                             <input id="btn_back" class="btn text-left mb15" type="button" value="Back"/>
                         </a>
                     </div>

@@ -78,7 +78,9 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cancel_url = request.POST.get('cancel_url')
         cancel_read_timeout = request.POST.get('cancel_read_timeout')
         provider = request.POST.get('provider')
-
+        pre_sof_check_status_url = request.POST.get('presof_check_status_url')
+        pre_sof_check_status_read_timeout = request.POST.get('presof_check_status_read_timeout')
+        pre_sof_check_status_max_retry = request.POST.get('presof_check_status_max_retry')
 
         body = {
             "name": name,
@@ -94,7 +96,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "credit_url": credit_url,
             "check_status_url": check_status_url,
             "cancel_url": cancel_url,
-            "provider_id": int(provider)
+            "provider_id": int(provider),
+            "pre_sof_check_status_url": pre_sof_check_status_url
         }
 
 
@@ -114,6 +117,10 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['check_status_read_timeout'] = int(check_status_read_timeout)
         if cancel_read_timeout:
             body['cancel_read_timeout'] = int(cancel_read_timeout)
+        if pre_sof_check_status_read_timeout:
+            body['pre_sof_check_status_read_timeout'] = int(pre_sof_check_status_read_timeout)
+        if pre_sof_check_status_max_retry:
+            body['pre_sof_check_status_max_retry'] = int(pre_sof_check_status_max_retry)
 
         url = api_settings.CARD_DESIGN_UPDATE.format(provider_id=provider, card_id=card_id)
         success, data = self._update_card_design(url, body)

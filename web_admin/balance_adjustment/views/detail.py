@@ -56,7 +56,13 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions = {}
         permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
 
+        balanceAdjustmentRespone = data['balance_adjustment_reference'][0]
+        referenceServiceGroupInfo = self._get_service_group_detail(balanceAdjustmentRespone['reference_service_group_id'])
+        referenceServiceInfo = self._get_service_detail(balanceAdjustmentRespone['reference_service_id'])
+
         context = {'order': data['balance_adjustment_reference'][0],
+                   'referenceServiceGroupInfo': referenceServiceGroupInfo,
+                   'referenceServiceInfo': referenceServiceInfo,
                    'show_buttons': True,
                    'permissions': permissions}
         self.logger.info('========== Finish getting balance adjustment detail ==========')
@@ -99,6 +105,15 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         elif status_code.lower() in ["general_error"]:
             error_msg = 'Other error, please contact system administrator'
             return self._handle_error(error_msg, reference_id)
+            # If get error timeout, response as success to client
+        elif status_code.lower() in ["external_call_timeout", "internal_call_timeout","sof_timeout", "timeout"]:
+            self.logger.info('get timeout error from server but considers as success to client')
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Payment is approved successfully'
+            )
+            return redirect('balance_adjustment:balance_adjustment_list')
         elif status_message == 'timeout':
             messages.add_message(
                 request,
@@ -151,3 +166,35 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
             message
         )
         return redirect(self.request.META['HTTP_REFERER'])
+
+    def _get_service_group_detail(self, service_group_id):
+        if service_group_id == None:
+            return None
+        url = api_settings.SERVICE_GROUP_DETAIL_URL.format(service_group_id)
+        self.logger.info('========== start getting service group detail ==========')
+        is_success, status_code, data = RestFulClient.get(url=url,
+                                                          headers=self._get_headers(),
+                                                          loggers=self.logger)
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                                status_code=status_code)
+        context = None
+        if is_success:
+            context = data
+        self.logger.info('========== Finished getting service group detail ==========')
+        return context
+
+    def _get_service_detail(self, service_id):
+        if service_id == None:
+            return None
+        url = api_settings.SERVICE_DETAIL_URL.format(service_id)
+        self.logger.info('========== start getting service detail ==========')
+        is_success, status_code, data = RestFulClient.get(url=url,
+                                                          headers=self._get_headers(),
+                                                          loggers=self.logger)
+        API_Logger.get_logging(loggers=self.logger, params={}, response=data,
+                               status_code=status_code)
+        context = None
+        if is_success:
+            context = data
+        self.logger.info('========== Finished getting service detail ==========')
+        return context

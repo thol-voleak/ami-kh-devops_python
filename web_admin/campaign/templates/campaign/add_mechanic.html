@@ -487,7 +487,25 @@
                     .val("@@user_id@@")
                     .html("Actor who registered")
                 )
+
+                if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                    $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                    $("#ddl_reward_type").val("fixed_cashback");
+                    this.listenRewardType("fixed_cashback");
+                }
             } else {
+                if (triggerValue == 'limit_reached') {
+                    $("#ddl_reward_type").find('[value="fixed_cashback"]').remove();
+                    $("#ddl_reward_type").val("send_notification");
+                    this.listenRewardType("send_notification");
+                } else {
+                    if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                        $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                        $("#ddl_reward_type").val("fixed_cashback");
+                        this.listenRewardType("fixed_cashback");
+                    }
+                }
+
                 if(rewardTypeSelectedValue == 'suspend_account') {
                     $("#lbl_paid_amount").prop('hidden', true);
                 } else {

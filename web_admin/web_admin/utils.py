@@ -5,6 +5,27 @@ from Crypto.Cipher import PKCS1_v1_5
 import base64
 import datetime
 import logging
+import urllib
+
+
+def encode_current_url_for_back(request):
+    path = request.get_full_path()
+    path = str.encode(path)
+    path = base64.b64encode(path)
+    path = urllib.parse.quote_plus(path)
+    return path
+
+
+def get_back_url(request, default_url=None):
+    back_url = request.GET.get('back_url')
+
+    if not back_url:
+        return default_url
+
+    path = urllib.parse.unquote_plus(back_url)
+    path = base64.b64decode(path)
+    path = path.decode()
+    return path
 
 
 def format_date_time(data):

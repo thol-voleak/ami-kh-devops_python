@@ -8,7 +8,8 @@ from .views.detail import CampaignDetail
 from .views.add_mechanic import AddMechanic
 from .views.delete_mechanic import MechanicDelete
 from .views.configuration import MappingView
-
+from .views.amount_limit import AmountLimit
+from .views.api_amount_limit import delete_amount_limit
 
 app_name = 'campaign'
 
@@ -28,5 +29,9 @@ urlpatterns = [
         name="delete_mechanic"),
     url(r'^configuration/$', login_required(MappingView.as_view(), login_url='authentications:login'),
         name="campaign_configuration"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/amount-limit/$', login_required(AmountLimit.as_view(), login_url='authentications:login'),
+        name="amount_limit"),
+    url(r'^(?P<rule_id>[0-9A-Za-z]+)/amount-limit/(?P<rule_limit_id>[0-9A-Za-z]+)/delete', login_required(delete_amount_limit, login_url='authentications:login'),
+        name="delete-amount-limit"),
 ]
 
