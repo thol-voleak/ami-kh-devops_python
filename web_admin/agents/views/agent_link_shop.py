@@ -44,9 +44,11 @@ class AgentLinkShop(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        permissions = {}
+        permissions['CAN_ADD_SHOP'] = self.check_membership(["CAN_ADD_SHOP"])
         agent_id = kwargs["agent_id"]
         form = request.POST
-        context = {'form': form, "agent_id": agent_id}
+        context = {'form': form, "agent_id": agent_id, 'permissions':permissions}
 
         params = {
             "paging": False,
