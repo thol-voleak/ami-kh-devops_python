@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     'shop_type',
     'shop_category',
     'shop',
+    'channel_gateway.service',
+    'channel_gateway.api',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -357,6 +359,16 @@ LOGGING = {
             'propagate': True,
         },
         'shop': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'channel_gateway.service': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'channel_gateway.api': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
