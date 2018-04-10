@@ -39,9 +39,9 @@ class ListView(TemplateView, GetHeaderMixin):
             'is_deleted_status_list': is_deleted_status_list
         })
         opening_page_index = request.GET.get('current_page_index', 1)
-        service_id = request.GET.get('service_id', None)
-        service_name = request.GET.get('service_name', None)
-        is_deleted = request.GET.get('is_deleted', None)
+        service_id = request.GET.get('service_id', "")
+        service_name = request.GET.get('service_name', "")
+        is_deleted = request.GET.get('is_deleted', "")
 
         params = {}
         params['paging'] = True
