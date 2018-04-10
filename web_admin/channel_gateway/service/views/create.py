@@ -49,14 +49,20 @@ class CreateView(TemplateView, GetHeaderMixin):
             params['max_total_connection'] = int(form['max_total_connection'])
 
         success, status_code, message, data = self.add_channel_service(params)
-        if success:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'New service has been created'
-            )
+
         self.logger.info('========== Finish Adding new channel service ==========')
-        return redirect('channel_gateway_service:list')
+
+        if success:
+            msg = 'New service has been created'
+            stt = messages.SUCCESS
+            url_name = 'channel_gateway_service:list'
+        else:
+            msg = message
+            stt = messages.ERROR
+            url_name = 'channel_gateway_service:create'
+
+        messages.add_message(request, stt, msg)
+        return redirect(url_name)
 
     def add_channel_service(self, params):
         success, status_code, message, data = RestFulClient.post(
