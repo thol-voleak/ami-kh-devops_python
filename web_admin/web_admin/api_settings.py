@@ -309,3 +309,8 @@ GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'
 DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
+
+# channel gateway
+GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
+
+
