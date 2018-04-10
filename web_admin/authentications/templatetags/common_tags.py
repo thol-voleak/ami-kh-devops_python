@@ -1,8 +1,13 @@
 from django import template
 
-from web_admin.utils import encode_current_url_for_back, get_back_url
+from web_admin.utils import encode_current_url_for_back, get_back_url, has_any_permission
 
 register = template.Library()
+
+
+@register.filter(name='has_any_permission')
+def filter_has_any_permission(request, args):
+    return has_any_permission(request, args.split(','))
 
 
 @register.simple_tag(name='current_url_encoded_for_back', takes_context=True)

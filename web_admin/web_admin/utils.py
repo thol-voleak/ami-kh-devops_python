@@ -8,6 +8,14 @@ import logging
 import urllib
 
 
+def has_any_permission(request, args):
+    permissions = request.session.get('permissions', [])
+    for permission in args:
+        if permission in [x['name'] for x in permissions]:
+            return True
+    return False
+
+
 def encode_current_url_for_back(request):
     path = request.get_full_path()
     path = str.encode(path)
