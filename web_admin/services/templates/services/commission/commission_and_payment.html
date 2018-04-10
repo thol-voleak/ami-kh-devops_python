@@ -187,6 +187,7 @@
                                 <select class="form-control" name="amount_type"
                                         id="ddl_setting_payment_fee_structure_from_amount"
                                         onchange="changeAmountType('#ddl_setting_payment_fee_structure_from_amount', '#txt_setting_payment_fee_structure_rate', this)">
+                                    <option value="" selected="selected"></option>
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
