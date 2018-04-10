@@ -76,7 +76,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         });
         
         // Master: AmountTypes Dropdown
-        var htmlDDAmountTypes = '';
+        var htmlDDAmountTypes = '<option value="" selected=\"selected\"/>';;
         jQuery.each(m_amount_type, function() {
             if (aData[5].toLowerCase() == this.amount_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';

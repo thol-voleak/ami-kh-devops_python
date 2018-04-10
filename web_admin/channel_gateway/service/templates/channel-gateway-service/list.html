@@ -6,7 +6,7 @@
             <div>
                 <div class="pull-left"><h3>Services</h3></div>
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                    <a id="btn_add_new_service" class="btn btn-success btn-block btn-md" href="{% url 'channel_gateway_service:create' %}?back_url={% current_url_encoded_for_back %}">
+                    <a id="btn_add_new_service" class="btn btn-success btn-block btn-md mb15" href="{% url 'channel_gateway_service:create' %}?back_url={% current_url_encoded_for_back %}">
                         <strong>+</strong> <span>Add New Shop</span>
                     </a>
                 </div>
@@ -73,9 +73,9 @@
                                 <td>{{ i.is_deleted|yesno:"Yes,No" }}</td>
                                 <td>{{ i.last_updated_timestamp|yesno:"Yes,No" }}</td>
                                 <td>
-                                    <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</button>
-                                    <button id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</button>
-                                    <button id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger">Delete</button>
+                                    <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</a>
+                                    <a id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</a>
+                                    <a id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger">Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
