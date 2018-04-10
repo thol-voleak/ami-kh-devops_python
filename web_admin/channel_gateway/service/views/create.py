@@ -53,16 +53,11 @@ class CreateView(TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish Adding new channel service ==========')
 
         if success:
-            msg = 'New service has been created'
-            stt = messages.SUCCESS
-            url_name = 'channel_gateway_service:list'
+            messages.add_message(request, messages.SUCCESS, 'New service has been created')
+            return redirect('channel_gateway_service:list')
         else:
-            msg = message
-            stt = messages.ERROR
-            url_name = 'channel_gateway_service:create'
-
-        messages.add_message(request, stt, msg)
-        return redirect(url_name)
+            messages.add_message(request, messages.ERROR, message)
+            return render(request, self.template_name, context={'form': form})
 
     def add_channel_service(self, params):
         success, status_code, message, data = RestFulClient.post(
