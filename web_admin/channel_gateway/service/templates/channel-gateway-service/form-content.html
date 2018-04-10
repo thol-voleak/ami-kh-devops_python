@@ -2,4 +2,37 @@
 
 <input type="hidden" name="id" value="{{ form.id }}" />
 
-Form Content Here
+<div class="form-group">
+    <label class="col-sm-3 control-label">Service Name *</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_service_name" name="name" value="{{ form.name }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Location *</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_location" name="location" value="{{ form.location }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Timeout (millisecond)</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_timeout" name="timeout" value="{{ form.timeout }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Max Total Connection</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_max_total_connection" name="max_total_connection" value="{{ form.max_total_connection }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Max Per Route</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_max_per_route" name="max_per_route" value="{{ form.max_per_route }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
