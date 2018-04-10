@@ -38,7 +38,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         });
 
         // Master: Actors Dropdown
-        var htmlDDActors = '';
+        var htmlDDActors = '<option value="" selected=\"selected\"/>';
         jQuery.each(m_actor_types, function() {
             if (aData[1].toLowerCase() == this.actor_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';

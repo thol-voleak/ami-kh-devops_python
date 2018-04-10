@@ -148,6 +148,7 @@
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
                                         onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund',this)">
+                                    <option value="" selected="selected"></option>
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}

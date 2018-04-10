@@ -310,7 +310,6 @@ DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
 
-# channel gateway
+# Channel-gateway Service
+CHANNEL_SERVICE = 'api-gateway/channel-gateway' + API_VERSION + '/admin/services'
 GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
-
-
