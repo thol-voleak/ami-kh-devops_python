@@ -29,10 +29,10 @@ class ListView(TemplateView, GetHeaderMixin):
             "value": "",
             "name": "All"
         },{
-            "value": "0",
+            "value": "1",
             "name": "Yes"
         },{
-            "value": "1",
+            "value": "0",
             "name": "No"
         }]
         context.update({
@@ -51,7 +51,7 @@ class ListView(TemplateView, GetHeaderMixin):
         if service_name:
             params['name'] = service_name
         if is_deleted:
-            params['is_deleted'] = True if is_deleted == '0' else False
+            params['is_deleted'] = True if is_deleted == '1' else False
 
         self.logger.info('========== Start get channel gateway service list ==========')
         channel_service_list = self.get_service_list(params)
