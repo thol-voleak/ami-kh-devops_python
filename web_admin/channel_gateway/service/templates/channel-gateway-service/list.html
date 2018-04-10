@@ -72,7 +72,7 @@
                                     <td>{{ i.name|default_if_none:'' }}</td>
                                     <td>{{ i.location|default_if_none:'' }}</td>
                                     <td>{{ i.is_deleted|yesno:"Yes,No" }}</td>
-                                    <td>{{ i.last_updated_timestamp|yesno:"Yes,No" }}</td>
+                                    <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                                     <td>
                                         <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</a>
                                         <a id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</a>
@@ -85,7 +85,7 @@
                                     <td><del>{{ i.name|default_if_none:'' }}</del></td>
                                     <td><del>{{ i.location|default_if_none:'' }}</del></td>
                                     <td><del>{{ i.is_deleted|yesno:"Yes,No" }}</del></td>
-                                    <td><del>{{ i.last_updated_timestamp|yesno:"Yes,No" }}</del></td>
+                                    <td><del>{{ i.last_updated_timestamp|default_if_none:'' }}</del></td>
                                     <td></td>
                                 </tr>
                             {% endif %}
