@@ -85,6 +85,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         payee_sof_type_id = request.POST.get('payee_sof_type_id')
         reference_service_group_id = request.POST.get('reference_service_group_id')
         reference_service_id = request.POST.get('reference_service_id')
+        batch_code = request.POST.get('batch_code')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -119,7 +120,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['created_user_id'] = requested_by_id
         if approved_by_id:
             body['approved_user_id'] = approved_by_id
-        
+        if batch_code:
+            body['batch_code'] = batch_code
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -168,6 +170,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                        'date_from': from_created_timestamp,
                        'date_to': to_created_timestamp,
                        'ref_order_id': ref_order_id,
+                       'batch_code': batch_code,
                        'paginator': page,
                        'page_range': calculate_page_range_from_page_info(page),
                        'search_count': page['total_elements']
