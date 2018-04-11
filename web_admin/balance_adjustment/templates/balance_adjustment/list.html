@@ -175,7 +175,6 @@
                         {% endfor %}
                     </select>
                 </div>
-                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
 
             </div>
             <div class="form-group">
@@ -195,10 +194,22 @@
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right" >Total Orders found:&nbsp;</label>
         </form>
+
+        <div class="dropdown pull-left" id="ddl_actions" style="margin-bottom: 10px;">
+            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span
+                    class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a>Approve</a></li>
+                <li><a>Reject</a></li>
+                <li><a>Upload Adjustment</a></li>
+            </ul>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
                 <thead>
                 <tr>
+                    <th><input type="checkbox" name="select-all" id="select-all" /></th>
                     <th id="batch_code">Batch Code</th>
                     <th id="id">Order ID</th>
                     <th id="amount">Transaction Amount</th>
@@ -218,7 +229,8 @@
                 </thead>
                 <tbody id="table_body">
                     {% for order in order_list %}
-                        <tr>
+                        <tr class="checkboxlist">
+                            <td class="col-sm-2"><input type="checkbox" name="balance_adjustment_checkbox" title="" id="chk_balance_adjustment_{{ order.reference_id|default_if_none:'' }}" value="{{order.reference_id}}"/></td>
                             <td class="col-sm-2">{{ order.batch_code|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
@@ -298,5 +310,23 @@
             ddlServiceGroup.value = refServiceGroupId;
         }
     }
+
+    bindSelectCheckboxEvents = function () {
+        //bind select all
+        $('#select-all').on('change', function() {
+            $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+        });
+
+        //bind select check box on row event
+        $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').on('change', function () {
+            var allChecked = $('#tbl_balance_adjustment .checkboxlist input:checked').length === $('#tbl_balance_adjustment .checkboxlist input').length;
+            $('#select-all').prop('checked', allChecked);
+        });
+    }
+
+    $(document).ready(function () {
+        bindSelectCheckboxEvents();
+    })
+
 </script>
 {%  endblock %}
