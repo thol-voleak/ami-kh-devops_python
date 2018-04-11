@@ -107,7 +107,7 @@
                                    id="txt_reason_for_approval_or_reject" name="reason_for_approval_or_reject"
                                    value="{{ order.reason_for_approve_or_reject | default_if_none:'' }}"
                                     {% if order.status.name != "CREATED" %} readonly {% endif %}
-                            readonly>
+                            >
                         </div>
                     </div>
 
