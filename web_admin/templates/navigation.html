@@ -21,7 +21,7 @@
                 </a>
             </li>
             {% with request.resolver_match.app_name as app_name %}
-            <li class="menu-accordion class={% if app_name == "channel_gateway_service" or app_name =="channel_gateway_api" or app_name == "channel_gateway_api" %} open{% endif %}">
+            <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                 <ul class="sub-menu">
                     <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
