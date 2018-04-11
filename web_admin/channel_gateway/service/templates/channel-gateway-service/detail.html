@@ -15,7 +15,7 @@
                     {% include "channel-gateway-service/form-content.html" with is_readonly=True %}
 
                     <div class="pull-right">
-                        <a id="btn_back" class="btn" href="{% url 'channel_gateway_service:list' %}">Back</a>
+                        <a id="btn_back" class="btn" href="{% get_back_url %}">Back</a>
                     </div>
                 </form>
             </div>
