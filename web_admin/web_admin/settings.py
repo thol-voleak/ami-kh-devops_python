@@ -364,12 +364,12 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'channel_gateway.service': {
+        'channel_gateway': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
-        'channel_gateway.api': {
+        'web_admin': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

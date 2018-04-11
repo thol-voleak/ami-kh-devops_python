@@ -1,6 +1,6 @@
 from django.views.generic.base import TemplateView
 from web_admin import setup_logger, api_settings
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, build_logger
 from django.shortcuts import render
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 import logging
@@ -9,18 +9,15 @@ from django.conf import settings
 from web_admin.api_logger import API_Logger
 from web_admin.get_header_mixins import GetHeaderMixin
 
-logger = logging.getLogger(__name__)
-
 
 class ListView(TemplateView, GetHeaderMixin):
 
     template_name = "channel-gateway-service/list.html"
     login_url = 'web:permission_denied'
-    logger = logger
+    logger = logging.getLogger(__name__)
 
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        self.logger = build_logger(request, __name__)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -53,9 +50,7 @@ class ListView(TemplateView, GetHeaderMixin):
         if is_deleted:
             params['is_deleted'] = True if is_deleted == '1' else False
 
-        self.logger.info('========== Start get channel gateway service list ==========')
         channel_service_list = self.get_service_list(params)
-        self.logger.info('========== Finish get channel gateway service list ==========')
         page = channel_service_list.get('page', {})
         context.update({
             'channel_service_list': channel_service_list.get('services', []),
@@ -71,15 +66,8 @@ class ListView(TemplateView, GetHeaderMixin):
     def get_service_list(self, params):
         api_path = api_settings.GET_CHANNEL_SERVICE
 
-        success, status_code, status_message, data = RestFulClient.post(url=api_path,
-                                                                        headers=self._get_headers(),
-                                                                        loggers=self.logger,
-                                                                        params=params,
-                                                                        timeout=settings.GLOBAL_TIMEOUT)
+        success, status_code, status_message, data = RestFulClient.send("POST", api_path, params, self.request, "get service list", "data.services")
         if data is None:
             data = {}
             data['services'] = []
-
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data['services'],
-                                status_code=status_code, is_getting_list=True)
         return data

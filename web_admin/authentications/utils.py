@@ -8,6 +8,7 @@ from django.conf import settings
 import logging
 
 from web_admin import setup_logger
+from web_admin.utils import build_auth_header
 
 register = template.Library()
 
@@ -33,14 +34,7 @@ def get_auth_header(user):
         correlation_id = auth.correlation_id
     except Exception as e:
         raise InvalidAccessToken("{}".format(e))
-    headers = {
-        'content-type': 'application/json',
-        'correlation-id': correlation_id,
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'Authorization': 'Bearer {}'.format(access_token),
-    }
-    return headers
+    return build_auth_header(client_id, client_secret, correlation_id, access_token)
 
 
 def get_correlation_id_from_username(user):
