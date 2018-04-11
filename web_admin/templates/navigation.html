@@ -21,7 +21,7 @@
                 </a>
             </li>
             {% with request.resolver_match.app_name as app_name %}
-            <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% endif %}">
+            <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                 <ul class="sub-menu">
                     <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
@@ -30,9 +30,11 @@
                     <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
                         <a href="{% url 'channel_gateway_api:list' %}"> <span>APIs</span> </a>
                     </li>
-                    <li class="class={% if app_name == "channel_gateway_client" %} active{% endif %}">
+                    {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
+                    <li class="class={% if app_name == "clients" %} active{% endif %}">
                             <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
                     </li>
+                    {% endif %}
                 </ul>
             </li>
             {% endwith %}
