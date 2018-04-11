@@ -1,12 +1,9 @@
 from django.views.generic.base import TemplateView
-from web_admin import setup_logger, api_settings
+from web_admin import api_settings
+from web_admin.restful_helper import RestfulHelper
 from web_admin.utils import calculate_page_range_from_page_info, build_logger
 from django.shortcuts import render
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 import logging
-from web_admin.restful_client import RestFulClient
-from django.conf import settings
-from web_admin.api_logger import API_Logger
 from web_admin.get_header_mixins import GetHeaderMixin
 
 
@@ -66,7 +63,7 @@ class ListView(TemplateView, GetHeaderMixin):
     def get_service_list(self, params):
         api_path = api_settings.GET_CHANNEL_SERVICE
 
-        success, status_code, status_message, data = RestFulClient.send("POST", api_path, params, self.request, "get service list", "data.services")
+        success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get service list", "data.services")
         if data is None:
             data = {}
             data['services'] = []

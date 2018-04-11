@@ -14,7 +14,6 @@ import requests
 import logging
 import time
 
-from web_admin.exceptions import AccessTokenExpired
 from web_admin.utils import encrypt_text
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,7 @@ class PermissionDeniedException(Exception):
 
 class InvalidAccessTokenException(object):
     def process_exception(self, request, exception):
-        if type(exception) == InvalidAccessToken or type(exception) == AccessTokenExpired:
+        if type(exception) == InvalidAccessToken:
             messages.add_message(
                 request, messages.ERROR,
                 'Your login credentials have expired. Please login again.'

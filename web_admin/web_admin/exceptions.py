@@ -1,2 +1,0 @@
-class AccessTokenExpired(Exception):
-    pass
