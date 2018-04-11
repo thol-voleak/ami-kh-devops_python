@@ -20,6 +20,22 @@
                     <span>Home</span>
                 </a>
             </li>
+            {% with request.resolver_match.app_name as app_name %}
+            <li class="menu-accordion class={% if app_name == "channel_gateway_service" or app_name =="channel_gateway_api" or app_name == "channel_gateway_api" %} open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
+                <ul class="sub-menu">
+                    <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
+                        <a href="{% url 'channel_gateway_service:list' %}"> <span>Service</span> </a>
+                    </li>
+                    <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
+                        <a href="{% url 'channel_gateway_api:list' %}"> <span>Api</span> </a>
+                    </li>
+                    <li class="class={% if app_name == "channel_gateway_client" %} active{% endif %}">
+                            <a href="#"> <span>Client</span> </a>
+                    </li>
+                </ul>
+            </li>
+            {% endwith %}
             {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES" or request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
             {% check_valid_url url_name 'authentications' as is_authen_url %}
             <li class="menu-accordion {% if is_authen_url %}open{% endif %}">
