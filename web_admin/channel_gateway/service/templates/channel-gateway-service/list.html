@@ -75,7 +75,7 @@
                                     <td>{{ i.is_deleted|yesno:"Yes,No" }}</td>
                                     <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                                     <td>
-                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</a>
+                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" href="{% url 'channel_gateway_service:detail' i.id%}" >Detail</a>
                                         <a id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</a>
                                         <a id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger">Delete</a>
                                     </td>
