@@ -25,13 +25,13 @@
                 <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                 <ul class="sub-menu">
                     <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
-                        <a href="{% url 'channel_gateway_service:list' %}"> <span>Service</span> </a>
+                        <a href="{% url 'channel_gateway_service:list' %}"> <span>Services</span> </a>
                     </li>
                     <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
-                        <a href="{% url 'channel_gateway_api:list' %}"> <span>Api</span> </a>
+                        <a href="{% url 'channel_gateway_api:list' %}"> <span>APIs</span> </a>
                     </li>
                     <li class="class={% if app_name == "channel_gateway_client" %} active{% endif %}">
-                            <a href="#"> <span>Client</span> </a>
+                            <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
                     </li>
                 </ul>
             </li>
