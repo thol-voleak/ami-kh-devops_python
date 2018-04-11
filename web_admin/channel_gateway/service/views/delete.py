@@ -33,7 +33,7 @@ class DeleteView(TemplateView, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         services_id = int(kwargs['id'])
-        api_path = api_settings.DELETE_CHANNEL_SERVICE
+        api_path = api_settings.DELETE_CHANNEL_SERVICE.format(service_id=services_id)
         self.logger.info('========== Start delete service  ==========')
         success, status_code, status_message = RestFulClient.delete(
             url=api_path,
@@ -51,6 +51,13 @@ class DeleteView(TemplateView, GetHeaderMixin):
                 'Service has been deleted'
             )
             return redirect('channel_gateway_service:list')
+        else:
+            messages.add_message(request, messages.ERROR, status_message)
+            services = self.get_service_detail(services_id)
+            context = {
+                "form": services["services"][0]
+            }
+            return render(request, self.template_name, context)
 
     def get_service_detail(self, services_id):
         url = api_settings.GET_CHANNEL_SERVICE
