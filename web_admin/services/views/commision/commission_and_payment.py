@@ -75,6 +75,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         context['fee_tier_detail'] = fee_tier_detail
 
         self._replace_actor_type_items(data)
+        self._replace_amount_type_items(data)
         context['data'] = self._filter_deleted_items(data)
         #context['bonus'] = self._filter_deleted_items(bonus)
         #context['agent_bonus_distribution'] = total_bonus_distribution
@@ -92,6 +93,11 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         for balance_distribution in data:
             if balance_distribution['actor_type'] in ['Grand Parent', 'Parent']:
                 balance_distribution['actor_type'] = None
+
+    def _replace_amount_type_items(self, data):
+        for balance_distribution in data:
+            if balance_distribution['amount_type'] == 'Parent Fee Rate':
+                balance_distribution['amount_type'] = None
 
     def _get_choices(self):
         url_list = [api_settings.ACTION_TYPES_URL, api_settings.AMOUNT_TYPES_URL,
