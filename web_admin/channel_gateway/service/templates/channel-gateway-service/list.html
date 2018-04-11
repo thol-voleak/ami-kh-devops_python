@@ -87,7 +87,9 @@
                                     <td><del>{{ i.location|default_if_none:'' }}</del></td>
                                     <td><del>{{ i.is_deleted|yesno:"Yes,No" }}</del></td>
                                     <td><del>{{ i.last_updated_timestamp|default_if_none:'' }}</del></td>
-                                    <td></td>
+                                    <td>
+                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" href="{% url 'channel_gateway_service:detail' i.id%}?back_url={% current_url_encoded_for_back %}" >Detail</a>
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
