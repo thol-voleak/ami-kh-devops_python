@@ -36,6 +36,7 @@
             <table class="table table-bordered table-striped mb0">
                 <thead>
                 <tr>
+                    <th id="lbl_id">Service Id</th>
                     <th id="lbl_name">Name</th>
                     <th id="lbl_group">Group</th>
                     <th id="lbl_currency">Currency</th>
@@ -48,6 +49,7 @@
                 <tbody>
                 {% for services in data %}
                 <tr>
+                    <td class="col-sm-1">{{ services.service_id|default_if_none:'' }}</td>
                     {% if services.is_deleted %}
                         <td class="col-sm-3"><del>{{ services.service_name|default_if_none:'' }}</del></td>
                     {% else %}
