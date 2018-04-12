@@ -1,11 +1,135 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="panel mb25">
-    <div class="panel-heading">
-        <h3>APIs</h3>
-
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <div>
+                <div class="pull-left"><h3>APIs</h3></div>
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a id="btn_add_new_api" class="btn btn-success btn-block btn-md mb15">
+                        <strong>+</strong> <span>Add New API</span>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
         {% include "message.html" %}
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="get"
+                  action="{% url 'channel_gateway_api:list' %}">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">API ID</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control input-rounded" name="api_id" id="txt_api_id"
+                               value="{{ api_id }}">
+                    </div>
+                    <label class="col-sm-2 control-label">API Name</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="api_name" id="txt_api_name"
+                               value="{{ api_name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Service Name</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_service_name" name="service_id">
+                            <option value="">All</option>
+                            {% for item in service_list %}
+                                {% if item.id == service_id %}
+                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">HTTP Method</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_http_method" name="http_method">
+                            {% for item in http_method_list %}
+                                {% if item.value == selected_http_method %}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Is Deleted</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_is_deleted" name="is_deleted">
+                            {% for item in is_deleted_status_list %}
+                                {% if item.value == selected_deleted_status %}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="col-xs-1 pull-right">
+                            <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
+                                   value="Search">
+                    </div>
+                </div>
+                <label class="pull-right" id="lbl_total">{{ total_result }}</label>
+                <label class="pull-right" >Total records found:&nbsp;</label>
+            </form>
+           <div class="table-responsive">
+                <table id='tbl_services' class="table table-bordered table-striped mb0">
+                        <thead>
+                        <tr>
+                            <th id="">API ID</th>
+                            <th id="">Service Name</th>
+                            <th id="">API Name</th>
+                            <th id="">HTTP Method</th>
+                            <th id="">Pattern</th>
+                            <th id="">Is Deleted</th>
+                            <th id="">Update Date</th>
+                            <th id="">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in channel_api_list %}
+                            {% if not i.is_deleted %}
+                                <tr>
+                                    <td>{{ i.id|default_if_none:'' }}</td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' i.service.id %}">{{ i.service.name|default_if_none:'' }}</a></td>
+                                    <td>{{ i.name|default_if_none:'' }}</td>
+                                    <td>{{ i.http_method|default_if_none:'' }}</td>
+                                    <td>{{ i.pattern|default_if_none:'' }}</td>
+                                    <td>{{ i.is_deleted|yesno:"Yes,No" }}</td>
+                                    <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                                    <td>
+                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</a>
+                                        <a id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary">Edit</a>
+                                        <a id="btn_delete" class="btn btn-outline mb5 btn-xs btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td><del>{{ i.id|default_if_none:'' }}</del></td>
+                                    <td><del><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' i.service.id %}">{{ i.service.name|default_if_none:'' }}</a></del></td>
+                                    <td><del>{{ i.name|default_if_none:'' }}</del></td>
+                                    <td><del>{{ i.http_method|default_if_none:'' }}</del></td>
+                                    <td><del>{{ i.pattern|default_if_none:'' }}</del></td>
+                                    <td><del>{{ i.is_deleted|yesno:"Yes,No" }}</del></td>
+                                    <td><del>{{ i.last_updated_timestamp|default_if_none:'' }}</del></td>
+                                    <td>
+                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Detail</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+        </div>
+        {% include "pagination.html" %}
+        </div>
     </div>
-</div>
 {% endblock %}
