@@ -34,10 +34,13 @@ class CreateView(TemplateView, GetHeaderMixin):
     def post(self, request):
         self.logger.info('========== Start Adding new channel service ==========')
         form = request.POST
-        params = {
-            'name': form['name'],
-            'location': form['location']
-        }
+        params = {}
+
+        if form.get('name'):
+            params['name'] = form['name']
+
+        if form.get('location'):
+            params['location'] = form['location']
 
         if form.get('timeout'):
             params['timeout'] = int(form['timeout'])
