@@ -2,6 +2,14 @@
 {% load static %}
 
 {% block content %}
+
+<style>
+    .modal-dialog {
+        top: 30% !important;
+    }
+</style>
+
+
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading border">
         <h3>Balance Adjustment History</h3>
@@ -199,12 +207,46 @@
             <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span
                     class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li><a>Approve</a></li>
+                <li id="aprove_multi_balance"><a>Approve</a></li>
                 <li><a>Reject</a></li>
                 <li><a>Upload Adjustment</a></li>
             </ul>
         </div>
 
+        <!--phong test-->
+
+        <div class="modal" tabindex="-1" role="dialog" id="approveModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div style="float: left;">
+                            <h3 class="modal-title">Action: Approve</h3>
+                        </div>
+                        <div id="summury_balance" style="float: right;">
+                            <div id="number_orders_container">
+                                <span style="font-size: 15px;">Number of Orders: </span>
+                                <span id="number_orders_value" style="font-size: 15px;"></span>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="approve_reason" style="padding-left: 30px;">
+                            <div style="float: left;"><span style="font-size: 15px;">Reason:</span></div>
+                            <div class="col-sm-9" style="float: left;">
+                                <input type="text" class="input-rounded" name="approve_reason" style="width: 100%;">
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End-->
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
                 <thead>
@@ -324,8 +366,22 @@
         });
     }
 
+    bindSelectApproveAction = function () {
+        $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
+            var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
+            $("#approveModal #number_orders_value").text(selectedNumber);
+            $("#approveModal input[name='approve_reason']").val('');
+            $("#approveModal").modal('show');
+        });
+    }
+
+    bindSelectActionsEvent = function () {
+        bindSelectApproveAction();
+    }
+
     $(document).ready(function () {
         bindSelectCheckboxEvents();
+        bindSelectActionsEvent();
     })
 
 </script>
