@@ -25,7 +25,8 @@ class RestfulHelper:
         elif method == 'PUT':
             is_success, status_code, status_message, data = RestFulClient.put(url, headers, loggers, params)
         elif method == 'DELETE':
-            is_success, status_code, status_message, data = RestFulClient.delete(url, headers, loggers, params)
+            is_success, status_code, status_message = RestFulClient.delete(url, headers, loggers, params)
+            data = None
 
         if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
             raise InvalidAccessToken(status_message)

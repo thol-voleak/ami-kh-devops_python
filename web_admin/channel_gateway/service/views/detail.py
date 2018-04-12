@@ -12,6 +12,8 @@ from web_admin.api_logger import API_Logger
 from django.http import JsonResponse
 import logging
 
+from web_admin.restful_helper import RestfulHelper
+
 logger = logging.getLogger(__name__)
 
 
@@ -27,27 +29,19 @@ class DetailView(TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         services_id = int(kwargs['id'])
-        services  = self.get_service_detail(services_id)
+        service  = self.get_service_detail(services_id)
         context = {
-            "form" : services["services"][0]
+            "form" : service
         }
         return render(request, self.template_name, context)
 
     def get_service_detail(self, services_id):
         url = api_settings.GET_CHANNEL_SERVICE
-        self.logger.info('========== Start get service detail ==========')
         params = {
             "id": services_id
         }
-        is_success, status_code, status_message, data = RestFulClient.post(url, 
-                                                                            headers=self._get_headers(),
-                                                                            params=params, loggers=self.logger)
+        is_success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request, "get service detail")
         if data is None:
-            data = {}
-            data["services"] = []
-            
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data.get('services', []),
-                                status_code=status_code, is_getting_list=False)
-        self.logger.info('========== Finish get service detail ==========')
-        return data
+            return None;
+        return data["services"][0]
         
