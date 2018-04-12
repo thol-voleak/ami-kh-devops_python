@@ -1,9 +1,8 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, api_settings
-from web_admin.restful_client import RestFulClient
+from web_admin.restful_helper import RestfulHelper
 from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
-from web_admin.api_logger import API_Logger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 import logging
@@ -32,7 +31,6 @@ class CreateView(TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def post(self, request):
-        self.logger.info('========== Start Adding new channel service ==========')
         form = request.POST
         params = {}
 
@@ -53,8 +51,6 @@ class CreateView(TemplateView, GetHeaderMixin):
 
         success, status_code, message, data = self.add_channel_service(params)
 
-        self.logger.info('========== Finish Adding new channel service ==========')
-
         if success:
             messages.add_message(request, messages.SUCCESS, 'New service has been created')
             return redirect('channel_gateway_service:list')
@@ -63,12 +59,5 @@ class CreateView(TemplateView, GetHeaderMixin):
             return render(request, self.template_name, context={'form': form})
 
     def add_channel_service(self, params):
-        success, status_code, message, data = RestFulClient.post(
-            url=api_settings.CHANNEL_SERVICE,
-            params=params, loggers=self.logger,
-            headers=self._get_headers()
-        )
-        API_Logger.post_logging(loggers=self.logger, params=params,
-                                response=data,
-                                status_code=status_code)
+        success, status_code, message, data = RestfulHelper.send("POST", api_settings.CHANNEL_SERVICE, params, self.request, "Adding new channel service")
         return success, status_code, message, data
