@@ -318,6 +318,7 @@ DELETE_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{se
 EDIT_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
 GET_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/report/apis/'
 ADD_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis'
+DELETE_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 
 
 
