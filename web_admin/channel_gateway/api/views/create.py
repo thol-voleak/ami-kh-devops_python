@@ -37,3 +37,35 @@ class CreateView(TemplateView, GetHeaderMixin):
             'service_list': service_list.get('services', [])
         })
         return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = request.POST
+        params = {}
+
+        if form.get('api_name'):
+            params['name'] = form['api_name']
+
+        if form.get('http_method'):
+            params['http_method'] = form['http_method']
+
+        if form.get('pattern'):
+            params['pattern'] = form['pattern']
+
+        if form.get('service_id'):
+            params['service_id'] = int(form['service_id'])
+
+        if form.get('require_access_token'):
+            params['is_required_access_token'] = True if form['require_access_token'] == '1' else False
+
+        success, status_code, message, data = self.add_api_service(params)
+
+        if success:
+            messages.add_message(request, messages.SUCCESS, 'New API has been created')
+            return redirect('channel_gateway_api:list')
+        else:
+            messages.add_message(request, messages.ERROR, message)
+            return render(request, self.template_name, context={'form': form})
+
+    def add_api_service(self, params):
+        success, status_code, message, data = RestfulHelper.send("POST", api_settings.ADD_CHANNEL_API, params, self.request, "Adding new channel api")
+        return success, status_code, message, data

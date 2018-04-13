@@ -46,13 +46,12 @@ class ListView(TemplateView, GetHeaderMixin):
         }, {
             "value": "POST",
             "name": "POST"
-        },{
-            "value": "DELETE",
-            "name": "DELETE"
-        }
-        ,{
+        }, {
             "value": "PUT",
             "name": "PUT"
+        }, {
+            "value": "DELETE",
+            "name": "DELETE"
         }]
         context.update({
             'is_deleted_status_list': is_deleted_status_list,
