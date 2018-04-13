@@ -15,7 +15,8 @@
                     {% include "channel-gateway-service/form-content.html" %}
 
                     <div class="pull-right">
-                        <a id="btn_cancel" class="btn" href="{% url 'channel_gateway_service:list' %}">Cancel</a>
+                            {% url 'channel_gateway_service:list' as channel_gateway_service_list %}
+                        <a id="btn_cancel" class="btn" href="{% get_back_url channel_gateway_service_list %}">Cancel</a>
                         <input id="btn_confirm" class="btn btn-success" type="submit" value="Confirm"/>
                     </div>
                 </form>
