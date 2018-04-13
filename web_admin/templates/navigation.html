@@ -210,15 +210,6 @@
 
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
-            {% check_valid_url url_name 'clients' as is_client_url %}
-            <li class="class={% if is_client_url %} active{% endif %}">
-                <a href="{% url 'clients:client-list' %}">
-                    <i class="fa fa-male"></i>
-                    <span>Clients</span>
-                </a>
-            </li>
-            {% endif %}
 
             {% if request.user|has_permission_name:"SYS_MANAGE_SCOPES" or user.is_authenticated %}
             {% check_valid_url url_name 'centralize_configuration,report_configuration' as is_configuration_url %}

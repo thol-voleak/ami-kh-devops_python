@@ -5,7 +5,7 @@ from web_admin.utils import calculate_page_range_from_page_info, build_logger
 from django.shortcuts import render
 import logging
 from web_admin.get_header_mixins import GetHeaderMixin
-
+from channel_gateway.api.utils  import get_service_list
 
 class ListView(TemplateView, GetHeaderMixin):
 
@@ -24,7 +24,7 @@ class ListView(TemplateView, GetHeaderMixin):
             'is_deleted': False,
             'paging': False
         }
-        service_list = self.get_service_list(body_res)
+        service_list = get_service_list(self, body_res)
 
         is_deleted_status_list = [{
             "value": "",
@@ -46,13 +46,12 @@ class ListView(TemplateView, GetHeaderMixin):
         }, {
             "value": "POST",
             "name": "POST"
-        },{
-            "value": "DELETE",
-            "name": "DELETE"
-        }
-        ,{
+        }, {
             "value": "PUT",
             "name": "PUT"
+        }, {
+            "value": "DELETE",
+            "name": "DELETE"
         }]
         context.update({
             'is_deleted_status_list': is_deleted_status_list,
@@ -74,7 +73,7 @@ class ListView(TemplateView, GetHeaderMixin):
         if api_name:
             params['name'] = api_name
         if service_id:
-            params['service_id'] = service_id
+            params['service_id'] = int(service_id)
         if is_deleted:
             params['is_deleted'] = True if is_deleted == '1' else False
         if http_method:
@@ -94,15 +93,6 @@ class ListView(TemplateView, GetHeaderMixin):
             "service_id": int(service_id) if service_id else ""
         })
         return render(request, self.template_name, context)
-
-    def get_service_list(self, params):
-        api_path = api_settings.GET_CHANNEL_SERVICE
-
-        success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get service list", "data.services")
-        if data is None:
-            data = {}
-            data['services'] = []
-        return data
 
     def get_api_list(self, params):
         api_path = api_settings.GET_CHANNEL_API

@@ -15,7 +15,7 @@
                 <form id="submit-form" class="form-horizontal" role="form" method="post">
                     {% include "channel-gateway-api/form-content.html" %}
                     <div class="pull-right">
-                        <a href="{% url 'channel_gateway_api:list' %}" class="btn btn-default" id="btn_cancel">Cancel</a>
+                        <a href="{% get_back_url %}" class="btn btn-default" id="btn_cancel">Cancel</a>
                         <button class="btn btn-success" id="btn_create" type="submit">Create</button>
                     </div>
                 </form>

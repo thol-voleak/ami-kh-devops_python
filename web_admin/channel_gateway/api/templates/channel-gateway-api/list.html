@@ -6,7 +6,7 @@
             <div>
                 <div class="pull-left"><h3>APIs</h3></div>
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                    <a id="btn_add_new_api" class="btn btn-success btn-block btn-md mb15">
+                    <a id="btn_add_new_api" class="btn btn-success btn-block btn-md mb15" href="{% url 'channel_gateway_api:create' %}?back_url={% current_url_encoded_for_back %}">
                         <strong>+</strong> <span>Add New API</span>
                     </a>
                 </div>
@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">API ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="api_id" id="txt_api_id"
+                        <input type="number" min="0" class="form-control input-rounded" name="api_id" id="txt_api_id"
                                value="{{ api_id }}">
                     </div>
                     <label class="col-sm-2 control-label">API Name</label>
