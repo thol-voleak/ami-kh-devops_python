@@ -7,6 +7,16 @@ import datetime
 import logging
 import urllib
 
+from web_admin.exceptions import PermissionDeniedException
+
+
+def check_permissions(request, permissions):
+    logger = build_logger(request, __name__)
+    if not has_any_permission(request, permissions.split(',')):
+        logger.info("User [{}] does not have permission [{}] to access [{}]".format(request.user, permissions, request.path))
+        raise PermissionDeniedException(permissions)
+    return True
+
 
 def build_auth_header_from_request(request):
     return build_auth_header(settings.CLIENTID,

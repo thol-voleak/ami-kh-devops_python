@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
+
+from web_admin.exceptions import PermissionDeniedException
 from web_admin.mixins import GetChoicesMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import GET_REPORT_AGENT_BALANCE
@@ -11,7 +13,6 @@ from web_admin.api_settings import COMPANY_BALANCE_ADD
 from web_admin.api_settings import GET_AGENT_BALANCE
 from web_admin import api_settings, setup_logger
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from authentications.apps import PermissionDeniedException
 from braces.views import GroupRequiredMixin
 
 logger = logging.getLogger(__name__)

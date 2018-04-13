@@ -5,11 +5,13 @@
         <div class="panel-heading border mb15">
             <div>
                 <div class="pull-left"><h3>Services</h3></div>
+                {% if request|has_any_permission:"CAN_CREATE_GW_SERVICE" %}
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                     <a id="btn_add_new_service" class="btn btn-success btn-block btn-md mb15" href="{% url 'channel_gateway_service:create' %}?back_url={% current_url_encoded_for_back %}">
                         <strong>+</strong> <span>Add New Service</span>
                     </a>
                 </div>
+                {% endif %}
                 <div class="clearfix"></div>
             </div>
         </div>

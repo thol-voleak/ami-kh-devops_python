@@ -14,6 +14,7 @@ import requests
 import logging
 import time
 
+from web_admin.exceptions import PermissionDeniedException
 from web_admin.utils import encrypt_text
 
 logger = logging.getLogger(__name__)
@@ -25,10 +26,6 @@ class AuthenticationsConfig(AppConfig):
 
 class InvalidAccessToken(Exception):
     """Raised when the access token is invalid"""
-    pass
-
-
-class PermissionDeniedException(Exception):
     pass
 
 
