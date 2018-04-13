@@ -57,6 +57,7 @@ DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{
 AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
 SEARCH_RELATIONSHIP = 'api-gateway/report/'+API_VERSION+'/agents/relationships'
 RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationship-types'
+GET_AGENT_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/agents/identity-types'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -317,6 +318,7 @@ DELETE_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{se
 EDIT_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
 GET_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/report/apis/'
 ADD_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis'
+DELETE_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 
 
 

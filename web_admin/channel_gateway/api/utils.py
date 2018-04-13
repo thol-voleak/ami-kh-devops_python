@@ -9,3 +9,14 @@ def get_service_list(self, params):
         data = {}
         data['services'] = []
     return data
+
+def get_api_detail(self, api_id):
+        url = api_settings.GET_CHANNEL_API
+        params = {
+            "id": api_id
+        }
+        is_success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request,
+                                                                           "get api detail")
+        if data is None:
+            return None
+        return data["apis"][0]

@@ -12,6 +12,8 @@ from web_admin.api_logger import API_Logger
 from web_admin.restful_helper import RestfulHelper
 import logging
 
+from web_admin.utils import check_permissions, build_logger
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,8 +22,8 @@ class DeleteView(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        check_permissions(request, "CAN_DELETE_GW_SERVICE")
+        self.logger = build_logger(request, __name__)
         return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

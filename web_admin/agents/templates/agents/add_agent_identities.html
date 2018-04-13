@@ -19,6 +19,17 @@
               action="{{ request.path }}">
             {% csrf_token %}
             <div class="form-group col-md-12">
+                <label class="col-sm-2 control-label">Identity Type *</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="ddl_identity_type" name="identity_type_id" required>
+                        <option value="">-</option>
+                        {% for item in list_identity_type %}
+                            <option {% if params.identity_type_id == item.id %} selected {% endif %} value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
                 <label class="col-sm-2 control-label">User Name *</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="txt_user_name" name="user_name" value="{{params.username|default_if_none:''}}" required>

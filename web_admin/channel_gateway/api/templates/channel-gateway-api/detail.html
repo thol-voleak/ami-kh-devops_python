@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="panel mb25">
-    <div class="panel-heading mb15">
+    <div class="panel-heading border mb15">
         <h3>View API</h3>
     </div>
 
@@ -15,7 +15,7 @@
                     {% include "channel-gateway-api/form-content.html" with is_readonly=True %}
 
                     <div class="pull-right">
-                        <a id="btn_back" class="btn" href="{% url 'channel_gateway_api:list' %}">Back</a>
+                        <a id="btn_back" class="btn" href="{% get_back_url %}">Back</a>
                     </div>
                 </form>
             </div>
