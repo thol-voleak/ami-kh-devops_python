@@ -207,8 +207,10 @@
             <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span
                     class="caret"></span></button>
             <ul class="dropdown-menu">
+                {% if permissions.SYS_BAL_ADJUST_APPROVE %}
                 <li id="aprove_multi_balance"><a>Approve</a></li>
                 <li id="reject_multi_balance"><a>Reject</a></li>
+                {% endif %}
                 <li><a>Upload Adjustment</a></li>
             </ul>
         </div>
