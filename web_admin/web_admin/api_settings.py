@@ -314,6 +314,7 @@ CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
 CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services'
 GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
 DELETE_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
+EDIT_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
 GET_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/report/apis/'
 ADD_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis'
 
