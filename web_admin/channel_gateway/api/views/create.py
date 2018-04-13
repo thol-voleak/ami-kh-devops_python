@@ -42,8 +42,8 @@ class CreateView(TemplateView, GetHeaderMixin):
         form = request.POST
         params = {}
 
-        if form.get('api_name'):
-            params['name'] = form['api_name']
+        if form.get('name'):
+            params['name'] = form['name']
 
         if form.get('http_method'):
             params['http_method'] = form['http_method']

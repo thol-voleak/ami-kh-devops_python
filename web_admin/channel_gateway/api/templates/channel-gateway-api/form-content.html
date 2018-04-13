@@ -3,9 +3,10 @@
 <div class="form-group">
     <label class="col-sm-3 control-label">API Name {% if not is_readonly %}*{% endif %}</label>
     <div class="col-sm-7">
-        <input type="text" class="form-control input-rounded" required id="txt_api_name" name="api_name" value="{{ form.api_name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="text" class="form-control input-rounded" required id="txt_api_name" name="name" value="{{ form.name }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
+{% if not is_readonly %}
 <div class="form-group">
     <label class="col-sm-3 control-label">HTTP Method</label>
     <div class="col-sm-7">
@@ -18,13 +19,22 @@
         </select>
     </div>
 </div>
+{% else %}
+     <div class="form-group">
+        <label class="col-sm-3 control-label">HTTP Method</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_http_method" name="http_method" value="{{ form.http_method }}" readonly />
+        </div>
+    </div>
+{% endif %}
 <div class="form-group">
     <label class="col-sm-3 control-label">Pattern {% if not is_readonly %}*{% endif %}</label>
     <div class="col-sm-7">
         <input type="text" class="form-control input-rounded" required id="txt_pattern" name="pattern" value="{{ form.pattern }}" {% if is_readonly %}readonly{% endif %} />
     </div>
 </div>
-<div class="form-group">
+{% if not is_readonly %}
+    <div class="form-group">
     <label class="col-sm-3 control-label">Require Access Token</label>
     <div class="col-sm-7">
         <select class="form-control" id="ddl_require_access_token" name="require_access_token" required>
@@ -49,3 +59,30 @@
         </select>
     </div>
 </div>
+{% else %}
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Require Access Token</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_require_access_token" name="require_access_token" value="{{ form.is_required_access_token|yesno:"Yes,No" }}" readonly />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Service Name</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_service_name" name="service_name" value="{{ form.service.name }}" readonly />
+        </div>
+    </div>
+    <div class="form-group mb15">
+        <label class="col-sm-3 control-label">Create Date</label>
+        <div class="col-sm-7">
+            <input type="text"  class="form-control input-rounded" id="txt_create_date" name="create_date" value="{{ form.created_timestamp }}" readonly />
+        </div>
+    </div>
+
+    <div class="form-group mb15">
+        <label class="col-sm-3 control-label">Update Date</label>
+        <div class="col-sm-7">
+            <input type="text"  class="form-control input-rounded" id="txt_update_date" name="update_date" value="{{ form.last_updated_timestamp }}" readonly />
+        </div>
+    </div>
+{% endif %}
