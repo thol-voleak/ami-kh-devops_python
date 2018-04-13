@@ -1,17 +1,25 @@
 from django.views.generic.base import TemplateView
+from authentications.utils import check_permissions_by_user
 from web_admin import api_settings
 from web_admin.restful_helper import RestfulHelper
 from web_admin.utils import calculate_page_range_from_page_info, build_logger
 from django.shortcuts import render
 import logging
 from web_admin.get_header_mixins import GetHeaderMixin
+from braces.views import GroupRequiredMixin
 
 
-class ListView(TemplateView, GetHeaderMixin):
+class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     template_name = "channel-gateway-service/list.html"
     login_url = 'web:permission_denied'
+    group_required = "CAN_MANAGE_GW_SERVICE"
     logger = logging.getLogger(__name__)
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         self.logger = build_logger(request, __name__)

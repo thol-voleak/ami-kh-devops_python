@@ -24,9 +24,11 @@
             <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                 <ul class="sub-menu">
-                    <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
-                        <a href="{% url 'channel_gateway_service:list' %}"> <span>Services</span> </a>
-                    </li>
+                    {% if request.user|has_permission_name:"CAN_MANAGE_GW_SERVICE" %}
+                        <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
+                            <a href="{% url 'channel_gateway_service:list' %}"> <span>Services</span> </a>
+                        </li>
+                    {% endif %}
                     <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
                         <a href="{% url 'channel_gateway_api:list' %}"> <span>APIs</span> </a>
                     </li>
