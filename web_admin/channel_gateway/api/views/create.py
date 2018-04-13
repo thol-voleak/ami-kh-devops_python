@@ -63,8 +63,13 @@ class CreateView(TemplateView, GetHeaderMixin):
             messages.add_message(request, messages.SUCCESS, 'New API has been created')
             return redirect('channel_gateway_api:list')
         else:
+            body_res = {
+                'is_deleted': False,
+                'paging': False
+            }
+            service_list = get_service_list(self, body_res)
             messages.add_message(request, messages.ERROR, message)
-            return render(request, self.template_name, context={'form': form})
+            return render(request, self.template_name, context={'form': form, 'service_list': service_list.get('services', [])})
 
     def add_api_service(self, params):
         success, status_code, message, data = RestfulHelper.send("POST", api_settings.ADD_CHANNEL_API, params, self.request, "Adding new channel api")

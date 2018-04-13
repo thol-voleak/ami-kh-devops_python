@@ -50,7 +50,7 @@
         <select class="form-control" id="ddl_service_name" name="service_id" required>
             <option value="">-</option>
             {% for item in service_list %}
-                {% if item.id == service_id %}
+                {% if item.id|slugify == form.service_id %}
                     <option value="{{ item.id }}" selected>{{ item.name }}</option>
                 {% else %}
                     <option value="{{ item.id }}">{{ item.name }}</option>
