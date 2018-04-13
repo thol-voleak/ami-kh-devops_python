@@ -1,15 +1,10 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
 from web_admin import setup_logger, api_settings
-from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
-from django.conf import settings
-from authentications.apps import InvalidAccessToken
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from web_admin.api_logger import API_Logger
-from django.http import JsonResponse
 import logging
 from web_admin.restful_helper import RestfulHelper
 
