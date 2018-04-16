@@ -58,7 +58,7 @@ class ListView(TemplateView, GetHeaderMixin):
         context.update({
             'is_deleted_status_list': is_deleted_status_list,
             'http_method_list': http_method_list,
-            'service_list': service_list.get('services', [])
+            'service_list': service_list
         })
         opening_page_index = request.GET.get('current_page_index', 1)
         api_id = request.GET.get('api_id', "")

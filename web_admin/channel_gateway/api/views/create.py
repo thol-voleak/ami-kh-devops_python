@@ -34,7 +34,7 @@ class CreateView(TemplateView, GetHeaderMixin):
         }
         service_list = get_service_list(self, body_res)
         context.update({
-            'service_list': service_list.get('services', [])
+            'service_list': service_list
         })
         return render(request, self.template_name, context)
 
@@ -69,7 +69,7 @@ class CreateView(TemplateView, GetHeaderMixin):
             }
             service_list = get_service_list(self, body_res)
             messages.add_message(request, messages.ERROR, message)
-            return render(request, self.template_name, context={'form': form, 'service_list': service_list.get('services', [])})
+            return render(request, self.template_name, context={'form': form, 'service_list': service_list})
 
     def add_api_service(self, params):
         success, status_code, message, data = RestfulHelper.send("POST", api_settings.ADD_CHANNEL_API, params, self.request, "Adding new channel api")

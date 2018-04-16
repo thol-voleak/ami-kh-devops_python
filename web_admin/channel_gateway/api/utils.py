@@ -5,10 +5,10 @@ def get_service_list(self, params):
     api_path = api_settings.GET_CHANNEL_SERVICE
 
     success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get service list", "data.services")
-    if data is None:
-        data = {}
-        data['services'] = []
-    return data
+    if success:
+        return data['services']
+    else:
+        return []
 
 def get_api_detail(self, api_id):
     url = api_settings.GET_CHANNEL_API
@@ -17,9 +17,18 @@ def get_api_detail(self, api_id):
     }
     is_success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request,
                                                                        "get api detail")
-    if data is None:
-        return None
-    return data["apis"][0]
+    if is_success:
+        data = data["apis"][0]
+        if 'service' in data:
+            data['service_id'] = data['service']['id']
+        if 'is_required_access_token' in data:
+            if data['is_required_access_token'] == True:
+                data['require_access_token'] = "1"
+            else:
+                data['require_access_token'] = "0"
+        return data
+    else:
+        return {}
 
 def get_api_list(self, params):
     api_path = api_settings.GET_CHANNEL_API

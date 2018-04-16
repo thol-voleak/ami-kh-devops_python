@@ -320,6 +320,6 @@ GET_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/report/apis/'
 ADD_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis'
 DELETE_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 GET_CLIENT_CHANNEL_GATEWAY_SCOPE_LIST_API = 'channel-gateway/' + API_VERSION + '/admin/oauth/clients/{client_id}/scopes'
-
+EDIT_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 
 
