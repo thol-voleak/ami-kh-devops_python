@@ -181,6 +181,11 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                        }
             if status_id:
                 context['status_id'] = int(status_id)
+
+            permissions = {}
+            permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user,
+                                                                              'SYS_BAL_ADJUST_APPROVE')
+            context['permissions'] = permissions
             self.logger.info('========== Finished searching Balance Adjustment ==========')
             return render(request, self.template_name, context)
         elif status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
