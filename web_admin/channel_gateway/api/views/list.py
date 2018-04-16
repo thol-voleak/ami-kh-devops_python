@@ -1,11 +1,12 @@
 from django.views.generic.base import TemplateView
 from web_admin import api_settings
 from web_admin.restful_helper import RestfulHelper
-from web_admin.utils import calculate_page_range_from_page_info, build_logger
+from web_admin.utils import calculate_page_range_from_page_info, build_logger, check_permissions
 from django.shortcuts import render
 import logging
 from web_admin.get_header_mixins import GetHeaderMixin
 from channel_gateway.api.utils  import get_service_list
+
 
 class ListView(TemplateView, GetHeaderMixin):
 
@@ -14,6 +15,7 @@ class ListView(TemplateView, GetHeaderMixin):
     logger = logging.getLogger(__name__)
 
     def dispatch(self, request, *args, **kwargs):
+        check_permissions(request, "CAN_MANAGE_GW_API")
         self.logger = build_logger(request, __name__)
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
