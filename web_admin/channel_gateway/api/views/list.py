@@ -5,7 +5,7 @@ from web_admin.utils import calculate_page_range_from_page_info, build_logger
 from django.shortcuts import render
 import logging
 from web_admin.get_header_mixins import GetHeaderMixin
-from channel_gateway.api.utils  import get_service_list
+from channel_gateway.api.utils  import get_service_list, get_api_list
 
 class ListView(TemplateView, GetHeaderMixin):
 
@@ -79,7 +79,7 @@ class ListView(TemplateView, GetHeaderMixin):
         if http_method:
             params['http_method'] = http_method
 
-        channel_api_list = self.get_api_list(params)
+        channel_api_list = get_api_list(self, params)
         page = channel_api_list.get('page', {})
         context.update({
             'channel_api_list': channel_api_list.get('apis', []),
@@ -94,11 +94,3 @@ class ListView(TemplateView, GetHeaderMixin):
         })
         return render(request, self.template_name, context)
 
-    def get_api_list(self, params):
-        api_path = api_settings.GET_CHANNEL_API
-
-        success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get api list", "data.apis")
-        if data is None:
-            data = {}
-            data['apis'] = []
-        return data
