@@ -59,11 +59,6 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         context['search_count'] = 0
         context['status_list'] = self.status_list
         context['status_id'] = ''
-
-        permissions = {}
-        permissions['SYS_BAL_ADJUST_APPROVE'] = check_permissions_by_user(self.request.user, 'SYS_BAL_ADJUST_APPROVE')
-        context['permissions'] = permissions
-
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
