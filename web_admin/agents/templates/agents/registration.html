@@ -79,13 +79,15 @@
                     </div>
                 </div>
                 <div class="form-group col-md-6">
-                        <label class="col-sm-4 control-label">User Name *</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control input-rounded" name="username"
-                                   id="txt_user_name" 
-                                   value="{{ identity.username | default_if_none:'' }}" required/>
-                        </div>
+                    <label class="col-sm-4 control-label">User Name Type *</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="ddl_identity_type" name="identity_type_id" required>
+                            {% for identity_type in identity_type_list %}
+                                <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
+                </div>
     </div>
     <!-- End section 2 - row 2 -->
 
@@ -98,12 +100,13 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Password *</label>
-                <div class="col-sm-8">
-                    <input type="password" class="form-control input-rounded" name="password"
-                           id="txt_password" required/>
-                </div>
+            <label class="col-sm-4 control-label">User Name *</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control input-rounded" name="username"
+                       id="txt_user_name"
+                       value="{{ identity.username | default_if_none:'' }}" required/>
             </div>
+        </div>
     </div>
     <!-- End section 2 - row 3 -->
 
@@ -116,12 +119,12 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Re-password *</label>
-                <div class="col-sm-8">
-                    <input type="password" class="form-control input-rounded" name="re_password"
-                           id="txt_re_password" required  onchange="validatePassword(this)"/>
-                </div>
+            <label class="col-sm-4 control-label">Password *</label>
+            <div class="col-sm-8">
+                <input type="password" class="form-control input-rounded" name="password"
+                       id="txt_password" required/>
             </div>
+        </div>
     </div>
     <!-- End section 2 - row 4 -->
 
@@ -141,7 +144,13 @@
                         </select>
                     </div>
                 </div>
-        <div class="form-group col-md-6"></div>
+        <div class="form-group col-md-6">
+            <label class="col-sm-4 control-label">Re-password *</label>
+            <div class="col-sm-8">
+                <input type="password" class="form-control input-rounded" name="re_password"
+                       id="txt_re_password" required  onchange="validatePassword(this)"/>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="form-group col-md-6">
