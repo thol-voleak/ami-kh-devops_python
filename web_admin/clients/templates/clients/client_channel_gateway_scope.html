@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="panel mb25">
+    <div class="panel-heading border">
+        <h3>Channel Gateway Scopes</h3>
+    </div>
+
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="col-xs-12">
+        <div class='alert alert-success alert-dismissable' id="msg-update-scope">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message|capfirst }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-update-scope">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message|capfirst }}</strong>
+            </div>
+        </div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="panel-body">
+        <div class="row no-margin">
+            <div class="col-lg-12">
+                <form class="form-horizontal" role="form" method="post" action="">
+                    {% csrf_token %}
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <div class="pull-right">
+                                <a href="{% url 'clients:client-list' %}">
+                                    <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                           value="Cancel"/>
+                                </a>
+                                <input id="btn_save" class="btn btn-success text-left mb15" type="submit"
+                                       value="Save"/>
+                            </div>
+                            <table id="tbl_apis" class="table table-bordered table-striped mb0">
+                                <thead>
+                                <tr>
+                                    <th id="cbx_granted"></th>
+                                    <th id="lbl_id">Id</th>
+                                    <th id="lbl_name">Name</th>
+                                    <th id="lbl_name">Service Name</th>
+                                    <th id="lbl_method">HTTP Method</th>
+                                    <th id="lbl_pattern">Pattern</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for object in all_apis %}
+                                <tr>
+                                    <td class="col-sm-1"><input type="checkbox" name="channel_gw_scope"
+                                                                id="chb_channel_gw_scope" value="{{ object.id }}"
+                                                                {{ object.is_checked|yesno:" checked, "}}>
+                                    </td>
+                                    <td class="col-sm-2"><a style="text-decoration: underline;" href="{% url 'channel_gateway_api:detail' object.id %}">{{ object.id }}</a></td>
+                                    <td class="col-sm-2">{{ object.name }}</td>
+                                    <td class="col-sm-2"><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' object.service.id %}">{{ object.service.name }}</a></td>
+                                    <td class="col-sm-1">{{ object.http_method }}</td>
+                                    <td class="col-sm-1">{{ object.pattern }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <select multiple hidden name="old_selected_api_id_list">
+                        {% for id in selected_api_id_list %}
+                            <option value="{{ id }}" selected>{{ id }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@ from .api import ClientApi
 from .views.suspend import suspend
 from .views.activate import activate
 from .views.scope import ScopeList
+from .views.client_channel_gateway_scope import ClientChannelGatewayScopeList
 
 app_name = 'clients'
 
@@ -29,4 +30,7 @@ urlpatterns = [
         name="activate-client"),
     url(r'^scopes/(?P<client_id>[0-9A-Za-z]+)/$', login_required(ScopeList.as_view(), login_url='authentications:login'),
         name="scope-client"),
+    url(r'^channel-gateway-scope/(?P<client_id>[0-9A-Za-z]+)/$',
+        login_required(ClientChannelGatewayScopeList.as_view(), login_url='authentications:login'),
+        name="client-channel-gateway-scopes"),
 ]
