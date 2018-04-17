@@ -1,4 +1,4 @@
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin.utils import check_permissions, build_logger
 from django.views.generic.base import TemplateView
 from web_admin import setup_logger, api_settings
 from web_admin.restful_helper import RestfulHelper
@@ -16,8 +16,8 @@ class EditView(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        check_permissions(request, "CAN_EDIT_GW_API")
+        self.logger = build_logger(request, __name__)
         return super(EditView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
