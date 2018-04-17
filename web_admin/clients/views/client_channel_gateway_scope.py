@@ -3,7 +3,7 @@ from web_admin import api_settings, setup_logger
 from django.contrib import messages
 from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
-from web_admin.utils import build_logger
+from web_admin.utils import build_logger, check_permissions
 from web_admin.restful_helper import RestfulHelper
 from channel_gateway.api.utils  import get_api_list
 import logging
@@ -14,6 +14,7 @@ class ClientChannelGatewayScopeList(TemplateView, GetChoicesMixin):
     logger = logging.getLogger(__name__)
 
     def dispatch(self, request, *args, **kwargs):
+        check_permissions(request, 'CAN_CHANGE_SCOPES_CHANNEL_GW_CLIENTS')
         self.logger = build_logger(request, __name__)
         return super(ClientChannelGatewayScopeList, self).dispatch(request, *args, **kwargs)
 
