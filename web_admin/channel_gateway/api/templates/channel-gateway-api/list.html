@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
-{% load permissions_filter %}
 {% block content %}
     <div class="panel mb25">
         <div class="panel-heading border mb15">
             <div>
                 <div class="pull-left"><h3>APIs</h3></div>
                 <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                {% if request.user|has_permission_name:'CAN_CREATE_GW_API' %}
+                {% if request|has_any_permission:'CAN_CREATE_GW_API' %}
                     <a id="btn_add_new_api" class="btn btn-success btn-block btn-md mb15" href="{% url 'channel_gateway_api:create' %}?back_url={% current_url_encoded_for_back %}">
                         <strong>+</strong> <span>Add New API</span>
                     </a>
