@@ -108,7 +108,9 @@
                                     <td>{{ i.is_deleted|yesno:"Yes,No" }}</td>
                                     <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                                     <td>
-                                        <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" href="{% url 'channel_gateway_api:detail' i.id%}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                        {% if request.user|has_permission_name:"CAN_VIEW_GW_API" %}
+                                            <a id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" href="{% url 'channel_gateway_api:detail' i.id%}?back_url={% current_url_encoded_for_back %}">Detail</a>
+                                        {% endif %}
                                         {% if request|has_any_permission:"CAN_EDIT_GW_API" %}
                                             <a id="btn_edit" class="btn btn-outline mb5 btn-xs btn-primary" href="{% url 'channel_gateway_api:edit' i.id%}?back_url={% current_url_encoded_for_back %}">Edit</a>
                                         {% endif %}
