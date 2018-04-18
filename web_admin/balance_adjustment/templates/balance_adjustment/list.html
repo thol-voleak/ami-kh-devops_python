@@ -274,7 +274,7 @@
                         <div style="clear: both;"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-primary" id="reject_multi_balance_adjustment_btn">Yes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                     </div>
                 </div>
@@ -483,10 +483,53 @@
         });
     }
 
+    bindRejectMultiBalanceAdjustment = function () {
+        $("#rejectModal #reject_multi_balance_adjustment_btn").click(function (e) {
+            var selectedIds = getSelectedBalanceAdjustments();
+            if ($(selectedIds).length == 0) {
+                $("#rejectModal").modal('hide');
+            } else {
+                var rejectReason = $("#rejectModal input[name='reject_reason']").val();
+                var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
+                var data = {
+                    "referenceIds": JSON.stringify(selectedIds),
+                    "reason": rejectReason,
+                    "actionType": "Reject"
+                }
+
+                // Request to server
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    },
+                    success: function (response) {
+                        if (response.is_success) {
+                            location.reload();
+                        } else {
+                            // Failed
+                            addErrorMessage(response.status_message);
+                        }
+                        $("#rejectModal").modal('hide');
+                    },
+                    error: function (err) {
+                        var json = JSON.stringify(err);
+
+                        addErrorMessage("reject error!");
+                    }
+                });
+            }
+        });
+    }
+
     $(document).ready(function () {
         bindSelectCheckboxEvents();
         bindSelectActionsEvent();
         bindApproveMultiBalanceAdjustment();
+        bindRejectMultiBalanceAdjustment();
     })
 
 </script>

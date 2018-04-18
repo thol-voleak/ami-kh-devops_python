@@ -233,6 +233,8 @@ class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
         actionType = data.get("actionType")
         if actionType == 'Approve':
             return self._approve_balance_adjustment_list(data)
+        elif actionType == 'Reject':
+            return self._reject_balance_adjustment_list(data)
 
     def _approve_balance_adjustment_list(self, data):
         self.logger.info('========== Start Approve balance adjustment list==========')
@@ -255,6 +257,40 @@ class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
                 self.request,
                 messages.SUCCESS,
                 str(len(referenceIds)) + " adjustments being Approved. Please wait a while and check again later"
+            )
+
+            return JsonResponse({
+                "is_success": is_success
+            })
+
+        else:
+            return JsonResponse({
+                "is_success": is_success,
+                "status_code": status_code,
+                "status_message": status_message
+            })
+
+    def _reject_balance_adjustment_list(self, data):
+        self.logger.info('========== Start reject balance adjustment list==========')
+        url = api_settings.ORDER_BAL_ADJUST_PATH
+        referenceIds = json.loads(data.get("referenceIds"))
+        data = {
+            "reference_ids": referenceIds,
+            "reason": data.get("reason")
+        }
+
+        is_success, status_code, status_message = RestFulClient.delete(
+            url,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=data
+        )
+
+        if is_success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                str(len(referenceIds)) + " adjustments being Rejected. Please wait a while and check again later"
             )
 
             return JsonResponse({
