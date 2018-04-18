@@ -7,8 +7,10 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from web_admin.api_logger import API_Logger
 from web_admin.utils import calculate_page_range_from_page_info
-
-
+from web_admin.utils import check_permissions
+import json
+from web_admin import api_settings
+from django.http import JsonResponse
 
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
@@ -216,6 +218,52 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         self.logger.info('Response_content_count: {}'.format(len(data)))
         return data
 
-        
-        
-        
+
+class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        check_permissions(request, "SYS_BAL_ADJUST_APPROVE")
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(BalanceAdjustmentListActionView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST.copy()
+        actionType = data.get("actionType")
+        if actionType == 'Approve':
+            return self._approve_balance_adjustment_list(data)
+
+    def _approve_balance_adjustment_list(self, data):
+        self.logger.info('========== Start Approve balance adjustment list==========')
+        url = api_settings.ORDER_BAL_ADJUST_PATH
+        referenceIds = json.loads(data.get("referenceIds"))
+        data = {
+            "reference_ids": referenceIds,
+            "reason": data.get("reason")
+        }
+
+        is_success, status_code, status_message, data = RestFulClient.put(
+            url,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=data
+        )
+
+        if is_success:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                str(len(referenceIds)) + " adjustments being Approved. Please wait a while and check again later"
+            )
+
+            return JsonResponse({
+                "is_success": is_success
+            })
+
+        else:
+            return JsonResponse({
+                "is_success": is_success,
+                "status_code": status_code,
+                "status_message": status_message
+            })

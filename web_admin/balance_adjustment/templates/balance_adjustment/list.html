@@ -14,23 +14,25 @@
     <div class="panel-heading border">
         <h3>Balance Adjustment History</h3>
     </div>
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <div class="col-xs-12">
-                <div class="alert alert-success alert-dismissable" id="msg-success">
-                    <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ message }}</strong>
+    <div id="ajax-messages">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissable" id="msg-success">
+                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message }}</strong>
+                    </div>
                 </div>
-            </div>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="col-xs-12">
-                <div class="alert alert-danger alert-dismissable" id="msg-success">
-                    <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ message }}</strong>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-xs-12">
+                    <div class="alert alert-danger alert-dismissable" id="msg-success">
+                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message }}</strong>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'balance_adjustment:balance_adjustment_list' %}">
             {% csrf_token %}
@@ -240,7 +242,7 @@
                         <div style="clear: both;"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-primary" id="approve_multi_balance_adjustment_btn">Yes</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                     </div>
                 </div>
@@ -348,7 +350,7 @@
 {% block body_js %}
 {{ block.super }}
 <script type="text/javascript">
-
+    var csrf_token = "{{ csrf_token }}";
     onFirstLoadingTime();
 
     function onFirstLoadingTime() {
@@ -382,6 +384,17 @@
         if(null != refServiceGroupId && "" != refServiceGroupId) {
             ddlServiceGroup.value = refServiceGroupId;
         }
+    }
+
+
+    function addErrorMessage(message) {
+        $("#ajax-messages").empty().append(
+            '<div class="col-xs-12">' +
+            '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+            '<strong>' + message + '</strong>' +
+            '</div>' +
+            '</div>')
     }
 
     bindSelectCheckboxEvents = function () {
@@ -420,9 +433,60 @@
         bindSelectRejectAction()
     }
 
+    getSelectedBalanceAdjustments = function () {
+        var selectedIds = [];
+        $('#tbl_balance_adjustment .checkboxlist input:checked').each(function (index, checkBox) {
+            selectedIds.push($(checkBox).val());
+        });
+        return selectedIds;
+    }
+
+    bindApproveMultiBalanceAdjustment = function () {
+        $("#approveModal #approve_multi_balance_adjustment_btn").click(function (e) {
+            var selectedIds = getSelectedBalanceAdjustments();
+            if ($(selectedIds).length == 0) {
+                $("#approveModal").modal('hide');
+            } else {
+                var approveReason = $("#approveModal input[name='approve_reason']").val();
+                var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
+                var data = {
+                    "referenceIds": JSON.stringify(selectedIds),
+                    "reason": approveReason,
+                    "actionType": "Approve"
+                }
+
+                // Request to server
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    },
+                    success: function (response) {
+                        if (response.is_success) {
+                            location.reload();
+                        } else {
+                            // Failed
+                            addErrorMessage(response.status_message);
+                        }
+                        $("#approveModal").modal('hide');
+                    },
+                    error: function (err) {
+                        var json = JSON.stringify(err);
+
+                        addErrorMessage("approve error!");
+                    }
+                });
+            }
+        });
+    }
+
     $(document).ready(function () {
         bindSelectCheckboxEvents();
         bindSelectActionsEvent();
+        bindApproveMultiBalanceAdjustment();
     })
 
 </script>

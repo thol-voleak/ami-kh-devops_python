@@ -20,28 +20,30 @@
                     <span>Home</span>
                 </a>
             </li>
-            {% with request.resolver_match.app_name as app_name %}
-            <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% endif %}">
-                <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
-                <ul class="sub-menu">
-                {% if request.user|has_permission_name:"CAN_MANAGE_GW_SERVICE" %}
-                    <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
-                        <a href="{% url 'channel_gateway_service:list' %}"> <span>Services</span> </a>
-                    </li>
-                {% endif %}
-                {% if request.user|has_permission_name:"CAN_MANAGE_GW_API" %}
-                    <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
-                        <a href="{% url 'channel_gateway_api:list' %}"> <span>APIs</span> </a>
-                    </li>
-                {% endif %}
-                {% if request.user|has_permission_name:"CAN_MANAGE_CLIENTS"%}
-                    <li class="class={% if app_name == "clients" %} active{% endif %}">
-                            <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
-                    </li>
-                {% endif %}
-                </ul>
-            </li>
-            {% endwith %}
+            {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS" %}
+                {% with request.resolver_match.app_name as app_name %}
+                <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% endif %}">
+                    <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
+                    <ul class="sub-menu">
+                    {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE" %}
+                        <li class="class={% if app_name == "channel_gateway_service"  %} active{% endif %}">
+                            <a href="{% url 'channel_gateway_service:list' %}"> <span>Services</span> </a>
+                        </li>
+                    {% endif %}
+                    {% if request|has_any_permission:"CAN_MANAGE_GW_API" %}
+                        <li class="class={% if app_name == "channel_gateway_api" %} active{% endif %}">
+                            <a href="{% url 'channel_gateway_api:list' %}"> <span>APIs</span> </a>
+                        </li>
+                    {% endif %}
+                    {% if request|has_any_permission:"CAN_MANAGE_CLIENTS"%}
+                        <li class="class={% if app_name == "clients" %} active{% endif %}">
+                                <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </li>
+                {% endwith %}
+            {% endif %}
             {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES" or request.user|has_permission_name:"CAN_MANAGE_ROLE"%}
             {% check_valid_url url_name 'authentications' as is_authen_url %}
             <li class="menu-accordion {% if is_authen_url %}open{% endif %}">
