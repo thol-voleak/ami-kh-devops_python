@@ -30,7 +30,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
         return super(ScopeList, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info("========== Start Updating client scopes ==========")
+        self.logger.info("========== Start Updating client api gateway scopes ==========")
         context = super(ScopeList, self).get_context_data(**kwargs)
         client_id = context['client_id']
 
@@ -40,7 +40,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
         granted_scope_ids = [scope.get('id') for scope in granted_scopes]
 
         self.update_scopes(request, client_id, granted_scope_ids, update_scopes)
-        self.logger.info("========== Finish Updating client scopes ==========")
+        self.logger.info("========== Finish Updating client api gateway scopes ==========")
 
         return redirect(request.META['HTTP_REFERER'])
 
@@ -79,7 +79,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
         return self._delete_method(url, 'Client Scopes', logger, params)
 
     def get_context_data(self, **kwargs):
-        self.logger.info("========== Start Getting client scopes ==========")
+        self.logger.info("========== Start getting client api gateway scopes ==========")
         context = super(ScopeList, self).get_context_data(**kwargs)
         client_id = context['client_id']
         all_scopes = self._get_all_scopes_list()
@@ -89,7 +89,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
 
         all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes, client_scopes)
         context['all_scopes'] = all_scopes
-        self.logger.info("========== Finish Getting client scopes ==========")
+        self.logger.info("========== Finish getting client api gateway scopes ==========")
         return context
 
     def _get_all_scopes_list(self):
