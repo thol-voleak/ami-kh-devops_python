@@ -11,7 +11,6 @@ from channel_gateway.api.utils  import get_service_list, get_api_list
 class ListView(TemplateView, GetHeaderMixin):
 
     template_name = "channel-gateway-api/list.html"
-    login_url = 'web:permission_denied'
     logger = logging.getLogger(__name__)
 
     def dispatch(self, request, *args, **kwargs):

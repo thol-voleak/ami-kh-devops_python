@@ -59,9 +59,9 @@
                                                                 id="chb_channel_gw_scope" value="{{ object.id }}"
                                                                 {{ object.is_checked|yesno:" checked, "}}>
                                     </td>
-                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_api:detail' object.id %}">{{ object.id }}</a></td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_api:detail' object.id %}?back_url={% current_url_encoded_for_back %}">{{ object.id }}</a></td>
                                     <td>{{ object.name }}</td>
-                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' object.service.id %}">{{ object.service.name }}</a></td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' object.service.id %}?back_url={% current_url_encoded_for_back %}">{{ object.service.name }}</a></td>
                                     <td>{{ object.http_method }}</td>
                                     <td>{{ object.pattern }}</td>
                                 </tr>
