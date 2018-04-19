@@ -53,7 +53,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for object in all_apis %}
+                                {% for object in all_apis|dictsort:"id" %}
                                 <tr>
                                     <td><input type="checkbox" name="channel_gw_scope"
                                                                 id="chb_channel_gw_scope" value="{{ object.id }}"
