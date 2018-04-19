@@ -102,7 +102,7 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin):
     def _get_client_scopes(self, client_id):
         url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
         success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request,
-                                                                        "get client scopes api list", "data.apis")
+                                                                        "get client scopes api gateway list", "data.apis")
         if data is None:
             data = {}
             data['scopes'] = []
