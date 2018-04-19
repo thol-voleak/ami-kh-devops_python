@@ -4,14 +4,14 @@ from web_admin import api_settings, setup_logger
 from django.contrib import messages
 from django.shortcuts import redirect
 from web_admin.mixins import GetChoicesMixin
-from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_helper import RestfulHelper
 import logging
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
 
 
-class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethods):
+class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin):
     template_name = "clients/client_scope.html"
     logger = logger
 
@@ -79,7 +79,6 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
         return self._delete_method(url, 'Client Scopes', logger, params)
 
     def get_context_data(self, **kwargs):
-        self.logger.info("========== Start getting client api gateway scopes ==========")
         context = super(ScopeList, self).get_context_data(**kwargs)
         client_id = context['client_id']
         all_scopes = self._get_all_scopes_list()
@@ -89,24 +88,25 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin, RESTfulMethod
 
         all_scopes = self.update_granted_scopes_for_all_scopes(all_scopes, client_scopes)
         context['all_scopes'] = all_scopes
-        self.logger.info("========== Finish getting client api gateway scopes ==========")
         return context
 
     def _get_all_scopes_list(self):
         url = api_settings.ALL_SCOPES_LIST_URL
-        data, success = self._get_method(url, 'Client Scopes', logger, True)
-
-        if success:
-            return data.get('apis', [])
-        return []
+        success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request,
+                                                                        "get api gateway list", "data.apis")
+        if data is None:
+            data = {}
+            data['apis'] = []
+        return data.get('apis', [])
 
     def _get_client_scopes(self, client_id):
         url = api_settings.CLIENT_SCOPES.format(client_id=client_id)
-        data, success = self._get_method(url, 'Client Scopes', logger, True)
-
-        if success:
-            return data.get('scopes', [])
-        return []
+        success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request,
+                                                                        "get client scopes api list", "data.apis")
+        if data is None:
+            data = {}
+            data['scopes'] = []
+        return data.get('scopes', [])
 
     def update_granted_scopes_for_all_scopes(self, all_scopes, client_scopes):
         client_scopes_id = [x['id'] for x in client_scopes]

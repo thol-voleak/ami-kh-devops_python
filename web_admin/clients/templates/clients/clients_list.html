@@ -67,8 +67,8 @@
                 </thead>
                 <tbody>
                 {% for client in data %}
+                {% if not client.is_deleted %}
                 <tr id="row-{{ client.client_id }}">
-                    {% if not client.is_deleted %}
                     <td class="col-sm-2">
                         <a class="client-details-link {{ client.is_deleted|yesno:" text,no-hidden" }}"
                         id="{{ client.client_id }}" class="text-info"
@@ -159,8 +159,8 @@
                             {% endif %}
                         </div>
                     </td>
-                    {% endif %}
                 </tr>
+                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
