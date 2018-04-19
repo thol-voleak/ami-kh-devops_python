@@ -70,13 +70,17 @@ class ScopeList(GroupRequiredMixin, TemplateView, GetChoicesMixin):
         if not scopes:
             return '', True
         params = {"scopes": scopes}
-        return self._post_method(url, 'Client Scopes', logger, params)
+        success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request,
+                                                                        "adding client api gateway scopes")
+        return status_message, success
 
     def delete_scopes(self, url, scopes):
         if not scopes:
             return '', True
         params = {"scopes": scopes}
-        return self._delete_method(url, 'Client Scopes', logger, params)
+        success, status_code, status_message, data = RestfulHelper.send("DELETE", url, params, self.request,
+                                                                        "deleting client api gateway scopes")
+        return status_message, success
 
     def get_context_data(self, **kwargs):
         context = super(ScopeList, self).get_context_data(**kwargs)
