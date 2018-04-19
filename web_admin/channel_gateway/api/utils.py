@@ -33,7 +33,7 @@ def get_api_detail(self, api_id):
 def get_api_list(self, params):
     api_path = api_settings.GET_CHANNEL_API
 
-    success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get api list", "data.apis")
+    success, status_code, status_message, data = RestfulHelper.send("POST", api_path, params, self.request, "get api channel list", "data.apis")
     if data is None:
         data = {}
         data['apis'] = []
