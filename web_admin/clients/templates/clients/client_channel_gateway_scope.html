@@ -44,7 +44,7 @@
                             <table id="tbl_apis" class="table table-bordered table-striped mb0">
                                 <thead>
                                 <tr>
-                                    <th id="cbx_granted"></th>
+                                    <th id="cbx_granted" style="width: 30px;"></th>
                                     <th id="lbl_id">Id</th>
                                     <th id="lbl_name">Name</th>
                                     <th id="lbl_name">Service Name</th>
@@ -55,15 +55,15 @@
                                 <tbody>
                                 {% for object in all_apis %}
                                 <tr>
-                                    <td class="col-sm-1"><input type="checkbox" name="channel_gw_scope"
+                                    <td><input type="checkbox" name="channel_gw_scope"
                                                                 id="chb_channel_gw_scope" value="{{ object.id }}"
                                                                 {{ object.is_checked|yesno:" checked, "}}>
                                     </td>
-                                    <td class="col-sm-2"><a style="text-decoration: underline;" href="{% url 'channel_gateway_api:detail' object.id %}">{{ object.id }}</a></td>
-                                    <td class="col-sm-2">{{ object.name }}</td>
-                                    <td class="col-sm-2"><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' object.service.id %}">{{ object.service.name }}</a></td>
-                                    <td class="col-sm-1">{{ object.http_method }}</td>
-                                    <td class="col-sm-1">{{ object.pattern }}</td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_api:detail' object.id %}">{{ object.id }}</a></td>
+                                    <td>{{ object.name }}</td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' object.service.id %}">{{ object.service.name }}</a></td>
+                                    <td>{{ object.http_method }}</td>
+                                    <td>{{ object.pattern }}</td>
                                 </tr>
                                 {% endfor %}
                                 </tbody>
