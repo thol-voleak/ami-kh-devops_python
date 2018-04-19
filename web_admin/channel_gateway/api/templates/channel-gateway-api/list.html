@@ -101,7 +101,7 @@
                             {% if not i.is_deleted %}
                                 <tr>
                                     <td>{{ i.id|default_if_none:'' }}</td>
-                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' i.service.id %}">{{ i.service.name|default_if_none:'' }}</a></td>
+                                    <td><a style="text-decoration: underline;" href="{% url 'channel_gateway_service:detail' i.service.id %}?back_url={% current_url_encoded_for_back %}">{{ i.service.name|default_if_none:'' }}</a></td>
                                     <td>{{ i.name|default_if_none:'' }}</td>
                                     <td>{{ i.http_method|default_if_none:'' }}</td>
                                     <td>{{ i.pattern|default_if_none:'' }}</td>
