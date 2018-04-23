@@ -22,14 +22,14 @@ class ListView(TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         is_deleted_status_list = [{
-            "value": "",
-            "name": "All"
+            "value": "0",
+            "name": "No"
         },{
             "value": "1",
             "name": "Yes"
         },{
-            "value": "0",
-            "name": "No"
+            "value": "",
+            "name": "All"
         }]
         context.update({
             'is_deleted_status_list': is_deleted_status_list
@@ -37,7 +37,7 @@ class ListView(TemplateView, GetHeaderMixin):
         opening_page_index = request.GET.get('current_page_index', 1)
         service_id = request.GET.get('service_id', "")
         service_name = request.GET.get('service_name', "")
-        is_deleted = request.GET.get('is_deleted', "")
+        is_deleted = request.GET.get('is_deleted', "0")
 
         params = {}
         params['paging'] = True

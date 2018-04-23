@@ -28,14 +28,14 @@ class ListView(TemplateView, GetHeaderMixin):
         service_list = get_service_list(self, body_res)
 
         is_deleted_status_list = [{
-            "value": "",
-            "name": "All"
+            "value": "0",
+            "name": "No"
         },{
             "value": "1",
             "name": "Yes"
         },{
-            "value": "0",
-            "name": "No"
+            "value": "",
+            "name": "All"
         }]
 
         http_method_list = [{
@@ -63,7 +63,7 @@ class ListView(TemplateView, GetHeaderMixin):
         api_id = request.GET.get('api_id', "")
         api_name = request.GET.get('api_name', "")
         service_id = request.GET.get('service_id', "")
-        is_deleted = request.GET.get('is_deleted', "")
+        is_deleted = request.GET.get('is_deleted', "0")
         http_method = request.GET.get('http_method', "")
 
         params = {}
