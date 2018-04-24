@@ -1,0 +1,38 @@
+{% extends "core.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% load humanize %}
+
+{% block content %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="col-xs-12">
+        <div class="alert alert-success alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="col-xs-12">
+        <div class="alert alert-danger alert-dismissable" id="msg-success">
+            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>{{ message }}</strong>
+        </div>
+    </div>
+{% endif %}
+{% endfor %}
+<div class="col-xs-12 mb5">
+    <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
+        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+        <strong id="alert-msg"></strong>
+    </div>
+</div>
+<h3>Mechanic Detail</h3>
+    <div id="mechanic_{{ mechanic.id }}">
+        <h3><font size="4">Mechanic Information</font></h3>
+    </div>
+
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+{% endblock %}

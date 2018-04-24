@@ -10,6 +10,7 @@ from .views.delete_mechanic import MechanicDelete
 from .views.configuration import MappingView
 from .views.amount_limit import AmountLimit
 from .views.api_amount_limit import delete_amount_limit
+from .views.mechanic_detail import MechanicDetail
 
 app_name = 'campaign'
 
@@ -33,5 +34,7 @@ urlpatterns = [
         name="amount_limit"),
     url(r'^(?P<rule_id>[0-9A-Za-z]+)/amount-limit/(?P<rule_limit_id>[0-9A-Za-z]+)/delete', login_required(delete_amount_limit, login_url='authentications:login'),
         name="delete-amount-limit"),
+    url(r'^detail/(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)$', login_required(MechanicDetail.as_view(), login_url='authentications:login'),
+        name="mechanic_detail"),
 ]
 

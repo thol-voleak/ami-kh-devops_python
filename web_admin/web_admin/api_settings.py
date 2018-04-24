@@ -224,6 +224,7 @@ GET_CAMPAIGNS_DETAIL= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_
 CREATE_CAMPAIGN = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/report'
 GET_MECHANIC_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
+GET_MECHANIC_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{mechanic_id}'
 CREATE_MECHANIC = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
 GET_CONDITION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions'
 GET_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions'
