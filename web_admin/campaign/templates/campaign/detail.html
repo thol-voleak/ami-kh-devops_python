@@ -27,23 +27,23 @@
         <strong id="alert-msg"></strong>
     </div>
 </div>
-<h3>Campaign Details</h3>
+<h3>Rule Details</h3>
 <div class="panel panel-primary " style="background-color: #ecf0f1;">
     <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
         <div class="pull-left">
         <p class="bold" style="margin-bottom:0;">
-            <label size="2"><strong>Campaign ID:</strong></label>
+            <label size="2"><strong>Rule ID:</strong></label>
             <span id="lbl_campaign_id" style="text-transform: uppercase">{{data.id}}</span>
         </p>
         <p class="bold">
-            <label size="2"><strong>Campaign Name:</strong></label>
+            <label size="2"><strong>Rule Name:</strong></label>
             <span id="lbl_campaign_name">{{data.name}}</span>
         </p>
         </div>
     </div>
     <div class="panel-body" style="margin-top: -20px;">
         <p>
-            <label>Campaign Description:</label>
+            <label>Rule Description:</label>
             <span id="lbl_campaign_description">{{data.description}}</span>
         </p>
         <p style="margin-bottom:0;">
@@ -58,14 +58,14 @@
         {% for i in limit_values %}
         <p><font size="2"></font>
         <label>Amount Limit:</label>
-        <span id="lbl_campaign_amount_limit_{{ i }}">{{i|floatformat:2|intcomma|default_if_none:''}}  /recipient/campaign</span>
+        <span id="lbl_campaign_amount_limit_{{ i }}">{{i|floatformat:2|intcomma|default_if_none:''}}  /recipient/rule</span>
         </p>
         {% endfor %}
 
         {% if count_limit_values == 0 %}
         <p><font size="2"></font>
         <label>Amount Limit:</label>
-        <span id="lbl_campaign_amount_limit">   /recipient/campaign</span>
+        <span id="lbl_campaign_amount_limit">   /recipient/rule</span>
         </p>
         {% endif %}
     </div>
