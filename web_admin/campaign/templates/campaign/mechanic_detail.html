@@ -4,35 +4,325 @@
 {% load humanize %}
 
 {% block content %}
-{% for message in messages %}
-{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-    <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissable" id="msg-success">
-            <a class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message }}</strong>
-        </div>
-    </div>
-{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-    <div class="col-xs-12">
-        <div class="alert alert-danger alert-dismissable" id="msg-success">
-            <a class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ message }}</strong>
-        </div>
-    </div>
-{% endif %}
-{% endfor %}
-<div class="col-xs-12 mb5">
-    <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client">
-        <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-        <strong id="alert-msg"></strong>
-    </div>
-</div>
-<h3>Mechanic Detail</h3>
-    <div id="mechanic_{{ mechanic.id }}">
-        <h3><font size="4">Mechanic Information</font></h3>
-    </div>
+    <div class="mechanic-detail-page">
+        <h3>Mechanic Detail</h3>
 
-{% endblock %}
-{% block body_js %}
-{{ block.super }}
+        {% include "message.html" %}
+
+        <div class="section-header">Trigger Detail</div>
+
+        <div class="list">
+            <div class="section">
+                <div class="pull-right">
+                    <a><i class="fa fa-pencil"></i></a>
+                </div>
+                <div>
+                    <b>Trigger: Trigger</b>
+                </div>
+                <div style="margin-top: 10px;">
+                    <b>Duration of Mechanic: 30/11/2017 To 30/11/2017</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            Conditions Detail
+            <a class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
+        </div>
+
+        <div class="list">
+            <div class="section">
+                <div class="pull-right">
+                    <a><i class="fa fa-trash"></i></a>
+                </div>
+                <div class="info-group">
+                    <div class="sub-title">Condition 1</div>
+                    <div></div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+
+                <div class="sub-list">
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Filter 1</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Filter 2</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="and-section">
+                AND
+            </div>
+            <div class="section">
+                <div class="pull-right">
+                    <a><i class="fa fa-trash"></i></a>
+                </div>
+                <div class="info-group">
+                    <div class="sub-title">Condition 2</div>
+                    <div></div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+
+                <div class="sub-list">
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Filter 1</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            Actions Detail
+            <a class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
+        </div>
+
+        <div class="list">
+            <div class="section">
+                <div class="pull-right">
+                    <a><i class="fa fa-trash"></i></a>
+                </div>
+                <div class="info-group">
+                    <div class="sub-title">Action 1</div>
+                    <div></div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+
+                <div class="sub-list">
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Limitation 1</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Limitation 2</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="and-section">
+                AND
+            </div>
+            <div class="section">
+                <div class="pull-right">
+                    <a><i class="fa fa-trash"></i></a>
+                </div>
+                <div class="info-group">
+                    <div class="sub-title">Action 2</div>
+                    <div></div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+                <div class="info-group">
+                    <div>Condition Type</div>
+                    <div>Event Detail</div>
+                </div>
+
+                <div class="sub-list">
+                    <div class="sub-section">
+                        <div class="pull-right">
+                            <a><i class="fa fa-trash"></i></a>
+                        </div>
+                        <div class="info-group">
+                            <div class="sub-title">Limitation 1</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Type</div>
+                            <div>Event Detail</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

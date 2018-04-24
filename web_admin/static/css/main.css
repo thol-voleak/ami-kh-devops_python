@@ -1,0 +1,59 @@
+.mechanic-detail-page .section-header {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 150%;
+  color: #6d6e7d;
+}
+.mechanic-detail-page .section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f6f6f6;
+}
+.mechanic-detail-page .list {
+  padding-left: 30px;
+}
+.mechanic-detail-page .fa-pencil,
+.mechanic-detail-page .fa-trash {
+  font-size: 150%;
+}
+.mechanic-detail-page .fa-plus {
+  color: #00da7d;
+}
+.mechanic-detail-page .info-group {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: stretch;
+}
+.mechanic-detail-page .info-group *:first-child {
+  width: 200px;
+  text-align: right;
+  margin-right: 15px;
+  font-weight: bold;
+}
+.mechanic-detail-page .info-group *:last-child {
+  flex: 1;
+}
+.mechanic-detail-page .info-group + .info-group {
+  margin-top: 15px;
+}
+.mechanic-detail-page .sub-title {
+  font-weight: bold;
+  color: #0870b6;
+  font-size: 110%;
+}
+.mechanic-detail-page .sub-section {
+  background-color: #efefef;
+  padding: 15px 15px 15px 0px;
+}
+.mechanic-detail-page .sub-section + .sub-section {
+  margin-top: 15px;
+}
+.mechanic-detail-page .sub-list {
+  margin-top: 20px;
+}
+.mechanic-detail-page .and-section {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
