@@ -46,64 +46,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 continue
             condition['filter'] = filter
 
-        success, action = self.get_rewards_list(campaign_id, mechanic_id)
-        if not success:
-            return render(request, self.template_name, context)
-
-        data['reward'] = {}
-        if len(action) > 0:
-            reward = {}
-            action = action[0]
-            action_id = action['id']
-            reward['reward_type'] = action['action_type']['name']
-            reward['id'] = action['action_type']['id']
-            if action['action_type']['id'] == 1:
-                for j in action['action_data']:
-                    if j['key_name'] == 'payee_user.user_id':
-                        if j['key_value'] in self.person.keys():
-                            reward['reward_to'] = self.person[j['key_value']]
-                    if j['key_name'] == 'payee_user.user_type':
-                        reward['recipient'] = j['key_value']
-                    if j['key_name'] == 'amount':
-                        reward['amount'] = j['key_value']
-            elif action['action_type']['id'] == 2:
-                reward['reward_type'] = 'Send Notification'
-                reward['reward_to'] = action['user_id']
-                reward['recipient'] = action['user_type']
-                for action_data in action['action_data']:
-                    if action_data['key_name'] == 'notification_url':
-                        reward['send_to'] = action_data['key_value']
-                reward['data_to_be_sent'] = action['action_data']
-            elif action['action_type']['id'] == 4:
-                reward['reward_type'] = 'Suspend Account'
-                for j in action['action_data']:
-                    if j['key_name'] == 'user_id':
-                        if j['key_value'] in self.person.keys():
-                            reward['reward_to'] = self.person[j['key_value']]
-                    if j['key_name'] == 'user_type':
-                        if j['key_value'] == 'customer':
-                            reward['recipient'] = 'Customer'
-                        elif j['key_value'] == 'agent':
-                            reward['recipient'] = 'Agent'
-                        else:
-                            reward['recipient'] = j['key_value']
-            data['reward'] = reward
-
-            success, limitation = self.get_limitation_list(campaign_id, mechanic_id, action_id)
-            if not success:
-                return render(request, self.template_name, context)
-
-            data['limitation_list'] = []
-            for l in limitation:
-                if l['is_deleted']:
-                    continue
-                for filter_limit in l['filters']:
-                    if filter_limit['key_name'] == 'user_id':
-                        if filter_limit['key_value'] in self.person.keys():
-                            l['reward_to'] = self.person[filter_limit['key_value']]
-                    if filter_limit['key_name'] == 'user_type':
-                        l['recipient'] = filter_limit['key_value']
-                data['limitation_list'].append(limitation)
+        data['action_list'] = self.build_action_list(campaign_id, mechanic_id)
 
         # Get result for Count Of
         for con in data.get('condition_list'):
@@ -132,6 +75,69 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         })
 
         return render(request, self.template_name, context)
+
+    def build_action_list(self, campaign_id, mechanic_id):
+        ret = []
+        success, action_list = self.get_rewards_list(campaign_id, mechanic_id)
+
+        for action in action_list:
+            if action['is_deleted']:
+                continue
+
+            action_data = action['action_data']
+            action_type_id = action['action_type']['id']
+
+            if action_type_id == 1:
+                reward_to = self.get_action_data_value(action_data, 'payee_user.user_id')
+                reward_to = self.get_person_name(reward_to)
+                action['reward_to'] = reward_to
+                action['recipient'] = self.get_action_data_value(action_data, 'payee_user.user_type')
+                action['amount'] = self.get_action_data_value(action_data, 'amount')
+                action['product_service_id'] = self.get_action_data_value(action_data, 'product_service_id')
+                action['payer_id'] = self.get_action_data_value(action_data, 'payer_user.user_id')
+                action['payer_sof_id'] = self.get_action_data_value(action_data, 'payer_user.sof.id')
+            elif action_type_id == 2:
+                action['reward_to'] = action['user_id']
+                action['recipient'] = action['user_type']
+                action['send_to'] = self.get_action_data_value(action_data, 'notification_url')
+            elif action_type_id == 4:
+                reward_to = self.get_action_data_value(action_data, 'user_id')
+                reward_to = self.get_person_name(reward_to)
+                action['reward_to'] = reward_to
+                action['recipient'] = self.get_action_data_value(action_data, 'user_type').title()
+
+            success, limitation_list = self.get_limitation_list(campaign_id, mechanic_id, action['id'])
+
+            action['limitation_list'] = []
+            for limitation in limitation_list:
+                if limitation['is_deleted']:
+                    continue
+
+                limitation_data = limitation['filters']
+                reward_to = self.get_limitation_data_value(limitation_data, 'user_id')
+                reward_to = self.get_person_name(reward_to)
+                limitation['reward_to'] = reward_to
+                limitation['recipient'] = self.get_limitation_data_value(limitation_data, 'user_type')
+                action['limitation_list'].append(limitation)
+            ret.append(action)
+        return ret
+
+    def get_limitation_data_value(self, limitation_data, key_name):
+        for data in limitation_data:
+            if data['key_name'] == key_name:
+                return data['key_value']
+        return None
+
+    def get_action_data_value(self, action_data, key_name):
+        for data in action_data:
+            if data['key_name'] == key_name:
+                return data['key_value']
+        return None
+
+    def get_person_name(self, key):
+        if key in self.person.keys():
+            return self.person[key]
+        return None
 
     def get_mechanic(self, campaign_id, mechanic_id):
         url = api_settings.GET_MECHANIC_DETAIL.format(bak_rule_id=campaign_id, mechanic_id=mechanic_id)

@@ -16,11 +16,14 @@
                 <div class="pull-right">
                     <a><i class="fa fa-pencil"></i></a>
                 </div>
-                <div>
-                    <b>Trigger: Trigger</b>
+                <div class="text-bold">
+                    Trigger: <span id="lbl_trigger">{{mechanic.event_name}}</span>
                 </div>
-                <div style="margin-top: 10px;">
-                    <b>Duration of Mechanic: 30/11/2017 To 30/11/2017</b>
+                <div class="text-bold" style="margin-top: 10px;">
+                    Duration of Mechanic:
+                    <span id="lbl_mechanic_start_date">{{mechanic.start_timestamp}}</span>
+                    To
+                    <span id="lbl_mechanic_end_date">{{mechanic.end_timestamp}}</span>
                 </div>
             </div>
         </div>
@@ -31,148 +34,250 @@
         </div>
 
         <div class="list">
-            <div class="section">
-                <div class="pull-right">
-                    <a><i class="fa fa-trash"></i></a>
-                </div>
-                <div class="info-group">
-                    <div class="sub-title">Condition 1</div>
-                    <div></div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-
-                <div class="sub-list">
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
-                        </div>
-                        <div class="info-group">
-                            <div class="sub-title">Filter 1</div>
-                            <div></div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
+            {%for condition in mechanic.condition_list%}
+                <div class="section" id="div_condition_{{condition.id}}">
+                    <div class="pull-right">
+                        <a><i class="fa fa-trash"></i></a>
                     </div>
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
+                    <div class="info-group">
+                        <div class="sub-title">Condition {{forloop.counter}}</div>
+                        <div></div>
+                    </div>
+                    {%if condition.filter_type == 'event_detail'%}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_condition_type">Event Detail</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div class="sub-title">Filter 2</div>
-                            <div></div>
+                            <div>Detail Name:</div>
+                            <div>
+                                <span id="lbl_comparison_key_name">{{condition.comparison_list.0.key_name}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Key Value Type:</div>
+                            <div>
+                                <span id="lbl_comparison_key_value_type">{{condition.comparison_list.0.key_value_type}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    <span>Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    <span>More Than</span>
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    <span>More than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    <span>Less Than</span>
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    <span>Less than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    <span>Not Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    <span>Contains</span>
+                                    {%endif%}
+                                </span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Key Value:</div>
+                            <div>
+                                <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                    {% elif  condition.filter_type == 'sum_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_sum_condition_type">Sum of</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Sum Key Name:</div>
+                            <div>
+                                <span id="lbl_sum_key_name">{{condition.sum_key_name}}</span>
+                            </div>
                         </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_sum_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    <span>Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    <span>More Than</span>
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    <span>More than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    <span>Less Than</span>
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    <span>Less than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    <span>Not Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    <span>Contains</span>
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Sum Key Value:</div>
+                            <div>
+                                <span id="lbl_sum_key_value">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                    {% elif  condition.filter_type == 'count_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_count_condition_type">Count of</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count Key Name:</div>
+                            <div>
+                                {%if condition.count_key_name == 'login' %}
+                                    <span id="lbl_count_key_name">Log-in</span>
+                                {%elif condition.count_key_name == 'register_customer' %}
+                                    <span id="lbl_count_key_name">Register</span>
+                                {%elif condition.count_key_name == 'create_order' %}
+                                    <span id="lbl_count_key_name">Create order</span>
+                                {%elif condition.count_key_name == 'executed_order' %}
+                                    <span id="lbl_count_key_name">Payment</span>
+                                {%elif condition.count_key_name == 'created_sof' %}
+                                    <span id="lbl_count_key_name">Link Bank</span>
+                                {% else %}
+                                    <span id="lbl_count_key_name">{{ condition.count_key_name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_count_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    <span>Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    <span>More Than</span>
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    <span>More than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    <span>Less Than</span>
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    <span>Less than or Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    <span>Not Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    <span>Contains</span>
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count:</div>
+                            <div>
+                                <span id="lbl_count">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                        {%if condition.within == 'Timebox' %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Timebox</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div></div>
+                                <div>
+                                    <span id="lbl_within_val">{{condition.timebox}} min</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Date</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Start Date:</div>
+                                <div>
+                                    <span id="lbl_within_start">{{condition.within_start}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>End Date:</div>
+                                <div>
+                                    <span id="lbl_within_end">{{condition.within_end}}</span>
+                                </div>
+                            </div>
+                        {%endif%}
+                    {%endif%}
+                    <div class="sub-list">
+                        {%for filter in condition.filter %}
+                            <div class="sub-section">
+                                <div class="pull-right">
+                                    <a><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="info-group">
+                                    <div class="sub-title">Filter {{forloop.counter}}</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Detail Name:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_name">{{filter.key_name}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Operator:</div>
+                                    <div>
+                                        <span id="lbl_filter_operator">
+                                            {%if filter.operator == '=' %}
+                                            <span>Equal to</span>
+                                            {%elif filter.operator == '>' %}
+                                            <span>More Than</span>
+                                            {%elif filter.operator == '>=' %}
+                                            <span>More than or Equal to</span>
+                                            {%elif filter.operator == '<' %}
+                                            <span>Less Than</span>
+                                            {%elif filter.operator == '<=' %}
+                                            <span>Less than or Equal to</span>
+                                            {%elif filter.operator == '!=' %}
+                                            <span>Not Equal to</span>
+                                            {%elif filter.operator == 'contains' %}
+                                            <span>Contains</span>
+                                            {%endif%}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_value_type">{{filter.key_value_type}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {%endfor%}
                     </div>
                 </div>
-            </div>
-            <div class="and-section">
-                AND
-            </div>
-            <div class="section">
-                <div class="pull-right">
-                    <a><i class="fa fa-trash"></i></a>
-                </div>
-                <div class="info-group">
-                    <div class="sub-title">Condition 2</div>
-                    <div></div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-
-                <div class="sub-list">
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
-                        </div>
-                        <div class="info-group">
-                            <div class="sub-title">Filter 1</div>
-                            <div></div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
+                {% if mechanic.condition_list|length > 1 and forloop.counter < mechanic.condition_list|length %}
+                    <div class="and-section">
+                        AND
                     </div>
-                </div>
-            </div>
+                {% endif %}
+            {%endfor%}
         </div>
 
         <div class="section-header">
@@ -181,148 +286,173 @@
         </div>
 
         <div class="list">
-            <div class="section">
-                <div class="pull-right">
-                    <a><i class="fa fa-trash"></i></a>
-                </div>
-                <div class="info-group">
-                    <div class="sub-title">Action 1</div>
-                    <div></div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-
-                <div class="sub-list">
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
-                        </div>
-                        <div class="info-group">
-                            <div class="sub-title">Limitation 1</div>
-                            <div></div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
+            {%for action in mechanic.action_list%}
+                <div class="section">
+                    <div class="pull-right">
+                        <a><i class="fa fa-trash"></i></a>
                     </div>
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
+                    <div class="info-group">
+                        <div class="sub-title">Action {{forloop.counter}}</div>
+                        <div></div>
+                    </div>
+                    {% if action.action_type.id == 1 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div>
+                                Fixed Cashback
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div class="sub-title">Limitation 2</div>
-                            <div></div>
+                            <div>Amount:</div>
+                            <div>
+                                <span id="lbl_amount">{{action.amount|default_if_none:''}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Reward Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Give Reward to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Product Service ID:</div>
+                            <div>
+                                <span id="lbl_product_service_id">{{action.product_service_id|default_if_none:''}}</span>
+                            </div>
                         </div>
                         <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
+                            <div>Payer ID:</div>
+                            <div>
+                                <span id="lbl_payer_id">{{action.payer_id|default_if_none:''}}</span>
+                            </div>
                         </div>
+                        <div class="info-group">
+                            <div>Payer SOF ID:</div>
+                            <div>
+                                <span id="lbl_payer_sof_id">{{action.payer_sof_id|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if action.action_type.id == 2 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div>
+                                Send Notification
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Send Notification To:</div>
+                            <div>
+                                <span id="lbl_send_notification_to">{{action.send_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Give Reward to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        {%for action_data in action.action_data %}
+                            {% if action_data.key_name != 'notification_url' %}
+                                <div class="info-group">
+                                    <div>Data to be sent:</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Name:</div>
+                                    <div>
+                                        <span id="lbl_key_name">{{action_data.key_name|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_key_value_type">{{action_data.key_value_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_key_value">{{action_data.key_value|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if action.action_type.id == 4 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div>Suspend Account</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Action Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Do action to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="sub-list">
+                        {% for limitation in action.limitation_list %}
+                            <div class="sub-section">
+                                <div class="pull-right">
+                                    <a><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="info-group">
+                                    <div class="sub-title">Limitation {{forloop.counter}}</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Limit Type:</div>
+                                    <div>
+                                        <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Limit to:</div>
+                                    <div>
+                                        <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Reward Recipient should be:</div>
+                                    <div>
+                                        <span id="lbl_limitation_reward_recipient_should_be">{{limitation.recipient|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Give Reward to:</div>
+                                    <div>
+                                        <span id="lbl_limitation_give_rewards_to">{{limitation.reward_to|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
-            <div class="and-section">
-                AND
-            </div>
-            <div class="section">
-                <div class="pull-right">
-                    <a><i class="fa fa-trash"></i></a>
-                </div>
-                <div class="info-group">
-                    <div class="sub-title">Action 2</div>
-                    <div></div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-                <div class="info-group">
-                    <div>Condition Type</div>
-                    <div>Event Detail</div>
-                </div>
-
-                <div class="sub-list">
-                    <div class="sub-section">
-                        <div class="pull-right">
-                            <a><i class="fa fa-trash"></i></a>
-                        </div>
-                        <div class="info-group">
-                            <div class="sub-title">Limitation 1</div>
-                            <div></div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
-                        <div class="info-group">
-                            <div>Condition Type</div>
-                            <div>Event Detail</div>
-                        </div>
+                {% if mechanic.action_list|length > 1 and forloop.counter < mechanic.action_list|length %}
+                    <div class="and-section">
+                        AND
                     </div>
-                </div>
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
