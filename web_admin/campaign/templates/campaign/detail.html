@@ -91,7 +91,7 @@
                     Mechanic ID: <span id="lbl_mechanic_id">{{mechanic.id}}</span>
                 </div>
                 <div>
-                    {%if not data.is_active and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
+                    {%if not data.is_active and mechanic_list|length != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
                     <a id="btn_delete" onClick="delete_mechanic('{% url 'campaign:delete_mechanic' data.id mechanic.id %}')"><i class="fa fa-trash"></i></a>
                     {% endif %}
 
