@@ -100,6 +100,12 @@
             </div>
         {%endfor%}
     </div>
+
+    <div class="text-right" style="margin-top: 15px">
+        <a href="{% url 'campaign:campaign' %}">
+            <input id="btn_dismiss" class="btn text-left" type="button" value="Dismiss"/>
+        </a>
+    </div>
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
