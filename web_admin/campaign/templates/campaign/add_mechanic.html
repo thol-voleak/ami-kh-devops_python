@@ -962,7 +962,7 @@
         var endTimeId = 'dtp_within_to_time';
         var prefixName = '';
 
-        if (typeCountOf == 'count_consecutive_of') {
+        if (typeCountOf == '1') {
             startdateId = 'dtp_count_consecutive_of_start_date';
             startTimeId = 'dtp_count_consecutive_of_start_time';
             endDateId = 'dtp_count_consecutive_of_end_date';
@@ -995,8 +995,8 @@
 
     var getWithinTimeHtml = function(conditionNumber, typeCountOf) {
         var timeboxId = 'txt_timebox';
-        var vprefixName = '';
-        if (typeCountOf == 'count_consecutive_of') {
+        var prefixName = '';
+        if (typeCountOf == '1') {
             timeboxId = 'txt_count_consecutive_of_timebox_minute';
             prefixName = 'consecutive_';
         }
@@ -1037,6 +1037,7 @@
              var countId = 'txt_count';
              var withinId = 'ddl_within';
              var prefixName = '';
+             var typeCountofNum = 0;
             if (typeCountOf == 'count_consecutive_of') {
                 operatorOptionsHtml =  '{% for oper in count_consecutive_of_operators %}\
                                            <option value= "{{ oper }}">{{ oper }}</option>\
@@ -1046,6 +1047,7 @@
                  countId = 'txt_count_consecutive_of_count';
                  withinId = 'ddl_count_consecutive_of_within';
                  prefixName = 'consecutive_';
+                 typeCountofNum = 1;
             }
             var CountOfHtml =  '<div class="form-group">\
                             <label class="col-sm-3 control-label">Count Key Name *</label>\
@@ -1076,7 +1078,7 @@
                         <div class="form-group">\
                              <label class="col-sm-3 control-label">Within *</label>\
                             <div class="col-xs-3">\
-                                 <select class="form-control" id="' + withinId + '" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ', "' + typeCountOf + '")" name="' + prefixName + 'within_' + conditionNumber + '">\
+                                 <select class="form-control" id="' + withinId + '" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ', ' + typeCountofNum + ')" name="' + prefixName + 'within_' + conditionNumber + '">\
                                         <option value= "date">Date</option>\
                                         <option value= "timebox">Timebox</option>\
                                 </select>\
