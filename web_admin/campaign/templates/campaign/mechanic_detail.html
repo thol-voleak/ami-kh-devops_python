@@ -595,7 +595,17 @@
             closeOnConfirm: true
         },
         function () {
-            window.location.replace(url);
+            $.ajax({
+                url: '/admin-portal/campaign/inactive/'+ "{{rule.id}}" + '/',
+                type: "POST",
+                data: {"campaign_name": "{{rule.name}}", "campaign_description": "{{rule.description}}"},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    window.location.replace(url);
+                }
+            });
         });
     };
 </script>
