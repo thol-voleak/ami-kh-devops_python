@@ -218,6 +218,127 @@
                             </div>
                         {%endif%}
                     {%endif%}
+                    {% if condition.filter_type == 'count_consecutive_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_condition_type">Count consecutive instances of</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count Key Name:</div>
+                            <div>
+                                {%if condition.filter_event_name.key_value == 'login' %}
+                                    <span id="lbl_count_key_name">Log-in</span>
+                                {%elif condition.filter_event_name.key_value == 'register_customer' %}
+                                    <span id="lbl_count_key_name">Register</span>
+                                {%elif condition.filter_event_name.key_value == 'create_order' %}
+                                    <span id="lbl_count_key_name">Create order</span>
+                                {%elif condition.filter_event_name.key_value == 'executed_order' %}
+                                    <span id="lbl_count_key_name">Payment</span>
+                                {%elif condition.filter_event_name.key_value == 'created_sof' %}
+                                    <span id="lbl_count_key_name">Link Bank</span>
+                                {% else %}
+                                    <span id="lbl_count_key_name">{{ condition.filter_event_name.key_value }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_consecutive_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                        <span>Equal to</span>
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                        <span>More than or Equal to</span>
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count:</div>
+                            <div>
+                                <span id="lbl_count">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                        {%if condition.within == 'Timebox' %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Timebox</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div></div>
+                                <div>
+                                    <span id="lbl_within_val">{{condition.timebox}} min</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Date</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Start Date:</div>
+                                <div>
+                                    <span id="lbl_within_start">{{condition.within_start}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>End Date:</div>
+                                <div>
+                                    <span id="lbl_within_end">{{condition.within_end}}</span>
+                                </div>
+                            </div>
+                        {%endif%}
+                        <div class="info-group">
+                            <div>Consecutive key detail:</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Detail Name:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_name">{{condition.filter_consecutive.key_name}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_operator">
+                                    {%if condition.filter_consecutive.operator == '=' %}
+                                        <span>Equal to</span>
+                                    {%elif condition.filter_consecutive.operator == '>' %}
+                                        <span>More Than</span>
+                                    {%elif condition.filter_consecutive.operator == '>=' %}
+                                        <span>More than or Equal to</span>
+                                    {%elif condition.filter_consecutive.operator == '<' %}
+                                        <span>Less Than</span>
+                                    {%elif condition.filter_consecutive.operator == '<=' %}
+                                        <span>Less than or Equal to</span>
+                                    {%elif condition.filter_consecutive.operator == '!=' %}
+                                        <span>Not Equal to</span>
+                                    {%elif condition.filter_consecutive.operator == 'contains' %}
+                                        <span>Contains</span>
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value Type:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_value_type">{{condition.filter_consecutive.key_value_type}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_value">{{condition.filter_consecutive.key_value}}</span>
+                            </div>
+                        </div>
+                    {%endif%}
                     <div class="sub-list">
                         {%for filter in condition.filter %}
                             <div class="sub-section">

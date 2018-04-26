@@ -38,12 +38,23 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         data['condition_list'] = cons
         for condition in cons:
             success, coms = self.get_comparison_list(campaign_id, mechanic_id, condition['id'])
-            if not success:
-                continue
             condition['comparison_list'] = coms
+
             success, filter = self.get_condition_filter(campaign_id, mechanic_id, condition['id'])
-            if not success:
-                continue
+
+            if condition.get('filter_type') == 'count_consecutive_of':
+                filter_event_name = self.pop_filter_by_key_name(filter, "event_name")
+                condition["filter_event_name"] = filter_event_name
+
+                filter_event_created_timestamp = self.pop_filter_by_key_name(filter, "event_created_timestamp")
+                self.build_within_from_filter(condition, filter_event_created_timestamp)
+
+                filter_event_created_timestamp = self.pop_filter_by_key_name(filter, "event_created_timestamp")
+                self.build_within_from_filter(condition, filter_event_created_timestamp)
+
+                filter_consecutive = self.pop_filter_if_is_consecutive(filter)
+                condition["filter_consecutive"] = filter_consecutive
+
             condition['filter'] = filter
 
         data['action_list'] = self.build_action_list(campaign_id, mechanic_id)
@@ -59,15 +70,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                     con['count_key_name'] = filter.get('key_value')
                     con['filter'].remove(filter)
                 elif filter.get('key_name') == 'event_created_timestamp':
-                    if '@@@@event_created_timestamp@@-minutes(' in filter.get('key_value'):
-                        con['within'] = 'Timebox'
-                        con['timebox'] = filter['key_value'].split('@@@@event_created_timestamp@@-minutes(')[1].split(')@@')[0]
-                    elif '@@event_created_timestamp@@' not in filter.get('key_value'):
-                        con['within'] = 'Date'
-                        if filter.get('operator') == '>=':
-                            con['within_start'] = filter.get('key_value')
-                        if filter.get('operator') == '<=':
-                            con['within_end'] = filter.get('key_value')
+                    self.build_within_from_filter(con, filter)
                     con['filter'].remove(filter)
 
         context.update({
@@ -75,6 +78,34 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         })
 
         return render(request, self.template_name, context)
+
+    def build_within_from_filter(self, condition, filter):
+        if not filter:
+            return
+
+        if 'minutes' in filter.get('key_value'):
+            condition['within'] = 'Timebox'
+            condition['timebox'] = filter['key_value'].split('@@@@event_created_timestamp@@-minutes(')[1].split(')@@')[0]
+        elif '@@event_created_timestamp@@' not in filter.get('key_value'):
+            condition['within'] = 'Date'
+            if filter.get('operator') == '>=':
+                condition['within_start'] = filter.get('key_value')
+            if filter.get('operator') == '<=':
+                condition['within_end'] = filter.get('key_value')
+
+    def pop_filter_by_key_name(self, filter_list, key_name):
+        for filter in filter_list:
+            if filter['key_name'] == key_name:
+                filter_list.remove(filter)
+                return filter
+        return None
+
+    def pop_filter_if_is_consecutive(self, filter_list):
+        for filter in filter_list:
+            if filter.get('is_consecutive_key'):
+                filter_list.remove(filter)
+                return filter
+        return None
 
     def build_action_list(self, campaign_id, mechanic_id):
         ret = []
