@@ -1,6 +1,23 @@
 .text-bold {
   font-weight: bold;
 }
+.list-mechanic {
+  margin-top: 15px;
+}
+.list-mechanic .item {
+  padding: 30px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.list-mechanic .item .fa-trash {
+  font-size: 150%;
+}
+.list-mechanic .item + .item {
+  margin-top: 15px;
+}
 .mechanic-detail-page .section-header {
   margin-top: 30px;
   margin-bottom: 20px;
