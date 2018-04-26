@@ -80,7 +80,7 @@
     <h3>
         Mechanic Information
         {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
-        <a class="btn btn-default pull-right" href="{% url 'campaign:add_mechanic' campaign_id %}"><i class="fa fa-plus" style="color: #00da7d;"></i> Add New Mechanic</a>
+        <a id="btn_add_mechanic" class="btn btn-default pull-right" href="{% url 'campaign:add_mechanic' campaign_id %}"><i class="fa fa-plus" style="color: #00da7d;"></i> Add New Mechanic</a>
         {% endif %}
     </h3>
 
