@@ -962,7 +962,7 @@
         var endTimeId = 'dtp_within_to_time';
         var prefixName = '';
 
-        if (typeCountOf == '1') {
+        if (typeCountOf == 1) {
             startdateId = 'dtp_count_consecutive_of_start_date';
             startTimeId = 'dtp_count_consecutive_of_start_time';
             endDateId = 'dtp_count_consecutive_of_end_date';
@@ -972,11 +972,11 @@
         var withinDateHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="' + prefixName + 'within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
+                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="' + prefixName + 'within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="' + startdateId + '" required >\
                                 </div>\
                                 <div class="col-xs-2">\
                                     <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
-                                    id="dtp_within_from_time" name="' + prefixName + 'within_from_time_' + conditionNumber + '"\
+                                    id="' + startTimeId + '" name="' + prefixName + 'within_from_time_' + conditionNumber + '"\
                                     value="{{ within_from_time|default_if_none:'00:00' }}"\
                                     style="height:40px;">\
                                 </div> <div style="display: inline-block;margin-top: 10px;">to</div>\
@@ -984,10 +984,10 @@
                             <div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="' + prefixName + 'within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
+                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="' + prefixName + 'within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="' + endDateId + '" required >\
                                 </div>\
                                 <div class="col-xs-2">\
-                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="' + prefixName + 'within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
+                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="' +endTimeId +'" name="' + prefixName + 'within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
                                 </div>\
                             </div>';
         return withinDateHtml;
@@ -996,7 +996,7 @@
     var getWithinTimeHtml = function(conditionNumber, typeCountOf) {
         var timeboxId = 'txt_timebox';
         var prefixName = '';
-        if (typeCountOf == '1') {
+        if (typeCountOf == 1) {
             timeboxId = 'txt_count_consecutive_of_timebox_minute';
             prefixName = 'consecutive_';
         }
@@ -1138,7 +1138,7 @@
                 countOfArea.appendChild(countOfDivElem);
                 var countOfDateArea = conditionElem.querySelector('#within-date-area');
                 var countOfDateDiv = document.createElement('div');
-                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 'count_of');
+                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 0);
                 var countOfDateDivElem  = countOfDateDiv.cloneNode(true);
                 countOfDateArea.appendChild(countOfDateDivElem);
                 var filterAreaDiv = document.createElement('div');
@@ -1161,7 +1161,7 @@
                 countConsecutiveOfArea.appendChild(countConsecutiveOfDivElem);
                 var countConsecutiveOfDateArea = conditionElem.querySelector('#within-date-area');
                 var countConsecutiveOfDateDiv = document.createElement('div');
-                countConsecutiveOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 'count_consecutive_of');
+                countConsecutiveOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 1);
                 var countConsecutiveOfDateDivElem  = countConsecutiveOfDateDiv.cloneNode(true);
                 countConsecutiveOfDateArea.appendChild(countConsecutiveOfDateDivElem);
                 var filterAreaDiv = document.createElement('div');

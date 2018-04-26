@@ -27,6 +27,12 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         context = super(MechanicDetail, self).get_context_data(**kwargs)
         campaign_id = kwargs['campaign_id']
         mechanic_id = kwargs['mechanic_id']
+
+        rule = self.get_rule_detail(campaign_id)
+        context.update({
+            'rule': rule,
+        })
+
         success, data = self.get_mechanic(campaign_id, mechanic_id)
         if not success:
             return render(request, self.template_name, context)
@@ -200,3 +206,8 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         url = api_settings.GET_CONDITION_FILTER.format(rule_id=campaign_id, mechanic_id=mechanic_id, condition_id=condition_id)
         success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting condition filter", "data")
         return success, data
+
+    def get_rule_detail(self, campaign_id):
+        url = api_settings.GET_CAMPAIGNS_DETAIL.format(bak_rule_id=campaign_id)
+        success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting rule detail", "data")
+        return data

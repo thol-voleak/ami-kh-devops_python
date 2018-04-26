@@ -14,7 +14,7 @@
         <div class="list">
             <div class="section">
                 <div class="pull-right">
-                    <a><i class="fa fa-pencil"></i></a>
+                    <a id="btn_edit_trigger" onclick="do_action('')"><i class="fa fa-pencil"></i></a>
                 </div>
                 <div class="text-bold">
                     Trigger: <span id="lbl_trigger">{{mechanic.event_name}}</span>
@@ -30,14 +30,14 @@
 
         <div class="section-header">
             Conditions Detail
-            <a class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
+            <a id="btn_add_new_condition" onclick="do_action('')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
         </div>
 
         <div class="list">
             {%for condition in mechanic.condition_list%}
                 <div class="section" id="div_condition_{{condition.id}}">
                     <div class="pull-right">
-                        <a><i class="fa fa-trash"></i></a>
+                        <a id="btn_delete_condition" onclick="do_action('')"><i class="fa fa-trash"></i></a>
                     </div>
                     <div class="info-group">
                         <div class="sub-title">Condition {{forloop.counter}}</div>
@@ -343,7 +343,7 @@
                         {%for filter in condition.filter %}
                             <div class="sub-section" id="div_count_of_filter_{{filter.id}}">
                                 <div class="pull-right">
-                                    <a><i class="fa fa-trash"></i></a>
+                                    <a id="btn_delete_filter" onclick="do_action('')"><i class="fa fa-trash"></i></a>
                                 </div>
                                 <div class="info-group">
                                     <div class="sub-title">Filter {{forloop.counter}}</div>
@@ -403,14 +403,14 @@
 
         <div class="section-header">
             Actions Detail
-            <a class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
+            <a id="btn_add_new_action" onclick="do_action('')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
         </div>
 
         <div class="list">
             {%for action in mechanic.action_list%}
                 <div class="section">
                     <div class="pull-right">
-                        <a><i class="fa fa-trash"></i></a>
+                        <a id="btn_delete_action" onclick="do_action('')"><i class="fa fa-trash"></i></a>
                     </div>
                     <div class="info-group">
                         <div class="sub-title">Action {{forloop.counter}}</div>
@@ -530,7 +530,7 @@
                         {% for limitation in action.limitation_list %}
                             <div class="sub-section">
                                 <div class="pull-right">
-                                    <a><i class="fa fa-trash"></i></a>
+                                    <a id="btn_delete_limitation" onclick="do_action('')"><i class="fa fa-trash"></i></a>
                                 </div>
                                 <div class="info-group">
                                     <div class="sub-title">Limitation {{forloop.counter}}</div>
@@ -572,4 +572,41 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block body_js %}
+{{ block.super }}
+<script>
+    function do_action(url) {
+        is_rule_active = {{rule.is_active|lower}};
+
+        if (!is_rule_active) {
+            window.location.replace(url);
+            return;
+        }
+
+        swal({
+            title: "This rule is currently ACTIVE. Editing will deactivate the rule. Proceed?",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Deactivate and Edit",
+            closeOnConfirm: true
+        },
+        function () {
+            $.ajax({
+                url: '/admin-portal/campaign/inactive/'+ "{{rule.id}}" + '/',
+                type: "POST",
+                data: {"campaign_name": "{{rule.name}}", "campaign_description": "{{rule.description}}"},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function () {
+                    window.location.replace(url);
+                }
+            });
+        });
+    };
+</script>
 {% endblock %}
