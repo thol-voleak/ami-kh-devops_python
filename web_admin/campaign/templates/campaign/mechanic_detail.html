@@ -355,50 +355,48 @@
                             </div>
                         </div>
                         {%for filter in condition.list_reset_filter %}
-                            <div class="sub-section">
-                                <div class="info-group">
-                                    <div class="sub-title">Reset Detail {{forloop.counter}}</div>
-                                    <div></div>
+                            <div class="info-group">
+                                <div>Reset Detail {{forloop.counter}}</div>
+                                <div></div>
+                            </div>
+                            <div class="info-group">
+                                <div>Detail Name:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_name">{{filter.key_name}}</span>
                                 </div>
-                                <div class="info-group">
-                                    <div>Detail Name:</div>
-                                    <div>
-                                        <span id="lbl_reset_filter_key_name">{{filter.key_name}}</span>
-                                    </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Key Value Type:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_value_type">{{filter.key_value_type}}</span>
                                 </div>
-                                <div class="info-group">
-                                    <div>Key Value Type:</div>
-                                    <div>
-                                        <span id="lbl_reset_filter_key_value_type">{{filter.key_value_type}}</span>
-                                    </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Operator:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_operator">
+                                        {%if filter.operator == '=' %}
+                                            <span>Equal to</span>
+                                        {%elif filter.operator == '>' %}
+                                            <span>More Than</span>
+                                        {%elif filter.operator == '>=' %}
+                                            <span>More than or Equal to</span>
+                                        {%elif filter.operator == '<' %}
+                                            <span>Less Than</span>
+                                        {%elif filter.operator == '<=' %}
+                                            <span>Less than or Equal to</span>
+                                        {%elif filter.operator == '!=' %}
+                                            <span>Not Equal to</span>
+                                        {%elif filter.operator == 'contains' %}
+                                            <span>Contains</span>
+                                        {%endif%}
+                                    </span>
                                 </div>
-                                <div class="info-group">
-                                    <div>Operator:</div>
-                                    <div>
-                                        <span id="lbl_reset_filter_operator">
-                                            {%if filter.operator == '=' %}
-                                                <span>Equal to</span>
-                                            {%elif filter.operator == '>' %}
-                                                <span>More Than</span>
-                                            {%elif filter.operator == '>=' %}
-                                                <span>More than or Equal to</span>
-                                            {%elif filter.operator == '<' %}
-                                                <span>Less Than</span>
-                                            {%elif filter.operator == '<=' %}
-                                                <span>Less than or Equal to</span>
-                                            {%elif filter.operator == '!=' %}
-                                                <span>Not Equal to</span>
-                                            {%elif filter.operator == 'contains' %}
-                                                <span>Contains</span>
-                                            {%endif%}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="info-group">
-                                    <div>Key Value:</div>
-                                    <div>
-                                        <span id="lbl_reset_filter_key_value">{{filter.key_value}}</span>
-                                    </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Key Value:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_value">{{filter.key_value}}</span>
                                 </div>
                             </div>
                         {%endfor%}
