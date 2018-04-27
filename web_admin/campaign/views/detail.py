@@ -64,6 +64,7 @@ class CampaignDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
         API_Logger.get_logging(loggers=self.logger, params={}, response=data,
                                status_code=status_code)
+        self.logger.info('========== Finish get mechanic list ==========')
         return data
 
     def get_detail_campaign(self, campaign_id):
