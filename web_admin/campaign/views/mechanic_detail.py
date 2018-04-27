@@ -46,22 +46,13 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
             success, coms = self.get_comparison_list(campaign_id, mechanic_id, condition['id'])
             condition['comparison_list'] = coms
 
-            success, filter = self.get_condition_filter(campaign_id, mechanic_id, condition['id'])
+            success, list_filter = self.get_condition_filter(campaign_id, mechanic_id, condition['id'])
 
             if condition.get('filter_type') == 'count_consecutive_of':
-                filter_event_name = self.pop_filter_by_key_name(filter, "event_name")
-                condition["filter_event_name"] = filter_event_name
+                success, list_reset_filter = self.get_condition_reset_filters(campaign_id, mechanic_id, condition['id'])
+                self.build_consecutive_data(condition, list_filter, list_reset_filter)
 
-                filter_event_created_timestamp = self.pop_filter_by_key_name(filter, "event_created_timestamp")
-                self.build_within_from_filter(condition, filter_event_created_timestamp)
-
-                filter_event_created_timestamp = self.pop_filter_by_key_name(filter, "event_created_timestamp")
-                self.build_within_from_filter(condition, filter_event_created_timestamp)
-
-                filter_consecutive = self.pop_filter_if_is_consecutive(filter)
-                condition["filter_consecutive"] = filter_consecutive
-
-            condition['filter'] = filter
+            condition['filter'] = list_filter
 
         data['action_list'] = self.build_action_list(campaign_id, mechanic_id)
 
@@ -84,6 +75,24 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         })
 
         return render(request, self.template_name, context)
+
+    def build_consecutive_data(self, condition, list_filter, list_reset_filter):
+        filter_event_name = self.pop_filter_by_key_name(list_filter, "event_name")
+        condition["filter_event_name"] = filter_event_name
+
+        filter_event_created_timestamp = self.pop_filter_by_key_name(list_filter, "event_created_timestamp")
+        self.build_within_from_filter(condition, filter_event_created_timestamp)
+
+        filter_event_created_timestamp = self.pop_filter_by_key_name(list_filter, "event_created_timestamp")
+        self.build_within_from_filter(condition, filter_event_created_timestamp)
+
+        filter_consecutive = self.pop_filter_if_is_consecutive(list_filter)
+        condition["filter_consecutive"] = filter_consecutive
+
+        reset_filter_event_name = self.pop_filter_by_key_name(list_reset_filter, "event_name")
+        condition["reset_filter_event_name"] = reset_filter_event_name
+
+        condition["list_reset_filter"] = list_reset_filter
 
     def build_within_from_filter(self, condition, filter):
         if not filter:
@@ -211,3 +220,8 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         url = api_settings.GET_CAMPAIGNS_DETAIL.format(bak_rule_id=campaign_id)
         success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting rule detail", "data")
         return data
+
+    def get_condition_reset_filters(self, campaign_id, mechanic_id, condition_id):
+        url = api_settings.GET_CONDITION_RESET_FILTERS.format(rule_id=campaign_id, mechanic_id=mechanic_id, condition_id=condition_id)
+        success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting condition reset filter", "data")
+        return success, data
