@@ -119,7 +119,7 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Password *</label>
+            <label class="col-sm-4 control-label" id="lbl_password">Password *</label>
             <div class="col-sm-8">
                 <input type="password" class="form-control input-rounded" name="password"
                        id="txt_password" required/>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
         <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Re-password *</label>
+            <label class="col-sm-4 control-label" id="lbl_re_password">Re-password *</label>
             <div class="col-sm-8">
                 <input type="password" class="form-control input-rounded" name="re_password"
                        id="txt_re_password" required  onchange="validatePassword(this)"/>
@@ -158,6 +158,16 @@
             <div class="col-sm-8">
                 <input type="text" class="form-control input-rounded" name="unique_reference"
                        id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}" required/>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label class="col-sm-4 control-label">System Password</label>
+            <div class="col-sm-8">
+                {% if identity.auto_generate_password %}
+                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="check_system_password()" checked>
+                {%else%}
+                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="check_system_password()">
+                {%endif%}
             </div>
         </div>
     </div>
@@ -799,5 +809,32 @@
         }
         return true;
     }
+    function check_system_password() {
+        var pwd = document.getElementById('txt_password');
+        var rePwd = document.getElementById('txt_re_password');
+        var checkbox = document.getElementById('chk_system_password');
+        var labelPwd = document.getElementById('lbl_password');
+        var labelRePwd = document.getElementById('lbl_re_password');
+        if (checkbox.checked) {
+            pwd.disabled = true;
+            pwd.required = false;
+            rePwd.disabled = true;
+            rePwd.required = false;
+            pwd.value='';
+            rePwd.value='';
+            labelPwd.innerHTML = 'Password';
+            labelRePwd.innerHTML =  'Re-password';
+        } else {
+            pwd.disabled = false;
+            pwd.required = true;
+            rePwd.disabled = false;
+            rePwd.required = true;
+            labelPwd.innerHTML= 'Password *';
+            labelRePwd.innerHTML = 'Re-password *';
+        }
+    }
+
+    check_system_password();
+
 </script>
 {% endblock %}

@@ -16,14 +16,19 @@
                 <div class="pull-right">
                     <a id="btn_edit_trigger" onclick="do_action('')"><i class="fa fa-pencil"></i></a>
                 </div>
-                <div class="text-bold">
-                    Trigger: <span id="lbl_trigger">{{mechanic.event_name}}</span>
+                <div class="info-group">
+                    <div>Trigger:</div>
+                    <div>
+                        <span id="lbl_trigger">{{mechanic.event_name}}</span>
+                    </div>
                 </div>
-                <div class="text-bold" style="margin-top: 10px;">
-                    Duration of Mechanic:
-                    <span id="lbl_mechanic_start_date">{{mechanic.start_timestamp}}</span>
-                    To
-                    <span id="lbl_mechanic_end_date">{{mechanic.end_timestamp}}</span>
+                <div class="info-group">
+                    <div>Duration of Mechanic:</div>
+                    <div>
+                        <span id="lbl_mechanic_start_date">{{mechanic.start_timestamp}}</span>
+                        <b>to</b>
+                        <span id="lbl_mechanic_end_date">{{mechanic.end_timestamp}}</span>
+                    </div>
                 </div>
             </div>
         </div>

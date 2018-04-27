@@ -126,9 +126,15 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         unique_reference = request.POST.get('unique_reference')
         identity_type_id = request.POST.get('identity_type_id')
         username = request.POST.get('username')
-        password = request.POST.get('password')
-        password = encrypt_text_agent(password)
-        # basic info session
+        password = ''
+        auto_generate_password = 'false'
+        system_password = request.POST.get('system_password')
+        if system_password:
+            auto_generate_password = 'true'
+        else:
+            password = encrypt_text_agent(request.POST.get('password'))
+
+# basic info session
 
         # Personal Details session    
         firstname = request.POST.get('firstname')
@@ -293,7 +299,8 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         identity = {
             'identity_type_id': identity_type_id,
             'username': username,
-            'password': password
+            'password': password,
+            'auto_generate_password': auto_generate_password
         }
 
         body = {
