@@ -1085,16 +1085,87 @@
                             </div>\
                         </div>\
                         <input id="filter_count_of_count" name="filter_count_of_count_' + conditionNumber +'" type="text" value="0" hidden />\
+                        <input id="reset_filter_count_of_count" name="reset_filter_count_of_count_' + conditionNumber +'" type="text" value="1" hidden />\
                         <div id="within-date-area">\
                         </div>\
                         <div id="within-time-area"></div>';
             return CountOfHtml;
         };
 
-        var getConsecutiveKeyDetailHtml = function() {
+        var getConsecutiveKeyDetailHtml = function(conditionNumber) {
           var consecutiveKeyDetailHtml = '<div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Consecutive key detail</label></div>';
-          consecutiveKeyDetailHtml += getFilterAreaHtml('key_detail', 'consecutive');
+          consecutiveKeyDetailHtml += getFilterAreaHtml(conditionNumber, 'consecutive');
           return consecutiveKeyDetailHtml;
+        };
+
+        var getMoreResetFilterButtonHtml = function(conditionNumber) {
+               var addMoreResetFilterHtml =  '<div class="form-group" id="add_reset_filter_area">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3" style="text-align: right;">\
+                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_reset_detail" onclick="addResetDetail(this, ' + conditionNumber + ')">\
+                                        Add Reset Detail\
+                                    </button>\
+                                </div>\
+                                </div>';
+               return addMoreResetFilterHtml;
+        };
+
+        var getConditionResetFilterAreaHtml = function(conditionNumber, resetfilterCount) {
+             var filterAreaHtml = '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="ddl_condition_reset_filter_detail_name" name="' + resetfilterCount + '_reset_filter_detail_name_' + conditionNumber + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_condition_reset_filter_key_value" class="form-control input-rounded" name="' + resetfilterCount + '_reset_filter_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return filterAreaHtml;
+        };
+
+        var getFirstConditionResetValueHtml = function(conditionNumber){
+                  var firstConditionResetHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Condition Reset Value</label></div>\
+                   <div class="form-group">\
+                      <label class="col-sm-3 control-label">Condition Reset event *</label>\
+                      <div class="col-xs-3">\
+                      <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="condition_reset_event_' + conditionNumber + '">\
+                          <option value= "change_user_status">User Status Update</option>\
+                      </select>\
+                      </div>\
+                   </div>';
+                  firstConditionResetHtml += getConditionResetFilterAreaHtml(conditionNumber, 1) + '</div>';
+                  return firstConditionResetHtml;
         };
 
         var selectConditionType = function(selectedValue, elem) {
@@ -1147,7 +1218,7 @@
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countOfArea.appendChild(filterAreaDivElem);
                 var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber, 1);
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
                 var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
                 countOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'count_consecutive_of') {
@@ -1170,13 +1241,22 @@
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(filterAreaDivElem);
                 var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber, 1);
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
                 var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(filterButtonDivElem);
                 var consecutiveKeyDetailDiv = document.createElement('div');
-                consecutiveKeyDetailDiv.innerHTML = getConsecutiveKeyDetailHtml();
+                consecutiveKeyDetailDiv.innerHTML = getConsecutiveKeyDetailHtml(conditionNumber);
                 var consecutiveKeyDetailDivElem  = consecutiveKeyDetailDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(consecutiveKeyDetailDivElem);
+                var resetFilterAreaDiv = document.createElement('div');
+                resetFilterAreaDiv.id = "reset-filter-area";
+                resetFilterAreaDiv.innerHTML = getFirstConditionResetValueHtml(conditionNumber);
+                var resetFilterAreaDivElem  = resetFilterAreaDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(resetFilterAreaDivElem);
+                var resetFilterButtonDiv = document.createElement('div');
+                resetFilterButtonDiv.innerHTML = getMoreResetFilterButtonHtml(conditionNumber);
+                var resetFilterButtonDivElem  = resetFilterButtonDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(resetFilterButtonDivElem);
             }
         };
 
@@ -1212,6 +1292,21 @@
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
             filterAreaElem.appendChild(newFilterElemDivElem);
             filterCountInput.setAttribute('value', filterCount);
+        };
+
+          var addResetDetail = function(elem, conditionNum) {
+            var conditionElem = document.getElementById('div_condition_' + conditionNum);
+            var resetFilterCountInput = conditionElem.querySelector('#reset_filter_count_of_count');
+            var resetFilterCount = resetFilterCountInput.getAttribute('value');
+            resetFilterCount = parseInt(resetFilterCount, 10);
+            resetFilterCount++;
+            var resetfilterAreaElem = conditionElem.querySelector('#reset-filter-area');
+            var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getConditionResetFilterAreaHtml(conditionNum, resetFilterCount) + '</div>';
+            var newFilterElemDiv = document.createElement('div');
+            newFilterElemDiv.innerHTML = newFilterElementHtml;
+            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            resetfilterAreaElem.appendChild(newFilterElemDivElem);
+            resetFilterCountInput.setAttribute('value', resetFilterCount);
         };
 
         function submitForm(){

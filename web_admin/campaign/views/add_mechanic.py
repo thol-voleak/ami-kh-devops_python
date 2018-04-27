@@ -1,7 +1,7 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
-from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION, CREATE_FILTER
+from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION, CREATE_FILTER, CREATE_RESET_FILTER
 from web_admin import setup_logger, RestFulClient
 from web_admin.restful_helper import RestfulHelper
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -229,6 +229,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 count_count_of = request.POST.get('consecutive_count_' + suffix)
                 count_of_operator = request.POST.get('consecutive_count_of_operator_' + suffix)
                 count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
+                count_of_reset_filter_counter = request.POST.get('reset_filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('consecutive_within_' + suffix)
                 event_name_filter_counter = request.POST.get('consecutive_event_name_' + suffix)
                 success, condition_id = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
@@ -237,11 +238,12 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                      kv_type_map)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
-
-                consecutive_key_value_type = request.POST.get('consecutive_key_value_type_key_detail')
-                consecutive_detail_name = request.POST.get('consecutive_detail_name_key_detail')
-                consecutive_operator = request.POST.get('consecutive_operator_key_detail')
-                consecutive_key_value = request.POST.get('consecutive_key_value_key_detail')
+                # consecutive key detail
+                consecutive_key_value_type = request.POST.get('consecutive_key_value_type_' + suffix)
+                consecutive_detail_name = request.POST.get('consecutive_detail_name_' + suffix)
+                consecutive_operator = request.POST.get('consecutive_operator_' + suffix)
+                consecutive_key_value = request.POST.get('consecutive_key_value_' +suffix)
+                condition_reset_event = request.POST.get('condition_reset_event_' + suffix)
                 params = {
                     'key_name': consecutive_detail_name,
                     'key_value_type': kv_type_map[consecutive_key_value_type],
@@ -251,8 +253,30 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 }
                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
 
+                # condition reset value
+                params = {
+                    'key_name': 'event_name',
+                    'key_value_type': 'text',
+                    'operator': '=',
+                    'key_value': condition_reset_event,
+                }
+                success, data, message = self.create_reset_filter(campaign_id, mechanic_id, condition_id, params)
+                for i in range(1, int(count_of_reset_filter_counter) + 1):
+                    prefix = str(i)
+                    key_value_type = prefix + '_reset_filter_key_value_type_' + suffix
+                    detail_name = prefix + '_reset_filter_detail_name_' + suffix
+                    operator = prefix + '_reset_filter_operator_' + suffix
+                    key_value = prefix + '_reset_filter_key_value_' + suffix
 
-
+                    if not request.POST.get(key_value):
+                        continue
+                    params = {
+                        'key_name': request.POST.get(detail_name),
+                        'key_value_type': kv_type_map[request.POST.get(key_value_type)],
+                        'operator': operations_map[request.POST.get(operator)],
+                        'key_value': request.POST.get(key_value),
+                    }
+                    success, data, message = self.create_reset_filter(campaign_id, mechanic_id, condition_id, params)
         # add reward
 
         reward_type = request.POST.get('reward_type')
@@ -454,6 +478,12 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                                                                  " creating filter")
         return success, data, message
 
+    def create_reset_filter(self, campaign_id, mechanic_id, condition_id, params):
+        add_reset_filter_url = CREATE_RESET_FILTER.format(rule_id=campaign_id, mechanic_id=mechanic_id, condition_id=condition_id)
+        success, status_code, message, data = RestfulHelper.send("POST", add_reset_filter_url, params, self.request,
+                                                                 " creating reset filter")
+        return success, data, message
+
     def create_reward(self, campaign_id, mechanic_id, params):
         add_reward_url = CREATE_REWARD.format(rule_id=campaign_id, mechanic_id=mechanic_id)
         success, status_code, message, data = RestfulHelper.send("POST", add_reward_url, params, self.request,
@@ -484,7 +514,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         params = {'filter_type': condition_type}
         success, data, message = self.create_condition(campaign_id, mechanic_id, params)
         if not success:
-            return success
+            return success, None
 
         condition_id = data['id']
 
@@ -496,7 +526,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
         if not success:
-            return success
+            return success, None
         if within_type == 'timebox':
             if condition_type == 'count_of':
                 timebox_minute = request.POST.get('txt_timebox_' + suffix)
@@ -510,7 +540,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success
+                return success, None
 
             params = {
                 'key_name': 'event_created_timestamp',
@@ -520,7 +550,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success
+                return success, None
         else:
             if condition_type == 'count_of':
                 count_of_input_start_date = request.POST.get('within_from_' + suffix)
@@ -557,7 +587,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success
+                return success, None
 
             params = {
                 'key_name': 'event_created_timestamp',
@@ -567,7 +597,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success
+                return success, None
 
         params = {
             'key_name': 'event_name',
@@ -577,7 +607,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
         if not success:
-            return success
+            return success, None
         for i in range(1, int(count_of_filter_counter) + 1):
             prefix = str(i)
             key_value_type = prefix + '_key_value_type_' + suffix
@@ -595,7 +625,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success
+                return success, None
         success = True
         return success, condition_id
 
