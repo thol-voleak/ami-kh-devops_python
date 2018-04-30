@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 import logging
 from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
-from web_admin.api_settings import PAYMENT_URL
+from web_admin.api_settings import PAYMENT_URL, PAYMENT_ORDER_DETAIL_URL
 from django.contrib import messages
 from authentications.utils import check_permissions_by_user, get_correlation_id_from_username
 from web_admin.api_logger import API_Logger
@@ -68,22 +68,19 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         customer_id = request.session.get('customer_id',None)
         request.session['redirect_from_detail'] = True
         back_wallet_url =request.session.get('back_wallet_url',None)
-
-        body = {
-            'order_id': order_id
-        }
-        data = self.get_payment_order_list(body=body)
+        data = self.get_payment_order_list(orderId=order_id)
         order_balance_movement = []
+        additional_references = []
         total_credit = 0
         total_debit = 0
-        if data and data['orders']:
-            data = data['orders'][0]
+        if data :
             data['status'] = STATUS_ORDER.get(data['status'], 'UN_KNOWN')
             data['is_deleted'] = IS_DELETED.get(data.get('is_deleted'))
-            data['initiator']['sof_type_id'] = SOF_TYPE.get(data['initiator']['sof_type_id'])
-            data['payer']['sof_type_id'] = SOF_TYPE.get(data['payer']['sof_type_id'])
-            data['payee']['sof_type_id'] = SOF_TYPE.get(data['payee']['sof_type_id'])
+            data['initiator_user']['sof_type_id'] = SOF_TYPE.get(data['initiator_user']['sof_type_id'])
+            data['payer_user']['sof_type_id'] = SOF_TYPE.get(data['payer_user']['sof_type_id'])
+            data['payee_user']['sof_type_id'] = SOF_TYPE.get(data['payee_user']['sof_type_id'])
             order_balance_movement = data['order_balance_movements']
+            additional_references = data['additional_references']
             for order in order_balance_movement:
                 order['converted_status'] = BALANCE_MOVEMENT_STATUS_ORDER.get(order['status'], 'UN_KNOWN')
                 if order['action_type'].lower() == "debit":
@@ -96,6 +93,7 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     order['debit_amount'] = '-'
         context['data'] = data
         context['order_balance_movement'] = order_balance_movement
+        context['additional_references'] = additional_references
         context['total_credit'] = total_credit
         context['total_debit'] = total_debit
         context['page_from'] = page_from
@@ -105,20 +103,21 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)
 
-    def get_payment_order_list(self, body):
-        is_success, status_code, status_message, data = RestFulClient.post(url=PAYMENT_URL,
-                                                                           headers=self._get_headers(),
-                                                                           loggers=self.logger,
-                                                                           params=body)
+    def get_payment_order_list(self, orderId):
+        url = PAYMENT_ORDER_DETAIL_URL.format(order_id=orderId)
 
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data['orders'],
+        is_success, status_code, data = RestFulClient.get(url=url,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger)
+
+        API_Logger.post_logging(loggers=self.logger, response=data,
                                 status_code=status_code, is_getting_list=False)
 
         if not is_success:
             messages.add_message(
                 self.request,
                 messages.ERROR,
-                status_message
+                "Something went wrong"
             )
             data = []
         return data

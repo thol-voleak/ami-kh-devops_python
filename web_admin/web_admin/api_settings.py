@@ -72,6 +72,8 @@ CHANGE_PASSWD = 'api-gateway/system-user/'+API_VERSION+'/system-users/passwords'
 
 # Payment
 PAYMENT_URL = 'api-gateway/report/'+API_VERSION+'/payments/orders'
+PAYMENT_ORDER_DETAIL_URL = 'api-gateway/report/'+API_VERSION+'/orders/{order_id}'
+
 
 # Permission
 PERMISSION_LIST = 'api-gateway/report/'+API_VERSION+'/permissions'
