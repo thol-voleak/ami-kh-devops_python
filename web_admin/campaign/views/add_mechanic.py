@@ -216,7 +216,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('within_' + suffix)
                 event_name_filter_counter = request.POST.get('event_name_' + suffix)
-                success, condition_id = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
                                                                 condition_type, operations_map, count_of_operator,
                                                                 count_count_of,
                                                                 within_type, event_name_filter_counter,
@@ -232,7 +232,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 count_of_reset_filter_counter = request.POST.get('reset_filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('consecutive_within_' + suffix)
                 event_name_filter_counter = request.POST.get('consecutive_event_name_' + suffix)
-                success, condition_id = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
                                                      condition_type, operations_map, count_of_operator, count_count_of,
                                                      within_type, event_name_filter_counter, count_of_filter_counter,
                                                      kv_type_map)
@@ -514,7 +514,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         params = {'filter_type': condition_type}
         success, data, message = self.create_condition(campaign_id, mechanic_id, params)
         if not success:
-            return success, None
+            return success, None, message
 
         condition_id = data['id']
 
@@ -526,7 +526,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
         if not success:
-            return success, None
+            return success, None, message
         if within_type == 'timebox':
             if condition_type == 'count_of':
                 timebox_minute = request.POST.get('txt_timebox_' + suffix)
@@ -540,7 +540,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success, None
+                return success, None, message
 
             params = {
                 'key_name': 'event_created_timestamp',
@@ -550,7 +550,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success, None
+                return success, None, message
         else:
             if condition_type == 'count_of':
                 count_of_input_start_date = request.POST.get('within_from_' + suffix)
@@ -587,7 +587,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success, None
+                return success, None, message
 
             params = {
                 'key_name': 'event_created_timestamp',
@@ -597,7 +597,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success, None
+                return success, None, message
 
         params = {
             'key_name': 'event_name',
@@ -607,7 +607,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
         success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
         if not success:
-            return success, None
+            return success, None, message
         for i in range(1, int(count_of_filter_counter) + 1):
             prefix = str(i)
             key_value_type = prefix + '_key_value_type_' + suffix
@@ -625,7 +625,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             }
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
-                return success, None
+                return success, None, message
         success = True
-        return success, condition_id
+        return success, condition_id, message
 
