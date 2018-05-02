@@ -383,7 +383,6 @@
 
                     <!-- End section 6 -->
                     <!-- Begin section 7 [Addition References] -->
-                    {% if additional_references|length > 0 %}
                       <div class="panel-group">
                         <div class="panel panel-default">
                           <div class="panel-heading">
@@ -392,6 +391,7 @@
                             </h4>
                           </div>
                           <div id="collapse1" class="panel-collapse collapse">
+                          {% if additional_references|length > 0 %}
                                 <div class="panel-footer">
 
                               {% for additional_ref in additional_references %}
@@ -406,10 +406,12 @@
                                  </div>
                             {% endfor %}
                                 </div>
+
+                    {% endif %}
                           </div>
+
                         </div>
                       </div>
-                    {% endif %}
                     <!-- End section 7 -->
                      <div class="row">
                             <div class="panel-body">
