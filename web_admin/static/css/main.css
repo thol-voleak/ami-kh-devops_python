@@ -29,15 +29,12 @@
   padding: 15px;
   background-color: #f6f6f6;
 }
-.mechanic-detail-page .list {
-  padding-left: 30px;
-}
 .mechanic-detail-page .fa-pencil,
 .mechanic-detail-page .fa-trash {
   font-size: 150%;
 }
 .mechanic-detail-page .fa-plus {
-  color: #00da7d;
+  color: #2dcc71;
 }
 .mechanic-detail-page .info-group {
   display: flex;
@@ -59,7 +56,7 @@
 }
 .mechanic-detail-page .sub-title {
   font-weight: bold;
-  color: #0870b6;
+  color: #1376c9;
   font-size: 110%;
 }
 .mechanic-detail-page .sub-section {
