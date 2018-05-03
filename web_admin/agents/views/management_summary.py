@@ -58,6 +58,7 @@ class AgentManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             data, success, status_message = self._get_relationships(params=body)
             if success:
                 relationships_list = data.get("relationships", [])
+                relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
                 summary_relationships = list(relationships_list)
                 if len(relationships_list) > 10:
                     summary_relationships = relationships_list[:10]
