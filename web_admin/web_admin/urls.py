@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^admin-portal/', include('web.urls')),
     url(r'^admin-portal/authentications/', include('authentications.urls')),
     url(r'^admin-portal/clients/', include('clients.urls')),
+    url(r'^admin-portal/password-center/', include('password_center.urls')),
     url(r'^admin-portal/balances/', include('balances.urls')),
     url(r'^admin-portal/health$', health, name="health"),
     url(r'^admin-portal/backlog/$', backlog, name="backlog"),

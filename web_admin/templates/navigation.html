@@ -22,7 +22,7 @@
             </li>
             {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS" %}
                 {% with request.resolver_match.app_name as app_name %}
-                <li class="menu-accordion class={% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% endif %}">
+                <li class="menu-accordion {% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% elif app_name == "password_center" %} open {% endif %}">
                     <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                     <ul class="sub-menu">
                     {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE" %}
@@ -40,6 +40,11 @@
                                 <a href="{% url 'clients:client-list' %}"> <span>Clients</span> </a>
                         </li>
                     {% endif %}
+                    {% if request|has_any_permission:"CAN_MANAGE_PASSWORD_CENTER"%}
+                    <li class="{% if app_name == "password_center" %} active{% endif %}">
+                            <a href="{% url 'password_center:list' %}"> <span>Password center</span> </a>
+                    </li>
+                     {% endif %}
                     </ul>
                 </li>
                 {% endwith %}
