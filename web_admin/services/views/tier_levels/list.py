@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-from web_admin.utils import build_logger
+from web_admin.utils import build_logger, check_permissions
 from .utils import get_label_levels
 
 import logging
@@ -12,6 +12,7 @@ class TierLevelView(TemplateView):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
+        check_permissions(request, "CAN_LABEL_TIER_CONFIGURATION")
         self.logger = build_logger(request, __name__)
         return super(TierLevelView, self).dispatch(request, *args, **kwargs)
 

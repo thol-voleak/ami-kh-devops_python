@@ -130,7 +130,7 @@
                 {% endif %}
             </li>
             {% endif %}
-            {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE_GROUP" or request.user|has_permission_name:"CAN_MANAGE_SERVICE"%}
+            {% if request|has_any_permission:"CAN_MANAGE_SERVICE_GROUP,CAN_MANAGE_SERVICE,CAN_LABEL_TIER_CONFIGURATION" %}
             {% check_valid_url url_name 'service_group,services' as is_services_urls %}
             <li class="menu-accordion class={% if is_services_urls %} open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-tasks"></i> <span>Payment Services</span> </a>
@@ -147,11 +147,11 @@
                         <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
                     </li>
                     {% endif %}
-{#                    {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE" %}#}
+                    {% if request.user|has_permission_name:"CAN_LABEL_TIER_CONFIGURATION" %}
                     <li class="{% if 'tier-levels' in request.path %}active{% endif %}">
                         <a href="{% url 'services:tier_label_list' %}"> <span>Tier Level Configuration Labels</span> </a>
                     </li>
-{#                    {% endif %}#}
+                    {% endif %}
 
                 </ul>
             </li>
