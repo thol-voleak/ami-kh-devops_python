@@ -135,6 +135,8 @@ FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{ser
 ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
+TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
+
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
 BALANCE_DISTRIBUTION_URL = 'api-gateway/payment/'+API_VERSION+'/admin/fee-tiers/{fee_tier_id}/balance-distributions'

@@ -143,9 +143,8 @@
                     </li>
                     {% endif %}
 {#                    {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE" %}#}
-{#                    {% check_valid_url url_name 'services' as is_services_url %}#}
-                    <li>
-                        <a href="#"> <span>Tier Level Configuration Labels</span> </a>
+                    <li class="class={% if 'tier-levels' in request.path %}active{% endif %}">
+                        <a href="{% url 'services:tier_label_list' %}"> <span>Tier Level Configuration Labels</span> </a>
                     </li>
 {#                    {% endif %}#}
 
