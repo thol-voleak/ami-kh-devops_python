@@ -35,7 +35,7 @@ from .views.commision.get_specific_sof import GetSpecificSOF
 from .views.spi_url_configuration.list import SPIUrlConfigurationView
 from .views.spi_url_configuration.update import SPIUrlConfigurationUpdate
 from .views.spi_url_configuration.delete import SPIUrlConfigurationDelete
-from .views.tier_levels.list import TierLablesView
+from .views.tier_levels.list import TierLevelView
 
 
 app_name = "services"
@@ -151,7 +151,7 @@ urlpatterns = [
         login_required(MultiBalanceDistributionsUpdate.as_view(), login_url='authentications:login'),
         name="payment_and_fee_stucture_multi_update"),
     url(r'^tier-levels/$',
-        login_required(TierLablesView.as_view(), login_url='authentications:login'),
+        login_required(TierLevelView.as_view(), login_url='authentications:login'),
         name="tier_label_list"),
 ]
 
