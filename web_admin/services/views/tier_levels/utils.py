@@ -11,4 +11,7 @@ def get_label_levels(request):
         description='getting label levels list',
         log_count_field='data'
     )
-    return data if success else {}
+    if success:
+        request.session['tier_levels'] = data
+        return data
+    return {}

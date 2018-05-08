@@ -136,6 +136,7 @@ ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{serv
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
 TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
+TIER_LEVELS_EDIT = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels/{tier_level_id}'
 
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
