@@ -328,3 +328,5 @@ GET_CLIENT_CHANNEL_GATEWAY_SCOPE_LIST_API = 'channel-gateway/' + API_VERSION + '
 EDIT_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 
 
+# PASSWORD CENTER
+PASSWORD_CENTER_IDENTITY_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/identity-types'
