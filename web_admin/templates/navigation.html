@@ -143,12 +143,12 @@
                     {% endif %}
                     {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE" %}
                     {% check_valid_url url_name 'services' as is_services_url %}
-                    <li class="class={% if is_services_url %} active{% endif %}">
+                    <li class="class={% if is_services_url and 'tier-levels' not in request.path %} active{% endif %}">
                         <a href="{% url 'services:services_list' %}"> <span>Services</span> </a>
                     </li>
                     {% endif %}
 {#                    {% if request.user|has_permission_name:"CAN_MANAGE_SERVICE" %}#}
-                    <li class="class={% if 'tier-levels' in request.path %}active{% endif %}">
+                    <li class="{% if 'tier-levels' in request.path %}active{% endif %}">
                         <a href="{% url 'services:tier_label_list' %}"> <span>Tier Level Configuration Labels</span> </a>
                     </li>
 {#                    {% endif %}#}
