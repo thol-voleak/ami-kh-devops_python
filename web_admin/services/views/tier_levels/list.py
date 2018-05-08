@@ -2,7 +2,6 @@ from django.conf import settings
 from web_admin import api_settings
 from django.views.generic.base import TemplateView
 from web_admin.utils import build_logger
-from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_helper import RestfulHelper
 
 import logging
@@ -10,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class TierLablesView(TemplateView, GetCommandNameAndServiceNameMixin):
+class TierLablesView(TemplateView):
     template_name = "services/tier_levels/list.html"
     logger = logger
 
@@ -21,7 +20,6 @@ class TierLablesView(TemplateView, GetCommandNameAndServiceNameMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(TierLablesView, self).get_context_data(**kwargs)
         label_levels = self.get_label_levels()
-        print(label_levels)
         context['data'] = label_levels
 
         return context
