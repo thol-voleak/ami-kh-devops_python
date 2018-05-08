@@ -278,7 +278,6 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         return data, success
 
     def post(self, request, *args, **kwargs):
-
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
@@ -296,7 +295,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "label": data.get("label"),
+            "remark": data.get("remark"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -351,7 +350,7 @@ class BalanceDistributionsUpdate(View):
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "label": data.get("label"),
+            "remark": data.get("remark"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -935,7 +934,7 @@ class MultiBalanceDistributionsUpdate(TemplateView):
                 "specific_sof": balanceDistributionData.get("specific_sof"),
                 "amount_type": balanceDistributionData.get("amount_type"),
                 "rate": balanceDistributionData.get("rate"),
-                "label": balanceDistributionData.get("label")
+                "remark": balanceDistributionData.get("remark")
             }
 
             putDataList.append(data)

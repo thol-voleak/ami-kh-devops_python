@@ -122,7 +122,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDSpecificSOF += 'ddl_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
             htmlIDRate += 'txt_setting_payment_fee_structure_rate_edit';
-            htmlIDLabel += 'txt_setting_payment_fee_structure_label_edit';
+            htmlIDLabel += 'txt_setting_payment_fee_structure_remark_edit';
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
@@ -193,7 +193,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
-        jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'label\' required value=\'' + aData[7] + '\'>';
+        jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' required value=\'' + aData[7] + '\'>';
         
         // Master: Specific SOF
         var htmlDDSpecificSOF = '';
@@ -567,7 +567,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 $("#ddl_setting_payment_fee_structure_specific_source_of_fund option:selected").text(),
                 $("#ddl_setting_payment_fee_structure_from_amount").val(),
                 $("#txt_setting_payment_fee_structure_rate").val(),
-                $("#txt_setting_payment_fee_structure_label").val(),
+                $("#txt_setting_payment_fee_structure_remark").val(),
                 ""];
             oTable.fnAddData(data, true);
             
@@ -752,7 +752,7 @@ function collectTableDataForSave(tableSelector, m_sof_types) {
                 "specific_sof": rowData[4],
                 "amount_type": rowData[5],
                 "rate": rowData[6],
-                "label": rowData[7]
+                "remark": rowData[7]
             };
 
             data.push(rowDataObj);
