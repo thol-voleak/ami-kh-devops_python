@@ -22,7 +22,7 @@
             </div>
         {% endif %}
 
-        <div class="col-xs-12 mb5">
+        <div class="mb5">
             <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
                 <button type="button" class="close" onclick="$('.alert').hide()">×</button>
                 <strong id="alert-message"></strong>
@@ -535,29 +535,22 @@
             return CountOfHtml;
         };
 
-        var getConsecutiveKeyDetailHtml = function(conditionNumber) {
-          var consecutiveKeyDetailHtml = '<div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Consecutive key detail</label></div>';
-          consecutiveKeyDetailHtml += getFilterAreaHtml(conditionNumber, 'consecutive');
-          return consecutiveKeyDetailHtml;
-        };
-
-        var getMoreResetFilterButtonHtml = function(conditionNumber) {
-               var addMoreResetFilterHtml =  '<div class="form-group" id="add_reset_filter_area">\
-                                <label class="col-sm-3 control-label"></label>\
-                                <div class="col-xs-3" style="text-align: right;">\
-                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_reset_detail" onclick="addResetDetail(this, ' + conditionNumber + ')">\
-                                        Add Reset Detail\
-                                    </button>\
+    var getConsecutiveKeyDetailHtml = function(conditionNumber) {
+        var filterCount = 'consecutive';
+        var detail_name_id = 'ddl_count_consecutive_key_detail_name';
+        var key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
+        var operator_id = 'ddl_count_consecutive_key_detail_operator';
+        var key_value = 'txt_count_consecutive_key_detail_value';
+        var filterAreaHtml = '<div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label sub-title">Consecutive key detail</label>\
+                                    <div class="col-xs-3">\
+                                    </div>\
                                 </div>\
-                                </div>';
-               return addMoreResetFilterHtml;
-        };
-
-        var getConditionResetFilterAreaHtml = function(conditionNumber, resetfilterCount) {
-             var filterAreaHtml = '<div class="form-group">\
+                                <div class="form-group">\
                                     <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
-                                        <select class="form-control" id="ddl_condition_reset_filter_detail_name" name="' + resetfilterCount + '_reset_filter_detail_name_' + conditionNumber + '">\
+                                        <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
                                             {% for item in detail_names %}\
                                                 {% if item.description != "" %}\
                                                 <option value= "{{ item.term }}">{{ item.description }}</option>\
@@ -567,38 +560,105 @@
                                             {% endfor %}\
                                         </select>\
                                     </div>\
+                                </div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            {% for type in key_value_types %}\
+                                                <option value= "{{ type }}">{{ type }}</option>\
+                                            {% endfor %}\
+                                        </select>\
                                     </div>\
-                                    <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
-                                        <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
-                                                {% for type in key_value_types %}\
-                                                    <option value= "{{ type }}">{{ type }}</option>\
-                                                {% endfor %}\
-                                            </select>\
+                                </div>\
+                                <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Operator *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            {% for oper in operations %}\
+                                                <option value= "{{ oper }}">{{ oper }}</option>\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                                <div class="form-group" id="last_form_group">\
+                                    <label class="col-sm-3 control-label">Key Value *</label>\
+                                    <div class="col-xs-3">\
+                                        <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                    </div>\
+                                </div>\
+                            </div>';
+        return filterAreaHtml;
+    };
+
+    var getMoreResetFilterButtonHtml = function(conditionNumber) {
+           var addMoreResetFilterHtml =  '<div class="form-group" id="add_reset_filter_area">\
+                            <label class="col-sm-3 control-label"></label>\
+                            <div class="col-xs-3" style="text-align: right;">\
+                                <button type="button" class="btn btn-default" id="btn_add_reset_detail" onclick="addResetDetail(this, ' + conditionNumber + ')">\
+                                    <i class="fa fa-plus"></i> Add Reset Detail\
+                                </button>\
+                            </div>\
+                            </div>';
+           return addMoreResetFilterHtml;
+    };
+
+        var getConditionResetFilterAreaHtml = function(conditionNumber, resetfilterCount) {
+             var filterAreaHtml = '<div class="sub-box">\
+                                        <div class="pull-right">\
+                                            <a class="btn_remove_subbox"><i class="fa fa-trash"></i></a>\
                                         </div>\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator *</label>\
-                                        <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
-                                                    <option value= "{{ oper }}">{{ oper }}</option>\
-                                                {% endfor %}\
-                                            </select>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label sub-title">Reset Detail</label>\
+                                            <div class="col-xs-3">\
+                                            </div>\
                                         </div>\
-                                    </div>\
-                                    <div class="form-group" id="last_form_group">\
-                                        <label class="col-sm-3 control-label">Key Value *</label>\
-                                        <div class="col-xs-3">\
-                                            <input id="txt_condition_reset_filter_key_value" class="form-control input-rounded" name="' + resetfilterCount + '_reset_filter_key_value_' + conditionNumber + '" type="number" required>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_condition_reset_filter_detail_name" name="' + resetfilterCount + '_reset_filter_detail_name_' + conditionNumber + '">\
+                                                    {% for item in detail_names %}\
+                                                        {% if item.description != "" %}\
+                                                        <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                        {% else %}\
+                                                        <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                        {% endif %}\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                    {% for type in key_value_types %}\
+                                                        <option value= "{{ type }}">{{ type }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Operator *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                    {% for oper in operations %}\
+                                                        <option value= "{{ oper }}">{{ oper }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group" id="last_form_group">\
+                                            <label class="col-sm-3 control-label">Key Value *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_condition_reset_filter_key_value" class="form-control input-rounded" name="' + resetfilterCount + '_reset_filter_key_value_' + conditionNumber + '" type="number" required>\
+                                            </div>\
                                         </div>\
                                     </div>';
             return filterAreaHtml;
         };
 
-        var getFirstConditionResetValueHtml = function(conditionNumber){
-                  var firstConditionResetHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Condition Reset Value</label></div>\
+        var getDefaultConditionResetValueHtml = function(conditionNumber){
+                  var firstConditionResetHtml = '<div class="form-group"><label class="col-sm-3 control-label sub-title" style="font-weight: bold;">Condition Reset Value</label><div></div></div>\
                    <div class="form-group">\
                       <label class="col-sm-3 control-label">Condition Reset event *</label>\
                       <div class="col-xs-3">\
@@ -607,7 +667,6 @@
                       </select>\
                       </div>\
                    </div>';
-                  firstConditionResetHtml += getConditionResetFilterAreaHtml(conditionNumber, 1) + '</div>';
                   return firstConditionResetHtml;
         };
 
@@ -682,28 +741,38 @@
                 countConsecutiveOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 1);
                 var countConsecutiveOfDateDivElem  = countConsecutiveOfDateDiv.cloneNode(true);
                 countConsecutiveOfDateArea.appendChild(countConsecutiveOfDateDivElem);
+
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(filterButtonDivElem);
+
                 var filterAreaDiv = document.createElement('div');
                 filterAreaDiv.id = "count-of-filter-area";
                 filterAreaDiv.innerHTML = '';
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(filterAreaDivElem);
-                var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
-                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
-                countConsecutiveOfArea.appendChild(filterButtonDivElem);
+
                 var consecutiveKeyDetailDiv = document.createElement('div');
                 consecutiveKeyDetailDiv.innerHTML = getConsecutiveKeyDetailHtml(conditionNumber);
                 var consecutiveKeyDetailDivElem  = consecutiveKeyDetailDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(consecutiveKeyDetailDivElem);
+
                 var resetFilterAreaDiv = document.createElement('div');
                 resetFilterAreaDiv.id = "reset-filter-area";
-                resetFilterAreaDiv.innerHTML = getFirstConditionResetValueHtml(conditionNumber);
+                resetFilterAreaDiv.innerHTML = getDefaultConditionResetValueHtml(conditionNumber);
                 var resetFilterAreaDivElem  = resetFilterAreaDiv.cloneNode(true);
                 countConsecutiveOfArea.appendChild(resetFilterAreaDivElem);
+
                 var resetFilterButtonDiv = document.createElement('div');
                 resetFilterButtonDiv.innerHTML = getMoreResetFilterButtonHtml(conditionNumber);
                 var resetFilterButtonDivElem  = resetFilterButtonDiv.cloneNode(true);
-                countConsecutiveOfArea.appendChild(resetFilterButtonDivElem);
+                resetFilterAreaDivElem.appendChild(resetFilterButtonDivElem);
+
+                var firstResetFilterDiv = document.createElement('div');
+                firstResetFilterDiv.innerHTML = getConditionResetFilterAreaHtml(conditionNumber, 1)
+                var firstResetFilterDiv  = firstResetFilterDiv.cloneNode(true);
+                resetFilterAreaDivElem.appendChild(firstResetFilterDiv);
             }
         };
 
@@ -744,7 +813,7 @@
             resetFilterCount = parseInt(resetFilterCount, 10);
             resetFilterCount++;
             var resetfilterAreaElem = conditionElem.querySelector('#reset-filter-area');
-            var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getConditionResetFilterAreaHtml(conditionNum, resetFilterCount) + '</div>';
+            var newFilterElementHtml = getConditionResetFilterAreaHtml(conditionNum, resetFilterCount);
             var newFilterElemDiv = document.createElement('div');
             newFilterElemDiv.innerHTML = newFilterElementHtml;
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
