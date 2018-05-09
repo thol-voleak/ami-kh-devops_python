@@ -105,6 +105,15 @@
   flex: 1;
   padding: 0px;
 }
+.add-condition-page .form-group .txt-date {
+  display: inline-block;
+  width: 200px;
+  margin-right: 10px;
+}
+.add-condition-page .form-group .txt-time {
+  display: inline-block;
+  width: 150px;
+}
 .add-condition-page .sub-title {
   font-weight: bold;
   color: #1376c9;

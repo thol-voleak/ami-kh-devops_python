@@ -373,8 +373,8 @@
                var addMoreFilterHtml =  '<div class="form-group" id="add_more_filter_area">\
                                 <label class="col-sm-3 control-label"></label>\
                                 <div class="col-xs-3" style="text-align: right;">\
-                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_filter" onclick="addFilterCountOf(this, ' + conditionNumber + ')">\
-                                      <span class="glyphicon glyphicon-plus"></span> Add Filter\
+                                    <button type="button" class="btn btn-default" id="btn_add_filter" onclick="addFilterCountOf(this, ' + conditionNumber + ')">\
+                                      <span class="fa fa-plus"></span> Add Filter\
                                     </button>\
                                 </div>\
                                 </div>';
@@ -417,22 +417,18 @@
         var withinDateHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="' + prefixName + 'within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="' + startdateId + '" required >\
-                                </div>\
-                                <div class="col-xs-2">\
-                                    <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
+                                    <input type="date" class="txt-date form-control input-rounded count-of-start-date-' + conditionNumber + '" name="' + prefixName + 'within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="' + startdateId + '" required >\
+                                    <input class="txt-time form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
                                     id="' + startTimeId + '" name="' + prefixName + 'within_from_time_' + conditionNumber + '"\
                                     value="{{ within_from_time|default_if_none:'00:00' }}"\
                                     style="height:40px;">\
-                                </div> <div style="display: inline-block;margin-top: 10px;">to</div>\
+                                </div>\
                             </div>\
                             <div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="' + prefixName + 'within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="' + endDateId + '" required >\
-                                </div>\
-                                <div class="col-xs-2">\
-                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="' +endTimeId +'" name="' + prefixName + 'within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
+                                    <input type="date" class="txt-date form-control input-rounded count-of-end-date-' + conditionNumber + '" name="' + prefixName + 'within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="' + endDateId + '" required >\
+                                    <input  class="txt-time form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="' +endTimeId +'" name="' + prefixName + 'within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
                                 </div>\
                             </div>';
         return withinDateHtml;
@@ -448,7 +444,7 @@
         var withinTimeHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                <input min="0" id="' + timeboxId + '" class="form-control input-rounded" name="' + prefixName + 'txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 7px;" id="lbl_minute">min</div>\
+                                <input min="0" id="' + timeboxId + '" class="txt-time form-control input-rounded" name="' + prefixName + 'txt_timebox_' + conditionNumber + '" type="number" required> <span id="lbl_minute">min</span></div>\
                               </div>';
         return withinTimeHtml;
     };
@@ -661,15 +657,17 @@
                 countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 0);
                 var countOfDateDivElem  = countOfDateDiv.cloneNode(true);
                 countOfDateArea.appendChild(countOfDateDivElem);
+
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                countOfArea.appendChild(filterButtonDivElem);
+
                 var filterAreaDiv = document.createElement('div');
                 filterAreaDiv.id = "count-of-filter-area";
                 filterAreaDiv.innerHTML = '';
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countOfArea.appendChild(filterAreaDivElem);
-                var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
-                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
-                countOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'count_consecutive_of') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
                 conditionElem.querySelector('#event_detail_area').innerHTML = '';
@@ -731,11 +729,7 @@
             filterCount = parseInt(filterCount, 10);
             filterCount++;
             var filterAreaElem = conditionElem.querySelector('#count-of-filter-area');
-            if(filterCount == 1) {
-                var newFilterElementHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Filter</label><div class="col-xs-3"></div></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
-            } else {
-                var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
-            }
+            var newFilterElementHtml = getFilterAreaHtml(conditionNum, filterCount);
             var newFilterElemDiv = document.createElement('div');
             newFilterElemDiv.innerHTML = newFilterElementHtml;
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
