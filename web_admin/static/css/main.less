@@ -99,16 +99,24 @@
 }
 
 .add-condition-page {
-  .info-group {
+  form {
+    .bordered-box;
+    max-width: 700px;
+  }
+
+  .form-group {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: stretch;
 
+    .control-label {
+      padding-top: 0px;
+    }
+
     > *:first-child {
-      width: 150px;
+      width: 200px;
       text-align: right;
-      margin-right: 15px;
       font-weight: bold;
     }
 

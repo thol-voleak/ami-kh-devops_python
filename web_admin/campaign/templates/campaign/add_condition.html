@@ -13,10 +13,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="panel mb25">
-        <div class="panel-heading border">
-            <h3>Add Condition</h3>
-        </div>
+    <div class="mb25 add-condition-page">
+        <h3>Add Condition</h3>
         {% if error_msg is not none %}
             <div class="alert alert-danger" id="msg-update-failed">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -25,95 +23,89 @@
         {% endif %}
 
         <div class="col-xs-12 mb5">
-        <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <strong id="alert-message"></strong>
-        </div>
-        </div>
-
-        <div class="panel-body">
-            <div class="row no-margin">
-                <div class="col-lg-12">
-                    <form id="submit-form" class="form-horizontal" role="form" method="post"
-                          action="{{ request.path }}">
-                        {% csrf_token %}
-                        <div id="condition-group">
-                            <div id="div_condition_1">
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Condition type *</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
-                                            <option value= "event_detail">Event Detail</option>
-                                            <option value= "sum_of">Sum of</option>
-                                            <option value= "count_of">Count of</option>
-                                            <option value= "count_consecutive_of">Count consecutive instances of</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div id="event_detail_area">
-                                    <div class="form-group">
-                                    <label class="col-sm-3 control-label">Detail Name *</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_detail_name" name="detail_name_1">
-                                            {% for item in detail_names %}
-                                                {% if item.description != "" %}
-                                                <option value= "{{ item.term }}">{{ item.description }}</option>
-                                                {% else %}
-                                                <option value= "{{ item.term }}">{{ item.term }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Key Value Type *</label>
-                                        <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
-                                                {% for type in key_value_types %}
-                                                    <option value= "{{ type }}">{{ type }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Operator *</label>
-                                        <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
-                                                {% for oper in operations %}
-                                                    <option value= "{{ oper }}">{{ oper }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" id="last_form_group">
-                                        <label class="col-sm-3 control-label">Key Value *</label>
-                                        <div class="col-xs-3">
-                                            <input id="txt_key_value" class="form-control input-rounded" name="key_value_1" type="number" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="sum_of_area">
-                                </div>
-                                <div id="count_of_area">
-                                </div>
-                                <div id="count_consecutive_of_area"></div>
-                            <br>
-                            </div>
-                        </div>
-                        <input type="hidden" name="condition_counter" id="txt_condition_counter">
-
-                        <div id='div_button' class="form-group pull-right">
-                            <a id="btn_dismiss" class="btn text-left mb15" href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">
-                                Dismiss
-                            </a>
-                            <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="button" onclick="return submitForm();"
-                                   value="Add Condition"/>
-                            <input id='hidden_submit' type="submit" hidden>
-                        </div>
-                    </form>
-                </div>
+            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-message"></strong>
             </div>
         </div>
+
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              action="{{ request.path }}">
+            {% csrf_token %}
+            <div id="condition-group">
+                <div id="div_condition_1">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Condition type *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
+                                <option value= "event_detail">Event Detail</option>
+                                <option value= "sum_of">Sum of</option>
+                                <option value= "count_of">Count of</option>
+                                <option value= "count_consecutive_of">Count consecutive instances of</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="event_detail_area">
+                        <div class="form-group">
+                        <label class="col-sm-3 control-label">Detail Name *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_detail_name" name="detail_name_1">
+                                {% for item in detail_names %}
+                                    {% if item.description != "" %}
+                                    <option value= "{{ item.term }}">{{ item.description }}</option>
+                                    {% else %}
+                                    <option value= "{{ item.term }}">{{ item.term }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Key Value Type *</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                    {% for type in key_value_types %}
+                                        <option value= "{{ type }}">{{ type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Operator *</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                    {% for oper in operations %}
+                                        <option value= "{{ oper }}">{{ oper }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="last_form_group">
+                            <label class="col-sm-3 control-label">Key Value *</label>
+                            <div class="col-xs-3">
+                                <input id="txt_key_value" class="form-control input-rounded" name="key_value_1" type="number" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="sum_of_area">
+                    </div>
+                    <div id="count_of_area">
+                    </div>
+                    <div id="count_consecutive_of_area"></div>
+                <br>
+                </div>
+            </div>
+            <input type="hidden" name="condition_counter" id="txt_condition_counter">
+
+            <div id='div_button' class="text-right">
+                <a id="btn_cancel" class="btn text-left" href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">
+                    Cancel
+                </a>
+                &nbsp; &nbsp;
+                <input id="btn_add_condition" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Add Condition"/>
+                <input id='hidden_submit' type="submit" hidden>
+            </div>
+        </form>
     </div>
     <script>
         function getCurrentOps (ddl) {

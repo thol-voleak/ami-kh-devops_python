@@ -78,19 +78,26 @@
   margin-bottom: 15px;
   font-weight: bold;
 }
-.add-condition-page .info-group {
+.add-condition-page form {
+  border: 1px solid #e6e6e6;
+  padding: 20px;
+  max-width: 700px;
+}
+.add-condition-page .form-group {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: stretch;
 }
-.add-condition-page .info-group > *:first-child {
-  width: 150px;
+.add-condition-page .form-group .control-label {
+  padding-top: 0px;
+}
+.add-condition-page .form-group > *:first-child {
+  width: 200px;
   text-align: right;
-  margin-right: 15px;
   font-weight: bold;
 }
-.add-condition-page .info-group > *:last-child {
+.add-condition-page .form-group > *:last-child {
   flex: 1;
 }
 .add-condition-page .info-group + .info-group {
