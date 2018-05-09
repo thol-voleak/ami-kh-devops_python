@@ -172,7 +172,7 @@ def check_permission_agent_management(self):
     return permissions
 
 def get_all_agent_identity_types(self):
-    api_path = api_settings.GET_AGENT_IDENTITY_TYPES
+    api_path = api_settings.GET_IDENTITY_TYPES
 
     body = {
         "is_deleted": False

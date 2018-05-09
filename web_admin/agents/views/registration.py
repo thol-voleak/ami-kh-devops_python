@@ -58,7 +58,7 @@ class AgentTypeAndCurrenciesAndIdentityTypeDropDownList(TemplateView, RESTfulMet
         return result
 
     def _get_identity_type_list(self):
-        api_path = api_settings.GET_AGENT_IDENTITY_TYPES
+        api_path = api_settings.GET_IDENTITY_TYPES
         body = {
             "is_deleted": False
         }
