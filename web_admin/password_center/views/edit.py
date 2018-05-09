@@ -50,7 +50,7 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'min_numeric_characters': request.POST.get('rule_config_min_numeric_characters'),
                 'min_alpha_numeric_characters': request.POST.get('rule_config_min_alpha_numeric_characters'),
                 'min_alphabet_characters': request.POST.get('rule_config_min_alphabet_characters'),
-                'min_distinct_characters': request.POST.get('rule_config_min_distinc_characters'),
+                'min_distinct_characters': request.POST.get('rule_config_min_distinct_characters'),
                 'min_special_characters': request.POST.get('rule_config_min_special_characters'),
                 'min_uppercase_characters': request.POST.get('rule_config_min_uppercase_characters'),
                 'min_lowercase_characters': request.POST.get('rule_config_min_lowercase_characters'),

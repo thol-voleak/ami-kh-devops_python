@@ -42,12 +42,12 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Minimum Length: </label>
                         <div class="col-sm-3">
-                            <input type="number" class="form-control" name="rule_config_min_length"
+                            <input type="number" required class="form-control" name="rule_config_min_length"
                                    value="{{ rule_data.rule_configs.0.rule_config.min_length }}" id="txt_password_center_rule_min_length">
                         </div>
                         <label class="col-sm-3 control-label">Maximum Length: </label>
                         <div class="col-sm-3">
-                            <input type="number" class="form-control" name="rule_config_max_length"
+                            <input type="number" required class="form-control" name="rule_config_max_length"
                                    value="{{ rule_data.rule_configs.0.rule_config.max_length }}" id="txt_password_center_rule_max_length">
                         </div>
                     </div>
@@ -58,13 +58,13 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Expire After (Days): </label>
                         <div class="col-sm-3">
-                            <input type="number" class="form-control" name="rule_config_expire_after"
+                            <input type="number" required class="form-control" name="rule_config_expire_after"
                                    value="{{ rule_data.rule_configs.0.rule_config.expire_after }}" id="txt_password_center_rule_expire_after">
                         </div>
                         <label class="col-sm-3 control-label">Disallow Last X Passwords: </label>
                         <div class="col-sm-3">
-                            <input type="number" class="form-control" name="rule_config_disallow_last_password"
-                                   value="{{ rule_data.rule_configs.0.rule_config.disallow_last_password }}" id="txt_password_center_rule_disallow_last_password">
+                            <input type="number" readonly required class="form-control" name="rule_config_disallow_last_password"
+                                   value="{{ rule_data.rule_configs.0.rule_config.disallow_last_password|default:'1' }}" id="txt_password_center_rule_disallow_last_password">
                         </div>
                     </div>
                     <br/>
@@ -75,44 +75,44 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Minimum Numeric Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_numeric_characters"
+                                <input type="number" required class="form-control" name="rule_config_min_numeric_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_numeric_characters }}" id="txt_password_center_rule_min_numeric_characters">
                             </div>
                             <label class="col-sm-3 control-label">Minimum Special Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_special_characters"
+                                <input type="number" required class="form-control" name="rule_config_min_special_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_special_characters }}" id="txt_password_center_rule_min_special_characters">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Minimum Alphabet Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_alphabet_characters"
+                                <input type="number" required class="form-control" name="rule_config_min_alphabet_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_alphabet_characters }}" id="txt_password_center_rule_min_alphabet_characters">
                             </div>
                             <label class="col-sm-3 control-label">Minimum Uppercase Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_uppercase_characters"
+                                <input type="number" required class="form-control" name="rule_config_min_uppercase_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_uppercase_characters }}" id="txt_password_center_rule_min_uppercase_characters">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Minimum Alphanumeric Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_alpha_numeric_characters"
+                                <input type="number" class="form-control" required name="rule_config_min_alpha_numeric_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_alpha_numeric_characters }}" id="txt_password_center_rule_min_alpha_numeric_characters">
                             </div>
                             <label class="col-sm-3 control-label">Minimum Lowercase Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_lowercase_characters"
+                                <input type="number" class="form-control" required name="rule_config_min_lowercase_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.min_lowercase_characters }}" id="txt_password_center_rule_min_lowercase_characters">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Minimum Distinc Characters: </label>
+                            <label class="col-sm-3 control-label">Minimum Distinct Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_min_distinc_characters"
-                                       value="{{ rule_data.rule_configs.0.rule_config.min_distinct_characters }}" id="txt_password_center_rule_min_distinc_characters">
+                                <input type="number" required class="form-control" name="rule_config_min_distinct_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_distinct_characters }}" id="txt_password_center_rule_min_distinct_characters">
                             </div>
                             <label class="col-sm-3 control-label">Characters Not Allowed: </label>
                             <div class="col-sm-3">
@@ -124,7 +124,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Maximum Repeated Numeric Characters: </label>
                             <div class="col-sm-3">
-                                <input type="number" class="form-control" name="rule_config_max_repeated_numeric_characters"
+                                <input type="number" required class="form-control" name="rule_config_max_repeated_numeric_characters"
                                        value="{{ rule_data.rule_configs.0.rule_config.max_repeated_numeric_characters }}" id="txt_password_center_rule_max_repeated_numeric_characters">
                             </div>
                         </div>
