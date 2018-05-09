@@ -35,6 +35,11 @@
             <div id="condition-group">
                 <div id="div_condition_1">
                     <div class="form-group">
+                        <label class="col-sm-3 control-label sub-title">Condition</label>
+                        <div class="col-xs-3">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">Condition type *</label>
                         <div class="col-xs-3">
                             <select class="form-control" id="ddl_condition_type" name="condition_type_1" counter="1" onchange="selectConditionType(this.value, this)">
@@ -240,12 +245,7 @@
                                         <input id="txt_sum_key_value" class="form-control input-rounded" name="sum_key_value_' + conditionNumber + '" type="number" required>\
                                     </div>\
                                 </div>\
-                                <div class="form-group">\
-                                    <label class="col-sm-3 control-label" style="font-weight: bold;">Filter</label>\
-                                    <div class="col-xs-3">\
-                                    </div>\
-                                    <input id="filter_count" name="filter_count_' + conditionNumber +'" type="text" value="1" hidden />\
-                                </div>';
+                                <input id="filter_count" name="filter_count_' + conditionNumber +'" type="text" value="1" hidden />';
             return sumOfKeyValueHtml;
         };
 
@@ -253,8 +253,8 @@
                var addMoreFilterHtml =  '<div class="form-group" id="add_more_filter_area">\
                                 <label class="col-sm-3 control-label"></label>\
                                 <div class="col-xs-3" style="text-align: right;">\
-                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_filter" onclick="addFilter(this, ' + conditionNumber + ')">\
-                                      <span class="glyphicon glyphicon-plus"></span> Add Filter\
+                                    <button type="button" class="btn btn-default" id="btn_add_filter" onclick="addFilter(this, ' + conditionNumber + ')">\
+                                      <span class="fa fa-plus"></span> Add Filter\
                                     </button>\
                                 </div>\
                                 </div>';
@@ -272,46 +272,56 @@
                 operator_id = 'ddl_count_consecutive_key_detail_operator';
                 key_value = 'txt_count_consecutive_key_detail_value';
             }
-             var filterAreaHtml = '<div><div class="form-group">\
-                                    <label class="col-sm-3 control-label">Detail Name *</label>\
-                                    <div class="col-xs-3">\
-                                        <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
-                                            {% for item in detail_names %}\
-                                                {% if item.description != "" %}\
-                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
-                                                {% else %}\
-                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
-                                                {% endif %}\
-                                            {% endfor %}\
-                                        </select>\
-                                    </div>\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
-                                        <div class="col-xs-3">\
-                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
-                                                {% for type in key_value_types %}\
-                                                    <option value= "{{ type }}">{{ type }}</option>\
-                                                {% endfor %}\
-                                            </select>\
+             var filterAreaHtml = '<div class="sub-box">\
+                                        <div class="pull-right">\
+                                            <a class="btn_remove_subbox"><i class="fa fa-trash"></i></a>\
                                         </div>\
-                                    </div>\
-                                    <div class="form-group">\
-                                        <label class="col-sm-3 control-label">Operator *</label>\
-                                        <div class="col-xs-3">\
-                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
-                                                    <option value= "{{ oper }}">{{ oper }}</option>\
-                                                {% endfor %}\
-                                            </select>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label sub-title">Filter</label>\
+                                            <div class="col-xs-3">\
+                                            </div>\
                                         </div>\
-                                    </div>\
-                                    <div class="form-group" id="last_form_group">\
-                                        <label class="col-sm-3 control-label">Key Value *</label>\
-                                        <div class="col-xs-3">\
-                                            <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
+                                                    {% for item in detail_names %}\
+                                                        {% if item.description != "" %}\
+                                                        <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                        {% else %}\
+                                                        <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                        {% endif %}\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
                                         </div>\
-                                    </div></div>';
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                    {% for type in key_value_types %}\
+                                                        <option value= "{{ type }}">{{ type }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Operator *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                    {% for oper in operations %}\
+                                                        <option value= "{{ oper }}">{{ oper }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group" id="last_form_group">\
+                                            <label class="col-sm-3 control-label">Key Value *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
             return filterAreaHtml;
         };
 
@@ -617,15 +627,17 @@
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
                 var newSumKeyElem  = sumKeyDiv.cloneNode(true);
                 sumOfArea.appendChild(newSumKeyElem);
+
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterButtonHtml(conditionNumber, 1);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                sumOfArea.appendChild(filterButtonDivElem);
+
                 var filterAreaDiv = document.createElement('div');
                 filterAreaDiv.id = "sum-of-filter-area";
                 filterAreaDiv.innerHTML = getFilterAreaHtml(conditionNumber, 1);
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 sumOfArea.appendChild(filterAreaDivElem);
-                var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterButtonHtml(conditionNumber, 1);
-                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
-                sumOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'event_detail') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
                 conditionElem.querySelector('#count_of_area').innerHTML = '';
@@ -704,10 +716,10 @@
             filterCount = parseInt(filterCount, 10);
             filterCount++;
             var filterAreaElem = conditionElem.querySelector('#sum-of-filter-area');
-            var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getFilterAreaHtml(conditionNum, filterCount) + '</div>';
+            var newFilterElementHtml = getFilterAreaHtml(conditionNum, filterCount);
             var newFilterElemDiv = document.createElement('div');
             newFilterElemDiv.innerHTML = newFilterElementHtml;
-            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            var newFilterElemDivElem = newFilterElemDiv.firstChild.cloneNode(true);
             filterAreaElem.appendChild(newFilterElemDivElem);
             filterCountInput.setAttribute('value', filterCount);
         };
@@ -786,4 +798,12 @@
 {% block body_js %}
     {{ block.super }}
     <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", ".btn_remove_subbox", function () {
+                $(this).closest(".sub-box").remove();
+            });
+        });
+    </script>
 {% endblock %}
