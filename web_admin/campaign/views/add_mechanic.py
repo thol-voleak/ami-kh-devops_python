@@ -65,7 +65,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         detail_names = self._filter_detail_names(all_terms)
         username = {'term': 'username', 'description': ''}
         is_login_success = {'term': 'is_login_success', 'description': ''}
-        detail_names.extend((username, is_login_success))
+        is_suspend = {'term': 'is_suspend', 'description': ''}
+        detail_names.extend((username, is_login_success, is_suspend))
         trigger = self._filter_trigger(all_terms)
 
         ops = {
