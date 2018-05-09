@@ -40,6 +40,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         success, cons = self.get_condition_list(campaign_id, mechanic_id)
         if not success:
             return render(request, self.template_name, context)
+        cons = [x for x in cons if not x['is_deleted']]
 
         data['condition_list'] = cons
         for condition in cons:

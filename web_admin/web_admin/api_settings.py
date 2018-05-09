@@ -238,6 +238,7 @@ GET_CONDITION_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rul
 GET_COMPARISON_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}/comparisons'
 DELETE_MECHANIC_URL = 'api-gateway/rule-engine/' + API_VERSION + '/admin/rules/{campaign_id}/mechanics/{mechanic_id}'
 CREATE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions'
+DELETE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}'
 CREATE_COMPARISON = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/comparisons'
 CREATE_REWARD =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
 CREATE_LIMITATION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}/limits'

@@ -42,7 +42,7 @@
             {%for condition in mechanic.condition_list%}
                 <div class="section" id="div_condition_{{condition.id}}">
                     <div class="pull-right">
-                        <a id="btn_delete_condition" onclick="do_action('')"><i class="fa fa-trash"></i></a>
+                        <a id="btn_delete_condition" onclick="do_action('', deleteCondition,'{% url 'campaign:delete_condition' rule.id mechanic.id condition.id %}')"><i class="fa fa-trash"></i></a>
                     </div>
                     <div class="info-group">
                         <div class="sub-title">Condition {{forloop.counter}}</div>
@@ -648,36 +648,59 @@
 {% block body_js %}
 {{ block.super }}
 <script>
-    function do_action(url) {
+    function do_action(url, func, urlOfFunc) {
         is_rule_active = {{rule.is_active|lower}};
 
         if (!is_rule_active) {
-            window.location.replace(url);
+            if (url != null && url != '') {
+                window.location.replace(url);
+            } else if(func != undefined ) {
+                func(urlOfFunc);
+            }
             return;
         }
 
         swal({
-            title: "This rule is currently ACTIVE. Editing will deactivate the rule. Proceed?",
-            text: "",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Deactivate and Edit",
-            closeOnConfirm: true
-        },
-        function () {
-            $.ajax({
-                url: '/admin-portal/campaign/inactive/'+ "{{rule.id}}" + '/',
-                type: "POST",
-                data: {"campaign_name": "{{rule.name}}", "campaign_description": "{{rule.description}}"},
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function () {
-                    window.location.replace(url);
-                }
+                title: "This rule is currently ACTIVE. Editing will deactivate the rule. Proceed?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Deactivate and Edit",
+                closeOnConfirm: true
+            },
+            function () {
+                $.ajax({
+                    url: '/admin-portal/campaign/inactive/' + "{{rule.id}}" + '/',
+                    type: "POST",
+                    data: {"campaign_name": "{{rule.name}}", "campaign_description": "{{rule.description}}"},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function () {
+                        if (url != null && url != '') {
+                            window.location.replace(url);
+                        } else if (func != undefined) {
+                            func(urlOfFunc);
+                        }
+                    }
+                });
             });
-        });
+    };
+
+    function deleteCondition(url) {
+        swal({
+                title: "Would you like to delete Condition?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            },
+            function () {
+                 window.location.replace(url);
+            });
     };
 </script>
 {% endblock %}
