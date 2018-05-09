@@ -334,3 +334,5 @@ EDIT_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 
 # PASSWORD CENTER
 PASSWORD_CENTER_IDENTITY_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/identity-types'
+PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/report/'+API_VERSION+'/password-rule-configs'
+UPDATE_PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/password-center/'+API_VERSION+'/admin/identity-types/{identity_type_id}/rule-configs'

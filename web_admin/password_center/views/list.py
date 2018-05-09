@@ -31,7 +31,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_context_data(self, **kwargs):
         self.logger.info("========== Start getting password center identity type list ==========")
         data = self.get_identity_types_list()
-        result = {'data': data }
+        result = {'data': data, 'msg': self.request.session.pop('password_center_update_msg', None)}
         self.logger.info("========== Finish getting  password center identity type list ==========")
         return result
 

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Password Policy</h3>
+        </div>
+        {% if error_msg is not None %}
+            <div class="col-xs-12">
+                <div class='alert alert-danger alert-dismissable' id="system_user_update_msg">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ error_msg|capfirst }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        <div class="panel-body">
+                <form class="form-horizontal" role="form" method="post" action="{% url 'password_center:update' identity_type_id%}">
+                    {% csrf_token %}
+                    <input type="hidden" class="form-control" readonly name="identity_type_id"
+                                   value="{{ identity_type_data.identity_types.0.id }}" id="txt_password_center_rule_identity_type_id">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Identity Type: </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" readonly name="identity_type_name"
+                                   value="{{ identity_type_data.identity_types.0.name }}" id="txt_password_center_rule_identity_type_name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Password Type: </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" readonly name="password_type_name"
+                                   value="{{ identity_type_data.identity_types.0.password_type.name }}" id="txt_password_center_rule_password_type_name">
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <h4>Password Length</h4>
+                    <br/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Minimum Length: </label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" name="rule_config_min_length"
+                                   value="{{ rule_data.rule_configs.0.rule_config.min_length }}" id="txt_password_center_rule_min_length">
+                        </div>
+                        <label class="col-sm-3 control-label">Maximum Length: </label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" name="rule_config_max_length"
+                                   value="{{ rule_data.rule_configs.0.rule_config.max_length }}" id="txt_password_center_rule_max_length">
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <h4>Password Validity</h4>
+                    <br/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Expire After (Days): </label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" name="rule_config_expire_after"
+                                   value="{{ rule_data.rule_configs.0.rule_config.expire_after }}" id="txt_password_center_rule_expire_after">
+                        </div>
+                        <label class="col-sm-3 control-label">Disallow Last X Passwords: </label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" name="rule_config_disallow_last_password"
+                                   value="{{ rule_data.rule_configs.0.rule_config.disallow_last_password }}" id="txt_password_center_rule_disallow_last_password">
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <h4>Character Restriction</h4>
+                    <br/>
+                    {% if identity_type_data.identity_types.0.password_type.name == "Alphanumeric" %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Minimum Numeric Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_numeric_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_numeric_characters }}" id="txt_password_center_rule_min_numeric_characters">
+                            </div>
+                            <label class="col-sm-3 control-label">Minimum Special Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_special_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_special_characters }}" id="txt_password_center_rule_min_special_characters">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Minimum Alphabet Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_alphabet_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_alphabet_characters }}" id="txt_password_center_rule_min_alphabet_characters">
+                            </div>
+                            <label class="col-sm-3 control-label">Minimum Uppercase Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_uppercase_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_uppercase_characters }}" id="txt_password_center_rule_min_uppercase_characters">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Minimum Alphanumeric Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_alpha_numeric_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_alpha_numeric_characters }}" id="txt_password_center_rule_min_alpha_numeric_characters">
+                            </div>
+                            <label class="col-sm-3 control-label">Minimum Lowercase Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_lowercase_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_lowercase_characters }}" id="txt_password_center_rule_min_lowercase_characters">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Minimum Distinc Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_min_distinc_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.min_distinct_characters }}" id="txt_password_center_rule_min_distinc_characters">
+                            </div>
+                            <label class="col-sm-3 control-label">Characters Not Allowed: </label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="rule_config_not_allowed_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.not_allowed_characters }}" id="txt_password_center_rule_not_allowed_characters">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Maximum Repeated Numeric Characters: </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" name="rule_config_max_repeated_numeric_characters"
+                                       value="{{ rule_data.rule_configs.0.rule_config.max_repeated_numeric_characters }}" id="txt_password_center_rule_max_repeated_numeric_characters">
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="pull-right">
+                        <a href="{% url 'password_center:list' %}">
+                            <input id="password-center-btn-cancel" class="btn text-left mb15" type="button"
+                                   value="Cancel"/>
+                        </a>
+                        <a href="{% url 'password_center:update' identity_type_id%}">
+                            <input id="password-center-btn-update" class="btn btn-success text-left mb15" type="submit"
+                                   value="Save"/>
+                        </a>
+                    </div>
+
+                </form>
+        </div>
+    </div>
+
+{% endblock %}
