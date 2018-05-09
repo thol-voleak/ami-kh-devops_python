@@ -470,7 +470,7 @@
 
         <div class="section-header">
             Actions Detail
-            <a id="btn_add_new_action" onclick="do_action('')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
+            <a id="btn_add_new_action" onclick="do_action('{% url 'campaign:add_action' rule.id mechanic.id %}')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
         </div>
 
         <div class="list">

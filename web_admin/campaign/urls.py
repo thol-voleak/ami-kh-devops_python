@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
+from campaign.views.add_action import AddAction
 from campaign.views.add_condition import AddCondition
 from .views.list import CampaignList
 from .views.active import ActiveCampaign
@@ -43,5 +44,7 @@ urlpatterns = [
         name="mechanic_detail"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/add_condition$',
         login_required(AddCondition.as_view(), login_url='authentications:login'), name="add_condition"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/add_action$',
+        login_required(AddAction.as_view(), login_url='authentications:login'), name="add_action"),
 ]
 
