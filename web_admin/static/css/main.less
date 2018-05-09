@@ -2,6 +2,11 @@
   font-weight: bold;
 }
 
+.bordered-box {
+  border: 1px solid #e6e6e6;
+  padding: 20px;
+}
+
 .list-mechanic {
   margin-top: 15px;
 
@@ -90,5 +95,35 @@
     margin-top: 15px;
     margin-bottom: 15px;
     font-weight: bold;
+  }
+}
+
+.add-condition-page {
+  .info-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: stretch;
+
+    > *:first-child {
+      width: 150px;
+      text-align: right;
+      margin-right: 15px;
+      font-weight: bold;
+    }
+
+    > *:last-child {
+      flex: 1;
+    }
+  }
+
+  .info-group + .info-group {
+    margin-top: 15px;
+  }
+
+  .sub-title {
+    font-weight: bold;
+    color: #1376c9;
+    font-size: 110%;
   }
 }

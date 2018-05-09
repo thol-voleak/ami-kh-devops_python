@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% verbatim %}
+    <div class="add-condition-page" ng-app="myApp" ng-controller="myCtrl">
+        <h3>Add Condition</h3>
+        <form id="form_main" class="bordered-box" style="max-width: 700px;">
+            <input type="hidden" name="csrfmiddlewaretoken" id="txt_csrf">
+            <div class="info-group">
+                <div class="sub-title">Condition</div>
+                <div></div>
+            </div>
+            <div class="info-group">
+                <div>Condition Type<sup>*</sup></div>
+                <div>
+                    <select class="form-control" name="condition_type" ng-model="condition_type">
+                        <option ng-repeat="item in condition_types" value="{{item.value}}">{{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-group">
+                <div>Detail Name<sup>*</sup></div>
+                <div>
+                    <select class="form-control" name="detail_name">
+                        <option ng-repeat="item in detail_names" value="{{item.term}}">{{item.term}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-group">
+                <div>Key Value Type<sup>*</sup></div>
+                <div>
+                    <select class="form-control" name="key_value_type">
+                        <option ng-repeat="item in key_value_types" value="{{item.value}}">{{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-group">
+                <div>Operator<sup>*</sup></div>
+                <div>
+                    <select class="form-control" name="operator">
+                        <option ng-repeat="item in event_detail_operations" value="{{item.value}}">{{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-group">
+                <div>Key Value<sup>*</sup></div>
+                <div>
+                    <input class="form-control" name="key_value" />
+                </div>
+            </div>
+            <div class="text-right" style="margin-top: 30px;">
+                <a class="btn btn-success" onclick="cancel()">CANCEL</a>
+                &nbsp; &nbsp;
+                <a class="btn btn-success" onclick="submit()">SAVE</a>
+            </div>
+        </form>
+    </div>
+    {% endverbatim %}
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+    <script src="{% static 'js/angular.min.js' %}"></script>
+    <script>
+        var app = angular.module("myApp", []);
+
+        app.controller("myCtrl", function ($scope) {
+            $("#txt_csrf").val("{{ csrf_token }}");
+
+            $scope.condition_types = [
+                {value: "event_detail", name: "Event Detail"},
+                {value: "sum_of", name: "Sum of"},
+                {value: "count_of", name: "Count of"},
+                {value: "count_consecutive_of", name: "Count consecutive instances of"}
+            ];
+
+            $scope.detail_names = {{ detail_names|jsonify }};
+
+            $scope.key_value_types = [
+                {value: "numeric", name: "Numeric"},
+                {value: "text", name: "Freetext"},
+                {value: "timestamp", name: "Timestamp"}
+            ];
+
+            $scope.event_detail_operations = [
+                {value: "=", name: "Equal to"},
+                {value: "!=", name: "Not Equal to"},
+                {value: "<", name: "Less Than"},
+                {value: ">", name: "More Than"},
+                {value: "<=", name: "Less than or Equal to"},
+                {value: ">=", name: "More than or Equal to"}
+            ];
+
+            $scope.condition_type = "event_detail";
+        });
+        
+        function submit() {
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: $("#form_main").serialize(),
+                success: function(data)
+                {
+                    if (data.status == "success") {
+                        window.location = "{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}";
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            });
+        }
+        
+        function cancel() {
+            window.location = "{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}";
+        }
+    </script>
+{% endblock %}

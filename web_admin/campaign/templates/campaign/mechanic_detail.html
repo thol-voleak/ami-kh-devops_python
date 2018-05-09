@@ -35,7 +35,7 @@
 
         <div class="section-header">
             Conditions Detail
-            <a id="btn_add_new_condition" onclick="do_action('')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
+            <a id="btn_add_new_condition" onclick="do_action('{% url 'campaign:add_condition' rule.id mechanic.id %}')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
         </div>
 
         <div class="list">

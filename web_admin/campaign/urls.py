@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+
+from campaign.views.add_condition import AddCondition
 from .views.list import CampaignList
 from .views.active import ActiveCampaign
 from .views.inactive import inactive
@@ -36,5 +38,7 @@ urlpatterns = [
         name="delete-amount-limit"),
     url(r'^detail/(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)$', login_required(MechanicDetail.as_view(), login_url='authentications:login'),
         name="mechanic_detail"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/add_condition$',
+        login_required(AddCondition.as_view(), login_url='authentications:login'), name="add_condition"),
 ]
 
