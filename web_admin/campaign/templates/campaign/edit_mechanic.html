@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Edit mechanic trigger</h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form class="form-horizontal" id="submit-form" method="post" action="{{ request.path }}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Trigger *</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" id="ddl_trigger" name="trigger" required>
+                                    {% for item in trigger_names %}
+                                        {% if item.term == mechanic.event_name %}
+                                            <option value="{{ item.term }}" selected>{{ item.description }}</option>
+                                        {% else %}
+                                            <option value="{{ item.term }}">{{ item.description }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Start Date *</label>
+                            <div class="col-xs-3">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_start_date" style="height:40px;"
+                                       value="{{ start_date|default_if_none:'' }}"
+                                       id="dtp_start_date" required>
+                            </div>
+                            <div class="col-xs-2">
+                                <input class="form-control input-rounded"
+                                       type="time" min="00:00" max="23:59" step="60"
+                                       id="dtp_start_time" name="dtp_start_time"
+                                       value="{{ start_time|default_if_none:'' }}"
+                                       style="height:40px;" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">End Date *</label>
+                            <div class="col-xs-3">
+                                <input type="date" class="form-control input-rounded"
+                                       name="dtp_end_date" style="height:40px;"
+                                       value="{{ end_date|default_if_none:'' }}"
+                                       id="dtp_end_date" required>
+                            </div>
+                            <div class="col-xs-2">
+                                <input class="form-control input-rounded"
+                                       type="time" min="00:00" max="23:59" step="60"
+                                       id="dtp_end_time" name="dtp_end_time"
+                                       value="{{ end_time|default_if_none:'' }}"
+                                       style="height:40px;" required>
+                            </div>
+                        </div>
+                        <a class="btn text-left mb15" id="btn_cancel"
+                           href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">Cancel</a>
+                        <input class="btn btn-success text-left mb15" type="submit" id="btn_save" value="Save">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

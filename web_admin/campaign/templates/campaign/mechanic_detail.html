@@ -14,7 +14,10 @@
         <div class="list">
             <div class="section">
                 <div class="pull-right">
-                    <a id="btn_edit_trigger" onclick="do_action('')"><i class="fa fa-pencil"></i></a>
+                    <a id="btn_edit_trigger"
+                       onclick="do_action('{% url 'campaign:edit_mechanic' campaign_id mechanic_id %}')">
+                        <i class="fa fa-pencil"></i>
+                    </a>
                 </div>
                 <div class="info-group">
                     <div>Trigger:</div>
