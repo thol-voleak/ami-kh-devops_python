@@ -927,6 +927,7 @@ forceNumber("txt_o_amount","ddl_o");
 var  $a = $('#ddl_a');
 if( $a.val() == ''){
     $('#txt_a_amount').attr('disabled', true);
+    $("#label_a_amount").text("{{ a_label }}" + " Amount");
     $("#a_from").hide();
 }
 if( $a.val() == 'Flat value') {
@@ -935,7 +936,7 @@ if( $a.val() == 'Flat value') {
      $a.change(function(){
         if( $a.val() == ''){
             $('#txt_a_amount').attr('disabled', true);
-
+            $("#label_a_amount").text("{{ a_label }}" + " Amount");
             $('#txt_a_amount').val('');
             $("#a_from").fadeOut(500);
         }
@@ -944,6 +945,7 @@ if( $a.val() == 'Flat value') {
             if($('#txt_a_amount').val() == '') {
                 $('#txt_a_amount').val('0');
             }
+            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
             $("#a_from").fadeOut(500);
         }
         else if( $a.val() == '% rate'){
@@ -951,6 +953,7 @@ if( $a.val() == 'Flat value') {
             if($('#txt_a_amount').val() == '') {
                 $('#txt_a_amount').val('0');
             }
+            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
             $("#a_from").fadeIn(1000);
         }
     })
@@ -958,15 +961,16 @@ if( $a.val() == 'Flat value') {
 var  $b = $('#ddl_b');
 if( $b.val() == ''){
     $('#txt_b_amount').attr('disabled', true);
+    $("#label_b_amount").text("{{ b_label }}" + " Amount");
     $("#b_from").hide();
 }
 if( $b.val() == 'Flat value') {
     $("#b_from").hide();
 }
-     $b.change(function(){
+    $b.change(function(){
         if( $b.val() == ''){
             $('#txt_b_amount').attr('disabled', true);
-
+            $("#label_b_amount").text("{{ b_label }}" + " Amount");
             $('#txt_b_amount').val('');
             $("#b_from").fadeOut(500);
         }
@@ -975,6 +979,7 @@ if( $b.val() == 'Flat value') {
             if($('#txt_b_amount').val() == '') {
                 $('#txt_b_amount').val('0');
             }
+            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
             $("#b_from").fadeOut(500);
         }
         else if( $b.val() == '% rate'){
@@ -982,6 +987,7 @@ if( $b.val() == 'Flat value') {
             if($('#txt_b_amount').val() == '') {
                 $('#txt_b_amount').val('0');
             }
+            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
             $("#b_from").fadeIn(1000);
         }
     })
@@ -990,15 +996,16 @@ if( $b.val() == 'Flat value') {
 var  $c = $('#ddl_c');
 if( $c.val() == ''){
     $('#txt_c_amount').attr('disabled', true);
+    $("#label_c_amount").text("{{ c_label }}" + " Amount");
     $("#c_from").hide();
 }
 if( $c.val() == 'Flat value') {
     $("#c_from").hide();
 }
-     $c.change(function(){
+    $c.change(function(){
         if( $c.val() == ''){
             $('#txt_c_amount').attr('disabled', true);
-
+            $("#label_c_amount").text("{{ c_label }}" + " Amount");
             $('#txt_c_amount').val('');
             $("#c_from").fadeOut(500);
         }
@@ -1007,6 +1014,7 @@ if( $c.val() == 'Flat value') {
             if($('#txt_c_amount').val() == '') {
                 $('#txt_c_amount').val('0');
             }
+            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
             $("#c_from").fadeOut(500);
         }
         else if( $c.val() == '% rate'){
@@ -1014,6 +1022,7 @@ if( $c.val() == 'Flat value') {
             if($('#txt_c_amount').val() == '') {
                 $('#txt_c_amount').val('0');
             }
+            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
             $("#c_from").fadeIn(1000);
         }
     })
@@ -1022,15 +1031,16 @@ if( $c.val() == 'Flat value') {
 var  $d = $('#ddl_d');
 if( $d.val() == ''){
     $('#txt_d_amount').attr('disabled', true);
+    $("#label_d_amount").text("{{ d_label }}" + " Amount");
     $("#d_from").hide();
 }
 if( $d.val() == 'Flat value') {
     $("#d_from").hide();
 }
-     $d.change(function(){
+    $d.change(function(){
         if( $d.val() == ''){
             $('#txt_d_amount').attr('disabled', true);
-
+            $("#label_d_amount").text("{{ d_label }}" + " Amount");
             $('#txt_d_amount').val('');
             $("#d_from").fadeOut(500);
         }
@@ -1039,6 +1049,7 @@ if( $d.val() == 'Flat value') {
             if($('#txt_d_amount').val() == '') {
                 $('#txt_d_amount').val('0');
             }
+            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
             $("#d_from").fadeOut(500);
         }
         else if( $d.val() == '% rate'){
@@ -1046,6 +1057,7 @@ if( $d.val() == 'Flat value') {
             if($('#txt_d_amount').val() == '') {
                 $('#txt_d_amount').val('0');
             }
+            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
             $("#d_from").fadeIn(1000);
         }
     })
@@ -1054,15 +1066,16 @@ if( $d.val() == 'Flat value') {
 var  $e = $('#ddl_e');
 if( $e.val() == ''){
     $('#txt_e_amount').attr('disabled', true);
+    $("#label_e_amount").text("{{ e_label }}" + " Amount");
     $("#e_from").hide();
 }
 if( $e.val() == 'Flat value') {
     $("#e_from").hide();
 }
-     $e.change(function(){
+    $e.change(function(){
         if( $e.val() == ''){
             $('#txt_e_amount').attr('disabled', true);
-
+            $("#label_e_amount").text("{{ e_label }}" + " Amount");
             $('#txt_e_amount').val('');
             $("#e_from").fadeOut(500);
         }
@@ -1071,6 +1084,7 @@ if( $e.val() == 'Flat value') {
             if($('#txt_e_amount').val() == '') {
                 $('#txt_e_amount').val('0');
             }
+            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
             $("#e_from").fadeOut(500);
         }
         else if( $e.val() == '% rate'){
@@ -1078,6 +1092,7 @@ if( $e.val() == 'Flat value') {
             if($('#txt_e_amount').val() == '') {
                 $('#txt_e_amount').val('0');
             }
+            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
             $("#e_from").fadeIn(1000);
         }
     })
@@ -1086,15 +1101,16 @@ if( $e.val() == 'Flat value') {
 var  $f = $('#ddl_f');
 if( $f.val() == ''){
     $('#txt_f_amount').attr('disabled', true);
+    $("#label_f_amount").text("{{ f_label }}" + " Amount");
     $("#f_from").hide();
 }
 if( $f.val() == 'Flat value') {
     $("#f_from").hide();
 }
-     $f.change(function(){
+    $f.change(function(){
         if( $f.val() == ''){
             $('#txt_f_amount').attr('disabled', true);
-
+            $("#label_f_amount").text("{{ f_label }}" + " Amount");
             $('#txt_f_amount').val('');
             $("#f_from").fadeOut(500);
         }
@@ -1103,6 +1119,7 @@ if( $f.val() == 'Flat value') {
             if($('#txt_f_amount').val() == '') {
                 $('#txt_f_amount').val('0');
             }
+            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
             $("#f_from").fadeOut(500);
         }
         else if( $f.val() == '% rate'){
@@ -1110,6 +1127,7 @@ if( $f.val() == 'Flat value') {
             if($('#txt_f_amount').val() == '') {
                 $('#txt_f_amount').val('0');
             }
+            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
             $("#f_from").fadeIn(1000);
         }
     })
@@ -1118,15 +1136,16 @@ if( $f.val() == 'Flat value') {
 var  $g = $('#ddl_g');
 if( $g.val() == ''){
     $('#txt_g_amount').attr('disabled', true);
+    $("#label_g_amount").text("{{ g_label }}" + " Amount");
     $("#g_from").hide();
 }
 if( $g.val() == 'Flat value') {
     $("#g_from").hide();
 }
-     $g.change(function(){
+    $g.change(function(){
         if( $g.val() == ''){
             $('#txt_g_amount').attr('disabled', true);
-
+            $("#label_g_amount").text("{{ g_label }}" + " Amount");
             $('#txt_g_amount').val('');
             $("#g_from").fadeOut(500);
         }
@@ -1135,6 +1154,7 @@ if( $g.val() == 'Flat value') {
             if($('#txt_g_amount').val() == '') {
                 $('#txt_g_amount').val('0');
             }
+            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
             $("#g_from").fadeOut(500);
         }
         else if( $g.val() == '% rate'){
@@ -1142,6 +1162,7 @@ if( $g.val() == 'Flat value') {
             if($('#txt_g_amount').val() == '') {
                 $('#txt_g_amount').val('0');
             }
+            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
             $("#g_from").fadeIn(1000);
         }
     })
@@ -1150,15 +1171,16 @@ if( $g.val() == 'Flat value') {
 var  $h = $('#ddl_h');
 if( $h.val() == ''){
     $('#txt_h_amount').attr('disabled', true);
+    $("#label_h_amount").text("{{ h_label }}" + " Amount");
     $("#h_from").hide();
 }
 if( $h.val() == 'Flat value') {
     $("#h_from").hide();
 }
-     $h.change(function(){
+    $h.change(function(){
         if( $h.val() == ''){
             $('#txt_h_amount').attr('disabled', true);
-
+            $("#label_h_amount").text("{{ h_label }}" + " Amount");
             $('#txt_h_amount').val('');
             $("#h_from").fadeOut(500);
         }
@@ -1167,6 +1189,7 @@ if( $h.val() == 'Flat value') {
             if($('#txt_h_amount').val() == '') {
                 $('#txt_h_amount').val('0');
             }
+            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
             $("#h_from").fadeOut(500);
         }
         else if( $h.val() == '% rate'){
@@ -1174,6 +1197,7 @@ if( $h.val() == 'Flat value') {
             if($('#txt_h_amount').val() == '') {
                 $('#txt_h_amount').val('0');
             }
+            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
             $("#h_from").fadeIn(1000);
         }
     })
@@ -1182,15 +1206,16 @@ if( $h.val() == 'Flat value') {
 var  $i = $('#ddl_i');
 if( $i.val() == ''){
     $('#txt_i_amount').attr('disabled', true);
+    $("#label_i_amount").text("{{ i_label }}" + " Amount");
     $("#i_from").hide();
 }
 if( $i.val() == 'Flat value') {
     $("#i_from").hide();
 }
-     $i.change(function(){
+    $i.change(function(){
         if( $i.val() == ''){
             $('#txt_i_amount').attr('disabled', true);
-
+            $("#label_i_amount").text("{{ i_label }}" + " Amount");
             $('#txt_i_amount').val('');
             $("#i_from").fadeOut(500);
         }
@@ -1199,6 +1224,7 @@ if( $i.val() == 'Flat value') {
             if($('#txt_i_amount').val() == '') {
                 $('#txt_i_amount').val('0');
             }
+            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
             $("#i_from").fadeOut(500);
         }
         else if( $i.val() == '% rate'){
@@ -1206,6 +1232,7 @@ if( $i.val() == 'Flat value') {
             if($('#txt_i_amount').val() == '') {
                 $('#txt_i_amount').val('0');
             }
+            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
             $("#i_from").fadeIn(1000);
         }
     })
@@ -1214,15 +1241,16 @@ if( $i.val() == 'Flat value') {
 var  $j = $('#ddl_j');
 if( $j.val() == ''){
     $('#txt_j_amount').attr('disabled', true);
+    $("#label_j_amount").text("{{ j_label }}" + " Amount");
     $("#j_from").hide();
 }
 if( $j.val() == 'Flat value') {
     $("#j_from").hide();
 }
-     $j.change(function(){
+    $j.change(function(){
         if( $j.val() == ''){
             $('#txt_j_amount').attr('disabled', true);
-
+            $("#label_j_amount").text("{{ j_label }}" + " Amount");
             $('#txt_j_amount').val('');
             $("#j_from").fadeOut(500);
         }
@@ -1231,6 +1259,7 @@ if( $j.val() == 'Flat value') {
             if($('#txt_j_amount').val() == '') {
                 $('#txt_j_amount').val('0');
             }
+            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
             $("#j_from").fadeOut(500);
         }
         else if( $j.val() == '% rate'){
@@ -1238,23 +1267,25 @@ if( $j.val() == 'Flat value') {
             if($('#txt_j_amount').val() == '') {
                 $('#txt_j_amount').val('0');
             }
+            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
             $("#j_from").fadeIn(1000);
         }
     })
 
 
 var  $k = $('#ddl_k');
-if( $k.val() == ''){
-    $('#txt_k_amount').attr('disabled', true);
-    $("#k_from").hide();
-}
-if( $k.val() == 'Flat value') {
-    $("#k_from").hide();
-}
-     $k.change(function(){
+    if( $k.val() == ''){
+        $('#txt_k_amount').attr('disabled', true);
+        $("#label_k_amount").text("{{ k_label }}" + " Amount");
+        $("#k_from").hide();
+    }
+    if( $k.val() == 'Flat value') {
+        $("#k_from").hide();
+    }
+    $k.change(function(){
         if( $k.val() == ''){
             $('#txt_k_amount').attr('disabled', true);
-
+            $("#label_k_amount").text("{{ k_label }}" + " Amount");
             $('#txt_k_amount').val('');
             $("#k_from").fadeOut(500);
         }
@@ -1263,6 +1294,7 @@ if( $k.val() == 'Flat value') {
             if($('#txt_k_amount').val() == '') {
                 $('#txt_k_amount').val('0');
             }
+            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
             $("#k_from").fadeOut(500);
         }
         else if( $k.val() == '% rate'){
@@ -1270,6 +1302,7 @@ if( $k.val() == 'Flat value') {
             if($('#txt_k_amount').val() == '') {
                 $('#txt_k_amount').val('0');
             }
+            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
             $("#k_from").fadeIn(1000);
         }
     })
@@ -1278,15 +1311,16 @@ if( $k.val() == 'Flat value') {
 var  $l = $('#ddl_l');
 if( $l.val() == ''){
     $('#txt_l_amount').attr('disabled', true);
+    $("#label_l_amount").text("{{ l_label }}" + " Amount");
     $("#l_from").hide();
 }
 if( $l.val() == 'Flat value') {
     $("#l_from").hide();
 }
-     $l.change(function(){
+    $l.change(function(){
         if( $l.val() == ''){
             $('#txt_l_amount').attr('disabled', true);
-
+            $("#label_l_amount").text("{{ l_label }}" + " Amount");
             $('#txt_l_amount').val('');
             $("#l_from").fadeOut(500);
         }
@@ -1295,6 +1329,7 @@ if( $l.val() == 'Flat value') {
             if($('#txt_l_amount').val() == '') {
                 $('#txt_l_amount').val('0');
             }
+            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
             $("#l_from").fadeOut(500);
         }
         else if( $l.val() == '% rate'){
@@ -1302,6 +1337,7 @@ if( $l.val() == 'Flat value') {
             if($('#txt_l_amount').val() == '') {
                 $('#txt_l_amount').val('0');
             }
+            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
             $("#l_from").fadeIn(1000);
         }
     })
@@ -1310,15 +1346,16 @@ if( $l.val() == 'Flat value') {
 var  $m = $('#ddl_m');
 if( $m.val() == ''){
     $('#txt_m_amount').attr('disabled', true);
+    $("#label_m_amount").text("{{ m_label }}" + " Amount");
     $("#m_from").hide();
 }
 if( $m.val() == 'Flat value') {
     $("#m_from").hide();
 }
-     $m.change(function(){
+    $m.change(function(){
         if( $m.val() == ''){
             $('#txt_m_amount').attr('disabled', true);
-
+            $("#label_m_amount").text("{{ m_label }}" + " Amount");
             $('#txt_m_amount').val('');
             $("#m_from").fadeOut(500);
         }
@@ -1327,6 +1364,7 @@ if( $m.val() == 'Flat value') {
             if($('#txt_m_amount').val() == '') {
                 $('#txt_m_amount').val('0');
             }
+            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
             $("#m_from").fadeOut(500);
         }
         else if( $m.val() == '% rate'){
@@ -1334,6 +1372,7 @@ if( $m.val() == 'Flat value') {
             if($('#txt_m_amount').val() == '') {
                 $('#txt_m_amount').val('0');
             }
+            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
             $("#m_from").fadeIn(1000);
         }
     })
@@ -1342,15 +1381,16 @@ if( $m.val() == 'Flat value') {
 var  $n = $('#ddl_n');
 if( $n.val() == ''){
     $('#txt_n_amount').attr('disabled', true);
+    $("#label_n_amount").text("{{ n_label }}" + " Amount");
     $("#n_from").hide();
 }
 if( $n.val() == 'Flat value') {
     $("#n_from").hide();
 }
-     $n.change(function(){
+    $n.change(function(){
         if( $n.val() == ''){
             $('#txt_n_amount').attr('disabled', true);
-
+            $("#label_n_amount").text("{{ n_label }}" + " Amount");
             $('#txt_n_amount').val('');
             $("#n_from").fadeOut(500);
         }
@@ -1359,6 +1399,7 @@ if( $n.val() == 'Flat value') {
             if($('#txt_n_amount').val() == '') {
                 $('#txt_n_amount').val('0');
             }
+            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
             $("#n_from").fadeOut(500);
         }
         else if( $n.val() == '% rate'){
@@ -1366,6 +1407,7 @@ if( $n.val() == 'Flat value') {
             if($('#txt_n_amount').val() == '') {
                 $('#txt_n_amount').val('0');
             }
+            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
             $("#n_from").fadeIn(1000);
         }
     })
@@ -1374,15 +1416,16 @@ if( $n.val() == 'Flat value') {
 var  $o = $('#ddl_o');
 if( $o.val() == ''){
     $('#txt_o_amount').attr('disabled', true);
+    $("#label_o_amount").text("{{ o_label }}" + " Amount");
     $("#o_from").hide();
 }
 if( $o.val() == 'Flat value') {
     $("#o_from").hide();
 }
-     $o.change(function(){
+    $o.change(function(){
         if( $o.val() == ''){
             $('#txt_o_amount').attr('disabled', true);
-
+            $("#label_o_amount").text("{{ o_label }}" + " Amount");
             $('#txt_o_amount').val('');
             $("#o_from").fadeOut(500);
         }
@@ -1391,6 +1434,7 @@ if( $o.val() == 'Flat value') {
             if($('#txt_o_amount').val() == '') {
                 $('#txt_o_amount').val('0');
             }
+            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
             $("#o_from").fadeOut(500);
         }
         else if( $o.val() == '% rate'){
@@ -1398,6 +1442,7 @@ if( $o.val() == 'Flat value') {
             if($('#txt_o_amount').val() == '') {
                 $('#txt_o_amount').val('0');
             }
+            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
             $("#o_from").fadeIn(1000);
         }
     })
