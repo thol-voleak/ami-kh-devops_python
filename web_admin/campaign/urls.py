@@ -16,6 +16,7 @@ from .views.configuration import MappingView
 from .views.amount_limit import AmountLimit
 from .views.api_amount_limit import delete_amount_limit
 from .views.mechanic_detail import MechanicDetail
+from .views.edit_mechanic import EditMechanicView
 
 app_name = 'campaign'
 
@@ -31,6 +32,9 @@ urlpatterns = [
         name="create_campaign"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/add_mechanic$', login_required(AddMechanic.as_view(), login_url='authentications:login'),
         name="add_mechanic"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanics/(?P<mechanic_id>[0-9A-Za-z]+)/edit/$',
+        login_required(EditMechanicView.as_view(), login_url='authentications:login'),
+        name="edit_mechanic"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/delete/(?P<mechanic_id>[0-9A-Za-z]+)/$', login_required(MechanicDelete.as_view(), login_url='authentications:login'),
         name="delete_mechanic"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/condition/(?P<condition_id>[0-9A-Za-z]+)/delete',
