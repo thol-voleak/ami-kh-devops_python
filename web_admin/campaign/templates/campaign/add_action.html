@@ -38,7 +38,7 @@
                 <div></div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Reward Type *</label>
+                <label class="col-sm-3 control-label">Action Type *</label>
                 <div class="col-xs-3">
                     <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
                         <option value= "fixed_cashback">Fixed Cashback</option>
@@ -61,11 +61,11 @@
             </div>
 
             <div class="form-group" id="div_reward_recipient">
-                <label class="col-sm-3 control-label sub-title">Reward Recipient</label>
+                <label class="col-sm-3 control-label sub-title">Action Recipient</label>
                 <div></div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Reward Recipient should be *</label>
+                <label class="col-sm-3 control-label">Action Recipient should be *</label>
                 <div class="col-xs-3">
                     <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
                         <option value= "customer" selected>Customer</option>
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Give Rewards to *</label>
+                <label class="col-sm-3 control-label">Give Actions to *</label>
                 <div class="col-xs-3">
                     <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
                         <option value= "@@user_id@@">Actor who registered</option>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Reward Recipient should be *</label>
+                        <label class="col-sm-3 control-label">Action Recipient should be *</label>
                         <div class="col-xs-3">
                             <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
                                 <option value= "customer">Customer</option>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Give Rewards to *</label>
+                        <label class="col-sm-3 control-label">Give Actions to *</label>
                         <div class="col-xs-3">
                             <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
                                 <option value= "@@user_id@@">Actor who registered</option>
@@ -162,7 +162,7 @@
                     Cancel
                 </a>
                 &nbsp; &nbsp;
-                <input id="btn_add_action" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Add Action"/>
+                <input id="btn_add_action" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Save"/>
                 <input id='hidden_submit' type="submit" hidden>
             </div>
         </form>

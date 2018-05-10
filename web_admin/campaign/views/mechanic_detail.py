@@ -48,6 +48,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
             condition['comparison_list'] = coms
 
             success, list_filter = self.get_condition_filter(campaign_id, mechanic_id, condition['id'])
+            list_filter = [x for x in list_filter if not x['is_deleted']]
 
             if condition.get('filter_type') == 'count_consecutive_of':
                 success, list_reset_filter = self.get_condition_reset_filters(campaign_id, mechanic_id, condition['id'])

@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username
 from web_admin.api_logger import API_Logger
-
+from services.views.tier_levels.utils import get_label_levels
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +39,10 @@ class UpdateView(TemplateView, RESTfulMethods):
         self.logger.info('========== Finish get amount type ==========')
         service_detail, status5 = self._get_service_detail(service_id)
         self.logger.info('========== Finish get service detail ==========')
+        tier_amount_froms, status7 = self._get_tier_amount_froms()
+        self.logger.info('========== Finish get tier amount froms ==========')
+        payment_decimals, status8 = self._get_payment_decimal()
+        self.logger.info('========== Finish get payment decimal ==========')
         currencies = self._get_currencies_list()
 
         if service_detail and currencies:
@@ -46,16 +50,51 @@ class UpdateView(TemplateView, RESTfulMethods):
             if currency_name in currencies.keys():
                 decimal = currencies[currency_name]
 
+        payment_decimal = payment_decimals['value']
+
+        a_label = self.get_label_detail('A')
+        b_label = self.get_label_detail('B')
+        c_label = self.get_label_detail('C')
+        d_label = self.get_label_detail('D')
+        e_label = self.get_label_detail('E')
+        f_label = self.get_label_detail('F')
+        g_label = self.get_label_detail('G')
+        h_label = self.get_label_detail('H')
+        i_label = self.get_label_detail('I')
+        j_label = self.get_label_detail('J')
+        k_label = self.get_label_detail('K')
+        l_label = self.get_label_detail('L')
+        m_label = self.get_label_detail('M')
+        n_label = self.get_label_detail('N')
+        o_label = self.get_label_detail('O')
+
         command_name, status6 = self._get_command_name(command_id)
-        if status1 and status2 and status3 and status4 and status5 and status6:
+        if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
             context.update({
                 'conditions': tier_conditions,
                 'fee_types':  fee_types,
                 'bonus_types': bonus_types,
+                'tier_amount_froms': tier_amount_froms,
                 'amount_types': amount_types,
+                'payment_decimal': payment_decimal,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
                 'update_tier': tier_to_update,
+                'a_label': a_label,
+                'b_label': b_label,
+                'c_label': c_label,
+                'd_label': d_label,
+                'e_label': e_label,
+                'f_label': f_label,
+                'g_label': g_label,
+                'h_label': h_label,
+                'i_label': i_label,
+                'j_label': j_label,
+                'k_label': k_label,
+                'l_label': l_label,
+                'm_label': m_label,
+                'n_label': n_label,
+                'o_label': o_label,
                 'decimal': int(decimal),
             })
         self.logger.info('========== Finish Loading updating Tier Page==========')
@@ -85,6 +124,18 @@ class UpdateView(TemplateView, RESTfulMethods):
         self.logger.info('========== Start get service detail ==========')
         return self._get_method(api_settings.SERVICE_DETAIL_URL.format(service_id),
                                 func_description="Service Detail",
+                                logger=logger)
+
+    def _get_tier_amount_froms(self):
+        self.logger.info('========== Start get tier amount froms ==========')
+        return self._get_method(api_settings.TIER_AMOUNT_FROMS,
+                                func_description="Tier amount froms",
+                                logger=logger)
+
+    def _get_payment_decimal(self):
+        self.logger.info('========== Start get payment decimal ==========')
+        return self._get_method(api_settings.PAYMENT_DECIMAL,
+                                func_description="Payment decimal",
                                 logger=logger)
 
     def _get_command_name(self, command_id):
@@ -139,6 +190,52 @@ class UpdateView(TemplateView, RESTfulMethods):
         if bonus_amount:
             bonus_amount = bonus_amount.replace(',', '')
 
+        a = request.POST.get('a')
+        a_from = request.POST.get('a_from')
+        a_amount = request.POST.get('a_amount')
+        b = request.POST.get('b')
+        b_from = request.POST.get('b_from')
+        b_amount = request.POST.get('b_amount')
+        c = request.POST.get('c')
+        c_from = request.POST.get('c_from')
+        c_amount = request.POST.get('c_amount')
+        d = request.POST.get('d')
+        d_from = request.POST.get('d_from')
+        d_amount = request.POST.get('d_amount')
+        e = request.POST.get('e')
+        e_from = request.POST.get('e_from')
+        e_amount = request.POST.get('e_amount')
+        f = request.POST.get('f')
+        f_from = request.POST.get('f_from')
+        f_amount = request.POST.get('f_amount')
+        g = request.POST.get('g')
+        g_from = request.POST.get('g_from')
+        g_amount = request.POST.get('g_amount')
+        h = request.POST.get('h')
+        h_from = request.POST.get('h_from')
+        h_amount = request.POST.get('h_amount')
+        i = request.POST.get('i')
+        i_from = request.POST.get('i_from')
+        i_amount = request.POST.get('i_amount')
+        j = request.POST.get('j')
+        j_from = request.POST.get('j_from')
+        j_amount = request.POST.get('j_amount')
+        k = request.POST.get('k')
+        k_from = request.POST.get('k_from')
+        k_amount = request.POST.get('k_amount')
+        l = request.POST.get('l')
+        l_from = request.POST.get('l_from')
+        l_amount = request.POST.get('l_amount')
+        m = request.POST.get('m')
+        m_from = request.POST.get('m_from')
+        m_amount = request.POST.get('m_amount')
+        n = request.POST.get('n')
+        n_from = request.POST.get('n_from')
+        n_amount = request.POST.get('n_amount')
+        o = request.POST.get('o')
+        o_from = request.POST.get('o_from')
+        o_amount = request.POST.get('o_amount')
+
         params = {
             "fee_tier_condition": condition,
             "condition_amount": condition_amount,
@@ -147,11 +244,86 @@ class UpdateView(TemplateView, RESTfulMethods):
             "bonus_type": bonus_type,
             "bonus_amount": bonus_amount,
             "amount_type": amount_type,
-            "settlement_type": settlement_type
+            "settlement_type": settlement_type,
+            "a": a,
+            "a_from": a_from,
+            "a_amount": a_amount,
+            "b": b,
+            "b_from": b_from,
+            "b_amount": b_amount,
+            "c": c,
+            "c_from": c_from,
+            "c_amount": c_amount,
+            "d": d,
+            "d_from": d_from,
+            "d_amount": d_amount,
+            "e": e,
+            "e_from": e_from,
+            "e_amount": e_amount,
+            "f": f,
+            "f_from": f_from,
+            "f_amount": f_amount,
+            "g": g,
+            "g_from": g_from,
+            "g_amount": g_amount,
+            "h": h,
+            "h_from": h_from,
+            "h_amount": h_amount,
+            "i": i,
+            "i_from": i_from,
+            "i_amount": i_amount,
+            "j": j,
+            "j_from": j_from,
+            "j_amount": j_amount,
+            "k": k,
+            "k_from": k_from,
+            "k_amount": k_amount,
+            "l": l,
+            "l_from": l_from,
+            "l_amount": l_amount,
+            "m": m,
+            "m_from": m_from,
+            "m_amount": m_amount,
+            "n": n,
+            "n_from": n_from,
+            "n_amount": n_amount,
+            "o": o,
+            "o_from": o_from,
+            "o_amount": o_amount
         }
 
         if params['bonus_type'] == "Flat value" or params['bonus_type'] == "":
             params['amount_type'] = ''
+        if params['a'] == "Flat value" or params['a'] == "":
+            params['a_from'] = None
+        if params['b'] == "Flat value" or params['b'] == "":
+            params['b_from'] = None
+        if params['c'] == "Flat value" or params['c'] == "":
+            params['c_from'] = None
+        if params['d'] == "Flat value" or params['d'] == "":
+            params['d_from'] = None
+        if params['e'] == "Flat value" or params['e'] == "":
+            params['e_from'] = None
+        if params['f'] == "Flat value" or params['f'] == "":
+            params['f_from'] = None
+        if params['g'] == "Flat value" or params['g'] == "":
+            params['g_from'] = None
+        if params['h'] == "Flat value" or params['h'] == "":
+            params['h_from'] = None
+        if params['i'] == "Flat value" or params['i'] == "":
+            params['i_from'] = None
+        if params['j'] == "Flat value" or params['j'] == "":
+            params['j_from'] = None
+        if params['k'] == "Flat value" or params['k'] == "":
+            params['k_from'] = None
+        if params['l'] == "Flat value" or params['l'] == "":
+            params['l_from'] = None
+        if params['m'] == "Flat value" or params['m'] == "":
+            params['m_from'] = None
+        if params['n'] == "Flat value" or params['n'] == "":
+            params['n_from'] = None
+        if params['o'] == "Flat value" or params['o'] == "":
+            params['o_from'] = None
 
         fee_tier_id = context['fee_tier_id']
 
@@ -262,3 +434,12 @@ class UpdateView(TemplateView, RESTfulMethods):
         except Exception:
             return False
         return True
+
+    def get_label_detail(self, lvl_name):
+        label_levels = self.request.session.get('tier_levels')
+        if not label_levels:
+            label_levels = get_label_levels(self.request)
+
+        for lvl in label_levels:
+            if lvl.get('name') == lvl_name:
+                return lvl.get('label')
