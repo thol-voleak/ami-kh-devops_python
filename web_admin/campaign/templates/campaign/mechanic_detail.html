@@ -410,7 +410,7 @@
                         {%for filter in condition.filter %}
                             <div class="sub-section" id="div_count_of_filter_{{filter.id}}">
                                 <div class="pull-right">
-                                    <a id="btn_delete_filter" onclick="do_action('')"><i class="fa fa-trash"></i></a>
+                                    <a id="btn_delete_filter" onclick="do_action('', deleteFilter, '{% url 'campaign:delete_filter' rule.id mechanic.id condition.id filter.id %}')"><i class="fa fa-trash"></i></a>
                                 </div>
                                 <div class="info-group">
                                     <div class="sub-title">Filter {{forloop.counter}}</div>
@@ -689,8 +689,16 @@
     };
 
     function deleteCondition(url) {
+        confirmDelete("Would you like to delete Condition?", url)
+    };
+
+    function deleteFilter(url) {
+        confirmDelete("Would you like to delete Condition Filter?", url)
+    }
+
+    function confirmDelete(message, url) {
         swal({
-                title: "Would you like to delete Condition?",
+                title: message,
                 text: "",
                 type: "warning",
                 showCancelButton: true,
@@ -701,6 +709,6 @@
             function () {
                  window.location.replace(url);
             });
-    };
+    }
 </script>
 {% endblock %}
