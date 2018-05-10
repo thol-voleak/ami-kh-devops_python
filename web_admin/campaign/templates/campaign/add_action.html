@@ -326,7 +326,8 @@
         var div_send_notification = document.getElementById('div_send_notification');
         var div_send_notification_html = '\
                             <div class="form-group">\
-                                <label class="col-sm-3 control-label"><b>Data to be sent</b></label>\
+                                <label class="col-sm-3 control-label sub-title">Data to be sent</label>\
+                                <div></div>\
                             </div>\
                             <div id="data_send_group">\
                                 <div id="data_tobe_send_1">\
@@ -384,9 +385,9 @@
                             <input type="hidden" name="data_counter" id="txt_data_counter">\
                             <div class="form-group">\
                                 <label class="col-sm-3 control-label"></label>\
-                                <div class="col-xs-3">\
-                                    <button type="button" class="btn btn-primary btn-block" id="btn_add_data_to_be_sent" onclick="addDataToSend()">\
-                                      <span class="glyphicon glyphicon-plus"></span> Add Data To Be Sent\
+                                <div class="col-xs-3 text-right">\
+                                    <button type="button" class="btn btn-default" id="btn_add_data_to_be_sent" onclick="addDataToSend()">\
+                                      <span class="fa fa-plus"></span> Add Data To Be Sent\
                                     </button>\
                                 </div>\
                             </div>';
@@ -523,7 +524,7 @@
             dataClone.id = "data_tobe_send_" + _data_counter;
             var div = document.createElement('div');
             div.className = 'form-group';
-            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label>';
+            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label><div class="text-right"><a class="btn_remove_data"><i class="fa fa-trash"></i></a></div>';
             dataClone.insertBefore(div, dataClone.firstChild);
             document.getElementById("data_send_group").appendChild(dataClone);
             $("#txt_data_counter").val(_data_counter);
@@ -579,6 +580,10 @@
     <script>
         $(document).ready(function () {
             listenTrigger();
+
+            $(document).on("click", ".btn_remove_data", function () {
+                $(this).closest("[id^='data_tobe_send']").remove();
+            });
         });
     </script>
 {% endblock %}
