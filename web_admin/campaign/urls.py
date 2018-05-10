@@ -12,6 +12,7 @@ from .views.add_mechanic import AddMechanic
 from .views.delete_mechanic import MechanicDelete
 from .views.delete_condition import ConditionDelete
 from .views.delete_filter import FilterDelete
+from .views.delete_action import ActionDelete
 from .views.configuration import MappingView
 from .views.amount_limit import AmountLimit
 from .views.api_amount_limit import delete_amount_limit
@@ -53,5 +54,7 @@ urlpatterns = [
         login_required(AddCondition.as_view(), login_url='authentications:login'), name="add_condition"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/add_action$',
         login_required(AddAction.as_view(), login_url='authentications:login'), name="add_action"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/action/(?P<action_id>[0-9A-Za-z]+)/delete',
+        login_required(ActionDelete.as_view(), login_url='authentications:login'), name="delete_action"),
 ]
 

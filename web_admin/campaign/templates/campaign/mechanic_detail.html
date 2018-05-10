@@ -480,7 +480,7 @@
             {%for action in mechanic.action_list%}
                 <div class="section">
                     <div class="pull-right">
-                        <a id="btn_delete_action" onclick="do_action('')"><i class="fa fa-trash"></i></a>
+                        <a id="btn_delete_action" onclick="do_action('', deleteAction, '{% url 'campaign:delete_action' rule.id mechanic.id action.id %}')"><i class="fa fa-trash"></i></a>
                     </div>
                     <div class="info-group">
                         <div class="sub-title">Action {{forloop.counter}}</div>
@@ -692,11 +692,15 @@
     };
 
     function deleteCondition(url) {
-        confirmDelete("Would you like to delete Condition?", url)
+        confirmDelete("Would you like to delete Condition?", url);
     };
 
     function deleteFilter(url) {
-        confirmDelete("Would you like to delete Condition Filter?", url)
+        confirmDelete("Would you like to delete Condition Filter?", url);
+    }
+
+    function deleteAction(url) {
+        confirmDelete("Would you like to delete Action?", url);
     }
 
     function confirmDelete(message, url) {
