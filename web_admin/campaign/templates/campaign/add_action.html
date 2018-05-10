@@ -13,10 +13,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="panel mb25">
-        <div class="panel-heading border">
-            <h3>Add Action</h3>
-        </div>
+    <div class="mb25 add-mechanic-action-page">
+        <h3>Add Action</h3>
         {% if error_msg is not none %}
             <div class="alert alert-danger" id="msg-update-failed">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -24,152 +22,149 @@
             </div>
         {% endif %}
 
-        <div class="col-xs-12 mb5">
-        <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
-            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-            <strong id="alert-message"></strong>
-        </div>
-        </div>
-
-        <div class="panel-body">
-            <div class="row no-margin">
-                <div class="col-lg-12">
-                    <form id="submit-form" class="form-horizontal" role="form" method="post"
-                          action="{{ request.path }}">
-                        {% csrf_token %}
-
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label"><b>Reward</b></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Type *</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
-                                    <option value= "fixed_cashback">Fixed Cashback</option>
-                                    <option value= "send_notification">Send Notification</option>
-                                    <option value= "suspend_account">Suspend Account</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group" id="div_send_to" hidden>
-                            <label class="col-sm-3 control-label">Send to *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" placeholder="Enter URL">
-                            </div>
-                        </div>
-                        <div class="form-group" id="div_amount">
-                            <label class="col-sm-3 control-label">Amount *</label>
-                            <div class="col-xs-3">
-                                <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="div_reward_recipient">
-                            <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Reward Recipient should be *</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
-                                    <option value= "customer" selected>Customer</option>
-                                    <option value= "agent">Agent</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Give Rewards to *</label>
-                            <div class="col-xs-3">
-                                <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
-                                    <option value= "@@user_id@@">Actor who registered</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group" id="lbl_paid_amount" hidden>
-                            <label class="col-sm-3 control-label">Paid Amount</label>
-                            <div class="col-xs-3">
-                                <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
-                            </div>
-                        </div>
-                        <div id="div_fixed_cashback">
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label"><b>Get Funds From</b></label>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Product Service ID *</label>
-                                <div class="col-xs-3">
-                                    <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Payer ID *</label>
-                                <div class="col-xs-3">
-                                    <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Payer SOF ID *</label>
-                                <div class="col-xs-3">
-                                    <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="div_send_notification"></div>
-                        <div class="panel-heading">
-                            <h5><b>Set Limitations</b></h5>
-                        </div>
-                        <div id="limitation-group">
-                            <div id="div_condition_1">
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Limitation Type *</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
-                                            <option value= "count">Count</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Limit to *</label>
-                                    <div class="col-xs-3">
-                                        <input min='0' id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
-
-                                    </div>
-                                    <span class="recipient-mechanic">/recipient/mechanic</span>
-
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Reward Recipient should be *</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
-                                            <option value= "customer">Customer</option>
-                                            <option value= "agent">Agent</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Give Rewards to *</label>
-                                    <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
-                                            <option value= "@@user_id@@">Actor who registered</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            <br>
-                            </div>
-                        </div>
-
-                        <div id='div_button' class="text-right">
-                            <a id="btn_cancel" class="btn text-left" href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">
-                                Cancel
-                            </a>
-                            &nbsp; &nbsp;
-                            <input id="btn_add_action" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Add Action"/>
-                            <input id='hidden_submit' type="submit" hidden>
-                        </div>
-                    </form>
-                </div>
+        <div class="mb5">
+            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-message"></strong>
             </div>
         </div>
+
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              action="{{ request.path }}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label sub-title">Action</label>
+                <div></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Reward Type *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
+                        <option value= "fixed_cashback">Fixed Cashback</option>
+                        <option value= "send_notification">Send Notification</option>
+                        <option value= "suspend_account">Suspend Account</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="div_send_to" style="display: none">
+                <label class="col-sm-3 control-label">Send to *</label>
+                <div class="col-xs-3">
+                    <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" placeholder="Enter URL">
+                </div>
+            </div>
+            <div class="form-group" id="div_amount">
+                <label class="col-sm-3 control-label">Amount *</label>
+                <div class="col-xs-3">
+                    <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
+                </div>
+            </div>
+
+            <div class="form-group" id="div_reward_recipient">
+                <label class="col-sm-3 control-label sub-title">Reward Recipient</label>
+                <div></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Reward Recipient should be *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
+                        <option value= "customer" selected>Customer</option>
+                        <option value= "agent">Agent</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Give Rewards to *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
+                        <option value= "@@user_id@@">Actor who registered</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="lbl_paid_amount" style="display: none">
+                <label class="col-sm-3 control-label">Paid Amount</label>
+                <div class="col-xs-3">
+                    <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
+                </div>
+            </div>
+            <div id="div_fixed_cashback">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label sub-title">Get Funds From</label>
+                    <div></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Product Service ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer SOF ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div id="div_send_notification"></div>
+            <div id="limitation-group" class="sub-box" style="margin-top: 30px;">
+                <div id="div_condition_1">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label sub-title">Limitation</label>
+                        <div class="col-xs-3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Limitation Type *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                                <option value= "count">Count</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Limit to *</label>
+                        <div class="col-xs-3">
+                            <input min='0' id="txt_limit_to" class="form-control input-rounded" style="width: 200px; display: inline-block" name="limit_to" type="number" required>
+                            <span class="recipient-mechanic" style="position: relative; top: 0px;">/recipient/mechanic</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Reward Recipient should be *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
+                                <option value= "customer">Customer</option>
+                                <option value= "agent">Agent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Give Rewards to *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
+                                <option value= "@@user_id@@">Actor who registered</option>
+                            </select>
+                        </div>
+                    </div>
+
+                <br>
+                </div>
+            </div>
+
+            <div id='div_button' class="text-right">
+                <a id="btn_cancel" class="btn text-left" href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">
+                    Cancel
+                </a>
+                &nbsp; &nbsp;
+                <input id="btn_add_action" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Add Action"/>
+                <input id='hidden_submit' type="submit" hidden>
+            </div>
+        </form>
     </div>
     <script>
         function rewardRecipientShouldBe() {
@@ -213,7 +208,7 @@
 
         function showElement(id) {
             var element = document.getElementById(id);
-            element.style.display = 'block';
+            element.style.display = '';
         }
 
         function setRequired(id) {
@@ -238,7 +233,7 @@
             var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
             if (triggerValue === 'register_customer' || triggerValue === 'login') {
-                $("#lbl_paid_amount").prop('hidden', true);
+                hideElement("lbl_paid_amount");
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
                     .val("@@user_id@@")
@@ -269,9 +264,9 @@
                 }
 
                 if(rewardTypeSelectedValue == 'suspend_account') {
-                    $("#lbl_paid_amount").prop('hidden', true);
+                    hideElement("lbl_paid_amount");
                 } else {
-                    $("#lbl_paid_amount").prop('hidden', false);
+                    showElement("lbl_paid_amount");
                 }
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
@@ -306,7 +301,8 @@
         var div_fixed_cashback = document.getElementById('div_fixed_cashback');
         var div_fixed_cashback_html = '\
             <div class="form-group">\
-                <label class="col-sm-3 control-label"><b>Get Funds From</b></label>\
+                <label class="col-sm-3 control-label sub-title">Get Funds From</label>\
+                <div></div>\
             </div>\
             <div class="form-group">\
                 <label class="col-sm-3 control-label">Product Service ID *</label>\
@@ -359,7 +355,7 @@
                                             </div>\
                                         </div>\
                                     </div>\
-                                    <div id="div_user_defined" hidden>\
+                                    <div id="div_user_defined" style="display: none">\
                                         <div class="form-group">\
                                             <label class="col-sm-3 control-label">Key Name *</label>\
                                             <div class="col-xs-3">\
@@ -425,9 +421,9 @@
             var triggerValue = $("#ddl_trigger").val();
             if (rType === 'send_notification') {
                 if (triggerValue === 'register_customer' || triggerValue === 'login') {
-                    $("#lbl_paid_amount").prop('hidden', true);
+                    hideElement("lbl_paid_amount");
                 } else {
-                    $("#lbl_paid_amount").prop('hidden', false);
+                    showElement("lbl_paid_amount");
                 }
                 resetRewardRecipient();
                 hideElement('div_amount');
@@ -444,9 +440,9 @@
 
             }   else if (rType === 'fixed_cashback') {
                 if (triggerValue === 'register_customer' || triggerValue === 'login') {
-                    $("#lbl_paid_amount").prop('hidden', true);
+                    hideElement("lbl_paid_amount");
                 } else {
-                    $("#lbl_paid_amount").prop('hidden', false);
+                    showElement("lbl_paid_amount");
                 }
                 resetRewardRecipient();
                 hideElement('div_send_to');
@@ -461,7 +457,7 @@
                 div_fixed_cashback.innerHTML = div_fixed_cashback_html;
 
             } else if (rType === 'suspend_account') {
-                $("#lbl_paid_amount").prop('hidden', true);
+                hideElement("lbl_paid_amount");
                 resetRewardRecipient();
                 showElement('div_reward_recipient');
                 hideElement('div_amount');
@@ -569,7 +565,7 @@
 
         function showErrorMessage(msg) {
             $("#alert-message").text(msg);
-            $("#msg-update-failed").prop("hidden", true);
+            hideElement("msg-update-failed");
             $("#alert-campaign").show();
             $("html, body").animate({scrollTop: 0}, "slow");
         }

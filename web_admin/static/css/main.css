@@ -132,3 +132,57 @@
   margin-top: 15px;
   margin-bottom: 15px;
 }
+.add-mechanic-action-page form {
+  border: 1px solid #e6e6e6;
+  padding: 20px;
+  max-width: 800px;
+}
+.add-mechanic-action-page .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: stretch;
+}
+.add-mechanic-action-page .form-group .control-label {
+  padding-top: 0px;
+}
+.add-mechanic-action-page .form-group > *:first-child {
+  width: 200px;
+  text-align: right;
+  font-weight: bold;
+  padding: 0px;
+  margin-right: 20px;
+}
+.add-mechanic-action-page .form-group > *:last-child {
+  flex: 1;
+  padding: 0px;
+}
+.add-mechanic-action-page .form-group .txt-date {
+  display: inline-block;
+  width: 200px;
+  margin-right: 10px;
+}
+.add-mechanic-action-page .form-group .txt-time {
+  display: inline-block;
+  width: 150px;
+}
+.add-mechanic-action-page .sub-title {
+  font-weight: bold;
+  color: #1376c9;
+  font-size: 110%;
+}
+.add-mechanic-action-page .fa-trash {
+  font-size: 150%;
+}
+.add-mechanic-action-page .fa-plus {
+  color: #2dcc71;
+}
+.add-mechanic-action-page .sub-box {
+  border: 1px solid #e6e6e6;
+  padding: 20px;
+  padding: 15px 15px 15px 0px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
