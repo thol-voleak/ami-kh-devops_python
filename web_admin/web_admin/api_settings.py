@@ -137,6 +137,8 @@ FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-condition
 
 TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
 TIER_LEVELS_EDIT = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels/{tier_level_id}'
+TIER_AMOUNT_FROMS = 'api-gateway/payment/'+API_VERSION+'/admin/tier-amount-froms'
+PAYMENT_DECIMAL = 'centralize-configuration/'+API_VERSION+'/admin/scopes/names/payment/configurations/payment.balance-distribution.rate.decimal-digit'
 
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
