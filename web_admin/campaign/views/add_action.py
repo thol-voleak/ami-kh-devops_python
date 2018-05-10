@@ -44,8 +44,7 @@ class AddAction(TemplateView, GetHeaderMixin):
         ops = {
             'key_value_types': key_value_types,
             'detail_names': detail_names,
-            'trigger_type': mechanic.get('event_name'),
-            # 'trigger_type': 'register_customer'
+            'trigger_type': mechanic.get('event_name')
         }
 
         context.update(ops)
