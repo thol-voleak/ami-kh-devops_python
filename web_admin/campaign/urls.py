@@ -18,6 +18,7 @@ from .views.amount_limit import AmountLimit
 from .views.api_amount_limit import delete_amount_limit
 from .views.mechanic_detail import MechanicDetail
 from .views.edit_mechanic import EditMechanicView
+from .views.delete_action_limit import DeleteActionLimitView
 
 app_name = 'campaign'
 
@@ -56,5 +57,7 @@ urlpatterns = [
         login_required(AddAction.as_view(), login_url='authentications:login'), name="add_action"),
     url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanic/(?P<mechanic_id>[0-9A-Za-z]+)/action/(?P<action_id>[0-9A-Za-z]+)/delete',
         login_required(ActionDelete.as_view(), login_url='authentications:login'), name="delete_action"),
+    url(r'^(?P<campaign_id>[0-9A-Za-z]+)/mechanics/(?P<mechanic_id>[0-9A-Za-z]+)/actions/(?P<action_id>[0-9A-Za-z]+)/limits/(?P<action_limit_id>[0-9A-Za-z]+)/delete/$',
+        login_required(DeleteActionLimitView.as_view(), login_url='authentications:login'), name="delete_action_limit"),
 ]
 
