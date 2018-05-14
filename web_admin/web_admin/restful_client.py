@@ -139,11 +139,13 @@ class RestFulClient:
                 loggers.info('Status code: [{status_code}].'.format(status_code=status_code))
                 loggers.info('Status message: [{status_message}].'.format(status_message=status_message))
 
+                data = response_json.get('data', '')
+
                 is_success = (http_status_code == 200) and (status_code == "success")
             except Exception as e:
                 loggers.error(e)
                 raise Exception(response)
         except requests.exceptions.Timeout:
-            is_success, status_code, status_message = False, 'Timeout', 'timeout'
+            is_success, status_code, status_message, data = False, 'Timeout', 'timeout', None
 
-        return is_success, status_code, status_message
+        return is_success, status_code, status_message, data
