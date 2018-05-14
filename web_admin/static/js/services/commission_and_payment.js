@@ -1,4 +1,4 @@
-function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token, payment_decimal) {
+function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
 
     var nEditing = null;
     var oTable;
@@ -186,13 +186,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             setRateDisabled = 'disabled';
         }
 
-        function onChangesRate(s) {
-            var x = document.getElementById(s);
-            if (x.value === '') {
-                x.value = 0;
-            }
-        }
-
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\' required>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
@@ -267,57 +260,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                $(this).removeAttr( "style" );
             });
 
-        var rate = document.getElementById('txt_setting_payment_fee_structure_rate_edit');
-        rateE = $('#txt_setting_payment_fee_structure_rate_edit');
-        rateE.keypress(function(event) {
-            var $this = $(this);
-            if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
-            ((event.which < 48 || event.which > 57) &&
-            (event.which != 0 && event.which != 8))) {
-                event.preventDefault();
-                }
-
-            var text = $(this).val();
-            if ((event.which == 46) && (text.indexOf('.') == -1)) {
-                console.log(2);
-                setTimeout(function() {
-                    if ($this.val().substring($this.val().indexOf('.')).length > payment_decimal + 1) {
-                        console.log(3);
-                        $this.val($this.val().substring(0, $this.val().indexOf('.') + payment_decimal + 1));
-                        }
-                    }, 1);
-                }
-            
-            if ((text.indexOf('.') != -1) &&
-            (text.substring(text.indexOf('.')).length > payment_decimal) &&
-            (event.which != 0 && event.which != 8) &&
-            ($(this)[0].selectionStart >= text.length - payment_decimal)) {
-                console.log(4);
-                event.preventDefault();
-                }
-            });
-
-        rateE.bind("paste", function(e) {
-            var text = e.originalEvent.clipboardData.getData('Text');
-            if ($.isNumeric(text)) {
-                if ((text.substring(text.indexOf('.')).length > payment_decimal +1 ) && (text.indexOf('.') > -1)) {
-                    e.preventDefault();
-                    $(this).val(text.substring(0, text.indexOf('.') + payment_decimal + 1));
-                    }
-                }
-            else {
-                e.preventDefault();
-                }
-        });
-
-        rate.onblur = function(){
-            num = rate.value;
-            if (num != "") {
-                num = parseFloat(num);
-                num = num.toFixed(payment_decimal);
-                rate.value = num;
-            }
-        };
+        forceRate('txt_setting_payment_fee_structure_rate_edit');
     }
 
     function saveRow(oTable, nRow) {
