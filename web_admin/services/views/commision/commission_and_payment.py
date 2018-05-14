@@ -949,7 +949,7 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         }
 
         response = ajax_functions._put_method(request, url, "", self.logger, body)
-        if response.status_code == 200:
+        if json.loads(response.content)['status'] == 2:
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
