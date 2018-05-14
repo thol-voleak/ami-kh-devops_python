@@ -599,9 +599,13 @@
                     <div class="sub-list">
                         {% for limitation in action.limitation_list %}
                             <div class="sub-section">
-                                <div class="pull-right">
-                                    <a id="btn_delete_limitation" onclick="do_action('')"><i class="fa fa-trash"></i></a>
-                                </div>
+                                {% if action.action_type.id != 1 %}
+                                    <div class="pull-right">
+                                        {% url 'campaign:delete_action_limit' rule.id mechanic.id action.id limitation.id as url_delete_limit %}
+                                        <a id="btn_delete_limitation" onclick="do_action('', deleteActionLimit,'{{ url_delete_limit }}')">
+                                            <i class="fa fa-trash"></i></a>
+                                    </div>
+                                {% endif %}
                                 <div class="info-group">
                                     <div class="sub-title">Limitation {{forloop.counter}}</div>
                                     <div></div>
@@ -701,6 +705,10 @@
 
     function deleteAction(url) {
         confirmDelete("Would you like to delete Action?", url);
+    }
+
+    function deleteActionLimit(url) {
+        confirmDelete("Would you like to delete Action Limit?", url)
     }
 
     function confirmDelete(message, url) {

@@ -129,6 +129,610 @@
                         </div>
                     </div>
 
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ a_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_a" name="a" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.a %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="a_from" >
+                        <label class="col-sm-2 control-label" id="txt_a_from">{{ a_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_a_from" name="a_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.a_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_a_amount">{{ a_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.a_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_a_amount');" name="a_amount" id="txt_a_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ b_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_b" name="b" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.b %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="b_from" >
+                        <label class="col-sm-2 control-label" id="txt_b_from">{{ b_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_b_from" name="b_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.b_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_b_amount">{{ b_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.b_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_b_amount');" name="b_amount" id="txt_b_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ c_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_c" name="c" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.c %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="c_from" >
+                        <label class="col-sm-2 control-label" id="txt_c_from">{{ c_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_c_from" name="c_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.c_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_c_amount">{{ c_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.c_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_c_amount');" name="c_amount" id="txt_c_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ d_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_d" name="d" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.d %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="d_from" >
+                        <label class="col-sm-2 control-label" id="txt_d_from">{{ d_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_d_from" name="d_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.d_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_d_amount">{{ d_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.d_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_d_amount');" name="d_amount" id="txt_d_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ e_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_e" name="e" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.e %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="e_from" >
+                        <label class="col-sm-2 control-label" id="txt_e_from">{{ e_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_e_from" name="e_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.e_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_e_amount">{{ e_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.e_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_e_amount');" name="e_amount" id="txt_e_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ f_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_f" name="f" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.f %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="f_from" >
+                        <label class="col-sm-2 control-label" id="txt_f_from">{{ f_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_f_from" name="f_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.f_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_f_amount">{{ f_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.f_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_f_amount');" name="f_amount" id="txt_f_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ g_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_g" name="g" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.g %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="g_from" >
+                        <label class="col-sm-2 control-label" id="txt_g_from">{{ g_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_g_from" name="g_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.g_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_g_amount">{{ g_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.g_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_g_amount');" name="g_amount" id="txt_g_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ h_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_h" name="h" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.h %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="h_from" >
+                        <label class="col-sm-2 control-label" id="txt_h_from">{{ h_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_h_from" name="h_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.h_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_h_amount">{{ h_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.h_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_h_amount');" name="h_amount" id="txt_h_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ i_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_i" name="i" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.i %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="i_from" >
+                        <label class="col-sm-2 control-label" id="txt_i_from">{{ i_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_i_from" name="i_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.i_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_i_amount">{{ i_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.i_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_i_amount');" name="i_amount" id="txt_i_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ j_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_j" name="j" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.j %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="j_from" >
+                        <label class="col-sm-2 control-label" id="txt_j_from">{{ j_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_j_from" name="j_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.j_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_j_amount">{{ j_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.j_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_j_amount');" name="j_amount" id="txt_j_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ k_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_k" name="k" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.k %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="k_from" >
+                        <label class="col-sm-2 control-label" id="txt_k_from">{{ k_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_k_from" name="k_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.k_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_k_amount">{{ k_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.k_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_k_amount');" name="k_amount" id="txt_k_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ l_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_l" name="l" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.l %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="l_from" >
+                        <label class="col-sm-2 control-label" id="txt_l_from">{{ l_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_l_from" name="l_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.l_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_l_amount">{{ l_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.l_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_l_amount');" name="l_amount" id="txt_l_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ m_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_m" name="m" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.m %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="m_from" >
+                        <label class="col-sm-2 control-label" id="txt_m_from">{{ m_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_m_from" name="m_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.m_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_m_amount">{{ m_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.m_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_m_amount');" name="m_amount" id="txt_m_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ n_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_n" name="n" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.n %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="n_from" >
+                        <label class="col-sm-2 control-label" id="txt_n_from">{{ n_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_n_from" name="n_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.n_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_n_amount">{{ n_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.n_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_n_amount');" name="n_amount" id="txt_n_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ o_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_o" name="o" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == update_tier.o %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="o_from" >
+                        <label class="col-sm-2 control-label" id="txt_o_from">{{ o_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_o_from" name="o_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if item.amount_type == update_tier.o_from %}
+                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_o_amount">{{ o_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ update_tier.o_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_o_amount');" name="o_amount" id="txt_o_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
                     <div class="pull-right">
                         <a href="{% url 'services:fee_tier_list' service_id command_id service_command_id %}">
                             <input id="btn_cancel" class="btn text-left mb15" type="button"
@@ -281,6 +885,547 @@ function forceNumber(any_amount, any_type) {
 forceAmountNumber("txt_amount");
 forceNumber("txt_fee_amount", "ddl_fee_type");
 forceNumber("txt_bonus_amount","ddl_bonus_type");
+forceNumber("txt_a_amount","ddl_a");
+forceNumber("txt_b_amount","ddl_b");
+forceNumber("txt_c_amount","ddl_c");
+forceNumber("txt_d_amount","ddl_d");
+forceNumber("txt_e_amount","ddl_e");
+forceNumber("txt_f_amount","ddl_f");
+forceNumber("txt_g_amount","ddl_g");
+forceNumber("txt_h_amount","ddl_h");
+forceNumber("txt_i_amount","ddl_i");
+forceNumber("txt_j_amount","ddl_j");
+forceNumber("txt_k_amount","ddl_k");
+forceNumber("txt_l_amount","ddl_l");
+forceNumber("txt_m_amount","ddl_m");
+forceNumber("txt_n_amount","ddl_n");
+forceNumber("txt_o_amount","ddl_o");
+
+
+// start tier level constraint
+var  $a = $('#ddl_a');
+if( $a.val() == ''){
+    $('#txt_a_amount').attr('disabled', true);
+    $("#label_a_amount").text("{{ a_label }}" + " Amount");
+    $("#a_from").hide();
+}
+if( $a.val() == 'Flat value') {
+    $("#a_from").hide();
+}
+     $a.change(function(){
+        if( $a.val() == ''){
+            $('#txt_a_amount').attr('disabled', true);
+            $("#label_a_amount").text("{{ a_label }}" + " Amount");
+            $('#txt_a_amount').val('');
+            $("#a_from").fadeOut(500);
+        }
+        else if( $a.val() == 'Flat value'){
+            $('#txt_a_amount').removeAttr('disabled');
+            if($('#txt_a_amount').val() == '') {
+                $('#txt_a_amount').val('0');
+            }
+            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
+            $("#a_from").fadeOut(500);
+        }
+        else if( $a.val() == '% rate'){
+            $('#txt_a_amount').removeAttr('disabled');
+            if($('#txt_a_amount').val() == '') {
+                $('#txt_a_amount').val('0');
+            }
+            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
+            $("#a_from").fadeIn(1000);
+        }
+    })
+
+var  $b = $('#ddl_b');
+if( $b.val() == ''){
+    $('#txt_b_amount').attr('disabled', true);
+    $("#label_b_amount").text("{{ b_label }}" + " Amount");
+    $("#b_from").hide();
+}
+if( $b.val() == 'Flat value') {
+    $("#b_from").hide();
+}
+    $b.change(function(){
+        if( $b.val() == ''){
+            $('#txt_b_amount').attr('disabled', true);
+            $("#label_b_amount").text("{{ b_label }}" + " Amount");
+            $('#txt_b_amount').val('');
+            $("#b_from").fadeOut(500);
+        }
+        else if( $b.val() == 'Flat value'){
+            $('#txt_b_amount').removeAttr('disabled');
+            if($('#txt_b_amount').val() == '') {
+                $('#txt_b_amount').val('0');
+            }
+            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
+            $("#b_from").fadeOut(500);
+        }
+        else if( $b.val() == '% rate'){
+            $('#txt_b_amount').removeAttr('disabled');
+            if($('#txt_b_amount').val() == '') {
+                $('#txt_b_amount').val('0');
+            }
+            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
+            $("#b_from").fadeIn(1000);
+        }
+    })
+
+
+var  $c = $('#ddl_c');
+if( $c.val() == ''){
+    $('#txt_c_amount').attr('disabled', true);
+    $("#label_c_amount").text("{{ c_label }}" + " Amount");
+    $("#c_from").hide();
+}
+if( $c.val() == 'Flat value') {
+    $("#c_from").hide();
+}
+    $c.change(function(){
+        if( $c.val() == ''){
+            $('#txt_c_amount').attr('disabled', true);
+            $("#label_c_amount").text("{{ c_label }}" + " Amount");
+            $('#txt_c_amount').val('');
+            $("#c_from").fadeOut(500);
+        }
+        else if( $c.val() == 'Flat value'){
+            $('#txt_c_amount').removeAttr('disabled');
+            if($('#txt_c_amount').val() == '') {
+                $('#txt_c_amount').val('0');
+            }
+            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
+            $("#c_from").fadeOut(500);
+        }
+        else if( $c.val() == '% rate'){
+            $('#txt_c_amount').removeAttr('disabled');
+            if($('#txt_c_amount').val() == '') {
+                $('#txt_c_amount').val('0');
+            }
+            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
+            $("#c_from").fadeIn(1000);
+        }
+    })
+
+
+var  $d = $('#ddl_d');
+if( $d.val() == ''){
+    $('#txt_d_amount').attr('disabled', true);
+    $("#label_d_amount").text("{{ d_label }}" + " Amount");
+    $("#d_from").hide();
+}
+if( $d.val() == 'Flat value') {
+    $("#d_from").hide();
+}
+    $d.change(function(){
+        if( $d.val() == ''){
+            $('#txt_d_amount').attr('disabled', true);
+            $("#label_d_amount").text("{{ d_label }}" + " Amount");
+            $('#txt_d_amount').val('');
+            $("#d_from").fadeOut(500);
+        }
+        else if( $d.val() == 'Flat value'){
+            $('#txt_d_amount').removeAttr('disabled');
+            if($('#txt_d_amount').val() == '') {
+                $('#txt_d_amount').val('0');
+            }
+            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
+            $("#d_from").fadeOut(500);
+        }
+        else if( $d.val() == '% rate'){
+            $('#txt_d_amount').removeAttr('disabled');
+            if($('#txt_d_amount').val() == '') {
+                $('#txt_d_amount').val('0');
+            }
+            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
+            $("#d_from").fadeIn(1000);
+        }
+    })
+
+
+var  $e = $('#ddl_e');
+if( $e.val() == ''){
+    $('#txt_e_amount').attr('disabled', true);
+    $("#label_e_amount").text("{{ e_label }}" + " Amount");
+    $("#e_from").hide();
+}
+if( $e.val() == 'Flat value') {
+    $("#e_from").hide();
+}
+    $e.change(function(){
+        if( $e.val() == ''){
+            $('#txt_e_amount').attr('disabled', true);
+            $("#label_e_amount").text("{{ e_label }}" + " Amount");
+            $('#txt_e_amount').val('');
+            $("#e_from").fadeOut(500);
+        }
+        else if( $e.val() == 'Flat value'){
+            $('#txt_e_amount').removeAttr('disabled');
+            if($('#txt_e_amount').val() == '') {
+                $('#txt_e_amount').val('0');
+            }
+            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
+            $("#e_from").fadeOut(500);
+        }
+        else if( $e.val() == '% rate'){
+            $('#txt_e_amount').removeAttr('disabled');
+            if($('#txt_e_amount').val() == '') {
+                $('#txt_e_amount').val('0');
+            }
+            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
+            $("#e_from").fadeIn(1000);
+        }
+    })
+
+
+var  $f = $('#ddl_f');
+if( $f.val() == ''){
+    $('#txt_f_amount').attr('disabled', true);
+    $("#label_f_amount").text("{{ f_label }}" + " Amount");
+    $("#f_from").hide();
+}
+if( $f.val() == 'Flat value') {
+    $("#f_from").hide();
+}
+    $f.change(function(){
+        if( $f.val() == ''){
+            $('#txt_f_amount').attr('disabled', true);
+            $("#label_f_amount").text("{{ f_label }}" + " Amount");
+            $('#txt_f_amount').val('');
+            $("#f_from").fadeOut(500);
+        }
+        else if( $f.val() == 'Flat value'){
+            $('#txt_f_amount').removeAttr('disabled');
+            if($('#txt_f_amount').val() == '') {
+                $('#txt_f_amount').val('0');
+            }
+            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
+            $("#f_from").fadeOut(500);
+        }
+        else if( $f.val() == '% rate'){
+            $('#txt_f_amount').removeAttr('disabled');
+            if($('#txt_f_amount').val() == '') {
+                $('#txt_f_amount').val('0');
+            }
+            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
+            $("#f_from").fadeIn(1000);
+        }
+    })
+
+
+var  $g = $('#ddl_g');
+if( $g.val() == ''){
+    $('#txt_g_amount').attr('disabled', true);
+    $("#label_g_amount").text("{{ g_label }}" + " Amount");
+    $("#g_from").hide();
+}
+if( $g.val() == 'Flat value') {
+    $("#g_from").hide();
+}
+    $g.change(function(){
+        if( $g.val() == ''){
+            $('#txt_g_amount').attr('disabled', true);
+            $("#label_g_amount").text("{{ g_label }}" + " Amount");
+            $('#txt_g_amount').val('');
+            $("#g_from").fadeOut(500);
+        }
+        else if( $g.val() == 'Flat value'){
+            $('#txt_g_amount').removeAttr('disabled');
+            if($('#txt_g_amount').val() == '') {
+                $('#txt_g_amount').val('0');
+            }
+            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
+            $("#g_from").fadeOut(500);
+        }
+        else if( $g.val() == '% rate'){
+            $('#txt_g_amount').removeAttr('disabled');
+            if($('#txt_g_amount').val() == '') {
+                $('#txt_g_amount').val('0');
+            }
+            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
+            $("#g_from").fadeIn(1000);
+        }
+    })
+
+
+var  $h = $('#ddl_h');
+if( $h.val() == ''){
+    $('#txt_h_amount').attr('disabled', true);
+    $("#label_h_amount").text("{{ h_label }}" + " Amount");
+    $("#h_from").hide();
+}
+if( $h.val() == 'Flat value') {
+    $("#h_from").hide();
+}
+    $h.change(function(){
+        if( $h.val() == ''){
+            $('#txt_h_amount').attr('disabled', true);
+            $("#label_h_amount").text("{{ h_label }}" + " Amount");
+            $('#txt_h_amount').val('');
+            $("#h_from").fadeOut(500);
+        }
+        else if( $h.val() == 'Flat value'){
+            $('#txt_h_amount').removeAttr('disabled');
+            if($('#txt_h_amount').val() == '') {
+                $('#txt_h_amount').val('0');
+            }
+            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
+            $("#h_from").fadeOut(500);
+        }
+        else if( $h.val() == '% rate'){
+            $('#txt_h_amount').removeAttr('disabled');
+            if($('#txt_h_amount').val() == '') {
+                $('#txt_h_amount').val('0');
+            }
+            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
+            $("#h_from").fadeIn(1000);
+        }
+    })
+
+
+var  $i = $('#ddl_i');
+if( $i.val() == ''){
+    $('#txt_i_amount').attr('disabled', true);
+    $("#label_i_amount").text("{{ i_label }}" + " Amount");
+    $("#i_from").hide();
+}
+if( $i.val() == 'Flat value') {
+    $("#i_from").hide();
+}
+    $i.change(function(){
+        if( $i.val() == ''){
+            $('#txt_i_amount').attr('disabled', true);
+            $("#label_i_amount").text("{{ i_label }}" + " Amount");
+            $('#txt_i_amount').val('');
+            $("#i_from").fadeOut(500);
+        }
+        else if( $i.val() == 'Flat value'){
+            $('#txt_i_amount').removeAttr('disabled');
+            if($('#txt_i_amount').val() == '') {
+                $('#txt_i_amount').val('0');
+            }
+            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
+            $("#i_from").fadeOut(500);
+        }
+        else if( $i.val() == '% rate'){
+            $('#txt_i_amount').removeAttr('disabled');
+            if($('#txt_i_amount').val() == '') {
+                $('#txt_i_amount').val('0');
+            }
+            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
+            $("#i_from").fadeIn(1000);
+        }
+    })
+
+
+var  $j = $('#ddl_j');
+if( $j.val() == ''){
+    $('#txt_j_amount').attr('disabled', true);
+    $("#label_j_amount").text("{{ j_label }}" + " Amount");
+    $("#j_from").hide();
+}
+if( $j.val() == 'Flat value') {
+    $("#j_from").hide();
+}
+    $j.change(function(){
+        if( $j.val() == ''){
+            $('#txt_j_amount').attr('disabled', true);
+            $("#label_j_amount").text("{{ j_label }}" + " Amount");
+            $('#txt_j_amount').val('');
+            $("#j_from").fadeOut(500);
+        }
+        else if( $j.val() == 'Flat value'){
+            $('#txt_j_amount').removeAttr('disabled');
+            if($('#txt_j_amount').val() == '') {
+                $('#txt_j_amount').val('0');
+            }
+            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
+            $("#j_from").fadeOut(500);
+        }
+        else if( $j.val() == '% rate'){
+            $('#txt_j_amount').removeAttr('disabled');
+            if($('#txt_j_amount').val() == '') {
+                $('#txt_j_amount').val('0');
+            }
+            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
+            $("#j_from").fadeIn(1000);
+        }
+    })
+
+
+var  $k = $('#ddl_k');
+    if( $k.val() == ''){
+        $('#txt_k_amount').attr('disabled', true);
+        $("#label_k_amount").text("{{ k_label }}" + " Amount");
+        $("#k_from").hide();
+    }
+    if( $k.val() == 'Flat value') {
+        $("#k_from").hide();
+    }
+    $k.change(function(){
+        if( $k.val() == ''){
+            $('#txt_k_amount').attr('disabled', true);
+            $("#label_k_amount").text("{{ k_label }}" + " Amount");
+            $('#txt_k_amount').val('');
+            $("#k_from").fadeOut(500);
+        }
+        else if( $k.val() == 'Flat value'){
+            $('#txt_k_amount').removeAttr('disabled');
+            if($('#txt_k_amount').val() == '') {
+                $('#txt_k_amount').val('0');
+            }
+            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
+            $("#k_from").fadeOut(500);
+        }
+        else if( $k.val() == '% rate'){
+            $('#txt_k_amount').removeAttr('disabled');
+            if($('#txt_k_amount').val() == '') {
+                $('#txt_k_amount').val('0');
+            }
+            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
+            $("#k_from").fadeIn(1000);
+        }
+    })
+
+
+var  $l = $('#ddl_l');
+if( $l.val() == ''){
+    $('#txt_l_amount').attr('disabled', true);
+    $("#label_l_amount").text("{{ l_label }}" + " Amount");
+    $("#l_from").hide();
+}
+if( $l.val() == 'Flat value') {
+    $("#l_from").hide();
+}
+    $l.change(function(){
+        if( $l.val() == ''){
+            $('#txt_l_amount').attr('disabled', true);
+            $("#label_l_amount").text("{{ l_label }}" + " Amount");
+            $('#txt_l_amount').val('');
+            $("#l_from").fadeOut(500);
+        }
+        else if( $l.val() == 'Flat value'){
+            $('#txt_l_amount').removeAttr('disabled');
+            if($('#txt_l_amount').val() == '') {
+                $('#txt_l_amount').val('0');
+            }
+            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
+            $("#l_from").fadeOut(500);
+        }
+        else if( $l.val() == '% rate'){
+            $('#txt_l_amount').removeAttr('disabled');
+            if($('#txt_l_amount').val() == '') {
+                $('#txt_l_amount').val('0');
+            }
+            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
+            $("#l_from").fadeIn(1000);
+        }
+    })
+
+
+var  $m = $('#ddl_m');
+if( $m.val() == ''){
+    $('#txt_m_amount').attr('disabled', true);
+    $("#label_m_amount").text("{{ m_label }}" + " Amount");
+    $("#m_from").hide();
+}
+if( $m.val() == 'Flat value') {
+    $("#m_from").hide();
+}
+    $m.change(function(){
+        if( $m.val() == ''){
+            $('#txt_m_amount').attr('disabled', true);
+            $("#label_m_amount").text("{{ m_label }}" + " Amount");
+            $('#txt_m_amount').val('');
+            $("#m_from").fadeOut(500);
+        }
+        else if( $m.val() == 'Flat value'){
+            $('#txt_m_amount').removeAttr('disabled');
+            if($('#txt_m_amount').val() == '') {
+                $('#txt_m_amount').val('0');
+            }
+            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
+            $("#m_from").fadeOut(500);
+        }
+        else if( $m.val() == '% rate'){
+            $('#txt_m_amount').removeAttr('disabled');
+            if($('#txt_m_amount').val() == '') {
+                $('#txt_m_amount').val('0');
+            }
+            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
+            $("#m_from").fadeIn(1000);
+        }
+    })
+
+
+var  $n = $('#ddl_n');
+if( $n.val() == ''){
+    $('#txt_n_amount').attr('disabled', true);
+    $("#label_n_amount").text("{{ n_label }}" + " Amount");
+    $("#n_from").hide();
+}
+if( $n.val() == 'Flat value') {
+    $("#n_from").hide();
+}
+    $n.change(function(){
+        if( $n.val() == ''){
+            $('#txt_n_amount').attr('disabled', true);
+            $("#label_n_amount").text("{{ n_label }}" + " Amount");
+            $('#txt_n_amount').val('');
+            $("#n_from").fadeOut(500);
+        }
+        else if( $n.val() == 'Flat value'){
+            $('#txt_n_amount').removeAttr('disabled');
+            if($('#txt_n_amount').val() == '') {
+                $('#txt_n_amount').val('0');
+            }
+            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
+            $("#n_from").fadeOut(500);
+        }
+        else if( $n.val() == '% rate'){
+            $('#txt_n_amount').removeAttr('disabled');
+            if($('#txt_n_amount').val() == '') {
+                $('#txt_n_amount').val('0');
+            }
+            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
+            $("#n_from").fadeIn(1000);
+        }
+    })
+
+
+var  $o = $('#ddl_o');
+if( $o.val() == ''){
+    $('#txt_o_amount').attr('disabled', true);
+    $("#label_o_amount").text("{{ o_label }}" + " Amount");
+    $("#o_from").hide();
+}
+if( $o.val() == 'Flat value') {
+    $("#o_from").hide();
+}
+    $o.change(function(){
+        if( $o.val() == ''){
+            $('#txt_o_amount').attr('disabled', true);
+            $("#label_o_amount").text("{{ o_label }}" + " Amount");
+            $('#txt_o_amount').val('');
+            $("#o_from").fadeOut(500);
+        }
+        else if( $o.val() == 'Flat value'){
+            $('#txt_o_amount').removeAttr('disabled');
+            if($('#txt_o_amount').val() == '') {
+                $('#txt_o_amount').val('0');
+            }
+            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
+            $("#o_from").fadeOut(500);
+        }
+        else if( $o.val() == '% rate'){
+            $('#txt_o_amount').removeAttr('disabled');
+            if($('#txt_o_amount').val() == '') {
+                $('#txt_o_amount').val('0');
+            }
+            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
+            $("#o_from").fadeIn(1000);
+        }
+    })
+// end tier level constraint
 
 
 // start Amount constraint

@@ -267,7 +267,8 @@ class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
             return JsonResponse({
                 "is_success": is_success,
                 "status_code": status_code,
-                "status_message": status_message
+                "status_message": status_message,
+                "data": data
             })
 
     def _reject_balance_adjustment_list(self, data):
