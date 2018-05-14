@@ -279,6 +279,24 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="listErrorModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Unable to approve some rows in the request</h3>
+                    </div>
+                    <div id = listError class="modal-body"></div>
+                    <div class="modal-footer">
+                        <div class="pull-right">
+                        <input class="btn btn-success btn-block" type="button" name="ok"
+                               onclick="hideListErrorModal()" value="OK">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
                 <thead>
@@ -467,8 +485,7 @@
                         if (response.is_success) {
                             location.reload();
                         } else {
-                            // Failed
-                            addErrorMessage(response.status_message);
+                            bindShowListError(response);
                         }
                         $("#approveModal").modal('hide');
                     },
@@ -522,6 +539,42 @@
                 });
             }
         });
+    }
+
+    function bindShowListError(response){
+        var status_code = response.status_code;
+        if(status_code == "invalid_request"){
+            var items = [
+                ["Success", 0],
+                ["Balance adjustment reference is not found", 0],
+                ["Only adjustment in 'CREATED' status can be approved", 0],
+                ["User type does not allowed", 0],
+                ["Any error occur", 0]
+            ]
+
+            var list_error = response.data;
+            var i, j;
+            for (i in list_error){
+                status_msg = list_error[i].status;
+                for (j in items){
+                    if (status_msg == items[j][0])
+                    items[j][1] = items[j][1] + 1;
+                    }
+                }
+
+            $("#listError").html("");
+            for (j in items) {
+                if(items[j][1] > 0){
+                    $("#listError").append(`<p style='font-size: 15px;'>${items[j][0]} : ${items[j][1]}</p>`);
+                }
+            }
+
+            $("#listErrorModal").modal('show');
+        }
+    }
+
+    function hideListErrorModal(){
+        $("#listErrorModal").modal('hide');
     }
 
     $(document).ready(function () {
