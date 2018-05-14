@@ -1,4 +1,4 @@
-function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token) {
+function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, fee_tier_id, csrf_token, payment_decimal) {
 
     var nEditing = null;
     var oTable;
@@ -186,13 +186,20 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             setRateDisabled = 'disabled';
         }
 
+        function onChangesRate(s) {
+            var x = document.getElementById(s);
+            if (x.value === '') {
+                x.value = 0;
+            }
+        }
+
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\' required>' + htmlDDActors + '</select>';
         jqTds[2].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
         jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\' ' + 'onkeypress="if (event.key.replace(/[^\\w\\.\\,]/g,\'\')==\'\') event.preventDefault();" ' + 'onChangesRate(this.id)' + '>';
         jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' required value=\'' + aData[7] + '\'>';
         
         // Master: Specific SOF
@@ -259,6 +266,58 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         $("body").find("th").each(function () {
                $(this).removeAttr( "style" );
             });
+
+        var rate = document.getElementById('txt_setting_payment_fee_structure_rate_edit');
+        rateE = $('#txt_setting_payment_fee_structure_rate_edit');
+        rateE.keypress(function(event) {
+            var $this = $(this);
+            if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+            ((event.which < 48 || event.which > 57) &&
+            (event.which != 0 && event.which != 8))) {
+                event.preventDefault();
+                }
+
+            var text = $(this).val();
+            if ((event.which == 46) && (text.indexOf('.') == -1)) {
+                console.log(2);
+                setTimeout(function() {
+                    if ($this.val().substring($this.val().indexOf('.')).length > payment_decimal + 1) {
+                        console.log(3);
+                        $this.val($this.val().substring(0, $this.val().indexOf('.') + payment_decimal + 1));
+                        }
+                    }, 1);
+                }
+            
+            if ((text.indexOf('.') != -1) &&
+            (text.substring(text.indexOf('.')).length > payment_decimal) &&
+            (event.which != 0 && event.which != 8) &&
+            ($(this)[0].selectionStart >= text.length - payment_decimal)) {
+                console.log(4);
+                event.preventDefault();
+                }
+            });
+
+        rateE.bind("paste", function(e) {
+            var text = e.originalEvent.clipboardData.getData('Text');
+            if ($.isNumeric(text)) {
+                if ((text.substring(text.indexOf('.')).length > payment_decimal +1 ) && (text.indexOf('.') > -1)) {
+                    e.preventDefault();
+                    $(this).val(text.substring(0, text.indexOf('.') + payment_decimal + 1));
+                    }
+                }
+            else {
+                e.preventDefault();
+                }
+        });
+
+        rate.onblur = function(){
+            num = rate.value;
+            if (num != "") {
+                num = parseFloat(num);
+                num = num.toFixed(payment_decimal);
+                rate.value = num;
+            }
+        };
     }
 
     function saveRow(oTable, nRow) {

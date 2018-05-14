@@ -842,10 +842,11 @@
             var m_sof_types = {{ choices.sof_types|safe }};
             var m_amount_type = {{ choices.amount_types|safe }};
             var current_fee_tier_id = {{ fee_tier_id  }};
+            var payment_decimal = {{ payment_decimal|safe }};
             //var csrf_token = "{{ csrf_token }}";
 
             // 1. Balance and Payment Fee Table
-            onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
+            onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token, payment_decimal);
 
             // 2. Setting Bonus Table
             //onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
