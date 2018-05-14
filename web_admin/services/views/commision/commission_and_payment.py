@@ -928,7 +928,6 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         balanceDistributionList = json.loads(data.get("balance_distributions"))
         putDataList = []
         for balanceDistributionData in balanceDistributionList:
-            self.logger.info(balanceDistributionData.get("fee_tier_id"))
             data = {
                 "fee_tier_id": balanceDistributionData.get("fee_tier_id"),
                 "balance_distribution_id": balanceDistributionData.get("balance_distribution_id"),
@@ -947,7 +946,6 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         body = {
             "balance_distributions": putDataList
         }
-
         response = ajax_functions._put_method(request, url, "", self.logger, body)
         if json.loads(response.content)['status'] == 2:
             messages.add_message(
