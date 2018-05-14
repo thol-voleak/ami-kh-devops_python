@@ -212,12 +212,16 @@
 
         function hideElement(id) {
             var element = document.getElementById(id);
-            element.style.display = 'none';
+            if (element) {
+                element.style.display = 'none';
+            }
         }
 
         function showElement(id) {
             var element = document.getElementById(id);
-            element.style.display = '';
+            if (element) {
+                element.style.display = '';
+            }
         }
 
         function setRequired(id) {

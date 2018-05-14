@@ -192,7 +192,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\'>';
+        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\' ' + 'onkeypress="if (event.key.replace(/[^\\w\\.\\,]/g,\'\')==\'\') event.preventDefault();" ' + 'onChangesRate(this.id)' + '>';
         jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' required value=\'' + aData[7] + '\'>';
         
         // Master: Specific SOF
@@ -259,6 +259,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         $("body").find("th").each(function () {
                $(this).removeAttr( "style" );
             });
+
+        forceRate('txt_setting_payment_fee_structure_rate_edit');
     }
 
     function saveRow(oTable, nRow) {

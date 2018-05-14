@@ -208,11 +208,11 @@ class AddAction(TemplateView, GetHeaderMixin):
             }
 
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
-        action_id = data.get("id", '')
 
         if not success:
             return JsonResponse({"status": 3, "msg": message})
 
+        action_id = data.get("id", '')
         # add limitation
         limit_to = request.POST.get('limit_to')
         if limit_to:

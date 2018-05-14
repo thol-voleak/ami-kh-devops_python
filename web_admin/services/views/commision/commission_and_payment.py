@@ -12,6 +12,7 @@ from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
+from services.views.utils import get_payment_decimal
 
 
 logger = logging.getLogger(__name__)
@@ -82,6 +83,10 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         #context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         #context['agents'] = agents
+
+        response = get_payment_decimal(self.request)
+        if response:
+            context['payment_decimal'] = response.get('value')
 
         self.logger.info('========== Finish getting Balance Movement ==========')
         return context
@@ -923,7 +928,6 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         balanceDistributionList = json.loads(data.get("balance_distributions"))
         putDataList = []
         for balanceDistributionData in balanceDistributionList:
-            self.logger.info(balanceDistributionData.get("fee_tier_id"))
             data = {
                 "fee_tier_id": balanceDistributionData.get("fee_tier_id"),
                 "balance_distribution_id": balanceDistributionData.get("balance_distribution_id"),
@@ -942,9 +946,8 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         body = {
             "balance_distributions": putDataList
         }
-
         response = ajax_functions._put_method(request, url, "", self.logger, body)
-        if response.status_code == 200:
+        if json.loads(response.content)['status'] == 2:
             messages.add_message(
                 self.request,
                 messages.SUCCESS,
