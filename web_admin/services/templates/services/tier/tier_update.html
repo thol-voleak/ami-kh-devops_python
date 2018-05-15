@@ -996,9 +996,15 @@ function forceNumber(any_amount, any_type) {
         if ((text.indexOf('.') != -1) &&
         (text.substring(text.indexOf('.')).length > deci) &&
         (event.which != 0 && event.which != 8) &&
-        ($(this)[0].selectionStart >= text.length - deci)) {
+            !window.getSelection().toString()) {
             event.preventDefault();
             }
+
+        var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
+        if (!isNaN(currentChar)) {
+            var nextValue = text.substring(0, amount.selectionStart) + currentChar + text.substring(amount.selectionEnd);
+            if ((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
+        }
         });
 
     any_amt.bind("paste", function(e) {
