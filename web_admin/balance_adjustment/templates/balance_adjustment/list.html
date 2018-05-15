@@ -575,10 +575,13 @@
                 var items = {};
 
                 var list_error = response.data;
-
                 var i;
                 for (i in list_error) {
                     status_msg = list_error[i].status;
+                    if(status_msg == 'Success') {
+                        $('#chk_balance_adjustment_' + list_error[i].reference_id).attr('checked', false);
+                        $('#chk_balance_adjustment_' + list_error[i].reference_id).prop('checked', false);
+                    }
                     if (items[status_msg] == undefined) {
                         items[status_msg] = 1;
                     } else {
@@ -599,6 +602,8 @@
                 $("#listError").append(error_tbl);
 
                 $("#listErrorModal").modal('show');
+            }else{
+                addErrorMessage(response.status_message);
             }
         }
 
@@ -613,9 +618,14 @@
                 var items = {};
 
                 var list_error = response.data;
+
                 var i;
                 for (i in list_error) {
                     status_msg = list_error[i].status;
+                    if(status_msg == 'Success') {
+                        $('#chk_balance_adjustment_' + list_error[i].reference_id).attr('checked', false);
+                        $('#chk_balance_adjustment_' + list_error[i].reference_id).prop('checked', false);
+                    }
                     if (items[status_msg] == undefined) {
                         items[status_msg] = 1;
                     } else {
@@ -636,6 +646,8 @@
                 $("#listRejectError").append(error_tbl);
 
                 $("#listRejectErrorModal").modal('show');
+            }else{
+                addErrorMessage(response.status_message);
             }
         }
 
