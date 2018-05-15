@@ -3,40 +3,40 @@
 
 {% block content %}
 
-<style>
-    .modal-dialog {
-        top: 30% !important;
-    }
-</style>
+    <style>
+        .modal-dialog {
+            top: 30% !important;
+        }
+    </style>
 
 
-<div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
-    <div class="panel-heading border">
-        <h3>Balance Adjustment History</h3>
-    </div>
-    <div id="ajax-messages">
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissable" id="msg-success">
-                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message }}</strong>
+    <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+        <div class="panel-heading border">
+            <h3>Balance Adjustment History</h3>
+        </div>
+        <div id="ajax-messages">
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="col-xs-12">
+                        <div class="alert alert-success alert-dismissable" id="msg-success">
+                            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ message }}</strong>
+                        </div>
                     </div>
-                </div>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-xs-12">
-                    <div class="alert alert-danger alert-dismissable" id="msg-success">
-                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message }}</strong>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dismissable" id="msg-success">
+                            <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>{{ message }}</strong>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="panel-body">
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'balance_adjustment:balance_adjustment_list' %}">
-            {% csrf_token %}
-            <div class="form-group">
+                {% csrf_token %}
+                <div class="form-group">
                     <label class="col-sm-3 control-label">Request Date: From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
@@ -52,287 +52,315 @@
                                id="dtp_to">
                     </div>
                 </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Requested By</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded"
-                           name="requested_by_id"
-                           value="{{ requested_by_id|default_if_none:'' }}"
-                           id="txt_requested_by">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Requested By</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="requested_by_id"
+                               value="{{ requested_by_id|default_if_none:'' }}"
+                               id="txt_requested_by">
+                    </div>
+                    <label class="col-sm-3 control-label">Approved/Rejected By</label>
+                    <div class="col-xs-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="approved_by_id"
+                               value="{{ approved_by_id|default_if_none:'' }}"
+                               id="txt_approved_rejected_by">
+                    </div>
                 </div>
-                <label class="col-sm-3 control-label">Approved/Rejected By</label>
-                <div class="col-xs-2">
-                    <input type="text" class="form-control input-rounded"
-                           name="approved_by_id"
-                           value="{{ approved_by_id|default_if_none:'' }}"
-                           id="txt_approved_rejected_by">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Service Name</label>
-                <div class="col-sm-2">
-                    <select class="form-control" id="ddl_service_name" name="service_name" >
-                        <option value="" selected="selected">All</option>
-                        {% for service in data %}
-                            {%if service.service_id == service_id %}
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Service Name</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_service_name" name="service_name">
+                            <option value="" selected="selected">All</option>
+                            {% for service in data %}
+                                {% if service.service_id == service_id %}
                             <option value="{{service.service_id }}" selected>{{service.service_name }}</option>
-                            {% else %}
-                            <option value="{{service.service_id }}">{{service.service_name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+                                {% else %}
+                                    <option value="{{ service.service_id }}">{{ service.service_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="col-sm-3 control-label">Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_status" name="status_id">
+                            <option value="" selected="selected">All</option>
+                            {% for item in status_list %}
+                                {% if item.id == status_id %}
+                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <label class="col-sm-3 control-label">Status</label>
-                <div class="col-sm-2">
-                    <select class="form-control" id="ddl_status" name="status_id" >
-                        <option value="" selected="selected">All</option>
-                        {% for item in status_list %}
-                           {% if item.id == status_id %}
-                            <option value="{{item.id}}" selected>{{item.name}}</option>
-                            {% else %}
-                            <option value="{{item.id}}">{{item.name}}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Order ID</label>
-                <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Order ID</label>
+                    <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
-                </div>
-                <label class="col-sm-3 control-label">Ref Order ID</label>
-                <div class="col-sm-2">
+                    </div>
+                    <label class="col-sm-3 control-label">Ref Order ID</label>
+                    <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="ref_order_id" id="txt_ref_order_id" value="{{ ref_order_id }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Payer ID</label>
-                <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer ID</label>
+                    <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payer_user_id" id="txt_payer_id" value="{{ payer_user_id }}">
-                </div>
-                <label class="col-sm-3 control-label">Payee ID</label>
-                <div class="col-sm-2">
+                    </div>
+                    <label class="col-sm-3 control-label">Payee ID</label>
+                    <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="payee_user_id" id="txt_payee_id" value="{{ payee_user_id }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Payer Type</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payer_type" name="payer_user_type_id">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_payer_type" name="payer_user_type_id">
                         <option value=0 {% if payer_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payer_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                         <option value=2 {% if payer_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
-                    </select>
-                </div>
-                <label class="col-sm-3 control-label">Payee Type</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payee_type" name="payee_user_type_id">
+                        </select>
+                    </div>
+                    <label class="col-sm-3 control-label">Payee Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_payee_type" name="payee_user_type_id">
                         <option value=0 {% if payee_user_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payee_user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
                         <option value=2 {% if payee_user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
-                    </select>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Payer Source of Fund Type</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payer_source_of_fund_type" name="payer_sof_type_id">
-                        <option value=0 {% if payer_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer Source of Fund Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_payer_source_of_fund_type" name="payer_sof_type_id">
+                            <option value=0 {% if payer_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payer_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payer_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
                         <option value=3 {% if payer_sof_type_id == '3' %}selected="selected"{% endif %}>Card</option>
-                    </select>
-                </div>
-                <label class="col-sm-3 control-label">Payee Source of Fund Type</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_payee_source_of_fund_type" name="payee_sof_type_id">
-                        <option value=0 {% if payee_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-3 control-label">Payee Source of Fund Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_payee_source_of_fund_type" name="payee_sof_type_id">
+                            <option value=0 {% if payee_sof_type_id == '0' %}selected="selected"{% endif %}>All</option>
                         <option value=1 {% if payee_sof_type_id == '1' %}selected="selected"{% endif %}>Bank</option>
                         <option value=2 {% if payee_sof_type_id == '2' %}selected="selected"{% endif %}>Cash</option>
                         <option value=3 {% if payee_sof_type_id == '3' %}selected="selected"{% endif %}>Card</option>
-                    </select>
+                        </select>
+                    </div>
+
                 </div>
 
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Ref Service Group</label>
-                <div class="col-xs-2">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Ref Service Group</label>
+                    <div class="col-xs-2">
                     <select class="form-control" id="ddl_reference_service_group_id" name="reference_service_group_id"
-                    onchange="onChangeRefServiceGroup()">
+                                onchange="onChangeRefServiceGroup()">
                         <option value="" {% if not reference_service_group_id %}selected="selected"{% endif %}>All</option>
-                         {% for service_group in service_group_list %}
-                                    {%if service_group.service_group_id == reference_service_group_id %}
+                            {% for service_group in service_group_list %}
+                                {% if service_group.service_group_id == reference_service_group_id %}
                                     <option value="{{service_group.service_group_id }}" selected>{{service_group.service_group_name }}</option>
-                                    {% else %}
-                                    <option value="{{service_group.service_group_id }}">{{service_group.service_group_name }}</option>
-                                    {% endif %}
+                                {% else %}
+                                    <option value="{{ service_group.service_group_id }}">{{ service_group.service_group_name }}</option>
+                                {% endif %}
                             {% endfor %}
-                    </select>
-                </div>
-                <label class="col-sm-3 control-label">Ref Service Name</label>
-                <div class="col-xs-2">
-                    <select class="form-control" id="ddl_reference_service_id" name="reference_service_id"
-                    onchange="onChangeRefServiceName()">
+                        </select>
+                    </div>
+                    <label class="col-sm-3 control-label">Ref Service Name</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_reference_service_id" name="reference_service_id"
+                                onchange="onChangeRefServiceName()">
                         <option value="" {% if not reference_service_id %}selected="selected"{% endif %}>All</option>
-                        {% for service in data %}
-                                {%if service.service_id == reference_service_id %}
+                            {% for service in data %}
+                                {% if service.service_id == reference_service_id %}
                                 <option value="{{service.service_id }}" selected parent-id="{{service.service_group_id}}">{{service.service_name }}</option>
                                 {% else %}
                                 <option value="{{service.service_id }}" parent-id="{{service.service_group_id}}">{{service.service_name }}</option>
                                 {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Batch Code</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded"
-                           name="batch_code"
-                           value="{{ batch_code|default_if_none:'' }}"
-                           id="txt_batch_code">
                 </div>
-                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                <div class="pull-right">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Batch Code</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="batch_code"
+                               value="{{ batch_code|default_if_none:'' }}"
+                               id="txt_batch_code">
+                    </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="pull-right">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
+                    </div>
                 </div>
+                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                <label class="pull-right">Total Orders found:&nbsp;</label>
+            </form>
+
+            <div class="dropdown pull-left" id="ddl_actions" style="margin-bottom: 10px;">
+                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span
+                        class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% if request|has_any_permission:"SYS_BAL_ADJUST_APPROVE" %}
+                        <li id="aprove_multi_balance"><a>Approve</a></li>
+                        <li id="reject_multi_balance"><a>Reject</a></li>
+                    {% endif %}
+                </ul>
             </div>
-            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-            <label class="pull-right" >Total Orders found:&nbsp;</label>
-        </form>
 
-        <div class="dropdown pull-left" id="ddl_actions" style="margin-bottom: 10px;">
-            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span
-                    class="caret"></span></button>
-            <ul class="dropdown-menu">
-                {% if request|has_any_permission:"SYS_BAL_ADJUST_APPROVE" %}
-                <li id="aprove_multi_balance"><a>Approve</a></li>
-                <li id="reject_multi_balance"><a>Reject</a></li>
-                {% endif %}
-            </ul>
-        </div>
-
-        <div class="modal" tabindex="-1" role="dialog" id="approveModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div style="float: left;">
-                            <h3 class="modal-title">Action: Approve</h3>
-                        </div>
-                        <div style="float: right;">
-                            <div >
-                                <span style="font-size: 15px;">Number of Orders: </span>
-                                <span id="number_orders_approve_value" style="font-size: 15px;"></span>
+            <div class="modal" tabindex="-1" role="dialog" id="approveModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div style="float: left;">
+                                <h3 class="modal-title">Action: Approve</h3>
                             </div>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                    <div class="modal-body">
-                        <div id="approve_reason" style="padding-left: 30px;">
-                            <div style="float: left;"><span style="font-size: 15px;">Reason:</span></div>
-                            <div class="col-sm-9" style="float: left;">
-                                <input type="text" class="input-rounded" name="approve_reason" style="width: 100%;">
+                            <div style="float: right;">
+                                <div>
+                                    <span style="font-size: 15px;">Number of Orders: </span>
+                                    <span id="number_orders_approve_value" style="font-size: 15px;"></span>
+                                </div>
                             </div>
+                            <div style="clear: both;"></div>
                         </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                    <div class="modal-footer">
+                        <div class="modal-body">
+                            <div id="approve_reason" style="padding-left: 30px;">
+                                <div style="float: left;"><span style="font-size: 15px;">Reason:</span></div>
+                                <div class="col-sm-9" style="float: left;">
+                                    <input type="text" class="input-rounded" name="approve_reason" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="approve_multi_balance_adjustment_btn">Yes</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="modal" tabindex="-1" role="dialog" id="rejectModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div style="float: left;">
-                            <h3 class="modal-title">Action: Reject</h3>
-                        </div>
-                        <div  style="float: right;">
-                            <div >
-                                <span style="font-size: 15px;">Number of Orders: </span>
-                                <span id="number_orders_reject_value" style="font-size: 15px;"></span>
+            <div class="modal" tabindex="-1" role="dialog" id="rejectModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div style="float: left;">
+                                <h3 class="modal-title">Action: Reject</h3>
                             </div>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                    <div class="modal-body">
-                        <div id="reject_reason" style="padding-left: 30px;">
-                            <div style="float: left;"><span style="font-size: 15px;">Reason:</span></div>
-                            <div class="col-sm-9" style="float: left;">
-                                <input type="text" class="input-rounded" name="reject_reason" style="width: 100%;">
+                            <div style="float: right;">
+                                <div>
+                                    <span style="font-size: 15px;">Number of Orders: </span>
+                                    <span id="number_orders_reject_value" style="font-size: 15px;"></span>
+                                </div>
                             </div>
+                            <div style="clear: both;"></div>
                         </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                    <div class="modal-footer">
+                        <div class="modal-body">
+                            <div id="reject_reason" style="padding-left: 30px;">
+                                <div style="float: left;"><span style="font-size: 15px;">Reason:</span></div>
+                                <div class="col-sm-9" style="float: left;">
+                                    <input type="text" class="input-rounded" name="reject_reason" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="reject_multi_balance_adjustment_btn">Yes</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" tabindex="-1" role="dialog" id="listErrorModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Unable to approve some rows in the request</h3>
-                    </div>
-                    <div id = listError class="modal-body"></div>
-                    <div class="modal-footer">
-                        <div class="pull-right">
-                        <input class="btn btn-success btn-block" type="button" name="ok"
-                               onclick="hideListErrorModal()" value="OK">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
-                <thead>
-                <tr>
-                    <th><input type="checkbox" name="select-all" id="select-all" /></th>
-                    <th id="batch_code">Batch Code</th>
-                    <th id="id">Order ID</th>
-                    <th id="amount">Transaction Amount</th>
-                    <th id="service_id">Service ID</th>
-                    <th id="payer_id">Payer ID</th>
-                    <th id="payer_type">Payer Type</th>
-                    <th id="payer_sof_type">Payer SoF Type</th>
-                    <th id="payee_id">Payee ID</th>
-                    <th id="payee_type">Payee Type</th>
-                    <th id="payee_sof_type">Payee SoF Type</th>
-                    <th id="status">Status</th>
-                    <th id="request_date">Request Date</th>
-                    <th id="requester">Requester</th>
-                    <th id="approved_rejected_by">Approved/Rejected by</th>
-                    <th id="adjustment_detail">Adjustment Details</th>
-                </tr>
-                </thead>
-                <tbody id="table_body">
+            <div class="modal" tabindex="-1" role="dialog" id="listErrorModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div style="font-size:5em; color:Red;" class="text-center">
+                                <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                            </div>
+                            <h3 class="modal-title">Unable to approve some rows in the request</h3>
+                        </div>
+                        <div id=listError class="modal-body"></div>
+                        <div class="modal-footer">
+                            <div class="pull-right">
+                                <input class="btn btn-success btn-block" type="button" name="ok"
+                                       onclick="hideListErrorModal()" value="OK">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" tabindex="-1" role="dialog" id="listRejectErrorModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div style="font-size:5em; color:Red;" class="text-center">
+                                <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                            </div>
+                            <h3 class="modal-title">Unable to reject some rows in the request</h3>
+                        </div>
+                        <div id="listRejectError" class="modal-body"></div>
+                        <div class="modal-footer">
+                            <div class="pull-right">
+                                <input class="btn btn-success btn-block" type="button" name="ok"
+                                       onclick="hideListRejectErrorModal()" value="OK">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" name="select-all" id="select-all"/></th>
+                        <th id="batch_code">Batch Code</th>
+                        <th id="id">Order ID</th>
+                        <th id="amount">Transaction Amount</th>
+                        <th id="service_id">Service ID</th>
+                        <th id="payer_id">Payer ID</th>
+                        <th id="payer_type">Payer Type</th>
+                        <th id="payer_sof_type">Payer SoF Type</th>
+                        <th id="payee_id">Payee ID</th>
+                        <th id="payee_type">Payee Type</th>
+                        <th id="payee_sof_type">Payee SoF Type</th>
+                        <th id="status">Status</th>
+                        <th id="request_date">Request Date</th>
+                        <th id="requester">Requester</th>
+                        <th id="approved_rejected_by">Approved/Rejected by</th>
+                        <th id="adjustment_detail">Adjustment Details</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
                     {% for order in order_list %}
                         <tr class="checkboxlist">
-                            <td class="col-sm-2"><input type="checkbox" name="balance_adjustment_checkbox" title="" id="chk_balance_adjustment_{{ order.reference_id|default_if_none:'' }}" value="{{order.reference_id}}"/></td>
+                            <td class="col-sm-2"><input type="checkbox" name="balance_adjustment_checkbox" title=""
+                                                        id="chk_balance_adjustment_{{ order.reference_id|default_if_none:'' }}"
+                                                        value="{{ order.reference_id }}"/></td>
                             <td class="col-sm-2">{{ order.batch_code|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.product_service_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_type.name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payer_user.sof.type_id == 1 %}Bank{% elif order.payer_user.sof.type_id == 2 %}Cash{% elif order.payer_user.sof.type_id == 3 %}Card{% endif %}</td>
+                            <td class="col-sm-2">{% if order.payer_user.sof.type_id == 1 %}
+                                Bank{% elif order.payer_user.sof.type_id == 2 %}
+                                Cash{% elif order.payer_user.sof.type_id == 3 %}Card{% endif %}</td>
                             <td class="col-sm-2">{{ order.payee_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payee_user.user_type.name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{% if order.payee_user.sof.type_id == 1 %}Bank{% elif order.payee_user.sof.type_id == 2 %}Cash{% elif order.payee_user.sof.type_id == 3 %}Card{% endif %}</td>
+                            <td class="col-sm-2">{% if order.payee_user.sof.type_id == 1 %}
+                                Bank{% elif order.payee_user.sof.type_id == 2 %}
+                                Cash{% elif order.payee_user.sof.type_id == 3 %}Card{% endif %}</td>
                             <td class="col-sm-2">{{ order.status.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
@@ -348,241 +376,279 @@
                             </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
         </div>
-        {% include "pagination.html" %}
-    </div>
-    <div class="loader" style="display:none" id="loader-indicator"></div>
-    <div class="col-xs-12" id="search-result-notification" style="display:none">
-        <div class="alert alert-danger alert-dismissable">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            Something wrong happened.
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 
 {% block body_js %}
-{{ block.super }}
-<script type="text/javascript">
-    var csrf_token = "{{ csrf_token }}";
-    onFirstLoadingTime();
-
-    function onFirstLoadingTime() {
-        var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
-        var ddlService = document.getElementById("ddl_reference_service_id");
-        var parentId = ddlServiceGroup.value;
-        for (i = 0; i < ddlService.length; i++) {
-            var txt = ddlService.options[i].getAttribute("parent-id");
-            if(null == parentId || "" == parentId) {
-                ddlService.options[i].style.display = "";
-            } else {
-                if(txt !==  parentId && null != txt && "" != txt) {
-                    ddlService.options[i].style.display = "none";
-                } else {
-                    ddlService.options[i].style.display = "";
-                }
-            }
-        }
-    }
-
-    function onChangeRefServiceGroup() {
-        var ddlService = document.getElementById("ddl_reference_service_id");
-        ddlService.value = "";
+    {{ block.super }}
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token }}";
         onFirstLoadingTime();
-    }
 
-    function onChangeRefServiceName() {
-        var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
-        var ddlService = document.getElementById("ddl_reference_service_id");
-        var refServiceGroupId = ddlService.options[ddlService.selectedIndex].getAttribute("parent-id");
-        if(null != refServiceGroupId && "" != refServiceGroupId) {
-            ddlServiceGroup.value = refServiceGroupId;
+        function onFirstLoadingTime() {
+            var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
+            var ddlService = document.getElementById("ddl_reference_service_id");
+            var parentId = ddlServiceGroup.value;
+            for (i = 0; i < ddlService.length; i++) {
+                var txt = ddlService.options[i].getAttribute("parent-id");
+                if (null == parentId || "" == parentId) {
+                    ddlService.options[i].style.display = "";
+                } else {
+                    if (txt !== parentId && null != txt && "" != txt) {
+                        ddlService.options[i].style.display = "none";
+                    } else {
+                        ddlService.options[i].style.display = "";
+                    }
+                }
+            }
         }
-    }
 
-
-    function addErrorMessage(message) {
-        $("#ajax-messages").empty().append(
-            '<div class="col-xs-12">' +
-            '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
-            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
-            '<strong>' + message + '</strong>' +
-            '</div>' +
-            '</div>')
-    }
-
-    bindSelectCheckboxEvents = function () {
-        //bind select all
-        $('#select-all').on('change', function() {
-            $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').prop('checked', this.checked);
-        });
-
-        //bind select check box on row event
-        $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').on('change', function () {
-            var allChecked = $('#tbl_balance_adjustment .checkboxlist input:checked').length === $('#tbl_balance_adjustment .checkboxlist input').length;
-            $('#select-all').prop('checked', allChecked);
-        });
-    }
-
-    bindSelectApproveAction = function () {
-        $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
-            var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
-            $("#approveModal #number_orders_approve_value").text(selectedNumber);
-            $("#approveModal input[name='approve_reason']").val('');
-            $("#approveModal").modal('show');
-        });
-    }
-
-    bindSelectRejectAction = function () {
-        $("#ddl_actions").find("#reject_multi_balance").click(function (e) {
-            var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
-            $("#rejectModal #number_orders_reject_value").text(selectedNumber);
-            $("#rejectModal input[name='reject_reason']").val('');
-            $("#rejectModal").modal('show');
-        });
-    }
-
-    bindSelectActionsEvent = function () {
-        bindSelectApproveAction();
-        bindSelectRejectAction()
-    }
-
-    getSelectedBalanceAdjustments = function () {
-        var selectedIds = [];
-        $('#tbl_balance_adjustment .checkboxlist input:checked').each(function (index, checkBox) {
-            selectedIds.push($(checkBox).val());
-        });
-        return selectedIds;
-    }
-
-    bindApproveMultiBalanceAdjustment = function () {
-        $("#approveModal #approve_multi_balance_adjustment_btn").click(function (e) {
-            var selectedIds = getSelectedBalanceAdjustments();
-            if ($(selectedIds).length == 0) {
-                $("#approveModal").modal('hide');
-            } else {
-                var approveReason = $("#approveModal input[name='approve_reason']").val();
-                var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
-                var data = {
-                    "referenceIds": JSON.stringify(selectedIds),
-                    "reason": approveReason,
-                    "actionType": "Approve"
-                }
-
-                // Request to server
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: data,
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
-                    },
-                    success: function (response) {
-                        if (response.is_success) {
-                            location.reload();
-                        } else {
-                            bindShowListError(response);
-                        }
-                        $("#approveModal").modal('hide');
-                    },
-                    error: function (err) {
-                        var json = JSON.stringify(err);
-
-                        addErrorMessage("approve error!");
-                    }
-                });
-            }
-        });
-    }
-
-    bindRejectMultiBalanceAdjustment = function () {
-        $("#rejectModal #reject_multi_balance_adjustment_btn").click(function (e) {
-            var selectedIds = getSelectedBalanceAdjustments();
-            if ($(selectedIds).length == 0) {
-                $("#rejectModal").modal('hide');
-            } else {
-                var rejectReason = $("#rejectModal input[name='reject_reason']").val();
-                var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
-                var data = {
-                    "referenceIds": JSON.stringify(selectedIds),
-                    "reason": rejectReason,
-                    "actionType": "Reject"
-                }
-
-                // Request to server
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: data,
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
-                    },
-                    success: function (response) {
-                        if (response.is_success) {
-                            location.reload();
-                        } else {
-                            // Failed
-                            addErrorMessage(response.status_message);
-                        }
-                        $("#rejectModal").modal('hide');
-                    },
-                    error: function (err) {
-                        var json = JSON.stringify(err);
-
-                        addErrorMessage("reject error!");
-                    }
-                });
-            }
-        });
-    }
-
-    function bindShowListError(response){
-        var status_code = response.status_code;
-        if(status_code == "invalid_request"){
-            var items = [
-                ["Success", 0],
-                ["Balance adjustment reference is not found", 0],
-                ["Only adjustment in 'CREATED' status can be approved", 0],
-                ["User type does not allowed", 0],
-                ["Any error occur", 0]
-            ]
-
-            var list_error = response.data;
-            var i, j;
-            for (i in list_error){
-                status_msg = list_error[i].status;
-                for (j in items){
-                    if (status_msg == items[j][0])
-                    items[j][1] = items[j][1] + 1;
-                    }
-                }
-
-            $("#listError").html("");
-            for (j in items) {
-                if(items[j][1] > 0){
-                    $("#listError").append(`<p style='font-size: 15px;'>${items[j][0]} : ${items[j][1]}</p>`);
-                }
-            }
-
-            $("#listErrorModal").modal('show');
+        function onChangeRefServiceGroup() {
+            var ddlService = document.getElementById("ddl_reference_service_id");
+            ddlService.value = "";
+            onFirstLoadingTime();
         }
-    }
 
-    function hideListErrorModal(){
-        $("#listErrorModal").modal('hide');
-    }
+        function onChangeRefServiceName() {
+            var ddlServiceGroup = document.getElementById("ddl_reference_service_group_id");
+            var ddlService = document.getElementById("ddl_reference_service_id");
+            var refServiceGroupId = ddlService.options[ddlService.selectedIndex].getAttribute("parent-id");
+            if (null != refServiceGroupId && "" != refServiceGroupId) {
+                ddlServiceGroup.value = refServiceGroupId;
+            }
+        }
 
-    $(document).ready(function () {
-        bindSelectCheckboxEvents();
-        bindSelectActionsEvent();
-        bindApproveMultiBalanceAdjustment();
-        bindRejectMultiBalanceAdjustment();
-    })
 
-</script>
-{%  endblock %}
+        function addErrorMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+
+        bindSelectCheckboxEvents = function () {
+            //bind select all
+            $('#select-all').on('change', function () {
+                $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+            });
+
+            //bind select check box on row event
+            $('#tbl_balance_adjustment .checkboxlist input[type="checkbox"]').on('change', function () {
+                var allChecked = $('#tbl_balance_adjustment .checkboxlist input:checked').length === $('#tbl_balance_adjustment .checkboxlist input').length;
+                $('#select-all').prop('checked', allChecked);
+            });
+        }
+
+        bindSelectApproveAction = function () {
+            $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
+                var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
+                $("#approveModal #number_orders_approve_value").text(selectedNumber);
+                $("#approveModal input[name='approve_reason']").val('');
+                $("#approveModal").modal('show');
+            });
+        }
+
+        bindSelectRejectAction = function () {
+            $("#ddl_actions").find("#reject_multi_balance").click(function (e) {
+                var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
+                $("#rejectModal #number_orders_reject_value").text(selectedNumber);
+                $("#rejectModal input[name='reject_reason']").val('');
+                $("#rejectModal").modal('show');
+            });
+        }
+
+        bindSelectActionsEvent = function () {
+            bindSelectApproveAction();
+            bindSelectRejectAction()
+        }
+
+        getSelectedBalanceAdjustments = function () {
+            var selectedIds = [];
+            $('#tbl_balance_adjustment .checkboxlist input:checked').each(function (index, checkBox) {
+                selectedIds.push($(checkBox).val());
+            });
+            return selectedIds;
+        }
+
+        bindApproveMultiBalanceAdjustment = function () {
+            $("#approveModal #approve_multi_balance_adjustment_btn").click(function (e) {
+                var selectedIds = getSelectedBalanceAdjustments();
+                if ($(selectedIds).length == 0) {
+                    $("#approveModal").modal('hide');
+                } else {
+                    var approveReason = $("#approveModal input[name='approve_reason']").val();
+                    var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
+                    var data = {
+                        "referenceIds": JSON.stringify(selectedIds),
+                        "reason": approveReason,
+                        "actionType": "Approve"
+                    }
+
+                    // Request to server
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: data,
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        },
+                        success: function (response) {
+                            if (response.is_success) {
+                                location.reload();
+                            } else {
+                                bindShowListError(response);
+                            }
+                            $("#approveModal").modal('hide');
+                        },
+                        error: function (err) {
+                            var json = JSON.stringify(err);
+
+                            addErrorMessage("approve error!");
+                        }
+                    });
+                }
+            });
+        }
+
+        bindRejectMultiBalanceAdjustment = function () {
+            $("#rejectModal #reject_multi_balance_adjustment_btn").click(function (e) {
+                var selectedIds = getSelectedBalanceAdjustments();
+                if ($(selectedIds).length == 0) {
+                    $("#rejectModal").modal('hide');
+                } else {
+                    var rejectReason = $("#rejectModal input[name='reject_reason']").val();
+                    var url = "{% url 'balance_adjustment:process_multi_balance_adjustments'%}";
+                    var data = {
+                        "referenceIds": JSON.stringify(selectedIds),
+                        "reason": rejectReason,
+                        "actionType": "Reject"
+                    }
+
+                    // Request to server
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: data,
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        },
+                        success: function (response) {
+                            if (response.is_success) {
+                                location.reload();
+                            } else {
+                                bindShowListRejectError(response);
+                            }
+                            $("#rejectModal").modal('hide');
+                        },
+                        error: function (err) {
+                            var json = JSON.stringify(err);
+
+                            addErrorMessage("reject error!");
+                        }
+                    });
+                }
+            });
+        }
+
+        function bindShowListError(response) {
+            var status_code = response.status_code;
+
+            if (status_code == "invalid_request") {
+                var items = {};
+
+                var list_error = response.data;
+
+                var i;
+                for (i in list_error) {
+                    status_msg = list_error[i].status;
+                    if (items[status_msg] == undefined) {
+                        items[status_msg] = 1;
+                    } else {
+                        items[status_msg] += 1;
+                    }
+                }
+
+                $("#listError").html("");
+                var error_tbl = "<table>"
+                var error_msg = ""
+                for (j in items) {
+                    if (items[j] > 0) {
+                        error_msg = j==="Success"?"Being approved": j
+                        error_tbl += "<tr><td class=\"text-right\" style=\"font-size: 15px;\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>"
+                    }
+                }
+                error_tbl += "</table>"
+                $("#listError").append(error_tbl);
+
+                $("#listErrorModal").modal('show');
+            }
+        }
+
+        function hideListErrorModal() {
+            $("#listErrorModal").modal('hide');
+        }
+
+        function bindShowListRejectError(response) {
+            var status_code = response.status_code;
+
+            if (status_code == "invalid_request") {
+                var items = {};
+
+                var list_error = response.data;
+                var i;
+                for (i in list_error) {
+                    status_msg = list_error[i].status;
+                    if (items[status_msg] == undefined) {
+                        items[status_msg] = 1;
+                    } else {
+                        items[status_msg] += 1;
+                    }
+                }
+
+                $("#listRejectError").html("");
+                var error_tbl = "<table>";
+                var error_msg = "";
+                for (j in items) {
+                    if (items[j] > 0) {
+                        error_msg = j==="Success"?"Being rejected":j;
+                        error_tbl += "<tr><td class=\"text-right\" style=\"font-size: 15px;\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>";
+                    }
+                }
+                error_tbl += "</table>";
+                $("#listRejectError").append(error_tbl);
+
+                $("#listRejectErrorModal").modal('show');
+            }
+        }
+
+        function hideListRejectErrorModal() {
+            $("#listRejectErrorModal").modal('hide');
+        }
+
+        $(document).ready(function () {
+            bindSelectCheckboxEvents();
+            bindSelectActionsEvent();
+            bindApproveMultiBalanceAdjustment();
+            bindRejectMultiBalanceAdjustment();
+        })
+
+    </script>
+{% endblock %}

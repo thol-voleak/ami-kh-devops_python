@@ -148,6 +148,8 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 action['reward_to'] = action['user_id']
                 action['recipient'] = action['user_type']
                 action['send_to'] = self.get_action_data_value(action_data, 'notification_url')
+            elif action_type_id == 3:
+                continue
             elif action_type_id == 4:
                 reward_to = self.get_action_data_value(action_data, 'user_id')
                 reward_to = self.get_person_name(reward_to)

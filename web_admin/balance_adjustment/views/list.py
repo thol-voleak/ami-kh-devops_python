@@ -280,7 +280,7 @@ class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
             "reason": data.get("reason")
         }
 
-        is_success, status_code, status_message = RestFulClient.delete(
+        is_success, status_code, status_message, data = RestFulClient.delete_return_data(
             url,
             headers=self._get_headers(),
             loggers=self.logger,
@@ -302,5 +302,6 @@ class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
             return JsonResponse({
                 "is_success": is_success,
                 "status_code": status_code,
-                "status_message": status_message
+                "status_message": status_message,
+                "data": data
             })

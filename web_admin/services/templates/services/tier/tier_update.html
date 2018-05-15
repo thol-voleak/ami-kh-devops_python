@@ -165,12 +165,20 @@
                     <div class="form-group" id="a_from" >
                         <label class="col-sm-2 control-label" id="txt_a_from">{{ a_label }} From</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_a_from" name="a_from">
+                            <select class="form-control" id="ddl_a_from" name="a_from" value="Amount">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.a_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.a_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.a_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -207,10 +215,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_b_from" name="b_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.b_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.b_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.b_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -247,10 +263,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_c_from" name="c_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.c_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.c_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.c_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -288,10 +312,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_d_from" name="d_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.d_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.d_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.d_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -329,10 +361,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_e_from" name="e_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.e_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.e_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.e_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -370,10 +410,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_f_from" name="f_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.f_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.f_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.f_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -411,10 +459,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_g_from" name="g_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.g_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.g_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.g_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -451,10 +507,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_h_from" name="h_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.h_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.h_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.h_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -491,10 +555,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_i_from" name="i_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.i_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.i_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.i_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -531,10 +603,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_j_from" name="j_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.j_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.j_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.j_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -571,10 +651,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_k_from" name="k_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.k_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.k_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.k_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -611,10 +699,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_l_from" name="l_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.l_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.l_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.l_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -651,10 +747,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_m_from" name="m_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.m_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.m_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.m_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -691,10 +795,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_n_from" name="n_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.n_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.n_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.n_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -731,10 +843,18 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_o_from" name="o_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if item.amount_type == update_tier.o_from %}
-                                        <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                    {% if update_tier.o_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% else %}
-                                        <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% if item.amount_type == update_tier.o_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -924,528 +1044,63 @@ forceNumber("txt_n_amount","ddl_n");
 forceNumber("txt_o_amount","ddl_o");
 
 // start tier level constraint
-var  $a = $('#ddl_a');
-if( $a.val() == ''){
-    $('#txt_a_amount').attr('disabled', true);
-    $("#label_a_amount").text("{{ a_label }}" + " Amount");
-    $("#a_from").hide();
-}
-if( $a.val() == 'Flat value') {
-    $("#a_from").hide();
-}
-     $a.change(function(){
+var contrainTierLevelParam = [
+    ['a', '{{ a_label }}', '{{ update_tier.a_from }}'],
+    ['b', '{{ b_label }}', '{{ update_tier.b_from }}'],
+    ['c', '{{ c_label }}', '{{ update_tier.c_from }}'],
+    ['d', '{{ d_label }}', '{{ update_tier.d_from }}'],
+    ['e', '{{ e_label }}', '{{ update_tier.e_from }}'],
+    ['f', '{{ f_label }}', '{{ update_tier.f_from }}'],
+    ['g', '{{ g_label }}', '{{ update_tier.g_from }}'],
+    ['h', '{{ h_label }}', '{{ update_tier.h_from }}'],
+    ['i', '{{ i_label }}', '{{ update_tier.i_from }}'],
+    ['j', '{{ j_label }}', '{{ update_tier.j_from }}'],
+    ['k', '{{ k_label }}', '{{ update_tier.k_from }}'],
+    ['l', '{{ l_label }}', '{{ update_tier.l_from }}'],
+    ['m', '{{ m_label }}', '{{ update_tier.m_from }}'],
+    ['n', '{{ n_label }}', '{{ update_tier.n_from }}'],
+    ['o', '{{ o_label }}', '{{ update_tier.o_from }}'],
+]
+$.each(contrainTierLevelParam, function(i){
+    contrainTierLevel(contrainTierLevelParam[i][0], contrainTierLevelParam[i][1], contrainTierLevelParam[i][2]);
+})
+
+function contrainTierLevel(tier_level, label, tier_from) {
+    var  $a = $('#ddl_'+tier_level);
+
+    if( $a.val() == ''){
+        $('#txt_'+tier_level+'_amount').attr('disabled', true);
+        $("#label_"+tier_level+"_amount").text(label + " Amount");
+        $("#"+tier_level+"_from").hide();
+    }
+    if( $a.val() == 'Flat value') {
+        $("#"+tier_level+"_from").hide();
+    }
+    $a.change(function(){
         if( $a.val() == ''){
-            $('#txt_a_amount').attr('disabled', true);
-            $("#label_a_amount").text("{{ a_label }}" + " Amount");
-            $('#txt_a_amount').val('');
-            $("#a_from").fadeOut(500);
+            $('#txt_'+tier_level+'_amount').attr('disabled', true);
+            $("#label_"+tier_level+"_amount").text(label + " Amount");
+            $('#txt_'+tier_level+'_amount').val('');
+            $("#"+tier_level+"_from").fadeOut(500);
         }
         else if( $a.val() == 'Flat value'){
-            $('#txt_a_amount').removeAttr('disabled');
-            if($('#txt_a_amount').val() == '') {
-                $('#txt_a_amount').val('0');
+            $('#txt_'+tier_level+'_amount').removeAttr('disabled');
+            if($('#txt_'+tier_level+'_amount').val() == '') {
+                $('#txt_'+tier_level+'_amount').val('0');
             }
-            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
-            $("#a_from").fadeOut(500);
+            $("#label_"+tier_level+"_amount").text(label + " Amount *");
+            $("#"+tier_level+"_from").fadeOut(500);
         }
         else if( $a.val() == '% rate'){
-            $('#txt_a_amount').removeAttr('disabled');
-            if($('#txt_a_amount').val() == '') {
-                $('#txt_a_amount').val('0');
+            $('#txt_'+tier_level+'_amount').removeAttr('disabled');
+            if($('#txt_'+tier_level+'_amount').val() == '') {
+                $('#txt_'+tier_level+'_amount').val('0');
             }
-            $("#label_a_amount").text("{{ a_label }}" + " Amount *");
-            $("#a_from").fadeIn(1000);
+            $("#label_"+tier_level+"_amount").text(label + " Amount *");
+            $("#"+tier_level+"_from").fadeIn(1000);
         }
     })
-
-var  $b = $('#ddl_b');
-if( $b.val() == ''){
-    $('#txt_b_amount').attr('disabled', true);
-    $("#label_b_amount").text("{{ b_label }}" + " Amount");
-    $("#b_from").hide();
 }
-if( $b.val() == 'Flat value') {
-    $("#b_from").hide();
-}
-    $b.change(function(){
-        if( $b.val() == ''){
-            $('#txt_b_amount').attr('disabled', true);
-            $("#label_b_amount").text("{{ b_label }}" + " Amount");
-            $('#txt_b_amount').val('');
-            $("#b_from").fadeOut(500);
-        }
-        else if( $b.val() == 'Flat value'){
-            $('#txt_b_amount').removeAttr('disabled');
-            if($('#txt_b_amount').val() == '') {
-                $('#txt_b_amount').val('0');
-            }
-            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
-            $("#b_from").fadeOut(500);
-        }
-        else if( $b.val() == '% rate'){
-            $('#txt_b_amount').removeAttr('disabled');
-            if($('#txt_b_amount').val() == '') {
-                $('#txt_b_amount').val('0');
-            }
-            $("#label_b_amount").text("{{ b_label }}" + " Amount *");
-            $("#b_from").fadeIn(1000);
-        }
-    })
-
-
-var  $c = $('#ddl_c');
-if( $c.val() == ''){
-    $('#txt_c_amount').attr('disabled', true);
-    $("#label_c_amount").text("{{ c_label }}" + " Amount");
-    $("#c_from").hide();
-}
-if( $c.val() == 'Flat value') {
-    $("#c_from").hide();
-}
-    $c.change(function(){
-        if( $c.val() == ''){
-            $('#txt_c_amount').attr('disabled', true);
-            $("#label_c_amount").text("{{ c_label }}" + " Amount");
-            $('#txt_c_amount').val('');
-            $("#c_from").fadeOut(500);
-        }
-        else if( $c.val() == 'Flat value'){
-            $('#txt_c_amount').removeAttr('disabled');
-            if($('#txt_c_amount').val() == '') {
-                $('#txt_c_amount').val('0');
-            }
-            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
-            $("#c_from").fadeOut(500);
-        }
-        else if( $c.val() == '% rate'){
-            $('#txt_c_amount').removeAttr('disabled');
-            if($('#txt_c_amount').val() == '') {
-                $('#txt_c_amount').val('0');
-            }
-            $("#label_c_amount").text("{{ c_label }}" + " Amount *");
-            $("#c_from").fadeIn(1000);
-        }
-    })
-
-
-var  $d = $('#ddl_d');
-if( $d.val() == ''){
-    $('#txt_d_amount').attr('disabled', true);
-    $("#label_d_amount").text("{{ d_label }}" + " Amount");
-    $("#d_from").hide();
-}
-if( $d.val() == 'Flat value') {
-    $("#d_from").hide();
-}
-    $d.change(function(){
-        if( $d.val() == ''){
-            $('#txt_d_amount').attr('disabled', true);
-            $("#label_d_amount").text("{{ d_label }}" + " Amount");
-            $('#txt_d_amount').val('');
-            $("#d_from").fadeOut(500);
-        }
-        else if( $d.val() == 'Flat value'){
-            $('#txt_d_amount').removeAttr('disabled');
-            if($('#txt_d_amount').val() == '') {
-                $('#txt_d_amount').val('0');
-            }
-            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
-            $("#d_from").fadeOut(500);
-        }
-        else if( $d.val() == '% rate'){
-            $('#txt_d_amount').removeAttr('disabled');
-            if($('#txt_d_amount').val() == '') {
-                $('#txt_d_amount').val('0');
-            }
-            $("#label_d_amount").text("{{ d_label }}" + " Amount *");
-            $("#d_from").fadeIn(1000);
-        }
-    })
-
-
-var  $e = $('#ddl_e');
-if( $e.val() == ''){
-    $('#txt_e_amount').attr('disabled', true);
-    $("#label_e_amount").text("{{ e_label }}" + " Amount");
-    $("#e_from").hide();
-}
-if( $e.val() == 'Flat value') {
-    $("#e_from").hide();
-}
-    $e.change(function(){
-        if( $e.val() == ''){
-            $('#txt_e_amount').attr('disabled', true);
-            $("#label_e_amount").text("{{ e_label }}" + " Amount");
-            $('#txt_e_amount').val('');
-            $("#e_from").fadeOut(500);
-        }
-        else if( $e.val() == 'Flat value'){
-            $('#txt_e_amount').removeAttr('disabled');
-            if($('#txt_e_amount').val() == '') {
-                $('#txt_e_amount').val('0');
-            }
-            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
-            $("#e_from").fadeOut(500);
-        }
-        else if( $e.val() == '% rate'){
-            $('#txt_e_amount').removeAttr('disabled');
-            if($('#txt_e_amount').val() == '') {
-                $('#txt_e_amount').val('0');
-            }
-            $("#label_e_amount").text("{{ e_label }}" + " Amount *");
-            $("#e_from").fadeIn(1000);
-        }
-    })
-
-
-var  $f = $('#ddl_f');
-if( $f.val() == ''){
-    $('#txt_f_amount').attr('disabled', true);
-    $("#label_f_amount").text("{{ f_label }}" + " Amount");
-    $("#f_from").hide();
-}
-if( $f.val() == 'Flat value') {
-    $("#f_from").hide();
-}
-    $f.change(function(){
-        if( $f.val() == ''){
-            $('#txt_f_amount').attr('disabled', true);
-            $("#label_f_amount").text("{{ f_label }}" + " Amount");
-            $('#txt_f_amount').val('');
-            $("#f_from").fadeOut(500);
-        }
-        else if( $f.val() == 'Flat value'){
-            $('#txt_f_amount').removeAttr('disabled');
-            if($('#txt_f_amount').val() == '') {
-                $('#txt_f_amount').val('0');
-            }
-            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
-            $("#f_from").fadeOut(500);
-        }
-        else if( $f.val() == '% rate'){
-            $('#txt_f_amount').removeAttr('disabled');
-            if($('#txt_f_amount').val() == '') {
-                $('#txt_f_amount').val('0');
-            }
-            $("#label_f_amount").text("{{ f_label }}" + " Amount *");
-            $("#f_from").fadeIn(1000);
-        }
-    })
-
-
-var  $g = $('#ddl_g');
-if( $g.val() == ''){
-    $('#txt_g_amount').attr('disabled', true);
-    $("#label_g_amount").text("{{ g_label }}" + " Amount");
-    $("#g_from").hide();
-}
-if( $g.val() == 'Flat value') {
-    $("#g_from").hide();
-}
-    $g.change(function(){
-        if( $g.val() == ''){
-            $('#txt_g_amount').attr('disabled', true);
-            $("#label_g_amount").text("{{ g_label }}" + " Amount");
-            $('#txt_g_amount').val('');
-            $("#g_from").fadeOut(500);
-        }
-        else if( $g.val() == 'Flat value'){
-            $('#txt_g_amount').removeAttr('disabled');
-            if($('#txt_g_amount').val() == '') {
-                $('#txt_g_amount').val('0');
-            }
-            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
-            $("#g_from").fadeOut(500);
-        }
-        else if( $g.val() == '% rate'){
-            $('#txt_g_amount').removeAttr('disabled');
-            if($('#txt_g_amount').val() == '') {
-                $('#txt_g_amount').val('0');
-            }
-            $("#label_g_amount").text("{{ g_label }}" + " Amount *");
-            $("#g_from").fadeIn(1000);
-        }
-    })
-
-
-var  $h = $('#ddl_h');
-if( $h.val() == ''){
-    $('#txt_h_amount').attr('disabled', true);
-    $("#label_h_amount").text("{{ h_label }}" + " Amount");
-    $("#h_from").hide();
-}
-if( $h.val() == 'Flat value') {
-    $("#h_from").hide();
-}
-    $h.change(function(){
-        if( $h.val() == ''){
-            $('#txt_h_amount').attr('disabled', true);
-            $("#label_h_amount").text("{{ h_label }}" + " Amount");
-            $('#txt_h_amount').val('');
-            $("#h_from").fadeOut(500);
-        }
-        else if( $h.val() == 'Flat value'){
-            $('#txt_h_amount').removeAttr('disabled');
-            if($('#txt_h_amount').val() == '') {
-                $('#txt_h_amount').val('0');
-            }
-            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
-            $("#h_from").fadeOut(500);
-        }
-        else if( $h.val() == '% rate'){
-            $('#txt_h_amount').removeAttr('disabled');
-            if($('#txt_h_amount').val() == '') {
-                $('#txt_h_amount').val('0');
-            }
-            $("#label_h_amount").text("{{ h_label }}" + " Amount *");
-            $("#h_from").fadeIn(1000);
-        }
-    })
-
-
-var  $i = $('#ddl_i');
-if( $i.val() == ''){
-    $('#txt_i_amount').attr('disabled', true);
-    $("#label_i_amount").text("{{ i_label }}" + " Amount");
-    $("#i_from").hide();
-}
-if( $i.val() == 'Flat value') {
-    $("#i_from").hide();
-}
-    $i.change(function(){
-        if( $i.val() == ''){
-            $('#txt_i_amount').attr('disabled', true);
-            $("#label_i_amount").text("{{ i_label }}" + " Amount");
-            $('#txt_i_amount').val('');
-            $("#i_from").fadeOut(500);
-        }
-        else if( $i.val() == 'Flat value'){
-            $('#txt_i_amount').removeAttr('disabled');
-            if($('#txt_i_amount').val() == '') {
-                $('#txt_i_amount').val('0');
-            }
-            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
-            $("#i_from").fadeOut(500);
-        }
-        else if( $i.val() == '% rate'){
-            $('#txt_i_amount').removeAttr('disabled');
-            if($('#txt_i_amount').val() == '') {
-                $('#txt_i_amount').val('0');
-            }
-            $("#label_i_amount").text("{{ i_label }}" + " Amount *");
-            $("#i_from").fadeIn(1000);
-        }
-    })
-
-
-var  $j = $('#ddl_j');
-if( $j.val() == ''){
-    $('#txt_j_amount').attr('disabled', true);
-    $("#label_j_amount").text("{{ j_label }}" + " Amount");
-    $("#j_from").hide();
-}
-if( $j.val() == 'Flat value') {
-    $("#j_from").hide();
-}
-    $j.change(function(){
-        if( $j.val() == ''){
-            $('#txt_j_amount').attr('disabled', true);
-            $("#label_j_amount").text("{{ j_label }}" + " Amount");
-            $('#txt_j_amount').val('');
-            $("#j_from").fadeOut(500);
-        }
-        else if( $j.val() == 'Flat value'){
-            $('#txt_j_amount').removeAttr('disabled');
-            if($('#txt_j_amount').val() == '') {
-                $('#txt_j_amount').val('0');
-            }
-            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
-            $("#j_from").fadeOut(500);
-        }
-        else if( $j.val() == '% rate'){
-            $('#txt_j_amount').removeAttr('disabled');
-            if($('#txt_j_amount').val() == '') {
-                $('#txt_j_amount').val('0');
-            }
-            $("#label_j_amount").text("{{ j_label }}" + " Amount *");
-            $("#j_from").fadeIn(1000);
-        }
-    })
-
-
-var  $k = $('#ddl_k');
-    if( $k.val() == ''){
-        $('#txt_k_amount').attr('disabled', true);
-        $("#label_k_amount").text("{{ k_label }}" + " Amount");
-        $("#k_from").hide();
-    }
-    if( $k.val() == 'Flat value') {
-        $("#k_from").hide();
-    }
-    $k.change(function(){
-        if( $k.val() == ''){
-            $('#txt_k_amount').attr('disabled', true);
-            $("#label_k_amount").text("{{ k_label }}" + " Amount");
-            $('#txt_k_amount').val('');
-            $("#k_from").fadeOut(500);
-        }
-        else if( $k.val() == 'Flat value'){
-            $('#txt_k_amount').removeAttr('disabled');
-            if($('#txt_k_amount').val() == '') {
-                $('#txt_k_amount').val('0');
-            }
-            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
-            $("#k_from").fadeOut(500);
-        }
-        else if( $k.val() == '% rate'){
-            $('#txt_k_amount').removeAttr('disabled');
-            if($('#txt_k_amount').val() == '') {
-                $('#txt_k_amount').val('0');
-            }
-            $("#label_k_amount").text("{{ k_label }}" + " Amount *");
-            $("#k_from").fadeIn(1000);
-        }
-    })
-
-
-var  $l = $('#ddl_l');
-if( $l.val() == ''){
-    $('#txt_l_amount').attr('disabled', true);
-    $("#label_l_amount").text("{{ l_label }}" + " Amount");
-    $("#l_from").hide();
-}
-if( $l.val() == 'Flat value') {
-    $("#l_from").hide();
-}
-    $l.change(function(){
-        if( $l.val() == ''){
-            $('#txt_l_amount').attr('disabled', true);
-            $("#label_l_amount").text("{{ l_label }}" + " Amount");
-            $('#txt_l_amount').val('');
-            $("#l_from").fadeOut(500);
-        }
-        else if( $l.val() == 'Flat value'){
-            $('#txt_l_amount').removeAttr('disabled');
-            if($('#txt_l_amount').val() == '') {
-                $('#txt_l_amount').val('0');
-            }
-            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
-            $("#l_from").fadeOut(500);
-        }
-        else if( $l.val() == '% rate'){
-            $('#txt_l_amount').removeAttr('disabled');
-            if($('#txt_l_amount').val() == '') {
-                $('#txt_l_amount').val('0');
-            }
-            $("#label_l_amount").text("{{ l_label }}" + " Amount *");
-            $("#l_from").fadeIn(1000);
-        }
-    })
-
-
-var  $m = $('#ddl_m');
-if( $m.val() == ''){
-    $('#txt_m_amount').attr('disabled', true);
-    $("#label_m_amount").text("{{ m_label }}" + " Amount");
-    $("#m_from").hide();
-}
-if( $m.val() == 'Flat value') {
-    $("#m_from").hide();
-}
-    $m.change(function(){
-        if( $m.val() == ''){
-            $('#txt_m_amount').attr('disabled', true);
-            $("#label_m_amount").text("{{ m_label }}" + " Amount");
-            $('#txt_m_amount').val('');
-            $("#m_from").fadeOut(500);
-        }
-        else if( $m.val() == 'Flat value'){
-            $('#txt_m_amount').removeAttr('disabled');
-            if($('#txt_m_amount').val() == '') {
-                $('#txt_m_amount').val('0');
-            }
-            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
-            $("#m_from").fadeOut(500);
-        }
-        else if( $m.val() == '% rate'){
-            $('#txt_m_amount').removeAttr('disabled');
-            if($('#txt_m_amount').val() == '') {
-                $('#txt_m_amount').val('0');
-            }
-            $("#label_m_amount").text("{{ m_label }}" + " Amount *");
-            $("#m_from").fadeIn(1000);
-        }
-    })
-
-
-var  $n = $('#ddl_n');
-if( $n.val() == ''){
-    $('#txt_n_amount').attr('disabled', true);
-    $("#label_n_amount").text("{{ n_label }}" + " Amount");
-    $("#n_from").hide();
-}
-if( $n.val() == 'Flat value') {
-    $("#n_from").hide();
-}
-    $n.change(function(){
-        if( $n.val() == ''){
-            $('#txt_n_amount').attr('disabled', true);
-            $("#label_n_amount").text("{{ n_label }}" + " Amount");
-            $('#txt_n_amount').val('');
-            $("#n_from").fadeOut(500);
-        }
-        else if( $n.val() == 'Flat value'){
-            $('#txt_n_amount').removeAttr('disabled');
-            if($('#txt_n_amount').val() == '') {
-                $('#txt_n_amount').val('0');
-            }
-            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
-            $("#n_from").fadeOut(500);
-        }
-        else if( $n.val() == '% rate'){
-            $('#txt_n_amount').removeAttr('disabled');
-            if($('#txt_n_amount').val() == '') {
-                $('#txt_n_amount').val('0');
-            }
-            $("#label_n_amount").text("{{ n_label }}" + " Amount *");
-            $("#n_from").fadeIn(1000);
-        }
-    })
-
-
-var  $o = $('#ddl_o');
-if( $o.val() == ''){
-    $('#txt_o_amount').attr('disabled', true);
-    $("#label_o_amount").text("{{ o_label }}" + " Amount");
-    $("#o_from").hide();
-}
-if( $o.val() == 'Flat value') {
-    $("#o_from").hide();
-}
-    $o.change(function(){
-        if( $o.val() == ''){
-            $('#txt_o_amount').attr('disabled', true);
-            $("#label_o_amount").text("{{ o_label }}" + " Amount");
-            $('#txt_o_amount').val('');
-            $("#o_from").fadeOut(500);
-        }
-        else if( $o.val() == 'Flat value'){
-            $('#txt_o_amount').removeAttr('disabled');
-            if($('#txt_o_amount').val() == '') {
-                $('#txt_o_amount').val('0');
-            }
-            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
-            $("#o_from").fadeOut(500);
-        }
-        else if( $o.val() == '% rate'){
-            $('#txt_o_amount').removeAttr('disabled');
-            if($('#txt_o_amount').val() == '') {
-                $('#txt_o_amount').val('0');
-            }
-            $("#label_o_amount").text("{{ o_label }}" + " Amount *");
-            $("#o_from").fadeIn(1000);
-        }
-    })
 // end tier level constraint
 
 
