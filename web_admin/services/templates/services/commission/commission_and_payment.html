@@ -802,9 +802,10 @@
                     event.preventDefault();
                 }
 
-                if (Number(text) > 100) {
-                    $this.val('100');
-                    event.preventDefault();
+                var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
+                if(!isNaN(currentChar)){
+                    var nextValue = rateE.val() + currentChar;
+                    if((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
                 }
             });
             rateE.bind("paste", function (e) {
@@ -821,10 +822,6 @@
             });
 
             eRate.onblur = function () {
-                var text = $(this).val();
-                if (Number(text) > 100) {
-                    $(this).val(100);
-                }
                 num = eRate.value;
                 if (num != "") {
                     num = parseFloat(num);
