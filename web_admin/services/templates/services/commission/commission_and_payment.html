@@ -798,13 +798,13 @@
                 if ((text.indexOf('.') != -1) &&
                     (text.substring(text.indexOf('.')).length > {{payment_decimal}}) &&
                     (event.which != 0 && event.which != 8) &&
-                    ($(this)[0].selectionStart >= text.length - {{payment_decimal}})) {
+                    !window.getSelection().toString()) {
                     event.preventDefault();
                 }
 
                 var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
                 if(!isNaN(currentChar)){
-                    var nextValue = rateE.val() + currentChar;
+                    var nextValue = text.substring(0, eRate.selectionStart) + currentChar + text.substring(eRate.selectionEnd);
                     if((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
                 }
             });
