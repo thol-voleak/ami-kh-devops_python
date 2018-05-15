@@ -592,7 +592,7 @@
                 for (j in items) {
                     if (items[j] > 0) {
                         error_msg = j==="Success"?"Being approved": j
-                        error_tbl += "<tr><td class=\"text-right\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>"
+                        error_tbl += "<tr><td class=\"text-right\" style=\"font-size: 15px;\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>"
                     }
                 }
                 error_tbl += "</table>"
@@ -629,7 +629,7 @@
                 for (j in items) {
                     if (items[j] > 0) {
                         error_msg = j==="Success"?"Being rejected":j;
-                        error_tbl += "<tr><td class=\"text-right\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>";
+                        error_tbl += "<tr><td class=\"text-right\" style=\"font-size: 15px;\">"+error_msg+":</td><td style=\"padding: 5px 10px;\">"+items[j]+"</td></tr>";
                     }
                 }
                 error_tbl += "</table>";
