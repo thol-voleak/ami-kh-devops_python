@@ -156,8 +156,6 @@
                     <th id="initiator_id">Initiator (ID)</th>
                     <th id="payer_id">Payer (ID)</th>
                     <th id="payee_id">Payee (ID)</th>
-                    <th id="free">Fee</th>
-                    <th id="bonus">Bonus</th>
                     <th id="user">Ext Transaction ID</th>
                     <th id="user">Creation Client ID</th>
                     <th id="user">Execution Client ID</th>
@@ -186,8 +184,6 @@
                             <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
                             <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.payer.user_id }})</td>
                             <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.payee.user_id }})</td>
-                            <td class="col-sm-2">{{ order.fee }}</td>
-                            <td class="col-sm-2">{{ order.bonus }}</td>
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
                             <td class="col-sm-2">{{ order.created_client_id }}</td>
                             <td class="col-sm-2">{{ order.executed_client_id }}</td>
