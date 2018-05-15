@@ -801,8 +801,12 @@
                     ($(this)[0].selectionStart >= text.length - {{payment_decimal}})) {
                     event.preventDefault();
                 }
-            });
 
+                if (Number(text) > 100) {
+                    $this.val('100');
+                    event.preventDefault();
+                }
+            });
             rateE.bind("paste", function (e) {
                 var text = e.originalEvent.clipboardData.getData('Text');
                 if ($.isNumeric(text)) {
@@ -817,6 +821,10 @@
             });
 
             eRate.onblur = function () {
+                var text = $(this).val();
+                if (Number(text) > 100) {
+                    $(this).val(100);
+                }
                 num = eRate.value;
                 if (num != "") {
                     num = parseFloat(num);
