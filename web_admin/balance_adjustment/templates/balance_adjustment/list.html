@@ -598,6 +598,8 @@
                 $("#listError").append(error_tbl);
 
                 $("#listErrorModal").modal('show');
+            }else{
+                addErrorMessage(response.status_message);
             }
         }
 
@@ -635,6 +637,8 @@
                 $("#listRejectError").append(error_tbl);
 
                 $("#listRejectErrorModal").modal('show');
+            }else{
+                addErrorMessage(response.status_message);
             }
         }
 
