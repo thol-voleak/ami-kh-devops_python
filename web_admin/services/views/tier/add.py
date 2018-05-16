@@ -313,7 +313,25 @@ class AddView(TemplateView, RESTfulMethods):
             command_name, status4 = self._get_command_name(command_id)
             fee_types, status5 = self._get_fee_types()
             bonus_types, status6 = self._get_bonus_types()
-            if status1 and status2 and status3 and status4 and status5 and status6:
+            tier_amount_froms, status7 = self._get_tier_amount_froms()
+            payment_decimals, status8 = self._get_payment_decimal()
+            payment_decimal = payment_decimals['value']
+            a_label = self.get_label_detail('A')
+            b_label = self.get_label_detail('B')
+            c_label = self.get_label_detail('C')
+            d_label = self.get_label_detail('D')
+            e_label = self.get_label_detail('E')
+            f_label = self.get_label_detail('F')
+            g_label = self.get_label_detail('G')
+            h_label = self.get_label_detail('H')
+            i_label = self.get_label_detail('I')
+            j_label = self.get_label_detail('J')
+            k_label = self.get_label_detail('K')
+            l_label = self.get_label_detail('L')
+            m_label = self.get_label_detail('M')
+            n_label = self.get_label_detail('N')
+            o_label = self.get_label_detail('O')
+            if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
                 context.update({
                     'conditions': tier_conditions,
                     'fee_types': fee_types,
@@ -322,7 +340,24 @@ class AddView(TemplateView, RESTfulMethods):
                     'service_name': service_detail.get('service_name', 'unknown'),
                     'command_name': command_name,
                     'decimal': int(decimal),
-                    'body': params
+                    'body': params,
+                    'tier_amount_froms': tier_amount_froms,
+                    'payment_decimal': payment_decimal,
+                    'a_label': a_label,
+                    'b_label': b_label,
+                    'c_label': c_label,
+                    'd_label': d_label,
+                    'e_label': e_label,
+                    'f_label': f_label,
+                    'g_label': g_label,
+                    'h_label': h_label,
+                    'i_label': i_label,
+                    'j_label': j_label,
+                    'k_label': k_label,
+                    'l_label': l_label,
+                    'm_label': m_label,
+                    'n_label': n_label,
+                    'o_label': o_label,
                 })
             return render(request, self.template_name, context)
 
