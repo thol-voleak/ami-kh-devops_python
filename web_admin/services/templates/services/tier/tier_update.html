@@ -999,10 +999,12 @@ function forceNumber(any_amount, any_type) {
             event.preventDefault();
         }
 
-        var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
-        if (!isNaN(currentChar)) {
-            var nextValue = text.substring(0, amount.selectionStart) + currentChar + text.substring(amount.selectionEnd);
-            if ((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
+        if (e.value == '% rate') {
+            var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
+            if (!isNaN(currentChar)) {
+                var nextValue = text.substring(0, amount.selectionStart) + currentChar + text.substring(amount.selectionEnd);
+                if ((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
+            }
         }
     });
 
