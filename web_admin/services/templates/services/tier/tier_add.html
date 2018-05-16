@@ -135,7 +135,7 @@
                             <select class="form-control" id="ddl_a" name="a" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.a %}
+                                    {% if item.bonus_type == body.a %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -150,14 +150,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_a_from" name="a_from" value="Amount">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.a_from == None %}
+                                    {% if body.a_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.a_from %}
+                                        {% if item.amount_type == body.a_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -171,7 +171,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_a_amount">{{ a_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.a_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.a_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_a_amount');" name="a_amount" id="txt_a_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -183,7 +183,7 @@
                             <select class="form-control" id="ddl_b" name="b" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.b %}
+                                    {% if item.bonus_type == body.b %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -198,14 +198,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_b_from" name="b_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.b_from == None %}
+                                    {% if body.b_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.b_from %}
+                                        {% if item.amount_type == body.b_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -219,7 +219,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_b_amount">{{ b_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.b_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.b_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_b_amount');" name="b_amount" id="txt_b_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -231,7 +231,7 @@
                             <select class="form-control" id="ddl_c" name="c" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.c %}
+                                    {% if item.bonus_type == body.c %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -246,14 +246,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_c_from" name="c_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.c_from == None %}
+                                    {% if body.c_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.c_from %}
+                                        {% if item.amount_type == body.c_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -267,7 +267,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_c_amount">{{ c_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.c_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.c_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_c_amount');" name="c_amount" id="txt_c_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -280,7 +280,7 @@
                             <select class="form-control" id="ddl_d" name="d" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.d %}
+                                    {% if item.bonus_type == body.d %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -295,14 +295,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_d_from" name="d_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.d_from == None %}
+                                    {% if body.d_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.d_from %}
+                                        {% if item.amount_type == body.d_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -316,7 +316,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_d_amount">{{ d_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.d_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.d_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_d_amount');" name="d_amount" id="txt_d_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -329,7 +329,7 @@
                             <select class="form-control" id="ddl_e" name="e" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.e %}
+                                    {% if item.bonus_type == body.e %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -344,14 +344,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_e_from" name="e_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.e_from == None %}
+                                    {% if body.e_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.e_from %}
+                                        {% if item.amount_type == body.e_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -365,7 +365,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_e_amount">{{ e_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.e_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.e_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_e_amount');" name="e_amount" id="txt_e_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -378,7 +378,7 @@
                             <select class="form-control" id="ddl_f" name="f" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.f %}
+                                    {% if item.bonus_type == body.f %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -393,14 +393,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_f_from" name="f_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.f_from == None %}
+                                    {% if body.f_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.f_from %}
+                                        {% if item.amount_type == body.f_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -414,7 +414,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_f_amount">{{ f_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.f_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.f_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_f_amount');" name="f_amount" id="txt_f_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -427,7 +427,7 @@
                             <select class="form-control" id="ddl_g" name="g" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.g %}
+                                    {% if item.bonus_type == body.g %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -442,14 +442,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_g_from" name="g_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.g_from == None %}
+                                    {% if body.g_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.g_from %}
+                                        {% if item.amount_type == body.g_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -463,7 +463,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_g_amount">{{ g_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.g_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.g_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_g_amount');" name="g_amount" id="txt_g_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -475,7 +475,7 @@
                             <select class="form-control" id="ddl_h" name="h" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.h %}
+                                    {% if item.bonus_type == body.h %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -490,14 +490,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_h_from" name="h_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.h_from == None %}
+                                    {% if body.h_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.h_from %}
+                                        {% if item.amount_type == body.h_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -511,7 +511,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_h_amount">{{ h_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.h_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.h_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_h_amount');" name="h_amount" id="txt_h_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -523,7 +523,7 @@
                             <select class="form-control" id="ddl_i" name="i" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.i %}
+                                    {% if item.bonus_type == body.i %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -538,14 +538,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_i_from" name="i_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.i_from == None %}
+                                    {% if body.i_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.i_from %}
+                                        {% if item.amount_type == body.i_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -559,7 +559,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_i_amount">{{ i_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.i_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.i_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_i_amount');" name="i_amount" id="txt_i_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -571,7 +571,7 @@
                             <select class="form-control" id="ddl_j" name="j" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.j %}
+                                    {% if item.bonus_type == body.j %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -586,14 +586,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_j_from" name="j_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.j_from == None %}
+                                    {% if body.j_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.j_from %}
+                                        {% if item.amount_type == body.j_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -607,7 +607,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_j_amount">{{ j_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.j_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.j_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_j_amount');" name="j_amount" id="txt_j_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -619,7 +619,7 @@
                             <select class="form-control" id="ddl_k" name="k" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.k %}
+                                    {% if item.bonus_type == body.k %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -634,14 +634,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_k_from" name="k_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.k_from == None %}
+                                    {% if body.k_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.k_from %}
+                                        {% if item.amount_type == body.k_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -655,7 +655,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_k_amount">{{ k_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.k_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.k_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_k_amount');" name="k_amount" id="txt_k_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -667,7 +667,7 @@
                             <select class="form-control" id="ddl_l" name="l" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.l %}
+                                    {% if item.bonus_type == body.l %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -682,14 +682,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_l_from" name="l_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.l_from == None %}
+                                    {% if body.l_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.l_from %}
+                                        {% if item.amount_type == body.l_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -703,7 +703,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_l_amount">{{ l_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.l_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.l_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_l_amount');" name="l_amount" id="txt_l_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -715,7 +715,7 @@
                             <select class="form-control" id="ddl_m" name="m" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.m %}
+                                    {% if item.bonus_type == body.m %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -730,14 +730,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_m_from" name="m_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.m_from == None %}
+                                    {% if body.m_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.m_from %}
+                                        {% if item.amount_type == body.m_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -751,7 +751,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_m_amount">{{ m_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.m_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.m_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_m_amount');" name="m_amount" id="txt_m_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -763,7 +763,7 @@
                             <select class="form-control" id="ddl_n" name="n" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.n %}
+                                    {% if item.bonus_type == body.n %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -778,14 +778,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_n_from" name="n_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.n_from == None %}
+                                    {% if body.n_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.n_from %}
+                                        {% if item.amount_type == body.n_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -799,7 +799,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_n_amount">{{ n_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.n_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.n_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_n_amount');" name="n_amount" id="txt_n_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -811,7 +811,7 @@
                             <select class="form-control" id="ddl_o" name="o" >
                                 <option value="">-</option>
                                 {% for item in bonus_types %}
-                                    {% if item.bonus_type == update_tier.o %}
+                                    {% if item.bonus_type == body.o %}
                                         <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
                                     {% else %}
                                         <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
@@ -826,14 +826,14 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_o_from" name="o_from">
                                 {% for item in tier_amount_froms %}
-                                    {% if update_tier.o_from == None %}
+                                    {% if body.o_from == None %}
                                         {% if  item.amount_type == 'Amount' %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
                                         {% endif %}
                                     {% else %}
-                                        {% if item.amount_type == update_tier.o_from %}
+                                        {% if item.amount_type == body.o_from %}
                                             <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
                                         {% else %}
                                             <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
@@ -847,7 +847,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" id="label_o_amount">{{ o_label }} Amount</label>
                         <div class="col-sm-8">
-                            <input value="{{ update_tier.o_amount|default_if_none:'' }}" type="text" class="form-control"
+                            <input value="{{ body.o_amount|default_if_none:'' }}" type="text" class="form-control"
                                    onchange="onChangesAmount('txt_o_amount');" name="o_amount" id="txt_o_amount"
                                    onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
                         </div>
@@ -1037,21 +1037,21 @@ forceNumber("txt_o_amount","ddl_o");
 
 // start tier level constraint
 var contrainTierLevelParam = [
-    ['a', '{{ a_label }}', '{{ update_tier.a_from }}'],
-    ['b', '{{ b_label }}', '{{ update_tier.b_from }}'],
-    ['c', '{{ c_label }}', '{{ update_tier.c_from }}'],
-    ['d', '{{ d_label }}', '{{ update_tier.d_from }}'],
-    ['e', '{{ e_label }}', '{{ update_tier.e_from }}'],
-    ['f', '{{ f_label }}', '{{ update_tier.f_from }}'],
-    ['g', '{{ g_label }}', '{{ update_tier.g_from }}'],
-    ['h', '{{ h_label }}', '{{ update_tier.h_from }}'],
-    ['i', '{{ i_label }}', '{{ update_tier.i_from }}'],
-    ['j', '{{ j_label }}', '{{ update_tier.j_from }}'],
-    ['k', '{{ k_label }}', '{{ update_tier.k_from }}'],
-    ['l', '{{ l_label }}', '{{ update_tier.l_from }}'],
-    ['m', '{{ m_label }}', '{{ update_tier.m_from }}'],
-    ['n', '{{ n_label }}', '{{ update_tier.n_from }}'],
-    ['o', '{{ o_label }}', '{{ update_tier.o_from }}'],
+    ['a', '{{ a_label }}', '{{ body.a_from }}'],
+    ['b', '{{ b_label }}', '{{ body.b_from }}'],
+    ['c', '{{ c_label }}', '{{ body.c_from }}'],
+    ['d', '{{ d_label }}', '{{ body.d_from }}'],
+    ['e', '{{ e_label }}', '{{ body.e_from }}'],
+    ['f', '{{ f_label }}', '{{ body.f_from }}'],
+    ['g', '{{ g_label }}', '{{ body.g_from }}'],
+    ['h', '{{ h_label }}', '{{ body.h_from }}'],
+    ['i', '{{ i_label }}', '{{ body.i_from }}'],
+    ['j', '{{ j_label }}', '{{ body.j_from }}'],
+    ['k', '{{ k_label }}', '{{ body.k_from }}'],
+    ['l', '{{ l_label }}', '{{ body.l_from }}'],
+    ['m', '{{ m_label }}', '{{ body.m_from }}'],
+    ['n', '{{ n_label }}', '{{ body.n_from }}'],
+    ['o', '{{ o_label }}', '{{ body.o_from }}'],
 ]
 $.each(contrainTierLevelParam, function(i){
     contrainTierLevel(contrainTierLevelParam[i][0], contrainTierLevelParam[i][1], contrainTierLevelParam[i][2]);
