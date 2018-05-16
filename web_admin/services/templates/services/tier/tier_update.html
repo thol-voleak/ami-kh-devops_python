@@ -895,140 +895,139 @@
 function forceAmountNumber(any_amount) {
     var deci = {{ decimal }};
     var amount = document.getElementById(any_amount);
-    any_amt = $('#'+any_amount);
-    any_amt.keypress(function(event) {
+    any_amt = $('#' + any_amount);
+    any_amt.keypress(function (event) {
         var $this = $(this);
         if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
-        ((event.which < 48 || event.which > 57) &&
-        (event.which != 0 && event.which != 8))) {
+            ((event.which < 48 || event.which > 57) &&
+                (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            }
+        }
 
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
-            setTimeout(function() {
+            setTimeout(function () {
                 if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
                     $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
-                    }
-                }, 1);
-            }
+                }
+            }, 1);
+        }
         if ((text.indexOf('.') != -1) &&
-        (text.substring(text.indexOf('.')).length > deci) &&
-        (event.which != 0 && event.which != 8) &&
-        ($(this)[0].selectionStart >= text.length - deci)) {
+            (text.substring(text.indexOf('.')).length > deci) &&
+            (event.which != 0 && event.which != 8) &&
+            ($(this)[0].selectionStart >= text.length - deci)) {
             event.preventDefault();
-            }
-        });
+        }
+    });
 
-        any_amt.bind("paste", function(e) {
-            var text = e.originalEvent.clipboardData.getData('Text');
-            if ($.isNumeric(text)) {
-                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
-                    e.preventDefault();
-                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
-                    }
-                }
-            else {
+    any_amt.bind("paste", function (e) {
+        var text = e.originalEvent.clipboardData.getData('Text');
+        if ($.isNumeric(text)) {
+            if ((text.substring(text.indexOf('.')).length > deci + 1 ) && (text.indexOf('.') > -1)) {
                 e.preventDefault();
-                }
-        });
-
-    amount.onblur = function(){
-
-        num = amount.value;
-            if (num != "") {
-                num = parseFloat(num);
-                num = num.toFixed(deci);
-                amount.value = num;
+                $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
             }
         }
+        else {
+            e.preventDefault();
+        }
+    });
+
+    amount.onblur = function () {
+
+        num = amount.value;
+        if (num != "") {
+            num = parseFloat(num);
+            num = num.toFixed(deci);
+            amount.value = num;
+        }
     }
+}
 
 function forceNumber(any_amount, any_type) {
     var deci = 0;
     var ddl = document.getElementById(any_type);
-    if (ddl.value == '% rate'){ deci = {{ payment_decimal }}; }
-    else if (ddl.value == 'Flat value'){ deci = {{ decimal }}; }
-    else { deci = 0; }
     var amount = document.getElementById(any_amount);
-    ddl.onchange = function() {
-        console.log("1"+amount);
+    ddl.onchange = function () {
         amount.value = '';
     }
-    console.log("2"+amount);
-    any_amt = $('#'+any_amount);
+    any_amt = $('#' + any_amount);
     var e = document.getElementById(any_type);
-        if (e.value == '% rate'){
-            deci = {{ payment_decimal }};
-            }
-        else if ( e.value == 'Flat value'){
-            deci = {{ decimal }};
-            }
-        else {deci = 0;}
+    if (e.value == '% rate') {
+        deci = {{ payment_decimal }};
+    }
+    else if (e.value == 'Flat value') {
+        deci = {{ decimal }};
+    }
+    else {
+        deci = 0;
+    }
 
-    $('#' + any_type).change(function() {
+    $('#' + any_type).change(function () {
         var e = document.getElementById(any_type);
-        if (e.value == '% rate'){
+        if (e.value == '% rate') {
             deci = {{ payment_decimal }};
-            }
-        else if ( e.value == 'Flat value'){
+        }
+        else if (e.value == 'Flat value') {
             deci = {{ decimal }};
-            }
-        else {deci = 0;}
-        });
+        }
+        else {
+            deci = 0;
+        }
+    });
 
-    any_amt.keypress(function(event) {
+    any_amt.keypress(function (event) {
         var $this = $(this);
         if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
-        ((event.which < 48 || event.which > 57) &&
-        (event.which != 0 && event.which != 8))) {
+            ((event.which < 48 || event.which > 57) &&
+                (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            }
+        }
 
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
-            setTimeout(function() {
+            setTimeout(function () {
                 if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
                     $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
-                    }
-                }, 1);
-            }
+                }
+            }, 1);
+        }
         if ((text.indexOf('.') != -1) &&
-        (text.substring(text.indexOf('.')).length > deci) &&
-        (event.which != 0 && event.which != 8) &&
+            (text.substring(text.indexOf('.')).length > deci) &&
+            (event.which != 0 && event.which != 8) &&
             !window.getSelection().toString()) {
             event.preventDefault();
-            }
+        }
 
         var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
         if (!isNaN(currentChar)) {
             var nextValue = text.substring(0, amount.selectionStart) + currentChar + text.substring(amount.selectionEnd);
             if ((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
         }
-        });
+    });
 
-    any_amt.bind("paste", function(e) {
+    any_amt.bind("paste", function (e) {
         var text = e.originalEvent.clipboardData.getData('Text');
         if ($.isNumeric(text)) {
-            if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
-                    e.preventDefault();
-                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
-                    }
-                }
-            else {
+            if ((text.substring(text.indexOf('.')).length > deci + 1 ) && (text.indexOf('.') > -1)) {
                 e.preventDefault();
-                }
-        });
-
-    amount.onblur = function(){
-        num = amount.value;
-            if (num != "") {
-                num = parseFloat(num);
-                num = num.toFixed(deci);
-                amount.value = num;
+                $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
             }
         }
+        else {
+            e.preventDefault();
+        }
+    });
+
+    amount.onblur = function () {
+        num = amount.value;
+        if (num != "") {
+            num = parseFloat(num);
+            num = num.toFixed(deci);
+            amount.value = num;
+        }
     }
+}
 
 forceAmountNumber("txt_amount");
 forceNumber("txt_fee_amount", "ddl_fee_type");
@@ -1112,86 +1111,88 @@ function contrainTierLevel(tier_level, label, tier_from) {
 
 // start Amount constraint
 var $condition = $('#ddl_condition');
-    function updateByConditionType() {
-        var $condition_amount = $('#txt_amount');
-        if ($condition.val() == 'unlimit') {
-            $("#label_amount").text("Amount");
-            $condition_amount.removeAttr('required');
-            $condition_amount.attr('disabled', true);
-            $condition_amount.val('');
-        } else {
-            $("#label_amount").text("Amount *");
-            $condition_amount.attr('required', true);
-            $condition_amount.removeAttr('disabled');
-        }
+
+function updateByConditionType() {
+    var $condition_amount = $('#txt_amount');
+    if ($condition.val() == 'unlimit') {
+        $("#label_amount").text("Amount");
+        $condition_amount.removeAttr('required');
+        $condition_amount.attr('disabled', true);
+        $condition_amount.val('');
+    } else {
+        $("#label_amount").text("Amount *");
+        $condition_amount.attr('required', true);
+        $condition_amount.removeAttr('disabled');
     }
+}
+
+updateByConditionType();
+$condition.change(function () {
     updateByConditionType();
-    $condition.change(function() {
-        updateByConditionType();
-    });
+});
 // end amount constraint
 
 
 // start Fee Amount constraint
 var $ddl_fee_type = $('#ddl_fee_type');
 
-    function validate_fee_type() {
-        if ($ddl_fee_type.val() == '') {
-            $('#txt_fee_amount').attr('disabled', true);
-            $('#txt_fee_amount').val('');
-            $("#label_fee_amount").text("Fee Amount");
-        } else {
-            $("#label_fee_amount").text("Fee Amount *")
-            $('#txt_fee_amount').removeAttr('disabled');
-            if($('#txt_fee_amount').val() == '') {
-                $('#txt_fee_amount').val('0');
-            }
+function validate_fee_type() {
+    if ($ddl_fee_type.val() == '') {
+        $('#txt_fee_amount').attr('disabled', true);
+        $('#txt_fee_amount').val('');
+        $("#label_fee_amount").text("Fee Amount");
+    } else {
+        $("#label_fee_amount").text("Fee Amount *")
+        $('#txt_fee_amount').removeAttr('disabled');
+        if ($('#txt_fee_amount').val() == '') {
+            $('#txt_fee_amount').val('0');
         }
     }
+}
 
-    $ddl_fee_type.change(function() {
-        validate_fee_type();
-        var element = document.getElementById('txt_fee_amount');
-        element.setCustomValidity("");
-    });
+$ddl_fee_type.change(function () {
     validate_fee_type();
+    var element = document.getElementById('txt_fee_amount');
+    element.setCustomValidity("");
+});
+validate_fee_type();
 // end Fee Amount constraint
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == ''){
+if ($bonus_type.val() == '') {
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
 }
-if($bonus_type.val() == 'Flat value') {
+if ($bonus_type.val() == 'Flat value') {
     $("#from").hide();
 }
-    $bonus_type.change(function(){
-        if($bonus_type.val() == ''){
-            $('#txt_bonus_amount').attr('disabled', true);
+$bonus_type.change(function () {
+    if ($bonus_type.val() == '') {
+        $('#txt_bonus_amount').attr('disabled', true);
 
-            $('#txt_bonus_amount').val('');
-            $("#label_bonus_amount").text("Bonus Amount");
-            $("#from").fadeOut(500);
+        $('#txt_bonus_amount').val('');
+        $("#label_bonus_amount").text("Bonus Amount");
+        $("#from").fadeOut(500);
+    }
+    else if ($bonus_type.val() == 'Flat value') {
+        $('#txt_bonus_amount').removeAttr('disabled');
+        if ($('#txt_bonus_amount').val() == '') {
+            $('#txt_bonus_amount').val('0');
         }
-        else if($bonus_type.val() == 'Flat value'){
-            $('#txt_bonus_amount').removeAttr('disabled');
-            if($('#txt_bonus_amount').val() == '') {
-                $('#txt_bonus_amount').val('0');
-            }
-            $("#label_bonus_amount").text("Bonus Amount *");
-            $("#from").fadeOut(500);
+        $("#label_bonus_amount").text("Bonus Amount *");
+        $("#from").fadeOut(500);
+    }
+    else if ($bonus_type.val() == '% rate') {
+        $('#txt_bonus_amount').removeAttr('disabled');
+        if ($('#txt_bonus_amount').val() == '') {
+            $('#txt_bonus_amount').val('0');
         }
-        else if($bonus_type.val() == '% rate'){
-            $('#txt_bonus_amount').removeAttr('disabled');
-            if($('#txt_bonus_amount').val() == '') {
-                $('#txt_bonus_amount').val('0');
-            }
-            $("#label_bonus_amount").text("Bonus Amount *");
-            $("#from").fadeIn(1000);
-        }
-    })
+        $("#label_bonus_amount").text("Bonus Amount *");
+        $("#from").fadeIn(1000);
+    }
+})
 // end Bonus Amount constraint
 
 var txt_bonus_amount = document.getElementById("txt_bonus_amount");
@@ -1232,7 +1233,7 @@ function validateFeeValue() {
     }*/
 
     // Validate min value
-    if(validateMinValue(txt_fee_amount)) {
+    if (validateMinValue(txt_fee_amount)) {
         var $ddl_fee_type = $('#ddl_fee_type');
         if ($ddl_fee_type.val() == '% rate') {
             return validateMaxValue(txt_fee_amount);
@@ -1249,7 +1250,7 @@ function validateConditionAmount() {
 
 function validateMinValue(element) {
     var value = parseFloat(element.value) || 0.0;
-    if(value < 0) {
+    if (value < 0) {
         element.setCustomValidity('Amount cannot be lower than 0');
         return false;
     } else {
@@ -1263,7 +1264,7 @@ function validateMaxValue(element) {
     var max = parseInt(element.getAttribute("max")) || 100;
     var value = parseFloat(element.value) || 0.0;
     var value = parseFloat(element.value) || 0.0;
-    if(value > max) {
+    if (value > max) {
         element.setCustomValidity('Amount cannot be greater than ' + max);
         return false;
     } else {
