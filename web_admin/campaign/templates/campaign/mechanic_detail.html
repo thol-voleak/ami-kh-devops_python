@@ -1,0 +1,729 @@
+{% extends "core.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% load humanize %}
+
+{% block content %}
+    <div class="mechanic-detail-page">
+        <h3>Mechanic Detail</h3>
+
+        {% include "message.html" %}
+
+        <div class="section-header">Trigger Detail</div>
+
+        <div class="list">
+            <div class="section">
+                <div class="pull-right">
+                    <a id="btn_edit_trigger"
+                       onclick="do_action('{% url 'campaign:edit_mechanic' campaign_id mechanic_id %}')">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </div>
+                <div class="info-group">
+                    <div>Trigger:</div>
+                    <div>
+                        <span id="lbl_trigger">{{mechanic.event_name}}</span>
+                    </div>
+                </div>
+                <div class="info-group">
+                    <div>Duration of Mechanic:</div>
+                    <div>
+                        <span id="lbl_mechanic_start_date">{{mechanic.start_timestamp}}</span>
+                        <b>to</b>
+                        <span id="lbl_mechanic_end_date">{{mechanic.end_timestamp}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            Conditions Detail
+            <a id="btn_add_new_condition" onclick="do_action('{% url 'campaign:add_condition' rule.id mechanic.id %}')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new condition</a>
+        </div>
+
+        <div class="list">
+            {%for condition in mechanic.condition_list%}
+                <div class="section" id="div_condition_{{condition.id}}">
+                    <div class="pull-right">
+                        <a id="btn_delete_condition" onclick="do_action('', deleteCondition,'{% url 'campaign:delete_condition' rule.id mechanic.id condition.id %}')"><i class="fa fa-trash"></i></a>
+                    </div>
+                    <div class="info-group">
+                        <div class="sub-title">Condition {{forloop.counter}}</div>
+                        <div></div>
+                    </div>
+                    {%if condition.filter_type == 'event_detail'%}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_condition_type">Event Detail</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Detail Name:</div>
+                            <div>
+                                <span id="lbl_comparison_key_name">{{condition.comparison_list.0.key_name}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value Type:</div>
+                            <div>
+                                <span id="lbl_comparison_key_value_type">{{condition.comparison_list.0.key_value_type}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    Equal to
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    More Than
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    More than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    Less Than
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    Less than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    Not Equal to
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    Contains
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value:</div>
+                            <div>
+                                <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                    {% elif  condition.filter_type == 'sum_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_sum_condition_type">Sum of</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Sum Key Name:</div>
+                            <div>
+                                <span id="lbl_sum_key_name">{{condition.sum_key_name}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_sum_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    Equal to
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    More Than
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    More than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    Less Than
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    Less than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    Not Equal to
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    Contains
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Sum Key Value:</div>
+                            <div>
+                                <span id="lbl_sum_key_value">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                    {% elif  condition.filter_type == 'count_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_count_condition_type">Count of</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count Key Name:</div>
+                            <div>
+                                {%if condition.count_key_name == 'login' %}
+                                    <span id="lbl_count_key_name">Log-in</span>
+                                {%elif condition.count_key_name == 'register_customer' %}
+                                    <span id="lbl_count_key_name">Register</span>
+                                {%elif condition.count_key_name == 'create_order' %}
+                                    <span id="lbl_count_key_name">Create order</span>
+                                {%elif condition.count_key_name == 'executed_order' %}
+                                    <span id="lbl_count_key_name">Payment</span>
+                                {%elif condition.count_key_name == 'created_sof' %}
+                                    <span id="lbl_count_key_name">Link Bank</span>
+                                {% else %}
+                                    <span id="lbl_count_key_name">{{ condition.count_key_name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_count_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    Equal to
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    More Than
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    More than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    Less Than
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    Less than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    Not Equal to
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    Contains
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count:</div>
+                            <div>
+                                <span id="lbl_count">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                        {%if condition.within == 'Timebox' %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Timebox</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div></div>
+                                <div>
+                                    <span id="lbl_within_val">{{condition.timebox}} min</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Date</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Start Date:</div>
+                                <div>
+                                    <span id="lbl_within_start">{{condition.within_start}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>End Date:</div>
+                                <div>
+                                    <span id="lbl_within_end">{{condition.within_end}}</span>
+                                </div>
+                            </div>
+                        {%endif%}
+                    {%endif%}
+                    {% if condition.filter_type == 'count_consecutive_of' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_condition_type">Count consecutive instances of</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count Key Name:</div>
+                            <div>
+                                {%if condition.filter_event_name.key_value == 'login' %}
+                                    <span id="lbl_count_key_name">Log-in</span>
+                                {%elif condition.filter_event_name.key_value == 'register_customer' %}
+                                    <span id="lbl_count_key_name">Register</span>
+                                {%elif condition.filter_event_name.key_value == 'create_order' %}
+                                    <span id="lbl_count_key_name">Create order</span>
+                                {%elif condition.filter_event_name.key_value == 'executed_order' %}
+                                    <span id="lbl_count_key_name">Payment</span>
+                                {%elif condition.filter_event_name.key_value == 'created_sof' %}
+                                    <span id="lbl_count_key_name">Link Bank</span>
+                                {% else %}
+                                    <span id="lbl_count_key_name">{{ condition.filter_event_name.key_value }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_consecutive_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                        Equal to
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                        More than or Equal to
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Count:</div>
+                            <div>
+                                <span id="lbl_count">{{condition.comparison_list.0.key_value}}</span>
+                            </div>
+                        </div>
+                        {%if condition.within == 'Timebox' %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Timebox</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div></div>
+                                <div>
+                                    <span id="lbl_within_val">{{condition.timebox}} min</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="info-group">
+                                <div>Within:</div>
+                                <div>
+                                    <span id="lbl_within">Date</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Start Date:</div>
+                                <div>
+                                    <span id="lbl_within_start">{{condition.within_start}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>End Date:</div>
+                                <div>
+                                    <span id="lbl_within_end">{{condition.within_end}}</span>
+                                </div>
+                            </div>
+                        {%endif%}
+                        <div class="info-group">
+                            <div>Consecutive key detail</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Detail Name:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_name">{{condition.filter_consecutive.key_name}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_operator">
+                                    {%if condition.filter_consecutive.operator == '=' %}
+                                        Equal to
+                                    {%elif condition.filter_consecutive.operator == '>' %}
+                                        More Than
+                                    {%elif condition.filter_consecutive.operator == '>=' %}
+                                        More than or Equal to
+                                    {%elif condition.filter_consecutive.operator == '<' %}
+                                        Less Than
+                                    {%elif condition.filter_consecutive.operator == '<=' %}
+                                        Less than or Equal to
+                                    {%elif condition.filter_consecutive.operator == '!=' %}
+                                        Not Equal to
+                                    {%elif condition.filter_consecutive.operator == 'contains' %}
+                                        Contains
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value Type:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_value_type">{{condition.filter_consecutive.key_value_type}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value:</div>
+                            <div>
+                                <span id="lbl_consecutive_key_detail_value">{{condition.filter_consecutive.key_value}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Reset Value</div>
+                            <div></div>
+                        </div>
+                        <div class="info-group">
+                            <div>Condition Reset Event:</div>
+                            <div>
+                                <span id="lbl_condition_reset_event">
+                                    {% if condition.reset_filter_event_name.key_value == 'change_user_status' %}
+                                        User Status Update
+                                    {% else %}
+                                        {{ condition.reset_filter_event_name.key_value }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {%for filter in condition.list_reset_filter %}
+                            <div class="info-group">
+                                <div>Reset Detail {{forloop.counter}}</div>
+                                <div></div>
+                            </div>
+                            <div class="info-group">
+                                <div>Detail Name:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_name">{{filter.key_name}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Key Value Type:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_value_type">{{filter.key_value_type}}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Operator:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_operator">
+                                        {%if filter.operator == '=' %}
+                                            Equal to
+                                        {%elif filter.operator == '>' %}
+                                            More Than
+                                        {%elif filter.operator == '>=' %}
+                                            More than or Equal to
+                                        {%elif filter.operator == '<' %}
+                                            Less Than
+                                        {%elif filter.operator == '<=' %}
+                                            Less than or Equal to
+                                        {%elif filter.operator == '!=' %}
+                                            Not Equal to
+                                        {%elif filter.operator == 'contains' %}
+                                            Contains
+                                        {%endif%}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Key Value:</div>
+                                <div>
+                                    <span id="lbl_reset_filter_key_value">{{filter.key_value}}</span>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    {%endif%}
+                    <div class="sub-list">
+                        {%for filter in condition.filter %}
+                            <div class="sub-section" id="div_count_of_filter_{{filter.id}}">
+                                <div class="pull-right">
+                                    <a id="btn_delete_filter" onclick="do_action('', deleteFilter, '{% url 'campaign:delete_filter' rule.id mechanic.id condition.id filter.id %}')"><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="info-group">
+                                    <div class="sub-title">Filter {{forloop.counter}}</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Detail Name:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_name">{{filter.key_name}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Operator:</div>
+                                    <div>
+                                        <span id="lbl_filter_operator">
+                                            {%if filter.operator == '=' %}
+                                            Equal to
+                                            {%elif filter.operator == '>' %}
+                                            More Than
+                                            {%elif filter.operator == '>=' %}
+                                            More than or Equal to
+                                            {%elif filter.operator == '<' %}
+                                            Less Than
+                                            {%elif filter.operator == '<=' %}
+                                            Less than or Equal to
+                                            {%elif filter.operator == '!=' %}
+                                            Not Equal to
+                                            {%elif filter.operator == 'contains' %}
+                                            Contains
+                                            {%endif%}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_value_type">{{filter.key_value_type}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    </div>
+                </div>
+                {% if mechanic.condition_list|length > 1 and forloop.counter < mechanic.condition_list|length %}
+                    <div class="and-section">
+                        AND
+                    </div>
+                {% endif %}
+            {%endfor%}
+        </div>
+
+        <div class="section-header">
+            Actions Detail
+            <a id="btn_add_new_action" onclick="do_action('{% url 'campaign:add_action' rule.id mechanic.id %}')" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add new action</a>
+        </div>
+
+        <div class="list">
+            {%for action in mechanic.action_list%}
+                <div class="section">
+                    <div class="pull-right">
+                        <a id="btn_delete_action" onclick="do_action('', deleteAction, '{% url 'campaign:delete_action' rule.id mechanic.id action.id %}')"><i class="fa fa-trash"></i></a>
+                    </div>
+                    <div class="info-group">
+                        <div class="sub-title">Action {{forloop.counter}}</div>
+                        <div></div>
+                    </div>
+                    {% if action.action_type.id == 1 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Fixed Cashback</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Amount:</div>
+                            <div>
+                                <span id="lbl_amount">{{action.amount|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Reward Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Give Reward to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Product Service ID:</div>
+                            <div>
+                                <span id="lbl_product_service_id">{{action.product_service_id|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Payer ID:</div>
+                            <div>
+                                <span id="lbl_payer_id">{{action.payer_id|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Payer SOF ID:</div>
+                            <div>
+                                <span id="lbl_payer_sof_id">{{action.payer_sof_id|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if action.action_type.id == 2 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Send Notification</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Send Notification To:</div>
+                            <div>
+                                <span id="lbl_send_notification_to">{{action.send_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Give Reward to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        {%for action_data in action.action_data %}
+                            {% if action_data.key_name != 'notification_url' %}
+                                <div class="info-group">
+                                    <div>Data to be sent</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Name:</div>
+                                    <div>
+                                        <span id="lbl_key_name">{{action_data.key_name|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_key_value_type">{{action_data.key_value_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_key_value">{{action_data.key_value|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if action.action_type.id == 4 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Suspend Account</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Action Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{action.recipient|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Do action to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="sub-list">
+                        {% for limitation in action.limitation_list %}
+                            <div class="sub-section">
+                                {% if action.action_type.id != 1 %}
+                                    <div class="pull-right">
+                                        {% url 'campaign:delete_action_limit' rule.id mechanic.id action.id limitation.id as url_delete_limit %}
+                                        <a id="btn_delete_limitation" onclick="do_action('', deleteActionLimit,'{{ url_delete_limit }}')">
+                                            <i class="fa fa-trash"></i></a>
+                                    </div>
+                                {% endif %}
+                                <div class="info-group">
+                                    <div class="sub-title">Limitation {{forloop.counter}}</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Limit Type:</div>
+                                    <div>
+                                        <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Limit to:</div>
+                                    <div>
+                                        <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Reward Recipient should be:</div>
+                                    <div>
+                                        <span id="lbl_limitation_reward_recipient_should_be">{{limitation.recipient|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Give Reward to:</div>
+                                    <div>
+                                        <span id="lbl_limitation_give_rewards_to">{{limitation.reward_to|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if mechanic.action_list|length > 1 and forloop.counter < mechanic.action_list|length %}
+                    <div class="and-section">
+                        AND
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="text-right" style="margin-top: 15px;">
+            <a id="btn_back" class="btn btn-default" href="{% url 'campaign:campaign_detail' rule.id %}"><i class="fa fa-chevron-left"></i> Back to Mechanic list</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_js %}
+{{ block.super }}
+<script>
+    function do_action(url, func, urlOfFunc) {
+        is_rule_active = {{rule.is_active|lower}};
+
+        if (!is_rule_active) {
+            if (url != null && url != '') {
+                window.location.replace(url);
+            } else if(func != undefined ) {
+                func(urlOfFunc);
+            }
+            return;
+        }
+
+        swal({
+                title: "This rule is currently ACTIVE. Editing will deactivate the rule. Proceed?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Deactivate and Edit",
+                closeOnConfirm: true
+            },
+            function () {
+                $.ajax({
+                    url: '/admin-portal/campaign/inactive/' + "{{rule.id}}" + '/',
+                    type: "POST",
+                    data: {"campaign_name": "{{rule.name}}", "campaign_description": "{{rule.description}}"},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function () {
+                        if (url != null && url != '') {
+                            window.location.replace(url);
+                        } else if (func != undefined) {
+                            func(urlOfFunc);
+                        }
+                    }
+                });
+            });
+    };
+
+    function deleteCondition(url) {
+        confirmDelete("Would you like to delete Condition?", url);
+    };
+
+    function deleteFilter(url) {
+        confirmDelete("Would you like to delete Condition Filter?", url);
+    }
+
+    function deleteAction(url) {
+        confirmDelete("Would you like to delete Action?", url);
+    }
+
+    function deleteActionLimit(url) {
+        confirmDelete("Would you like to delete Action Limit?", url)
+    }
+
+    function confirmDelete(message, url) {
+        swal({
+                title: message,
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            },
+            function () {
+                 window.location.replace(url);
+            });
+    }
+</script>
+{% endblock %}

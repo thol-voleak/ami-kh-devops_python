@@ -107,7 +107,7 @@
                             <th class="col-sm-2" id="lbl_specific_source">Specific Source of Fund</th>
                             <th class="col-sm-2" id="lbl_from_amount">From Amount</th>
                             <th class="col-sm-1" id="lbl_rate">Rate %</th>
-                            <th class="col-sm-1" id="lbl_label">Label</th>
+                            <th class="col-sm-1" id="lbl_remark">Remark</th>
                             <th class="col-sm-1" id="lbl_actions">Actions</th>
                         </tr>
                         </thead>
@@ -123,7 +123,7 @@
                                 <td >{{ d.specific_sof|default_if_none:'' }}</td>
                                 <td >{{ d.amount_type|default_if_none:'' }}</td>
                                 <td>{{ d.rate|default_if_none:'' }}</td>
-                                <td >{{ d.label|default_if_none:'' }}</td>
+                                <td >{{ d.remark|default_if_none:'' }}</td>
                                 <td>
                                     <button type="button"
                                             class="edit btn btn-outline btn-xs btn-primary text-info small"
@@ -148,6 +148,7 @@
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
                                         onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund',this)">
+                                    <option value="" selected="selected"></option>
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
@@ -186,18 +187,19 @@
                                 <select class="form-control" name="amount_type"
                                         id="ddl_setting_payment_fee_structure_from_amount"
                                         onchange="changeAmountType('#ddl_setting_payment_fee_structure_from_amount', '#txt_setting_payment_fee_structure_rate', this)">
+                                    <option value="" selected="selected"></option>
                                     {% for amount_type in choices.amount_types %}
                                         <option value="{{ amount_type.amount_type }}">{{ amount_type.amount_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate"
+                            <td><input class="form-control" name="rate" id="txt_setting_payment_fee_structure_rate" onchange="onChangesRate(this.id);" onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();"
                                     {% if 'Rate' not in choices.amount_types.0.amount_type %}
                                         disabled
                                     {% endif %}
                                 />
                             </td>
                             <td>
-                                <input class="form-control" name="label" id="txt_setting_payment_fee_structure_label"/>
+                                <input class="form-control" name="remark" id="txt_setting_payment_fee_structure_remark"/>
                             </td>
                             <td>
                                 <input id="btn_setting_payment_fee_structure_add" class="btn btn-success" type="button" value="Add">
@@ -766,6 +768,68 @@
             }
         };
 
+        function onChangesRate(s) {
+            var x = document.getElementById(s);
+            if (x.value === '') {
+                x.value = 0;
+            }
+        }
+
+        function forceRate(rate) {
+            var eRate = document.getElementById(rate);
+            rateE = $('#' + rate);
+            rateE.keypress(function (event) {
+                var $this = $(this);
+                if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
+                    ((event.which < 48 || event.which > 57) &&
+                    (event.which != 0 && event.which != 8))) {
+                    event.preventDefault();
+                }
+
+                var text = $(this).val();
+                if ((event.which == 46) && (text.indexOf('.') == -1)) {
+                    setTimeout(function () {
+                        if ($this.val().substring($this.val().indexOf('.')).length > {{payment_decimal}} + 1) {
+                            $this.val($this.val().substring(0, $this.val().indexOf('.') + {{payment_decimal}} + 1));
+                        }
+                    }, 1);
+                }
+
+                if ((text.indexOf('.') != -1) &&
+                    (text.substring(text.indexOf('.')).length > {{payment_decimal}}) &&
+                    (event.which != 0 && event.which != 8) &&
+                    !window.getSelection().toString()) {
+                    event.preventDefault();
+                }
+
+                var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
+                if(!isNaN(currentChar)){
+                    var nextValue = text.substring(0, eRate.selectionStart) + currentChar + text.substring(eRate.selectionEnd);
+                    if((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
+                }
+            });
+            rateE.bind("paste", function (e) {
+                var text = e.originalEvent.clipboardData.getData('Text');
+                if ($.isNumeric(text)) {
+                    if ((text.substring(text.indexOf('.')).length > {{payment_decimal}} + 1 ) && (text.indexOf('.') > -1)) {
+                        e.preventDefault();
+                        $(this).val(text.substring(0, text.indexOf('.') + {{payment_decimal}} + 1));
+                    }
+                }
+                else {
+                    e.preventDefault();
+                }
+            });
+
+            eRate.onblur = function () {
+                num = eRate.value;
+                if (num != "") {
+                    num = parseFloat(num);
+                    num = num.toFixed({{ payment_decimal }});
+                    eRate.value = num;
+                }
+            };
+        }
 
         function onClickSaveBtn() {
             var current_fee_tier_id = {{ fee_tier_id  }};
@@ -784,7 +848,7 @@
                     "specific_sof": rowData.specific_sof,
                     "amount_type": rowData.amount_type,
                     "rate": rowData.rate,
-                    "label": rowData.label
+                    "remark": rowData.remark
                 }
                 balanceDistributionDataList.push(balanceDistributionData);
             })
@@ -829,6 +893,7 @@
 
         // Edit row features
         $(document).ready(function () {
+            forceRate('txt_setting_payment_fee_structure_rate');
             //var ddl_agent_hier_fee_actor = document.getElementById('ddl_agent_hier_fee_actor');
             //changeSpecificActorTypeRelativeAdd(ddl_agent_hier_fee_actor);
             //ddl_agent_hier_fee_amount_changed();
@@ -844,7 +909,6 @@
 
             // 1. Balance and Payment Fee Table
             onInlineSetupDataTable('tbl_setting_payment_fee_structure', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
-
             // 2. Setting Bonus Table
             //onInlineSetupDataTable('tbl_setting_bonus', m_action_types, m_actor_types, m_specific_ids, m_sof_types, m_amount_type, current_fee_tier_id, csrf_token);
 

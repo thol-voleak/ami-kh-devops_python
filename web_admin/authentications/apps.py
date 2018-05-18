@@ -14,6 +14,7 @@ import requests
 import logging
 import time
 
+from web_admin.exceptions import PermissionDeniedException
 from web_admin.utils import encrypt_text
 
 logger = logging.getLogger(__name__)
@@ -25,10 +26,6 @@ class AuthenticationsConfig(AppConfig):
 
 class InvalidAccessToken(Exception):
     """Raised when the access token is invalid"""
-    pass
-
-
-class PermissionDeniedException(Exception):
     pass
 
 
@@ -117,6 +114,10 @@ class CustomBackend:
                     loggers.info("Authentication success and generate session for {} user name".format(username))
 
                     loggers.info('========== Finish authentication backend service ==========')
+
+                    request.session['access_token'] = access_token
+                    request.session['correlation_id'] = correlation_id
+
                     return user
                 else:
                     loggers.error("Cannot get access token from response of {} user name".format(username))

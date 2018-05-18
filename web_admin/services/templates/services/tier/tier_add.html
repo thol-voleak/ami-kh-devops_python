@@ -41,20 +41,8 @@
                         </div>
                     </div>
 
-                     <div class="form-group" id="from_settlement_type">
-                        <label class="col-sm-2 control-label" id="txt_settlement_type">Settlement Type</label>
-                        <div class="col-sm-2">
-                            <select class="form-control" id="ddl_settlement_type" name="settlement_type">
-                                {% for type in amount_types %}
-                                    {% if type.amount_type == body.settlement_type %}
-                                     <option value="{{ type.amount_type }}" selected>{{ type.amount_type }}</option>
-                                    {% else %}
-                                     <option value="{{ type.amount_type }}">{{ type.amount_type }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+                    <input type="hidden" class="form-control" name="settlement_type" id="ddl_settlement_type"
+                           value="Amount" required readonly/>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Condition</label>
@@ -141,6 +129,730 @@
                         </div>
                     </div>
 
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ a_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_a" name="a" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.a %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="a_from" >
+                        <label class="col-sm-2 control-label" id="txt_a_from">{{ a_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_a_from" name="a_from" value="Amount">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.a_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.a_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_a_amount">{{ a_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.a_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_a_amount');" name="a_amount" id="txt_a_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ b_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_b" name="b" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.b %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="b_from" >
+                        <label class="col-sm-2 control-label" id="txt_b_from">{{ b_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_b_from" name="b_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.b_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.b_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_b_amount">{{ b_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.b_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_b_amount');" name="b_amount" id="txt_b_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ c_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_c" name="c" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.c %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="c_from" >
+                        <label class="col-sm-2 control-label" id="txt_c_from">{{ c_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_c_from" name="c_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.c_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.c_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_c_amount">{{ c_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.c_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_c_amount');" name="c_amount" id="txt_c_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ d_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_d" name="d" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.d %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="d_from" >
+                        <label class="col-sm-2 control-label" id="txt_d_from">{{ d_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_d_from" name="d_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.d_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.d_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_d_amount">{{ d_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.d_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_d_amount');" name="d_amount" id="txt_d_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ e_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_e" name="e" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.e %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="e_from" >
+                        <label class="col-sm-2 control-label" id="txt_e_from">{{ e_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_e_from" name="e_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.e_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.e_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_e_amount">{{ e_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.e_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_e_amount');" name="e_amount" id="txt_e_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ f_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_f" name="f" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.f %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="f_from" >
+                        <label class="col-sm-2 control-label" id="txt_f_from">{{ f_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_f_from" name="f_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.f_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.f_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_f_amount">{{ f_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.f_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_f_amount');" name="f_amount" id="txt_f_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ g_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_g" name="g" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.g %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="g_from" >
+                        <label class="col-sm-2 control-label" id="txt_g_from">{{ g_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_g_from" name="g_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.g_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.g_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_g_amount">{{ g_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.g_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_g_amount');" name="g_amount" id="txt_g_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ h_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_h" name="h" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.h %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="h_from" >
+                        <label class="col-sm-2 control-label" id="txt_h_from">{{ h_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_h_from" name="h_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.h_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.h_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_h_amount">{{ h_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.h_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_h_amount');" name="h_amount" id="txt_h_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ i_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_i" name="i" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.i %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="i_from" >
+                        <label class="col-sm-2 control-label" id="txt_i_from">{{ i_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_i_from" name="i_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.i_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.i_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_i_amount">{{ i_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.i_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_i_amount');" name="i_amount" id="txt_i_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ j_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_j" name="j" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.j %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="j_from" >
+                        <label class="col-sm-2 control-label" id="txt_j_from">{{ j_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_j_from" name="j_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.j_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.j_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_j_amount">{{ j_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.j_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_j_amount');" name="j_amount" id="txt_j_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ k_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_k" name="k" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.k %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="k_from" >
+                        <label class="col-sm-2 control-label" id="txt_k_from">{{ k_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_k_from" name="k_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.k_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.k_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_k_amount">{{ k_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.k_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_k_amount');" name="k_amount" id="txt_k_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ l_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_l" name="l" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.l %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="l_from" >
+                        <label class="col-sm-2 control-label" id="txt_l_from">{{ l_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_l_from" name="l_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.l_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.l_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_l_amount">{{ l_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.l_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_l_amount');" name="l_amount" id="txt_l_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ m_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_m" name="m" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.m %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="m_from" >
+                        <label class="col-sm-2 control-label" id="txt_m_from">{{ m_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_m_from" name="m_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.m_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.m_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_m_amount">{{ m_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.m_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_m_amount');" name="m_amount" id="txt_m_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ n_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_n" name="n" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.n %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="n_from" >
+                        <label class="col-sm-2 control-label" id="txt_n_from">{{ n_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_n_from" name="n_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.n_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.n_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_n_amount">{{ n_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.n_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_n_amount');" name="n_amount" id="txt_n_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label">{{ o_label }}</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_o" name="o" >
+                                <option value="">-</option>
+                                {% for item in bonus_types %}
+                                    {% if item.bonus_type == body.o %}
+                                        <option value="{{ item.bonus_type }}" selected="selected" >{{ item.bonus_type }}</option>
+                                    {% else %}
+                                        <option value="{{ item.bonus_type }}">{{ item.bonus_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="o_from" >
+                        <label class="col-sm-2 control-label" id="txt_o_from">{{ o_label }} From</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_o_from" name="o_from">
+                                {% for item in tier_amount_froms %}
+                                    {% if body.o_from == None %}
+                                        {% if  item.amount_type == 'Amount' %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if item.amount_type == body.o_from %}
+                                            <option value="{{ item.amount_type }}" selected="selected" >{{ item.amount_type }}</option>
+                                        {% else %}
+                                            <option value="{{ item.amount_type }}">{{ item.amount_type }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="label_o_amount">{{ o_label }} Amount</label>
+                        <div class="col-sm-8">
+                            <input value="{{ body.o_amount|default_if_none:'' }}" type="text" class="form-control"
+                                   onchange="onChangesAmount('txt_o_amount');" name="o_amount" id="txt_o_amount"
+                                   onkeypress="if (event.key.replace(/[^\w\.\,]/g,'')=='') event.preventDefault();" required/>
+                        </div>
+                    </div>
+
                     <div class="pull-right">
                         <a href="{% url 'services:fee_tier_list' service_id command_id service_command_id %}">
                             <input id="btn_cancel" class="btn text-left mb15" type="button"
@@ -168,218 +880,308 @@ function changeStep(c){
 function forceAmountNumber(any_amount) {
     var deci = {{ decimal }};
     var amount = document.getElementById(any_amount);
-    any_amt = $('#'+any_amount);
-    any_amt.keypress(function(event) {
+    any_amt = $('#' + any_amount);
+    any_amt.keypress(function (event) {
         var $this = $(this);
         if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
-        ((event.which < 48 || event.which > 57) &&
-        (event.which != 0 && event.which != 8))) {
+            ((event.which < 48 || event.which > 57) &&
+                (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            }
+        }
 
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
-            setTimeout(function() {
+            setTimeout(function () {
                 if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
                     $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
-                    }
-                }, 1);
-            }
+                }
+            }, 1);
+        }
         if ((text.indexOf('.') != -1) &&
-        (text.substring(text.indexOf('.')).length > deci) &&
-        (event.which != 0 && event.which != 8) &&
-        ($(this)[0].selectionStart >= text.length - deci)) {
+            (text.substring(text.indexOf('.')).length > deci) &&
+            (event.which != 0 && event.which != 8) &&
+            ($(this)[0].selectionStart >= text.length - deci)) {
             event.preventDefault();
-            }
-        });
+        }
+    });
 
-        any_amt.bind("paste", function(e) {
-            var text = e.originalEvent.clipboardData.getData('Text');
-            if ($.isNumeric(text)) {
-                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
-                    e.preventDefault();
-                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
-                    }
-                }
-            else {
+    any_amt.bind("paste", function (e) {
+        var text = e.originalEvent.clipboardData.getData('Text');
+        if ($.isNumeric(text)) {
+            if ((text.substring(text.indexOf('.')).length > deci + 1 ) && (text.indexOf('.') > -1)) {
                 e.preventDefault();
-                }
-        });
-
-    amount.onblur = function(){
-        num = amount.value;
-        if (num != "") {
-                num = parseFloat(num);
-                num = num.toFixed(deci);
-                amount.value = num;
+                $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
             }
         }
+        else {
+            e.preventDefault();
+        }
+    });
+
+    amount.onblur = function () {
+        num = amount.value;
+        if (num != "") {
+            num = parseFloat(num);
+            num = num.toFixed(deci);
+            amount.value = num;
+        }
     }
+}
 
 function forceNumber(any_amount, any_type) {
     var deci = 0;
     var ddl = document.getElementById(any_type);
     var amount = document.getElementById(any_amount);
-    ddl.onchange = function() {
+    ddl.onchange = function () {
         amount.value = '';
     }
-    any_amt = $('#'+any_amount);
+    any_amt = $('#' + any_amount);
     var e = document.getElementById(any_type);
-        if (e.value == '% rate'){
-            deci = 3;
-            }
-        else if ( e.value == 'Flat value'){
-            deci = {{ decimal }};
-            }
-        else {deci = 0;}
-    $('#' + any_type).change(function() {
-        var e = document.getElementById(any_type);
-        if (e.value == '% rate'){
-            deci = 3;
-            }
-        else if ( e.value == 'Flat value'){
-            deci = {{ decimal }};
-            }
-        else {deci = 0;}
-        });
+    if (e.value == '% rate') {
+        deci = {{ payment_decimal }};
+    }
+    else if (e.value == 'Flat value') {
+        deci = {{ decimal }};
+    }
+    else {
+        deci = 0;
+    }
 
-    any_amt.keypress(function(event) {
+    $('#' + any_type).change(function () {
+        var e = document.getElementById(any_type);
+        if (e.value == '% rate') {
+            deci = {{ payment_decimal }};
+        }
+        else if (e.value == 'Flat value') {
+            deci = {{ decimal }};
+        }
+        else {
+            deci = 0;
+        }
+    });
+
+    any_amt.keypress(function (event) {
         var $this = $(this);
         if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
-        ((event.which < 48 || event.which > 57) &&
-        (event.which != 0 && event.which != 8))) {
+            ((event.which < 48 || event.which > 57) &&
+                (event.which != 0 && event.which != 8))) {
             event.preventDefault();
-            }
+        }
 
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
-            setTimeout(function() {
+            setTimeout(function () {
                 if ($this.val().substring($this.val().indexOf('.')).length > deci + 1) {
                     $this.val($this.val().substring(0, $this.val().indexOf('.') + deci + 1));
-                    }
-                }, 1);
-            }
+                }
+            }, 1);
+        }
         if ((text.indexOf('.') != -1) &&
-        (text.substring(text.indexOf('.')).length > deci) &&
-        (event.which != 0 && event.which != 8) &&
-        ($(this)[0].selectionStart >= text.length - deci)) {
+            (text.substring(text.indexOf('.')).length > deci) &&
+            (event.which != 0 && event.which != 8) &&
+            !window.getSelection().toString()) {
             event.preventDefault();
-            }
-        });
+        }
 
-        any_amt.bind("paste", function(e) {
-            var text = e.originalEvent.clipboardData.getData('Text');
-            if ($.isNumeric(text)) {
-                if ((text.substring(text.indexOf('.')).length > deci +1 ) && (text.indexOf('.') > -1)) {
-                    e.preventDefault();
-                    $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
-                    }
-                }
-            else {
-                e.preventDefault();
-                }
-        });
-
-    amount.onblur = function(){
-        num = amount.value;
-            if (num != "") {
-                num = parseFloat(num);
-                num = num.toFixed(deci);
-                amount.value = num;
+        if (e.value == '% rate') {
+            var currentChar = parseInt(String.fromCharCode(event.keyCode), 10);
+            if (!isNaN(currentChar)) {
+                var nextValue = text.substring(0, amount.selectionStart) + currentChar + text.substring(amount.selectionEnd);
+                if ((parseFloat(nextValue, 10) > 100) && window.getSelection().toString() !== text) event.preventDefault();
             }
         }
+    });
+
+    any_amt.bind("paste", function (e) {
+        var text = e.originalEvent.clipboardData.getData('Text');
+        if ($.isNumeric(text)) {
+            if ((text.substring(text.indexOf('.')).length > deci + 1 ) && (text.indexOf('.') > -1)) {
+                e.preventDefault();
+                $(this).val(text.substring(0, text.indexOf('.') + deci + 1));
+            }
+        }
+        else {
+            e.preventDefault();
+        }
+    });
+
+    amount.onblur = function () {
+        num = amount.value;
+        if (num != "") {
+            num = parseFloat(num);
+            num = num.toFixed(deci);
+            amount.value = num;
+        }
     }
+}
 
 forceAmountNumber("txt_amount");
 forceNumber("txt_fee_amount", "ddl_fee_type");
 forceNumber("txt_bonus_amount","ddl_bonus_type");
+forceNumber("txt_a_amount","ddl_a");
+forceNumber("txt_b_amount","ddl_b");
+forceNumber("txt_c_amount","ddl_c");
+forceNumber("txt_d_amount","ddl_d");
+forceNumber("txt_e_amount","ddl_e");
+forceNumber("txt_f_amount","ddl_f");
+forceNumber("txt_g_amount","ddl_g");
+forceNumber("txt_h_amount","ddl_h");
+forceNumber("txt_i_amount","ddl_i");
+forceNumber("txt_j_amount","ddl_j");
+forceNumber("txt_k_amount","ddl_k");
+forceNumber("txt_l_amount","ddl_l");
+forceNumber("txt_m_amount","ddl_m");
+forceNumber("txt_n_amount","ddl_n");
+forceNumber("txt_o_amount","ddl_o");
+
+
+// start tier level constraint
+var contrainTierLevelParam = [
+    ['a', '{{ a_label }}', '{{ body.a_from }}'],
+    ['b', '{{ b_label }}', '{{ body.b_from }}'],
+    ['c', '{{ c_label }}', '{{ body.c_from }}'],
+    ['d', '{{ d_label }}', '{{ body.d_from }}'],
+    ['e', '{{ e_label }}', '{{ body.e_from }}'],
+    ['f', '{{ f_label }}', '{{ body.f_from }}'],
+    ['g', '{{ g_label }}', '{{ body.g_from }}'],
+    ['h', '{{ h_label }}', '{{ body.h_from }}'],
+    ['i', '{{ i_label }}', '{{ body.i_from }}'],
+    ['j', '{{ j_label }}', '{{ body.j_from }}'],
+    ['k', '{{ k_label }}', '{{ body.k_from }}'],
+    ['l', '{{ l_label }}', '{{ body.l_from }}'],
+    ['m', '{{ m_label }}', '{{ body.m_from }}'],
+    ['n', '{{ n_label }}', '{{ body.n_from }}'],
+    ['o', '{{ o_label }}', '{{ body.o_from }}'],
+]
+$.each(contrainTierLevelParam, function(i){
+    contrainTierLevel(contrainTierLevelParam[i][0], contrainTierLevelParam[i][1], contrainTierLevelParam[i][2]);
+})
+
+function contrainTierLevel(tier_level, label, tier_from) {
+    var  $a = $('#ddl_'+tier_level);
+
+    if( $a.val() == ''){
+        $('#txt_'+tier_level+'_amount').attr('disabled', true);
+        $("#label_"+tier_level+"_amount").text(label + " Amount");
+        $("#"+tier_level+"_from").hide();
+    }
+    if( $a.val() == 'Flat value') {
+        $("#"+tier_level+"_from").hide();
+    }
+    $a.change(function(){
+        if( $a.val() == ''){
+            $('#txt_'+tier_level+'_amount').attr('disabled', true);
+            $("#label_"+tier_level+"_amount").text(label + " Amount");
+            $('#txt_'+tier_level+'_amount').val('');
+            $("#"+tier_level+"_from").fadeOut(500);
+        }
+        else if( $a.val() == 'Flat value'){
+            $('#txt_'+tier_level+'_amount').removeAttr('disabled');
+            if($('#txt_'+tier_level+'_amount').val() == '') {
+                $('#txt_'+tier_level+'_amount').val('0');
+            }
+            $("#label_"+tier_level+"_amount").text(label + " Amount *");
+            $("#"+tier_level+"_from").fadeOut(500);
+        }
+        else if( $a.val() == '% rate'){
+            $('#txt_'+tier_level+'_amount').removeAttr('disabled');
+            if($('#txt_'+tier_level+'_amount').val() == '') {
+                $('#txt_'+tier_level+'_amount').val('0');
+            }
+            $("#label_"+tier_level+"_amount").text(label + " Amount *");
+            $("#"+tier_level+"_from").fadeIn(1000);
+        }
+    })
+}
+// end tier level constraint
 
 
 // start Amount constraint
 var $condition = $('#ddl_condition');
-    function updateByConditionType() {
-        var $condition_amount = $('#txt_amount');
-        if ($condition.val() == 'unlimit') {
-            $("#label_amount").text("Amount");
-            $condition_amount.removeAttr('required');
-            $condition_amount.attr('disabled', true);
-            $condition_amount.val('');
-        } else {
-            $("#label_amount").text("Amount *");
-            $condition_amount.attr('required', true);
-            $condition_amount.removeAttr('disabled');
-        }
+
+function updateByConditionType() {
+    var $condition_amount = $('#txt_amount');
+    if ($condition.val() == 'unlimit') {
+        $("#label_amount").text("Amount");
+        $condition_amount.removeAttr('required');
+        $condition_amount.attr('disabled', true);
+        $condition_amount.val('');
+    } else {
+        $("#label_amount").text("Amount *");
+        $condition_amount.attr('required', true);
+        $condition_amount.removeAttr('disabled');
     }
+}
+
+updateByConditionType();
+$condition.change(function () {
     updateByConditionType();
-    $condition.change(function() {
-        updateByConditionType();
-    });
+});
 // end amount constraint
 
 
 // start Fee Amount constraint
 var $ddl_fee_type = $('#ddl_fee_type');
 
-    function validate_fee_type() {
-        if ($ddl_fee_type.val() == '') {
-            $('#txt_fee_amount').attr('disabled', true);
-            $('#txt_fee_amount').val('');
-            $("#label_fee_amount").text("Fee Amount");
-        } else {
-            $("#label_fee_amount").text("Fee Amount *")
-            $('#txt_fee_amount').removeAttr('disabled');
-            if($('#txt_fee_amount').val() == '') {
-                $('#txt_fee_amount').val('0');
-            }
+function validate_fee_type() {
+    if ($ddl_fee_type.val() == '') {
+        $('#txt_fee_amount').attr('disabled', true);
+        $('#txt_fee_amount').val('');
+        $("#label_fee_amount").text("Fee Amount");
+    } else {
+        $("#label_fee_amount").text("Fee Amount *")
+        $('#txt_fee_amount').removeAttr('disabled');
+        if ($('#txt_fee_amount').val() == '') {
+            $('#txt_fee_amount').val('0');
         }
     }
+}
 
-    $ddl_fee_type.change(function() {
-        validate_fee_type();
-        var element = document.getElementById('txt_fee_amount');
-        element.setCustomValidity("");
-    });
+$ddl_fee_type.change(function () {
     validate_fee_type();
+    var element = document.getElementById('txt_fee_amount');
+    element.setCustomValidity("");
+});
+validate_fee_type();
 // end Fee Amount constraint
 
 
 
 // start Bonus Amount constraint
 var $bonus_type = $('#ddl_bonus_type');
-if($bonus_type.val() == ''){
+if ($bonus_type.val() == '') {
     $('#txt_bonus_amount').attr('disabled', true);
     $("#label_bonus_amount").text("Bonus Amount");
     $("#from").hide();
 }
-if($bonus_type.val() == 'Flat value'){
+if ($bonus_type.val() == 'Flat value') {
     $("#from").hide();
 }
-    $bonus_type.change(function(){
-        if($bonus_type.val() == ''){
-            $('#txt_bonus_amount').attr('disabled', true);
-            $('#txt_bonus_amount').val('');
-            $("#label_bonus_amount").text("Bonus Amount");
-            $("#from").fadeOut(500);
+$bonus_type.change(function () {
+    if ($bonus_type.val() == '') {
+        $('#txt_bonus_amount').attr('disabled', true);
+        $('#txt_bonus_amount').val('');
+        $("#label_bonus_amount").text("Bonus Amount");
+        $("#from").fadeOut(500);
+    }
+    else if ($bonus_type.val() == 'Flat value') {
+        $('#txt_bonus_amount').removeAttr('disabled');
+        if ($('#txt_bonus_amount').val() == '') {
+            $('#txt_bonus_amount').val('0');
         }
-        else if($bonus_type.val() == 'Flat value'){
-            $('#txt_bonus_amount').removeAttr('disabled');
-            if($('#txt_bonus_amount').val() == '') {
-                $('#txt_bonus_amount').val('0');
-            }
-            $("#label_bonus_amount").text("Bonus Amount *");
-            $("#from").fadeOut(500);
+        $("#label_bonus_amount").text("Bonus Amount *");
+        $("#from").fadeOut(500);
+    }
+    else if ($bonus_type.val() == '% rate') {
+        $('#txt_bonus_amount').removeAttr('disabled');
+        if ($('#txt_bonus_amount').val() == '') {
+            $('#txt_bonus_amount').val('0');
         }
-        else if($bonus_type.val() == '% rate'){
-            $('#txt_bonus_amount').removeAttr('disabled');
-            if($('#txt_bonus_amount').val() == '') {
-                $('#txt_bonus_amount').val('0');
-            }
-            $("#label_bonus_amount").text("Bonus Amount *");
-            $("#from").fadeIn(1000);
-        }
-    })
+        $("#label_bonus_amount").text("Bonus Amount *");
+        $("#from").fadeIn(1000);
+    }
+})
 // end Bonus Amount constraint
-
 
 
 var txt_bonus_amount = document.getElementById("txt_bonus_amount");
@@ -427,7 +1229,7 @@ function validateConditionAmount() {
 
 function validateMinValue(element) {
     var value = parseFloat(element.value) || 0.0;
-    if(value < 0) {
+    if (value < 0) {
         element.setCustomValidity('Amount cannot be lower than 0');
     } else {
         element.setCustomValidity("");
@@ -438,7 +1240,7 @@ function validateMinValue(element) {
 function validateMaxValue(element) {
     var max = parseInt(element.getAttribute("max")) || 100;
     var value = parseFloat(element.value) || 0.0;
-    if(value > max) {
+    if (value > max) {
         element.setCustomValidity('Amount cannot be greater than ' + max);
     } else {
         element.setCustomValidity("");

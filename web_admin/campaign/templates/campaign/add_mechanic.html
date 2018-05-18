@@ -96,6 +96,7 @@
                                             <option value= "event_detail">Event Detail</option>
                                             <option value= "sum_of">Sum of</option>
                                             <option value= "count_of">Count of</option>
+                                            <option value= "count_consecutive_of">Count consecutive instances of</option>
                                         </select>
                                     </div>
                                 </div>
@@ -145,6 +146,7 @@
                                 </div>
                                 <div id="count_of_area">
                                 </div>
+                                <div id="count_consecutive_of_area"></div>
                             <br>
                             </div>
                         </div>
@@ -377,6 +379,7 @@
                                             <option value= "event_detail">Event Detail</option>\
                                             <option value= "sum_of">Sum of</option>\
                                             <option value= "count_of">Count of</option>\
+                                            <option value= "count_consecutive_of">Count consecutive instances of</option>\
                                         </select>\
                                     </div>\
                                 </div>\
@@ -426,6 +429,7 @@
                                 </div>\
                                 <div id="count_of_area">\
                                 </div>\
+                                <div id="count_consecutive_of_area"></div>\
                             <br>\
                             </div></div>';
             return defaultConditionHtml;
@@ -821,10 +825,20 @@
         };
 
         var getFilterAreaHtml = function(conditionNumber, filterCount) {
-             var filterAreaHtml = '<div class="form-group">\
+            var detail_name_id = 'ddl_filter_detail_name';
+            var key_value_type_id = 'ddl_filter_key_value_type';
+            var operator_id = 'ddl_filter_operator';
+            var key_value = 'txt_filter_key_value';
+            if(filterCount == 'consecutive') {
+                detail_name_id = 'ddl_count_consecutive_key_detail_name';
+                key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
+                operator_id = 'ddl_count_consecutive_key_detail_operator';
+                key_value = 'txt_count_consecutive_key_detail_value';
+            }
+             var filterAreaHtml = '<div><div class="form-group">\
                                     <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
-                                        <select class="form-control" id="ddl_filter_detail_name" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
+                                        <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
                                             {% for item in detail_names %}\
                                                 {% if item.description != "" %}\
                                                 <option value= "{{ item.term }}">{{ item.description }}</option>\
@@ -838,7 +852,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_filter_key_value_type" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -848,7 +862,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_filter_operator" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
                                                 {% for oper in operations %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -858,9 +872,9 @@
                                     <div class="form-group" id="last_form_group">\
                                         <label class="col-sm-3 control-label">Key Value *</label>\
                                         <div class="col-xs-3">\
-                                            <input id="txt_filter_key_value" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                            <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
                                         </div>\
-                                    </div>';
+                                    </div></div>';
             return filterAreaHtml;
         };
 
@@ -941,15 +955,28 @@
         }
      };
 
-    var getWithinDateHtml = function(conditionNumber) {
+    var getWithinDateHtml = function(conditionNumber, typeCountOf) {
+        var startdateId = 'dtp_within_from';
+        var startTimeId = 'dtp_within_from_time';
+        var endDateId = 'dtp_within_to';
+        var endTimeId = 'dtp_within_to_time';
+        var prefixName = '';
+
+        if (typeCountOf == 1) {
+            startdateId = 'dtp_count_consecutive_of_start_date';
+            startTimeId = 'dtp_count_consecutive_of_start_time';
+            endDateId = 'dtp_count_consecutive_of_end_date';
+            endTimeId = 'dtp_count_consecutive_of_end_time';
+            prefixName = 'consecutive_';
+        }
         var withinDateHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="dtp_within_from" required >\
+                                    <input type="date" class="form-control input-rounded count-of-start-date-' + conditionNumber + '" name="' + prefixName + 'within_from_' + conditionNumber + '" style="height:40px;" value="{{ within_from|default_if_none:'' }}" id="' + startdateId + '" required >\
                                 </div>\
                                 <div class="col-xs-2">\
                                     <input class="form-control input-rounded count-of-start-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 value="00:00"\
-                                    id="dtp_within_from_time" name="within_from_time_' + conditionNumber + '"\
+                                    id="' + startTimeId + '" name="' + prefixName + 'within_from_time_' + conditionNumber + '"\
                                     value="{{ within_from_time|default_if_none:'00:00' }}"\
                                     style="height:40px;">\
                                 </div> <div style="display: inline-block;margin-top: 10px;">to</div>\
@@ -957,87 +984,190 @@
                             <div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="dtp_within_to" required >\
+                                    <input type="date" class="form-control input-rounded count-of-end-date-' + conditionNumber + '" name="' + prefixName + 'within_to_' + conditionNumber + '" style="height:40px;" value="{{ within_to|default_if_none:'' }}" id="' + endDateId + '" required >\
                                 </div>\
                                 <div class="col-xs-2">\
-                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="dtp_within_to_time" name="within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
+                                    <input  class="form-control input-rounded  count-of-end-time-' + conditionNumber + '" type=time min=00:00 max=23:59 step=60 id="' +endTimeId +'" name="' + prefixName + 'within_to_time_' + conditionNumber + '" value="00:00" value="{{ within_to_time|default_if_none:'00:00' }}" style="height:40px;" >\
                                 </div>\
                             </div>';
         return withinDateHtml;
     };
 
-    var getWithinTimeHtml = function(conditionNumber) {
+    var getWithinTimeHtml = function(conditionNumber, typeCountOf) {
+        var timeboxId = 'txt_timebox';
+        var prefixName = '';
+        if (typeCountOf == 1) {
+            timeboxId = 'txt_count_consecutive_of_timebox_minute';
+            prefixName = 'consecutive_';
+        }
         var withinTimeHtml = '<div class="form-group">\
                                 <label class="col-sm-3 control-label" style="font-weight: bold;"></label>\
                                 <div class="col-xs-3">\
-                                <input min="0" id="txt_timebox" class="form-control input-rounded" name="txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 7px;" id="lbl_minute">min</div>\
+                                <input min="0" id="' + timeboxId + '" class="form-control input-rounded" name="' + prefixName + 'txt_timebox_' + conditionNumber + '" type="number" required></div><div style="display: inline-block;margin-top: 7px;" id="lbl_minute">min</div>\
                               </div>';
         return withinTimeHtml;
     };
 
-    var changeWithinOption = function(elem, selectedValue, conditionNumber) {
+    var changeWithinOption = function(elem, selectedValue, conditionNumber, typeCountOf) {
          var conditionElem = document.getElementById('div_condition_' + conditionNumber);
          if(selectedValue == 'date') {
              conditionElem.querySelector('#within-time-area').innerHTML = '';
              var withinDateArea = conditionElem.querySelector('#within-date-area');
              var withinDateDiv = document.createElement('div');
-            withinDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+            withinDateDiv.innerHTML = getWithinDateHtml(conditionNumber, typeCountOf);
             var withinDateElem  = withinDateDiv.cloneNode(true);
             withinDateArea.appendChild(withinDateElem);
          } else {
              conditionElem.querySelector('#within-date-area').innerHTML = '';
              var withinTimeArea = conditionElem.querySelector('#within-time-area');
              var withinTimeDiv = document.createElement('div');
-            withinTimeDiv.innerHTML = getWithinTimeHtml(conditionNumber);
+            withinTimeDiv.innerHTML = getWithinTimeHtml(conditionNumber, typeCountOf);
             var withinTimeElem  = withinTimeDiv.cloneNode(true);
             withinTimeArea.appendChild(withinTimeElem);
          }
 
     };
 
-     var getCountOfHtml = function(conditionNumber) {
-                       var CountOfHtml =  '<div class="form-group">\
-                                    <label class="col-sm-3 control-label">Count Key Name *</label>\
-                                    <div class="col-xs-3">\
-                                         <select class="form-control" id="ddl_count_key_name" name="event_name_' + conditionNumber + '">\
-                                                <option value="register_customer">Register</option>\
-                                                <option value="login">Log-in</option>\
-                                                <option value="create_order">Create order</option>\
-                                                <option value="executed_order">Payment</option>\
-                                                <option value="created_sof">Link Bank</option>\
-                                        </select>\
-                                    </div>\
-                                </div>\
-                               <div class="form-group">\
-                                   <label class="col-sm-3 control-label">Operator *</label>\
-                                   <div class="col-xs-3">\
-                                       <select class="form-control" id="ddl_count_of_operator" name="count_of_operator_' + conditionNumber + '">\
-                                       {% for oper in count_of_operators %}\
+     var getCountOfOrCountConsecutiveOfHtml = function(conditionNumber, typeCountOf) {
+             var operatorOptionsHtml =  '{% for oper in count_of_operators %}\
+                                       <option value= "{{ oper }}">{{ oper }}</option>\
+                                    {% endfor %}';
+             var operatorId = 'ddl_count_of_operator';
+             var countKeyNameId = 'ddl_count_key_name';
+             var countId = 'txt_count';
+             var withinId = 'ddl_within';
+             var prefixName = '';
+             var typeCountofNum = 0;
+             var minCount = 0;
+            if (typeCountOf == 'count_consecutive_of') {
+                operatorOptionsHtml =  '{% for oper in count_consecutive_of_operators %}\
                                            <option value= "{{ oper }}">{{ oper }}</option>\
-                                        {% endfor %}\
-                                       </select>\
-                                   </div>\
-                               </div>\
-                              <div class="form-group">\
-                                  <label class="col-sm-3 control-label">Count *</label>\
-                                  <div class="col-xs-3">\
-                                      <input min="0" id="txt_count" class="form-control input-rounded" name="count_' + conditionNumber + '" type="number" required>\
-                               </div>\
+                                        {% endfor %}';
+                 operatorId = 'ddl_count_consecutive_count_operator';
+                 countKeyNameId = 'ddl_count_consecutive_key_name';
+                 countId = 'txt_count_consecutive_of_count';
+                 withinId = 'ddl_count_consecutive_of_within';
+                 prefixName = 'consecutive_';
+                 typeCountofNum = 1;
+                 minCount = 2;
+            }
+            var CountOfHtml =  '<div class="form-group">\
+                            <label class="col-sm-3 control-label">Count Key Name *</label>\
+                            <div class="col-xs-3">\
+                                 <select class="form-control" id="' + countKeyNameId + '" name="' + prefixName + 'event_name_' + conditionNumber + '">\
+                                        <option value="register_customer">Register</option>\
+                                        <option value="login">Log-in</option>\
+                                        <option value="create_order">Create order</option>\
+                                        <option value="executed_order">Payment</option>\
+                                        <option value="created_sof">Link Bank</option>\
+                                </select>\
+                            </div>\
+                        </div>\
+                       <div class="form-group">\
+                           <label class="col-sm-3 control-label">Operator *</label>\
+                           <div class="col-xs-3">\
+                               <select class="form-control" id="' + operatorId + '" name="' + prefixName + 'count_of_operator_' + conditionNumber + '">';
+            CountOfHtml += operatorOptionsHtml;
+            CountOfHtml += '</select>\
+                           </div>\
+                       </div>\
+                      <div class="form-group">\
+                          <label class="col-sm-3 control-label">Count *</label>\
+                          <div class="col-xs-3">\
+                              <input min="' + minCount + '" id="' + countId + '" class="form-control input-rounded" name="' + prefixName + 'count_' + conditionNumber + '" type="number" required>\
+                       </div>\
+                        </div>\
+                        <div class="form-group">\
+                             <label class="col-sm-3 control-label">Within *</label>\
+                            <div class="col-xs-3">\
+                                 <select class="form-control" id="' + withinId + '" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ', ' + typeCountofNum + ')" name="' + prefixName + 'within_' + conditionNumber + '">\
+                                        <option value= "date">Date</option>\
+                                        <option value= "timebox">Timebox</option>\
+                                </select>\
+                            </div>\
+                        </div>\
+                        <input id="filter_count_of_count" name="filter_count_of_count_' + conditionNumber +'" type="text" value="0" hidden />\
+                        <input id="reset_filter_count_of_count" name="reset_filter_count_of_count_' + conditionNumber +'" type="text" value="1" hidden />\
+                        <div id="within-date-area">\
+                        </div>\
+                        <div id="within-time-area"></div>';
+            return CountOfHtml;
+        };
+
+        var getConsecutiveKeyDetailHtml = function(conditionNumber) {
+          var consecutiveKeyDetailHtml = '<div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Consecutive key detail</label></div>';
+          consecutiveKeyDetailHtml += getFilterAreaHtml(conditionNumber, 'consecutive');
+          return consecutiveKeyDetailHtml;
+        };
+
+        var getMoreResetFilterButtonHtml = function(conditionNumber) {
+               var addMoreResetFilterHtml =  '<div class="form-group" id="add_reset_filter_area">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3" style="text-align: right;">\
+                                    <button style="background-color: #7b7676; border: none; color: white;" type="button" class="btn" id="btn_add_reset_detail" onclick="addResetDetail(this, ' + conditionNumber + ')">\
+                                        Add Reset Detail\
+                                    </button>\
                                 </div>\
-                                <div class="form-group">\
-                                     <label class="col-sm-3 control-label">Within *</label>\
+                                </div>';
+               return addMoreResetFilterHtml;
+        };
+
+        var getConditionResetFilterAreaHtml = function(conditionNumber, resetfilterCount) {
+             var filterAreaHtml = '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
-                                         <select class="form-control" id="ddl_within" onchange="changeWithinOption(this, this.options[this.selectedIndex].value,' + conditionNumber+ ')" name="within_' + conditionNumber + '">\
-                                                <option value= "date">Date</option>\
-                                                <option value= "timebox">Timebox</option>\
+                                        <select class="form-control" id="ddl_condition_reset_filter_detail_name" name="' + resetfilterCount + '_reset_filter_detail_name_' + conditionNumber + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
                                         </select>\
                                     </div>\
-                                </div>\
-                                <input id="filter_count_of_count" name="filter_count_of_count_' + conditionNumber +'" type="text" value="0" hidden />\
-                                <div id="within-date-area">\
-                                </div>\
-                                <div id="within-time-area"></div>';
-            return CountOfHtml;
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_condition_reset_filter_key_value" class="form-control input-rounded" name="' + resetfilterCount + '_reset_filter_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return filterAreaHtml;
+        };
+
+        var getFirstConditionResetValueHtml = function(conditionNumber){
+                  var firstConditionResetHtml = '<div><div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Condition Reset Value</label></div>\
+                   <div class="form-group">\
+                      <label class="col-sm-3 control-label">Condition Reset event *</label>\
+                      <div class="col-xs-3">\
+                      <select class="form-control" id="ddl_condition_reset_event" name="condition_reset_event_' + conditionNumber + '">\
+                          <option value= "change_user_status">User Status Update</option>\
+                      </select>\
+                      </div>\
+                   </div>';
+                  firstConditionResetHtml += getConditionResetFilterAreaHtml(conditionNumber, 1) + '</div>';
+                  return firstConditionResetHtml;
         };
 
         var selectConditionType = function(selectedValue, elem) {
@@ -1046,6 +1176,7 @@
             if(selectedValue == 'sum_of') {
                 conditionElem.querySelector('#event_detail_area').innerHTML = '';
                 conditionElem.querySelector('#count_of_area').innerHTML = '';
+                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
                 var sumOfArea = conditionElem.querySelector('#sum_of_area');
                 var sumKeyDiv = document.createElement('div');
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
@@ -1063,6 +1194,7 @@
             } else if(selectedValue == 'event_detail') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
                 conditionElem.querySelector('#count_of_area').innerHTML = '';
+                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
                 var eventDetailArea = conditionElem.querySelector('#event_detail_area');
                 var eventDetailDiv = document.createElement('div');
                 eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
@@ -1071,14 +1203,15 @@
             } else if(selectedValue == 'count_of') {
                 conditionElem.querySelector('#sum_of_area').innerHTML = '';
                 conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
                 var countOfArea = conditionElem.querySelector('#count_of_area');
                 var countOfDiv = document.createElement('div');
-                countOfDiv.innerHTML = getCountOfHtml(conditionNumber);
+                countOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_of');
                 var countOfDivElem  = countOfDiv.cloneNode(true);
                 countOfArea.appendChild(countOfDivElem);
                 var countOfDateArea = conditionElem.querySelector('#within-date-area');
                 var countOfDateDiv = document.createElement('div');
-                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber);
+                countOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 0);
                 var countOfDateDivElem  = countOfDateDiv.cloneNode(true);
                 countOfDateArea.appendChild(countOfDateDivElem);
                 var filterAreaDiv = document.createElement('div');
@@ -1087,9 +1220,45 @@
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countOfArea.appendChild(filterAreaDivElem);
                 var filterButtonDiv = document.createElement('div');
-                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber, 1);
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
                 var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
                 countOfArea.appendChild(filterButtonDivElem);
+            } else if(selectedValue == 'count_consecutive_of') {
+                conditionElem.querySelector('#sum_of_area').innerHTML = '';
+                conditionElem.querySelector('#event_detail_area').innerHTML = '';
+                conditionElem.querySelector('#count_of_area').innerHTML = '';
+                var countConsecutiveOfArea = conditionElem.querySelector('#count_consecutive_of_area');
+                var countConsecutiveOfDiv = document.createElement('div');
+                countConsecutiveOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_consecutive_of');
+                var countConsecutiveOfDivElem  = countConsecutiveOfDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(countConsecutiveOfDivElem);
+                var countConsecutiveOfDateArea = conditionElem.querySelector('#within-date-area');
+                var countConsecutiveOfDateDiv = document.createElement('div');
+                countConsecutiveOfDateDiv.innerHTML = getWithinDateHtml(conditionNumber, 1);
+                var countConsecutiveOfDateDivElem  = countConsecutiveOfDateDiv.cloneNode(true);
+                countConsecutiveOfDateArea.appendChild(countConsecutiveOfDateDivElem);
+                var filterAreaDiv = document.createElement('div');
+                filterAreaDiv.id = "count-of-filter-area";
+                filterAreaDiv.innerHTML = '';
+                var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(filterAreaDivElem);
+                var filterButtonDiv = document.createElement('div');
+                filterButtonDiv.innerHTML = getMoreFilterCountOfButtonHtml(conditionNumber);
+                var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(filterButtonDivElem);
+                var consecutiveKeyDetailDiv = document.createElement('div');
+                consecutiveKeyDetailDiv.innerHTML = getConsecutiveKeyDetailHtml(conditionNumber);
+                var consecutiveKeyDetailDivElem  = consecutiveKeyDetailDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(consecutiveKeyDetailDivElem);
+                var resetFilterAreaDiv = document.createElement('div');
+                resetFilterAreaDiv.id = "reset-filter-area";
+                resetFilterAreaDiv.innerHTML = getFirstConditionResetValueHtml(conditionNumber);
+                var resetFilterAreaDivElem  = resetFilterAreaDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(resetFilterAreaDivElem);
+                var resetFilterButtonDiv = document.createElement('div');
+                resetFilterButtonDiv.innerHTML = getMoreResetFilterButtonHtml(conditionNumber);
+                var resetFilterButtonDivElem  = resetFilterButtonDiv.cloneNode(true);
+                countConsecutiveOfArea.appendChild(resetFilterButtonDivElem);
             }
         };
 
@@ -1125,6 +1294,21 @@
             var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
             filterAreaElem.appendChild(newFilterElemDivElem);
             filterCountInput.setAttribute('value', filterCount);
+        };
+
+          var addResetDetail = function(elem, conditionNum) {
+            var conditionElem = document.getElementById('div_condition_' + conditionNum);
+            var resetFilterCountInput = conditionElem.querySelector('#reset_filter_count_of_count');
+            var resetFilterCount = resetFilterCountInput.getAttribute('value');
+            resetFilterCount = parseInt(resetFilterCount, 10);
+            resetFilterCount++;
+            var resetfilterAreaElem = conditionElem.querySelector('#reset-filter-area');
+            var newFilterElementHtml = '<div><div class="col-sm-12" style="margin-bottom: 20px;"><label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label></div>' + getConditionResetFilterAreaHtml(conditionNum, resetFilterCount) + '</div>';
+            var newFilterElemDiv = document.createElement('div');
+            newFilterElemDiv.innerHTML = newFilterElementHtml;
+            var newFilterElemDivElem = newFilterElemDiv.cloneNode(true);
+            resetfilterAreaElem.appendChild(newFilterElemDivElem);
+            resetFilterCountInput.setAttribute('value', resetFilterCount);
         };
 
         function submitForm(){

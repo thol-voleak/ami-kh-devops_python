@@ -10,6 +10,7 @@ from web_admin.restful_client import RestFulClient
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from web_admin.api_logger import API_Logger
+from agents.utils import get_all_agent_identity_types
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,8 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
         agent_id = kwargs.get('agent_id')
         context['agent_id'] = agent_id
         context['params'] = {}
+        list_identity_type = get_all_agent_identity_types(self)
+        context['list_identity_type'] = list_identity_type
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
@@ -49,7 +52,12 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
         username = request.POST.get('user_name')
         params = {'username': username}
         manual_password = request.POST.get('manual_password')
+        identity_type_id = int(request.POST.get('identity_type_id'))
 
+        list_identity_type = get_all_agent_identity_types(self)
+        context['list_identity_type'] = list_identity_type
+
+        params['identity_type_id'] = identity_type_id
         if manual_password:
             params['password'] = encrypt_text_agent(manual_password)
         else:
@@ -70,6 +78,7 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
             messages.add_message(request, messages.ERROR,
                                  'Transaction Timeout : Cannot add identities, please try again or contact technical support')
             params['password'] = manual_password
+            params['identity_type_id'] = identity_type_id
             context['agent_id'] = agent_id
             context['params'] = params
             return render(request, self.template_name, context=context)
@@ -79,6 +88,7 @@ class AddAgentIdentities(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                  messages.ERROR,
                                  msg)
             params['password'] = manual_password
+            params['identity_type_id'] = identity_type_id
             context['agent_id'] = agent_id
             context['params'] = params
             return render(request, self.template_name, context=context)

@@ -1,4 +1,4 @@
-API_VERSION = 'v3.2'
+API_VERSION = 'v3.3'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -57,6 +57,7 @@ DELETE_AGENT_SMART_CARD_PATH = 'api-gateway/agent/'+API_VERSION+'/admin/agents/{
 AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
 SEARCH_RELATIONSHIP = 'api-gateway/report/'+API_VERSION+'/agents/relationships'
 RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationship-types'
+GET_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/identity-types'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -71,6 +72,8 @@ CHANGE_PASSWD = 'api-gateway/system-user/'+API_VERSION+'/system-users/passwords'
 
 # Payment
 PAYMENT_URL = 'api-gateway/report/'+API_VERSION+'/payments/orders'
+PAYMENT_ORDER_DETAIL_URL = 'api-gateway/report/'+API_VERSION+'/orders/{order_id}'
+
 
 # Permission
 PERMISSION_LIST = 'api-gateway/report/'+API_VERSION+'/permissions'
@@ -131,6 +134,11 @@ SERVICE_COMMAND_ADD_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-com
 FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers'
 ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
+
+TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
+TIER_LEVELS_EDIT = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels/{tier_level_id}'
+TIER_AMOUNT_FROMS = 'api-gateway/payment/'+API_VERSION+'/admin/tier-amount-froms'
+PAYMENT_DECIMAL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/payment/configurations/payment.balance-distribution.rate.decimal-digit'
 
 # Balance Movement
 AMOUNT_TYPES_URL = 'api-gateway/payment/'+API_VERSION+'/admin/amount-types'
@@ -223,7 +231,9 @@ GET_CAMPAIGNS_DETAIL= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_
 CREATE_CAMPAIGN = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
 SEARCH_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/report'
 GET_MECHANIC_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics'
+GET_MECHANIC_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{mechanic_id}'
 CREATE_MECHANIC = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics'
+UPDATE_MECHANIC = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}'
 GET_CONDITION_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions'
 GET_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions'
 GET_CONDITION_DETAIL = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}'
@@ -231,14 +241,19 @@ GET_CONDITION_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rul
 GET_COMPARISON_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/conditions/{bak_condition_id}/comparisons'
 DELETE_MECHANIC_URL = 'api-gateway/rule-engine/' + API_VERSION + '/admin/rules/{campaign_id}/mechanics/{mechanic_id}'
 CREATE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions'
+DELETE_CONDITION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}'
 CREATE_COMPARISON = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/comparisons'
 CREATE_REWARD =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
 CREATE_LIMITATION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}/limits'
 GET_LIMITION_LIST= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{bak_rule_id}/mechanics/{bak_mechanic_id}/actions/{bak_action_id}/limits'
+DELETE_LIMITATION= 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}/limits/{action_limit_id}'
 CREATE_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters'
+DELETE_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/filters/{filter_id}'
+CREATE_RESET_FILTER = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/reset-filters'
 GET_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
 CREATE_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits'
 DELETE_RULE_AMOUNT_LIMIT = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/limits/{rule_limit_id}'
+GET_CONDITION_RESET_FILTERS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/conditions/{condition_id}/reset-filters'
 
 # Rule Engine
 GET_RULE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
@@ -255,6 +270,7 @@ GET_RULE_REWARD_LIST = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rul
 GET_ACTION_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/action-types'
 GET_DATA_TYPE = 'api-gateway/rule-engine/'+API_VERSION+'/admin/data-types'
 CREATE_ACTION =     'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions'
+DELETE_ACTION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/mechanics/{mechanic_id}/actions/{action_id}'
 
 
 #Remmittance
@@ -309,3 +325,20 @@ GET_DETAIL_SHOP = 'api-gateway/report/' + API_VERSION + '/shops'
 DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
+
+# Channel-gateway Service
+CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services'
+GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
+DELETE_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
+EDIT_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services/{service_id}'
+GET_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/report/apis/'
+ADD_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis'
+DELETE_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
+GET_CLIENT_CHANNEL_GATEWAY_SCOPE_LIST_API = 'channel-gateway/' + API_VERSION + '/admin/oauth/clients/{client_id}/scopes'
+EDIT_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
+
+
+# PASSWORD CENTER
+PASSWORD_CENTER_IDENTITY_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/identity-types'
+PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/report/'+API_VERSION+'/password-rule-configs'
+UPDATE_PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/password-center/'+API_VERSION+'/admin/identity-types/{identity_type_id}/rule-configs'

@@ -4,7 +4,7 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border">
-        <h3>Clients > Scopes</h3>
+        <h3>API Gateway Scopes</h3>
     </div>
 
     {% for message in messages %}
@@ -46,7 +46,7 @@
                             <table class="table table-bordered table-striped mb0">
                                 <thead>
                                 <tr>
-                                    <th id="cbx_granted"></th>
+                                    <th id="cbx_granted" style="width: 30px;"></th>
                                     <th id="lbl_id">Id</th>
                                     <th id="lbl_name">Name</th>
                                     <th id="lbl_method">HTTP Method</th>
@@ -56,14 +56,14 @@
                                 <tbody>
                                 {% for object in all_scopes %}
                                 <tr>
-                                    <td class="col-sm-2"><input type="checkbox" name="scope"
+                                    <td><input type="checkbox" name="scope"
                                                                 id="chb_scope" value="{{ object.id }}"
                                                                 {{ object.is_granted|yesno:" checked, "}}>
                                     </td>
-                                    <td class="col-sm-2">{{ object.id }}</td>
-                                    <td class="col-sm-2">{{ object.name }}</td>
-                                    <td class="col-sm-1">{{ object.http_method }}</td>
-                                    <td class="col-sm-1">{{ object.pattern }}</td>
+                                    <td>{{ object.id }}</td>
+                                    <td>{{ object.name }}</td>
+                                    <td>{{ object.http_method }}</td>
+                                    <td>{{ object.pattern }}</td>
                                 </tr>
                                 {% endfor %}
                                 </tbody>

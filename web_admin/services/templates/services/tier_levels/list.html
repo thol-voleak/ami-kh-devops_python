@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="panel mb15">
+    <div class="panel-heading border mb15" >
+        <h3>Tier Level Configuration Labels</h3>
+    </div>
+    {% include "message.html" %}
+    <div class="panel-body">
+        <div class="table-responsive row">
+            <table class="table table-bordered table-striped mb0" id="tbl_tier_level">
+                <thead>
+                <tr>
+                    <th id="lbl_name">Tier Level Configuration</th>
+                    <th id="lbl_label">Label</th>
+                    <th id="lbl_action">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for level in data %}
+                <tr>
+                    <td class="col-sm-1">{{ level.name|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ level.label|default_if_none:'' }}</td>
+                    <td class="col-sm-1">
+                        <a type="button" class="btn btn-outline btn-xs btn-primary text-info" id="btn_edit"
+                           href="{% url 'services:tier_label_update' level.id %}" role="button">
+                            <span class="small">Edit</span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

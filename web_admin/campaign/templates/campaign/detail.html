@@ -27,23 +27,23 @@
         <strong id="alert-msg"></strong>
     </div>
 </div>
-<h3>Campaign Details</h3>
+<h3>Rule Details</h3>
 <div class="panel panel-primary " style="background-color: #ecf0f1;">
     <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
         <div class="pull-left">
         <p class="bold" style="margin-bottom:0;">
-            <label size="2"><strong>Campaign ID:</strong></label>
+            <label size="2"><strong>Rule ID:</strong></label>
             <span id="lbl_campaign_id" style="text-transform: uppercase">{{data.id}}</span>
         </p>
         <p class="bold">
-            <label size="2"><strong>Campaign Name:</strong></label>
+            <label size="2"><strong>Rule Name:</strong></label>
             <span id="lbl_campaign_name">{{data.name}}</span>
         </p>
         </div>
     </div>
     <div class="panel-body" style="margin-top: -20px;">
         <p>
-            <label>Campaign Description:</label>
+            <label>Rule Description:</label>
             <span id="lbl_campaign_description">{{data.description}}</span>
         </p>
         <p style="margin-bottom:0;">
@@ -58,426 +58,61 @@
         {% for i in limit_values %}
         <p><font size="2"></font>
         <label>Amount Limit:</label>
-        <span id="lbl_campaign_amount_limit_{{ i }}">{{i|floatformat:2|intcomma|default_if_none:''}}  /recipient/campaign</span>
+        <span id="lbl_campaign_amount_limit_{{ i }}">{{i|floatformat:2|intcomma|default_if_none:''}}  /recipient/rule</span>
         </p>
         {% endfor %}
 
         {% if count_limit_values == 0 %}
         <p><font size="2"></font>
         <label>Amount Limit:</label>
-        <span id="lbl_campaign_amount_limit">   /recipient/campaign</span>
+        <span id="lbl_campaign_amount_limit">   /recipient/rule</span>
         </p>
         {% endif %}
     </div>
 </div>
 
-{%if len_mechanic != 0 %}
     {%if permissions.CAN_ADD_RULE_LIMIT %}
     <a href="{% url 'campaign:amount_limit' campaign_id %}">
         <input id="btn_add_rule_limit" class="btn btn-info mb15" type="submit" value="Add Rule Limits">
     </a>
     {%endif%}
-    {% for i in mechanic %}
-        {% if not i.is_deleted %}
-        <div id="mechanic_{{ i.id }}">
-            <h3 id="lbl_mechanic_{{i.count}}" ><font size="4">Mechanic {{i.count}} Information</font></h3>
-            <div class="panel panel-primary " style="background-color: #ecf0f1;" id="div_mechanic_{{i.count}}">
-                <div class="panel-heading" style="background-color: #ecf0f1; border:none; margin-bottom:0;">
-                    <div class="pull-left">
-                    <p class="bold" style="margin-bottom:0;">
-                        <label size="2"><strong>Mechanic ID:</strong></label>
-                        <span id="lbl_mechanic_id" style="text-transform: uppercase">{{i.id}}</span>
-                    </p>
-                    </div>
-                    {%if not data.is_active and active_mechanic_count != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
-                    <div class="pull-right delete-mechanic-button" style="color: grey;cursor: pointer;position: relative;">
-                            <i onClick="delete_mechanic({{ i.id }})" id="btn_delete"
-                               data-url="{% url 'campaign:delete_mechanic' data.id i.id %}"
-                               class="glyphicon glyphicon-remove" style="position: absolute; top: -5px; left: -8px;"></i>
-                    </div>
-                    {% endif %}
+
+    <h3>
+        Mechanic Information
+        {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
+        <a id="btn_add_mechanic" class="btn btn-default pull-right" href="{% url 'campaign:add_mechanic' campaign_id %}"><i class="fa fa-plus" style="color: #00da7d;"></i> Add New Mechanic</a>
+        {% endif %}
+    </h3>
+
+    <div class="list-mechanic">
+        {% for mechanic in mechanic_list %}
+            <div class="item" id="mechanic_{{mechanic.id}}">
+                <div>
+                    Mechanic ID: <span id="lbl_mechanic_id">{{mechanic.id}}</span>
                 </div>
-                <div class="panel-body" style="margin-top: -20px;">
-                    <p style="margin-bottom:0; ,">
-                        <label size="2">Trigger:</label>
-                        <span id="lbl_trigger">{{i.event_name}}</span>
-                    </p>
-                    <p style="margin-bottom:0; ,">
-                        <label size="2">Start Date: </label>
-                        <span id="lbl_mechanic_start_date">{{i.start_timestamp}}</span>
-                    </p>
-                    <p><font size="2"></font>
-                    <label>End Date:</label>
-                    <span id="lbl_mechanic_end_date">{{i.end_timestamp}}</span>
-                    </p>
-                    {%for condition in i.condition_list%}
-                    <div id="div_condition_{{condition.id}}">
-                        <p style="margin-bottom:0; ,">
-                            <label size="2"><strong>Condition Id:</strong></label>
-                            <span id="lbl_condition_id"><strong>{{condition.id}}</strong></span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2">Condition Type:</label>
-                            {%if condition.filter_type == 'event_detail'%}
-                                <span id="lbl_condition_type">Event Detail</span>
-                                {%for comparison in condition.comparison_list%}
-                                    <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Detail Name:</label>
-                                        <span id="lbl_comparison_key_name">{{comparison.key_name}}</span>
-                                    </p>
-                                    <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Key Value Type:</label>
-                                        <span id="lbl_comparison_key_value_type">{{comparison.key_value_type}}</span>
-                                    </p>
-                                    <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2" >Operator:</label>
-                                        <span id="lbl_operator">
-                                        {%if comparison.operator == '=' %}
-                                        <span>Equal to</span>
-                                        {%elif comparison.operator == '>' %}
-                                        <span>More Than</span>
-                                        {%elif comparison.operator == '>=' %}
-                                        <span>More than or Equal to</span>
-                                        {%elif comparison.operator == '<' %}
-                                        <span>Less Than</span>
-                                        {%elif comparison.operator == '<=' %}
-                                        <span>Less than or Equal to</span>
-                                        {%elif comparison.operator == '!=' %}
-                                        <span>Not Equal to</span>
-                                        {%elif comparison.operator == 'contains' %}
-                                        <span>Contains</span>
-                                        {%endif%}
-                                        </span>
-                                    </p>
-                                    <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Key Value:</label>
-                                        <span id="lbl_comparison_key_value">{{comparison.key_value}}</span>
-                                    </p>
-                                {%endfor%}
-                            {% elif  condition.filter_type == 'sum_of' %}
-                                <span id="lbl_sum_condition_type">Sum of</span>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Sum Key Name:</label>
-                                        <span id="lbl_sum_key_name">{{condition.sum_key_name}}</span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Operator:</label>
-                                    <span id="lbl_sum_operator">
-                                    {%if condition.comparison_list.0.operator == '=' %}
-                                    <span>Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '>' %}
-                                    <span>More Than</span>
-                                    {%elif condition.comparison_list.0.operator == '>=' %}
-                                    <span>More than or Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '<' %}
-                                    <span>Less Than</span>
-                                    {%elif condition.comparison_list.0.operator == '<=' %}
-                                    <span>Less than or Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '!=' %}
-                                    <span>Not Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == 'contains' %}
-                                    <span>Contains</span>
-                                    {%endif%}
-                                    </span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Sum Key Value:</label>
-                                        <span id="lbl_sum_key_value">{{condition.comparison_list.0.key_value}}</span>
-                                </p>
-
-                                {% if condition.filter is not none %}
-                                <p style="margin-left: 10px;">
-                                        <label size="2" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">Filter</label>
-                                </p>
-
-                                    {%for filter in condition.filter %}
-                                        <div id="div_sum_of_filter_{{filter.id}}">
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Detail Name:</label>
-                                        <span id="lbl_filter_key_name">{{filter.key_name}}</span>
-                                        </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2">Key Value Type:</label>
-                                                <span id="lbl_filter_key_value_type">{{filter.key_value_type}}</span>
-                                            </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2" >Operator:</label>
-                                                <span id="lbl_filter_operator">
-                                                {%if filter.operator == '=' %}
-                                                <span>Equal to</span>
-                                                {%elif filter.operator == '>' %}
-                                                <span>More Than</span>
-                                                {%elif filter.operator == '>=' %}
-                                                <span>More than or Equal to</span>
-                                                {%elif filter.operator == '<' %}
-                                                <span>Less Than</span>
-                                                {%elif filter.operator == '<=' %}
-                                                <span>Less than or Equal to</span>
-                                                {%elif filter.operator == '!=' %}
-                                                <span>Not Equal to</span>
-                                                {%elif filter.operator == 'contains' %}
-                                                <span>Contains</span>
-                                                {%endif%}
-                                                </span>
-                                            </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2">Key Value:</label>
-                                                <span id="lbl_filter_key_value">{{filter.key_value}}</span>
-                                            </p>
-                                            {% if condition.filter|length > 1 and forloop.counter < condition.filter|length %}
-                                            <p style="margin-left: 10px;">
-                                                <label size="2" id="lbl_sum_of_filter_and_{{forloop.counter}}" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">AND</label>
-                                            </p>
-                                            {% endif %}
-                                        </div>
-
-                                    {%endfor%}
-                                {% endif %}
-                            {% elif  condition.filter_type == 'count_of' %}
-                                <span id="lbl_count_condition_type">Count of</span>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Count Key Name:</label>
-                                    {%if condition.count_key_name == 'login' %}
-                                        <span id="lbl_count_key_name">Log-in</span>
-                                    {%elif condition.count_key_name == 'register_customer' %}
-                                        <span id="lbl_count_key_name">Register</span>
-                                    {%elif condition.count_key_name == 'create_order' %}
-                                        <span id="lbl_count_key_name">Create order</span>
-                                    {%elif condition.count_key_name == 'executed_order' %}
-                                        <span id="lbl_count_key_name">Payment</span>
-                                    {%elif condition.count_key_name == 'created_sof' %}
-                                        <span id="lbl_count_key_name">Link Bank</span>
-                                    {% else %}
-                                        <span id="lbl_count_key_name">{{ condition.count_key_name }}</span>
-                                    {% endif %}
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Operator:</label>
-                                    <span id="lbl_count_operator">
-                                    {%if condition.comparison_list.0.operator == '=' %}
-                                    <span>Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '>' %}
-                                    <span>More Than</span>
-                                    {%elif condition.comparison_list.0.operator == '>=' %}
-                                    <span>More than or Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '<' %}
-                                    <span>Less Than</span>
-                                    {%elif condition.comparison_list.0.operator == '<=' %}
-                                    <span>Less than or Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == '!=' %}
-                                    <span>Not Equal to</span>
-                                    {%elif condition.comparison_list.0.operator == 'contains' %}
-                                    <span>Contains</span>
-                                    {%endif%}
-                                    </span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Count:</label>
-                                    <span id="lbl_count">{{condition.comparison_list.0.key_value}}</span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Within:</label>
-                                {%if condition.within == 'Timebox' %}
-                                    <span id="lbl_within">Timebox</span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 55px;">
-                                    <span id="lbl_within_val">{{condition.timebox}} min</span>
-                                </p>
-                                {% else %}
-                                    <span id="lbl_within">Date</span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Start Date:</label>
-                                    <span id="lbl_within_start">{{condition.within_start}}</span>
-                                </p>
-                                <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">End Date:</label>
-                                    <span id="lbl_within_end">{{condition.within_end}}</span>
-                                </p>
-                                {% endif %}
-                                {% if condition.filter %}
-                                <p style="margin-left: 10px;">
-                                        <label size="2" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">Filter</label>
-                                </p>
-
-                                    {%for filter in condition.filter %}
-                                        <div id="div_count_of_filter_{{filter.id}}">
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                        <label size="2">Detail Name:</label>
-                                        <span id="lbl_filter_key_name">{{filter.key_name}}</span>
-                                        </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2" >Operator:</label>
-                                                <span id="lbl_filter_operator">
-                                                {%if filter.operator == '=' %}
-                                                <span>Equal to</span>
-                                                {%elif filter.operator == '>' %}
-                                                <span>More Than</span>
-                                                {%elif filter.operator == '>=' %}
-                                                <span>More than or Equal to</span>
-                                                {%elif filter.operator == '<' %}
-                                                <span>Less Than</span>
-                                                {%elif filter.operator == '<=' %}
-                                                <span>Less than or Equal to</span>
-                                                {%elif filter.operator == '!=' %}
-                                                <span>Not Equal to</span>
-                                                {%elif filter.operator == 'contains' %}
-                                                <span>Contains</span>
-                                                {%endif%}
-                                                </span>
-                                            </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2">Key Value Type:</label>
-                                                <span id="lbl_filter_key_value_type">{{filter.key_value_type}}</span>
-                                            </p>
-                                            <p style="margin-bottom:0; margin-left: 10px;">
-                                                <label size="2">Key Value:</label>
-                                                <span id="lbl_filter_key_value">{{filter.key_value}}</span>
-                                            </p>
-                                            {% if condition.filter|length > 1 and forloop.counter < condition.filter|length %}
-                                            <p style="margin-left: 10px;">
-                                                <label size="2" id="lbl_count_of_filter_and_{{forloop.counter}}" style="font-weight: bold; margin-bottom:2px; margin-top: 10px;">AND</label>
-                                            </p>
-                                            {% endif %}
-                                        </div>
-
-                                    {%endfor%}
-                                {% endif %}
-                            {%endif%}
-                        </p>
-                    </div>
-
-
-                    {%endfor%}
-                    {% if i.reward is not None %}
-                        <p style="margin-bottom:0; ">
-                            <label size="2"><strong>
-                                {% if i.reward.id == 1 or i.reward.id == 2 %}Reward{% endif %}
-                                {% if i.reward.id == 4 %}Action{% endif %}
-                            </strong></label>
-                        </p>
-                        {% if i.reward.id == 1 %}
-                            <p></p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label>Give Reward to:</label>
-                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2"> Reward Recipient should be:</label>
-                                <span id="lbl_reward_recipient">{{i.reward.recipient|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Reward Type:</label>
-                                    <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Amount:</label>
-                                    <span id="lbl_amount">{{i.reward.amount|default_if_none:''}}</span>
-                            </p>
-                        {% endif %}
-                        {% if i.reward.id == 2 %}
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label>Reward Type:</label>
-                                <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label>Send Notification To:</label>
-                                <span id="lbl_send_notification_to">{{i.reward.send_to|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Recipient should be: {{i.reward.recipient|default_if_none:''}}</label>
-                                <span id="lbl_reward_recipient"></span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label>Give Reward to:</label>
-                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; ">
-                                <label size="2"><strong>Data to be sent</strong></label>
-                                {%for data_to_be_sent in i.reward.data_to_be_sent%}
-                                    {% if data_to_be_sent.key_name != 'notification_url' %}
-                                        <p style="margin-bottom:0; margin-left: 10px;">
-                                            <label>Key Name:</label>
-                                            <span id="lbl_key_name">{{data_to_be_sent.key_name|default_if_none:''}}</span>
-                                        </p>
-                                        <p style="margin-bottom:0; margin-left: 10px;">
-                                            <label>Key Value Type:</label>
-                                            <span id="lbl_key_value_type">{{data_to_be_sent.key_value_type|default_if_none:''}}</span>
-                                        </p>
-                                         <p style="margin-bottom: 10px; margin-left: 10px;">
-                                            <label>Key Value:</label>
-                                            <span id="lbl_key_value">{{data_to_be_sent.key_value|default_if_none:''}}</span>
-                                        </p>
-                                    {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                        {% if i.reward.id == 4 %}
-                             <p style="margin-bottom:0; margin-left: 10px;">
-                                    <label size="2">Action:</label>
-                                    <span id="lbl_reward_type">{{i.reward.reward_type|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2"> Action Recipient should be:</label>
-                                <span id="lbl_reward_recipient" style="text-transform: capitalize;">{{i.reward.recipient|default_if_none:''}}</span>
-                            </p>
-                            <p style="margin-bottom:0; margin-left: 10px;">
-                                <label>Do action to:</label>
-                                <span id="lbl_give_reward_to">{{i.reward.reward_to|default_if_none:''}}</span>
-                            </p>
-                        {% endif %}
+                <div>
+                    {%if not data.is_active and mechanic_list|length != 1 and request.user|has_permission_name:"CAN_DELETE_MECHANIC"%}
+                    <a id="btn_delete" onClick="delete_mechanic('{% url 'campaign:delete_mechanic' data.id mechanic.id %}')"><i class="fa fa-trash"></i></a>
                     {% endif %}
-                    {%for limitation in i.limitation_list%}
-                        <p></p>
-                        <p style="margin-bottom:0; ">
-                            <label size="2"><strong>Limitation</strong></label>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Limit Type: </label>
-                                <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                                <label size="2">Limit to: </label>
-                                <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label size="2">Reward Recipient should be :</label>
-                            <span id="lbl_limitation_reward_recipient_should_be">{{limitation.recipient|default_if_none:''}}</span>
-                        </p>
-                        <p style="margin-bottom:0; margin-left: 10px;">
-                            <label>Give Reward to:</label>
-                            <span id="lbl_limitation_give_rewards_to">{{limitation.reward_to|default_if_none:''}}</span>
-                        </p>
-                    {%endfor%}
+
+                    <a id="btn_view_mechanic" href="{% url 'campaign:mechanic_detail' campaign_id mechanic.id %}" style="color: #03a9ff; margin-left: 15px;">VIEW <i class="fa fa-chevron-right"></i></a>
                 </div>
             </div>
-        </div>
-        {% endif %}
+        {%endfor%}
+    </div>
 
-    {%endfor%}
-{% endif %}
-
-    <div class="form-group pull-right">
+    <div class="text-right" style="margin-top: 15px">
         <a href="{% url 'campaign:campaign' %}">
-            <input id="btn_dismiss" class="btn text-left mb15" type="button"
-                   value="Dismiss"/>
+            <input id="btn_dismiss" class="btn text-left" type="button" value="Dismiss"/>
         </a>
-        {% if request.user|has_permission_name:"CAN_CREATE_CAMPAIGN" %}
-            <a href="{% url 'campaign:add_mechanic' campaign_id %}">
-                <input id="btn_add_mechanic" class="btn btn-success text-left mb15" type="submit"
-                       value="Add More Mechanic"/>
-            </a>
-        {% endif %}
-
     </div>
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
 <script>
-
-    var delete_mechanic = function(mechanicId) {
+    var delete_mechanic = function(url) {
         swal({
-            title: "Delete campaign mechanic?",
+            title: "Delete rule mechanic?",
             text: "",
             type: "warning",
             showCancelButton: true,
@@ -486,7 +121,6 @@
             closeOnConfirm: true
         },
         function () {
-            var url = $("#mechanic_" + mechanicId + " #btn_delete").data("url");
             window.location.replace(url);
         });
     };

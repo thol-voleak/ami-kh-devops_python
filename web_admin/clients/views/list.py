@@ -12,7 +12,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     template_name = "clients/clients_list.html"
     logger = logger
 
-    group_required = "CAN_LIST_CLIENTS"
+    group_required = "CAN_MANAGE_CLIENTS"
     login_url = 'web:permission_denied'
     raise_exception = False
 

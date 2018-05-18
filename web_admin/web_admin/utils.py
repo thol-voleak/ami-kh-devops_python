@@ -7,6 +7,64 @@ import datetime
 import logging
 import urllib
 
+from web_admin.exceptions import PermissionDeniedException
+
+
+def check_permissions(request, permissions):
+    logger = build_logger(request, __name__)
+    if not has_any_permission(request, permissions.split(',')):
+        logger.info("User [{}] does not have permission [{}] to access [{}]".format(request.user, permissions, request.path))
+        raise PermissionDeniedException(permissions)
+    return True
+
+
+def build_auth_header_from_request(request):
+    return build_auth_header(settings.CLIENTID,
+                             settings.CLIENTSECRET,
+                             request.session.get('correlation_id'),
+                             request.session.get('access_token'))
+
+
+def build_auth_header(client_id, client_secret, correlation_id, access_token):
+    headers = {
+        'content-type': 'application/json',
+        'correlation-id': correlation_id,
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'Authorization': 'Bearer {}'.format(access_token),
+    }
+    return headers
+
+
+def build_logger(request, name):
+    client_ip = get_client_ip(request)
+    correlation_id = request.session.get('correlation_id')
+
+    logger = logging.getLogger(name)
+
+    return logging.LoggerAdapter(logger, extra={'IPAddress': client_ip, 'correlationId': correlation_id})
+
+
+def get_client_ip(request):
+    if request is not None:
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            client_ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            client_ip = request.META.get('REMOTE_ADDR')
+    else:
+        client_ip = ''
+
+    return client_ip
+
+
+def has_any_permission(request, args):
+    permissions = request.session.get('permissions', [])
+    for permission in args:
+        if permission in [x['name'] for x in permissions]:
+            return True
+    return False
+
 
 def encode_current_url_for_back(request):
     path = request.get_full_path()

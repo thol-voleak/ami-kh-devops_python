@@ -1,0 +1,53 @@
+{% csrf_token %}
+
+<input type="hidden" name="id" value="{{ form.id }}" />
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">Service Name {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_service_name" name="name" value="{{ form.name }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Location {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_location" name="location" value="{{ form.location }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Timeout (millisecond)</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_timeout" name="timeout" value="{{ form.timeout }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Max Total Connection</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_max_total_connection" name="max_total_connection" value="{{ form.max_total_connection }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Max Per Route</label>
+    <div class="col-sm-7">
+        <input type="number" min=0  class="form-control input-rounded" id="txt_max_per_route" name="max_per_route" value="{{ form.max_per_route }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+{% if is_readonly %}
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Create Date</label>
+    <div class="col-sm-7">
+        <input type="text"  class="form-control input-rounded" id="txt_create_date" name="create_date" value="{{ form.created_timestamp }}" readonly />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Update Date</label>
+    <div class="col-sm-7">
+        <input type="text"  class="form-control input-rounded" id="txt_update_date" name="update_date" value="{{ form.last_updated_timestamp }}" readonly />
+    </div>
+</div>
+{% endif %}

@@ -55,7 +55,7 @@
 
     <div class="panel-body" >
         <div class="table-responsive">
-            <table class="table table-bordered table-striped mb0">
+            <table id="tbl_clients" class="table table-bordered table-striped mb0">
                 <thead>
                 <tr>
                     <th>Client Id</th>
@@ -67,8 +67,8 @@
                 </thead>
                 <tbody>
                 {% for client in data %}
+                {% if not client.is_deleted %}
                 <tr id="row-{{ client.client_id }}">
-                    {% if not client.is_deleted %}
                     <td class="col-sm-2">
                         <a class="client-details-link {{ client.is_deleted|yesno:" text,no-hidden" }}"
                         id="{{ client.client_id }}" class="text-info"
@@ -141,15 +141,26 @@
                                class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:'hidden,no-hidden' }}"
                             {{ client.is_deleted|yesno:'disable=true, disable=false' }}
                             role="button"
-                            id="btn_scopes" class="text-info"
+                            id="btn_api_gw_scopes" class="text-info"
                             href="{% url 'clients:scope-client' client.client_id %}" role="button">
-                            <span class="small">Scopes</span>
+                            <span class="small">API GW Scopes</span>
+                            </a>
+                            {% endif %}
+
+                            {% if request|has_any_permission:'CAN_CHANGE_SCOPES_CHANNEL_GW_CLIENTS' %}
+                             <a type="button"
+                               class="btn btn-primary mb5 btn-outline btn-xs {{ client.is_deleted|yesno:'hidden,no-hidden' }}"
+                            {{ client.is_deleted|yesno:'disable=true, disable=false' }}
+                            role="button"
+                            id="btn_channel_gw_scopes" class="text-info"
+                            href="{% url 'clients:client-channel-gateway-scopes' client.client_id %}" role="button">
+                            <span class="small">Channel GW Scopes</span>
                             </a>
                             {% endif %}
                         </div>
                     </td>
-                    {% endif %}
                 </tr>
+                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

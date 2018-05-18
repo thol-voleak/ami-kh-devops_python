@@ -25,13 +25,15 @@ from web_admin.restful_client import RestFulClient
 from authentications.apps import InvalidAccessToken
 from web_admin.get_header_mixins import GetHeaderMixin
 
+from web_admin.api_logger import API_Logger
+
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
 
 
 
-class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
+class AgentTypeAndCurrenciesAndIdentityTypeDropDownList(TemplateView, RESTfulMethods):
     def _get_agent_types_list(self):
         data, success = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
                                          func_description="Agent Type List",
@@ -55,8 +57,23 @@ class AgentTypeAndCurrenciesDropDownList(TemplateView, RESTfulMethods):
             result = []
         return result
 
+    def _get_identity_type_list(self):
+        api_path = api_settings.GET_IDENTITY_TYPES
+        body = {
+            "is_deleted": False
+        }
+        success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body)
+        data = data or {}
+        API_Logger.post_logging(loggers=self.logger, params=body,
+                                response=data.get('identity_types', []),
+                                status_code=status_code, is_getting_list=True)
+        return data.get('identity_types', [])
 
-class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, GetHeaderMixin):
+
+class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTypeDropDownList, GetHeaderMixin):
     group_required = "CAN_PERFORM_AGENT_REGISTRATION"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -79,11 +96,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         # Get API that inherits from parent Class
         currencies = self._get_currencies_dropdown()
         agent_types_list = self._get_agent_types_list()
+        identity_type_list = self._get_identity_type_list()
 
         result = {
             'permanent_address_check':True,
             'currencies': currencies,
             'agent_types_list': agent_types_list,
+            'identity_type_list': identity_type_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
         self.logger.info('========== Finished showing Create Agent page ==========')
@@ -95,6 +114,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         status = 1  # request.POST.get('status') #TODO: hard fix
         agent_types_list = self._get_agent_types_list()
         currencies = self._get_currencies_dropdown()
+        identity_type_list = self._get_identity_type_list()
         check_or_not = True
         date_exist_on_context = {}
 
@@ -104,10 +124,17 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         grand_parent_id = request.POST.get('grand_parent_id')
         currency = request.POST.get('currency')
         unique_reference = request.POST.get('unique_reference')
+        identity_type_id = request.POST.get('identity_type_id')
         username = request.POST.get('username')
-        password = request.POST.get('password')
-        password = encrypt_text_agent(password)
-        # basic info session
+        password = ''
+        auto_generate_password = 'false'
+        system_password = request.POST.get('system_password')
+        if system_password:
+            auto_generate_password = 'true'
+        else:
+            password = encrypt_text_agent(request.POST.get('password'))
+
+# basic info session
 
         # Personal Details session    
         firstname = request.POST.get('firstname')
@@ -270,8 +297,10 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
         }
 
         identity = {
+            'identity_type_id': identity_type_id,
             'username': username,
-            'password': password
+            'password': password,
+            'auto_generate_password': auto_generate_password
         }
 
         body = {
@@ -294,6 +323,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesDropDownList, 
             'agent_types_list': agent_types_list,
             'context_date':date_exist_on_context,
             'currencies': currencies,
+            'identity_type_list': identity_type_list,
             'agent_profile': profile,
             'identity': identity,
             'context_currency':currency,

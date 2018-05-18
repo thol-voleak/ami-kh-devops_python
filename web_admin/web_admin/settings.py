@@ -71,6 +71,9 @@ INSTALLED_APPS = [
     'shop_type',
     'shop_category',
     'shop',
+    'channel_gateway.service',
+    'channel_gateway.api',
+    'password_center',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -111,7 +114,7 @@ TEMPLATES = [
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
                               'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
                               'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
-                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type')],
+                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type', 'password_center')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +123,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
-            ]
+            ],
+            'builtins': ['authentications.templatetags.common_tags']
         },
     },
 ]
@@ -357,6 +361,21 @@ LOGGING = {
             'propagate': True,
         },
         'shop': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'channel_gateway': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'web_admin': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'password_center': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

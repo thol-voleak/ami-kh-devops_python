@@ -1,8 +1,21 @@
-from django import template
+import json
 
-from web_admin.utils import encode_current_url_for_back, get_back_url
+from django import template
+from django.utils.safestring import mark_safe
+
+from web_admin.utils import encode_current_url_for_back, get_back_url, has_any_permission
 
 register = template.Library()
+
+
+@register.filter(name='jsonify')
+def filter_json(value):
+    return mark_safe(json.dumps(value))
+
+
+@register.filter(name='has_any_permission')
+def filter_has_any_permission(request, args):
+    return has_any_permission(request, args.split(','))
 
 
 @register.simple_tag(name='current_url_encoded_for_back', takes_context=True)

@@ -32,6 +32,8 @@ def login_user(request):
                 authens.permissions = permissions['permissions']
                 authens.save()
 
+                request.session['permissions'] = permissions['permissions']
+
             next_request = request.POST.get('next') or 'web:web-index'
             return redirect(next_request)
 

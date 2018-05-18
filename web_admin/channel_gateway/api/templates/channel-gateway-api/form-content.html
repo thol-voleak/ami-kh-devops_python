@@ -1,0 +1,88 @@
+{% csrf_token %}
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">API Name {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_api_name" name="name" value="{{ form.name }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+{% if not is_readonly %}
+<div class="form-group">
+    <label class="col-sm-3 control-label">HTTP Method {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <select class="form-control" id="ddl_http_method" name="http_method" required>
+            <option value="" {% if not form.http_method %}selected{% endif %}>-</option>
+            <option value="GET" {% if form.http_method == 'GET' %}selected{% endif %}>GET</option>
+            <option value="POST" {% if form.http_method == 'POST' %}selected{% endif %}>POST</option>
+            <option value="PUT" {% if form.http_method == 'PUT' %}selected{% endif %}>PUT</option>
+            <option value="DELETE" {% if form.http_method == 'DELETE' %}selected{% endif %}>DELETE</option>
+        </select>
+    </div>
+</div>
+{% else %}
+     <div class="form-group">
+        <label class="col-sm-3 control-label">HTTP Method</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_http_method" name="http_method" value="{{ form.http_method }}" readonly />
+        </div>
+    </div>
+{% endif %}
+<div class="form-group">
+    <label class="col-sm-3 control-label">Pattern {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" required id="txt_pattern" name="pattern" value="{{ form.pattern }}" {% if is_readonly %}readonly{% endif %} />
+    </div>
+</div>
+{% if not is_readonly %}
+    <div class="form-group">
+    <label class="col-sm-3 control-label">Require Access Token {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <select class="form-control" id="ddl_require_access_token" name="require_access_token" required>
+            <option value="" {% if not form.require_access_token %}selected{% endif %}>-</option>
+            <option value="1" {% if form.require_access_token == '1' %}selected{% endif %}>Yes</option>
+            <option value="0" {% if form.require_access_token == '0' %}selected{% endif %}>No</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label">Service Name {% if not is_readonly %}*{% endif %}</label>
+    <div class="col-sm-7">
+        <select class="form-control" id="ddl_service_name" name="service_id" required>
+            <option value="">-</option>
+            {% for item in service_list %}
+                {% if item.id|slugify == form.service_id|slugify %}
+                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                {% else %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% else %}
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Require Access Token</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_require_access_token" name="require_access_token" value="{{ form.is_required_access_token|yesno:"Yes,No" }}" readonly />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Service Name</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control input-rounded" required id="txt_service_name" name="service_name" value="{{ form.service.name }}" readonly />
+        </div>
+    </div>
+    <div class="form-group mb15">
+        <label class="col-sm-3 control-label">Create Date</label>
+        <div class="col-sm-7">
+            <input type="text"  class="form-control input-rounded" id="txt_create_date" name="create_date" value="{{ form.created_timestamp }}" readonly />
+        </div>
+    </div>
+
+    <div class="form-group mb15">
+        <label class="col-sm-3 control-label">Update Date</label>
+        <div class="col-sm-7">
+            <input type="text"  class="form-control input-rounded" id="txt_update_date" name="update_date" value="{{ form.last_updated_timestamp }}" readonly />
+        </div>
+    </div>
+{% endif %}

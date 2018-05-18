@@ -170,3 +170,20 @@ def check_permission_agent_management(self):
     permissions['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB'] = self.check_membership(['CAN_ACCESS_PRODUCT_CONFIGURATION_TAB'])
     permissions['CAN_ACCESS_SHOP_MANAGEMENT_TAB'] = self.check_membership(['CAN_ACCESS_SHOP_MANAGEMENT_TAB'])
     return permissions
+
+def get_all_agent_identity_types(self):
+    api_path = api_settings.GET_IDENTITY_TYPES
+
+    body = {
+        "is_deleted": False
+    }
+
+    success, status_code, status_message, data = RestFulClient.post(url=api_path,
+                                                                    headers=self._get_headers(),
+                                                                    loggers=self.logger,
+                                                                    params=body)
+    data = data or {}
+    API_Logger.post_logging(loggers=self.logger, params=body,
+                            response=data.get('identity_types', []),
+                            status_code=status_code, is_getting_list=True)
+    return data.get('identity_types', [])

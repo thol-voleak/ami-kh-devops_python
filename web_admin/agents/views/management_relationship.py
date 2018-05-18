@@ -54,13 +54,14 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         data, success, status_message = self._get_relationships(params=body)
         if success:
             relationships_list = data.get("relationships", [])
+            relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
             summary_relationships = list(relationships_list)
             if len(relationships_list) > 10:
                 summary_relationships = relationships_list[:10]
 
             page = data.get("page", {})
             context.update(
-                {'search_count': page.get('total_elements', 0),
+                {'search_count': len(relationships_list),
                  'relationships': relationships_list,
                  'summary_relationships': summary_relationships,
                  'relationship_list_length': len(relationships_list)
@@ -136,12 +137,13 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
 
         if success:
             relationships_list = data.get("relationships", [])
+            relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
             page = data.get("page", {})
 
             context = {
                 'agent_id': agent_id,
                 'permissions': permissions,
-                'search_count': page.get('total_elements', 0),
+                'search_count': len(relationships_list),
                 'relationships': relationships_list,
                 'relationship_type_id': list_relationship_type,
                 'relationship_types': relationship_types,

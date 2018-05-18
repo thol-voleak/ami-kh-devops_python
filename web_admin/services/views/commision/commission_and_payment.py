@@ -12,6 +12,7 @@ from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
+from services.views.utils import get_payment_decimal
 
 
 logger = logging.getLogger(__name__)
@@ -74,6 +75,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         context['fee_tier_detail'] = fee_tier_detail
 
+        self._replace_actor_type_items(data)
+        self._replace_amount_type_items(data)
         context['data'] = self._filter_deleted_items(data)
         #context['bonus'] = self._filter_deleted_items(bonus)
         #context['agent_bonus_distribution'] = total_bonus_distribution
@@ -81,11 +84,25 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         context['choices'] = choices
         #context['agents'] = agents
 
+        response = get_payment_decimal(self.request)
+        if response:
+            context['payment_decimal'] = response.get('value')
+
         self.logger.info('========== Finish getting Balance Movement ==========')
         return context
 
     def _filter_deleted_items(self, data):
         return list(filter(lambda x: not x['is_deleted'], data))
+
+    def _replace_actor_type_items(self, data):
+        for balance_distribution in data:
+            if balance_distribution['actor_type'] in ['Grand Parent', 'Parent']:
+                balance_distribution['actor_type'] = None
+
+    def _replace_amount_type_items(self, data):
+        for balance_distribution in data:
+            if balance_distribution['amount_type'] == 'Parent Fee Rate':
+                balance_distribution['amount_type'] = None
 
     def _get_choices(self):
         url_list = [api_settings.ACTION_TYPES_URL, api_settings.AMOUNT_TYPES_URL,
@@ -266,7 +283,6 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
         return data, success
 
     def post(self, request, *args, **kwargs):
-
         service_id = kwargs.get('service_id')
         fee_tier_id = kwargs.get('fee_tier_id')
         command_id = kwargs.get('command_id')
@@ -284,7 +300,7 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
             "specific_sof": data.get('specific_sof'),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "label": data.get("label"),
+            "remark": data.get("remark"),
             "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -339,7 +355,7 @@ class BalanceDistributionsUpdate(View):
             "specific_sof": data.get("specific_sof"),
             "amount_type": data.get("amount_type"),
             "rate": data.get("rate"),
-            "label": data.get("label"),
+            "remark": data.get("remark"),
             # "specific_actor_id": data.get("specific_actor_id"),
         }
 
@@ -912,7 +928,6 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         balanceDistributionList = json.loads(data.get("balance_distributions"))
         putDataList = []
         for balanceDistributionData in balanceDistributionList:
-            self.logger.info(balanceDistributionData.get("fee_tier_id"))
             data = {
                 "fee_tier_id": balanceDistributionData.get("fee_tier_id"),
                 "balance_distribution_id": balanceDistributionData.get("balance_distribution_id"),
@@ -923,7 +938,7 @@ class MultiBalanceDistributionsUpdate(TemplateView):
                 "specific_sof": balanceDistributionData.get("specific_sof"),
                 "amount_type": balanceDistributionData.get("amount_type"),
                 "rate": balanceDistributionData.get("rate"),
-                "label": balanceDistributionData.get("label")
+                "remark": balanceDistributionData.get("remark")
             }
 
             putDataList.append(data)
@@ -931,9 +946,8 @@ class MultiBalanceDistributionsUpdate(TemplateView):
         body = {
             "balance_distributions": putDataList
         }
-
         response = ajax_functions._put_method(request, url, "", self.logger, body)
-        if response.status_code == 200:
+        if json.loads(response.content)['status'] == 2:
             messages.add_message(
                 self.request,
                 messages.SUCCESS,

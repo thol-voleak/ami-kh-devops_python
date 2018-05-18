@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_stylesheet %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    <style>
+        .recipient-mechanic {
+            position: relative;
+            top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="mb25 add-mechanic-action-page">
+        <h3>Add Action</h3>
+        {% if error_msg is not none %}
+            <div class="alert alert-danger" id="msg-update-failed">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong id="alert-msg">{{ error_msg|capfirst }}</strong>
+            </div>
+        {% endif %}
+
+        <div class="mb5">
+            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-campaign">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-message"></strong>
+            </div>
+        </div>
+
+        <form id="submit-form" class="form-horizontal" role="form" method="post"
+              action="{{ request.path }}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label sub-title">Action</label>
+                <div></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Action Type *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_reward_type" name="reward_type" onchange="listenRewardType(this.options[this.selectedIndex].value)">
+                        <option value= "fixed_cashback">Fixed Cashback</option>
+                        <option value= "send_notification">Send Notification</option>
+                        <option value= "suspend_account">Suspend Account</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="div_send_to" style="display: none">
+                <label class="col-sm-3 control-label">Send to *</label>
+                <div class="col-xs-3">
+                    <input id="txt_send_to" class="form-control input-rounded" name="send_to" type="text" placeholder="Enter URL">
+                </div>
+            </div>
+            <div class="form-group" id="div_amount">
+                <label class="col-sm-3 control-label">Amount *</label>
+                <div class="col-xs-3">
+                    <input id="txt_amount" class="form-control input-rounded" name="amount" type="number" required>
+                </div>
+            </div>
+
+            <div class="form-group" id="div_reward_recipient">
+                <label class="col-sm-3 control-label sub-title">Action Recipient</label>
+                <div></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Action Recipient should be *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
+                        <option value= "customer" selected>Customer</option>
+                        <option value= "agent">Agent</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Give Actions to *</label>
+                <div class="col-xs-3">
+                    <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
+                        <option value= "@@user_id@@">Actor who registered</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="lbl_paid_amount" style="display: none">
+                <label class="col-sm-3 control-label">Paid Amount</label>
+                <div class="col-xs-3">
+                    <input id="txt_paid_amount" class="form-control input-rounded" value="@@amount@@" name="paid_amount" type="text" disabled>
+                </div>
+            </div>
+            <div id="div_fixed_cashback">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label sub-title">Get Funds From</label>
+                    <div></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Product Service ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Payer SOF ID *</label>
+                    <div class="col-xs-3">
+                        <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div id="div_send_notification"></div>
+            <div id="limitation-group" class="sub-box" style="margin-top: 30px;">
+                <div id="div_condition_1">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label sub-title">Limitation</label>
+                        <div class="col-xs-3 text-right">
+                            <a class="btn_remove_limitation" style="display: none;"><i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Limitation Type *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                                <option value= "count">Count</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Limit to *</label>
+                        <div class="col-xs-3">
+                            <input min='0' id="txt_limit_to" class="form-control input-rounded" style="width: 200px; display: inline-block" name="limit_to" type="number" required>
+                            <span class="recipient-mechanic" style="position: relative; top: 0px;">/recipient/mechanic</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Action Recipient should be *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_reward_recipient" name="reward_type_disabled" disabled>
+                                <option value= "customer">Customer</option>
+                                <option value= "agent">Agent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Give Actions to *</label>
+                        <div class="col-xs-3">
+                            <select class="form-control" id="ddl_limitation_give_reward" name="give_reward_to_disabled" disabled>
+                                <option value= "@@user_id@@">Actor who registered</option>
+                            </select>
+                        </div>
+                    </div>
+
+                <br>
+                </div>
+            </div>
+
+            <div id='div_button' class="text-right">
+                <a id="btn_cancel" class="btn text-left" href="{% url 'campaign:mechanic_detail' campaign_id mechanic_id %}">
+                    Cancel
+                </a>
+                &nbsp; &nbsp;
+                <input id="btn_add_action" class="btn btn-success text-left" type="button" onclick="return submitForm();" value="Save"/>
+                <input id='hidden_submit' type="submit" hidden>
+            </div>
+        </form>
+    </div>
+    <script>
+        function rewardRecipientShouldBe() {
+            try {
+                var e = document.getElementById("ddl_reward_recipient");
+                document.getElementById("ddl_limitation_reward_recipient").selectedIndex = e.selectedIndex;
+            } catch(err) {
+                console.log(err.message);
+            }
+        }
+
+        function giveRewardsTo()  {
+            try {
+                var e = document.getElementById("ddl_give_reward_to");
+                document.getElementById("ddl_limitation_give_reward").selectedIndex = e.selectedIndex;
+            } catch(err) {
+                console.log(err.message);
+            }
+        }
+
+        function getCurrentOps (ddl) {
+            var ops = [];
+            ddl.find('option').each(function()
+            {
+                ops.push($(this).val());
+            });
+            return ops
+        }
+
+        function setDDL(ddl, newOps) {
+            ddl.empty();
+            for (var ops in newOps) {
+                ddl.append( $("<option>")
+                    .val(newOps[ops])
+                    .html(newOps[ops])
+                )
+            }
+        }
+
+        function removeElement(id) {
+            var element = document.getElementById(id);
+            element.parentNode.removeChild(element);
+        }
+
+        function hideElement(id) {
+            var element = document.getElementById(id);
+            if (element) {
+                element.style.display = 'none';
+            }
+        }
+
+        function showElement(id) {
+            var element = document.getElementById(id);
+            if (element) {
+                element.style.display = '';
+            }
+        }
+
+        function setRequired(id) {
+            var element = document.getElementById(id);
+            element.setAttribute("required", "");
+        }
+
+        function setNotRequired(id) {
+            var element = document.getElementById(id);
+            element.removeAttribute("required");
+        }
+
+        var resetValue = function(id) {
+            var element = document.getElementById(id);
+            element.value = '';
+        };
+
+        function listenTrigger() {
+            var ddl_give_reward_to = $("#ddl_give_reward_to");
+            var triggerValue = "{{ trigger_type }}";
+            var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
+            var rewardTypeSelectedValue = $("#ddl_reward_type").val();
+
+            if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                hideElement("lbl_paid_amount");
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor who registered")
+                )
+
+                if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                    $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                    $("#ddl_reward_type").val("fixed_cashback");
+                    this.listenRewardType("fixed_cashback");
+                }
+            } else {
+                if (triggerValue == 'limit_reached') {
+                    $("#ddl_reward_type").find('[value="fixed_cashback"]').remove();
+                    $("#ddl_reward_type").val("send_notification");
+                    this.listenRewardType("send_notification");
+                } else {
+                    if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                        $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                        $("#ddl_reward_type").val("fixed_cashback");
+                        this.listenRewardType("fixed_cashback");
+                    }
+                }
+
+                if(rewardTypeSelectedValue == 'suspend_account') {
+                    hideElement("lbl_paid_amount");
+                } else {
+                    showElement("lbl_paid_amount");
+                }
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for the transaction")
+                )
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received the transaction")
+                )
+
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@payer_user_id@@")
+                    .html("Actor that paid for the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@initiator_user_id@@")
+                    .html("Actor that created the transaction")
+                )
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@payee_user_id@@")
+                    .html("Actor that received the transaction")
+                )
+            }
+        }
+
+        var div_fixed_cashback = document.getElementById('div_fixed_cashback');
+        var div_fixed_cashback_html = '\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label sub-title">Get Funds From</label>\
+                <div></div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Product Service ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_product_service_id" class="form-control input-rounded" name="product_service_id" type="text" required>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Payer ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_payer_id" class="form-control input-rounded" name="payer_id" type="text" required>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label">Payer SOF ID *</label>\
+                <div class="col-xs-3">\
+                    <input id="txt_payer_sof_id" class="form-control input-rounded" name="payer_sof_id" type="text" required>\
+                </div>\
+            </div>';
+
+        var div_send_notification = document.getElementById('div_send_notification');
+        var div_send_notification_html = '\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label sub-title">Data to be sent</label>\
+                                <div></div>\
+                            </div>\
+                            <div id="data_send_group">\
+                                <div id="data_tobe_send_1">\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Data type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_reward_data_type" name="reward_data_type" onchange="listenDataType(this, this.options[this.selectedIndex].value)">\
+                                                <option value= "from_database">From Database</option>\
+                                                <option value= "user_defined">User Defined</option>\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_from_database">\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_detail_name" name="reward_detail_name">\
+                                                    {% for item in detail_names %}\
+                                                        {% if item.description != "" %}\
+                                                        <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                        {% else %}\
+                                                        <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                        {% endif %}\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_user_defined" style="display: none">\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_name" class="form-control input-rounded" name="reward_key_name" type="text">\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_key_value_type" name="reward_key_value_type" onchange="listenRewardKeyValType(this, this.options[this.selectedIndex].value)">\
+                                                    {% for type in key_value_types %}\
+                                                        <option value= "{{ type }}">{{ type }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_value" class="form-control input-rounded" name="reward_key_value" type="number">\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <input type="hidden" name="data_counter" id="txt_data_counter">\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3 text-right">\
+                                    <button type="button" class="btn btn-default" id="btn_add_data_to_be_sent" onclick="addDataToSend()">\
+                                      <span class="fa fa-plus"></span> Add Data To Be Sent\
+                                    </button>\
+                                </div>\
+                            </div>';
+
+        var reward_recipient_should_be_elem = document.getElementById('ddl_reward_recipient');
+        var give_rewards_to_elem = document.getElementById('ddl_give_reward_to');
+
+        var resetSelectElement = function (selectElement) {
+            var options = selectElement.options;
+
+            // Look for a default selected option
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+
+                if (options[i].defaultSelected) {
+                    selectElement.selectedIndex = i;
+                    return;
+                }
+            }
+
+            selectElement.selectedIndex = 0; // or -1 for no option selected
+        };
+
+        var resetRewardRecipient = function() {
+            resetSelectElement(reward_recipient_should_be_elem);
+            resetSelectElement(give_rewards_to_elem);
+            rewardRecipientShouldBe();
+            giveRewardsTo();
+        };
+
+        // confirm API, confirm paid amount
+        function listenRewardType (rType) {
+            var triggerValue = $("#ddl_trigger").val();
+            if (rType === 'send_notification') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    hideElement("lbl_paid_amount");
+                } else {
+                    showElement("lbl_paid_amount");
+                }
+                resetRewardRecipient();
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+                hideElement('div_reward_recipient');
+                div_fixed_cashback.innerHTML = '';
+
+                showElement('div_send_to');
+                setRequired('txt_send_to');
+
+                div_send_notification.innerHTML = div_send_notification_html;
+                sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
+
+            }   else if (rType === 'fixed_cashback') {
+                if (triggerValue === 'register_customer' || triggerValue === 'login') {
+                    hideElement("lbl_paid_amount");
+                } else {
+                    showElement("lbl_paid_amount");
+                }
+                resetRewardRecipient();
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                div_send_notification.innerHTML = '';
+
+                showElement('div_amount');
+                setRequired('txt_amount');
+                showElement('div_reward_recipient');
+
+                div_fixed_cashback.innerHTML = div_fixed_cashback_html;
+
+            } else if (rType === 'suspend_account') {
+                hideElement("lbl_paid_amount");
+                resetRewardRecipient();
+                showElement('div_reward_recipient');
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                div_send_notification.innerHTML = '';
+                div_fixed_cashback.innerHTML = '';
+            }
+        }
+
+        function listenDataType (ele, dType) {
+            var div_from_database = $(ele).parent().parent().next('div');
+            var div_user_defined = $(div_from_database).next('div');
+            if (dType === 'from_database') {
+                hideElement(div_user_defined.attr('id'));
+                showElement(div_from_database.attr('id'));
+                var nodes = document.getElementById(div_user_defined.attr('id')).getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = false;
+                }
+            }   else if (dType === 'user_defined') {
+                hideElement(div_from_database.attr('id'));
+                showElement(div_user_defined.attr('id'));
+                var nodes = document.getElementById(div_user_defined.attr('id')).getElementsByTagName('input');
+                for(var i = 0; i < nodes.length; i++){
+                     nodes[i].required = true;
+                }
+            }
+        }
+
+        function listenRewardKeyValType(ele, type) {
+            var keyValue = $(ele).parent().parent().nextAll('div').find('input');
+            keyValue.val('');
+            if (type === 'Freetext') {
+                keyValue.attr('type', 'text');
+            } else if (type === 'Numeric') {
+                keyValue.attr('type', 'number');
+            } else if (type === 'Timestamp') {
+                keyValue.attr('type', 'datetime-local');
+            }
+        }
+
+        var _data_counter = 1;
+        function addDataToSend() {
+            _data_counter++;
+            var dataClone = sampleData.cloneNode(true);
+            dataClone.querySelectorAll('[id="div_from_database"]')[0].id = "div_from_database" + (_data_counter + "");
+            dataClone.querySelectorAll('[id="div_user_defined"]')[0].id = "div_user_defined" + (_data_counter + "");
+            var inputEle = dataClone.getElementsByTagName("input");
+            for (var i = 0; i < inputEle.length; i++) {
+                inputEle[i].name += (_data_counter + "");
+                inputEle[i].id += (_data_counter + "");
+            }
+            var ddlEle = dataClone.getElementsByTagName("select");
+            for (var i = 0; i < ddlEle.length; i++) {
+                ddlEle[i].name += (_data_counter + "");
+                ddlEle[i].id += (_data_counter + "");
+            }
+
+            dataClone.id = "data_tobe_send_" + _data_counter;
+            var div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = '<label class="col-sm-3 control-label" id="lbl_and"><b>AND</b></label><div class="text-right"><a class="btn_remove_data"><i class="fa fa-trash"></i></a></div>';
+            dataClone.insertBefore(div, dataClone.firstChild);
+            document.getElementById("data_send_group").appendChild(dataClone);
+            $("#txt_data_counter").val(_data_counter);
+        }
+
+        function submitForm(){
+            var form = $("#submit-form");
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (!response.status) {
+                            showErrorMessage("Unknown error");
+                        } else if (response.status == 2) {
+                            // success
+                            url = $('#div_button').find('a').attr('href');
+                            window.location.replace(url);
+                        } else {
+                            console.log(response);
+                            showErrorMessage(response.msg);
+                            if (response.status == 4) {
+                                $('#dtp_start_date').css('border-color', 'red');
+                                $('#dtp_start_time').css('border-color', 'red');
+                                $('#dtp_end_date').css('border-color', 'red');
+                                $('#dtp_end_time').css('border-color', 'red');
+                            }
+                        }
+                    },
+                    error: function (msg) {
+                        showErrorMessage('System Error');
+                    }
+                });
+            } else {
+                $('#hidden_submit').click();
+            }
+        };
+
+        function showErrorMessage(msg) {
+            $("#alert-message").text(msg);
+            hideElement("msg-update-failed");
+            $("#alert-campaign").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+
+    </script>
+{% endblock %}
+
+{% block body_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            listenTrigger();
+
+            $(document).on("click", ".btn_remove_data", function () {
+                $(this).closest("[id^='data_tobe_send']").remove();
+            });
+
+            $(document).on("click", ".btn_remove_limitation", function () {
+                $(this).closest(".sub-box").remove();
+            });
+
+            $("#ddl_reward_type").change(function () {
+                if($(this).val() == "fixed_cashback") {
+                    $(".btn_remove_limitation").hide();
+                } else {
+                    $(".btn_remove_limitation").show();
+                }
+            });
+        });
+    </script>
+{% endblock %}
