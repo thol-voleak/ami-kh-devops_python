@@ -12,6 +12,7 @@ from web_admin.api_settings import DOWNLOAD_URL
 from django.http import JsonResponse
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
+import json
 
 import requests
 logger = logging.getLogger(__name__)
@@ -34,11 +35,9 @@ class Download(TemplateView, GetHeaderMixin):
 	def post(self, request, *args, **kwargs):
 		headers = self._get_headers()
 		file_id = request.POST.get('file_id')
-		status_id = request.POST.get('status_id')
-		params = {'file_id': int(file_id), 'status_id': int(status_id)}
+		params = {'file_id': int(file_id), 'status_id': 2}
 
 		data = RestFulClient.download(url=DOWNLOAD_URL, headers=headers, loggers=self.logger, params=params,timeout=settings.GLOBAL_TIMEOUT)
-		data_res = data.json()
-		response = HttpResponse(FileWrapper(data['ok'], content_type='text/csv'))
+		response = HttpResponse(data.content, content_type='text/csv')
 		response['Content-Disposition']='attachment; filename=abc.csv'
 		return response

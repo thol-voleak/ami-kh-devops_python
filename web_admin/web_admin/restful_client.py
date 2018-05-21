@@ -230,7 +230,6 @@ class RestFulClient:
              url = settings.DOMAIN_NAMES + url
         if timeout is None:
              timeout = settings.GLOBAL_TIMEOUT
-        loggers.info('POST path: [{path}]'.format(path=url))
         response = requests.post(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
         return response
 

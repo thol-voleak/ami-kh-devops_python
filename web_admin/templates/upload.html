@@ -45,8 +45,8 @@
             <div class="col-lg-6">
                     <form method="post" action="{% url 'upload:download' %}">
                         {% csrf_token %}
-                        <input type="text" value="{{ file_id }}" id="file_id">
-                        <button type="submit" onclick="downloadFile()">Download</button>
+                        <input type="text" name="file_id">
+                        <button type="submit">Download</button>
                     </form>
 
             </div>
@@ -54,32 +54,4 @@
         </div>`
     </div>
 </div>
-{% endblock %}
-
-{% block body_js %}
-{{ block.super }}
-    <script type="text/javascript">
-         var csrf_token = "{{ csrf_token }}";
-         var url = "{% url 'upload:download' %}";
-         var downloadFile = function() {
-                var fileId = $('#file_id').val();
-
-
-                   $.ajax({
-                        url: url,
-                        type: "POST",
-                        data: {"file_id": fileId, "status_id": 2},
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                        },
-                        success: function (response) {
-
-                        },
-                        error: function (msg) {
-                        console.log('Error inactive the rule');
-                        }
-                 });
-         };
-
-    </script>
 {% endblock %}
