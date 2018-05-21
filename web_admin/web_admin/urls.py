@@ -59,4 +59,5 @@ urlpatterns = [
     url(r'^admin-portal/shops/', include('shop.urls')),
     url(r'^admin-portal/channel-gateway/services/', include('channel_gateway.service.urls')),
     url(r'^admin-portal/channel-gateway/apis/', include('channel_gateway.api.urls')),
+    url(r'^admin-portal/upload/', include('upload.urls'))
 ]
