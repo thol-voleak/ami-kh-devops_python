@@ -12,7 +12,7 @@ from services.views.mixins import GetCommandNameAndServiceNameMixin
 from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
-from services.views.utils import get_payment_decimal
+from services.views.utils import get_payment_decimal, get_currency_by_service_id
 
 
 logger = logging.getLogger(__name__)
@@ -87,6 +87,8 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         response = get_payment_decimal(self.request)
         if response:
             context['payment_decimal'] = response.get('value')
+
+        get_currency_by_service_id(self.request, service_id)
 
         self.logger.info('========== Finish getting Balance Movement ==========')
         return context

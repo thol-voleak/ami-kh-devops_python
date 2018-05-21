@@ -1,5 +1,4 @@
 import logging
-from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
 from web_admin import api_settings, setup_logger, RestFulClient
@@ -7,6 +6,7 @@ from django.views.generic.base import View
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
 from web_admin.get_header_mixins import GetHeaderMixin
+from services.views.utils import get_currency_by_service_id
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +21,13 @@ class GetSpecificSOF(View, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start getting Specific SOF ==========')
+        service_id = kwargs.get('service_id')
+        currency = get_currency_by_service_id(request, service_id)
         user_id = kwargs.get('user_id')
         sof_type = kwargs.get('sof_type')
         params = {
             'user_id': user_id,
+            'currency': currency,
         }
         if sof_type == '2':
             path = api_settings.CASH_SOFS_URL
