@@ -47,6 +47,7 @@
                                 <option value= "sum_of">Sum of</option>
                                 <option value= "count_of">Count of</option>
                                 <option value= "count_consecutive_of">Count consecutive instances of</option>
+                                <option value= "profile_details">Profile Details</option>
                             </select>
                         </div>
                     </div>
@@ -97,6 +98,7 @@
                     <div id="count_of_area">
                     </div>
                     <div id="count_consecutive_of_area"></div>
+                    <div id="profile_details_area"></div>
                 <br>
                 </div>
             </div>
@@ -367,6 +369,60 @@
                                         </div>\
                                     </div>';
             return eventdetailareaHtml;
+        };
+
+        var getProfileDetailAreaHtml = function(conditionNumber) {
+            var profiledetailareaHtml =     '<div class="form-group profile-actor">\
+                                        <label class="col-sm-3 control-label">Actor *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_profile_actor" name="profile_actor_' + conditionNumber + '" >\
+                                                <option value= "payer">Payer</option>\
+                                                <option value= "initiator">Initiator</option>\
+                                                <option value= "payee">Payee</option>\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Detail Name *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_profile_detail_name" name="profile_detail_name_' + conditionNumber + '" >\
+                                                {% for item in detail_names %}\
+                                                    {% if item.description != "" %}\
+                                                    <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                    {% else %}\
+                                                    <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                    {% endif %}\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_profile_key_value_type" name="profile_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_profile_operator" name="profile_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_profile_key_value" class="form-control input-rounded" name="profile_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return profiledetailareaHtml;
         };
 
      var getMoreFilterCountOfButtonHtml = function(conditionNumber) {
@@ -670,13 +726,31 @@
                   return firstConditionResetHtml;
         };
 
+        function toggleProfileActor() {
+            var trigger = "{{ trigger_type }}";
+            if (trigger == "create_order" || trigger == "executed_order") {
+                $(".profile-actor").show();
+                $(".profile-actor select").prop('disabled', false);
+            } else {
+                $(".profile-actor").hide();
+                $(".profile-actor select").prop('disabled', true);
+            }
+        }
+
+        function clearConditionArea(conditionElem) {
+            conditionElem.querySelector('#event_detail_area').innerHTML = '';
+            conditionElem.querySelector('#sum_of_area').innerHTML = '';
+            conditionElem.querySelector('#count_of_area').innerHTML = '';
+            conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+            conditionElem.querySelector('#profile_details_area').innerHTML = '';
+        }
+
         var selectConditionType = function(selectedValue, elem) {
             var conditionNumber = parseInt($(elem).attr('counter'), 10);
             var conditionElem = document.getElementById('div_condition_' + conditionNumber);
             if(selectedValue == 'sum_of') {
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var sumOfArea = conditionElem.querySelector('#sum_of_area');
                 var sumKeyDiv = document.createElement('div');
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
@@ -694,18 +768,26 @@
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 sumOfArea.appendChild(filterAreaDivElem);
             } else if(selectedValue == 'event_detail') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var eventDetailArea = conditionElem.querySelector('#event_detail_area');
                 var eventDetailDiv = document.createElement('div');
                 eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
                 var eventDetailDivElem  = eventDetailDiv.cloneNode(true);
                 eventDetailArea.appendChild(eventDetailDivElem);
+            } else if(selectedValue == 'profile_details') {
+                clearConditionArea(conditionElem);
+
+                var profileDetailArea = conditionElem.querySelector('#profile_details_area');
+                var profileDetailDiv = document.createElement('div');
+                profileDetailDiv.innerHTML = getProfileDetailAreaHtml(conditionNumber);
+                var profileDetailDivElem  = profileDetailDiv.cloneNode(true);
+                profileDetailArea.appendChild(profileDetailDivElem);
+
+                toggleProfileActor();
             } else if(selectedValue == 'count_of') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var countOfArea = conditionElem.querySelector('#count_of_area');
                 var countOfDiv = document.createElement('div');
                 countOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_of');
@@ -728,9 +810,8 @@
                 var filterAreaDivElem  = filterAreaDiv.cloneNode(true);
                 countOfArea.appendChild(filterAreaDivElem);
             } else if(selectedValue == 'count_consecutive_of') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var countConsecutiveOfArea = conditionElem.querySelector('#count_consecutive_of_area');
                 var countConsecutiveOfDiv = document.createElement('div');
                 countConsecutiveOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_consecutive_of');
