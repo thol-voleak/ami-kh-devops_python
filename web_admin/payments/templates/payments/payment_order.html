@@ -27,6 +27,26 @@
         border-top: 0.5px solid grey;
     }
 
+    .glyphicon-download-alt {
+        right: 10px;
+        font-size: 20px;
+        color: #4a5777;
+        cursor: pointer;
+    }
+
+    .export-file-dropdown {
+        top: -5px;
+    }
+
+    .export-file-dropdown.open .dropdown-menu {
+        right: -230px;
+        min-width: 260px;
+        box-shadow: 3px 3px 8px #888888;
+        padding-left: 5px;
+        color: #26252b;
+        cursor: pointer;
+    }
+
 </style>
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading border">
@@ -130,6 +150,11 @@
                                id="dtp_to_date">
                     </div>
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                                <input id="export-type" type="text" name="export-type" value="" />
+                                <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                                       value="Download">
+                    </div>
                     {% if permissions.is_perm_order_search %}
                     <div class="col-xs-1 col-xs-offset-3">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
@@ -138,7 +163,17 @@
                     {% endif %}
                 </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-            <label class="pull-right" >Total Orders found:&nbsp;</label>
+            <label class="pull-right">Total Orders found:&nbsp;</label>
+            {% if is_show_export %}
+            <div class="pull-right dropdown export-file-dropdown">
+                <label class="dropdown-toggle" title="Export this filter" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                    <li onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                </ul>
+            </div>
+            {% endif %}
         </form>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_order_list">
@@ -252,6 +287,15 @@
     $('#ddl_status').on("chosen:showing_dropdown", function () {
         selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')
     });
+
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
 
 </script>
 {% endblock %}
