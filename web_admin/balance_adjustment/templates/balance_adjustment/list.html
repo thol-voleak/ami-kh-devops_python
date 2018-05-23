@@ -684,6 +684,10 @@
         }
 
         uploadDelegateFunction = function (popupContainer) {
+            if (!commonUploadValidation(popupContainer)) {
+                return false;
+            }
+
             if (!validateUploadFileSize(popupContainer)) {
                 return false;
             }

@@ -59,7 +59,7 @@ defaultOpenUploadFilePopup = function (popupContainer) {
     $(uploadFileInputFake).val("");
 }
 
-commonValidation = function (popupContainer) {
+commonUploadValidation = function (popupContainer) {
     return validateFileEmpty(popupContainer);
 }
 
