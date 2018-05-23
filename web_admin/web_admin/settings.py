@@ -381,5 +381,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'upload_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     }
 }
