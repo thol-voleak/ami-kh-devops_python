@@ -44,7 +44,7 @@ bindFileInputEvent = function (popupContainer) {
 
 
 bindUploadButtonEvent = function (popupContainer, uploadDelegateFunction) {
-    $(popupContainer).find("#btn_upload").click(function () {
+    $(popupContainer).find("#btn_upload").click(function (event) {
         if (uploadDelegateFunction != undefined && uploadDelegateFunction != null) {
             uploadDelegateFunction(popupContainer);
         }
@@ -74,4 +74,5 @@ function validateFileEmpty(popupContainer) {
         });
         return false;
     }
+    return true;
 }
