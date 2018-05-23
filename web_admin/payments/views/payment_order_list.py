@@ -1,5 +1,5 @@
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
@@ -10,7 +10,6 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 import logging
 from django.contrib import messages
-from django.http import HttpResponse
 from datetime import datetime
 logger = logging.getLogger(__name__)
 
@@ -92,17 +91,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start searching payment order ==========')
-
         order_id = request.POST.get('order_id')
         searched_services = request.POST.getlist('service_name')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
-        self.logger.info('========== Start getting service list ==========')
-        services = self.get_services_list()
-        services.sort(key=lambda service: service['service_name'])
-        self.logger.info('========== Finish getting service list ==========')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         list_status_id = request.POST.getlist('list_status_id')
         creation_client_id = request.POST.get('creation_client_id')
@@ -122,8 +116,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         list_status_id = list(list_status_search)
 
         body = {}
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id
         if user_id and user_id.isdigit():
@@ -160,9 +152,23 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['to'] = new_to_created_timestamp
 
         if 'download' in request.POST:
-            return HttpResponse("To be implemented")
-        if 'search' in request.POST:
+            self.logger.info('========== Start exporting payment order ==========')
+            file_type = request.POST.get('export-type')
+            body['file_type'] = file_type
+            body['row_number'] = 5000
+            is_success, data = self.export_file(body=body)
+            if is_success:
+                response = make_download_file(data, file_type)
+                self.logger.info('========== Finish exporting payment order ==========')
+                return response
 
+        if 'search' in request.POST:
+            self.logger.info('========== Start getting service list ==========')
+            services = self.get_services_list()
+            services.sort(key=lambda service: service['service_name'])
+            self.logger.info('========== Finish getting service list ==========')
+            body['paging'] = True
+            body['page_index'] = int(opening_page_index)
             data, is_success = self.get_payment_order_list(body=body)
 
             if data:
@@ -228,6 +234,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             )
             data = []
         return data, is_success
+
+    def export_file(self, body):
+        status_code, is_success, data = RestFulClient.download(url=PAYMENT_URL, headers=self._get_headers(), loggers=self.logger, params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body, response={},
+                                status_code=status_code)
+        return is_success, data
 
     def format_data(self, data):
         for i in data['orders']:
