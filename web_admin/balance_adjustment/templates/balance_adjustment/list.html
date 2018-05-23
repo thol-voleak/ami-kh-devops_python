@@ -667,10 +667,32 @@
             $("#listRejectErrorModal").modal('hide');
         }
 
+        validateUploadFileSize = function (popupContainer) {
+            var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+//            Validate the file size must not be greater than 8MB
+            if ($(uploadFileInput)[0].files[0].size / (1024 * 1024) > 8) {
+                swal({
+                    title: 'Upload exceeded max file size limit',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                return false;
+            }
+            return true;
+        }
+
+        uploadDelegateFunction = function (popupContainer) {
+            if (!validateUploadFileSize(popupContainer)) {
+                return false;
+            }
+//            console.log("do the real upload");
+        }
 
         initUploadPopup = function () {
             var uploadPopup = $("#uploadFileModal");
-            initUploadFilePopup(uploadPopup);
+            initUploadFilePopup(uploadPopup, undefined, uploadDelegateFunction);
         }
 
         $(document).ready(function () {
