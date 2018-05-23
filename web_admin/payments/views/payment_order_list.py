@@ -90,7 +90,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start searching payment order ==========')
         order_id = request.POST.get('order_id')
         searched_services = request.POST.getlist('service_name')
         user_id = request.POST.get('user_id')
@@ -167,6 +166,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             services = self.get_services_list()
             services.sort(key=lambda service: service['service_name'])
             self.logger.info('========== Finish getting service list ==========')
+            self.logger.info('========== Start searching payment order ==========')
             body['paging'] = True
             body['page_index'] = int(opening_page_index)
             data, is_success = self.get_payment_order_list(body=body)
