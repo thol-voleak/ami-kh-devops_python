@@ -2,7 +2,6 @@ function initUploadFilePopup(popupContainer, openCallBackFunction) {
     bindBrowseFileButtonEvent(popupContainer);
     bindFileInputFakeEvent(popupContainer);
     bindFileInputEvent(popupContainer);
-
     $(popupContainer).on("shown.bs.modal", function (event) {
         if (openCallBackFunction != undefined) {
             openCallBackFunction(popupContainer);
@@ -48,4 +47,21 @@ defaultOpenUploadFilePopup = function (popupContainer) {
     //reset input file
     $(uploadFileInput).val('');
     $(uploadFileInputFake).val("");
+}
+
+commonValidation = function (popupContainer) {
+    return validateFileEmpty(popupContainer);
+}
+
+function validateFileEmpty(popupContainer) {
+    if ($(popupContainer).find('input[name=file_data]')[0].files[0].size == 0) {
+        swal({
+                title: 'File cannot be empty',
+                type: "error",
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "Close",
+                closeOnConfirm: true
+            });
+        return false;
+    }
 }
