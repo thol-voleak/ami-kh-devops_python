@@ -133,19 +133,19 @@ class AddCondition(TemplateView, GetHeaderMixin):
 
             elif condition_type == 'profile_details':
                 params = {'filter_type': condition_type}
-                profile_actor = request.POST.get('profile_actor_' + suffix)
-                if profile_actor:
-                    params['profile_detail_actor'] = profile_actor
+                profile_detail_actor = request.POST.get('actor_' + suffix)
+                if profile_detail_actor:
+                    params['profile_detail_actor'] = profile_detail_actor
 
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
 
                 condition_id = data['id']
-                key_value_type = 'profile_key_value_type_' + suffix
-                detail_name = 'profile_detail_name_' + suffix
-                operator = 'profile_operator_' + suffix
-                key_value = 'profile_key_value_' + suffix
+                key_value_type = 'key_value_type_' + suffix
+                detail_name = 'detail_name_' + suffix
+                operator = 'operator_' + suffix
+                key_value = 'key_value_' + suffix
 
                 if not request.POST.get(key_value):
                     continue
