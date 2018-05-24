@@ -182,3 +182,19 @@ class RestFulClient:
             is_success, status_code, status_message, data = False, 'Timeout', 'timeout', None
 
         return is_success, status_code, status_message, data
+
+    @classmethod
+    def download(cls, url, headers, loggers, params={}, timeout=None):
+        if 'http' not in url:
+            url = settings.DOMAIN_NAMES + url
+        if timeout is None:
+            timeout = settings.GLOBAL_TIMEOUT
+        try:
+            loggers.info('POST path: [{path}]'.format(path=url))
+            response = requests.post(url, headers=headers, json=params, verify=settings.CERT, timeout=timeout)
+            status_code = response.status_code
+            is_success = status_code == 200
+        except requests.exceptions.Timeout:
+            is_success, status_code, response = False, 'Timeout', None
+
+        return status_code, is_success, response

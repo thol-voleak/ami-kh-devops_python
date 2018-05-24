@@ -1,0 +1,30 @@
+<div class="modal" tabindex="-1" role="dialog" id="uploadFileModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="float: left;">
+                    <h3 class="modal-title">{{modelHeader}}</h3>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <div class="modal-body">
+                <div id="uploadFileBody" style="padding-left: 30px;">
+                    <div style="float: left;"><span style="font-size: 15px;">File:</span></div>
+                    <div class="col-sm-7" style="float: left; padding-right: 0; height: 34px;">
+                        <input type="file" class="input-rounded" name="file_data" style="display: none;">
+                        <input type="text" class="input-rounded" name="file_data_mask" style="width: 100%; height: 100%;">
+                    </div>
+
+                    <div class="" style="float: left;">
+                        <button type="button" class="btn btn-primary" id="browse_file">Browse</button>
+                        <button id="btn_upload" type="button" class="btn btn-success" style="margin-left: 42px;">Upload</button>
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
 from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION, CREATE_FILTER, CREATE_RESET_FILTER
-from web_admin import setup_logger, RestFulClient
+from web_admin import setup_logger, RestFulClient, api_settings
 from web_admin.restful_helper import RestfulHelper
 from web_admin.get_header_mixins import GetHeaderMixin
 from braces.views import GroupRequiredMixin
@@ -60,6 +60,10 @@ class AddCondition(TemplateView, GetHeaderMixin):
         detail_names.extend((username, is_login_success, is_suspend))
         trigger = self._filter_trigger(all_terms)
 
+        campaign_id = context['campaign_id']
+        mechanic_id = context['mechanic_id']
+        success, mechanic = self.get_mechanic(campaign_id, mechanic_id)
+
         ops = {
             'operations': operations,
             'key_value_types': key_value_types,
@@ -71,7 +75,8 @@ class AddCondition(TemplateView, GetHeaderMixin):
             'sum_of_operators': sum_of_operators,
             'count_of_operators': count_of_operators,
             'count_consecutive_of_operators': count_consecutive_of_operators,
-            'sum_key_name': sum_key_name
+            'sum_key_name': sum_key_name,
+            'trigger_type': mechanic.get('event_name')
         }
 
         context.update(ops)
@@ -103,6 +108,35 @@ class AddCondition(TemplateView, GetHeaderMixin):
 
             if condition_type == 'event_detail':
                 params = {'filter_type': condition_type}
+                success, data, message = self.create_condition(campaign_id, mechanic_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
+                condition_id = data['id']
+                key_value_type = 'key_value_type_' + suffix
+                detail_name = 'detail_name_' + suffix
+                operator = 'operator_' + suffix
+                key_value = 'key_value_' + suffix
+
+                if not request.POST.get(key_value):
+                    continue
+
+                params = {
+                    'key_name': request.POST.get(detail_name),
+                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
+                    'operator': operations_map[request.POST.get(operator)],
+                    'key_value': request.POST.get(key_value),
+                }
+                success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
+            elif condition_type == 'profile_details':
+                params = {'filter_type': condition_type}
+                profile_detail_actor = request.POST.get('actor_' + suffix)
+                if profile_detail_actor:
+                    params['profile_detail_actor'] = profile_detail_actor
+
                 success, data, message = self.create_condition(campaign_id, mechanic_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -278,6 +312,11 @@ class AddCondition(TemplateView, GetHeaderMixin):
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         filtered.extend([link_bank, created_order, limit_reached])
         return filtered
+
+    def get_mechanic(self, campaign_id, mechanic_id):
+        url = api_settings.GET_MECHANIC_DETAIL.format(bak_rule_id=campaign_id, mechanic_id=mechanic_id)
+        success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting mechanic detail")
+        return success, data
 
     def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):
         params = {'filter_type': condition_type}

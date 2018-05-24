@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block content %}
+    <div class="col-md-12">
+        <div class="panel mb25">
+            <div class="panel-heading border mb15">
+                <div>
+                    <div class="pull-left"><h3>Upload Management</h3></div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            {% for message in messages %}
+                <div class="col-xs-12">
+                    <div class='alert
+                        alert-success
+                        alert-dismissable' id="msg-add-service">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if msg is not None %}
+                <div class="col-xs-12 mb5">
+                    <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ msg }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+            {% if add_client_msg is not None %}
+                <div class="col-xs-12 mb5">
+                    <div class="alert alert-success alert-dismissable" id="msg-add-client">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ add_client_msg }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-xs-12 mb5">
+                <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg"></strong>
+                </div>
+            </div>
+
+
+            <div class="panel-body">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'upload_management:list' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Filename</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control input-rounded"
+                                   name="filename"
+                                   id="txt_filename">
+                        </div>
+                        <label class="col-sm-2 control-label">Function</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_function" name="function">
+                                {% for item in function_list %}
+                                    {%if item.id == function_id%}
+                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endif %}
+
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">File ID</label>
+                        <div class="col-sm-2">
+                             <input type="number" class="form-control input-rounded"
+                                   name="file_id"
+                                   id="txt_file_id">
+                        </div>
+                        <label class="col-sm-2 control-label">Status</label>
+                        <div class="col-xs-2">
+                            <select class="form-control" id="ddl_status" name="status">
+                                {% for item in status_list %}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Uploaded by</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control input-rounded"
+                                   name="uploaded_by"
+                                   id="txt_uploaded_by">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Uploaded from</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="uploaded_from"
+                                   value="{{ uploaded_from|default_if_none:'' }}"
+                                   id="dtp_uploaded_from">
+                        </div>
+                        <label class="col-sm-2 control-label">To</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="uploaded_to"
+                                   value="{{ uploaded_to|default_if_none:'' }}"
+                                   id="dtp_uploaded_to">
+                        </div>
+                        <div class="pull-left">
+                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                                   onclick="searchFiles()" value="Search">
+                        </div>
+                    </div>
+                </form>
+
+                <div class="no-more-tables" style="position: absolute;">
+                <div class="table-responsive">
+                    <table id='tbl_file' class="table table-bordered table-striped mb0">
+                        <thead>
+                        <tr>
+                            <th id="ddl_file_id">File ID</th>
+                            <th id="ddl_filename">Filename</th>
+                            <th id="ddl_function">Function</th>
+                            <th id="ddl_status">Status</th>
+                            <th id="ddl_uploaded_by">Uploaded by</th>
+                            <th id="ddl_uploaded_date">Uploaded date</th>
+                            <th id="ddl_format_error">Format error</th>
+                            <th id="ddl_action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in data %}
+                            <!-- <div > -->
+                            <tr>
+                                <td>{{ i.file_id|default_if_none:'' }}</td>
+                                <td>{{ i.filename|default_if_none:'' }}</td>
+                                <td>{{ i.function|default_if_none:'' }}</td>
+                                <td>{{ i.status|default_if_none:'' }}</td>
+                                <td>{{ i.uploaded_by|default_if_none:'' }}</td>
+                                <td>{{ i.uploaded_timestamp|default_if_none:'' }}</td>
+                                <td>{{ i.common_error|default_if_none:'' }}</td>
+                                <td>
+                                    {#                                {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}#}
+                                    {#                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>#}
+                                    {#                                {% endif %}#}
+                                </td>
+                            </tr>
+                            <!-- </div> -->
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block body_js %}
+    {{ block.super }}
+    <script>
+        var searchFiles = function () {
+            document.getElementById("submit-form").submit();
+        };
+
+    </script>
+{% endblock %}

@@ -213,6 +213,8 @@
                         <li id="aprove_multi_balance"><a>Approve</a></li>
                         <li id="reject_multi_balance"><a>Reject</a></li>
                     {% endif %}
+
+                    <li id="upload_balance_adjustment_file"><a>Upload</a></li>
                 </ul>
             </div>
 
@@ -318,6 +320,7 @@
                     </div>
                 </div>
             </div>
+            {% include "uploadFile.html" with modelHeader="Upload Create Balance Adjustment"%}
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
@@ -394,6 +397,8 @@
 
 {% block body_js %}
     {{ block.super }}
+
+<script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
     <script type="text/javascript">
         var csrf_token = "{{ csrf_token }}";
         onFirstLoadingTime();
@@ -473,9 +478,16 @@
             });
         }
 
+        bindSelectUploadAction = function () {
+            $("#ddl_actions").find("#upload_balance_adjustment_file").click(function (e) {
+                $("#uploadFileModal").modal('show');
+            });
+        }
+
         bindSelectActionsEvent = function () {
             bindSelectApproveAction();
-            bindSelectRejectAction()
+            bindSelectRejectAction();
+            bindSelectUploadAction();
         }
 
         getSelectedBalanceAdjustments = function () {
@@ -655,11 +667,44 @@
             $("#listRejectErrorModal").modal('hide');
         }
 
+        validateUploadFileSize = function (popupContainer) {
+            var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+//            Validate the file size must not be greater than 8MB
+            if ($(uploadFileInput)[0].files[0].size / (1024 * 1024) > 8) {
+                swal({
+                    title: 'Upload exceeded max 8MB file size limit',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                return false;
+            }
+            return true;
+        }
+
+        uploadDelegateFunction = function (popupContainer) {
+            if (!commonUploadValidation(popupContainer)) {
+                return false;
+            }
+
+            if (!validateUploadFileSize(popupContainer)) {
+                return false;
+            }
+//            console.log("do the real upload");
+        }
+
+        initUploadPopup = function () {
+            var uploadPopup = $("#uploadFileModal");
+            initUploadFilePopup(uploadPopup, undefined, uploadDelegateFunction);
+        }
+
         $(document).ready(function () {
             bindSelectCheckboxEvents();
             bindSelectActionsEvent();
             bindApproveMultiBalanceAdjustment();
             bindRejectMultiBalanceAdjustment();
+            initUploadPopup();
         })
 
     </script>

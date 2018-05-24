@@ -174,6 +174,35 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
 
+            elif condition_type == 'profile_details':
+                params = {'filter_type': condition_type}
+                profile_detail_actor = request.POST.get('actor_' + suffix)
+                if profile_detail_actor:
+                    params['profile_detail_actor'] = profile_detail_actor
+
+                success, data, message = self.create_condition(campaign_id, mechanic_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
+                condition_id = data['id']
+                key_value_type = 'key_value_type_' + suffix
+                detail_name = 'detail_name_' + suffix
+                operator = 'operator_' + suffix
+                key_value = 'key_value_' + suffix
+
+                if not request.POST.get(key_value):
+                    continue
+
+                params = {
+                    'key_name': request.POST.get(detail_name),
+                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
+                    'operator': operations_map[request.POST.get(operator)],
+                    'key_value': request.POST.get(key_value),
+                }
+                success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
             elif condition_type == 'sum_of':
                 # condition_type == 'sum_of'
                 params = {'filter_type': condition_type, 'sum_key_name': sum_key_name}

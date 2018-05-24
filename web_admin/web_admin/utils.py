@@ -6,6 +6,8 @@ import base64
 import datetime
 import logging
 import urllib
+import cgi
+from django.http import HttpResponse
 
 from web_admin.exceptions import PermissionDeniedException
 
@@ -153,3 +155,12 @@ def calculate_page_range_from_page_info(pageInfo):
                 pageRangeStop = currentPage + 3
     pageRange = range(pageRangeStart, pageRangeStop)
     return pageRange
+
+def make_download_file(data, file_type):
+    value, params = cgi.parse_header(data.headers['Content-Disposition'])
+    if file_type == 'csv':
+        response = HttpResponse(data.content, content_type='text/csv')
+    else:
+        response = HttpResponse(data.content, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=' + params['filename']
+    return response
