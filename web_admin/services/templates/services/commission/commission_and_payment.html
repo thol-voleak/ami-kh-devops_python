@@ -153,18 +153,25 @@
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td>
-                                <select name="specific_actor_id" id="ddl_setting_payment_fee_structure_specific_id" class="form-control"
-                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
-                                        disabled
-                                    {% endif %}
-                                    onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)" type="number" autocomplete="off" >
-                                        <option value=""></option>
-                                        {% for id in specific_ids %}
-                                            <option value="{{ id }}">{{ id }}</option>
-                                        {% endfor %}
-                                </select>
                             </td>
+
+                            <td>
+                                <input onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)"
+                                id="ddl_setting_payment_fee_structure_specific_id" type='number' class="form-control" name="specific_actor_id" list="specific_ids" autocomplete="off"
+                                {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                    disabled
+                                {% endif %}>
+                                <datalist id="specific_ids">
+{#                                    {% with '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' as list%}#}
+{#                                    {% for i in list.split %}#}
+                                    {% for id in specific_ids %}
+                                        <option value="{{ id }}">
+                                    {% endfor %}
+{#                                    {% endfor %}#}
+{#                                    {% endwith %}#}
+                                </datalist>
+                            </td>
+
                             <td>
                                 <select class="form-control" name="sof_type_id"
                                         id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)">
@@ -363,7 +370,8 @@
         function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
             var cTr = $(selected_value).closest("tr");
             var actor = cTr.find("#" + actor + " option:selected").text();
-            var specific_id = cTr.find("#" + specific_id + " option:selected").text();
+{#            var specific_id = cTr.find("#" + specific_id + " option:selected").text();#}
+            var specific_id = cTr.find("#" + specific_id).val();
             var sof = cTr.find("#" + sof + " option:selected").val();
             var specific_sof = cTr.find("#" + specific_sof);
 
