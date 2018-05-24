@@ -218,6 +218,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             return render(request, self.template_name, context)
 
     def get_payment_order_list(self, body):
+        # url = 'http://localhost:1236/search_order'
         is_success, status_code, status_message, data = RestFulClient.post(url=PAYMENT_URL,
                                                                            headers=self._get_headers(), 
                                                                            loggers=self.logger, 
@@ -232,7 +233,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.ERROR,
                 status_message
             )
-            data = []
         return data, is_success
 
     def export_file(self, body):
