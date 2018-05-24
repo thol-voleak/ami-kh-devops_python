@@ -59,7 +59,12 @@
                         <div class="col-sm-2">
                             <select class="form-control" id="ddl_function" name="function">
                                 {% for item in function_list %}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {%if item.id == function_id%}
+                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endif %}
+
                                 {% endfor %}
                             </select>
                         </div>
