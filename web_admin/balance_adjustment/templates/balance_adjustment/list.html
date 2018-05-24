@@ -321,7 +321,7 @@
                     </div>
                 </div>
             </div>
-            {% include "uploadFile.html" with modelHeader="Upload Create Balance Adjustment"%}
+            {% include "uploadFile.html" with modelHeader="Upload Create Balance Adjustment" acceptedFileTypes=".csv"%}
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_balance_adjustment">
@@ -684,7 +684,30 @@
             return true;
         }
 
+        validateUploadBalanceAdjustmentFileType = function (popupContainer) {
+            //Validate csv file type
+            if (!validateFileType(popupContainer, ['csv'])) {
+                swal({
+                    title: 'Upload must be in csv format',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                return false;
+            }
+            return true;
+        }
+
         uploadDelegateFunction = function (popupContainer) {
+            if (!validateRequireInputFile(popupContainer)) {
+                return false;
+            }
+            //Validate csv file type
+            if (!validateUploadBalanceAdjustmentFileType(popupContainer)) {
+                return false;
+            }
+
             if (!commonUploadValidation(popupContainer)) {
                 return false;
             }

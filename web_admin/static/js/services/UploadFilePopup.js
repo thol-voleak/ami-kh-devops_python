@@ -76,3 +76,19 @@ function validateFileEmpty(popupContainer) {
     }
     return true;
 }
+
+function validateFileType(popupContainer, fileTypes) {
+    //don't care the file type
+    if (fileTypes == undefined || fileTypes == null || fileTypes.length === 0) {
+        return true;
+    }
+    var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+    var fileName = $(uploadFileInput)[0].files[0].name;
+    var fileExtension = fileName.substr((fileName.lastIndexOf('.') + 1));
+    return jQuery.inArray(fileExtension, fileTypes) > -1;
+}
+
+function validateRequireInputFile(popupContainer) {
+    var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+    return $(uploadFileInput)[0].files.length > 0;
+}
