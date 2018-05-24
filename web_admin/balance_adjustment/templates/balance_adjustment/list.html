@@ -213,8 +213,9 @@
                         <li id="aprove_multi_balance"><a>Approve</a></li>
                         <li id="reject_multi_balance"><a>Reject</a></li>
                     {% endif %}
-
+                    {% if request|has_any_permission:"CAN_UPLOAD_BALANCE_ADJUSTMENT" %}
                     <li id="upload_balance_adjustment_file"><a>Upload</a></li>
+                    {% endif %}
                 </ul>
             </div>
 
