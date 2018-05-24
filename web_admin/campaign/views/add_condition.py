@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from campaign.utils import get_profile_details_event_list
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
 from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION, CREATE_FILTER, CREATE_RESET_FILTER
@@ -68,6 +69,7 @@ class AddCondition(TemplateView, GetHeaderMixin):
             'operations': operations,
             'key_value_types': key_value_types,
             'detail_names': detail_names,
+            'profile_detail_names': get_profile_details_event_list(),
             'trigger': trigger,
             'freetext_ops': freetext_ops,
             'filter_ops': filter_ops,

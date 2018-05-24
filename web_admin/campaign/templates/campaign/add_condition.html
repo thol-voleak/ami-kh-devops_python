@@ -386,12 +386,8 @@
                                         <label class="col-sm-3 control-label">Detail Name *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_detail_name" name="detail_name_' + conditionNumber + '" >\
-                                                {% for item in detail_names %}\
-                                                    {% if item.description != "" %}\
-                                                    <option value= "{{ item.term }}">{{ item.description }}</option>\
-                                                    {% else %}\
-                                                    <option value= "{{ item.term }}">{{ item.term }}</option>\
-                                                    {% endif %}\
+                                                {% for item in profile_detail_names %}\
+                                                    <option value= "{{ item.value }}">{{ item.text }}</option>\
                                                 {% endfor %}\
                                             </select>\
                                         </div>\
