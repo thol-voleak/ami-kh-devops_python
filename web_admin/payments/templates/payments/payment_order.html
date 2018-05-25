@@ -56,6 +56,7 @@
     <div class="panel-heading border">
         <h3>Payment Order</h3>
     </div>
+    {% include "message.html" %}
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
             {% csrf_token %}

@@ -1,4 +1,6 @@
 from django.views.generic.base import TemplateView
+
+from campaign.utils import get_profile_details_event_list
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.shortcuts import render
 from web_admin.utils import build_logger
@@ -74,6 +76,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
         context.update({
             'mechanic': data,
+            'profile_detail_names': get_profile_details_event_list(),
         })
 
         return render(request, self.template_name, context)
