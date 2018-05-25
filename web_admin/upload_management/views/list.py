@@ -9,9 +9,21 @@ from django.shortcuts import render
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
+from web_admin.utils import calculate_page_range_from_page_info
 
 
 logger = logging.getLogger(__name__)
+
+status_list_map = {
+    "All": 0,
+    "VALIDATING": 1,
+    "VALIDATE_FAIL": 2,
+    "VALIDATED": 3,
+    "POSTING": 4,
+    "POST_FAIL": 5,
+    "POST_PARTIAL": 6,
+    "POSTED": 7
+}
 
 class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
@@ -32,35 +44,79 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render bulk-upload file list page==========')
-        status_list = self._get_status_list()
         function_list = self._get_function_list()
 
         context = {
-            'status_list': status_list,
+            'function_id':0,
+            'status_id':0,
+            'status_list_map': status_list_map,
             'function_list': function_list,
+            'search_count': 0
         }
         self.logger.info('========== Finish render bulk-upload file list page==========')
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        function_list = self._get_function_list()
+
+        opening_page_index = request.POST.get('current_page_index')
+
 
         function = int(request.POST.get('function'))
+        function_list = self._get_function_list()
+        status = int(request.POST.get('status'))
+
+        filename = request.POST.get('filename')
+        file_id = request.POST.get('file_id')
+        uploaded_by = request.POST.get('uploaded_by')
+        uploaded_from = request.POST.get('uploaded_from')
+        uploaded_to = request.POST.get('uploaded_to')
 
         body = {}
+        body['page_index'] = int(opening_page_index)
+        if filename!='':
+            body['file_name'] = filename
+        if file_id:
+            body['id'] = int(file_id)
+        if uploaded_by:
+            body['uploaded_username'] = uploaded_by
+            # if uploaded_from:
         if function!=0:
             body['function_id'] = function
+        if status!=0:
+            body['status_id'] = status
 
-        context = {
-            'function_list': function_list,
-        }
+        if uploaded_from:
+            new_from_created_timestamp = datetime.strptime(uploaded_from, "%Y-%m-%d")
+            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_timestamp'] = new_from_created_timestamp
+
+        if uploaded_to:
+            new_to_created_timestamp = datetime.strptime(uploaded_to, "%Y-%m-%d")
+            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
+            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_created_timestamp'] = new_to_created_timestamp
+
+        self.logger.info('========== Start searching file ==========')
+        is_success, data = self._search_file(body)
+        self.logger.info('========== Finished searching file ==========')
+        if is_success:
+            page = data['page']
+            context = {
+                'data': data['file_uploads'],
+                'filename': filename,
+                'file_id': file_id,
+                'function_id': function,
+                'function_list': function_list,
+                'status_id': status,
+                'uploaded_by': uploaded_by,
+                'uploaded_from': uploaded_from,
+                'uploaded_to' : uploaded_to,
+                'paginator': page,
+                'search_count': page['total_elements'],
+                'page_range': calculate_page_range_from_page_info(page),
+                'status_list_map': status_list_map
+            }
         return render(request, self.template_name, context)
-
-
-    def _get_status_list(self):
-        return [
-            {"name": "All", "value": ""},
-        ]
 
     def _get_function_list(self):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_FUNCTION,
@@ -81,14 +137,13 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data=[{"id":0,"name":"All"}]+data
         return data
 
-
     def _search_file(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_UPLOADED_FILE,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
 
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data['file_uploads'],
                                 status_code=status_code, is_getting_list=True)
 
         if not is_success:
@@ -98,4 +153,4 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
-        return data
+        return is_success, data

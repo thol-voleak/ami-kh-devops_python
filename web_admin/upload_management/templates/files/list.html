@@ -2,120 +2,135 @@
 {% load static %}
 {% load permissions_filter %}
 {% block content %}
-    <div class="col-md-12">
-        <div class="panel mb25">
-            <div class="panel-heading border mb15">
-                <div>
-                    <div class="pull-left"><h3>Upload Management</h3></div>
-                    <div class="clearfix"></div>
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <div>
+                <div class="pull-left"><h3>Upload Management</h3></div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        {% for message in messages %}
+            <div class="col-xs-12">
+                <div class='alert
+                    alert-success
+                    alert-dismissable' id="msg-add-service">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message|capfirst }}</strong>
                 </div>
             </div>
-            {% for message in messages %}
-                <div class="col-xs-12">
-                    <div class='alert
-                        alert-success
-                        alert-dismissable' id="msg-add-service">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message|capfirst }}</strong>
-                    </div>
-                </div>
-            {% endfor %}
-            {% if msg is not None %}
-                <div class="col-xs-12 mb5">
-                    <div class="alert alert-success alert-dismissable" id="msg-update-client">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ msg }}</strong>
-                    </div>
-                </div>
-            {% endif %}
-            {% if add_client_msg is not None %}
-                <div class="col-xs-12 mb5">
-                    <div class="alert alert-success alert-dismissable" id="msg-add-client">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ add_client_msg }}</strong>
-                    </div>
-                </div>
-            {% endif %}
+        {% endfor %}
+        {% if msg is not None %}
             <div class="col-xs-12 mb5">
-                <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
-                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-                    <strong id="alert-msg"></strong>
+                <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ msg }}</strong>
                 </div>
             </div>
+        {% endif %}
+        {% if add_client_msg is not None %}
+            <div class="col-xs-12 mb5">
+                <div class="alert alert-success alert-dismissable" id="msg-add-client">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ add_client_msg }}</strong>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
 
 
-            <div class="panel-body">
-                <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="{% url 'upload_management:list' %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Filename</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control input-rounded"
-                                   name="filename"
-                                   id="txt_filename">
-                        </div>
-                        <label class="col-sm-2 control-label">Function</label>
-                        <div class="col-sm-2">
-                            <select class="form-control" id="ddl_function" name="function">
-                                {% for item in function_list %}
-                                    {%if item.id == function_id%}
-                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
-                                    {% else %}
-                                    <option value="{{ item.id }}">{{ item.name }}</option>
-                                    {% endif %}
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post"
+                  action="{% url 'upload_management:list' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Filename</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="filename"
+                               id="txt_filename"
+                               value="{{ filename }}">
 
-                                {% endfor %}
-                            </select>
-                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">File ID</label>
-                        <div class="col-sm-2">
-                             <input type="number" class="form-control input-rounded"
-                                   name="file_id"
-                                   id="txt_file_id">
-                        </div>
-                        <label class="col-sm-2 control-label">Status</label>
-                        <div class="col-xs-2">
-                            <select class="form-control" id="ddl_status" name="status">
-                                {% for item in status_list %}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Uploaded by</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control input-rounded"
-                                   name="uploaded_by"
-                                   id="txt_uploaded_by">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Uploaded from</label>
-                        <div class="col-sm-2">
-                            <input type="date" class="form-control input-rounded"
-                                   name="uploaded_from"
-                                   value="{{ uploaded_from|default_if_none:'' }}"
-                                   id="dtp_uploaded_from">
-                        </div>
-                        <label class="col-sm-2 control-label">To</label>
-                        <div class="col-sm-2">
-                            <input type="date" class="form-control input-rounded"
-                                   name="uploaded_to"
-                                   value="{{ uploaded_to|default_if_none:'' }}"
-                                   id="dtp_uploaded_to">
-                        </div>
-                        <div class="pull-left">
-                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
-                                   onclick="searchFiles()" value="Search">
-                        </div>
-                    </div>
-                </form>
+                    <label class="col-sm-2 control-label">Function</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_function" name="function">
+                            {% for item in function_list %}
+                                {%if item.id == function_id%}
+                                <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endif %}
 
-                <div class="no-more-tables" style="position: absolute;">
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">File ID</label>
+                    <div class="col-sm-2">
+                         <input type="number" class="form-control input-rounded"
+                               name="file_id"
+                                id="txt_file_id"
+                                value="{{ file_id }}">
+
+                    </div>
+                    <label class="col-sm-2 control-label">Status</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_status" name="status">
+                            {% for key, value in status_list_map.items %}
+                                {%if value == status_id%}
+                                <option value="{{ value }}" selected>{{ key }}</option>
+                                {% else %}
+                                <option value="{{ value }}">{{ key }}</option>
+                                {% endif %}
+
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Uploaded by</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded"
+                               name="uploaded_by"
+                               id="txt_uploaded_by"
+                               value="{{ uploaded_by }}">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Uploaded from</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="uploaded_from"
+                               value="{{ uploaded_from|default_if_none:'' }}"
+                               id="dtp_uploaded_from"
+                               value="{{ uploaded_from }}">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="uploaded_to"
+                               value="{{ uploaded_to|default_if_none:'' }}"
+                               id="dtp_uploaded_to"
+                               value="{{ uploaded_to }}"  >
+                    </div>
+                    <div class="pull-left">
+                        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                               onclick="searchFiles()" value="Search">
+                    </div>
+
+                </div>
+                <div class="form-group" >
+                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                    <label class="pull-right">Total Orders found:&nbsp;</label>
+                </div>
                 <div class="table-responsive">
                     <table id='tbl_file' class="table table-bordered table-striped mb0">
                         <thead>
@@ -134,17 +149,21 @@
                         {% for i in data %}
                             <!-- <div > -->
                             <tr>
-                                <td>{{ i.file_id|default_if_none:'' }}</td>
-                                <td>{{ i.filename|default_if_none:'' }}</td>
-                                <td>{{ i.function|default_if_none:'' }}</td>
-                                <td>{{ i.status|default_if_none:'' }}</td>
-                                <td>{{ i.uploaded_by|default_if_none:'' }}</td>
-                                <td>{{ i.uploaded_timestamp|default_if_none:'' }}</td>
+                                <td>{{ i.id|default_if_none:'' }}</td>
+                                <td>{{ i.file_name|default_if_none:'' }}</td>
+                                <td>{{ i.function.name|default_if_none:'' }}</td>
+                                <td>{{ i.status.name|default_if_none:'' }}</td>
+                                <td>{{ i.uploaded_username|default_if_none:'' }}</td>
+                                <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.common_error|default_if_none:'' }}</td>
                                 <td>
-                                    {#                                {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}#}
-                                    {#                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>#}
-                                    {#                                {% endif %}#}
+                                        {% if i.status.id == status_list_map.VALIDATED %}
+                                            <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
+                                        {% endif %}
+                                        {% if i.status.id != status_list_map.POSTING and i.status.id != status_list_map.VALIDATING %}
+                                            <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Get Result</button>
+                                        {% endif %}
+
                                 </td>
                             </tr>
                             <!-- </div> -->
@@ -152,7 +171,8 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+                {% include "pagination.html" %}
+            </form>
         </div>
     </div>
 {% endblock %}
