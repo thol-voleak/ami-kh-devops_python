@@ -9,7 +9,7 @@ from django.shortcuts import render
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
-
+import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +35,7 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         status_list = self._get_status_list()
         function_list = self._get_function_list()
 
+        pdb.set_trace()
         context = {
             'status_list': status_list,
             'function_list': function_list,
@@ -84,6 +85,24 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def _search_file(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_UPLOADED_FILE,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
+
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
+                                status_code=status_code, is_getting_list=True)
+
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            data = []
+        return data
+
+    def _post_file(self, body):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.POST_UPLOADED_FILE,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
