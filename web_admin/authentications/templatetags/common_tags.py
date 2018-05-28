@@ -8,6 +8,11 @@ from web_admin.utils import encode_current_url_for_back, get_back_url, has_any_p
 register = template.Library()
 
 
+@register.filter(name='split')
+def filter_split(str, c):
+    return str.split(c)
+
+
 @register.filter(name='jsonify')
 def filter_json(value):
     return mark_safe(json.dumps(value))
