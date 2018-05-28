@@ -130,10 +130,11 @@
                                         <th id="sof_id">Sof ID</th>
                                         <th id="service_name">Service Name</th>
                                         <th id="from_amount">From Amount</th>
+                                        <th id="pre_balance">Pre-Balance</th>
                                         <th id="debit">Debit (-)</th>
                                         <th id="credit">Credit (+)</th>
-                                        <th id="currency">Currency</th>
                                         <th id="post_balance">Post-Balance</th>
+                                        <th id="currency">Currency</th>
                                         <th id="created_date">Created Date</th>
                                         <th id="action">Action</th>
                                     </tr>
@@ -151,10 +152,11 @@
                                             <td>{{ row.sof_id|default_if_none:'' }}</td>
                                             <td>{{ row.service_name|default_if_none:'' }}</td>
                                             <td>{{ row.amount_type|default_if_none:'' }}</td>
+                                            <td>{{ row.pre_balance|default_if_none:'' }}</td>
                                             <td>{% if row.action_type|lower == 'debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
                                             <td>{% if row.action_type|lower == 'credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
-                                            <td>{{ row.currency|default_if_none:'' }}</td>
                                             <td>{{ row.post_balance|default_if_none:'' }}</td>
+                                            <td>{{ row.currency|default_if_none:'' }}</td>
                                             <td>{{ row.created_timestamp|default_if_none:'' }}</td>
                                             <td class="col-sm-3">
                                                 {% if row.has_permission_view_payment_order_detail %}
