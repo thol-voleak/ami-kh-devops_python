@@ -160,7 +160,7 @@
                                         {% if i.status.id == status_list_map.VALIDATED %}
                                             <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
                                         {% endif %}
-                                        {% if i.status.id != status_list_map.POSTING and i.status.id != status_list_map.VALIDATING %}
+                                        {% if i.status.id != status_list_map.VALIDATING %}
                                             <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Get Result</button>
                                         {% endif %}
 
