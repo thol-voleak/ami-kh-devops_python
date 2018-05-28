@@ -19,7 +19,7 @@ from django.contrib import messages
 import logging
 
 from web_admin.global_constants import UserType, ORDER_STATUS, ORDER_DETAIL_STATUS, SOF_TYPE
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, export_file
 
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
@@ -218,18 +218,19 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['to_created_timestamp'] = new_to_created_timestamp
 
             if 'download' in request.GET:
-                self.logger.info('========== Start exporting customer transaction history ==========')
+                self.logger.info('Exporting customer transaction history')
                 file_type = request.GET.get('export-type')
                 body['file_type'] = file_type
                 body['row_number'] = 5000
-                is_success, data = self.export_file(body=body)
+                is_success, data = export_file(self, body=body, url_download=BALANCE_MOVEMENT_LIST_PATH,
+                                               api_logger=API_Logger)
                 if is_success:
                     response = make_download_file(data, file_type)
-                    self.logger.info('========== Finish exporting payment order ==========')
+                    self.logger.info('Export customer transaction history success')
                     return response
 
             if 'search' in request.GET:
-                self.logger.info('========== Start getting customer transaction history ==========')
+                self.logger.info('Searching customer transaction history')
                 data, success, status_message = self._get_transaction_history_list(body)
                 if success:
 
@@ -270,7 +271,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                          'is_show_export': False
                          }
                     )
-                self.logger.info('========== End search customer transaction history ==========')
+                self.logger.info('Finish search customer transaction history')
         request.session['customer_redirect_from_wallet_view'] = True
         request.session['back_wallet_url'] = request.build_absolute_uri()
 
@@ -341,9 +342,3 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp_as_datetime = datetime.strptime(toDate, self.dateUIFormat)
         detal = to_created_timestamp_as_datetime - from_created_timestamp_as_datetime
         return detal.days
-
-    def export_file(self, body):
-        status_code, is_success, data = RestFulClient.download(url=BALANCE_MOVEMENT_LIST_PATH, headers=self._get_headers(), loggers=self.logger, params=body)
-        API_Logger.post_logging(loggers=self.logger, params=body, response={},
-                                status_code=status_code)
-        return is_success, data

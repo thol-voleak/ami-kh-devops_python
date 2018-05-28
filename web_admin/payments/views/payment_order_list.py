@@ -1,5 +1,5 @@
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info, make_download_file
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
@@ -155,7 +155,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             file_type = request.POST.get('export-type')
             body['file_type'] = file_type
             body['row_number'] = 5000
-            is_success, data = self.export_file(body=body)
+            is_success, data = export_file(self, body=body, url_download=PAYMENT_URL, api_logger=API_Logger)
             if is_success:
                 response = make_download_file(data, file_type)
                 self.logger.info('========== Finish exporting payment order ==========')
@@ -234,12 +234,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 status_message
             )
         return data, is_success
-
-    def export_file(self, body):
-        status_code, is_success, data = RestFulClient.download(url=PAYMENT_URL, headers=self._get_headers(), loggers=self.logger, params=body)
-        API_Logger.post_logging(loggers=self.logger, params=body, response={},
-                                status_code=status_code)
-        return is_success, data
 
     def format_data(self, data):
         for i in data['orders']:
