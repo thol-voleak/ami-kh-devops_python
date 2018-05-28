@@ -195,6 +195,22 @@
                                value="{{ batch_code|default_if_none:'' }}"
                                id="txt_batch_code">
                     </div>
+
+                    <!--currecy search criteria-->
+                    <label class="col-sm-3 control-label">Currency</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_currency" name="currency_code">
+                            <option value="" {% if not currency_code %}selected="selected" {% endif %}>All</option>
+                            {% for currency_entity in currencies %}
+                                {% if currency_entity.currency_code == currency_code %}
+                                    <option value="{{currency_entity.currency_code }}" selected>{{currency_entity.currency_code}}</option>
+                                {% else %}
+                                    <option value="{{ currency_entity.currency_code }}">{{ currency_entity.currency_code }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="pull-right">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
@@ -342,6 +358,7 @@
                         <th id="request_date">Request Date</th>
                         <th id="requester">Requester</th>
                         <th id="approved_rejected_by">Approved/Rejected by</th>
+                        <th id="currency">Currency</th>
                         <th id="adjustment_detail">Adjustment Details</th>
                     </tr>
                     </thead>
@@ -369,6 +386,7 @@
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.currency|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"

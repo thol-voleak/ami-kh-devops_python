@@ -56,11 +56,14 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         context = super(BalanceAdjustmentListView, self).get_context_data(**kwargs)
         data = self.get_services_list()
         service_group_list = self.get_service_group_list()
+        currency_list = self._get_preload_currencies_dropdown()
+
         context['data'] = data
         context['service_group_list'] = service_group_list
         context['search_count'] = 0
         context['status_list'] = self.status_list
         context['status_id'] = ''
+        context['currencies'] = currency_list
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -87,6 +90,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         reference_service_group_id = request.POST.get('reference_service_group_id')
         reference_service_id = request.POST.get('reference_service_id')
         batch_code = request.POST.get('batch_code')
+        currency_code = request.POST.get('currency_code')
+        currency_list = self._get_preload_currencies_dropdown()
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -123,6 +128,8 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             body['approved_user_id'] = approved_by_id
         if batch_code:
             body['batch_code'] = batch_code
+        if currency_code:
+            body['currency'] = currency_code
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -157,9 +164,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                        'data': service_list,
                        'service_group_list': service_group_list,
                        'payer_user_id': payer_user_id,
-                       'payer_user_type_id':payer_user_type_id,
+                       'payer_user_type_id': payer_user_type_id,
                        'payee_user_id': payee_user_id,
-                       'payee_user_type_id':payee_user_type_id,
+                       'payee_user_type_id': payee_user_type_id,
                        'search_count': count,
                        'requested_by_id': requested_by_id,
                        'approved_by_id': approved_by_id,
@@ -174,7 +181,9 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
                        'batch_code': batch_code,
                        'paginator': page,
                        'page_range': calculate_page_range_from_page_info(page),
-                       'search_count': page['total_elements']
+                       'search_count': page['total_elements'],
+                       'currency_code': currency_code,
+                       'currencies': currency_list
                        }
             if status_id:
                 context['status_id'] = int(status_id)
@@ -217,6 +226,18 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
             data = []
         self.logger.info('Response_content_count: {}'.format(len(data)))
         return data
+
+    def _get_preload_currencies_dropdown(self):
+        url = api_settings.GET_ALL_PRELOAD_CURRENCY_URL
+        is_success, status_code, data = RestFulClient.get(url,
+                                                          loggers=self.logger,
+                                                          headers=self._get_headers())
+
+        if is_success:
+            return data
+        else:
+            # return empty list data
+            return []
 
 
 class BalanceAdjustmentListActionView(TemplateView, GetHeaderMixin):
