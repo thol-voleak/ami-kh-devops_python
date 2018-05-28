@@ -9,10 +9,11 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from web_admin.api_logger import API_Logger
-from web_admin.api_settings import SOF_TYPES_URL
+from web_admin.api_settings import SOF_TYPES_URL, BALANCE_MOVEMENT_LIST_PATH
 from web_admin.global_constants import UserType, SOFType
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_settings import CASH_SOFS_URL
+from web_admin.utils import make_download_file
 from django.contrib import messages
 
 import logging
@@ -107,7 +108,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'cash_sof_list': cash_sof_list,
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
-                     'user_id': user_id
+                     'user_id': user_id,
+                     'is_show_export': True
                      }
                 )
             else:
@@ -115,7 +117,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     {'search_count': 0,
                      'data': [],
                      'paginator': {},
-                     'user_id': user_id
+                     'user_id': user_id,
+                     'is_show_export': False
                      }
                 )
             permissions = {
@@ -214,45 +217,60 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
 
-            data, success, status_message = self._get_transaction_history_list(body)
-            if success:
+            if 'download' in request.GET:
+                self.logger.info('========== Start exporting customer transaction history ==========')
+                file_type = request.GET.get('export-type')
+                body['file_type'] = file_type
+                body['row_number'] = 5000
+                is_success, data = self.export_file(body=body)
+                if is_success:
+                    response = make_download_file(data, file_type)
+                    self.logger.info('========== Finish exporting payment order ==========')
+                    return response
 
-                order_balance_movements = data.get("order_balance_movements", [])
+            if 'search' in request.GET:
+                self.logger.info('========== Start getting customer transaction history ==========')
+                data, success, status_message = self._get_transaction_history_list(body)
+                if success:
 
-                if order_balance_movements is not None:
-                    result_data = self.format_data(order_balance_movements)
-                    has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
-                                                                                         'CAN_VIEW_PAYMENT_ORDER_DETAIL')
-                    for i in order_balance_movements:
-                        i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                    order_balance_movements = data.get("order_balance_movements", [])
+
+                    if order_balance_movements is not None:
+                        result_data = self.format_data(order_balance_movements)
+                        has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                             'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                        for i in order_balance_movements:
+                            i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                    else:
+                        result_data = order_balance_movements
+
+                    page = data.get("page", {})
+                    self.logger.info("Page: {}".format(page))
+                    context.update(
+                        {'search_count': page.get('total_elements', 0),
+                         'list': result_data,
+                         'choices': choices,
+                         'sof_type_id': sof_type_id,
+                         'sof_id': sof_id,
+                         'cash_sof_list': cash_sof_list,
+                         'paginator': page,
+                         'page_range': calculate_page_range_from_page_info(page),
+                         'user_id': user_id,
+                         'from_created_timestamp': from_created_timestamp,
+                         'to_created_timestamp': to_created_timestamp,
+                         'is_show_export': True
+                         }
+                    )
                 else:
-                    result_data = order_balance_movements
-
-                page = data.get("page", {})
-                self.logger.info("Page: {}".format(page))
-                context.update(
-                    {'search_count': page.get('total_elements', 0),
-                     'list': result_data,
-                     'choices': choices,
-                     'sof_type_id': sof_type_id,
-                     'sof_id': sof_id,
-                     'cash_sof_list': cash_sof_list,
-                     'paginator': page,
-                     'page_range': calculate_page_range_from_page_info(page),
-                     'user_id': user_id,
-                     'from_created_timestamp': from_created_timestamp,
-                     'to_created_timestamp': to_created_timestamp
-                     }
-                )
-            else:
-                context.update(
-                    {'search_count': 0,
-                     'data': [],
-                     'paginator': {},
-                     'user_id': user_id
-                     }
-                )
-            self.logger.info('========== End search customer transaction history ==========')
+                    context.update(
+                        {'search_count': 0,
+                         'data': [],
+                         'paginator': {},
+                         'user_id': user_id,
+                         'is_show_export': False
+                         }
+                    )
+                self.logger.info('========== End search customer transaction history ==========')
         request.session['customer_redirect_from_wallet_view'] = True
         request.session['back_wallet_url'] = request.build_absolute_uri()
 
@@ -323,3 +341,9 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp_as_datetime = datetime.strptime(toDate, self.dateUIFormat)
         detal = to_created_timestamp_as_datetime - from_created_timestamp_as_datetime
         return detal.days
+
+    def export_file(self, body):
+        status_code, is_success, data = RestFulClient.download(url=BALANCE_MOVEMENT_LIST_PATH, headers=self._get_headers(), loggers=self.logger, params=body)
+        API_Logger.post_logging(loggers=self.logger, params=body, response={},
+                                status_code=status_code)
+        return is_success, data
