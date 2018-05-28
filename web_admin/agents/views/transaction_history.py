@@ -18,7 +18,7 @@ from django.contrib import messages
 import logging
 
 from web_admin.global_constants import UserType, ORDER_STATUS, ORDER_DETAIL_STATUS, SOF_TYPE, SOFType
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
@@ -118,6 +118,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'agent_id': user_id
                      }
                 )
+                context['is_show_export'] = True
             else:
                 context.update(
                     {'search_count': 0,
@@ -126,6 +127,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'agent_id': user_id
                      }
                 )
+                context['is_show_export'] = False
         else :
             user_type = UserType.AGENT.value
             cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
@@ -225,48 +227,61 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
 
-            data, success, status_message = self._get_transaction_history_list(body)
-            if success:
-                order_balance_movements = data.get("order_balance_movements", [])
-
-                if order_balance_movements is not None:
-                    result_data = self.format_data(order_balance_movements)
-                    has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
-                                                                                         'CAN_VIEW_PAYMENT_ORDER_DETAIL')
-                    for i in order_balance_movements:
-                        i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
-                else:
-                    result_data = order_balance_movements
-
-                page = data.get("page", {})
-                self.logger.info("Page: {}".format(page))
-                context.update(
-                    {'search_count': page.get('total_elements', 0),
-                     'list': result_data,
-                     'choices': choices,
-                     'sof_type_id': sof_type_id,
-                     'sof_id': sof_id,
-                     'cash_sof_list': cash_sof_list,
-                     'paginator': page,
-                     'page_range': calculate_page_range_from_page_info(page),
-                     'agent_id': user_id,
-                     'from_created_timestamp': from_created_timestamp,
-                     'to_created_timestamp': to_created_timestamp
-                     }
-                )
+            if ('download' in request.GET):
+                self.logger.info('Exporting agent transaction history')
+                file_type = request.GET.get('export_type')
+                body['file_type'] = file_type
+                body['row_number'] = 5000
+                is_success, data = export_file(self, body=body, url_download = api_settings.BALANCE_MOVEMENT_LIST_PATH, api_logger = API_Logger)
+                if is_success:
+                    response = make_download_file(data, file_type)
+                    self.logger.info('Export agent transaction history success')
+                    return response
             else:
-                context.update(
-                    {'search_count': 0,
-                     'data': [],
-                     'paginator': {},
-                     'agent_id': user_id
-                     }
-                )
-            self.logger.info('========== End search transaction history ==========')
+                self.logger.info('Searching customer transaction history')
+                data, success, status_message = self._get_transaction_history_list(body)
+                if success:
+                    order_balance_movements = data.get("order_balance_movements", [])
+
+                    if order_balance_movements is not None:
+                        result_data = self.format_data(order_balance_movements)
+                        has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
+                                                                                             'CAN_VIEW_PAYMENT_ORDER_DETAIL')
+                        for i in order_balance_movements:
+                            i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
+                    else:
+                        result_data = order_balance_movements
+
+                    page = data.get("page", {})
+                    self.logger.info("Page: {}".format(page))
+                    context.update(
+                        {'search_count': page.get('total_elements', 0),
+                         'list': result_data,
+                         'choices': choices,
+                         'sof_type_id': sof_type_id,
+                         'sof_id': sof_id,
+                         'cash_sof_list': cash_sof_list,
+                         'paginator': page,
+                         'page_range': calculate_page_range_from_page_info(page),
+                         'agent_id': user_id,
+                         'from_created_timestamp': from_created_timestamp,
+                         'to_created_timestamp': to_created_timestamp
+                         }
+                    )
+                    context['is_show_export'] = True
+                else:
+                    context.update(
+                        {'search_count': 0,
+                         'data': [],
+                         'paginator': {},
+                         'agent_id': user_id
+                         }
+                    )
+                    context['is_show_export'] = False
+                self.logger.info('Finish search agent transaction history')
         request.session['back_wallet_url'] = request.build_absolute_uri()
         self.logger.info('========== Finished getting agent transaction history ==========')
         return render(request, self.template_name, context)
-
 
     def _get_choices_types(self):
         url = settings.DOMAIN_NAMES + SOF_TYPES_URL
