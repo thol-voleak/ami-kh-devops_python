@@ -9,7 +9,6 @@ from django.shortcuts import render
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
-import pdb
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -46,7 +45,6 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger.info('========== Start render bulk-upload file list page==========')
         function_list = self._get_function_list()
 
-        pdb.set_trace()
         context = {
             'function_id':0,
             'status_id':0,
@@ -72,6 +70,8 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         uploaded_from = request.POST.get('uploaded_from')
         uploaded_to = request.POST.get('uploaded_to')
 
+        postingFileId = request.POST.get('postingFileId')
+
         body = {}
         body['page_index'] = int(opening_page_index)
         if filename!='':
@@ -86,6 +86,11 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if status!=0:
             body['status_id'] = status
 
+        if postingFileId:
+            postBodyData = {}
+            postBodyData['file_id'] = postingFileId
+            is_success, data = self._post_file(postBodyData)
+            
         if uploaded_from:
             new_from_created_timestamp = datetime.strptime(uploaded_from, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -172,4 +177,10 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
+        else:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                "Post successful"
+            )
         return is_success, data
