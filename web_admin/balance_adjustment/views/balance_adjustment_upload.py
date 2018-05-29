@@ -2,8 +2,6 @@
 import os
 
 import logging
-import simplejson
-from django.contrib import messages
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.uploadhandler import MemoryFileUploadHandler, \
     StopFutureHandlers
