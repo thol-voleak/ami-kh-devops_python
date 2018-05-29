@@ -247,6 +247,12 @@
                                     <span style="font-size: 15px;">Number of Orders: </span>
                                     <span id="number_orders_approve_value" style="font-size: 15px;"></span>
                                 </div>
+                                <div>
+                                    <span style="font-size: 15px;">Total Value: </span>
+                                    <span id="total_amount_orders_approve_value" style="font-size: 15px;"></span>
+                                    <span>&nbsp;</span>
+                                    <span id="total_amount_orders_approve_currency" style="font-size: 15px;"></span>
+                                </div>
                             </div>
                             <div style="clear: both;"></div>
                         </div>
@@ -278,6 +284,12 @@
                                 <div>
                                     <span style="font-size: 15px;">Number of Orders: </span>
                                     <span id="number_orders_reject_value" style="font-size: 15px;"></span>
+                                </div>
+                                <div>
+                                    <span style="font-size: 15px;">Total Value: </span>
+                                    <span id="total_amount_orders_reject_value" style="font-size: 15px;"></span>
+                                    <span>&nbsp;</span>
+                                    <span id="total_amount_orders_reject_currency" style="font-size: 15px;"></span>
                                 </div>
                             </div>
                             <div style="clear: both;"></div>
@@ -370,7 +382,7 @@
                                                         value="{{ order.reference_id }}"/></td>
                             <td class="col-sm-2">{{ order.batch_code|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id="balance_adjustment_amount">{{ order.amount|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.product_service_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_type.name|default_if_none:'' }}</td>
@@ -386,7 +398,7 @@
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.currency|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id="balance_adjustment_currency">{{ order.currency|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"
@@ -416,7 +428,7 @@
 
 {% block body_js %}
     {{ block.super }}
-
+<script src="{% static 'vendor/bignumber.js-master/bignumber.min.js' %}"></script>
 <script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
     <script type="text/javascript">
         var csrf_token = "{{ csrf_token }}";
@@ -466,6 +478,68 @@
                 '</div>')
         }
 
+        calculateTotalAmount = function () {
+            var totalAmount = new BigNumber(0);
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amount = $(tr).find("td#balance_adjustment_amount").text();
+                    var amountAsNumberFormat = amount.replace(/,/g,'');
+                    totalAmount = totalAmount.plus(new BigNumber(amountAsNumberFormat));
+                }
+            });
+            return totalAmount;
+        }
+
+        getDecimalAmount = function () {
+            var decimalAmount = 0;
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amountstr = $(tr).find("td#balance_adjustment_amount").text();
+                    var arr = amountstr.split('.');
+                    var fractionPart = arr[1];
+                    if (fractionPart != undefined) {
+                        decimalAmount = fractionPart.trim().length;
+                    }
+                    //break each loop
+                    return false;
+                }
+            });
+            return decimalAmount;
+        }
+
+        getSelectedCurrency = function () {
+            var selectedCurrencies = [];
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var currency = $(tr).find("td#balance_adjustment_currency").text();
+                    selectedCurrencies.push(currency);
+                }
+            });
+
+            if (selectedCurrencies.length == 0) {
+                return null;
+            }
+
+            var selectedCurrency = selectedCurrencies[0];
+            //does not have the currency for created fail
+            if (selectedCurrency == null || selectedCurrency == '') {
+                return null;
+            }
+
+            $.each(selectedCurrencies, function (index, currency) {
+                if (currency != selectedCurrency) {
+                    //handle the currency is not the same error later
+                    selectedCurrency = null;
+                    return false;
+                }
+            })
+            return selectedCurrency;
+        }
+
+
         bindSelectCheckboxEvents = function () {
             //bind select all
             $('#select-all').on('change', function () {
@@ -481,18 +555,55 @@
 
         bindSelectApproveAction = function () {
             $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
+                var selectedCurrency = getSelectedCurrency();
+                var decimalAmount = null;
+                var totalAmount = null;
+                if (selectedCurrency != null) {
+                    decimalAmount = getDecimalAmount();
+                    totalAmount = calculateTotalAmount();
+                }
+
                 var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
                 $("#approveModal #number_orders_approve_value").text(selectedNumber);
                 $("#approveModal input[name='approve_reason']").val('');
+
+                //                show the total amount and currency
+                if (totalAmount == null) {
+                    //don't show the amount and currency
+                    $("#approveModal #total_amount_orders_approve_value").text('');
+                    $("#approveModal #total_amount_orders_approve_currency").text('');
+                } else {
+                    $("#approveModal #total_amount_orders_approve_value").text(totalAmount.toFormat(decimalAmount));
+                    $("#approveModal #total_amount_orders_approve_currency").text(selectedCurrency);
+                }
+
                 $("#approveModal").modal('show');
             });
         }
 
         bindSelectRejectAction = function () {
             $("#ddl_actions").find("#reject_multi_balance").click(function (e) {
+                var selectedCurrency = getSelectedCurrency();
+                var decimalAmount = null;
+                var totalAmount = null;
+                if (selectedCurrency != null) {
+                    decimalAmount = getDecimalAmount();
+                    totalAmount = calculateTotalAmount();
+                }
                 var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
                 $("#rejectModal #number_orders_reject_value").text(selectedNumber);
                 $("#rejectModal input[name='reject_reason']").val('');
+
+                //                show the total amount and currency
+                if (totalAmount == null) {
+                    //don't show the amount and currency
+                    $("#rejectModal #total_amount_orders_reject_value").text('');
+                    $("#rejectModal #total_amount_orders_reject_currency").text('');
+                } else {
+                    $("#rejectModal #total_amount_orders_reject_value").text(totalAmount.toFormat(decimalAmount));
+                    $("#rejectModal #total_amount_orders_reject_currency").text(selectedCurrency);
+                }
+
                 $("#rejectModal").modal('show');
             });
         }
