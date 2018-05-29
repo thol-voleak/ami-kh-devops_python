@@ -157,8 +157,10 @@
                                 <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.common_error|default_if_none:'' }}</td>
                                 <td>
-                                        {% if i.status.id == status_list_map.VALIDATED %}
-                                            <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
+                                        {% if request|has_any_permission:"CAN_POST_UPLOAD_RESULT" %}
+                                            {% if i.status.id == status_list_map.VALIDATED %}
+                                                <button id="btn_post" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
+                                            {% endif %}
                                         {% endif %}
                                         {% if i.status.id != status_list_map.VALIDATING %}
                                             <a id="btn_get_result" class="btn btn-outline mb5 btn-xs btn-info"  type="button" name="download"
