@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from io import BytesIO
 
+from rest_framework.utils import json
+
 from authentications.utils import get_auth_header, get_correlation_id_from_username
 from web_admin import RestFulClient
 from web_admin import settings
@@ -98,7 +100,7 @@ def upload_progress(request):
     if progress_id:
         cache_key = "%s" % (progress_id)
         data = request.session.get('upload_progress_%s' % cache_key, None)
-        return HttpResponse(simplejson.dumps(data))
+        return HttpResponse(json.dumps(data))
     else:
         return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
 
@@ -114,7 +116,7 @@ def _upload_file_view(request):
     if request.method == 'POST':
         upload_file = request.FILES.get('file_data', None)  # start the upload
         data = _upload_via_api(request, upload_file)
-        return HttpResponse(simplejson.dumps(data))
+        return HttpResponse(json.dumps(data))
 
 def _upload_via_api(request, file):
     myHeader = get_auth_header(request.user)
