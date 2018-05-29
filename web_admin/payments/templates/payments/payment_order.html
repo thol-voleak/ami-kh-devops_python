@@ -20,17 +20,11 @@
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Error Code</label>
-                <div class="col-sm-3 select-error-code" id="select-error-code-area" style="position: relative;">
-                    <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
-                        {% for item in error_list %}
-                            {% if item.name in error_code_id %}
-                                <option value="{{item.name}}" selected>{{ item.title }}</option>
-                            {%else%}
-                                <option value="{{item.name}}">{{ item.title }}</option>
-                            {%endif%}
-                        {% endfor %}
-                    </select>
+                <div class="col-sm-4">
+                    <label class="col-sm-5 control-label">Reference Order ID</label>
+                    <div class="col-sm-7">
+                        <input type="number" class="form-control input-rounded" name="ref_order_id" id="txt_ref_order_id" value="{{ ref_order_id }}">
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -57,6 +51,20 @@
                             {%endif%}
                         {% endfor %}
                     </select>
+                </div>
+                <div class="col-sm-4">
+                    <label class="col-sm-5 control-label">Error Code</label>
+                    <div class="col-sm-7 select-error-code" id="select-error-code-area" style="position: relative;">
+                        <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
+                            {% for item in error_list %}
+                                {% if item.name in error_code_id %}
+                                    <option value="{{item.name}}" selected>{{ item.title }}</option>
+                                {%else%}
+                                    <option value="{{item.name}}">{{ item.title }}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

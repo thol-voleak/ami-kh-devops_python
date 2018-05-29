@@ -103,6 +103,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
         error_code = request.POST.getlist('error_code_id')
+        ref_order_id = request.POST.get('ref_order_id')
         error_code_search = error_code
 
         if 'All' in error_code:
@@ -118,6 +119,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {}
         if order_id:
             body['order_id'] = order_id
+        if ref_order_id:
+            body['ref_order_id'] = ref_order_id
         if user_id and user_id.isdigit():
             body['user_id'] = int(user_id)
         elif user_id:
@@ -189,6 +192,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             context = {'order_list': orders,
                        'order_id': order_id,
+                       'ref_order_id': ref_order_id,
                        'searched_services': searched_services,
                        'services': services,
                        'user_type':user_type_id,
