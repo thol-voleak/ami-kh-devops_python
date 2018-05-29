@@ -346,3 +346,5 @@ UPDATE_PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/password-center/'+API_VERS
 # Upload management
 SEARCH_UPLOADED_FILE = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/files'
 SEARCH_FUNCTION = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/functions'
+UPLOAD_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/upload'
+DOWNLOAD_URL='api-gateway/bulk-upload/'+API_VERSION+'/files'

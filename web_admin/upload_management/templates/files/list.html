@@ -161,9 +161,9 @@
                                             <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
                                         {% endif %}
                                         {% if i.status.id != status_list_map.VALIDATING %}
-                                            <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Get Result</button>
+                                            <a id="btn_get_result" class="btn btn-outline mb5 btn-xs btn-info"  type="button" name="download"
+                                                    value="Download" href="{% url "upload_management:download" file_id=i.id status_id=i.status.id %}" >Get Result</a>
                                         {% endif %}
-
                                 </td>
                             </tr>
                             <!-- </div> -->
