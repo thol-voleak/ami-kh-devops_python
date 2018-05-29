@@ -1,6 +1,4 @@
 # views.py
-import os
-
 import logging
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.uploadhandler import MemoryFileUploadHandler, \
@@ -13,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from io import BytesIO
 
-from rest_framework.utils import json
+import json
 
 from authentications.utils import get_auth_header, get_correlation_id_from_username
 from web_admin import RestFulClient
