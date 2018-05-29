@@ -3,41 +3,64 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div style="float: left;">
-                    <h3 class="modal-title">{{modelHeader}}</h3>
+                    <h3 class="modal-title">{{ modelHeader }}</h3>
                 </div>
                 <div style="clear: both;"></div>
             </div>
             <div class="modal-body">
-                <div id="uploadFileBody" style="padding-left: 30px;">
-                    <div style="float: left;"><span style="font-size: 15px;">File:</span></div>
-                    <div class="col-sm-7" style="float: left; padding-right: 0; height: 34px;">
-                        <input type="file" class="input-rounded" name="file_data" style="display: none;"
-                               accept="{{acceptedFileTypes|default_if_none:''}}">
-                        <input type="text" class="input-rounded" name="file_data_mask" style="width: 100%; height: 100%;">
-                        <div id="progress_container"
-                             style="display:none;width:100%;border:0px solid;text-align:left;height:15px; padding-top:5px">
-                            <div id='progress'
-                                 style='background:#CCFF99;text-align:center;padding-top:5px;padding-bottom:5px; width:0%;color:black;font-size:10px;font-weight:bold;'>
-                            </div>
-                            <span id="progress_info">0%</span>
-                            <a id="download_link" href="#" class="link"></a>
+                <div id="uploadFileBody" style="padding-left: 10px;font-size: 15px;text-align: right">
+                    <div class="row">
+                        <div class="col-sm-2"><span style="line-height: 30px">File:</span></div>
+                        <div class="col-sm-7">
+                            <input type="file" class="input-rounded" name="file_data" style="display: none;"
+                                   accept="{{ acceptedFileTypes|default_if_none:'' }}">
+                            <input type="text" class="input-rounded" name="file_data_mask"
+                                   style="float:left; width: 75%; height: 34px;">
+                            <button type="button" class="btn btn-primary" id="browse_file" style="float:left">Browse</button>
                         </div>
-                        <div style="clear: both;"></div>
+                        <div class="col-sm-3">
+                                <button id="btn_upload" type="button" class="btn btn-success" style="margin-left: 10px;float:right">Upload</button>
+                        </div>
                     </div>
 
-                    <div class="" style="float: left;">
-                        <button type="button" class="btn btn-primary" id="browse_file">Browse</button>
-                        <button id="btn_upload" type="button" class="btn btn-success" style="margin-left: 42px;">Upload</button>
+                    <div id="progress_container" style="display:none;">
+                        <div class="row" style="padding-top:5px">
+                            <div class="col-sm-2"><span>Progress:</span>
+                            </div>
+                            <div class="col-sm-7" style="padding-right: 0; height: 34px;">
+                                <div style="text-align:left;height:15px; padding-top:5px; float:left">
+                                    <div id='progress'
+                                         style='background:#2ecc71;padding-top:5px;padding-bottom:5px; width:0%'>
+                                    </div>
+                                </div>
+                                <div style="float:left;display: none" id="dlg_icon_ok">
+                                    <span class="glyphicon glyphicon-ok" style="float: left; color:#2ecc71; padding-left:3px"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                            </div>
+                            <div class="col-sm-7" style="padding-right: 0; height: 34px;">
+                                <div style="text-align:left;height:15px; padding-top:5px">
+                                    <span id="progress_info" style="padding-top:5px">0%</span>
+                                    <a id="download_link" href="#" onmouseover="this.style.color='red';"
+                                       onmouseout="this.style.color='blue';" style="color: blue"></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                            </div>
+                        </div>
                     </div>
-                    <br>
-                    <div style="float: left;"></div>
-
                 </div>
-
             </div>
-            <div class="modal-footer">
-                <button id="btn_dialog_cancel" type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                <button id="btn_dialog_done" type="button" class="btn btn-success" style="display:none" data-dismiss="modal">Done</button>
+            <div class="modal-footer row">
+                <div class="col-sm-8"></div>
+                <div class="col-sm-4">
+                    <button id="btn_dialog_cancel" type="button" class="btn btn-danger" data-dismiss="modal" style="float:right">Cancel</button>
+                    <button id="btn_dialog_done" type="button" class="btn btn-success" style="display:none; float:right"
+                            data-dismiss="modal">Done</button>
+                </div>
             </div>
         </div>
     </div>
