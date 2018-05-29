@@ -499,7 +499,10 @@
 
         bindSelectUploadAction = function () {
             $("#ddl_actions").find("#upload_balance_adjustment_file").click(function (e) {
+                $("#uploadFileModal").find("#progress_container").hide();
                 $("#uploadFileModal").modal('show');
+                $("#uploadFileModal").find("#progress_container").find("#progress").width(0);
+                $("#uploadFileModal").find("#progress_container").find("#progress_info").width("0%");
             });
         }
 
@@ -688,7 +691,6 @@
 
         validateUploadFileSize = function (popupContainer) {
             var uploadFileInput = $(popupContainer).find("input[name='file_data']");
-//            Validate the file size must not be greater than 8MB
             if ($(uploadFileInput)[0].files[0].size / (1024 * 1024) > 8) {
                 swal({
                     title: 'Upload exceeded max 8MB file size limit',
@@ -733,12 +735,75 @@
             if (!validateUploadFileSize(popupContainer)) {
                 return false;
             }
-//            console.log("do the real upload");
+            upload();
         }
 
         initUploadPopup = function () {
             var uploadPopup = $("#uploadFileModal");
             initUploadFilePopup(uploadPopup, undefined, uploadDelegateFunction);
+        }
+
+        function gen_uuid() {
+            var uuid = ""
+            for (var i = 0; i < 32; i++) {
+                uuid += Math.floor(Math.random() * 16).toString(16);
+            }
+            return uuid
+        }
+
+        upload = function() {
+            var uuid = gen_uuid(); // id for this upload so we can fetch progress info.
+            var file = $("#uploadFileModal").find('input[name="file_data"]').get(0).files[0];
+            var formData = new FormData();
+            formData.append('file_data', file);
+            var url = "{% url 'balance_adjustment:upload'%}"
+
+            var freq = 100; // freqency of update in ms
+            var progress_url = '{% url 'balance_adjustment:upload_progress' %}';
+
+            var $progress = $("#uploadFileModal").find($('#progress_container'))
+            // Update progress bar
+            function update_progress_info() {
+                $progress.show();
+                $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
+                    if (data) {
+                        var progress = parseInt(data.uploaded) / parseInt(data.length);
+                        progress = progress > 1 ? 1 : progress;
+                        var width = $progress.width()
+                        var progress_width = width * progress;
+                        $progress.find('#progress').width(progress_width);
+                        var uploadPercent = parseInt(progress * 100);
+                        $progress.find('#progress_info').text('Uploading ' + uploadPercent + '%');
+                        window.setTimeout(update_progress_info, freq);
+                    } else {
+                        $progress.find('#progress').width($progress.width());
+                        $progress.find('#progress_info').text("Upload successfully")
+                    }
+                });
+            };
+            window.setTimeout(update_progress_info, 500);
+            $.ajax({
+                type: "POST",
+                url: url + "?X-Progress-ID=" + uuid,
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-Progress-ID", uuid);
+                },
+                success: function (data) {
+                    var uploadData = JSON.parse(data);
+
+                    $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                    $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}")
+                    $("#uploadFileModal").find($('#progress_info')).hide();
+                    $("#uploadFileModal").find($('#download_link')).show();
+                    $("#uploadFileModal").find($('#btn_dialog_done')).show();
+                    $("#uploadFileModal").find($('#btn_dialog_cancel')).hide();
+                }
+            });
         }
 
         $(document).ready(function () {

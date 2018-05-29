@@ -57,6 +57,12 @@ defaultOpenUploadFilePopup = function (popupContainer) {
     //reset input file
     $(uploadFileInput).val('');
     $(uploadFileInputFake).val("");
+    $("#uploadFileModal").find($('#progress_info')).hide();
+    $("#uploadFileModal").find($('#download_link')).hide();
+    $("#uploadFileModal").find($('#btn_dialog_done')).hide();
+    $("#uploadFileModal").find($('#btn_dialog_cancel')).show();
+    $("#uploadFileModal").find($('#download_link')).text("")
+    $("#uploadFileModal").find($('#download_link')).attr("href", "#")
 }
 
 commonUploadValidation = function (popupContainer) {

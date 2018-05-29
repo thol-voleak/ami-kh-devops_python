@@ -14,17 +14,30 @@
                         <input type="file" class="input-rounded" name="file_data" style="display: none;"
                                accept="{{acceptedFileTypes|default_if_none:''}}">
                         <input type="text" class="input-rounded" name="file_data_mask" style="width: 100%; height: 100%;">
+                        <div id="progress_container"
+                             style="display:none;width:100%;border:0px solid;text-align:left;height:15px; padding-top:5px">
+                            <div id='progress'
+                                 style='background:#CCFF99;text-align:center;padding-top:5px;padding-bottom:5px; width:0%;color:black;font-size:10px;font-weight:bold;'>
+                            </div>
+                            <span id="progress_info">0%</span>
+                            <a id="download_link" href="#" class="link"></a>
+                        </div>
+                        <div style="clear: both;"></div>
                     </div>
 
                     <div class="" style="float: left;">
                         <button type="button" class="btn btn-primary" id="browse_file">Browse</button>
                         <button id="btn_upload" type="button" class="btn btn-success" style="margin-left: 42px;">Upload</button>
                     </div>
+                    <br>
+                    <div style="float: left;"></div>
+
                 </div>
-                <div style="clear: both;"></div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button id="btn_dialog_cancel" type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button id="btn_dialog_done" type="button" class="btn btn-success" style="display:none" data-dismiss="modal">Done</button>
             </div>
         </div>
     </div>
