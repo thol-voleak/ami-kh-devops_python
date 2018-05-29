@@ -75,6 +75,16 @@
             </div>
 
             <div class="form-group">
+                <label class="col-sm-2 control-label">Product Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="product_name"
+                           value="{{ product_name|default_if_none:'' }}"
+                           id="txt_product_name">
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Creation Client ID</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded"

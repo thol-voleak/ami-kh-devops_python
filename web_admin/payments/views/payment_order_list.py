@@ -98,6 +98,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         list_status_id = request.POST.getlist('list_status_id')
+        product_name = request.POST.get('product_name')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
@@ -129,6 +130,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if list_status_search:
             body['status_id_list'] = list_status_search
 
+        if product_name:
+            body['product_name'] = product_name
         if creation_client_id:
             body['created_client_id'] = creation_client_id
         if execution_client_id:
@@ -191,6 +194,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                        'user_type':user_type_id,
                        'user_id': user_id,
                        'search_count': page.get('total_elements', 0),
+                       'product_name': product_name,
                        'creation_client_id': creation_client_id,
                        'execution_client_id': execution_client_id,
                        'ext_transaction_id': ext_transaction_id,
