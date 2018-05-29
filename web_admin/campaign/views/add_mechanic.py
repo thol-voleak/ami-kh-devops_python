@@ -42,7 +42,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
         operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to", "Contains"]
-
+        freetext_ops_2 = ["Equal to", "Not Equal to", "Contains", "Is Part of", "Is Not Part of"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
@@ -77,6 +77,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'profile_detail_names': get_profile_details_event_list(),
             'trigger': trigger,
             'freetext_ops': freetext_ops,
+            'freetext_ops_2': freetext_ops_2,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
@@ -136,6 +137,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "Not Equal to": '!=', "Less than or Equal to": '<=',
             "More than or Equal to": '>=',
             "Contains": "contains",
+            "Is Part of": "in_list",
+            "Is Not Part of": "not_in_list"
         }
         kv_type_map = {
             "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
