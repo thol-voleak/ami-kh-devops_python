@@ -304,12 +304,20 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return data
     
     def _get_transaction_history_list(self, body):
+        # Mountebank URL for test call api fail
+        # api_path = 'http://localhost:1237/payments/orders/balance-movements'
         api_path = api_settings.BALANCE_MOVEMENT_LIST_PATH
         success, status_code, status_message, data = RestFulClient.post(url=api_path,
                                                                         headers=self._get_headers(),
                                                                         loggers=self.logger,
                                                                         params=body,
                                                                         timeout=settings.GLOBAL_TIMEOUT)
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
 
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('order_balance_movements', []),
