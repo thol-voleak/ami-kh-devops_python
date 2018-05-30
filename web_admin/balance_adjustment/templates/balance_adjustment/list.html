@@ -551,8 +551,32 @@
             });
         }
 
+        var validateCurrencies = function () {
+            var firstCurrency = "";
+            var currentCurrency = "";
+            var isOk = true;
+
+            var checkedInput = $("#tbl_balance_adjustment").find("input[type='Checkbox']:checked");
+            firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#balance_adjustment_currency").text() : "";
+            $(checkedInput).each(function (index, value) {
+                currentCurrency = $(value).parent().parent().find("#balance_adjustment_currency").text();
+                if (firstCurrency != currentCurrency) {
+                    swal({
+                        title: 'Please select currencies of the same type.',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
+                }
+            });
+            return isOk;
+        };
+
         bindSelectApproveAction = function () {
             $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
+                if (!validateCurrencies()) return false;
                 var selectedCurrency = getSelectedCurrency();
                 var decimalAmount = null;
                 var totalAmount = null;
@@ -581,6 +605,7 @@
 
         bindSelectRejectAction = function () {
             $("#ddl_actions").find("#reject_multi_balance").click(function (e) {
+                if (!validateCurrencies()) return false;
                 var selectedCurrency = getSelectedCurrency();
                 var decimalAmount = null;
                 var totalAmount = null;
