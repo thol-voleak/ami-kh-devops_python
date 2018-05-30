@@ -321,6 +321,13 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                                                         params=body,
                                                                         timeout=settings.GLOBAL_TIMEOUT)
 
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('order_balance_movements', []),
                                 status_code=status_code, is_getting_list=True)
