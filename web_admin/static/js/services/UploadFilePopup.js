@@ -27,6 +27,18 @@ bindFileInputFakeEvent = function (popupContainer) {
     })
 }
 
+resetUploadProgress = function (popupContainer) {
+    $(popupContainer).find($('#progress_info')).hide();
+    $(popupContainer).find($('#progress')).width(0);
+    $(popupContainer).find($('#download_link')).hide();
+    $(popupContainer).find($('#btn_dialog_done')).hide();
+    $(popupContainer).find($('#btn_dialog_cancel')).show();
+    $(popupContainer).find($('#download_link')).text("")
+    $(popupContainer).find($('#download_link')).attr("href", "#")
+    $(popupContainer).find('#dlg_icon_ok').hide()
+    $(popupContainer).find('#progress_container').hide()
+}
+
 bindFileInputEvent = function (popupContainer) {
     var uploadFileInput = $(popupContainer).find("input[name='file_data']");
     var uploadFileInputFake = $(popupContainer).find("input[name='file_data_mask']");
@@ -35,6 +47,7 @@ bindFileInputEvent = function (popupContainer) {
         if (file != null) {
             //add file name to fake input
             $(uploadFileInputFake).val(file.name);
+            resetUploadProgress(popupContainer)
         } else {
             //clear the input fake value
             $(uploadFileInputFake).val('');
@@ -42,12 +55,15 @@ bindFileInputEvent = function (popupContainer) {
     })
 }
 
-
+processUpload = function (popupContainer) {
+    resetUploadProgress(popupContainer)
+    if (uploadDelegateFunction != undefined && uploadDelegateFunction != null) {
+        uploadDelegateFunction(popupContainer);
+    }
+}
 bindUploadButtonEvent = function (popupContainer, uploadDelegateFunction) {
     $(popupContainer).find("#btn_upload").click(function (event) {
-        if (uploadDelegateFunction != undefined && uploadDelegateFunction != null) {
-            uploadDelegateFunction(popupContainer);
-        }
+        processUpload(popupContainer)
     })
 }
 
@@ -57,6 +73,7 @@ defaultOpenUploadFilePopup = function (popupContainer) {
     //reset input file
     $(uploadFileInput).val('');
     $(uploadFileInputFake).val("");
+    resetUploadProgress(popupContainer)
 }
 
 commonUploadValidation = function (popupContainer) {

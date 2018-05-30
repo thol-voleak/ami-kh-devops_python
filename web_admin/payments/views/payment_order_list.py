@@ -1,5 +1,5 @@
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info, make_download_file
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import PAYMENT_URL, SERVICE_LIST_URL
@@ -98,10 +98,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         ext_transaction_id = request.POST.get('ext_transaction_id')
         list_status_id = request.POST.getlist('list_status_id')
+        product_name = request.POST.get('product_name')
         creation_client_id = request.POST.get('creation_client_id')
         execution_client_id = request.POST.get('execution_client_id')
         opening_page_index = request.POST.get('current_page_index')
         error_code = request.POST.getlist('error_code_id')
+        ref_order_id = request.POST.get('ref_order_id')
         error_code_search = error_code
 
         if 'All' in error_code:
@@ -117,6 +119,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {}
         if order_id:
             body['order_id'] = order_id
+        if ref_order_id:
+            body['ref_order_id'] = ref_order_id
         if user_id and user_id.isdigit():
             body['user_id'] = int(user_id)
         elif user_id:
@@ -129,6 +133,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if list_status_search:
             body['status_id_list'] = list_status_search
 
+        if product_name:
+            body['product_name'] = product_name
         if creation_client_id:
             body['created_client_id'] = creation_client_id
         if execution_client_id:
@@ -155,7 +161,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             file_type = request.POST.get('export-type')
             body['file_type'] = file_type
             body['row_number'] = 5000
-            is_success, data = self.export_file(body=body)
+            is_success, data = export_file(self, body=body, url_download=PAYMENT_URL, api_logger=API_Logger)
             if is_success:
                 response = make_download_file(data, file_type)
                 self.logger.info('========== Finish exporting payment order ==========')
@@ -186,11 +192,13 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             context = {'order_list': orders,
                        'order_id': order_id,
+                       'ref_order_id': ref_order_id,
                        'searched_services': searched_services,
                        'services': services,
                        'user_type':user_type_id,
                        'user_id': user_id,
                        'search_count': page.get('total_elements', 0),
+                       'product_name': product_name,
                        'creation_client_id': creation_client_id,
                        'execution_client_id': execution_client_id,
                        'ext_transaction_id': ext_transaction_id,
@@ -234,12 +242,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 status_message
             )
         return data, is_success
-
-    def export_file(self, body):
-        status_code, is_success, data = RestFulClient.download(url=PAYMENT_URL, headers=self._get_headers(), loggers=self.logger, params=body)
-        API_Logger.post_logging(loggers=self.logger, params=body, response={},
-                                status_code=status_code)
-        return is_success, data
 
     def format_data(self, data):
         for i in data['orders']:

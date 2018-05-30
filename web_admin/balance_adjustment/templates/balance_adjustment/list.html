@@ -195,6 +195,22 @@
                                value="{{ batch_code|default_if_none:'' }}"
                                id="txt_batch_code">
                     </div>
+
+                    <!--currecy search criteria-->
+                    <label class="col-sm-3 control-label">Currency</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_currency" name="currency_code">
+                            <option value="" {% if not currency_code %}selected="selected" {% endif %}>All</option>
+                            {% for currency_entity in currencies %}
+                                {% if currency_entity.currency_code == currency_code %}
+                                    <option value="{{currency_entity.currency_code }}" selected>{{currency_entity.currency_code}}</option>
+                                {% else %}
+                                    <option value="{{ currency_entity.currency_code }}">{{ currency_entity.currency_code }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="pull-right">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
@@ -231,6 +247,11 @@
                                     <span style="font-size: 15px;">Number of Orders: </span>
                                     <span id="number_orders_approve_value" style="font-size: 15px;"></span>
                                 </div>
+                                <div>
+                                    <span style="font-size: 15px;">Total Value: </span>
+                                    <span id="total_amount_orders_approve_value" style="font-size: 15px;"></span>
+                                    <span id="total_amount_orders_approve_currency" style="font-size: 15px;"></span>
+                                </div>
                             </div>
                             <div style="clear: both;"></div>
                         </div>
@@ -262,6 +283,11 @@
                                 <div>
                                     <span style="font-size: 15px;">Number of Orders: </span>
                                     <span id="number_orders_reject_value" style="font-size: 15px;"></span>
+                                </div>
+                                <div>
+                                    <span style="font-size: 15px;">Total Value: </span>
+                                    <span id="total_amount_orders_reject_value" style="font-size: 15px;"></span>
+                                    <span id="total_amount_orders_reject_currency" style="font-size: 15px;"></span>
                                 </div>
                             </div>
                             <div style="clear: both;"></div>
@@ -342,6 +368,7 @@
                         <th id="request_date">Request Date</th>
                         <th id="requester">Requester</th>
                         <th id="approved_rejected_by">Approved/Rejected by</th>
+                        <th id="currency">Currency</th>
                         <th id="adjustment_detail">Adjustment Details</th>
                     </tr>
                     </thead>
@@ -353,7 +380,7 @@
                                                         value="{{ order.reference_id }}"/></td>
                             <td class="col-sm-2">{{ order.batch_code|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.order_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ order.amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id="balance_adjustment_amount">{{ order.amount|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.product_service_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.payer_user.user_type.name|default_if_none:'' }}</td>
@@ -369,6 +396,7 @@
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2" id="balance_adjustment_currency">{{ order.currency|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
                                    class="btn btn-outline btn-xs btn-info"
@@ -398,7 +426,7 @@
 
 {% block body_js %}
     {{ block.super }}
-
+<script src="{% static 'vendor/bignumber.js-master/bignumber.min.js' %}"></script>
 <script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
     <script type="text/javascript">
         var csrf_token = "{{ csrf_token }}";
@@ -448,6 +476,68 @@
                 '</div>')
         }
 
+        calculateTotalAmount = function () {
+            var totalAmount = new BigNumber(0);
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amount = $(tr).find("td#balance_adjustment_amount").text();
+                    var amountAsNumberFormat = amount.replace(/,/g,'');
+                    totalAmount = totalAmount.plus(new BigNumber(amountAsNumberFormat));
+                }
+            });
+            return totalAmount;
+        }
+
+        getDecimalAmount = function () {
+            var decimalAmount = 0;
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amountstr = $(tr).find("td#balance_adjustment_amount").text();
+                    var arr = amountstr.split('.');
+                    var fractionPart = arr[1];
+                    if (fractionPart != undefined) {
+                        decimalAmount = fractionPart.trim().length;
+                    }
+                    //break each loop
+                    return false;
+                }
+            });
+            return decimalAmount;
+        }
+
+        getSelectedCurrency = function () {
+            var selectedCurrencies = [];
+            $('#tbl_balance_adjustment tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var currency = $(tr).find("td#balance_adjustment_currency").text();
+                    selectedCurrencies.push(currency);
+                }
+            });
+
+            if (selectedCurrencies.length == 0) {
+                return null;
+            }
+
+            var selectedCurrency = selectedCurrencies[0];
+            //does not have the currency for created fail
+            if (selectedCurrency == null || selectedCurrency == '') {
+                return null;
+            }
+
+            $.each(selectedCurrencies, function (index, currency) {
+                if (currency != selectedCurrency) {
+                    //handle the currency is not the same error later
+                    selectedCurrency = null;
+                    return false;
+                }
+            })
+            return selectedCurrency;
+        }
+
+
         bindSelectCheckboxEvents = function () {
             //bind select all
             $('#select-all').on('change', function () {
@@ -463,25 +553,65 @@
 
         bindSelectApproveAction = function () {
             $("#ddl_actions").find("#aprove_multi_balance").click(function (e) {
+                var selectedCurrency = getSelectedCurrency();
+                var decimalAmount = null;
+                var totalAmount = null;
+                if (selectedCurrency != null) {
+                    decimalAmount = getDecimalAmount();
+                    totalAmount = calculateTotalAmount();
+                }
+
                 var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
                 $("#approveModal #number_orders_approve_value").text(selectedNumber);
                 $("#approveModal input[name='approve_reason']").val('');
+
+                //                show the total amount and currency
+                if (totalAmount == null) {
+                    //don't show the amount and currency
+                    $("#approveModal #total_amount_orders_approve_value").text('');
+                    $("#approveModal #total_amount_orders_approve_currency").text('');
+                } else {
+                    $("#approveModal #total_amount_orders_approve_value").text(totalAmount.toFormat(decimalAmount));
+                    $("#approveModal #total_amount_orders_approve_currency").text(selectedCurrency);
+                }
+
                 $("#approveModal").modal('show');
             });
         }
 
         bindSelectRejectAction = function () {
             $("#ddl_actions").find("#reject_multi_balance").click(function (e) {
+                var selectedCurrency = getSelectedCurrency();
+                var decimalAmount = null;
+                var totalAmount = null;
+                if (selectedCurrency != null) {
+                    decimalAmount = getDecimalAmount();
+                    totalAmount = calculateTotalAmount();
+                }
                 var selectedNumber = $('#tbl_balance_adjustment .checkboxlist input:checked').length;
                 $("#rejectModal #number_orders_reject_value").text(selectedNumber);
                 $("#rejectModal input[name='reject_reason']").val('');
+
+                //                show the total amount and currency
+                if (totalAmount == null) {
+                    //don't show the amount and currency
+                    $("#rejectModal #total_amount_orders_reject_value").text('');
+                    $("#rejectModal #total_amount_orders_reject_currency").text('');
+                } else {
+                    $("#rejectModal #total_amount_orders_reject_value").text(totalAmount.toFormat(decimalAmount));
+                    $("#rejectModal #total_amount_orders_reject_currency").text(selectedCurrency);
+                }
+
                 $("#rejectModal").modal('show');
             });
         }
 
         bindSelectUploadAction = function () {
             $("#ddl_actions").find("#upload_balance_adjustment_file").click(function (e) {
+                $("#uploadFileModal").find("#progress_container").hide();
                 $("#uploadFileModal").modal('show');
+                $("#uploadFileModal").find("#progress_container").find("#progress").width(0);
+                $("#uploadFileModal").find("#progress_container").find("#progress_info").width("0%");
             });
         }
 
@@ -670,7 +800,6 @@
 
         validateUploadFileSize = function (popupContainer) {
             var uploadFileInput = $(popupContainer).find("input[name='file_data']");
-//            Validate the file size must not be greater than 8MB
             if ($(uploadFileInput)[0].files[0].size / (1024 * 1024) > 8) {
                 swal({
                     title: 'Upload exceeded max 8MB file size limit',
@@ -715,12 +844,74 @@
             if (!validateUploadFileSize(popupContainer)) {
                 return false;
             }
-//            console.log("do the real upload");
+            upload();
         }
 
         initUploadPopup = function () {
             var uploadPopup = $("#uploadFileModal");
             initUploadFilePopup(uploadPopup, undefined, uploadDelegateFunction);
+        }
+
+        function gen_uuid() {
+            var uuid = ""
+            for (var i = 0; i < 32; i++) {
+                uuid += Math.floor(Math.random() * 16).toString(16);
+            }
+            return uuid
+        }
+
+        upload = function() {
+            var uuid = gen_uuid(); // id for this upload so we can fetch progress info.
+            var file = $("#uploadFileModal").find('input[name="file_data"]').get(0).files[0];
+            var formData = new FormData();
+            formData.append('file_data', file);
+            var url = "{% url 'balance_adjustment:upload'%}"
+            var freq = 100; // freqency of update in ms
+            var progress_url = '{% url 'balance_adjustment:upload_progress' %}';
+            var $progress = $("#uploadFileModal").find($('#progress_container'))
+            // Update progress bar
+            function update_progress_info() {
+                $progress.show();
+                $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
+                    if (data) {
+                        var progress = parseInt(data.uploaded) / parseInt(data.length);
+                        progress = progress > 1 ? 1 : progress;
+                        var width = $("#uploadFileModal").find('input[name="file_data_mask"]').width()
+                        var progress_width = width * progress;
+                        $progress.find('#progress').width(progress_width);
+                        var uploadPercent = parseInt(progress * 100);
+                        $progress.find('#progress_info').text('Uploading ' + uploadPercent + '%');
+                        window.setTimeout(update_progress_info, freq);
+                    } else {
+                        $progress.find('#progress').width($("#uploadFileModal").find('input[name="file_data_mask"]').width());
+                        $progress.find('#progress_info').text("Upload successfully")
+                        $progress.find('#dlg_icon_ok').show()
+                    }
+                });
+            };
+            window.setTimeout(update_progress_info, 300);
+            $.ajax({
+                type: "POST",
+                url: url + "?X-Progress-ID=" + uuid,
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-Progress-ID", uuid);
+                },
+                success: function (data) {
+                    var uploadData = JSON.parse(data);
+
+                    $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                    $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}")
+                    $("#uploadFileModal").find($('#progress_info')).hide();
+                    $("#uploadFileModal").find($('#download_link')).show();
+                    $("#uploadFileModal").find($('#btn_dialog_done')).show();
+                    $("#uploadFileModal").find($('#btn_dialog_cancel')).hide();
+                }
+            });
         }
 
         $(document).ready(function () {

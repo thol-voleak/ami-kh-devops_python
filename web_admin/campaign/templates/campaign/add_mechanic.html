@@ -119,7 +119,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Key Value Type *</label>
                                         <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops_2 }})">
                                                 {% for type in key_value_types %}
                                                     <option value= "{{ type }}">{{ type }}</option>
                                                 {% endfor %}
@@ -404,7 +404,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops_2 }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -902,7 +902,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops_2 }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\

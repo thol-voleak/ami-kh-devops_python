@@ -3,7 +3,7 @@ from datetime import datetime
 
 from authentications.utils import get_correlation_id_from_username
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_helper import RestfulHelper
@@ -65,7 +65,10 @@ class EditMechanicView(TemplateView, GetHeaderMixin):
 
         is_success, status_code, message = self.__update_mechanic(campaign_id, mechanic_id, params)
         if is_success:
-            messages.success(request, 'Save successfully')
+            if message == 'Success':
+                messages.success(request, 'Save successfully')
+            else:
+                messages.warning(request, message)
             return redirect('campaign:mechanic_detail', campaign_id=campaign_id, mechanic_id=mechanic_id)
 
     def __get_mechanic(self, campaign_id: int, mechanic_id: int) -> tuple:

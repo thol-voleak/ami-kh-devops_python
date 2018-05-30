@@ -88,6 +88,10 @@
                                     Not Equal to
                                     {%elif condition.comparison_list.0.operator == 'contains' %}
                                     Contains
+                                    {%elif condition.comparison_list.0.operator == 'in_list' %}
+                                    Is Part of
+                                    {%elif condition.comparison_list.0.operator == 'not_in_list' %}
+                                    Is Not Part of
                                     {%endif%}
                                 </span>
                             </div>
@@ -95,7 +99,17 @@
                         <div class="info-group">
                             <div>Key Value:</div>
                             <div>
-                                <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
+                                {% if condition.comparison_list.0.operator != 'in_list' and condition.comparison_list.0.operator != 'not_in_list' %}
+                                    <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
+                                {% else %}
+                                    <div class="list-key-value" id="list_comparison_key_value">
+                                        {% for value in condition.comparison_list.0.key_value|split:',' %}
+                                            <div>
+                                                <span class="item">{{ value }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% elif  condition.filter_type == 'profile_details' %}
@@ -785,4 +799,20 @@
             });
     }
 </script>
+<style>
+.list-key-value {
+    max-height: 710px;
+    overflow-y: auto;
+}
+.list-key-value .item {
+    display: inline-block;
+    line-height: 30px;
+    border: 1px solid #c0c0c0;
+    padding: 0px 10px;
+    background-color: #ffffff;
+    min-width: 100px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+</style>
 {% endblock %}

@@ -55,6 +55,7 @@ class GetSpecificSOF(View, GetHeaderMixin):
         else:
             path = api_settings.BANK_SOFS_URL
             params['user_type_id'] = 2
+            params['is_deleted'] = False
             response = ajax_functions._post_method(request, path, "", self.logger, params)
         self.logger.info('========== Finish getting Specific SOF ==========')
         return response
