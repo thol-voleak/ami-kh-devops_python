@@ -20,12 +20,10 @@ from web_admin import setup_logger
 from web_admin.api_logger import API_Logger
 from web_admin.api_settings import UPLOAD_FILE
 
-
 class ProgressUploadHandler(MemoryFileUploadHandler):
     """
     Download the file and store progression in the session
     """
-
     def __init__(self, request=None):
         super(ProgressUploadHandler, self).__init__(request)
         self.progress_id = None
@@ -111,7 +109,12 @@ def upload_form(request):
 def _upload_file_view(request):
     if request.method == 'POST':
         upload_file = request.FILES.get('file_data', None)  # start the upload
-        data = _upload_via_api(request, upload_file)
+
+        # 8MB = 1024 * 1024 * 8 = 8388608
+        if upload_file.size > 8388608:
+            data = {'id': -1,"code":"file_exceeded_max_size"}
+        else:
+            data = _upload_via_api(request, upload_file)
         return HttpResponse(json.dumps(data))
 
 def _upload_via_api(request, file):

@@ -800,7 +800,8 @@
 
         validateUploadFileSize = function (popupContainer) {
             var uploadFileInput = $(popupContainer).find("input[name='file_data']");
-            if ($(uploadFileInput)[0].files[0].size / (1024 * 1024) > 8) {
+            //8MB = 1024 * 1024 * 8 = 8388608
+            if ($(uploadFileInput)[0].files[0].size > 8388608) {
                 swal({
                     title: 'Upload exceeded max 8MB file size limit',
                     type: "error",
@@ -841,9 +842,9 @@
                 return false;
             }
 
-            if (!validateUploadFileSize(popupContainer)) {
-                return false;
-            }
+            <!--if (!validateUploadFileSize(popupContainer)) {-->
+                <!--return false;-->
+            <!--}-->
             upload();
         }
 
@@ -871,7 +872,6 @@
             var $progress = $("#uploadFileModal").find($('#progress_container'))
             // Update progress bar
             function update_progress_info() {
-                $progress.show();
                 $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
                     if (data) {
                         var progress = parseInt(data.uploaded) / parseInt(data.length);
@@ -900,16 +900,27 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                     xhr.setRequestHeader("X-Progress-ID", uuid);
+                    $progress.show();
                 },
                 success: function (data) {
                     var uploadData = JSON.parse(data);
-
-                    $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
-                    $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}")
-                    $("#uploadFileModal").find($('#progress_info')).hide();
-                    $("#uploadFileModal").find($('#download_link')).show();
-                    $("#uploadFileModal").find($('#btn_dialog_done')).show();
-                    $("#uploadFileModal").find($('#btn_dialog_cancel')).hide();
+                    if (null != uploadData &&  uploadData.id >=0) {
+                        $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                        $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}")
+                        $("#uploadFileModal").find($('#progress_info')).hide();
+                        $("#uploadFileModal").find($('#download_link')).show();
+                        $("#uploadFileModal").find($('#btn_dialog_done')).show();
+                        $("#uploadFileModal").find($('#btn_dialog_cancel')).hide();
+                    } else if (uploadData.id == -1 && "file_exceeded_max_size" == uploadData.code) {
+                        $("#uploadFileModal").find($('#progress_container')).hide();
+                        swal({
+                            title: 'Upload exceeded max 8MB file size limit',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    }
                 }
             });
         }
