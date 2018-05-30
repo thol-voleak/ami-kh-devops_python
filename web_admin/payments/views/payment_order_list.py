@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 import logging
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime, date, timedelta
 logger = logging.getLogger(__name__)
 
 IS_SUCCESS = {
@@ -78,6 +78,12 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         error_code_id = []
         status_code_id = []
 
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        date_from = yesterday.strftime('%Y-%m-%d')
+        date_to = tomorrow.strftime('%Y-%m-%d')
+
         context['services'] = services
         context['search_count'] = 0
         context['status_list'] = status_list
@@ -85,6 +91,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['error_code_id'] = error_code_id
         context['status_code_id'] = status_code_id
         context['permissions'] = self._get_has_permissions()
+        context['date_from'] = date_from
+        context['date_to'] = date_to
         context['is_show_export'] = False
         self.logger.info('========== Finish render payment order ==========')
         return render(request, self.template_name, context)
