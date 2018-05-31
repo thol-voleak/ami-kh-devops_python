@@ -556,7 +556,7 @@
             var currentCurrency = "";
             var isOk = true;
 
-            var checkedInput = $("#tbl_balance_adjustment").find("input[type='Checkbox']:checked");
+            var checkedInput = $("#tbl_balance_adjustment").find("input[type='Checkbox'][name='balance_adjustment_checkbox']:checked");
             firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#balance_adjustment_currency").text() : "";
             $(checkedInput).each(function (index, value) {
                 currentCurrency = $(value).parent().parent().find("#balance_adjustment_currency").text();
