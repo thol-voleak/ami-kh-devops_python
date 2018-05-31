@@ -32,7 +32,19 @@ class ProgressUploadHandler(MemoryFileUploadHandler):
         self.outPath = None
         self.destination = None
 
+
     def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
+        """
+        Use the content_length to signal whether or not this handler should be in use.
+        """
+        # Check the content-length header to see if we should
+        # If the post is too large, the program auto switch to TemporaryFileUploadHandler.
+        if content_length > settings.FILE_UPLOAD_MAX_MEMORY_SIZE:
+            self.activated = False
+            # TODO: Need to update uploaded size if implement temporary upload hander
+            # upload_progress_<uuid> = {'length':<file_length>,'uploaded':<uploaded_size>}
+        else:
+            self.activated = True
         self.content_length = content_length
         if 'X-Progress-ID' in self.request.GET:
             self.progress_id = self.request.GET['X-Progress-ID']
@@ -47,19 +59,24 @@ class ProgressUploadHandler(MemoryFileUploadHandler):
 
     def new_file(self, *args, **kwargs):
         super(MemoryFileUploadHandler, self).new_file(*args, **kwargs)
-        self.file = BytesIO()
-        raise StopFutureHandlers()
+        if self.activated:
+            self.file = BytesIO()
+            raise StopFutureHandlers()
 
     def receive_data_chunk(self, raw_data, start):
-        data = self.request.session['upload_progress_%s' % self.cache_key]
-        data['uploaded'] += self.chunk_size
-        self.request.session['upload_progress_%s' % self.cache_key] = data
-        self.request.session.save()
-        self.file.write(raw_data)
-        # data wont be passed to any other handler
+        if self.activated:
+            data = self.request.session['upload_progress_%s' % self.cache_key]
+            data['uploaded'] += self.chunk_size
+            self.request.session['upload_progress_%s' % self.cache_key] = data
+            self.request.session.save()
+            self.file.write(raw_data)
+        else:
+            return raw_data        # data wont be passed to any other handler
         return None
 
     def file_complete(self, file_size):
+        if not self.activated:
+            return
 
         self.file.seek(0)
         return InMemoryUploadedFile(
@@ -109,7 +126,6 @@ def upload_form(request):
 def _upload_file_view(request):
     if request.method == 'POST':
         upload_file = request.FILES.get('file_data', None)  # start the upload
-
         # 8MB = 1024 * 1024 * 8 = 8388608
         if upload_file.size > 8388608:
             data = {'id': -1,"code":"file_exceeded_max_size"}
@@ -137,10 +153,5 @@ def _upload_via_api(request, file):
                             status_code=status_code, is_getting_list=True)
 
     if not is_success:
-        # messages.add_message(
-        #     request,
-        #     messages.ERROR,
-        #     status_message
-        # )
         data = []
     return data
