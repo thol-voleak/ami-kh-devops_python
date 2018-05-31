@@ -218,7 +218,7 @@
                             <td class="col-sm-2">{{ order.payment_method.name }}</td>
                             <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
                             <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
-                            <td class="col-sm-2">{{ order.created_channel_type }}</td>
+                            <td class="col-sm-2">{% if order.created_channel_type == 'DNE' %}UNKNOWN{% else %}{{ order.created_channel_type}}{% endif %}</td>
                             <td class="col-sm-2">{{ order.created_device_unique_reference }}</td>
                             <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.payer.user_id }})</td>
                             <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.payee.user_id }})</td>
