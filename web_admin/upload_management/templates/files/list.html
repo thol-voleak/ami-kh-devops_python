@@ -191,5 +191,12 @@
             document.getElementById("postingFileId").value = fileId;
             document.getElementById("submit-form").submit();
         };
+        var triggerSearchFiles = function () {
+            var isTrigger = '{{ trigger_search }}' == 'True'
+            if (isTrigger){
+                searchFiles()
+            }
+        }
+        triggerSearchFiles();
     </script>
 {% endblock %}

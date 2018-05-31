@@ -44,10 +44,13 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render bulk-upload file list page==========')
         function_list = self._get_function_list()
-
+        file_id = request.GET.get('file_id',None)
+        trigger_search = True if file_id else False
         context = {
             'function_id':0,
             'status_id':0,
+            'file_id':file_id,
+            'trigger_search':trigger_search,
             'status_list_map': status_list_map,
             'function_list': function_list,
             'search_count': 0
