@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
 from datetime import datetime
 from web_admin.api_logger import API_Logger
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
@@ -90,6 +90,8 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['status_id'] = status
 
         if postingFileId:
+            if not check_permissions_by_user(self.request.user, "CAN_POST_UPLOAD_RESULT"):
+                return redirect("web:permission_denied")
             postBodyData = {}
             postBodyData['file_id'] = postingFileId
             is_success, data = self._post_file(postBodyData)
