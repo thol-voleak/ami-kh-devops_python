@@ -109,6 +109,25 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">Creation Channel Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_creation_channel_type" name="creation_channel_type">
+                        <option value='' {% if creation_channel_type == '' %}selected="selected"{% endif %}>All</option>
+                        <option value='EDC' {% if creation_channel_type == 'EDC' %}selected="selected"{% endif %}>EDC</option>
+                        <option value='Web portal' {% if creation_channel_type == 'Web portal' %}selected="selected"{% endif %}>Web portal</option>
+                        <option value='Mobile' {% if creation_channel_type == 'Mobile' %}selected="selected"{% endif %}>Mobile</option>
+                        <option value='POS' {% if creation_channel_type == 'POS' %}selected="selected"{% endif %}>POS</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Creation Unique Device Reference</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="creation_device_unique_reference"
+                           value="{{ creation_device_unique_reference|default_if_none:'' }}"
+                           id="txt_creation_device_unique_reference">
+                </div>
+            </div>
+            <div class="form-group">
                     <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
@@ -163,6 +182,8 @@
                     <th id="balance">Payment Method</th>
                     <th id="last_modify_date">Last Modify Date</th>
                     <th id="initiator_id">Initiator (ID)</th>
+                    <th id="initiator_id">Creation Channel Type</th>
+                    <th id="initiator_id">Creation Unique Device Reference</th>
                     <th id="payer_id">Payer (ID)</th>
                     <th id="payee_id">Payee (ID)</th>
                     <th id="user">Ext Transaction ID</th>
@@ -191,6 +212,8 @@
                             <td class="col-sm-2">{{ order.payment_method.name }}</td>
                             <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
                             <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{{ order.created_channel_type }}</td>
+                            <td class="col-sm-2">{{ order.created_device_unique_reference }}</td>
                             <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.payer.user_id }})</td>
                             <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.payee.user_id }})</td>
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>

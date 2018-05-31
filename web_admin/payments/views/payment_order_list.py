@@ -112,6 +112,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         opening_page_index = request.POST.get('current_page_index')
         error_code = request.POST.getlist('error_code_id')
         ref_order_id = request.POST.get('ref_order_id')
+        creation_channel_type = request.POST.get('creation_channel_type')
+        creation_device_unique_reference = request.POST.get('creation_device_unique_reference')
         error_code_search = error_code
 
         if 'All' in error_code:
@@ -152,6 +154,11 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if searched_services:
             searched_services = [int(i) for i in searched_services if i.isnumeric()]
             body['service_id_list'] = searched_services
+
+        if creation_channel_type:
+            body['created_channel_type'] = creation_channel_type
+        if creation_device_unique_reference:
+            body['created_device_unique_reference'] = creation_device_unique_reference
 
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
@@ -217,6 +224,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                        'permissions': self._get_has_permissions(),
                        'paginator': page,
                        'page_range': calculate_page_range_from_page_info(page),
+                       'creation_channel_type': creation_channel_type,
+                       'creation_device_unique_reference': creation_device_unique_reference,
             }
 
             if is_success:
