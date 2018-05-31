@@ -5,12 +5,11 @@ from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
 from datetime import datetime
 from web_admin.api_logger import API_Logger
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
 from web_admin.utils import calculate_page_range_from_page_info
-
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +44,13 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render bulk-upload file list page==========')
         function_list = self._get_function_list()
-
+        file_id = request.GET.get('file_id',None)
+        trigger_search = True if file_id else False
         context = {
             'function_id':0,
             'status_id':0,
+            'file_id':file_id,
+            'trigger_search':trigger_search,
             'status_list_map': status_list_map,
             'function_list': function_list,
             'search_count': 0
@@ -71,6 +73,8 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         uploaded_from = request.POST.get('uploaded_from')
         uploaded_to = request.POST.get('uploaded_to')
 
+        postingFileId = request.POST.get('postingFileId')
+
         body = {}
         body['page_index'] = int(opening_page_index)
         if filename!='':
@@ -85,6 +89,13 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if status!=0:
             body['status_id'] = status
 
+        if postingFileId:
+            if not check_permissions_by_user(self.request.user, "CAN_POST_UPLOAD_RESULT"):
+                return redirect("web:permission_denied")
+            postBodyData = {}
+            postBodyData['file_id'] = postingFileId
+            is_success, data = self._post_file(postBodyData)
+            
         if uploaded_from:
             new_from_created_timestamp = datetime.strptime(uploaded_from, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -153,4 +164,28 @@ class FileList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
+        return is_success, data
+
+    def _post_file(self, body):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.POST_UPLOADED_FILE,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
+
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data,
+                                status_code=status_code, is_getting_list=True)
+
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            data = []
+        else:
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                "Post successful"
+            )
         return is_success, data

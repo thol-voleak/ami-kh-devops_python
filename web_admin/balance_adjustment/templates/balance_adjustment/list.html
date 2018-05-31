@@ -867,9 +867,9 @@
                 return false;
             }
 
-            <!--if (!validateUploadFileSize(popupContainer)) {-->
-                <!--return false;-->
-            <!--}-->
+            if (!validateUploadFileSize(popupContainer)) {
+                return false;
+            }
             upload();
         }
 
@@ -931,7 +931,7 @@
                     var uploadData = JSON.parse(data);
                     if (null != uploadData &&  uploadData.id >=0) {
                         $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
-                        $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}")
+                        $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
                         $("#uploadFileModal").find($('#progress_info')).hide();
                         $("#uploadFileModal").find($('#download_link')).show();
                         $("#uploadFileModal").find($('#btn_dialog_done')).show();

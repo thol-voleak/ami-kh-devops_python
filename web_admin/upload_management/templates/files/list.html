@@ -47,6 +47,7 @@
             <form id="submit-form" class="form-horizontal" role="form" method="post"
                   action="{% url 'upload_management:list' %}">
                 {% csrf_token %}
+                <input type="hidden" id="postingFileId" name="postingFileId" />
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Filename</label>
                     <div class="col-sm-2">
@@ -159,7 +160,7 @@
                                 <td>
                                     {% if request|has_any_permission:"CAN_POST_UPLOAD_RESULT" %}
                                         {% if i.status.id == status_list_map.VALIDATED %}
-                                            <button id="btn_post" class="btn btn-outline mb5 btn-xs btn-info" >Post</button>
+                                            <button id="btn_post" class="btn btn-outline mb5 btn-xs btn-info" onclick="postFile({{ i.id}})">Post</button>
                                         {% endif %}
                                     {% endif %}
                                     {%  if request|has_any_permission:"CAN_GET_UPLOAD_RESULT" %}
@@ -186,6 +187,16 @@
         var searchFiles = function () {
             document.getElementById("submit-form").submit();
         };
-
+        var postFile = function (fileId) {
+            document.getElementById("postingFileId").value = fileId;
+            document.getElementById("submit-form").submit();
+        };
+        var triggerSearchFiles = function () {
+            var isTrigger = '{{ trigger_search }}' == 'True'
+            if (isTrigger){
+                searchFiles()
+            }
+        }
+        triggerSearchFiles();
     </script>
 {% endblock %}
