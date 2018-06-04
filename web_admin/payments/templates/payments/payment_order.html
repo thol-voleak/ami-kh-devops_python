@@ -163,7 +163,7 @@
                 </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right">Total Orders found:&nbsp;</label>
-            {% if is_show_export %}
+            {% if is_show_export and permissions.is_perm_order_export%}
             <div class="pull-right dropdown export-file-dropdown">
                 <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
