@@ -156,15 +156,21 @@
                                             <span class="small">ChangeRole</span>
                                         </a>
                                     {% endif %}
-                                    <a type="button"
-                                       class="btn btn-outline btn-xs btn-danger mb5"
-                                       role="button"
-                                       id="btn_system_user_suspend">
-                                        {% if systemuser.is_suspended %}
+                                    {% if systemuser.is_suspended %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger mb5"
+                                           role="button"
+                                           id="btn_system_user_activate">
                                             <span class="small">Activate</span>
-                                        {% endif %}
-                                        <span class="small">Suspend</span>
-                                    </a>
+                                        </a>
+                                    {% else %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger mb5"
+                                           role="button"
+                                           id="btn_system_user_suspend">
+                                             <span class="small">Suspend</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </td>
