@@ -38,7 +38,7 @@
                             <span style="cursor: pointer; position: absolute; top: 9px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}"></span>
                             <div class="checkbox" style="margin-left: 20px;" id="group-checkbox-{{ service_group.service_group_id }}">
                                 <label>
-                                    <input type="checkbox" id="chk_service_group_id" name="service-group" {% if service_group.is_checked %}checked{% endif %} onchange="checkServiceGroup(this, {{ service_group.service_group_id }})" /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
+                                    <input type="checkbox" id="chk_service_group_id" {% if service_group.is_indeterminate %}class="indeterminate"{% endif %} name="service-group" {% if service_group.is_checked %}checked{% endif %} onchange="checkServiceGroup(this, {{ service_group.service_group_id }})" /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
                             </div>
                         </div>
                         <div id="collapse-{{ service_group.service_group_id }}" group-id="{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
@@ -83,6 +83,9 @@
             elem.classList.add("glyphicon-minus");
         });
 
+        $('.indeterminate').prop("indeterminate", true);
+        $('.indeterminate').attr("indeterminate", true);
+
         var checkServiceGroup = function(elem, serviceGroupId) {
             if($('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').is(':checked')){
                 $('#collapse-' + serviceGroupId + ' #chk_service_id').prop("checked", true);
@@ -93,12 +96,40 @@
             }
         };
 
+        var checkIndeterminate = function(serviceGroupId) {
+            var checkboxItems = document.getElementById('collapse-' + serviceGroupId).getElementsByTagName('input');
+            var isIndeterminate = false;
+            var countChecked = 0;
+            for(var j = 0; j < checkboxItems.length; j++) {
+                if(checkboxItems[j].checked) {
+                    countChecked++;
+                }
+            }
+            if(countChecked > 0 && countChecked < checkboxItems.length) {
+                isIndeterminate = true;
+            }
+            if(isIndeterminate) {
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').prop("indeterminate", true);
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').attr("indeterminate", true);
+            } else {
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').prop("indeterminate", false);
+                $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').removeAttr("indeterminate");
+            }
+            return isIndeterminate;
+        };
+
         var checkServiceItem = function(elem, serviceGroupId, serviceId) {
             if(!elem.checked){
                 $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').prop("checked", false);
                 $('#group-checkbox-' + serviceGroupId + ' #chk_service_group_id').removeAttr("checked");
+
+                checkIndeterminate(serviceGroupId);
+
             } else {
                 var checkboxItems = document.getElementById('collapse-' + serviceGroupId).getElementsByTagName('input');
+
+                checkIndeterminate(serviceGroupId);
+
                 var isCheckAll = true;
                 for(var i = 0; i < checkboxItems.length; i++) {
                     if(!checkboxItems[i].checked) {
