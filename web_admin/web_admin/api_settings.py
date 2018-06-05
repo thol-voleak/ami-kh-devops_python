@@ -349,3 +349,6 @@ SEARCH_FUNCTION = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/functions'
 POST_UPLOADED_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/files/post'
 UPLOAD_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/upload'
 DOWNLOAD_URL='api-gateway/bulk-upload/'+API_VERSION+'/files'
+
+SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/system-users/{}/status'
+

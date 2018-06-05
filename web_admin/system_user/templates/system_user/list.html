@@ -16,7 +16,12 @@
         <h3>System Users</h3>
     </div>
 
-
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_system_user">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert_msg"></strong>
+        </div>
+    </div>
     {% for message in messages %}
         <div class="col-xs-12">
             <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
@@ -113,7 +118,7 @@
                         {% endif %}
 
                         <td class="col-sm-3">{{systemuser.firstname|add:" "|add:systemuser.lastname }}</td>
-                        <td class="col-sm-2">{% if systemuser.is_suspended %} Suspended {% else %} Active {% endif %}</td>
+                        <td class="col-sm-2" id="system-user-status-{{ systemuser.id }}">{% if systemuser.is_suspended %} Suspended {% else %} Active {% endif %}</td>
                         <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             <div id="client_btn_group_{{ system_user.id }}">
@@ -174,6 +179,8 @@
                                     {% else %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
+                                           data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"
+                                           data-system_user-id='{{ systemuser.id }}'
                                            role="button"
                                            id="btn_system_user_suspend" onClick="doSuspendOrActivate(this)">
                                              <span class="small">Suspend</span>
@@ -205,7 +212,19 @@
 <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
 
 <script>
+    function showErrorMessage(msg) {
+        $("#alert-msg").text(msg);
+        $("#msg-error").fadeIn(700);
+    }
 
+    function showSuccessMessage(msg) {
+	    $("#alert_msg").text(msg);
+	    $('#alert_system_user').removeClass("alert-danger");
+	    $('#alert_system_user').addClass("alert-success");
+
+	    $("#alert_system_user").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
 
     function doSuspendOrActivate(e) {
         var title = e.innerText;
@@ -234,6 +253,37 @@
         })
         .then(function(isConfirm) {
             if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var system_user_id = e.getAttribute('data-system_user-id');
+                var resason_suppend = document.getElementById("txt_input_reason").value;
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {"active_suspend_reason":resason_suppend},
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/suspend/', '/activate/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Activate</span>";
+
+                            var status_id = 'system-user-status-' + system_user_id;
+                            document.getElementById(status_id).innerText = 'Suspended';
+
+                            showSuccessMessage('Suspended data successfully');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error suspending the system user id' + system_user_id + msg);
+                        showErrorMessage(JSON.stringify(msg));
+                    }
+                });
 
             }
         });
