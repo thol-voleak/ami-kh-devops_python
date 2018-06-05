@@ -109,7 +109,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
                      'user_id': user_id,
-                     'is_show_export': True
+                     'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_CUSTOMER_INDIVIDUAL_WALLET')
                      }
                 )
             else:
@@ -259,7 +259,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                          'user_id': user_id,
                          'from_created_timestamp': from_created_timestamp,
                          'to_created_timestamp': to_created_timestamp,
-                         'is_show_export': True
+                         'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_CUSTOMER_INDIVIDUAL_WALLET')
                          }
                     )
                 else:
