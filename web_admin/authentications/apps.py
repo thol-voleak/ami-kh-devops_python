@@ -130,6 +130,12 @@ class CustomBackend:
                         messages.INFO,
                         "Your username and password didn't match. Please try again."
                     )
+                elif json_data.get('error_description') == 'Account has been suspended':
+                        messages.add_message(
+                            request,
+                            messages.INFO,
+                            "Your account has been suspended. \n Please contact your administrator."
+                        )
 
         except Exception as ex:
             loggers.error(ex)
