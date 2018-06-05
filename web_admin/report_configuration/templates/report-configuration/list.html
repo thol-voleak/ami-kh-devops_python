@@ -5,6 +5,14 @@
     <div class="panel mb25">
         <div class="panel-heading border">
             <h3>Report Configurations</h3>
+            <div class="form row" style="margin-top: 40px">
+                <label class="col-sm-2 col-form-label" id="lab_report_type">Report Type</label>
+                <div class="col-sm-4">
+                     <select class="form-control" id="ddl_report_type" onchange="reportTypeChange(this.value)">
+                        <option value="agent_summary">Agent - My Summary TPV, Commission, Fee</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
     {% for message in messages %}
@@ -143,5 +151,11 @@
                 }
             }
         };
+
+        var reportTypeChange = function(reportType) {
+            if (reportType == 'agent_summary') {
+                $('<div id="service-whitelist-cont"></div>ent-area').removeAttr("hidden");
+            }
+        }
     </script>
 {% endblock %}
