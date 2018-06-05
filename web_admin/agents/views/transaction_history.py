@@ -59,16 +59,11 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         from_created_timestamp = request.GET.get('from_created_timestamp')
         to_created_timestamp = request.GET.get('to_created_timestamp')
 
+        context = {}
         if sof_id is None and sof_type_id is None and opening_page_index is None and from_created_timestamp is None and to_created_timestamp is None:
-            permissions = {
-            }
-
             body = {}
             body['paging'] = True
             body['page_index'] = 1
-
-            context = {
-            }
 
             request.session['agent_redirect_from_wallet_view'] = True
             request.session['page_from'] = 'agent'
@@ -115,19 +110,19 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'cash_sof_list': cash_sof_list,
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
-                     'agent_id': user_id
+                     'agent_id': user_id,
+                     'is_show_export': check_permissions_by_user(self.request.user, "CAN_EXPORT_AGENT_INDIVIDUAL_WALLET")
                      }
                 )
-                context['is_show_export'] = True
             else:
                 context.update(
                     {'search_count': 0,
                      'data': [],
                      'paginator': {},
-                     'agent_id': user_id
+                     'agent_id': user_id,
+                     'is_show_export': False
                      }
                 )
-                context['is_show_export'] = False
         else :
             user_type = UserType.AGENT.value
             cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
@@ -144,7 +139,6 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = UserType.AGENT.value
             body['user_id'] = user_id
 
-            context = {}
             # validate required search date criteria
             if from_created_timestamp is '' or to_created_timestamp is '':
                 messages.add_message(
@@ -265,19 +259,19 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                          'page_range': calculate_page_range_from_page_info(page),
                          'agent_id': user_id,
                          'from_created_timestamp': from_created_timestamp,
-                         'to_created_timestamp': to_created_timestamp
+                         'to_created_timestamp': to_created_timestamp,
+                         'is_show_export': check_permissions_by_user(self.request.user, "CAN_EXPORT_AGENT_INDIVIDUAL_WALLET")
                          }
                     )
-                    context['is_show_export'] = True
                 else:
                     context.update(
                         {'search_count': 0,
                          'data': [],
                          'paginator': {},
-                         'agent_id': user_id
+                         'agent_id': user_id,
+                         'is_show_export': False
                          }
                     )
-                    context['is_show_export'] = False
                 self.logger.info('Finish search agent transaction history')
         request.session['back_wallet_url'] = request.build_absolute_uri()
         self.logger.info('========== Finished getting agent transaction history ==========')
