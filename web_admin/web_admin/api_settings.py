@@ -135,7 +135,7 @@ FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{ser
 ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
-TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
+TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/tier-levels'
 TIER_LEVELS_EDIT = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels/{tier_level_id}'
 TIER_AMOUNT_FROMS = 'api-gateway/payment/'+API_VERSION+'/admin/tier-amount-froms'
 PAYMENT_DECIMAL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/payment/configurations/payment.balance-distribution.rate.decimal-digit'
@@ -349,3 +349,6 @@ SEARCH_FUNCTION = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/functions'
 POST_UPLOADED_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/files/post'
 UPLOAD_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/upload'
 DOWNLOAD_URL='api-gateway/bulk-upload/'+API_VERSION+'/files'
+
+SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/system-users/{}/status'
+

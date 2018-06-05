@@ -8,6 +8,7 @@ from .views.update import SystemUserUpdateForm
 from .views.change_password import SystemUserChangePassword
 from .views.self_change_password import SelfChangePassword
 from .views.user_role_management import RoleManagementView
+from .views.suspend import suspend
 
 
 app_name = 'system_user'
@@ -26,4 +27,7 @@ urlpatterns = [
         name="system_user_role_management"),
     url(r'^change-password/$', login_required(SelfChangePassword.as_view(), login_url='authentications:login'),
         name="self_change_password"),
+    url(r'^suspend/(?P<system_user_id>[0-9A-Za-z]+)/$', login_required(suspend, login_url='authentications:login'),
+        name="system_user_suspend"),
+
 ]

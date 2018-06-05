@@ -71,8 +71,11 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                 continue
             service_group['service_list'] = list(shown_service_list)
             service_group['is_checked'] = False
+            service_group['is_indeterminate'] = False
             if checked_count == len(shown_service_list):
                 service_group['is_checked'] = True
+            if checked_count > 0 and checked_count < len(shown_service_list):
+                service_group['is_indeterminate'] = True
             shown_service_group_list.append(service_group)
 
         return render(request, self.template_name, {'service_group_list': shown_service_group_list, 'checked_service_arr' : checked_service_arr})

@@ -43,6 +43,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to", "Contains"]
         freetext_ops_2 = ["Equal to", "Not Equal to", "Contains", "Is Part of", "Is Not Part of"]
+        numeric_ops = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        numeric_ops_2 = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to", "Is Part of", "Is Not Part of"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
@@ -72,12 +74,14 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         ops = {
             'operations': operations,
+            'numeric_ops': numeric_ops,
             'key_value_types': key_value_types,
             'detail_names': detail_names,
             'profile_detail_names': get_profile_details_event_list(),
             'trigger': trigger,
             'freetext_ops': freetext_ops,
             'freetext_ops_2': freetext_ops_2,
+            'numeric_ops_2': numeric_ops_2,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,

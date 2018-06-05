@@ -286,5 +286,6 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         permissions = {
             'is_perm_order_detail': check_permissions_by_user(self.request.user, "CAN_VIEW_PAYMENT_ORDER_DETAIL"),
             'is_perm_order_search': check_permissions_by_user(self.request.user, "CAN_SEARCH_PAYMENT_ORDER"),
+            'is_perm_order_export': check_permissions_by_user(self.request.user, "CAN_EXPORT_PAYMENT_ORDER")
         }
         return permissions
