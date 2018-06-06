@@ -116,7 +116,7 @@
                                                             <td>{{ device.channel_type.name|default_if_none:'' }}</td>
                                                             <td>{{ device.channel.name|default_if_none:'' }}</td>
                                                             <td>{{ device.mobile_device_model|default_if_none:'' }}</td>
-                                                            <td>{{ device.mobile_device_model|default_if_none:'' }}</td>
+                                                            <td>{{ device.mobile_device_unique_reference|default_if_none:'' }}</td>
                                                             <td>
                                                                 <div id="action-device-{{device.id}}">
                                                                     {% if permissions.CAN_EDIT_CUSTOMER_CHANNEL_DETAILS %}
@@ -217,6 +217,7 @@
     function activate(e) {
         swal({
                 title: "Are you sure you want to active device?",
+                type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
@@ -262,6 +263,7 @@
     function inactive(e) {
         swal({
                 title: "Are you sure you want to inactive device?",
+                type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
@@ -308,6 +310,7 @@
     function deleteDevice(e) {
         swal({
                 title: "Are you sure you want to delete device?",
+                type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
@@ -365,6 +368,7 @@
 
         swal({
                 title: title,
+                type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
