@@ -113,7 +113,7 @@
                         </div>
                         <br/>
                     {% else %}
-                        <div class="form-inline not_in_review row">
+                        <div class="form-inline not_in_review row" id="tier_conf">
                             <label class="col-sm-2 control-label">{{ conf.label }}:</label>
                             <div class="col-sm-10">
                                 <div class="col-sm-4">
@@ -138,7 +138,7 @@
                     </div><br/><br/>
                 {% endif %}
                 {% if forloop.counter >= 3 %}
-                    <div class="form-inline not_in_review row collapsible" hidden>
+                    <div class="form-inline not_in_review row collapsible" id="tier_conf_more" hidden>
                         <label class="col-sm-2 control-label">{{ conf.label }}:</label>
                         <div class="col-sm-10">
                             <div class="col-sm-4">
