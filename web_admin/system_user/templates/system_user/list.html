@@ -74,13 +74,26 @@
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
                 </div>
-                <div class="col-xs-1">
-                    <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
-                    </a>
+            </div>
+
+            <div class="col-sm-12  form-group">
+                <label class="col-sm-1 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status">
+                        <option value="All" {% if status == 'All' %}selected="selected"{% endif %}>All</option>
+                        <option value="Active" {% if status == 'Active' %}selected="selected"{% endif %}>Active</option>
+                        <option value="Suspended" {% if status == 'Suspended' %}selected="selected"{% endif %}>Suspended</option>
+                    </select>
                 </div>
 
+                <div class="col-sm-1 col-sm-offset-3">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search"
+                               name="search">
+                    </a>
+                </div>
             </div>
+
         </form>
         {% endif %}
         {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}

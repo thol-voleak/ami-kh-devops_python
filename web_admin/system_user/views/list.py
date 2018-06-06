@@ -49,14 +49,13 @@ class ListView(GroupRequiredMixin, TemplateView):
         self.logger.info("========== Start searching system user ==========")
         username = request.GET.get('username')
         email = request.GET.get('email')
-        params = {}
-        if username:
-            params['username'] = username
-        if email:
-            params['email'] = email
+        status = request.GET.get('status')
+        if not status:
+            status = 'All'
 
         status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
-                                                                                self.logger, username, email, None)
+                                                                                self.logger, username, email,
+                                                                                None, status)
         if (status_code == "access_token_expire") or \
                 (status_code == 'authentication_fail') or \
                 (status_code == 'invalid_access_token'):
@@ -79,6 +78,7 @@ class ListView(GroupRequiredMixin, TemplateView):
         context['data'] = data
         context['username'] = username
         context['email'] = email
+        context['status'] = status
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)
 
