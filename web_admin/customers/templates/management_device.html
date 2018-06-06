@@ -127,7 +127,7 @@
                                                         <div id="action-device-{{device.id}}">
                                                             {% if permissions.CAN_EDIT_CUSTOMER_CHANNEL_DETAILS %}
                                                                 <button id="btn-edit-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
-    {#                                                                                onclick="location.href='{% url 'customers:mobile_device_update' device.id %}'"
+    {#                                                                                onclick="location.href='{% url 'customers:mobile_device_update' customerId device.id %}'"
                                                                 >Edit Detail</button>
                                                             {% endif %}
                                                             {% if permissions.CAN_UNBIND_CUSTOMER_DEVICE %}

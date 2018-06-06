@@ -49,6 +49,7 @@ class MobileDeviceView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start update customer device ==========')
         mobile_device_id = kwargs['device_id']
+        customer_id = kwargs['customer_id']
         form = request.POST
         params = {
             'channel_type_id': form['channel_type_id'],
@@ -67,7 +68,7 @@ class MobileDeviceView(TemplateView):
             'public_ip_address': form['public_ip_address'],
             'app_version': form['app_version'],
             'supporting_file_1': form['supporting_file_1'],
-            'supporting_file_1': form['supporting_file_1']
+            'supporting_file_2': form['supporting_file_2']
         }
         url = api_settings.CUSTOMER_UPDATE_DEVICE_URL.format(mobile_device_id)
         is_success, status_code, status_message, data = RestFulClient.put(url,
@@ -81,7 +82,7 @@ class MobileDeviceView(TemplateView):
                 'Updated data successfully'
             )
             self.logger.info('========== Finish update customer device ==========')
-            return redirect('customers:customer-list')
+            return redirect('customers:customer_management_summary', customerId=customer_id)
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                 status_code == 'invalid_access_token'):
             raise InvalidAccessToken(status_message)

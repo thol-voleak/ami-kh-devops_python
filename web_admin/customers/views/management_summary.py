@@ -36,10 +36,6 @@ class CustomerManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin
     def get(self, request, *args, **kwargs):
         context = super(CustomerManagementSummary, self).get_context_data(**kwargs)
         customerId = int(context['customerId'])
-        msg = request.GET.get('message', None)
-        messages = []
-        if msg:
-            messages.append(msg)
 
         permissions = check_permission_customer_management(self)
         if not permissions['CAN_VIEW_CUSTOMER_MANAGEMENT']:
@@ -77,8 +73,7 @@ class CustomerManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin
                 context.update(
                     {'total_result': page.get('total_elements', 0),
                      'summary_device_list': summary_device_list,
-                     'supported_channels': supported_channels,
-                     'messages': messages
+                     'supported_channels': supported_channels
                      })
             elif (status_message == "access_token_expire") or (status_message == 'authentication_fail') or (
                         status_message == 'invalid_access_token'):
