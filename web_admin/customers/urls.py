@@ -11,6 +11,7 @@ from .views.reset_identity_password import reset_password
 from .views.blocked_devices import BlockedDevicesList
 from .views.unblock_devices import unblock
 from .views.transaction_history import TransactionHistoryView
+from .views.mobile_device_update import MobileDeviceView
 
 app_name = 'customers'
 
@@ -32,4 +33,5 @@ url(r'^delete/(?P<customer_id>[0-9A-Za-z]+)', login_required(delete_customer, lo
     url(r'^blocked_devices', login_required(BlockedDevicesList.as_view(), login_url='authentications:login'),
         name="blocked-devices"),
     url(r'^unblock/(?P<ticket_id>[0-9A-Za-z]+)/', login_required(unblock, login_url='authentications:login'), name="unblock_devices"),
+    url(r'^mobile_devices/(?P<device_id>[0-9A-Za-z]+)/update', login_required(MobileDeviceView.as_view(), login_url='authentications:login'), name="mobile_device_update"),
 ]

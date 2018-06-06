@@ -188,6 +188,8 @@ ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/sta
 RESET_IDENTITY_PASSWORD = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/identities/{}/passwords/temporary'
 ADMIN_UPDATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
 ADMIN_DELETE_CUSTOMER_URL = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
+CUSTOMER_DEVICE_DETAIL_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
+CUSTOMER_UPDATE_DEVICE_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'
