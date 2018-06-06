@@ -220,6 +220,7 @@
                     <tr>
                         <th><input type="checkbox" name="select-all" id="select-all" /></th>
                         <th id="ddl_voucher_id">Voucher ID</th>
+                        <th id="ddl_issuer_user_id">Issuer User ID</th>
                         <th id="ddl_voucher_type">Voucher Type</th>
                         <th id="ddl_voucher_amount">Voucher Amount</th>
                         <th id="ddl_voucher_fee">Voucher Fee</th>
@@ -239,6 +240,7 @@
                         <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
                             <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
+                            <td>{{ i.issuer_user_id|default_if_none:'' }}</td>
                             <td>{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
