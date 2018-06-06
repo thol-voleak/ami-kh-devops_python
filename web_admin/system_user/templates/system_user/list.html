@@ -119,9 +119,7 @@
                 <tbody id="table_body">
                 {% for systemuser in data %}
                     <tr>
-                        <td class="col-sm-1" id="id_{{ systemuser.id }}">
-                            {{ systemuser.id|default_if_none:'' }}
-                        </td>
+                        <td class="col-sm-1" id="id_{{ systemuser.id }}">{{ systemuser.id|default_if_none:'' }}</td>
                         {% if systemuser.is_deleted %}
                             <td class="col-sm-1">
                                 <del>{{ systemuser.username|default_if_none:'' }}</del>
