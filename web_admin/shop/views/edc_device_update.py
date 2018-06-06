@@ -1,0 +1,91 @@
+from django.views.generic.base import TemplateView
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
+from authentications.apps import InvalidAccessToken
+from web_admin import setup_logger
+from web_admin import api_settings, RestFulClient
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from web_admin.utils import get_back_url
+from django.urls import reverse
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class EdcDeviceView(TemplateView):
+    template_name = "shop/device_update.html"
+    raise_exception = False
+    logger = logger
+    login_url = 'web:permission_denied'
+
+    def dispatch(self, request, *args, **kwargs):
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(EdcDeviceView, self).dispatch(request, *args, **kwargs)
+
+    def _get_headers(self):
+        if getattr(self, '_headers', None) is None:
+            self._headers = get_auth_header(self.request.user)
+        return self._headers
+
+    def get_context_data(self, **kwargs):
+        self.logger.info('========== Start get agent device detail ==========')
+        context = super(EdcDeviceView, self).get_context_data(**kwargs)
+        edc_device_id = context['device_id']
+        self.logger.info("Searching edc device with ID [{}]".format(edc_device_id))
+        url = api_settings.AGENT_DEVICE_URL.format(edc_device_id)
+        is_success, status_code, data = RestFulClient.get(
+            url,
+            loggers=self.logger,
+            headers=self._get_headers())
+        if is_success:
+            self.logger.info('Response_content: {}'.format(data))
+            context['form'] = data
+            self.logger.info('========== Finish get agent device detail ==========')
+            return context
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+
+    def post(self, request, *args, **kwargs):
+        self.logger.info('========== Start update agent device ==========')
+        edc_device_id = kwargs['device_id']
+        form = request.POST
+        params = {
+            'channel_type_id': form['channel_type_id'],
+            'channel_id': form['channel_id'],
+            'edc_serial_number': form['edc_serial_number'],
+            'edc_model': form['edc_model'],
+            'edc_software_version': form['edc_software_version'],
+            'edc_firmware_version': form['edc_firmware_version'],
+            'edc_sim_card_number': form['edc_sim_card_number'],
+            'edc_battery_serial_number': form['edc_battery_serial_number'],
+            'edc_adapter_serial_number': form['edc_adapter_serial_number'],
+            'edc_smartcard_1_number': form['edc_smartcard_1_number'],
+            'edc_smartcard_2_number': form['edc_smartcard_2_number'],
+            'edc_smartcard_3_number': form['edc_smartcard_3_number'],
+            'edc_smartcard_4_number': form['edc_smartcard_4_number'],
+            'edc_smartcard_5_number': form['edc_smartcard_5_number'],
+            'mac_address': form['mac_address'],
+            'network_provider_name': form['network_provider_name'],
+            'public_ip_address': form['public_ip_address'],
+            'supporting_file_1': form['supporting_file_1'],
+            'supporting_file_2': form['supporting_file_2']
+        }
+        url = api_settings.AGENT_DEVICE_URL.format(edc_device_id)
+        is_success, status_code, status_message, data = RestFulClient.put(url,
+                                                                          self._get_headers(),
+                                                                          self.logger, params)
+        self.logger.info("Params: {} ".format(params))
+        if is_success:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Updated data successfully'
+            )
+            self.logger.info('========== Finish update agent device ==========')
+            return redirect('shop:shop_list')
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                status_code == 'invalid_access_token'):
+            raise InvalidAccessToken(status_message)
