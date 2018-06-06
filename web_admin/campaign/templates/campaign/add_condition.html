@@ -394,7 +394,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ profile_details_numeric_ops }}, {{ profile_details_freetext_ops }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -405,7 +405,7 @@
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                                {% for oper in profile_details_numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
