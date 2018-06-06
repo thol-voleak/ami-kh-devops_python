@@ -67,6 +67,8 @@ class ListView(GroupRequiredMixin, TemplateView):
         is_permission_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_SYSTEM_USER')
         is_permission_change_pwd = check_permissions_by_user(self.request.user, 'SYS_CHANGE_SYSTEM_USER_PASSWORD')
         is_permission_change_role = check_permissions_by_user(self.request.user, 'CAN_CHANGE_ROLE_FOR_USER')
+        is_permission_suspend_user = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_SYSTEM_USER')
+        is_permission_activate_user = check_permissions_by_user(self.request.user, 'CAN_ACTIVATE_SYSTEM_USER')
 
         for i in data:
             i['is_permission_detail'] = is_permission_detail
@@ -74,6 +76,8 @@ class ListView(GroupRequiredMixin, TemplateView):
             i['is_permission_delete'] = is_permission_delete
             i['is_permission_change_pwd'] = is_permission_change_pwd
             i['is_permission_change_role'] = is_permission_change_role
+            i['is_permission_suspend_user'] = is_permission_suspend_user
+            i['is_permission_activate_user'] = is_permission_activate_user
 
         context['data'] = data
         context['username'] = username

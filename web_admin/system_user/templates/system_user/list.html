@@ -182,14 +182,14 @@
                                             <span class="small">ChangeRole</span>
                                         </a>
                                     {% endif %}
-                                    {% if systemuser.is_suspended %}
+                                    {% if systemuser.is_suspended and systemuser.is_permission_activate_user %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            role="button"
                                            id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
                                             <span class="small">Activate</span>
                                         </a>
-                                    {% else %}
+                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"
