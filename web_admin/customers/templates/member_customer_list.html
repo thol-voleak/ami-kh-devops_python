@@ -198,6 +198,11 @@
                         <button id="btn_identities-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_identities' customer.id %}'">Identities</button>
                     {% endif %}
+                    {% if customer.is_permission_management and customer.is_deleted is not True%}
+                        <button id="btn_managements-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
+                                onclick="location.href='{% url 'customers:customer_management_summary' customer.id %}'"
+                        >Management</button>
+                    {% endif %}
                     {% if customer.has_permission_individual_wallet %}
                         <button id="btn_individual_wallet_view-{{ customer.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                 onclick="location.href='{% url 'customers:customer_transaction_history' customer.id %}'">Individual Wallet View</button>
