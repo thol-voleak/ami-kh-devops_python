@@ -9,6 +9,7 @@ from web_admin.api_settings import CUSTOMER_DEVICE_LIST_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.utils import calculate_page_range_from_page_info
 from customers.utils import check_permission_customer_management, get_supported_channels, get_channel_permissions_list
+from authentications.apps import InvalidAccessToken
 
 import logging
 
@@ -50,19 +51,6 @@ class CustomerManagementDevice(GroupRequiredMixin, TemplateView, GetHeaderMixin)
              'permissions': permissions
              })
 
-        supported_channels = get_supported_channels(self)
-        access_channel_permissions = get_channel_permissions_list(self, customerId)
-
-        dict_channels = {int(x['id']): x for x in supported_channels}
-        id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
-        for id, channel in dict_channels.items():
-            if id in id_channels_permissions:
-                channel['grant_permission'] = True
-            else:
-                channel['grant_permission'] = False
-
-        supported_channels = dict_channels.values()
-
         self.logger.info('========== Start getting Devices list ==========')
         opening_page_index = int(request.GET.get('current_page_index', 1))
 
@@ -70,6 +58,19 @@ class CustomerManagementDevice(GroupRequiredMixin, TemplateView, GetHeaderMixin)
         if success:
             devices_list = data.get("devices", [])
             page = data.get("page", {})
+
+            supported_channels = get_supported_channels(self)
+            access_channel_permissions = get_channel_permissions_list(self, customerId)
+
+            dict_channels = {int(x['id']): x for x in supported_channels}
+            id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
+            for id, channel in dict_channels.items():
+                if id in id_channels_permissions:
+                    channel['grant_permission'] = True
+                else:
+                    channel['grant_permission'] = False
+
+            supported_channels = dict_channels.values()
 
             context.update(
                 {'total_result': page.get('total_elements', 0),
@@ -79,6 +80,10 @@ class CustomerManagementDevice(GroupRequiredMixin, TemplateView, GetHeaderMixin)
                  'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page)
                  })
+        elif (status_message == "access_token_expire") or (status_message == 'authentication_fail') or (
+                    status_message == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
 
         self.logger.info('========== Finish getting Devices list ==========')
         return render(request, self.template_name, context)
