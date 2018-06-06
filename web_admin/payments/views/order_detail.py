@@ -7,7 +7,6 @@ from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.api_settings import PAYMENT_URL, PAYMENT_ORDER_DETAIL_URL
 from django.contrib import messages
-from services.views.tier_levels.utils import get_label_levels
 from authentications.utils import check_permissions_by_user, get_correlation_id_from_username
 from web_admin.api_logger import API_Logger
 
@@ -92,37 +91,7 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     total_credit += order['amount']
                     order['credit_amount'] = order['amount']
                     order['debit_amount'] = '-'
-        a_label = self.get_label_detail('A')
-        b_label = self.get_label_detail('B')
-        c_label = self.get_label_detail('C')
-        d_label = self.get_label_detail('D')
-        e_label = self.get_label_detail('E')
-        f_label = self.get_label_detail('F')
-        g_label = self.get_label_detail('G')
-        h_label = self.get_label_detail('H')
-        i_label = self.get_label_detail('I')
-        j_label = self.get_label_detail('J')
-        k_label = self.get_label_detail('K')
-        l_label = self.get_label_detail('L')
-        m_label = self.get_label_detail('M')
-        n_label = self.get_label_detail('N')
-        o_label = self.get_label_detail('O')
         context['data'] = data
-        context['a_label'] = a_label
-        context['b_label'] = b_label
-        context['c_label'] = c_label
-        context['d_label'] = d_label
-        context['e_label'] = e_label
-        context['f_label'] = f_label
-        context['g_label'] = g_label
-        context['h_label'] = h_label
-        context['i_label'] = i_label
-        context['j_label'] = j_label
-        context['k_label'] = k_label
-        context['l_label'] = l_label
-        context['m_label'] = m_label
-        context['n_label'] = n_label
-        context['o_label'] = o_label
         context['order_balance_movement'] = order_balance_movement
         context['additional_references'] = additional_references
         context['total_credit'] = total_credit
@@ -152,12 +121,3 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
             data = []
         return data
-
-    def get_label_detail(self, lvl_name):
-        label_levels = self.request.session.get('tier_levels')
-        if not label_levels:
-            label_levels = get_label_levels(self.request)
-
-        for lvl in label_levels:
-            if lvl.get('name') == lvl_name:
-                return lvl.get('label')
