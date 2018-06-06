@@ -79,7 +79,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Operator *</label>
                             <div class="col-xs-3">
-                                <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops_2 }})">
+
                                     {% for oper in numeric_ops %}
                                         <option value= "{{ oper }}">{{ oper }}</option>
                                     {% endfor %}
@@ -155,20 +156,19 @@
             operator.selectedIndex = 0;
         }
 
-        function listenOperator(ele, type, operation, fullOps, filterOps) {
-            return;
-
-            var keyValueType = $(ele).parent().parent().prev('div').find('select');
-            var keyValue = $(ele).parent().parent().next('div').find('input');
-            var currentKVType = getCurrentOps(keyValueType);
-            if (type === "Equal to" || type === "Not Equal to" || type === "Contains") {
-                if (currentKVType.length === 2) {
-                    keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
+        function listenOperator(ele, currentOperator, operatorNumeric, operatorText) {
+            var keyValueObj = $(ele).parent().parent().next('div').find('input');
+            var keyValueTypeObj = $(ele).parent().parent().prev('div').find('select');
+            var currentKVTypeList = getCurrentOps(keyValueTypeObj);
+            var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
+            if (operatorText.includes(currentOperator)) {
+                if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of")) {
+                    keyValueObj.attr('type', 'text');
+                } else if (currentKVType === "Numeric" && operatorNumeric.includes(currentOperator)) {
+                    keyValueObj.attr('type', 'number');
                 }
             } else {
-                if (currentKVType.length === 3) {
-                    keyValueType.find('[value="Freetext"]').remove();
-                }
+                keyValueObj.attr('type', 'number');
             }
         }
 
