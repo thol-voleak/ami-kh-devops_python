@@ -42,9 +42,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
         operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to", "Contains"]
-        freetext_ops_2 = ["Equal to", "Not Equal to", "Contains", "Is Part of", "Is Not Part of"]
-        numeric_ops = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
-        numeric_ops_2 = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to", "Is Part of", "Is Not Part of"]
+        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Contains"]
+        numeric_ops = ["Equal to", "Not Equal to","Is Part of", "Is Not Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
@@ -81,7 +80,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'trigger': trigger,
             'freetext_ops': freetext_ops,
             'freetext_ops_2': freetext_ops_2,
-            'numeric_ops_2': numeric_ops_2,
+            'numeric_ops': numeric_ops,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,

@@ -188,6 +188,15 @@ ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/sta
 RESET_IDENTITY_PASSWORD = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/identities/{}/passwords/temporary'
 ADMIN_UPDATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
 ADMIN_DELETE_CUSTOMER_URL = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
+CUSTOMER_DEVICE_LIST_URL = 'api-gateway/report/'+API_VERSION+'/customers/devices'
+CUSTOMER_CHANNEL_LIST_URL = 'api-gateway/report/'+API_VERSION+'/channels'
+CUSTOMER_DEVICE_STATUS_URL = 'api-gateway/customer/' + API_VERSION + '/admin/devices/{}/status'
+CUSTOMER_DEVICE_DELETE_URL = 'api-gateway/customer/' + API_VERSION + '/admin/devices/{}'
+CUSTOMER_CHANNEL_GRANT_URL = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{}/permissions'
+CUSTOMER_CHANNEL_REVOKE_URL = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{}/permissions/revoke'
+CUSTOMER_CHANNEL_PERMISSION_LIST_URL = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
+CUSTOMER_DEVICE_DETAIL_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
+CUSTOMER_UPDATE_DEVICE_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'

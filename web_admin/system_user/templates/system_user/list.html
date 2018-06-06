@@ -74,13 +74,26 @@
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
                 </div>
-                <div class="col-xs-1">
-                    <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
-                    </a>
+            </div>
+
+            <div class="col-sm-12  form-group">
+                <label class="col-sm-1 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status">
+                        <option value="All" {% if status == 'All' %}selected="selected"{% endif %}>All</option>
+                        <option value="Active" {% if status == 'Active' %}selected="selected"{% endif %}>Active</option>
+                        <option value="Suspended" {% if status == 'Suspended' %}selected="selected"{% endif %}>Suspended</option>
+                    </select>
                 </div>
 
+                <div class="col-sm-1 col-sm-offset-3">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search"
+                               name="search">
+                    </a>
+                </div>
             </div>
+
         </form>
         {% endif %}
         {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}
@@ -92,7 +105,7 @@
         </div>
         {% endif %}
         <div class="table-responsive" id=system_user_table>
-            <table class="table table-bordered table-striped mb0">
+            <table class="table table-bordered table-striped mb0" id="tbl_system_user">
                 <thead>
                 <tr>
                     <th id="id">ID</th>
@@ -106,9 +119,7 @@
                 <tbody id="table_body">
                 {% for systemuser in data %}
                     <tr>
-                        <td class="col-sm-1" id="id_{{ systemuser.id }}">
-                            {{ systemuser.id|default_if_none:'' }}
-                        </td>
+                        <td class="col-sm-1" id="id_{{ systemuser.id }}">{{ systemuser.id|default_if_none:'' }}</td>
                         {% if systemuser.is_deleted %}
                             <td class="col-sm-1">
                                 <del>{{ systemuser.username|default_if_none:'' }}</del>
@@ -169,14 +180,14 @@
                                             <span class="small">ChangeRole</span>
                                         </a>
                                     {% endif %}
-                                    {% if systemuser.is_suspended %}
+                                    {% if systemuser.is_suspended and systemuser.is_permission_activate_user %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            role="button"
                                            id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
                                             <span class="small">Activate</span>
                                         </a>
-                                    {% else %}
+                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"

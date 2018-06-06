@@ -1,0 +1,12 @@
+<ul  class="nav nav-pills">
+    {% if permissions.CAN_VIEW_CUSTOMER_MANAGEMENT %}
+    <li  id="tab_summary" {% if active_tab == 'summary' %}class="active" {% endif %}>
+        <a  href="{% url 'customers:customer_management_summary' customerId %}"><font size="4">Summary</font></a>
+    </li>
+    {% endif %}
+    {% if permissions.CAN_ACCESS_CUSTOMER_DEVICE_TAB %}
+    <li  id="tab_product" {% if active_tab == 'device' %}class="active" {% endif %}>
+        <a href="{% url 'customers:customer_management_device' customerId %}"><font size="4">Device Management</font></a>
+    </li>
+    {% endif %}
+</ul>
