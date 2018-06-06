@@ -119,7 +119,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Key Value Type *</label>
                                         <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops_2 }}, {{ freetext_ops_2 }}, {{ operations }})">
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">
                                                 {% for type in key_value_types %}
                                                     <option value= "{{ type }}">{{ type }}</option>
                                                 {% endfor %}
@@ -130,7 +130,7 @@
                                         <label class="col-sm-3 control-label">Operator *</label>
                                         <div class="col-xs-3">
                                             <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
-                                                {% for oper in numeric_ops_2 %}
+                                                {% for oper in numeric_ops %}
                                                     <option value= "{{ oper }}">{{ oper }}</option>
                                                 {% endfor %}
                                             </select>
@@ -341,7 +341,6 @@
                 }
                 keyValue.attr('type', 'text');
             } else if (type === 'Numeric') {
-                console.log("Hello", numericOps)
                 setDDL(operator, numericOps);
                 keyValue.attr('type', 'number');
             } else if (type === 'Timestamp') {
@@ -404,7 +403,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops_2 }}, {{ freetext_ops_2 }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -415,7 +414,7 @@
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in numeric_ops_2 %}\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -835,13 +834,7 @@
             var key_value_type_id = 'ddl_filter_key_value_type';
             var operator_id = 'ddl_filter_operator';
             var key_value = 'txt_filter_key_value';
-            if(filterCount == 'consecutive') {
-                detail_name_id = 'ddl_count_consecutive_key_detail_name';
-                key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
-                operator_id = 'ddl_count_consecutive_key_detail_operator';
-                key_value = 'txt_count_consecutive_key_detail_value';
-            }
-             var filterAreaHtml = '<div><div class="form-group">\
+            var filterAreaHtml = '<div><div class="form-group">\
                                     <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
@@ -858,7 +851,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops }}, {{ operations }})">\
+                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -869,7 +862,7 @@
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -902,7 +895,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{numeric_ops_2}}, {{ freetext_ops_2 }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{numeric_ops}}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -913,7 +906,7 @@
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
                                             <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in numeric_ops_2 %}\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -952,7 +945,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -1151,8 +1144,53 @@
         };
 
         var getConsecutiveKeyDetailHtml = function(conditionNumber) {
-          var consecutiveKeyDetailHtml = '<div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Consecutive key detail</label></div>';
-          consecutiveKeyDetailHtml += getFilterAreaHtml(conditionNumber, 'consecutive');
+            var detail_name_id = 'ddl_count_consecutive_key_detail_name';
+            var key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
+            var operator_id = 'ddl_count_consecutive_key_detail_operator';
+            var key_value = 'txt_count_consecutive_key_detail_value';
+            var filterCount = 'consecutive';
+
+            var consecutiveKeyDetailHtml = '<div><div class="form-group">\
+                                    <label class="col-sm-3 control-label">Consecutive key detail *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div></div>';
+
           return consecutiveKeyDetailHtml;
         };
 
@@ -1186,7 +1224,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
