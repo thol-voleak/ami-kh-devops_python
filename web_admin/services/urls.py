@@ -37,6 +37,8 @@ from .views.spi_url_configuration.update import SPIUrlConfigurationUpdate
 from .views.spi_url_configuration.delete import SPIUrlConfigurationDelete
 from .views.tier_levels.list import TierLevelView
 from .views.tier_levels.edit import TierLevelEdit
+from .views.suspend import suspend
+from .views.activate import activate
 
 
 app_name = "services"
@@ -157,5 +159,7 @@ urlpatterns = [
     url(r'^tier-levels/(?P<level_id>[0-9A-Za-z]+)/update$',
         login_required(TierLevelEdit.as_view(), login_url='authentications:login'),
         name="tier_label_update"),
+    url(r'^suspend/(?P<service_id>[0-9A-Za-z]+)/$', login_required(suspend, login_url='authentications:login'), name="service_suspend"),
+    url(r'^activate/(?P<service_id>[0-9A-Za-z]+)/$', login_required(activate, login_url='authentications:login'), name="service_activate"),
 ]
 

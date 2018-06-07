@@ -113,6 +113,7 @@ SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
+SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash/balances/histories/'
