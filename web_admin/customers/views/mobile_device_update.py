@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class MobileDeviceView(TemplateView):
-    template_name = "mobile_device_update.html"
+    template_name = "device_update.html"
     raise_exception = False
     logger = logger
     login_url = 'web:permission_denied'
@@ -59,7 +59,7 @@ class MobileDeviceView(TemplateView):
             'device_unique_reference': form['device_unique_reference'],
             'os': form['os'],
             'os_version': form['os_version'],
-            'display_size_inches': form['display_size_inches'],
+            'display_size_in_inches': form['display_size_in_inches'],
             'pixel_counts': form['pixel_counts'],
             'unique_number': form['unique_number'],
             'mac_address': form['mac_address'],
