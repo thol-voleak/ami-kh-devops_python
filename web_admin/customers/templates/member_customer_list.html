@@ -106,6 +106,16 @@
                                value="{{ mobile_number | default_if_none:'' }}"/>
                     </div>
                 </div>
+                <div class="row col-xs-12">
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-4 control-label">Mobile Unique Reference</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control "
+                                   name="mobile_device_unique_reference" id="txt_mobile_device_unique_reference"
+                                   value="{{ mobile_device_unique_reference | default_if_none:'' }}"/>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-4 control-label">Created Date: From</label>
                     <div class="col-sm-6">
@@ -329,7 +339,7 @@
                                         +'</div>'
                                         +'<div id="reason-text-area" class="form-group" style="margin-bottom: 40px;">'
                                         +'<div class="control-label suspend-label-custom">Suspend Reason Description'
-                                        +'<span> </span>' 
+                                        +'<span> </span>'
                                         +'<span id="required-description" style="display:none;">*</span></div>'
                                         +'<div>'
                                         +'<textarea id="txt_input_reason" class="form-control" name="suspend_reason" placeholder="Description" disabled></textarea>'

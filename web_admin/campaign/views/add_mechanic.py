@@ -50,6 +50,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
+        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
+        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -80,7 +82,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'trigger': trigger,
             'freetext_ops': freetext_ops,
             'freetext_ops_2': freetext_ops_2,
-            'numeric_ops': numeric_ops,
+            'profile_details_freetext_ops': profile_details_freetext_ops,
+            'profile_details_numeric_ops': profile_details_numeric_ops,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,

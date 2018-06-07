@@ -224,8 +224,11 @@
 
 <script>
     function showErrorMessage(msg) {
-        $("#alert-msg").text(msg);
-        $("#msg-error").fadeIn(700);
+        $("#alert_msg").text(msg);
+        $('#alert_system_user').removeClass("alert-success");
+	    $('#alert_system_user').addClass("alert-danger");
+        $("#alert_system_user").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
     }
 
     function showSuccessMessage(msg) {
@@ -287,12 +290,11 @@
                             showSuccessMessage('Suspended data successfully');
                         } else {
                             // Failed
-                            showErrorMessage(response.msg);
+                            showErrorMessage('Suspend system user failed');
                         }
                     },
                     error: function (msg) {
-                        console.log('Error suspending the system user id' + system_user_id + msg);
-                        showErrorMessage(JSON.stringify(msg));
+                        showErrorMessage('Suspend system user failed');
                     }
                 });
 
