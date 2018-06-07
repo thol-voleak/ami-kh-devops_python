@@ -1,0 +1,354 @@
+<style type="text/css">
+    div.checkbox {
+        display: inline-block;
+    }
+    div.checkbox label{
+        margin-left: 10px;
+    }
+    .device-panel-empty {
+        border: 1px dashed #c0c0c0;
+        padding: 30px;
+        text-align: center;
+    }
+</style>
+
+<h4 style="margin: 30px 0px;">Channel & Device Management</h4>
+<div style="margin-bottom: 15px">
+    <div class="device-panel-empty" id="div-device-empty" {% if device_list %} style="display: none" {% endif %}>
+        <div>
+            <div id="lbl_device_add"><b>Please Add a Device</b></div>
+            <div style="margin-top: 10px;">
+                <a id="btn-add-device" class="btn btn-success btn-md" onclick="addDevice()">
+                    <span class="small">Add</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="div-device-management" {% if not device_list %} style="display: none" {% endif %}>
+        <div class="channel-list">
+            <h5>Give Access to the following Channels</h5>
+            {% for channel in supported_channels %}
+                <div class="checkbox">
+                    <label>
+                    <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                           {% if is_readonly %}disabled{% endif %}
+                           {% if channel.grant_permission %}checked{% endif %}
+                           onclick="changeChannelAccessStatus(this)"
+                           data-url-grant="{% url 'shop:grant_channel_access' channel.id form.id %}"
+                           data-url-revoke="{% url 'shop:revoke_channel_access' channel.id form.id %}"
+                           data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="table-responsive" style="margin-top: 10px;">
+            <table id="tbl_device_management" class="table table-bordered table-striped mb0">
+                <thead>
+                    <tr>
+                        <th id="channel_type">Channel Type</th>
+                        <th id="channel">Channel</th>
+                        <th id="device_model">Device Model</th>
+                        <th id="device_unique_ref">Device Unique Reference</th>
+                        {% if not is_readonly %}
+                            <th id="action" style="width: 15%">Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in device_list %}
+                        <tr id="column-device-{{ device.id }}">
+                            <td>{{ device.channel_type.name|default_if_none:'' }}</td>
+                            <td>{{ device.channel.name|default_if_none:'' }}</td>
+                            <td>{{ device.mobile_device_model|default_if_none:'' }}</td>
+                            <td>
+                                {% if device.channel_type.id == 1 %}
+                                    {{ device.mobile_device_unique_reference|default_if_none:'' }}
+                                {% elif device.channel_type.id == 3 %}
+                                    {{ device.edc_serial_number|default_if_none:'' }}
+                                {% elif device.channel_type.id == 4 %}
+                                    {{ device.pos_serial_number|default_if_none:'' }}
+                                {% endif %}
+                            </td>
+                            {% if not is_readonly %}
+                                <td>
+                                    <div id="action-device-{{device.id}}">
+                                        {% if permissions.CAN_EDIT_AGENT_CHANNEL_DETAILS %}
+                                            <a id="btn-edit-device-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
+                                                    href="{% url 'shop:device_update' form.id device.id %}">
+                                                <span class="small">Edit Detail</span>
+                                            </a>
+                                        {% endif %}
+                                        {% if permissions.CAN_UNBIND_AGENT_DEVICE %}
+                                            <a type="button"
+                                                id="btn-unbind-{{ device.id }}"
+                                                data-url="{% url 'shop:unbind_device' device.id %}"
+                                                onclick="deleteDevice(this)"
+                                                data-device-id='{{ device.id }}'
+                                                class="btn btn-danger mb5 btn-outline btn-xs">
+                                                <span class="small">Unbind Device</span>
+                                            </a>
+                                        {% endif %}
+                                        {% if permissions.CAN_DISABLE_AGENT_DEVICE %}
+                                            {% if not device.is_active %}
+                                                <a id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                        data-url="{% url 'shop:enable_device' device.id %}"
+                                                        onclick="doEnableOrDisableDevice(this)">Enable</a>
+                                            {% else %}
+                                                <a id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                        data-url="{% url 'shop:disable_device' device.id %}"
+                                                        onclick="doEnableOrDisableDevice(this)">Disable</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {%endfor%}
+                    {% if not is_readonly %}
+                        <tr>
+                            <td colspan="5" style="background-color: #9dd788; color: #222; text-align: center; font-weight: bold; cursor: pointer;" id="btn_add_device" onclick="addDevice()">Add Device</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function showErrorMessage(msg) {
+	    $(".alert-success").hide();
+	    $('.alert-warning').text(msg);
+	    $('.alert-danger').hide();
+
+        $(".alert-warning").show();
+
+        $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+	function showSuccessMessage(msg) {
+	    $(".alert-success").text(msg);
+	    $('.alert-warning').hide();
+	    $('.alert-danger').hide();
+
+        $(".alert-success").show();
+
+        $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+    function changeChannelAccessStatus(e) {
+        var grant;
+        var url;
+        var title;
+        var channelName = e.getAttribute('data-channel-name');
+        if ($(e).is(':checked')){
+            grant = true;
+            url = e.getAttribute('data-url-grant');
+            title = 'Are you sure you want to give this user access to ' + channelName + ' Channel';
+        } else {
+            grant = false;
+            url = e.getAttribute('data-url-revoke');
+            title = 'Are you sure you want to block this user from using ' + channelName + ' Channel';
+        }
+
+        swal({
+                title: title,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                closeOnClickOutside: false,
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/shops/";
+                                console.log(window.location.origin);
+                                window.location.replace(url);
+                            } else if (response.status == 2) {
+                                // success
+                                if (grant) {
+                                    showSuccessMessage('Agent is now granted access to ' + channelName + ' Channel');
+                                } else {
+                                    showSuccessMessage('Agent is now revoked access to ' + channelName + ' Channel');
+                                }
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                } else {
+                    e.checked = !e.checked;
+                }
+            });
+    };
+
+    function doEnableOrDisableDevice(e) {
+            var title = e.innerText;
+            if (title === 'Enable') {
+                activate(e);
+            } else {
+                inactive(e);
+            }
+    }
+
+    function activate(e) {
+        swal({
+                title: "Are you sure you want to active device?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                closeOnConfirm: true,
+                closeOnClickOutside: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    var url = e.getAttribute('data-url');
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/shops/";
+                                console.log(window.location.origin);
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                e.innerHTML = "Disable";
+                                e.disabled = true;
+                                e.disabled = false;
+                                e.setAttribute('data-url', e.getAttribute('data-url').replace('/enable', '/disable'));
+                                showSuccessMessage('Enable device successfully');
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+    }
+
+    function inactive(e) {
+        swal({
+                title: "Are you sure you want to inactive device?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                closeOnConfirm: true,
+                closeOnClickOutside: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    var url = e.getAttribute('data-url');
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/shops/";
+                                console.log(window.location.origin);
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // success
+                                e.innerHTML = "Enable";
+                                e.disabled = true;
+                                e.disabled = false;
+                                e.setAttribute('data-url', e.getAttribute('data-url').replace('/disable', '/enable'));
+                                showSuccessMessage('Disable device successfully');
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+    }
+
+
+    function deleteDevice(e) {
+        swal({
+                title: "Are you sure you want to delete device?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                closeOnConfirm: true,
+                closeOnClickOutside: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    var url = e.getAttribute('data-url');
+                    console.log(url)
+                    var device_id = e.getAttribute('data-device-id');
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        dataType: "json",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+                            if(response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/shops/";
+                                console.log(window.location.origin);
+                                window.location.replace(url);
+                            } else if(response.status == 2) {
+                                // Success
+                                $('#column-device-'+device_id).remove();
+                                var rowCount = $('[id^=column-device-]').length;
+                                console.log(rowCount);
+                                if (rowCount == 0) {
+                                    $("#div-device-empty").show();
+                                    $("#div-device-management").hide();
+                                }
+                                showSuccessMessage('Delete device successfully');
+                            } else {
+                                // Failed
+                                showErrorMessage(response.msg);
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+    }
+
+    function addDevice() {
+        $("#addDeviceModal").modal('show');
+    }
+</script>

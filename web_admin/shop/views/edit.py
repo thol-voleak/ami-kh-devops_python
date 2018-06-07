@@ -1,10 +1,10 @@
-from shop.utils import get_shop_details, convert_shop_to_form, convert_form_to_shop, get_all_shop_type, get_all_shop_category
+from shop.utils import get_shop_details, convert_shop_to_form, convert_form_to_shop, get_all_shop_type, get_all_shop_category, get_agent_supported_channels, get_channel_permissions_list, get_devices_list, check_permission_device_management
 from web_admin.api_logger import API_Logger
 from web_admin.restful_methods import RESTfulMethods
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
 from web_admin import setup_logger
-from web_admin import api_settings, RestFulClient
+from web_admin import api_settings, RestFulClient, ajax_functions
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from braces.views import GroupRequiredMixin
@@ -48,10 +48,28 @@ class EditView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         list_shop_type = get_all_shop_type(self)
         list_shop_category = get_all_shop_category(self)
         form = convert_shop_to_form(shop)
+
+        permissions = check_permission_device_management(self)
+
+        supported_channels = get_agent_supported_channels(self)
+        access_channel_permissions = get_channel_permissions_list(self, shop_id)
+        dict_channels = {int(x['id']): x for x in supported_channels}
+        id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
+        for id, channel in dict_channels.items():
+            if id in id_channels_permissions:
+                channel['grant_permission'] = True
+            else:
+                channel['grant_permission'] = False
+
+        device_list = get_devices_list(self, shop_id)
+        supported_channels = dict_channels.values()
         context.update({
             'form': form,
             'list_shop_type': list_shop_type,
-            'list_shop_category': list_shop_category
+            'list_shop_category': list_shop_category,
+            'supported_channels': supported_channels,
+            'device_list': device_list,
+            'permissions': permissions
         })
         return render(request, self.template_name, context)
 

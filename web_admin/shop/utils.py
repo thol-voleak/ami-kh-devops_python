@@ -60,8 +60,98 @@ def get_system_country(self):
 
     return data['value']
 
+def get_agent_supported_channels(self):
+    self.logger.info('========== Start get supported channel for agent ==========')
+    api_path = api_settings.SEARCH_CHANNEL
+    body = {}
+    body['user_type_id'] = 2
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=body
+    )
 
+    data = data.get('channels', [])
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data,
+                            status_code=status_code,
+                            is_getting_list=True,
+                            params=body)
+    self.logger.info('========== Finish get supported channel for agent ==========')
+    return data
 
+def get_channel_permissions_list(self, shopId):
+    self.logger.info('========== Start get channel access permission for the shop ==========')
+    api_path = api_settings.SEARCH_CHANNEL_PERMISSION
+    body = {}
+    body['shop_id'] = shopId
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=body
+    )
+
+    data = data.get('permissions', [])
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data,
+                            status_code=status_code,
+                            is_getting_list=True,
+                            params=body)
+    self.logger.info('========== Finish get channel access permission for the shop ==========')
+    return data
+
+def get_devices_list(self, shopId):
+    self.logger.info('========== Start get all devices under the shop ==========')
+    api_path = api_settings.SEARCH_AGENT_DEVICES
+    body = {}
+    body['shop_id'] = shopId
+    body['is_deleted'] = False
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=body
+    )
+
+    data = data.get('devices', [])
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data,
+                            status_code=status_code,
+                            is_getting_list=True,
+                            params=body)
+    self.logger.info('========== Finish get all devices under the shop ==========')
+    return data
+
+def check_permission_device_management(self):
+    permissions = {}
+    permissions['CAN_BLOCK_AGENT_CHANNELS'] = self.check_membership(['CAN_BLOCK_AGENT_CHANNELS'])
+    permissions['CAN_EDIT_AGENT_CHANNEL_DETAILS'] = self.check_membership(['CAN_EDIT_AGENT_CHANNEL_DETAILS'])
+    permissions['CAN_UNBIND_AGENT_DEVICE'] = self.check_membership(['CAN_UNBIND_AGENT_DEVICE'])
+    permissions['CAN_DISABLE_AGENT_DEVICE'] = self.check_membership(['CAN_DISABLE_AGENT_DEVICE'])
+    return permissions
+
+def get_channel_detail(self, channel_id):
+    self.logger.info('========== Start get channel detail ==========')
+    api_path = api_settings.SEARCH_CHANNEL
+    body = {}
+    body['id'] = channel_id
+    success, status_code, status_message, data = RestFulClient.post(
+        url=api_path,
+        headers=self._get_headers(),
+        loggers=self.logger,
+        params=body
+    )
+
+    data = data.get('channels', [])
+    API_Logger.post_logging(loggers=self.logger,
+                            response=data,
+                            status_code=status_code,
+                            is_getting_list=False,
+                            params=body)
+    self.logger.info('========== Finish get channel detail ==========')
+    return data[0]
 
 def get_shop_details(self, shop_id):
     url = api_settings.GET_DETAIL_SHOP
