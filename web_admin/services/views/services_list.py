@@ -30,7 +30,7 @@ class ListView(TemplateView):
         name = request.GET.get('name')
         id = request.GET.get('id')
         currency = request.GET.get('currency')
-        group = request.GET.get('group')
+        # group = request.GET.get('group')
         status = request.GET.get('status')
 
         if id:
@@ -45,9 +45,9 @@ class ListView(TemplateView):
             context['currency'] = currency
             params['currency'] = currency
 
-        if group:
-            context['group'] = group
-            params['service_group_id'] = group
+        # if group:
+        #     context['group'] = group
+        #     params['service_group_id'] = group
 
         if not status:
             params['status'] = 1
@@ -62,7 +62,7 @@ class ListView(TemplateView):
         service_groups = []
         for i in service_list:
             for j in service_group_list:
-                service_groups.append({'id': str(j['service_group_id']), 'name': j['service_group_name']})
+                # service_groups.append({'id': str(j['service_group_id']), 'name': j['service_group_name']})
                 if i['service_group_id'] == j['service_group_id']:
                     i['service_group_name'] = j['service_group_name']
 
