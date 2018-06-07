@@ -1,0 +1,124 @@
+{% csrf_token %}
+
+<input type="hidden" name="id" value="{{ form.id }}" />
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">Channel Type *</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded"  required id="txt_channel_type" name="channel_type_name" value="{{ form.channel_type.name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="hidden" class="form-control input-rounded" name="channel_type_id" value="{{ form.channel_type.id }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Channel</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_channel" name="channel_name" value="{{ form.channel.name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="hidden" class="form-control input-rounded" name="channel_id" value="{{ form.channel.id }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Device Name</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_device_name" name="device_name" value="{{ form.device_name }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Device Model</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_device_model" name="device_model" value="{{ form.device_model }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Device Unique Reference</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_device_unique_reference" name="device_unique_reference" value="{{ form.device_unique_reference }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">OS</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_os" name="os" value="{{ form.os }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">OS Version</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_os_version" name="os_version" value="{{ form.os_version }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Display Size (inches)</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_display_size_inches" name="display_size_inches" value="{{ form.os_version }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Pixel Counts</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_pixel_counts" name="pixel_counts" value="{{ form.pixel_counts }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Unique Number (IMEI, MEID, ESN, IMSI)</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_unique_number" name="unique_number" value="{{ form.unique_number }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">MAC Address</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_mac_address" name="mac_address" value="{{ form.mac_address }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Serial Number</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_serial_number" name="serial_number" value="{{ form.serial_number }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Network/Provider Name</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_network_provider_name" name="network_provider_name" value="{{ form.network_provider_name }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Public IP Address</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_public_ip_address" name="public_ip_address" value="{{ form.public_ip_address }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">App Version</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_app_version" name="app_version" value="{{ form.app_version }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Supporting File 1</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_supporting_file_1" name="supporting_file_1" value="{{ form.supporting_file_1 }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Supporting File 2</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_supporting_file_2" name="supporting_file_2" value="{{ form.supporting_file_2 }}"  />
+    </div>
+</div>
