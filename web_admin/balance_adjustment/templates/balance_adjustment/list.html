@@ -945,6 +945,15 @@
                             confirmButtonText: "Close",
                             closeOnConfirm: true
                         });
+                    }else if (uploadData.id == -1 && "Upload must be in csv format" == uploadData.code) {
+                        $("#uploadFileModal").find($('#progress_container')).hide();
+                        swal({
+                            title: 'Upload must be in csv format',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
                     }
                 }
             });
