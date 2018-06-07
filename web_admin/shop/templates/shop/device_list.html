@@ -34,8 +34,8 @@
                            {% if is_readonly %}disabled{% endif %}
                            {% if channel.grant_permission %}checked{% endif %}
                            onclick="changeChannelAccessStatus(this)"
-                           data-url-grant="{% url 'shop:grant_channel_access' channel.id form.id %}"
-                           data-url-revoke="{% url 'shop:revoke_channel_access' channel.id form.id %}"
+                           data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
+                           data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
                            data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
                 </div>
             {% endfor %}
@@ -118,20 +118,24 @@
 
     function showErrorMessage(msg) {
 	    $(".alert-success").hide();
-	    $('.alert-warning').text(msg);
+        $(".alert-warning").hide();
 	    $('.alert-danger').hide();
 
-        $(".alert-warning").show();
+        $('#message-device-error').text(msg);
+        $("#div-message-device-error").show();
+        $("#div-message-device-success").hide();
 
         $("html, body").animate({scrollTop: 0}, "slow");
 	}
 
 	function showSuccessMessage(msg) {
-	    $(".alert-success").text(msg);
-	    $('.alert-warning').hide();
-	    $('.alert-danger').hide();
+        $(".alert-success").hide();
+        $('.alert-warning').hide();
+        $('.alert-danger').hide();
 
-        $(".alert-success").show();
+        $('#message-device-success').text(msg);
+	    $("#div-message-device-error").hide();
+        $("#div-message-device-success").show();
 
         $("html, body").animate({scrollTop: 0}, "slow");
 	}
@@ -177,9 +181,9 @@
                             } else if (response.status == 2) {
                                 // success
                                 if (grant) {
-                                    showSuccessMessage('Agent is now granted access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Shop is now granted access to ' + channelName + ' Channel');
                                 } else {
-                                    showSuccessMessage('Agent is now revoked access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Shop is now revoked access to ' + channelName + ' Channel');
                                 }
                             } else {
                                 // Failed

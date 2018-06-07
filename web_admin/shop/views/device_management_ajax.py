@@ -9,7 +9,7 @@ from django.conf import settings
 import logging
 
 
-def grant_channel_access(request, channel_id, shop_id):
+def grant_channel_access(request, shop_id, channel_id):
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
@@ -32,7 +32,7 @@ def grant_channel_access(request, channel_id, shop_id):
 
     return result
 
-def revoke_channel_access(request, channel_id, shop_id):
+def revoke_channel_access(request, shop_id, channel_id):
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
