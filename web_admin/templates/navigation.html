@@ -45,6 +45,9 @@
                             <a href="{% url 'password_center:list' %}"> <span>Password Center</span> </a>
                     </li>
                      {% endif %}
+                    <li class="class={% if app_name == "one_time_passsword_report" %} active{% endif %}">
+                        <a href="{% url 'one_time_password_report:list' %}"> <span>One Time Password Report</span> </a>
+                    </li>
                     </ul>
                 </li>
                 {% endwith %}

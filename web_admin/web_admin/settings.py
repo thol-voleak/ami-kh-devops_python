@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'channel_gateway.api',
     'password_center',
     'upload_management',
+    'authentications.one_time_password_report'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -382,6 +383,11 @@ LOGGING = {
             'propagate': True,
         },
         'upload_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'one_time_password_report': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
