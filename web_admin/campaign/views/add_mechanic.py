@@ -548,7 +548,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
-        profile_update = {'term': 'profile_update', 'description': 'Profile Update'}
+        profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
         filtered.extend([link_bank, created_order, limit_reached, profile_update])
         return filtered
 
