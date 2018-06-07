@@ -117,7 +117,7 @@
                     <td class="col-sm-1">{{ services.service_group_name|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ services.currency|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.description|default_if_none:'' }}</td>
-                    <td class="col-sm-2">{{ services.status|yesno:"Activated,Suspended" }}</td>
+                    <td class="col-sm-2" id="status-{{ services.service_id }}">{{ services.status|yesno:"Activated,Suspended" }}</td>
                     <td class="col-sm-2">{{ services.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-2">{{ services.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-3">
@@ -237,6 +237,9 @@
                             e.innerHTML = "<span class='small'>Activate</span>";
                             e.disabled = true;
                             e.disabled = false;
+                            var service_id = e.getAttribute('data-service-id');
+                            var status_id = 'status-' + service_id;
+                            document.getElementById(status_id).innerText = 'Suspended';
 
                             showSuccessMessage('Suspended data successfully');
                         } else {
@@ -278,6 +281,9 @@
                             e.innerHTML = "<span class='small'>Suspend</span>";
                             e.disabled = true;
                             e.disabled = false;
+                            var service_id = e.getAttribute('data-service-id');
+                            var status_id = 'status-' + service_id;
+                            document.getElementById(status_id).innerText = 'Activated';
 
                             showSuccessMessage('Activated data successfully');
                         } else {
