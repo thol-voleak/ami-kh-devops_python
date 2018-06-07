@@ -183,6 +183,8 @@
                                     {% if systemuser.is_suspended and systemuser.is_permission_activate_user %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
+                                           data-url="{% url 'system_user:system_user_activate' systemuser.id %}"
+                                           data-system_user-id='{{ systemuser.id }}'
                                            role="button"
                                            id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
                                             <span class="small">Activate</span>
@@ -243,12 +245,58 @@
     function doSuspendOrActivate(e) {
         var title = e.innerText;
         if (title === 'Activate') {
-
+            activate(e);
         } else {
             suspend(e);
         }
     }
 
+    function activate(e){
+        swal({
+            icon: "warning",
+            title: "Are you sure you want to activate?",
+            buttons: true,
+            closeOnClickOutside: false
+
+        }).then(function(isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var system_user_id = e.getAttribute('data-system_user-id');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/activate/', '/suspend/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Suspend</span>";
+                            e.id = "btn_system_user_suspend";
+
+                            var status_id = 'system-user-status-' + system_user_id;
+                            document.getElementById(status_id).innerText = 'Active';
+
+                            showSuccessMessage('Activate system user successfully');
+                        } else {
+                            // Failed
+                            if (response.server_error_code == 500) {
+                                showErrorMessage('Activate system user failed')
+                            } else {
+                                showErrorMessage(response.msg);
+                            }
+                        }
+                    },
+                    error: function (msg) {
+                        showErrorMessage('Activate system user failed');
+                    }
+                });
+
+            }
+        });
+    }
 
     function suspend(e) {
         var suspendContentElem = document.createElement("div");
@@ -269,11 +317,11 @@
             if (isConfirm) {
                 var url = e.getAttribute('data-url');
                 var system_user_id = e.getAttribute('data-system_user-id');
-                var resason_suppend = document.getElementById("txt_input_reason").value;
+                var reason_suppend = document.getElementById("txt_input_reason").value;
                 $.ajax({
                     url: url,
                     type: "GET",
-                    data: {"active_suspend_reason":resason_suppend},
+                    data: {"active_suspend_reason":reason_suppend},
                     success: function (response) {
                         if (response.status == 1) {
                             // Logout
@@ -283,11 +331,12 @@
                             var updatedUrl = url.replace('/suspend/', '/activate/');
                             e.setAttribute('data-url', updatedUrl);
                             e.innerHTML = "<span class='small'>Activate</span>";
+                            e.id = "btn_system_user_activate";
 
                             var status_id = 'system-user-status-' + system_user_id;
                             document.getElementById(status_id).innerText = 'Suspended';
 
-                            showSuccessMessage('Suspended data successfully');
+                            showSuccessMessage('Suspended system user successfully');
                         } else {
                             // Failed
                             if (response.server_error_code == 500) {
