@@ -43,7 +43,7 @@
                     <th>Mobile Number</th>
                     <th>Is Passed Validation</th>
                     <th>Fail Validation Count</th>
-                    <th>Is Deleted</th>
+                    <th>Is_Deleted</th>
                     <th>Created Date(UTC+0)</th>
                     <th>Updated Date(UTC+0)</th>
                     <th>Expired Date(UTC+0)</th>
@@ -55,7 +55,7 @@
                         <td>{{ otp.id }}</td>
                         <td>{{ otp.otp_reference_id|default_if_none:""}}</td>
                         <td>{{ otp.user_reference_code|default_if_none:""}}</td>
-                        <td>{{ otp.user_type.name|default_if_none:"" }}</td>
+                        <td>{{ otp.user_type|default_if_none:"" }}</td>
                         <td>{{ otp.user_id|default_if_none:"" }}</td>
                         <td>{{ otp.delivery_channel|default_if_none:"" }}</td>
                         <td>{{ otp.email|default_if_none:"" }}</td>
