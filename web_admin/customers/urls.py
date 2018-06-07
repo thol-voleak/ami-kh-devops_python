@@ -43,5 +43,5 @@ urlpatterns = [
     url(r'^blocked_devices', login_required(BlockedDevicesList.as_view(), login_url='authentications:login'),
         name="blocked-devices"),
     url(r'^unblock/(?P<ticket_id>[0-9A-Za-z]+)/', login_required(unblock, login_url='authentications:login'), name="unblock_devices"),
-    url(r'^(?P<customer_id>[0-9A-Za-z]+)/mobile-devices/(?P<device_id>[0-9A-Za-z]+)/update', login_required(MobileDeviceView.as_view(), login_url='authentications:login'), name="mobile_device_update"),
+    url(r'^(?P<customer_id>[0-9A-Za-z]+)/devices/(?P<device_id>[0-9A-Za-z]+)/update', login_required(MobileDeviceView.as_view(), login_url='authentications:login'), name="mobile_device_update"),
 ]

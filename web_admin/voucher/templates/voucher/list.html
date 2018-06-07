@@ -96,11 +96,11 @@
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'voucher:voucher' %}">
             {% csrf_token %}
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Voucher ID</label>
+                    <label class="col-sm-3 control-label">Voucher ID</label>
                     <div class="col-sm-2">
                         <input type="number" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id" value="{{ voucher_id }}">
                     </div>
-                    <label class="col-sm-2 control-label">Claim Status</label>
+                    <label class="col-sm-3 control-label">Claim Status</label>
                     <div class="col-sm-2">
                         <select class="form-control" id="ddl_claim_status" name="claim_status" >
                             {% for item in claim_status_list %}
@@ -112,21 +112,9 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <label class="col-sm-2 control-label">Hold Status</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_hold_status" name="hold_status" >
-                            {% for item in hold_status_list %}
-                                {%if item.value == hold_status%}
-                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
                 </div>
                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Cash In User Type</label>
+                    <label class="col-sm-3 control-label">Cash In User Type</label>
                     <div class="col-sm-2">
                         <select class="form-control" id="ddl_user_type_cash_in" name="user_type_cash_in" >
                                 {% for item in cash_in_user_type_list %}
@@ -138,7 +126,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <label class="col-sm-2 control-label">Cash In ID</label>
+                    <label class="col-sm-3 control-label">Cash In ID</label>
                     <div class="col-xs-2">
                         <input type="number" class="form-control input-rounded"
                                name="cash_in_id"
@@ -147,14 +135,14 @@
                     </div>
                 </div>
                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Cash Out User Type</label>
+                    <label class="col-sm-3 control-label">Cash Out User Type</label>
                     <div class="col-sm-2">
                         <input type="text" class="form-control input-rounded"
                                name="user_type_cash_out"
                                value="Agent" readonly
                                id="txt_user_type_cash_out">
                     </div>
-                    <label class="col-sm-2 control-label">Cash Out ID</label>
+                    <label class="col-sm-3 control-label">Cash Out ID</label>
                     <div class="col-xs-2">
                         <input type="number" class="form-control input-rounded"
                                name="cash_out_id"
@@ -163,14 +151,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Create Date From</label>
+                    <label class="col-sm-3 control-label">Create Date From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="create_date_from"
                                value="{{ create_date_from|default_if_none:'' }}"
                                id="dtp_create_date_from">
                     </div>
-                    <label class="col-sm-2 control-label">To</label>
+                    <label class="col-sm-3 control-label">To</label>
                     <div class="col-xs-2">
                         <input type="date" class="form-control input-rounded"
                                name="create_date_to"
@@ -179,31 +167,46 @@
                     </div>
                 </div>
                  <div class="form-group">
-                        <label class="col-sm-2 control-label">Expiration Date From</label>
+                        <label class="col-sm-3 control-label">Expiration Date From</label>
                         <div class="col-sm-2">
                             <input type="date" class="form-control input-rounded"
                                    name="expiration_date_from"
                                    value="{{ expiration_date_from|default_if_none:'' }}"
                                    id="dtp_expiration_date_from">
                         </div>
-                        <label class="col-sm-2 control-label">To</label>
+                        <label class="col-sm-3 control-label">To</label>
                         <div class="col-xs-2">
                             <input type="date" class="form-control input-rounded"
                                    name="expiration_date_to"
                                    value="{{ expiration_date_to|default_if_none:'' }}"
                                    id="dtp_expiration_date_to">
                         </div>
-
-                        <div class="col-xs-1">
-                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
-                                   onclick="searchVouchers()" value="Search">
+                 </div>
+                 <div class="form-group">
+                        <div class="col-sm-5">
+                        </div>
+                        <label class="col-sm-3 control-label">Hold Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_hold_status" name="hold_status" >
+                                {% for item in hold_status_list %}
+                                    {%if item.value == hold_status%}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
                         </div>
                  </div>
+                 <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
+                            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                                   onclick="searchVouchers()" value="Search">
+                 </div>
             </form>
-
             <div class="no-more-tables" style="position: absolute;">
                 {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION %}
-                <div class="dropdown pull-right" id="ddl_select_action" style="margin-top: -50px;">
+                <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
@@ -213,6 +216,10 @@
                         <li><a onclick="unHold()">Unhold</a></li>
                         {%endif%}
                     </ul>
+                </div>
+                <div style="margin-right: +20px; margin-top: -15px;">
+                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                    <label class="pull-right">Total Orders found:&nbsp;</label>
                 </div>
                 {%endif%}
                 <table id='tbl_voucher' class="table table-bordered table-striped mb0">
@@ -263,6 +270,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
+            {% include "pagination.html" %}
             </div>
         </div>
     </div>

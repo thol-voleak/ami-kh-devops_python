@@ -60,4 +60,5 @@ urlpatterns = [
     url(r'^admin-portal/channel-gateway/services/', include('channel_gateway.service.urls')),
     url(r'^admin-portal/channel-gateway/apis/', include('channel_gateway.api.urls')),
     url(r'^admin-portal/uploads/', include('upload_management.urls')),
+    url(r'^admin-portal/otp/', include('authentications.one_time_password_report.urls')),
 ]

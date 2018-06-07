@@ -476,7 +476,25 @@
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
             var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
-            if (triggerValue === 'register_customer' || triggerValue === 'login') {
+            if (triggerValue == 'profile_update') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+
+                if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                    $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                    $("#ddl_reward_type").val("fixed_cashback");
+                    this.listenRewardType("fixed_cashback");
+                }
+            } else if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")

@@ -7,8 +7,7 @@ from .views.delete import DeleteView
 from .views.detail import DetailView
 from .views.edit import EditView
 from .views.list import ListView
-from .views.edc_device_update import EdcDeviceView
-
+from .views.device_update import DeviceUpdateView
 app_name = 'shop'
 
 urlpatterns = [
@@ -18,5 +17,5 @@ url(r'^ajax/agent-detail/(?P<id>[0-9A-Za-z]+)/$', login_required(Agent_Detail.as
     url(r'^(?P<id>[0-9A-Za-z]+)/edit/$', login_required(EditView.as_view(), login_url='authentications:login'), name="shop_edit"),
     url(r'^(?P<id>[0-9A-Za-z]+)/detail/$', login_required(DetailView.as_view(), login_url='authentications:login'), name="shop_detail"),
     url(r'^(?P<id>[0-9A-Za-z]+)/delete/$', login_required(DeleteView.as_view(), login_url='authentications:login'), name="shop_delete"),
-    url(r'^(?P<id>[0-9A-Za-z]+)/edc-devices/(?P<device_id>[0-9A-Za-z]+)/edit', login_required(EdcDeviceView.as_view(), login_url='authentications:login'), name="edc_device_update"),
+    url(r'^(?P<id>[0-9A-Za-z]+)/devices/(?P<device_id>[0-9A-Za-z]+)/edit', login_required(DeviceUpdateView.as_view(), login_url='authentications:login'), name="device_update"),
 ]
