@@ -290,7 +290,11 @@
                             showSuccessMessage('Suspended data successfully');
                         } else {
                             // Failed
-                            showErrorMessage('Suspend system user failed');
+                            if (response.server_error_code == 500) {
+                                showErrorMessage('Suspend system user failed')
+                            } else {
+                                showErrorMessage(response.msg);
+                            }
                         }
                     },
                     error: function (msg) {
