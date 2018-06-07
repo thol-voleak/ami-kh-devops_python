@@ -108,6 +108,7 @@ GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{ser
 GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
+SEARCH_SERVICE = 'api-gateway/report/'+API_VERSION+'/payments/services/'
 SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
