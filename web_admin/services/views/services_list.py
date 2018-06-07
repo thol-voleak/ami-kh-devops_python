@@ -25,7 +25,6 @@ class ListView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         params = {'paging': False}
-        params = {}
         context = {}
 
         name = request.GET.get('name')
