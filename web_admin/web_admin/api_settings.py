@@ -339,6 +339,15 @@ CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
 
 AGENT_DEVICE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/devices/{}'
 
+SEARCH_CHANNEL = 'api-gateway/report/'+API_VERSION+'/channels'
+SEARCH_CHANNEL_PERMISSION = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
+SEARCH_AGENT_DEVICES = 'api-gateway/report/'+API_VERSION+'/agents/devices'
+CHANNEL_GRANT_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions'
+CHANNEL_REVOKE_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions/revoke'
+UPDATE_AGENT_DEVICE_STATUS = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}/status'
+DELETE_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}'
+ADD_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices'
+
 # Channel-gateway Service
 CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services'
 GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
