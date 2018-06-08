@@ -7,6 +7,8 @@ from web_admin.restful_methods import RESTfulMethods
 import logging
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
+from web_admin.restful_helper import RestfulHelper
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +50,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         service_name = request.POST.get('service_name')
         currency = request.POST.get('currency')
         description = request.POST.get('description')
+        clone_from = request.POST.get('clone_from')
 
         body = {
             'service_group_id': service_group_id,
@@ -55,6 +58,9 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'currency': currency,
             'description': description,
         }
+
+        if clone_from:
+            body['clone_from'] = clone_from
 
         url = api_settings.SERVICE_CREATE_URL
         data, success = self._post_method(api_path=url,
@@ -111,9 +117,16 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         service_groups, success_service = self._get_service_group_choices()
         self.logger.info('========== Finish Getting Service Group Choices ==========')
         currencies, success_currency = async_result.get()
+        services = self.get_services_list({'paging': False, 'status': 1})
         if success_currency and success_service:
             return {
                        'currencies': currencies,
                        'service_groups': service_groups,
+                       'services': services
                    }, True
         return None, False
+
+    def get_services_list(self, params):
+        url = api_settings.SEARCH_SERVICE
+        success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request, "searching service", "data.services")
+        return data.get('services') if success else []
