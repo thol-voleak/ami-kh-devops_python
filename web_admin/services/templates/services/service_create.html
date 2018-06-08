@@ -79,7 +79,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Currency:</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_currency" name="currency" required>
+                            <select class="form-control" id="ddl_currency" name="currency" required {% if body.clone_from %} style="pointer-events: none;background: #eee;" {% endif %}>
                                 {% for currency in choices.currencies %}
                                 {% if currency.0|slugify == body.currency|slugify %}
                                         <option value="{{ currency.0 }}" selected>{{ currency.0 }}
