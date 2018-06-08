@@ -1,6 +1,7 @@
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
 from authentications.apps import InvalidAccessToken
+from customers.utils import check_permission_customer_management
 from web_admin import setup_logger
 from web_admin import api_settings, RestFulClient
 from django.contrib import messages
