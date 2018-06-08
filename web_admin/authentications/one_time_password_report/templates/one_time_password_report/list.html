@@ -28,6 +28,15 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">User Type</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_user_type" name="user_type">
+                        <option value='All'>All</option>
+                        <option value='agent' {% if user_type == 'agent' %}selected="selected"{%endif%}>Agent</option>
+                        <option value='customer' {%if user_type == 'customer' %}selected="selected"{%endif%}>Customer</option>
+                        <option value='system-user' {%if user_type == 'system-user' %}selected="selected"{%endif%}>System User</option>
+                    </select>
+                </div>
                 <label class="col-sm-2 control-label">User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">

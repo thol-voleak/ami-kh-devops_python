@@ -50,6 +50,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         context.update({
             'delivery_channel': 'All',
             'validation_status': 'All',
+            'user_type': 'All',
             'otp_list': converted_otp_list,
             'paginator': page,
             'search_count': page.get('total_elements', 0),
@@ -72,6 +73,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         otp_reference_id = request.POST.get('otp_reference_id', '')
         validation_status = request.POST.get('validation_status', '')
         opening_page_index = request.POST.get('current_page_index')
+        user_type = request.POST.get('user_type', '')
 
         body = {}
         if user_id:
@@ -95,7 +97,8 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['is_deleted'] = True if is_deleted == '1' else False
         if validation_status and validation_status != 'All':
             body['is_success_verified'] = (validation_status == 'Yes')
-
+        if user_type and user_type != 'All':
+            body['user_type'] = user_type
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
@@ -111,6 +114,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
             'mobile_number': mobile_number,
             'otp_reference_id': otp_reference_id,
             'validation_status': validation_status,
+            'user_type': user_type,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
             'paginator': page,
