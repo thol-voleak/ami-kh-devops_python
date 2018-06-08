@@ -6,16 +6,26 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
+from braces.views import GroupRequiredMixin
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class OTPList(TemplateView):
+class OTPList(GroupRequiredMixin, TemplateView):
 
     template_name = "one_time_password_report/list.html"
     logger = logger
+
+    group_required = "CAN_MANAGE_OTP_REPORT"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -36,8 +46,9 @@ class OTPList(TemplateView):
         body['page_index'] = 1
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__handle_validator(otp_list['otps'])
+        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
+            'delivery_channel': 'All',
             'otp_list': converted_otp_list,
             'paginator': page,
             'search_count': page.get('total_elements', 0),
@@ -51,17 +62,37 @@ class OTPList(TemplateView):
         context = super(OTPList, self).get_context_data(**kwargs)
         self.logger.info('========== Start searching otp list ==========')
         user_id = request.POST.get('user_id', '')
+        delivery_channel = request.POST.get('delivery_channel', '')
+        user_ref_code = request.POST.get('user_ref_code', '')
+        otp_id = request.POST.get('otp_id', '')
+        email = request.POST.get('email', '')
         opening_page_index = request.POST.get('current_page_index')
+
         body = {}
         if user_id:
             body['user_id'] = user_id
+        if delivery_channel:
+            if delivery_channel != 'All':
+                body['delivery_channel'] = delivery_channel
+        else:
+            body['delivery_channel'] = None
+        if user_ref_code:
+            body['user_reference_code'] = user_ref_code
+        if otp_id:
+            body['id'] = otp_id
+        if email:
+            body['email'] = email
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__handle_validator(otp_list['otps'])
+        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
+            'otp_id': otp_id,
             'user_id': user_id,
+            'user_ref_code': user_ref_code,
+            'delivery_channel': delivery_channel,
+            'email': email,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
             'paginator': page,
@@ -75,19 +106,21 @@ class OTPList(TemplateView):
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
-
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data['otps'],
-                                status_code=status_code, is_getting_list=True)
-
         if not is_success:
+            data = {}
+            data['otps'] = []
+
             messages.add_message(
                 self.request,
                 messages.ERROR,
                 status_message
             )
+        API_Logger.post_logging(loggers=self.logger, params=body, response=data['otps'],
+                                status_code=status_code, is_getting_list=True)
+
         return data, is_success
 
-    def __handle_validator(self, otp_list):
+    def __canculate_validation_info(self, otp_list):
 
         for otp in otp_list:
             otp['is_passed_validation'] = False

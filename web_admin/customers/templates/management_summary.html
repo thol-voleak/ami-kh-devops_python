@@ -84,19 +84,25 @@
                                         <h4>Channel & Devices Management</h4>
                                         <br>
                                         <div>
-                                            <div class="channel-list">
-                                                <h5>Give Access to the following Channels</h5>
-                                                {% for channel in supported_channels %}
-                                                    <div class="checkbox">
-                                                        <label>
-                                                        <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
-                                                            {% if channel.grant_permission %}checked{% endif %}
-                                                            onclick="changeChannelAccessStatus(this)"
-                                                            data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
-                                                            data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
-                                                            data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
-                                                    </div>
-                                                {% endfor %}
+                                            {% if permissions.CAN_BLOCK_CUSTOMER_CHANNELS %}
+                                                <div class="channel-list">
+                                                    <h5>Give Access to the following Channels</h5>
+                                                    {% for channel in supported_channels %}
+                                                        <div class="checkbox">
+                                                            <label>
+                                                            <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                                                                {% if channel.grant_permission %}checked{% endif %}
+                                                                onclick="changeChannelAccessStatus(this)"
+                                                                data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
+                                                                data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
+                                                                data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                            <div class="form-group col-md-12 hidden">
+                                                <label class="pull-right" id="lbl_total">{{ total_result }}</label>
+                                                <label class="pull-right" >Total Devices found:&nbsp;</label>
                                             </div>
                                             <div class="no-more-tables">
                                                 <table id='tbl_summary_management'
@@ -120,13 +126,13 @@
                                                             <td>
                                                                 <div id="action-device-{{device.id}}">
                                                                     {% if permissions.CAN_EDIT_CUSTOMER_CHANNEL_DETAILS %}
-                                                                        <button id="btn-edit-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
+                                                                        <button id="btn_edit_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                                                                 onclick="location.href='{% url 'customers:mobile_device_update' customerId device.id %}'"
                                                                         >Edit Detail</button>
                                                                     {% endif %}
                                                                     {% if permissions.CAN_UNBIND_CUSTOMER_DEVICE %}
                                                                         <button type="button"
-                                                                            id="btn-unbind-{{ device.id }}"
+                                                                            id="btn_unbind_{{ device.id }}"
                                                                             data-url="{% url 'customers:unbind_device' customerId device.id %}"
                                                                             onclick="deleteDevice(this)"
                                                                             data-device-id='{{ device.id }}'
@@ -136,11 +142,11 @@
                                                                     {% endif %}
                                                                     {% if permissions.CAN_DISABLE_CUSTOMER_DEVICE %}
                                                                         {% if not device.is_active %}
-                                                                            <button id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                                            <button id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                                                                     data-url="{% url 'customers:enable_device' customerId device.id %}"
                                                                                     onclick="doEnableOrDisableDevice(this)">Enable</button>
                                                                         {% else %}
-                                                                            <button id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                                            <button id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
                                                                                     data-url="{% url 'customers:disable_device' customerId device.id %}"
                                                                                     onclick="doEnableOrDisableDevice(this)">Disable</button>
                                                                         {% endif %}
@@ -154,15 +160,9 @@
                                                 <div class="text-right" style="margin-top: 15px;">
                                                     {% if total_result > 5 %}
                                                         <a href="{% url 'customers:customer_management_device' customerId %}">
+                                                        <button id="btn_view_more" class="btn btn-success btn-md" type="button">View More</button>
+                                                        </a>
                                                     {% endif %}
-                                                    {% if total_result <= 5 %}
-                                                        <div style="cursor: not-allowed; display: inline-block">
-                                                            <button id="btn_summary_device_view_more" class="btn btn-success btn-md" type="button" disabled="disabled">View More</button>
-                                                        </div>
-                                                    {% else %}
-                                                        <button id="btn_summary_device_view_more" class="btn btn-success btn-md" type="button">View More</button>
-                                                    {% endif %}
-                                                    {% if total_result > 5 %}</a>{% endif %}
                                                 </div>
 
                                             </div>
@@ -337,6 +337,11 @@
                             } else if(response.status == 2) {
                                 // Success
                                 $('#column-device-'+device_id).remove();
+                                var currentTotal = parseInt($("#lbl_total").text()) - 1;
+                                $("#lbl_total").text(currentTotal);
+                                if(currentTotal <= 0) {
+                                    $("#div_devices_summary").remove();
+                                }
                                 showSuccessMessage('Delete device successfully');
                             } else {
                                 // Failed

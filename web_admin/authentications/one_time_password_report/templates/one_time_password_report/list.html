@@ -14,17 +14,40 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="">
             {% csrf_token %}
             <div class="form-group">
+                <label class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="otp_id" id="txt_otp_id" value="{{ otp_id }}">
+                </div>
                 <label class="col-sm-2 control-label">User ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
                 </div>
+                <label class="col-sm-2 control-label">User Reference Code</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="user_ref_code" id="txt_user_ref_code" value="{{ user_ref_code }}">
+                </div>
             </div>
             <div class="form-group">
-                    <div class="col-sm-1 col-sm-offset-11">
-                        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
-                               value="Search">
-                    </div>
+                 <label class="col-sm-2 control-label">Delivery Channel</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_delivery_channel" name="delivery_channel">
+                            <option value='All' {% if delivery_channel == 'All' %}selected="selected"{%endif%}>All</option>
+                            <option value='' {% if delivery_channel == '' %}selected="selected"{%endif%}>-</option>
+                            <option value='SMS' {%if delivery_channel == 'SMS' %}selected="selected"{%endif%}>SMS</option>
+                            <option value='EMAIL' {%if delivery_channel == 'EMAIL' %}selected="selected"{%endif%}>EMAIL</option>
+                            <option value='PUSH NOTIFICATION' {%if delivery_channel == 'PUSH NOTIFICATION' %}selected="selected"{%endif%}>PUSH NOTIFICATION</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="email" id="txt_email" value="{{ email }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 col-sm-offset-11">
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">
+                </div>
             </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
             <label class="pull-right">Total records found:&nbsp;</label>

@@ -5,16 +5,24 @@ from web_admin import setup_logger
 from web_admin import api_settings, RestFulClient
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from braces.views import GroupRequiredMixin
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class MobileDeviceView(TemplateView):
+class MobileDeviceView(GroupRequiredMixin, TemplateView):
+    group_required = "CAN_EDIT_CUSTOMER_CHANNEL_DETAILS"
     template_name = "device_update.html"
     raise_exception = False
     logger = logger
     login_url = 'web:permission_denied'
+
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
