@@ -16,6 +16,11 @@ class MobileDeviceView(TemplateView):
     logger = logger
     login_url = 'web:permission_denied'
 
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
@@ -27,6 +32,9 @@ class MobileDeviceView(TemplateView):
         return self._headers
 
     def get_context_data(self, **kwargs):
+        permissions = check_permission_customer_management(self)
+        if not permissions['CAN_EDIT_CUSTOMER_CHANNEL_DETAILS']:
+            return redirect('customers:customer_management_summary', customerId=customerId)
         self.logger.info('========== Start get customer device detail ==========')
         context = super(MobileDeviceView, self).get_context_data(**kwargs)
         mobile_device_id = context['device_id']
