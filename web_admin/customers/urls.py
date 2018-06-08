@@ -13,7 +13,7 @@ from .views.unblock_devices import unblock
 from .views.transaction_history import TransactionHistoryView
 from .views.management_summary import CustomerManagementSummary
 from .views.management_device import CustomerManagementDevice
-from .views.mobile_device_update import MobileDeviceView
+from .views.device_update import MobileDeviceView
 
 
 app_name = 'customers'
