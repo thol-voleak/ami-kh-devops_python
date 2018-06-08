@@ -65,6 +65,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         delivery_channel = request.POST.get('delivery_channel', '')
         user_ref_code = request.POST.get('user_ref_code', '')
         otp_id = request.POST.get('otp_id', '')
+        email = request.POST.get('email', '')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
@@ -79,6 +80,8 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['user_reference_code'] = user_ref_code
         if otp_id:
             body['id'] = otp_id
+        if email:
+            body['email'] = email
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
@@ -89,6 +92,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
             'user_id': user_id,
             'user_ref_code': user_ref_code,
             'delivery_channel': delivery_channel,
+            'email': email,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
             'paginator': page,
