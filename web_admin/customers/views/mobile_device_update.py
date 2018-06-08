@@ -12,10 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class MobileDeviceView(TemplateView):
+    group_required = "CAN_EDIT_CUSTOMER_CHANNEL_DETAILS"
     template_name = "device_update.html"
     raise_exception = False
     logger = logger
     login_url = 'web:permission_denied'
+
 
     def check_membership(self, permission):
         self.logger.info(
@@ -33,9 +35,6 @@ class MobileDeviceView(TemplateView):
         return self._headers
 
     def get_context_data(self, **kwargs):
-        permissions = check_permission_customer_management(self)
-        if not permissions['CAN_EDIT_CUSTOMER_CHANNEL_DETAILS']:
-            return redirect('customers:customer_management_summary', customerId=customerId)
         self.logger.info('========== Start get customer device detail ==========')
         context = super(MobileDeviceView, self).get_context_data(**kwargs)
         mobile_device_id = context['device_id']
