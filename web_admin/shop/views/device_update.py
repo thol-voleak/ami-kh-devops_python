@@ -51,6 +51,7 @@ class DeviceUpdateView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start update agent device ==========')
         edc_device_id = kwargs['device_id']
+        shop_id = kwargs['id']
         form = request.POST
         if form['channel_type_id'] == '3':
             params = {
@@ -106,7 +107,7 @@ class DeviceUpdateView(TemplateView):
                 'Updated data successfully'
             )
             self.logger.info('========== Finish update agent device ==========')
-            return redirect('shop:shop_list')
+            return redirect('shop:shop_edit', id=shop_id)
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                 status_code == 'invalid_access_token'):
             raise InvalidAccessToken(status_message)
