@@ -54,12 +54,20 @@
                 </div>
             </div>
             <div class="form-group">
-                 <label class="col-sm-2 control-label">Is Deleted</label>
+                <label class="col-sm-2 control-label">Is Validation Passed</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_validation_status" name="validation_status">
+                        <option value='All' {% if validation_status == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='Yes' {%if validation_status == 'Yes' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='No' {%if validation_status == 'No' %}selected="selected"{%endif%}>No</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Is Deleted</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="ddl_is_deleted" name="is_deleted">
-                            <option value='' {% if is_deleted == 'All' %}selected="selected"{%endif%}>All</option>
-                            <option value='1' {% if is_deleted == '1' %}selected="selected"{%endif%}>Yes</option>
-                            <option value='0' {%if is_deleted == '0' %}selected="selected"{%endif%}>No</option>
+                        <option value='' {% if is_deleted == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='1' {% if is_deleted == '1' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='0' {%if is_deleted == '0' %}selected="selected"{%endif%}>No</option>
                     </select>
                 </div>
             </div>
