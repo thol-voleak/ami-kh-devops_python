@@ -20,6 +20,18 @@
                 </div>
             </div>
             <div class="form-group">
+                 <label class="col-sm-2 control-label">Delivery Channel</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_delivery_channel" name="delivery_channel">
+                            <option value='All' {% if delivery_channel == 'All' %}selected="selected"{%endif%}>All</option>
+                            <option value='' {% if delivery_channel == '' %}selected="selected"{%endif%}>-</option>
+                            <option value='SMS' {%if delivery_channel == 'SMS' %}selected="selected"{%endif%}>SMS</option>
+                            <option value='EMAIL' {%if delivery_channel == 'EMAIL' %}selected="selected"{%endif%}>EMAIL</option>
+                            <option value='PUSH NOTIFICATION' {%if delivery_channel == 'PUSH NOTIFICATION' %}selected="selected"{%endif%}>PUSH NOTIFICATION</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
                     <div class="col-sm-1 col-sm-offset-11">
                         <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
