@@ -53,6 +53,7 @@ class OTPList(TemplateView):
         self.logger.info('========== Start searching otp list ==========')
         user_id = request.POST.get('user_id', '')
         delivery_channel = request.POST.get('delivery_channel', '')
+        user_ref_code = request.POST.get('user_ref_code', '')
         opening_page_index = request.POST.get('current_page_index')
         body = {}
         if user_id:
@@ -62,6 +63,8 @@ class OTPList(TemplateView):
                 body['delivery_channel'] = delivery_channel
         else:
             body['delivery_channel'] = None
+        if user_ref_code:
+            body['user_reference_code'] = user_ref_code
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
@@ -69,6 +72,7 @@ class OTPList(TemplateView):
         converted_otp_list = self.__handle_validator(otp_list['otps'])
         context.update({
             'user_id': user_id,
+            'user_ref_code': user_ref_code,
             'delivery_channel': delivery_channel,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
