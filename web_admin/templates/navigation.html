@@ -20,7 +20,7 @@
                     <span>Home</span>
                 </a>
             </li>
-            {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS,CAN_MANAGE_PASSWORD_CENTER" %}
+            {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS,CAN_MANAGE_PASSWORD_CENTER,CAN_MANAGE_OTP_REPORT" %}
                 {% with request.resolver_match.app_name as app_name %}
                 <li class="menu-accordion {% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% elif app_name == "password_center" %} open {% endif %}">
                     <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
@@ -45,9 +45,11 @@
                             <a href="{% url 'password_center:list' %}"> <span>Password Center</span> </a>
                     </li>
                      {% endif %}
+                    {% if request|has_any_permission:"CAN_MANAGE_OTP_REPORT"%}
                     <li class="{% if app_name == "one_time_passsword_report" %} active{% endif %}">
                         <a href="{% url 'one_time_password_report:list' %}"> <span>One Time Password Report</span> </a>
                     </li>
+                    {% endif %}
                     </ul>
                 </li>
                 {% endwith %}
