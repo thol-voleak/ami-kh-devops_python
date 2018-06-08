@@ -22,7 +22,7 @@
             </li>
             {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS,CAN_MANAGE_PASSWORD_CENTER,CAN_MANAGE_OTP_REPORT" %}
                 {% with request.resolver_match.app_name as app_name %}
-                <li class="menu-accordion {% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% elif app_name == "password_center" %} open {% endif %}">
+                <li class="menu-accordion {% if app_name == "channel_gateway_service" or app_name == "channel_gateway_api" or app_name == "clients" or app_name == "password_center" or app_name == "one_time_password_report" %} open {% endif %}">
                     <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                     <ul class="sub-menu">
                     {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE" %}
@@ -46,7 +46,7 @@
                     </li>
                      {% endif %}
                     {% if request|has_any_permission:"CAN_MANAGE_OTP_REPORT"%}
-                    <li class="{% if app_name == "one_time_passsword_report" %} active{% endif %}">
+                    <li class="{% if app_name == "one_time_password_report" %} active{% endif %}">
                         <a href="{% url 'one_time_password_report:list' %}"> <span>One Time Password Report</span> </a>
                     </li>
                     {% endif %}
