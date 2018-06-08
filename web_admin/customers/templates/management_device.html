@@ -332,6 +332,9 @@
                                 $('#column-device-'+device_id).remove();
                                 var currentTotal = parseInt($("#lbl_total").text()) - 1;
                                 $("#lbl_total").text(currentTotal);
+                                if(currentTotal <= 0) {
+                                    $("#div_devices_management").remove();
+                                }
                                 showSuccessMessage('Delete device successfully');
                             } else {
                                 // Failed
