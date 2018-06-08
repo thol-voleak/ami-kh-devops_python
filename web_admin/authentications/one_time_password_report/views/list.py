@@ -46,7 +46,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         body['page_index'] = 1
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__handle_validator(otp_list['otps'])
+        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
             'delivery_channel': 'All',
             'otp_list': converted_otp_list,
@@ -64,7 +64,9 @@ class OTPList(GroupRequiredMixin, TemplateView):
         user_id = request.POST.get('user_id', '')
         delivery_channel = request.POST.get('delivery_channel', '')
         user_ref_code = request.POST.get('user_ref_code', '')
+        otp_id = request.POST.get('otp_id', '')
         opening_page_index = request.POST.get('current_page_index')
+
         body = {}
         if user_id:
             body['user_id'] = user_id
@@ -75,12 +77,15 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['delivery_channel'] = None
         if user_ref_code:
             body['user_reference_code'] = user_ref_code
+        if otp_id:
+            body['id'] = otp_id
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__handle_validator(otp_list['otps'])
+        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
+            'otp_id': otp_id,
             'user_id': user_id,
             'user_ref_code': user_ref_code,
             'delivery_channel': delivery_channel,
@@ -111,7 +116,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
 
         return data, is_success
 
-    def __handle_validator(self, otp_list):
+    def __canculate_validation_info(self, otp_list):
 
         for otp in otp_list:
             otp['is_passed_validation'] = False
