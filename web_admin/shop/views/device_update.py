@@ -1,3 +1,4 @@
+from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
 from authentications.apps import InvalidAccessToken
@@ -9,10 +10,13 @@ from web_admin.utils import get_back_url
 from django.urls import reverse
 import logging
 
+from web_admin.restful_methods import RESTfulMethods
+
 logger = logging.getLogger(__name__)
 
 
-class DeviceUpdateView(TemplateView):
+class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_EDIT_AGENT_CHANNEL_DETAILS"
     template_name = "shop/device_update.html"
     raise_exception = False
     logger = logger

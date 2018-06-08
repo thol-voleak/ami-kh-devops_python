@@ -18,13 +18,19 @@
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="otp_id" id="txt_otp_id" value="{{ otp_id }}">
                 </div>
-                <label class="col-sm-2 control-label">User ID</label>
+                <label class="col-sm-2 control-label">System OTP Reference ID</label>
                 <div class="col-sm-2">
-                    <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
+                    <input type="text" class="form-control input-rounded" name="otp_reference_id" id="txt_otp_reference_id" value="{{ otp_reference_id }}">
                 </div>
                 <label class="col-sm-2 control-label">User Reference Code</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="user_ref_code" id="txt_user_ref_code" value="{{ user_ref_code }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
                 </div>
             </div>
             <div class="form-group">
@@ -41,6 +47,10 @@
                 <label class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="txt_email" value="{{ email }}">
+                </div>
+                <label class="col-sm-2 control-label">Mobile Number</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
                 </div>
             </div>
             <div class="form-group">
