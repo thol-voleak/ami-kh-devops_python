@@ -49,6 +49,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
             'delivery_channel': 'All',
+            'validation_status': 'All',
             'otp_list': converted_otp_list,
             'paginator': page,
             'search_count': page.get('total_elements', 0),
@@ -66,8 +67,10 @@ class OTPList(GroupRequiredMixin, TemplateView):
         user_ref_code = request.POST.get('user_ref_code', '')
         otp_id = request.POST.get('otp_id', '')
         email = request.POST.get('email', '')
+        is_deleted = request.POST.get('is_deleted', '')
         mobile_number = request.POST.get('mobile_number', '')
         otp_reference_id = request.POST.get('otp_reference_id', '')
+        validation_status = request.POST.get('validation_status', '')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
@@ -88,6 +91,11 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['mobile_number'] = mobile_number
         if otp_reference_id:
             body['otp_reference_id'] = otp_reference_id
+        if is_deleted:
+            body['is_deleted'] = True if is_deleted == '1' else False
+        if validation_status and validation_status != 'All':
+            body['is_success_verified'] = (validation_status == 'Yes')
+
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
@@ -95,12 +103,14 @@ class OTPList(GroupRequiredMixin, TemplateView):
         converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
             'otp_id': otp_id,
+            'is_deleted': is_deleted,
             'user_id': user_id,
             'user_ref_code': user_ref_code,
             'delivery_channel': delivery_channel,
             'email': email,
             'mobile_number': mobile_number,
             'otp_reference_id': otp_reference_id,
+            'validation_status': validation_status,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
             'paginator': page,
