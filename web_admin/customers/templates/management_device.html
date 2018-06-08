@@ -83,20 +83,22 @@
                                 </div>
                                 <br>
                                 <div>
-                                    <div class="channel-list">
-                                        <h5>Give Access to the following Channels</h5>
-                                        {% for channel in supported_channels %}
-                                            <div class="checkbox">
-                                                <label>
-                                                <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
-                                                    {% if channel.grant_permission %}checked{% endif %}
-                                                    onclick="changeChannelAccessStatus(this)"
-                                                    data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
-                                                    data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
-                                                    data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
+                                    {% if permissions.CAN_BLOCK_CUSTOMER_CHANNELS %}
+                                        <div class="channel-list">
+                                            <h5>Give Access to the following Channels</h5>
+                                            {% for channel in supported_channels %}
+                                                <div class="checkbox">
+                                                    <label>
+                                                    <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                                                        {% if channel.grant_permission %}checked{% endif %}
+                                                        onclick="changeChannelAccessStatus(this)"
+                                                        data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
+                                                        data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
+                                                        data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     <div class="form-group col-md-12">
                                         <label class="pull-right" id="lbl_total">{{ total_result }}</label>
                                         <label class="pull-right" >Total Devices found:&nbsp;</label>
