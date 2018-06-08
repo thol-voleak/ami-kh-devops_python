@@ -41,7 +41,7 @@
                                 <option value=""></option>
                                 {% for service in choices.services %}
                                     {% if not service.is_deleted %}
-                                        {% if service.service_id == body.clone_from %}
+                                        {% if service.service_id|slugify == body.clone_from|slugify %}
                                             <option value="{{ service.service_id }}" selected>{{ service.service_name }}</option>
                                         {% else %}
                                             <option value="{{ service.service_id }}">{{ service.service_name }}</option>
