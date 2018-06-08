@@ -14,7 +14,7 @@
 
 <h4 style="margin: 30px 0px;">Channel & Device Management</h4>
 <div style="margin-bottom: 15px">
-    <div class="device-panel-empty" id="div-device-empty" {% if device_list %} style="display: none" {% endif %}>
+    <div class="device-panel-empty" id="div-device-empty" {% if device_list or is_readonly %} style="display: none" {% endif %}>
         <div>
             <div id="lbl_device_add"><b>Please Add a Device</b></div>
             <div style="margin-top: 10px;">

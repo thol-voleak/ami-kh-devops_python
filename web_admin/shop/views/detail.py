@@ -11,6 +11,9 @@ from django.conf import settings
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
 
+from shop.utils import check_permission_device_management, get_agent_supported_channels, \
+    get_channel_permissions_list, get_devices_list
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,5 +40,26 @@ class DetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         shop_id = int(kwargs['id'])
         shop = get_shop_details(self, shop_id)
         form = convert_shop_to_form(shop)
-        context = {'form': form, 'permissions':permissions}
+
+        permissions.update(check_permission_device_management(self))
+
+        supported_channels = get_agent_supported_channels(self)
+        access_channel_permissions = get_channel_permissions_list(self, shop_id)
+        dict_channels = {int(x['id']): x for x in supported_channels}
+        id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
+        for id, channel in dict_channels.items():
+            if id in id_channels_permissions:
+                channel['grant_permission'] = True
+            else:
+                channel['grant_permission'] = False
+
+        device_list = get_devices_list(self, shop_id)
+        supported_channels = dict_channels.values()
+
+        context = {
+            'form': form,
+            'permissions':permissions,
+            'supported_channels': supported_channels,
+            'device_list': device_list,
+        }
         return render(request, self.template_name, context)
