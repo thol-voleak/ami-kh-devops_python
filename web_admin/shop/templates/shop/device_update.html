@@ -3,7 +3,7 @@
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading mb15">
-        <h3>Device Management Detail</h3>
+        <h3>Device Management Details</h3>
     </div>
 
     {% include "message.html" %}
@@ -18,7 +18,7 @@
                         {% include "shop/form_mobile_device.html" with is_readonly=True %}
                     {% endif %}
                     <div class="pull-right">
-                        <a id="btn_cancel" class="btn" >Cancel</a>
+                        <a id="btn_back" href="{% url 'shop:shop_edit' shopId %}" class="btn" >Back</a>
                         <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
                     </div>
                 </form>

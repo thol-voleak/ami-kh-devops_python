@@ -41,6 +41,7 @@ class DeviceUpdateView(TemplateView):
         if is_success:
             self.logger.info('Response_content: {}'.format(data))
             context['form'] = data
+            context['shopId'] = context['id']
             self.logger.info('========== Finish get agent device detail ==========')
             return context
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
