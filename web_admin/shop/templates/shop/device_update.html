@@ -18,7 +18,7 @@
                         {% include "shop/form_mobile_device.html" with is_readonly=True %}
                     {% endif %}
                     <div class="pull-right">
-                        <a id="btn_back" href="{% url 'shop:shop_edit' shopId %}" class="btn" >Back</a>
+                        <a id="btn_cancel" href="{% url 'shop:shop_edit' shopId %}" class="btn" >Cancel</a>
                         <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
                     </div>
                 </form>
