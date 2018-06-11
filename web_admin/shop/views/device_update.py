@@ -104,6 +104,16 @@ class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'supporting_file_1': form['supporting_file_1'],
                 'supporting_file_2': form['supporting_file_2']
             }
+        elif form['channel_type_id'] == '2':
+            params = {
+                'channel_type_id': form['channel_type_id'],
+                'channel_id': form['channel_id'],
+                'mac_address': form['mac_address'],
+                'network_provider_name': form['network_provider_name'],
+                'public_ip_address': form['public_ip_address'],
+                'supporting_file_1': form['supporting_file_1'],
+                'supporting_file_2': form['supporting_file_2']
+            }
         else:
             params = {
                 'channel_type_id': form['channel_type_id'],
