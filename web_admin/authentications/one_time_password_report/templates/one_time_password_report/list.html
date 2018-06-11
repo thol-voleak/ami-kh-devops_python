@@ -81,6 +81,33 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">From</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ from_date|default_if_none:'' }}"
+                           id="dtp_from_date">
+                </div>
+                <div class="col-sm-2">
+                    <input type="time" class="form-control input-rounded"
+                           step="1" value="{{ from_time|default_if_none:'' }}"
+                           name="from_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                           id="from_time">
+                </div>
+                <label class="col-sm-2 control-label">To</label>
+                <div class="col-xs-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ to_date|default_if_none:'' }}"
+                           id="dtp_to_date">
+                </div>
+                <div class="col-sm-2">
+                    <input type="time" class="form-control input-rounded"
+                           name="to_time" step="1" value="{{ to_time|default_if_none:'' }}"
+                           id="to_time">
+                </div>
+            </div>
+            <div class="form-group">
                 <div class="col-sm-1 col-sm-offset-11">
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">

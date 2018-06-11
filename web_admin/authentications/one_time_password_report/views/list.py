@@ -7,6 +7,7 @@ from django.views.generic.base import TemplateView
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
+from datetime import datetime, date, timedelta
 
 import logging
 
@@ -41,6 +42,8 @@ class OTPList(GroupRequiredMixin, TemplateView):
         context = super(OTPList, self).get_context_data(**kwargs)
         self.logger.info('========== Start getting otp list ==========')
 
+        self.initSearchDateTime(context)
+
         body= {}
         body['paging'] = True
         body['page_index'] = 1
@@ -74,6 +77,10 @@ class OTPList(GroupRequiredMixin, TemplateView):
         validation_status = request.POST.get('validation_status', '')
         opening_page_index = request.POST.get('current_page_index')
         user_type = request.POST.get('user_type', '')
+        from_created_timestamp = request.POST.get('from_created_timestamp')
+        to_created_timestamp = request.POST.get('to_created_timestamp')
+        from_time = request.POST.get('from_time')
+        to_time = request.POST.get('to_time')
 
         body = {}
         if user_id:
@@ -99,6 +106,13 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['is_success_verified'] = (validation_status == 'Yes')
         if user_type and user_type != 'All':
             body['user_type'] = user_type
+
+        if from_created_timestamp:
+            body['from'] = self.convertStringToDateTime(from_created_timestamp, from_time)
+
+        if to_created_timestamp:
+            body['to'] = self.convertStringToDateTime(to_created_timestamp, to_time)
+
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
@@ -115,6 +129,10 @@ class OTPList(GroupRequiredMixin, TemplateView):
             'otp_reference_id': otp_reference_id,
             'validation_status': validation_status,
             'user_type': user_type,
+            'from_date': from_created_timestamp,
+            'to_date': to_created_timestamp,
+            'from_time': from_time,
+            'to_time': to_time,
             'search_count': page.get('total_elements', 0),
             'otp_list': converted_otp_list,
             'paginator': page,
@@ -153,3 +171,24 @@ class OTPList(GroupRequiredMixin, TemplateView):
                     otp['failed_validation_count'] = len(otp['verifications']) - 1
                     break
         return otp_list
+
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['from_time'] = "00:00:00"
+        context['to_time'] = "00:00:00"
+
+    def convertStringToDateTime(self, date_str, time_str):
+        _date = datetime.strptime(date_str, "%Y-%m-%d")
+        time_split = time_str.split(":")
+        if len(time_split) == 3:
+            return _date.replace(hour = int(time_str.split(":")[0]),
+                                 minute = int(time_str.split(":")[1]),
+                                 second = int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            return _date.replace(hour=int(time_str.split(":")[0]),
+                                        minute=int(time_str.split(":")[1]),
+                                        second= 0).strftime('%Y-%m-%dT%H:%M:%SZ')
