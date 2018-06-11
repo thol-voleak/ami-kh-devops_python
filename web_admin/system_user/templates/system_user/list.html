@@ -189,7 +189,7 @@
                                            id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
                                             <span class="small">Activate</span>
                                         </a>
-                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user %}
+                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user and request.user.username != systemuser.username %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"
