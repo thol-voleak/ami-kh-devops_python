@@ -13,7 +13,7 @@ def suspend(request, system_user_id):
     url = settings.DOMAIN_NAMES + api_settings.SYSTEM_USER_STATUS_URL.format(system_user_id)
     params = {
         'is_suspended': True,
-        'active_suspend_reason': request.GET.get("active_suspend_reason")
+        'suspend_reason': request.GET.get("suspend_reason")
     }
 
     result = ajax_functions._put_method(request, url, "", logger, params)
