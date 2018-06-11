@@ -94,7 +94,7 @@ class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'device_unique_reference': form['device_unique_reference'],
                 'os': form['os'],
                 'os_version': form['os_version'],
-                'display_size_inches': form['display_size_inches'],
+                'display_size_in_inches': form['display_size_in_inches'],
                 'pixel_counts': form['pixel_counts'],
                 'unique_number': form['unique_number'],
                 'mac_address': form['mac_address'],
