@@ -128,4 +128,8 @@ def _put_method(request, api_path, func_description, logger, params={}, timeout=
     else:
         code = 3
 
-    return JsonResponse({"status": code, "msg": message})
+    server_error_code = ''
+    if response.status_code:
+        server_error_code = response.status_code
+
+    return JsonResponse({"status": code, "msg": message, 'server_error_code': server_error_code})

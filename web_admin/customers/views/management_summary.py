@@ -8,6 +8,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import CUSTOMER_DEVICE_LIST_URL
 from web_admin.get_header_mixins import GetHeaderMixin
 from customers.utils import check_permission_customer_management, get_supported_channels, get_channel_permissions_list
+from authentications.apps import InvalidAccessToken
 
 import logging
 
@@ -35,10 +36,6 @@ class CustomerManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin
     def get(self, request, *args, **kwargs):
         context = super(CustomerManagementSummary, self).get_context_data(**kwargs)
         customerId = int(context['customerId'])
-        msg = request.GET.get('message', None)
-        messages = []
-        if msg:
-            messages.append(msg)
 
         permissions = check_permission_customer_management(self)
         if not permissions['CAN_VIEW_CUSTOMER_MANAGEMENT']:
@@ -51,19 +48,6 @@ class CustomerManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin
              })
 
         if permissions['CAN_ACCESS_CUSTOMER_DEVICE_TAB']:
-            supported_channels = get_supported_channels(self)
-            access_channel_permissions = get_channel_permissions_list(self, customerId)
-
-            dict_channels = {int(x['id']): x for x in supported_channels}
-            id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
-            for id, channel in dict_channels.items():
-                if id in id_channels_permissions:
-                    channel['grant_permission'] = True
-                else:
-                    channel['grant_permission'] = False
-
-            supported_channels = dict_channels.values()
-
             self.logger.info('========== Start getting Devices list ==========')
             data, success, status_message = self._get_devices(customerId)
             if success:
@@ -73,12 +57,28 @@ class CustomerManagementSummary(GroupRequiredMixin, TemplateView, GetHeaderMixin
                 if len(devices_list) > 5:
                     summary_device_list = devices_list[:5]
 
+                supported_channels = get_supported_channels(self)
+                access_channel_permissions = get_channel_permissions_list(self, customerId)
+
+                dict_channels = {int(x['id']): x for x in supported_channels}
+                id_channels_permissions = {int(x['channel']['id']) for x in access_channel_permissions}
+                for id, channel in dict_channels.items():
+                    if id in id_channels_permissions:
+                        channel['grant_permission'] = True
+                    else:
+                        channel['grant_permission'] = False
+
+                supported_channels = dict_channels.values()
+
                 context.update(
                     {'total_result': page.get('total_elements', 0),
                      'summary_device_list': summary_device_list,
-                     'supported_channels': supported_channels,
-                     'messages': messages
+                     'supported_channels': supported_channels
                      })
+            elif (status_message == "access_token_expire") or (status_message == 'authentication_fail') or (
+                        status_message == 'invalid_access_token'):
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
 
             self.logger.info('========== Finish getting Devices list ==========')
         return render(request, self.template_name, context)

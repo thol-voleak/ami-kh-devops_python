@@ -129,7 +129,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Operator *</label>
                                         <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
+                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value)">
                                                 {% for oper in numeric_ops %}
                                                     <option value= "{{ oper }}">{{ oper }}</option>
                                                 {% endfor %}
@@ -351,21 +351,13 @@
             operator.selectedIndex = 0;
         }
 
-        function listenOperator(ele, type, operation, fullOps, filterOps) {
-            return;
-
-            var keyValueType = $(ele).parent().parent().prev('div').find('select');
-            var keyValue = $(ele).parent().parent().next('div').find('input');
-            var currentKVType = getCurrentOps(keyValueType);
-            if (type === "Equal to" || type === "Not Equal to" || type === "Contains") {
-                if (currentKVType.length === 2) {
-                    keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
-                }
-            } else {
-                if (currentKVType.length === 3) {
-                    keyValueType.find('[value="Freetext"]').remove();
-                }
-            }
+        function listenOperator(ele, currentOperator) {
+            var keyValueObj = $(ele).parent().parent().next('div').find('input');
+            var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
+            if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of"))
+                keyValueObj.attr('type', 'text');
+            else if (currentKVType === "Numeric")
+                keyValueObj.attr('type', 'number');
         }
 
         var _counter = 1;
@@ -413,7 +405,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -484,7 +476,25 @@
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
             var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
-            if (triggerValue === 'register_customer' || triggerValue === 'login') {
+            if (triggerValue == 'update_profile') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+
+                if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                    $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                    $("#ddl_reward_type").val("fixed_cashback");
+                    this.listenRewardType("fixed_cashback");
+                }
+            } else if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
@@ -861,7 +871,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -905,7 +915,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -945,7 +955,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ profile_details_numeric_ops }}, {{ profile_details_freetext_ops }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -955,8 +965,8 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in profile_details_numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -1109,6 +1119,7 @@
                                         <option value="create_order">Create order</option>\
                                         <option value="executed_order">Payment</option>\
                                         <option value="created_sof">Link Bank</option>\
+                                        <option value="update_profile">Profile Update</option>\
                                 </select>\
                             </div>\
                         </div>\
@@ -1177,7 +1188,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in operations %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -1234,7 +1245,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in operations %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\

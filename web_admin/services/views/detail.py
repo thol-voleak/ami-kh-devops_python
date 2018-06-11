@@ -3,6 +3,7 @@ from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
+from django.http import JsonResponse
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,12 @@ class ServiceDetailForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(ServiceDetailForm, self).get_context_data(**kwargs)
         service_id = context['ServiceId']
         return self._get_service_detail(service_id)
+
+    def post(self, request, **kwargs):
+        context = super(ServiceDetailForm, self).get_context_data(**kwargs)
+        service_id = context['ServiceId']
+        context = self._get_service_detail(service_id)
+        return JsonResponse({"service": context.get('service_info')})
 
     def _get_service_detail(self, service_id):
 

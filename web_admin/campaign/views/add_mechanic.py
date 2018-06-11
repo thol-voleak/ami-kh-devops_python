@@ -50,6 +50,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
+        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
+        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -80,7 +82,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'trigger': trigger,
             'freetext_ops': freetext_ops,
             'freetext_ops_2': freetext_ops_2,
-            'numeric_ops': numeric_ops,
+            'profile_details_freetext_ops': profile_details_freetext_ops,
+            'profile_details_numeric_ops': profile_details_numeric_ops,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
@@ -545,7 +548,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
-        filtered.extend([link_bank, created_order, limit_reached])
+        profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
+        filtered.extend([link_bank, created_order, limit_reached, profile_update])
         return filtered
 
     def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):

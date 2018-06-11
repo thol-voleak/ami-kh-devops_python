@@ -9,6 +9,7 @@ from django.shortcuts import render
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
+from web_admin.utils import calculate_page_range_from_page_info
 
 
 logger = logging.getLogger(__name__)
@@ -62,7 +63,10 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         hold_status = request.POST.get('hold_status')
         cash_in_user_type = request.POST.get('user_type_cash_in')
 
+        opening_page_index = request.POST.get('current_page_index')
+
         body = {}
+        body['page_index'] = int(opening_page_index)
         if cash_in_user_type != '':
             body['cash_in_user_type'] = cash_in_user_type
         if cash_in_id:
@@ -111,8 +115,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
         permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
+
+        page = data['page']
         context = {
-            'data': data,
+            'data': data['vouchers'],
+            'paginator': page,
+			'search_count': page['total_elements'],
+			'page_range': calculate_page_range_from_page_info(page),
             'voucher_id': voucher_id,
             'claim_status_list': self._get_status_list(),
             'selected_status': claim_status,

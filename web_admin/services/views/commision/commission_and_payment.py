@@ -13,6 +13,7 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
 from services.views.utils import get_payment_decimal, get_currency_by_service_id
+from services.views.tier_levels.utils import get_label_levels
 
 
 logger = logging.getLogger(__name__)
@@ -75,6 +76,30 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         context['fee_tier_detail'] = fee_tier_detail
 
+        tiers_conf = [
+            {'type': fee_tier_detail['fee_type'], 'amount': fee_tier_detail['fee_amount']},
+            {'type': fee_tier_detail['bonus_type'], 'from': fee_tier_detail['amount_type'], 'amount': fee_tier_detail['bonus_amount']},
+            {'type': fee_tier_detail['a'], 'label': self.get_label_detail('A'), 'from': fee_tier_detail['a_from'], 'amount': fee_tier_detail['a_amount']},
+            {'type': fee_tier_detail['b'], 'label': self.get_label_detail('B'), 'from': fee_tier_detail['b_from'], 'amount': fee_tier_detail['b_amount']},
+            {'type': fee_tier_detail['c'], 'label': self.get_label_detail('C'), 'from': fee_tier_detail['c_from'], 'amount': fee_tier_detail['c_amount']},
+            {'type': fee_tier_detail['d'], 'label': self.get_label_detail('D'), 'from': fee_tier_detail['d_from'], 'amount': fee_tier_detail['d_amount']},
+            {'type': fee_tier_detail['e'], 'label': self.get_label_detail('E'), 'from': fee_tier_detail['e_from'], 'amount': fee_tier_detail['e_amount']},
+            {'type': fee_tier_detail['f'], 'label': self.get_label_detail('F'), 'from': fee_tier_detail['f_from'], 'amount': fee_tier_detail['f_amount']},
+            {'type': fee_tier_detail['g'], 'label': self.get_label_detail('G'), 'from': fee_tier_detail['g_from'], 'amount': fee_tier_detail['g_amount']},
+            {'type': fee_tier_detail['h'], 'label': self.get_label_detail('H'), 'from': fee_tier_detail['h_from'], 'amount': fee_tier_detail['h_amount']},
+            {'type': fee_tier_detail['i'], 'label': self.get_label_detail('I'), 'from': fee_tier_detail['i_from'], 'amount': fee_tier_detail['i_amount']},
+            {'type': fee_tier_detail['j'], 'label': self.get_label_detail('J'), 'from': fee_tier_detail['j_from'], 'amount': fee_tier_detail['j_amount']},
+            {'type': fee_tier_detail['k'], 'label': self.get_label_detail('K'), 'from': fee_tier_detail['k_from'], 'amount': fee_tier_detail['k_amount']},
+            {'type': fee_tier_detail['l'], 'label': self.get_label_detail('L'), 'from': fee_tier_detail['l_from'], 'amount': fee_tier_detail['l_amount']},
+            {'type': fee_tier_detail['m'], 'label': self.get_label_detail('M'), 'from': fee_tier_detail['m_from'], 'amount': fee_tier_detail['m_amount']},
+            {'type': fee_tier_detail['n'], 'label': self.get_label_detail('N'), 'from': fee_tier_detail['n_from'], 'amount': fee_tier_detail['n_amount']},
+            {'type': fee_tier_detail['o'], 'label': self.get_label_detail('O'), 'from': fee_tier_detail['o_from'], 'amount': fee_tier_detail['o_amount']},
+        ]
+
+        valid_tiers_conf = self.check_valid_tier(tiers_conf)
+
+        context['valid_tiers_conf'] = valid_tiers_conf
+
         self._replace_actor_type_items(data)
         self._replace_amount_type_items(data)
         context['data'] = self._filter_deleted_items(data)
@@ -92,6 +117,15 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         self.logger.info('========== Finish getting Balance Movement ==========')
         return context
+
+    def check_valid_tier(self, tiers):
+        valid_tiers = []
+        for tier in tiers:
+            for i in tier:
+                if i != 'label' and tier[i] and tier[i] != 'NON':
+                    valid_tiers.append(tier)
+                    break
+        return valid_tiers
 
     def _filter_deleted_items(self, data):
         return list(filter(lambda x: not x['is_deleted'], data))
@@ -175,6 +209,14 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         self.logger.info('========== Finished searching agent ==========')
         return data
 
+    def get_label_detail(self, lvl_name):
+        label_levels = self.request.session.get('tier_levels')
+        if not label_levels:
+            label_levels = get_label_levels(self.request)
+
+        for lvl in label_levels:
+            if lvl.get('name') == lvl_name:
+                return lvl.get('label')
 
 class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin, RESTfulMethods):
     template_name = "services/commission/commission_and_payment.html"

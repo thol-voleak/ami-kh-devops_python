@@ -62,6 +62,38 @@
                                        value="{{ system_user_info.email | default_if_none:'' }}" readonly>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Status</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_status"
+                                       value="{% if system_user_info.is_suspended %} Suspended {% else %} Active {% endif %}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Suspend reason</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_suspend_reason"
+                                       value="{% if system_user_info.is_suspended %} {{ system_user_info.active_suspend_reason }} {% endif %}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Create date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_create_date"
+                                       value="{{ system_user_info.created_timestamp | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Update date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                       id="txt_update_date"
+                                       value="{{ system_user_info.last_updated_timestamp | default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
                         <div class="pull-right">
                             <a href="{% url 'system_user:system-user-list' %}">
                                 <input id="system_user_btn_cancel" class="btn text-left mb15" type="button"

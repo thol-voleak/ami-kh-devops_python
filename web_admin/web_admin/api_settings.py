@@ -108,11 +108,13 @@ GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{ser
 GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
+SEARCH_SERVICE = 'api-gateway/report/'+API_VERSION+'/payments/services/'
 SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
+SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash/balances/histories/'
@@ -335,6 +337,17 @@ DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
 
+AGENT_DEVICE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/devices/{}'
+
+SEARCH_CHANNEL = 'api-gateway/report/'+API_VERSION+'/channels'
+SEARCH_CHANNEL_PERMISSION = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
+SEARCH_AGENT_DEVICES = 'api-gateway/report/'+API_VERSION+'/agents/devices'
+CHANNEL_GRANT_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions'
+CHANNEL_REVOKE_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions/revoke'
+UPDATE_AGENT_DEVICE_STATUS = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}/status'
+DELETE_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}'
+ADD_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices'
+
 # Channel-gateway Service
 CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services'
 GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
@@ -360,4 +373,6 @@ UPLOAD_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/upload'
 DOWNLOAD_URL='api-gateway/bulk-upload/'+API_VERSION+'/files'
 
 SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/system-users/{}/status'
+
+OTP_URL = 'api-gateway/report/'+ API_VERSION + '/otp-management/otps'
 

@@ -13,7 +13,7 @@ from .views.unblock_devices import unblock
 from .views.transaction_history import TransactionHistoryView
 from .views.management_summary import CustomerManagementSummary
 from .views.management_device import CustomerManagementDevice
-from .views.mobile_device_update import MobileDeviceView
+from .views.device_update import MobileDeviceView
 
 
 app_name = 'customers'
@@ -43,5 +43,5 @@ urlpatterns = [
     url(r'^blocked_devices', login_required(BlockedDevicesList.as_view(), login_url='authentications:login'),
         name="blocked-devices"),
     url(r'^unblock/(?P<ticket_id>[0-9A-Za-z]+)/', login_required(unblock, login_url='authentications:login'), name="unblock_devices"),
-    url(r'^mobile_devices/(?P<device_id>[0-9A-Za-z]+)/update', login_required(MobileDeviceView.as_view(), login_url='authentications:login'), name="mobile_device_update"),
+    url(r'^(?P<customer_id>[0-9A-Za-z]+)/devices/(?P<device_id>[0-9A-Za-z]+)/update', login_required(MobileDeviceView.as_view(), login_url='authentications:login'), name="mobile_device_update"),
 ]

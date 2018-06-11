@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+
+{% block content %}
+
+<div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>One Time Password Report</h3>
+        </div>
+    </div>
+      <div class="panel-body">
+        <form id="submit-form" class="form-horizontal" role="form" method="post" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="otp_id" id="txt_otp_id" value="{{ otp_id }}">
+                </div>
+                <label class="col-sm-2 control-label">System OTP Reference ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="otp_reference_id" id="txt_otp_reference_id" value="{{ otp_reference_id }}">
+                </div>
+                <label class="col-sm-2 control-label">User Reference Code</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="user_ref_code" id="txt_user_ref_code" value="{{ user_ref_code }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User Type</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_user_type" name="user_type">
+                        <option value='All'>All</option>
+                        <option value='agent' {% if user_type == 'agent' %}selected="selected"{%endif%}>Agent</option>
+                        <option value='customer' {%if user_type == 'customer' %}selected="selected"{%endif%}>Customer</option>
+                        <option value='system-user' {%if user_type == 'system-user' %}selected="selected"{%endif%}>System User</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">User ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
+                </div>
+            </div>
+            <div class="form-group">
+                 <label class="col-sm-2 control-label">Delivery Channel</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_delivery_channel" name="delivery_channel">
+                            <option value='All' {% if delivery_channel == 'All' %}selected="selected"{%endif%}>All</option>
+                            <option value='' {% if delivery_channel == '' %}selected="selected"{%endif%}>-</option>
+                            <option value='SMS' {%if delivery_channel == 'SMS' %}selected="selected"{%endif%}>SMS</option>
+                            <option value='EMAIL' {%if delivery_channel == 'EMAIL' %}selected="selected"{%endif%}>EMAIL</option>
+                            <option value='PUSH NOTIFICATION' {%if delivery_channel == 'PUSH NOTIFICATION' %}selected="selected"{%endif%}>PUSH NOTIFICATION</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="email" id="txt_email" value="{{ email }}">
+                </div>
+                <label class="col-sm-2 control-label">Mobile Number</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Is Validation Passed</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_validation_status" name="validation_status">
+                        <option value='All' {% if validation_status == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='Yes' {%if validation_status == 'Yes' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='No' {%if validation_status == 'No' %}selected="selected"{%endif%}>No</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Is Deleted</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_is_deleted" name="is_deleted">
+                        <option value='' {% if is_deleted == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='1' {% if is_deleted == '1' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='0' {%if is_deleted == '0' %}selected="selected"{%endif%}>No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 col-sm-offset-11">
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">
+                </div>
+            </div>
+            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+            <label class="pull-right">Total records found:&nbsp;</label>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mb0" id="tbl_otp_list">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>System OTP Reference ID</th>
+                    <th>User Reference Code</th>
+                    <th>User Type</th>
+                    <th>User ID</th>
+                    <th>Delivery Channel</th>
+                    <th>Email</th>
+                    <th>Mobile Number</th>
+                    <th>Is Passed Validation</th>
+                    <th>Fail Validation Count</th>
+                    <th>Is_Deleted</th>
+                    <th>Created Date(UTC+0)</th>
+                    <th>Updated Date(UTC+0)</th>
+                    <th>Expired Date(UTC+0)</th>
+                </tr>
+                </thead>
+                <tbody id="table_body">
+                {% for otp in otp_list %}
+                    <tr>
+                        <td>{{ otp.id }}</td>
+                        <td>{{ otp.otp_reference_id|default_if_none:""}}</td>
+                        <td>{{ otp.user_reference_code|default_if_none:""}}</td>
+                        <td>{{ otp.user_type|default_if_none:"" }}</td>
+                        <td>{{ otp.user_id|default_if_none:"" }}</td>
+                        <td>{{ otp.delivery_channel|default_if_none:"" }}</td>
+                        <td>{{ otp.email|default_if_none:"" }}</td>
+                        <td>{{ otp.mobile_number|default_if_none:"" }}</td>
+                        <td>{{ otp.is_passed_validation|yesno:"Yes,No,''"  }}</td>
+                        <td>{{ otp.failed_validation_count|default_if_none:"" }}</td>
+                        <td>{{ otp.is_deleted|yesno:"Yes,No,''" }}</td>
+                        <td>{{ otp.created_timestamp|default_if_none:"" }}</td>
+                        <td>{{ otp.last_updated_timestamp|default_if_none:"" }}</td>
+                        <td>{{ otp.expired_timestamp|default_if_none:"" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</div>
+{% endblock %}
