@@ -85,6 +85,35 @@ class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'supporting_file_1': form['supporting_file_1'],
                 'supporting_file_2': form['supporting_file_2']
             }
+        elif form['channel_type_id'] == '4':
+            params = {
+                'channel_type_id': form['channel_type_id'],
+                'channel_id': form['channel_id'],
+                'pos_serial_number': form['pos_serial_number'],
+                'pos_model': form['pos_model'],
+                'pos_software_version': form['pos_software_version'],
+                'pos_firmware_version': form['pos_firmware_version'],
+                'pos_smartcard_1_number': form['pos_smartcard_1_number'],
+                'pos_smartcard_2_number': form['pos_smartcard_2_number'],
+                'pos_smartcard_3_number': form['pos_smartcard_3_number'],
+                'pos_smartcard_4_number': form['pos_smartcard_4_number'],
+                'pos_smartcard_5_number': form['pos_smartcard_5_number'],
+                'mac_address': form['mac_address'],
+                'network_provider_name': form['network_provider_name'],
+                'public_ip_address': form['public_ip_address'],
+                'supporting_file_1': form['supporting_file_1'],
+                'supporting_file_2': form['supporting_file_2']
+            }
+        elif form['channel_type_id'] == '2':
+            params = {
+                'channel_type_id': form['channel_type_id'],
+                'channel_id': form['channel_id'],
+                'mac_address': form['mac_address'],
+                'network_provider_name': form['network_provider_name'],
+                'public_ip_address': form['public_ip_address'],
+                'supporting_file_1': form['supporting_file_1'],
+                'supporting_file_2': form['supporting_file_2']
+            }
         else:
             params = {
                 'channel_type_id': form['channel_type_id'],
