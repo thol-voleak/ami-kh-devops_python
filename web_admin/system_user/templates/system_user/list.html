@@ -285,7 +285,11 @@
                             if (response.server_error_code == 500) {
                                 showErrorMessage('Activate system user failed')
                             } else {
-                                showErrorMessage(response.msg);
+                                if(response.msg == 'System user is already deleted') {
+                                    showErrorMessage('Cannot activate the deleted user');
+                                } else {
+                                    showErrorMessage(response.msg);
+                                }
                             }
                         }
                     },
