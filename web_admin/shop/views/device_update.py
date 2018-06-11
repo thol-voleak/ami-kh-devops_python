@@ -1,3 +1,4 @@
+from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user, get_auth_header
 from authentications.apps import InvalidAccessToken
@@ -9,14 +10,22 @@ from web_admin.utils import get_back_url
 from django.urls import reverse
 import logging
 
+from web_admin.restful_methods import RESTfulMethods
+
 logger = logging.getLogger(__name__)
 
 
-class DeviceUpdateView(TemplateView):
+class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+    group_required = "CAN_EDIT_AGENT_CHANNEL_DETAILS"
     template_name = "shop/device_update.html"
     raise_exception = False
     logger = logger
     login_url = 'web:permission_denied'
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -76,6 +85,35 @@ class DeviceUpdateView(TemplateView):
                 'supporting_file_1': form['supporting_file_1'],
                 'supporting_file_2': form['supporting_file_2']
             }
+        elif form['channel_type_id'] == '4':
+            params = {
+                'channel_type_id': form['channel_type_id'],
+                'channel_id': form['channel_id'],
+                'pos_serial_number': form['pos_serial_number'],
+                'pos_model': form['pos_model'],
+                'pos_software_version': form['pos_software_version'],
+                'pos_firmware_version': form['pos_firmware_version'],
+                'pos_smartcard_1_number': form['pos_smartcard_1_number'],
+                'pos_smartcard_2_number': form['pos_smartcard_2_number'],
+                'pos_smartcard_3_number': form['pos_smartcard_3_number'],
+                'pos_smartcard_4_number': form['pos_smartcard_4_number'],
+                'pos_smartcard_5_number': form['pos_smartcard_5_number'],
+                'mac_address': form['mac_address'],
+                'network_provider_name': form['network_provider_name'],
+                'public_ip_address': form['public_ip_address'],
+                'supporting_file_1': form['supporting_file_1'],
+                'supporting_file_2': form['supporting_file_2']
+            }
+        elif form['channel_type_id'] == '2':
+            params = {
+                'channel_type_id': form['channel_type_id'],
+                'channel_id': form['channel_id'],
+                'mac_address': form['mac_address'],
+                'network_provider_name': form['network_provider_name'],
+                'public_ip_address': form['public_ip_address'],
+                'supporting_file_1': form['supporting_file_1'],
+                'supporting_file_2': form['supporting_file_2']
+            }
         else:
             params = {
                 'channel_type_id': form['channel_type_id'],
@@ -85,7 +123,7 @@ class DeviceUpdateView(TemplateView):
                 'device_unique_reference': form['device_unique_reference'],
                 'os': form['os'],
                 'os_version': form['os_version'],
-                'display_size_inches': form['display_size_inches'],
+                'display_size_in_inches': form['display_size_in_inches'],
                 'pixel_counts': form['pixel_counts'],
                 'unique_number': form['unique_number'],
                 'mac_address': form['mac_address'],

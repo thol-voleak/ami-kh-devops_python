@@ -70,23 +70,29 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label"></label>
-{#            <label class="col-sm-2 control-label">Servcice Group</label>#}
+            <label class="col-sm-2 control-label">Servcice Group</label>
             <div class="col-sm-2">
-{#                <select class="form-control" id="ddl_service_group" name="group">#}
-{#                <option value=''>ALL</option>#}
-{#                {% for g in service_groups %}#}
-{#                    <option value='{{ g.id }}' {% if group == g.id %}selected="selected"{% endif %}>{{ g.name }}</option>#}
-{#                {% endfor %}#}
-{#                </select>#}
+                <select class="form-control" id="ddl_service_group" name="group">
+                <option value=''>ALL</option>
+                {% for g in service_groups %}
+                    {% if group == g.id %}
+                        <option value='{{ g.id }}' selected>{{ g.name }}</option>
+                    {% else %}
+                        <option value='{{ g.id }}'>{{ g.name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
             </div>
             <label class="col-sm-2 control-label"></label>
             <div class="col-sm-2">
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                 <div class="col-sm-8 pull-right" style="right: -10px;">
                     <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                 </div>
             </div>
         </div>
+    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+    <label class="pull-right" >Total:&nbsp;</label>
     </form>
 
     <div class="panel-body">
@@ -189,6 +195,14 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+    <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
         </div>
     </div>
 </div>

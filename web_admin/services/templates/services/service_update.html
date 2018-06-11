@@ -82,7 +82,7 @@
                                       id="txt_description">{{ service_detail.description|default_if_none:'' }}</textarea>
                         </div>
                     </div>
-
+                    <input id="txt_status" hidden type="text" name="status"  value= "{{service_detail.status}}" />
                     <div class="pull-right">
                         <a href="{% url 'services:services_list' %}">
                             <input id="btn_cancel" class="btn text-left mb15" type="button"

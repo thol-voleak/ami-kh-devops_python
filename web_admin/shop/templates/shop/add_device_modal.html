@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="dialog" id="addDeviceModal" hidden="hidden">
+<div class="modal" tabindex="-1" role="dialog" id="div_add_device_modal" hidden="hidden">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -23,8 +23,8 @@
                                 </div>
                             </div>
                             <div class="pull-right">
-                                <a id="btn_cancel_add" class="btn" onclick="closeAddDevice()">Cancel</a>
-                                <input id="btn_add_device" class="btn btn-success" type="submit" value="Save"/>
+                                <a id="btn_cancel_add_device" class="btn" onclick="closeAddDevice()">Cancel</a>
+                                <input id="btn_save_device" class="btn btn-success" type="submit" value="Save"/>
                             </div>
                         </form>
                     </div>
@@ -36,6 +36,6 @@
 
 <script>
     function closeAddDevice() {
-        $("#addDeviceModal").modal('hide');
+        $("#div_add_device_modal").modal('hide');
     }
 </script>

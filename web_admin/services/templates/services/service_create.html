@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 <div class="panel mb25">
     <div class="panel-heading border mb15">
@@ -35,6 +35,24 @@
                     {% csrf_token %}
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Clone from Service:</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_clone_from" name="clone_from" onchange="setClone(this)">
+                                <option value=""></option>
+                                {% for service in choices.services %}
+                                    {% if not service.is_deleted %}
+                                        {% if service.service_id|slugify == body.clone_from|slugify %}
+                                            <option value="{{ service.service_id }}" selected>{{ service.service_name }}</option>
+                                        {% else %}
+                                            <option value="{{ service.service_id }}">{{ service.service_name }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Name:</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="service_name" id="txt_name" required
@@ -61,7 +79,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Currency:</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_currency" name="currency" required>
+                            <select class="form-control" id="ddl_currency" name="currency" required {% if body.clone_from %} style="pointer-events: none;background: #eee;" {% endif %}>
                                 {% for currency in choices.currencies %}
                                 {% if currency.0|slugify == body.currency|slugify %}
                                         <option value="{{ currency.0 }}" selected>{{ currency.0 }}
@@ -96,4 +114,53 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    var csrf_token = "{{ csrf_token }}";
+    function setClone(e) {
+        var clone_service = e.value;
+        if (clone_service !== '') {
+            {# url of update_service #}
+            url = "{% url 'services:services_list' %}" + "details/" + clone_service + "/";
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {},
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                },
+                success: function (response) {
+                    if (!response.service.service_name) {
+                        location.reload();
+                    }
+                    if (response.service) {
+                        $('#txt_name').val(response.service.service_name);
+                        $('#ddl_group').val(response.service.service_group_id);
+                        $('#ddl_currency').val(response.service.currency);
+                        $('#ddl_currency').attr("style", "pointer-events: none;background: #eee;");
+                        $('#txt_description').val(response.service.description)
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    location.reload();
+                }
+            });
+        } else {
+            $('#txt_name').val('');
+            $('#ddl_group').val($("#ddl_group option:first").val());
+            $('#ddl_currency').val($("#ddl_currency option:first").val());
+            $('#ddl_currency').attr("style", "pointer-events: block;");
+            $('#txt_description').val('')
+        }
+    }
+</script>
 {% endblock %}

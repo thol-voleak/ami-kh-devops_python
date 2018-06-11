@@ -14,3 +14,5 @@ media
 web_admin/collected_static
 web_admin/.idea
 web_admin/python3/
+lib/
+bin/

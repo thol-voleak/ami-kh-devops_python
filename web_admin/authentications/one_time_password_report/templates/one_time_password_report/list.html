@@ -18,13 +18,28 @@
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="otp_id" id="txt_otp_id" value="{{ otp_id }}">
                 </div>
-                <label class="col-sm-2 control-label">User ID</label>
+                <label class="col-sm-2 control-label">System OTP Reference ID</label>
                 <div class="col-sm-2">
-                    <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
+                    <input type="text" class="form-control input-rounded" name="otp_reference_id" id="txt_otp_reference_id" value="{{ otp_reference_id }}">
                 </div>
                 <label class="col-sm-2 control-label">User Reference Code</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="user_ref_code" id="txt_user_ref_code" value="{{ user_ref_code }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User Type</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_user_type" name="user_type">
+                        <option value='All'>All</option>
+                        <option value='agent' {% if user_type == 'agent' %}selected="selected"{%endif%}>Agent</option>
+                        <option value='customer' {%if user_type == 'customer' %}selected="selected"{%endif%}>Customer</option>
+                        <option value='system-user' {%if user_type == 'system-user' %}selected="selected"{%endif%}>System User</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">User ID</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
                 </div>
             </div>
             <div class="form-group">
@@ -41,6 +56,55 @@
                 <label class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="txt_email" value="{{ email }}">
+                </div>
+                <label class="col-sm-2 control-label">Mobile Number</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Is Validation Passed</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_validation_status" name="validation_status">
+                        <option value='All' {% if validation_status == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='Yes' {%if validation_status == 'Yes' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='No' {%if validation_status == 'No' %}selected="selected"{%endif%}>No</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Is Deleted</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_is_deleted" name="is_deleted">
+                        <option value='' {% if is_deleted == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='1' {% if is_deleted == '1' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='0' {%if is_deleted == '0' %}selected="selected"{%endif%}>No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">From</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="from_created_timestamp"
+                           value="{{ from_date|default_if_none:'' }}"
+                           id="dtp_from_date">
+                </div>
+                <div class="col-sm-2">
+                    <input type="time" class="form-control input-rounded"
+                           step="1" value="{{ from_time|default_if_none:'' }}"
+                           name="from_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                           id="from_time">
+                </div>
+                <label class="col-sm-2 control-label">To</label>
+                <div class="col-xs-2">
+                    <input type="date" class="form-control input-rounded"
+                           name="to_created_timestamp"
+                           value="{{ to_date|default_if_none:'' }}"
+                           id="dtp_to_date">
+                </div>
+                <div class="col-sm-2">
+                    <input type="time" class="form-control input-rounded"
+                           name="to_time" step="1" value="{{ to_time|default_if_none:'' }}"
+                           id="to_time">
                 </div>
             </div>
             <div class="form-group">

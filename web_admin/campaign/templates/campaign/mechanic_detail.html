@@ -231,7 +231,7 @@
                                 {%elif condition.count_key_name == 'executed_order' %}
                                     <span id="lbl_count_key_name">Payment</span>
                                 {%elif condition.count_key_name == 'created_sof' %}
-                                    <span id="lbl_count_key_name">Link Bank</span>
+                                    <span id="lbl_count_key_name">Create SOF</span>
                                 {%elif condition.count_key_name == 'update_profile' %}
                                     <span id="lbl_count_key_name">Profile Update</span>
                                 {% else %}
@@ -320,7 +320,9 @@
                                 {%elif condition.filter_event_name.key_value == 'executed_order' %}
                                     <span id="lbl_count_key_name">Payment</span>
                                 {%elif condition.filter_event_name.key_value == 'created_sof' %}
-                                    <span id="lbl_count_key_name">Link Bank</span>
+                                    <span id="lbl_count_key_name">Create SOF</span>
+                                {%elif condition.filter_event_name.key_value == 'update_profile' %}
+                                    <span id="lbl_count_key_name">Profile Update</span>
                                 {% else %}
                                     <span id="lbl_count_key_name">{{ condition.filter_event_name.key_value }}</span>
                                 {% endif %}

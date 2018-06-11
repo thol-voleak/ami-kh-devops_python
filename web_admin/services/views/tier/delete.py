@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username
 from web_admin.restful_methods import RESTfulMethods
+from django.http import JsonResponse
 logger = logging.getLogger(__name__)
 
 
@@ -57,6 +58,10 @@ class TierDeleteView(TemplateView, RESTfulMethods):
                         command_id=command_id,
                         service_command_id=service_command_id)
 
+    def put(self, request, *args, **kwargs):
+        tier_id = kwargs.get('fee_tier_id')
+        context = self._get_tier_detail(tier_id)
+        return JsonResponse({"fee_tier": context})
 
     def _delete_tier(self, fee_tier_id):
         return self._delete_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),

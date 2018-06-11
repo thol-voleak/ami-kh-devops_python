@@ -88,7 +88,7 @@ class EditMechanicView(TemplateView, GetHeaderMixin):
         register_customer = {'term': 'register_customer', 'description': 'Register customer'}
         executed_order = {'term': 'executed_order', 'description': 'Executed Order'}
         login = {'term': 'login', 'description': 'Log in'}
-        link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
+        link_bank = {'term': 'created_sof', 'description': 'Create SOF'}
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         profile_update = {'term': 'update_profile', 'description': 'Profile Update'}

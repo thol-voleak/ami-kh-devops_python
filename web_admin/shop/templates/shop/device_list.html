@@ -13,33 +13,37 @@
 </style>
 
 <h4 style="margin: 30px 0px;">Channel & Device Management</h4>
-<div style="margin-bottom: 15px">
-    <div class="device-panel-empty" id="div-device-empty" {% if device_list or is_readonly %} style="display: none" {% endif %}>
-        <div>
-            <div id="lbl_device_add"><b>Please Add a Device</b></div>
-            <div style="margin-top: 10px;">
-                <a id="btn-add-device" class="btn btn-success btn-md" onclick="addDevice()">
-                    <span class="small">Add</span>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div id="div-device-management" {% if not device_list %} style="display: none" {% endif %}>
-        <div class="channel-list">
-            <h5>Give Access to the following Channels</h5>
-            {% for channel in supported_channels %}
-                <div class="checkbox">
-                    <label>
-                    <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
-                           {% if is_readonly %}disabled{% endif %}
-                           {% if channel.grant_permission %}checked{% endif %}
-                           onclick="changeChannelAccessStatus(this)"
-                           data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
-                           data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
-                           data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+<div id="div-device-management" style="margin-bottom: 15px">
+    <div class="device-panel-empty" id="div-device-empty" {% if device_list or is_readonly %} hidden {% endif %}>
+        {% if permissions.CAN_EDIT_AGENT_CHANNEL_DETAILS %}
+            <div>
+                <div id="lbl_device_add"><b>Please Add a Device</b></div>
+                <div style="margin-top: 10px;">
+                    <a id="btn_add_device_from_empty" class="btn btn-success btn-md" onclick="addDevice()">
+                        <span class="small">Add</span>
+                    </a>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endif %}
+    </div>
+    <div id="div-device-data" {% if not device_list %} hidden {% endif %}>
+        {% if permissions.CAN_BLOCK_AGENT_CHANNELS %}
+            <div class="channel-list">
+                <h5>Give Access to the following Channels</h5>
+                {% for channel in supported_channels %}
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                               {% if is_readonly %}disabled{% endif %}
+                               {% if channel.grant_permission %}checked{% endif %}
+                               onclick="changeChannelAccessStatus(this)"
+                               data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
+                               data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
+                               data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="table-responsive" style="margin-top: 10px;">
             <table id="tbl_device_management" class="table table-bordered table-striped mb0">
                 <thead>
@@ -70,16 +74,16 @@
                             </td>
                             {% if not is_readonly %}
                                 <td>
-                                    <div id="action-device-{{device.id}}">
+                                    <div id="action_device_{{device.id}}">
                                         {% if permissions.CAN_EDIT_AGENT_CHANNEL_DETAILS %}
-                                            <a id="btn-edit-device-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
+                                            <a id="btn_edit_device_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-primary"
                                                     href="{% url 'shop:device_update' form.id device.id %}">
                                                 <span class="small">Edit Detail</span>
                                             </a>
                                         {% endif %}
                                         {% if permissions.CAN_UNBIND_AGENT_DEVICE %}
                                             <a type="button"
-                                                id="btn-unbind-{{ device.id }}"
+                                                id="btn_unbind_{{ device.id }}"
                                                 data-url="{% url 'shop:unbind_device' device.id %}"
                                                 onclick="deleteDevice(this)"
                                                 data-device-id='{{ device.id }}'
@@ -89,13 +93,15 @@
                                         {% endif %}
                                         {% if permissions.CAN_DISABLE_AGENT_DEVICE %}
                                             {% if not device.is_active %}
-                                                <a id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
-                                                        data-url="{% url 'shop:enable_device' device.id %}"
-                                                        onclick="doEnableOrDisableDevice(this)">Enable</a>
+                                                <a type="button"
+                                                    id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                    data-url="{% url 'shop:enable_device' device.id %}"
+                                                    onclick="doEnableOrDisableDevice(this)">Enable</a>
                                             {% else %}
-                                                <a id="btn_status-{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
-                                                        data-url="{% url 'shop:disable_device' device.id %}"
-                                                        onclick="doEnableOrDisableDevice(this)">Disable</a>
+                                                <a type="button"
+                                                   id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                   data-url="{% url 'shop:disable_device' device.id %}"
+                                                   onclick="doEnableOrDisableDevice(this)">Disable</a>
                                             {% endif %}
                                         {% endif %}
                                     </div>
@@ -336,7 +342,7 @@
                                 console.log(rowCount);
                                 if (rowCount == 0) {
                                     $("#div-device-empty").show();
-                                    $("#div-device-management").hide();
+                                    $("#div-device-data").hide();
                                 }
                                 showSuccessMessage('Delete device successfully');
                             } else {
@@ -353,6 +359,6 @@
     }
 
     function addDevice() {
-        $("#addDeviceModal").modal('show');
+        $("#div_add_device_modal").modal('show');
     }
 </script>
