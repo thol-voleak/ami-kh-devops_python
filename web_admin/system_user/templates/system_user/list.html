@@ -325,7 +325,7 @@
                 $.ajax({
                     url: url,
                     type: "GET",
-                    data: {"active_suspend_reason":reason_suppend},
+                    data: {"suspend_reason":reason_suppend},
                     success: function (response) {
                         if (response.status == 1) {
                             // Logout
