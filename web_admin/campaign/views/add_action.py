@@ -262,7 +262,7 @@ class AddAction(TemplateView, GetHeaderMixin):
     def _filter_trigger(self, data):
         filtered = [v for v in data if
                     ((v.term == 'register_customer') or (v.term == 'executed_order') or (v.term == 'login'))]
-        link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
+        link_bank = {'term': 'created_sof', 'description': 'Create SOF'}
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         filtered.extend([link_bank, created_order, limit_reached])
