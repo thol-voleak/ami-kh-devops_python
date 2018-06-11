@@ -189,7 +189,7 @@
                                            id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
                                             <span class="small">Activate</span>
                                         </a>
-                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user %}
+                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user and request.user.username != systemuser.username %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-danger mb5"
                                            data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"
@@ -285,7 +285,11 @@
                             if (response.server_error_code == 500) {
                                 showErrorMessage('Activate system user failed')
                             } else {
-                                showErrorMessage(response.msg);
+                                if(response.msg == 'System user is already deleted') {
+                                    showErrorMessage('Cannot activate the deleted user');
+                                } else {
+                                    showErrorMessage(response.msg);
+                                }
                             }
                         }
                     },
@@ -321,7 +325,7 @@
                 $.ajax({
                     url: url,
                     type: "GET",
-                    data: {"active_suspend_reason":reason_suppend},
+                    data: {"suspend_reason":reason_suppend},
                     success: function (response) {
                         if (response.status == 1) {
                             // Logout

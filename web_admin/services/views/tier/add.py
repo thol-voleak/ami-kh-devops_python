@@ -7,6 +7,7 @@ from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username
 from django.contrib import messages
 from services.views.tier_levels.utils import get_label_levels
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class AddView(TemplateView, RESTfulMethods):
         context = super(AddView, self).get_context_data(**kwargs)
         service_id = context['service_id']
         command_id = context['command_id']
+        service_command_id = kwargs.get('service_command_id')
         tier_conditions, status1 = self._get_tier_condition()
         amount_types, status2 = self._get_amount_types()
         service_detail, status3 = self._get_service_detail(service_id)
@@ -41,6 +43,8 @@ class AddView(TemplateView, RESTfulMethods):
         self.logger.info('========== Finish get tier amount froms ==========')
         payment_decimals, status8 = self._get_payment_decimal()
         self.logger.info('========== Finish get payment decimal ==========')
+        fee_tiers, status9 = self._get_fee_tier_list(service_command_id)
+        self.logger.info('========== Finished get Fee Tier List ==========')
 
         payment_decimal = payment_decimals['value']
 
@@ -60,7 +64,7 @@ class AddView(TemplateView, RESTfulMethods):
         n_label = self.get_label_detail('N')
         o_label = self.get_label_detail('O')
 
-        if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
+        if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8 and status9:
             context.update({
                 'conditions': tier_conditions,
                 'fee_types': fee_types,
@@ -71,6 +75,7 @@ class AddView(TemplateView, RESTfulMethods):
                 'decimal': int(decimal),
                 'tier_amount_froms': tier_amount_froms,
                 'payment_decimal': payment_decimal,
+                'fee_tiers': fee_tiers,
                 'a_label': a_label,
                 'b_label': b_label,
                 'c_label': c_label,
@@ -149,6 +154,7 @@ class AddView(TemplateView, RESTfulMethods):
         o = request.POST.get('o')
         o_from = request.POST.get('o_from')
         o_amount = request.POST.get('o_amount')
+        clone_from = request.POST.get('clone_from')
 
         if condition_amount:
             condition_amount = condition_amount.replace(',', '')
@@ -246,6 +252,8 @@ class AddView(TemplateView, RESTfulMethods):
             params['n_from'] = None
         if params['o'] == "Flat value" or params['o'] == "":
             params['o_from'] = None
+        if clone_from:
+            params['clone_from'] = clone_from
 
         self.logger.info("Create tire for service command id [{}] with param [{}]".format(service_command_id, params))
 
@@ -316,6 +324,8 @@ class AddView(TemplateView, RESTfulMethods):
             tier_amount_froms, status7 = self._get_tier_amount_froms()
             payment_decimals, status8 = self._get_payment_decimal()
             payment_decimal = payment_decimals['value']
+            fee_tiers, status9 = self._get_fee_tier_list(service_command_id)
+            self.logger.info('========== Finished get Fee Tier List ==========')
             a_label = self.get_label_detail('A')
             b_label = self.get_label_detail('B')
             c_label = self.get_label_detail('C')
@@ -331,7 +341,7 @@ class AddView(TemplateView, RESTfulMethods):
             m_label = self.get_label_detail('M')
             n_label = self.get_label_detail('N')
             o_label = self.get_label_detail('O')
-            if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
+            if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8 and status9:
                 context.update({
                     'conditions': tier_conditions,
                     'fee_types': fee_types,
@@ -343,6 +353,7 @@ class AddView(TemplateView, RESTfulMethods):
                     'body': params,
                     'tier_amount_froms': tier_amount_froms,
                     'payment_decimal': payment_decimal,
+                    'fee_tiers': fee_tiers,
                     'a_label': a_label,
                     'b_label': b_label,
                     'c_label': c_label,
@@ -466,3 +477,7 @@ class AddView(TemplateView, RESTfulMethods):
         for lvl in label_levels:
             if lvl.get('name') == lvl_name:
                 return lvl.get('label')
+
+    def _get_fee_tier_list(self, service_command_id):
+        url = settings.DOMAIN_NAMES + api_settings.FEE_TIER_LIST.format(service_command_id=service_command_id)
+        return self._get_precision_method(api_path=url, func_description="fee tier list", is_getting_list=True)

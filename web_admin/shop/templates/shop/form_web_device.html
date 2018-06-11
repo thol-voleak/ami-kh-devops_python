@@ -1,0 +1,54 @@
+{% csrf_token %}
+
+<input type="hidden" name="id" value="{{ form.id }}" />
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">Channel Type *</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded"  required id="txt_channel_type" name="channel_type_name" value="{{ form.channel_type.name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="hidden" class="form-control input-rounded" name="channel_type_id" value="{{ form.channel_type.id }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Channel</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_channel" name="channel_name" value="{{ form.channel.name }}" {% if is_readonly %}readonly{% endif %} />
+        <input type="hidden" class="form-control input-rounded" name="channel_id" value="{{ form.channel.id }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Mac Address</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_mac_address" name="mac_address" value="{{ form.mac_address | default_if_none:'' }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Network/Provider Name</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_network_provider_name" name="network_provider_name" value="{{ form.network_provider_name | default_if_none:'' }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Public Ip Address</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_public_ip_address" name="public_ip_address" value="{{ form.public_ip_address | default_if_none:'' }}"  />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Supporting File 1</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_supporting_file_1" name="supporting_file_1" value="{{ form.supporting_file_1 | default_if_none:'' }}" />
+    </div>
+</div>
+
+<div class="form-group mb15">
+    <label class="col-sm-3 control-label">Supporting File 2</label>
+    <div class="col-sm-7">
+        <input type="text" class="form-control input-rounded" id="txt_supporting_file_2" name="supporting_file_2" value="{{ form.supporting_file_2 | default_if_none:'' }}"  />
+    </div>
+</div>

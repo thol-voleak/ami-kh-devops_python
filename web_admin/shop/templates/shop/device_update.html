@@ -14,11 +14,15 @@
                 <form id="submit-form" class="form-horizontal" role="form" method="post">
                     {% if form.channel_type.id == 3 %}
                         {% include "shop/form_edc_device.html" with is_readonly=True %}
+                    {% elif form.channel_type.id == 2%}
+                        {% include "shop/form_web_device.html" with is_readonly=True %}
+                    {% elif form.channel_type.id == 4%}
+                        {% include "shop/form_pos_device.html" with is_readonly=True %}
                     {% else %}
                         {% include "shop/form_mobile_device.html" with is_readonly=True %}
                     {% endif %}
                     <div class="pull-right">
-                        <a id="btn_back" href="{% url 'shop:shop_edit' shopId %}" class="btn" >Back</a>
+                        <a id="btn_cancel" href="{% url 'shop:shop_edit' shopId %}" class="btn" >Cancel</a>
                         <input id="btn_save" class="btn btn-success" type="submit" value="Save"/>
                     </div>
                 </form>
