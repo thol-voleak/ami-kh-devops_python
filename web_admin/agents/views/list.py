@@ -157,6 +157,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
+        edc_serial_number = request.POST.get('edc_serial_number')
+        mobile_device_unique_reference = request.POST.get('mobile_device_unique_reference')
 
         # Build Body
         context = {}
@@ -179,6 +181,11 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 new_kyc_status = False
             body['kyc_status'] = new_kyc_status
             context['kyc_status'] = kyc_status
+
+        if edc_serial_number:
+            body['edc_serial_number'] = edc_serial_number
+        if mobile_device_unique_reference:
+            body['mobile_device_unique_reference'] = mobile_device_unique_reference
 
         context.update(body)
 
@@ -211,7 +218,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
         context['has_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
         self.update_session(request, None, agent_id, unique_reference, email,
-                            primary_mobile_number, kyc_status,
+                            primary_mobile_number, kyc_status, edc_serial_number, mobile_device_unique_reference,
                             new_from_created_timestamp,
                             new_to_created_timestamp, False, False)
         return render(request, self.template_name, context)
@@ -258,13 +265,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return data, success, status_message
 
     def update_session(self, request, message=None,id=None , unique_reference=None, email=None, primary_mobile_number=None,
-                       kyc=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False, redirect_from_wallet_view = False):
+                       kyc=None, edc_serial_number=None, mobile_device_unique_reference=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False, redirect_from_wallet_view = False):
         request.session['agent_message'] = message
         request.session['agent_id'] = id
         request.session['agent_unique_reference'] = unique_reference
         request.session['agent_email'] = email
         request.session['agent_primary_mobile_number'] = primary_mobile_number
         request.session['agent_kyc_status'] = kyc
+        request.session['edc_serial_number'] = edc_serial_number
+        request.session['mobile_device_unique_reference'] = mobile_device_unique_reference
         request.session['agent_from'] = from_created_timestamp
         request.session['agent_to'] = to_created_timestamp
         request.session['agent_redirect_from_delete'] = redirect_from_delete
