@@ -451,6 +451,11 @@
             var sof = cTr.find("#" + sof + " option:selected").val();
             var specific_sof = cTr.find("#" + specific_sof);
 
+            if (sof === '3') {
+                specific_sof.empty();
+                return;
+            }
+
             if (actor !== 'Specific ID') {
                 return;
             }
