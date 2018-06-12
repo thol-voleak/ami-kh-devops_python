@@ -21,10 +21,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
     }
 
     person_1 = {
-        '@@user_id@@': 'Actor whose profile is updated',
-        '@@payer_user_id@@': 'Actor that paid for the transaction',
-        '@@payee_user_id@@': 'Actor that received the transaction',
-        '@@initiator_user_id@@': 'Actor that created the transaction'
+        '@@user_id@@': 'Actor whose profile is updated'
     }
 
     def dispatch(self, request, *args, **kwargs):
