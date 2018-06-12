@@ -30,18 +30,21 @@
         {% if permissions.CAN_BLOCK_AGENT_CHANNELS %}
             <div class="channel-list">
                 <h5>Give Access to the following Channels</h5>
+                <div class="row" style="margin-left: 15px">
                 {% for channel in supported_channels %}
-                    <div class="checkbox">
-                        <label>
-                        <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
-                               {% if is_readonly %}disabled{% endif %}
-                               {% if channel.grant_permission %}checked{% endif %}
-                               onclick="changeChannelAccessStatus(this)"
-                               data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
-                               data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
-                               data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                    <div class="form-group col-md-4 col-xs-12 checkbox">
+                        <div class="col-sm-6">
+                            <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                                   {% if is_readonly %}disabled{% endif %}
+                                   {% if channel.grant_permission %}checked{% endif %}
+                                   onclick="changeChannelAccessStatus(this)"
+                                   data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
+                                   data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
+                                   data-channel-name="{{ channel.name }}">{{ channel.name }}
+                        </div>
                     </div>
                 {% endfor %}
+                </div>
             </div>
         {% endif %}
         <div class="table-responsive" style="margin-top: 10px;">
