@@ -342,12 +342,13 @@
 
                             showSuccessMessage('Suspended system user successfully');
                         } else {
-                            // Failed
-                            if (response.server_error_code == 500) {
-                                showErrorMessage('Suspend system user failed')
-                            } else {
-                                showErrorMessage(response.msg);
-                            }
+							if (response.server_error_code == 500) {
+								showErrorMessage('Suspend system user failed')
+                            } else if (response.msg == 'System user is already deleted') {
+								showErrorMessage('Cannot suspend the deleted user');
+							} else {
+								showErrorMessage(response.msg);
+							}
                         }
                     },
                     error: function (msg) {
