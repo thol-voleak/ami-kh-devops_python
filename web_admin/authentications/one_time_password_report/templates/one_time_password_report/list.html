@@ -65,10 +65,10 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Is Validation Passed</label>
                 <div class="col-sm-2">
-                    <select class="form-control" id="ddl_validation_status" name="validation_status">
-                        <option value='All' {% if validation_status == 'All' %}selected="selected"{%endif%}>All</option>
-                        <option value='Yes' {%if validation_status == 'Yes' %}selected="selected"{%endif%}>Yes</option>
-                        <option value='No' {%if validation_status == 'No' %}selected="selected"{%endif%}>No</option>
+                    <select class="form-control" id="ddl_validation_status" name="is_success_verified">
+                        <option value='All' {% if is_success_verified == 'All' %}selected="selected"{%endif%}>All</option>
+                        <option value='Yes' {%if is_success_verified == 'Yes' %}selected="selected"{%endif%}>Yes</option>
+                        <option value='No' {%if is_success_verified == 'No' %}selected="selected"{%endif%}>No</option>
                     </select>
                 </div>
                 <label class="col-sm-2 control-label">Is Deleted</label>
@@ -147,7 +147,7 @@
                         <td>{{ otp.delivery_channel|default_if_none:"" }}</td>
                         <td>{{ otp.email|default_if_none:"" }}</td>
                         <td>{{ otp.mobile_number|default_if_none:"" }}</td>
-                        <td>{{ otp.is_passed_validation|yesno:"Yes,No,''"  }}</td>
+                        <td>{{ otp.is_success_verified|yesno:"Yes,No,''"  }}</td>
                         <td>{{ otp.failed_validation_count|default_if_none:"" }}</td>
                         <td>{{ otp.is_deleted|yesno:"Yes,No,''" }}</td>
                         <td>{{ otp.created_timestamp|default_if_none:"" }}</td>
