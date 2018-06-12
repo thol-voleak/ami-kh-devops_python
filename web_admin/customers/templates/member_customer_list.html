@@ -54,94 +54,81 @@
                     <h4>Search</h4>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">ID</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control input-rounded"
-                               name="customer_id" id="txt_id"
-                               value="{{ customer_id | default_if_none:'' }}"/>
-                    </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="customer_id" id="txt_id"
+                           value="{{ customer_id | default_if_none:'' }}"/>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Unique Reference</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control input-rounded"
-                               name="unique_reference" id="txt_unique_reference"
-                               value="{{ unique_reference | default_if_none:'' }}"/>
-                    </div>
+                <label class="col-sm-2 control-label">Unique Reference</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="unique_reference" id="txt_unique_reference"
+                           value="{{ unique_reference | default_if_none:'' }}"/>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">KYC Status</label>
-                    <div class="col-sm-6">
-                        <select type="text" class="form-control" name="kyc_status" id="ddl_kyc_status">
-                            <option value=''{% if kyc_status == '' %}selected="selected"{% endif %}>-</option>
-                            <option value=1 {% if kyc_status == '1' %}selected="selected"{% endif %}>True</option>
-                            <option value=0 {% if kyc_status == '0' %}selected="selected"{% endif %}>False</option>
-                        </select>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">KYC Status</label>
+                <div class="col-sm-2">
+                    <select type="text" class="form-control" name="kyc_status" id="ddl_kyc_status">
+                        <option value=''{% if kyc_status == '' %}selected="selected"{% endif %}>-</option>
+                        <option value=1 {% if kyc_status == '1' %}selected="selected"{% endif %}>True</option>
+                        <option value=0 {% if kyc_status == '0' %}selected="selected"{% endif %}>False</option>
+                    </select>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Citizen Card ID</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control "
-                               name="citizen_card_id" id="txt_citizen_card_id"
-                               value="{{ citizen_card_id | default_if_none:'' }}"/>
-                    </div>
+                <label class="col-sm-2 control-label">Citizen Card ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control "
+                           name="citizen_card_id" id="txt_citizen_card_id"
+                           value="{{ citizen_card_id | default_if_none:'' }}"/>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Email</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control "
-                               name="email" id="txt_email"
-                               value="{{ email | default_if_none:'' }}"/>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control "
+                           name="email" id="txt_email"
+                           value="{{ email | default_if_none:'' }}"/>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Mobile Number</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control input-rounded"
-                               name="mobile_number" id="txt_mobile_number"
-                               value="{{ mobile_number | default_if_none:'' }}"/>
-                    </div>
+                <label class="col-sm-2 control-label">Mobile Number</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="mobile_number" id="txt_mobile_number"
+                           value="{{ mobile_number | default_if_none:'' }}"/>
                 </div>
-                <div class="row col-xs-12">
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-4 control-label">Mobile Unique Reference</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control "
-                                   name="mobile_device_unique_reference" id="txt_mobile_device_unique_reference"
-                                   value="{{ mobile_device_unique_reference | default_if_none:'' }}"/>
-                        </div>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Mobile Unique Reference</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control "
+                           name="mobile_device_unique_reference" id="txt_mobile_device_unique_reference"
+                           value="{{ mobile_device_unique_reference | default_if_none:'' }}"/>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Created Date: From</label>
-                    <div class="col-sm-6">
-                        <input type="date" class="form-control "
-                               name="from_created_timestamp"
-                               value="{{ from_created_timestamp|default_if_none:'' }}"
-                               id="dtp_from">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Created Date: From</label>
+                <div class="col-sm-2">
+                    <input type="date" class="form-control "
+                           name="from_created_timestamp"
+                           value="{{ from_created_timestamp|default_if_none:'' }}"
+                           id="dtp_from">
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">To</label>
-                    <div class="col-sm-6">
-                        <input type= "date" class="form-control "
-                               name="to_created_timestamp"
-                               value="{{ to_created_timestamp|default_if_none:'' }}"
-                               id="dtp_to">
-                    </div>
-                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                    <div class="col-xs-2">
-                    <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
-                    </div>
+                <label class="col-sm-2 control-label">To</label>
+                <div class="col-sm-2">
+                    <input type= "date" class="form-control "
+                           name="to_created_timestamp"
+                           value="{{ to_created_timestamp|default_if_none:'' }}"
+                           id="dtp_to">
                 </div>
-                <div class="form-group col-md-12">
-                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-                    <label class="pull-right" >Total Customers found:&nbsp;</label>
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                <div class="col-xs-2">
+                <input id="btn_search" class="btn btn-success btn-block col-xs-1" type="submit" value="Search">
                 </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                <label class="pull-right" >Total Customers found:&nbsp;</label>
             </div>
         </form>
         <div class="table-responsive">

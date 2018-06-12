@@ -15,7 +15,8 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Channel*</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="ddl_channel" name="channel_id">
+                                    <select class="form-control" id="ddl_channel" name="channel_id" required>
+                                        <option value="">-</option>
                                         {% for channel in supported_channels %}
                                             <option value="{{ channel.id }}">{{ channel.name }}</option>
                                         {% endfor %}

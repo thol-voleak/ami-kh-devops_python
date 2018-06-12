@@ -94,7 +94,7 @@
                                         {% if permissions.CAN_DISABLE_AGENT_DEVICE %}
                                             {% if not device.is_active %}
                                                 <a type="button"
-                                                    id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                    id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-success"
                                                     data-url="{% url 'shop:enable_device' device.id %}"
                                                     onclick="doEnableOrDisableDevice(this)">Enable</a>
                                             {% else %}
@@ -246,6 +246,8 @@
                                 e.innerHTML = "Disable";
                                 e.disabled = true;
                                 e.disabled = false;
+                                e.classList.remove("btn-success");
+                                e.classList.add("btn-danger");
                                 e.setAttribute('data-url', e.getAttribute('data-url').replace('/enable', '/disable'));
                                 showSuccessMessage('Enable device successfully');
                             } else {
@@ -292,6 +294,8 @@
                                 e.innerHTML = "Enable";
                                 e.disabled = true;
                                 e.disabled = false;
+                                e.classList.add("btn-success");
+                                e.classList.remove("btn-danger");
                                 e.setAttribute('data-url', e.getAttribute('data-url').replace('/disable', '/enable'));
                                 showSuccessMessage('Disable device successfully');
                             } else {

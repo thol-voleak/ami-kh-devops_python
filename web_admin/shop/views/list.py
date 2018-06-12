@@ -71,6 +71,12 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if form.get('owner_id'):
             params['agent_id'] = form['owner_id']
 
+        if form.get('mobile_device_unique_reference'):
+            params['mobile_device_unique_reference'] = form['mobile_device_unique_reference']
+
+        if form.get('edc_serial_number'):
+            params['edc_serial_number'] = form['edc_serial_number']
+
         shops = search_shop(self, params)
         page = shops.get('page', {})
         context['permissions'] = permissions
