@@ -18,7 +18,7 @@ def activate(request, service_id):
         ("GET", url_get_detail, {}, request, "getting service detail")
     if success:
         params = {
-            'status': 0,
+            'status': 1,
             'service_group_id': data['service_group_id'],
             'currency': data['currency'],
             'description': data['description'],
