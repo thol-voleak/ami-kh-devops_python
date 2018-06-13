@@ -38,8 +38,8 @@
                                    {% if is_readonly %}disabled{% endif %}
                                    {% if channel.grant_permission %}checked{% endif %}
                                    onclick="changeChannelAccessStatus(this)"
-                                   data-url-grant="{% url 'shop:grant_channel_access' form.id channel.id %}"
-                                   data-url-revoke="{% url 'shop:revoke_channel_access' form.id channel.id %}"
+                                   data-url-grant="{% url 'shop:grant_channel_access' form.agent_id form.id channel.id %}"
+                                   data-url-revoke="{% url 'shop:revoke_channel_access' form.agent_id form.id channel.id %}"
                                    data-channel-name="{{ channel.name }}">{{ channel.name }}
                         </div>
                     </div>
