@@ -40,9 +40,9 @@ class DeviceUpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start get agent device detail ==========')
         context = super(DeviceUpdateView, self).get_context_data(**kwargs)
-        edc_device_id = context['device_id']
-        self.logger.info("Searching edc device with ID [{}]".format(edc_device_id))
-        url = api_settings.AGENT_DEVICE_URL.format(edc_device_id)
+        device_id = context['device_id']
+        self.logger.info("Searching agent device with ID [{}]".format(device_id))
+        url = api_settings.AGENT_DEVICE_URL.format(device_id)
         is_success, status_code, data = RestFulClient.get(
             url,
             loggers=self.logger,

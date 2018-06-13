@@ -49,12 +49,11 @@ class OTPList(GroupRequiredMixin, TemplateView):
         body['page_index'] = 1
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
             'delivery_channel': 'All',
-            'validation_status': 'All',
             'user_type': 'All',
-            'otp_list': converted_otp_list,
+            'is_success_verified': 'All',
+            'otp_list': otp_list['otps'],
             'paginator': page,
             'search_count': page.get('total_elements', 0),
             'page_range': calculate_page_range_from_page_info(page),
@@ -74,7 +73,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
         is_deleted = request.POST.get('is_deleted', '')
         mobile_number = request.POST.get('mobile_number', '')
         otp_reference_id = request.POST.get('otp_reference_id', '')
-        validation_status = request.POST.get('validation_status', '')
+        is_success_verified = request.POST.get('is_success_verified', '')
         opening_page_index = request.POST.get('current_page_index')
         user_type = request.POST.get('user_type', '')
         from_created_timestamp = request.POST.get('from_created_timestamp')
@@ -102,8 +101,8 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['otp_reference_id'] = otp_reference_id
         if is_deleted:
             body['is_deleted'] = True if is_deleted == '1' else False
-        if validation_status and validation_status != 'All':
-            body['is_success_verified'] = (validation_status == 'Yes')
+        if is_success_verified and is_success_verified != 'All':
+            body['is_success_verified'] = True if is_success_verified == 'Yes' else False
         if user_type and user_type != 'All':
             body['user_type'] = user_type
 
@@ -117,7 +116,6 @@ class OTPList(GroupRequiredMixin, TemplateView):
         body['page_index'] = int(opening_page_index)
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
-        converted_otp_list = self.__canculate_validation_info(otp_list['otps'])
         context.update({
             'otp_id': otp_id,
             'is_deleted': is_deleted,
@@ -127,14 +125,14 @@ class OTPList(GroupRequiredMixin, TemplateView):
             'email': email,
             'mobile_number': mobile_number,
             'otp_reference_id': otp_reference_id,
-            'validation_status': validation_status,
+            'is_success_verified': is_success_verified,
             'user_type': user_type,
             'from_date': from_created_timestamp,
             'to_date': to_created_timestamp,
             'from_time': from_time,
             'to_time': to_time,
             'search_count': page.get('total_elements', 0),
-            'otp_list': converted_otp_list,
+            'otp_list': otp_list['otps'],
             'paginator': page,
             'page_range': calculate_page_range_from_page_info(page),
         })
@@ -159,18 +157,6 @@ class OTPList(GroupRequiredMixin, TemplateView):
                                 status_code=status_code, is_getting_list=True)
 
         return data, is_success
-
-    def __canculate_validation_info(self, otp_list):
-
-        for otp in otp_list:
-            otp['is_passed_validation'] = False
-            otp['failed_validation_count'] = len(otp['verifications'])
-            for validator in otp['verifications']:
-                if validator['is_success']:
-                    otp['is_passed_validation'] = True
-                    otp['failed_validation_count'] = len(otp['verifications']) - 1
-                    break
-        return otp_list
 
     def initSearchDateTime(self, context):
         today = date.today()

@@ -9,7 +9,7 @@ from django.conf import settings
 import logging
 
 
-def grant_channel_access(request, shop_id, channel_id):
+def grant_channel_access(request, agent_id, shop_id, channel_id):
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
@@ -21,6 +21,7 @@ def grant_channel_access(request, shop_id, channel_id):
     url = settings.DOMAIN_NAMES + api_settings.CHANNEL_GRANT_PERMISSION.format(channel_id=channel_id)
     params = {
         'shop_id': shop_id,
+        'user_id': agent_id,
         'user_type': {
             'id': 2,
             'name': 'agent'
@@ -32,7 +33,7 @@ def grant_channel_access(request, shop_id, channel_id):
 
     return result
 
-def revoke_channel_access(request, shop_id, channel_id):
+def revoke_channel_access(request, agent_id, shop_id, channel_id):
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
@@ -44,6 +45,7 @@ def revoke_channel_access(request, shop_id, channel_id):
     url = settings.DOMAIN_NAMES + api_settings.CHANNEL_REVOKE_PERMISSION.format(channel_id=channel_id)
     params = {
         'shop_id': shop_id,
+        'user_id': agent_id,
         'user_type': {
             "id": 2,
             'name': 'agent'

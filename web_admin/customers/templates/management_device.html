@@ -81,22 +81,24 @@
                                 <div class="panel-heading" style="margin-top: -30px;">
                                     <h3>Channel & Devices Management</h3>
                                 </div>
-                                <br>
                                 <div>
                                     {% if permissions.CAN_BLOCK_CUSTOMER_CHANNELS %}
-                                        <div class="channel-list">
+                                        <div class="channel-list form-horizontal">
                                             <h5>Give Access to the following Channels</h5>
+                                            <div class="row" style="margin-left: 20px">
                                             {% for channel in supported_channels %}
-                                                <div class="checkbox">
-                                                    <label>
-                                                    <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
-                                                        {% if channel.grant_permission %}checked{% endif %}
-                                                        onclick="changeChannelAccessStatus(this)"
-                                                        data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
-                                                        data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
-                                                        data-channel-name="{{ channel.name }}">{{ channel.name }}</label>
+                                                <div class="form-group col-md-4 col-xs-12 checkbox">
+                                                    <div class="col-sm-6">
+                                                        <input type="checkbox" id="chk_channel_{{ channel.id }}" name="chk_channel_{{ channel.id }}" value="{{ channel.id }}"
+                                                                {% if channel.grant_permission %}checked{% endif %}
+                                                                onclick="changeChannelAccessStatus(this)"
+                                                                data-url-grant="{% url 'customers:grant_channel_access' customerId channel.id %}"
+                                                                data-url-revoke="{% url 'customers:revoke_channel_access' customerId channel.id %}"
+                                                                data-channel-name="{{ channel.name }}">{{ channel.name }}
+                                                    </div>
                                                 </div>
                                             {% endfor %}
+                                            </div>
                                         </div>
                                     {% endif %}
                                     <div class="form-group col-md-12">
@@ -144,7 +146,7 @@
                                                             {% endif %}
                                                             {% if permissions.CAN_DISABLE_CUSTOMER_DEVICE %}
                                                                 {% if not device.is_active %}
-                                                                    <button id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-danger"
+                                                                    <button id="btn_status_{{ device.id }}" class="btn mb5 btn-outline btn-xs btn-success"
                                                                             data-url="{% url 'customers:enable_device' customerId device.id %}"
                                                                             onclick="doEnableOrDisableDevice(this)">Enable</button>
                                                                 {% else %}
@@ -238,6 +240,8 @@
                                 e.innerHTML = "Disable";
                                 e.disabled = true;
                                 e.disabled = false;
+                                e.classList.remove("btn-success");
+                                e.classList.add("btn-danger");
                                 e.setAttribute('data-url', e.getAttribute('data-url').replace('/enable', '/disable'));
                                 showSuccessMessage('Enable device successfully');
                             } else {
@@ -284,6 +288,8 @@
                                 e.innerHTML = "Enable";
                                 e.disabled = true;
                                 e.disabled = false;
+                                e.classList.add("btn-success");
+                                e.classList.remove("btn-danger");
                                 e.setAttribute('data-url', e.getAttribute('data-url').replace('/disable', '/enable'));
                                 showSuccessMessage('Disable device successfully');
                             } else {
