@@ -60,7 +60,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'description': description,
         }
 
-        if clone_from:
+        if clone_from.isdigit():
             body['clone_from'] = clone_from
 
         url = api_settings.SERVICE_CREATE_URL
