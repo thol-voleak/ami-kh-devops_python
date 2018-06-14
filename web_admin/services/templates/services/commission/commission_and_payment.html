@@ -87,7 +87,9 @@
                                 <div class="col-sm-4">
                                     <input value="{{ conf.type }}" type="text" class="form-control" id="txt_fee" disabled/>
                                 </div>
-                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4">
+                                    <input class="form-control" disabled/>
+                                </div>
                                 <div class="col-sm-4">
                                     <input type="text" value="{{ conf.amount }}" class="form-control" id="txt_fee_value" disabled/>
                                 </div>
@@ -102,9 +104,7 @@
                                     <input value="{{ conf.type }}" type="text" class="form-control" id="txt_bonus" disabled/>
                                 </div>
                                 <div class="col-sm-4">
-                                {% if conf.type == '% rate' %}
-                                    <input value="{{ conf.from }}" type="text" class="form-control" id="txt_amount_type" disabled/>
-                                {% endif %}
+                                    <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" id="txt_amount_type" disabled/>
                                 </div>
                                 <div class="col-sm-4">
                                     <input type="text" value="{{ conf.amount }}" class="form-control" id="txt_bonus_value" disabled/>
@@ -120,9 +120,7 @@
                                     <input value="{{ conf.type }}" type="text" class="form-control" disabled/>
                                 </div>
                                 <div class="col-sm-4">
-                                {% if conf.type == '% rate' %}
-                                    <input value="{{ conf.from }}" type="text" class="form-control" disabled/>
-                                {% endif %}
+                                    <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" disabled/>
                                 </div>
                                 <div class="col-sm-4">
                                     <input type="text" value="{{ conf.amount }}" class="form-control" disabled/>
@@ -145,9 +143,7 @@
                                 <input value="{{ conf.type }}" type="text" class="form-control" disabled/>
                             </div>
                             <div class="col-sm-4">
-                            {% if conf.type == '% rate' %}
-                                <input value="{{ conf.from }}" type="text" class="form-control" disabled/>
-                            {% endif %}
+                                <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" disabled/>
                             </div>
                             <div class="col-sm-4">
                                 <input type="text" value="{{ conf.amount }}" class="form-control" disabled/>
