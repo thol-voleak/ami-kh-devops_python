@@ -34,9 +34,9 @@
                                 <option value=""></option>
                                 {% for fee_tier in fee_tiers %}
                                     {% if fee_tier.fee_tier_id|slugify == body.clone_from|slugify %}
-                                        <option value="{{ fee_tier.fee_tier_id }}" selected>{{ fee_tier.fee_tier_id }}</option>
+                                        <option value="{{ fee_tier.fee_tier_id }}" selected>{% if fee_tier.fee_tier_condition == 'unlimit' %}{{ fee_tier.fee_tier_condition }}{% else %}{{ fee_tier.fee_tier_condition }} {{ fee_tier.condition_amount }}{% endif %}</option>
                                     {% else %}
-                                        <option value="{{ fee_tier.fee_tier_id }}">{{ fee_tier.fee_tier_id }}</option>
+                                        <option value="{{ fee_tier.fee_tier_id }}">{% if fee_tier.fee_tier_condition == 'unlimit' %}{{ fee_tier.fee_tier_condition }}{% else %}{{ fee_tier.fee_tier_condition }} {{ fee_tier.condition_amount }}{% endif %}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -1298,8 +1298,8 @@ function setClone(e) {
                 if (response.fee_tier) {
                     $('#txt_service_name').val('{{ service_name }}');
                     $('#txt_command').val('{{ command_name }}');
-                    $('#ddl_condition').val(response.fee_tier.fee_tier_condition).trigger('change');
-                    $('#txt_amount').val(response.fee_tier.condition_amount);
+                    $('#ddl_condition').val($("#ddl_condition option:first").val()).trigger('change');
+                    $('#txt_amount').val('');
                     if (response.fee_tier.fee_type == 'NON') {
                         response.fee_tier.fee_type = '';
                     }
