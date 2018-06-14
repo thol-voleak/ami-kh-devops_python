@@ -31,24 +31,21 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form class="form-horizontal" role="form" method="post" action="{% url 'services:service_create' %}">
+                <form class="form-horizontal" role="form" method="post" action="{% url 'services:service_create' %}" onsubmit="return replaceServiceID()">
                     {% csrf_token %}
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Clone from Service:</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_clone_from" name="clone_from" onchange="setClone(this)">
-                                <option value=""></option>
+                            <input class="form-control" id="ddl_clone_from" onchange="setClone(this)" list="clone_services" autocomplete="off"/>
+                            <datalist id="clone_services">
+                                <option value="">
                                 {% for service in choices.services %}
                                     {% if not service.is_deleted %}
-                                        {% if service.service_id|slugify == body.clone_from|slugify %}
-                                            <option value="{{ service.service_id }}" selected>{{ service.service_name }}</option>
-                                        {% else %}
-                                            <option value="{{ service.service_id }}">{{ service.service_name }}</option>
-                                        {% endif %}
+                                        <option data-value="{{ service.service_id }}" value="{{ service.service_name }}">
                                     {% endif %}
                                 {% endfor %}
-                            </select>
+                            </datalist>
                         </div>
                     </div>
 
@@ -109,6 +106,8 @@
                             <input id="btn_add" role="button" class="btn btn-success text-left mb15" type="submit" value="Add"/>
                         </a>
                     </div>
+                    <input hidden id="service_name_hidden" name="service_name_hidden" value="{{ clone_service_name }}"/>
+                    <input hidden id="service_id_hidden" name="clone_from" value="{{ body.clone_from }}"/>
                 </form>
             </div>
         </div>
@@ -124,11 +123,25 @@
 <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
 <script>
     var csrf_token = "{{ csrf_token }}";
+    var clone_service_name = '{{ clone_service_name }}';
+    if (clone_service_name) {
+        document.getElementById('ddl_clone_from').value = clone_service_name
+    }
+
+    function replaceServiceID(){
+        var value = document.getElementById('ddl_clone_from').value;
+        document.getElementById('service_name_hidden').value = value;
+        var valueSend = document.querySelector("#clone_services option[value='"+value+"']").dataset.value;
+        document.getElementById('service_id_hidden').value = valueSend;
+        return true
+    }
+
     function setClone(e) {
         var clone_service = e.value;
         if (clone_service !== '') {
+            var value2send = document.querySelector("#clone_services option[value='"+clone_service+"']").dataset.value;
             {# url of update_service #}
-            url = "{% url 'services:services_list' %}" + "details/" + clone_service + "/";
+            url = "{% url 'services:services_list' %}" + "details/" + value2send + "/";
             $.ajax({
                 url: url,
                 type: "POST",
@@ -150,7 +163,7 @@
                     }
                 },
                 error: function (err) {
-                    console.log(err);
+                    console.log('error');
                     location.reload();
                 }
             });

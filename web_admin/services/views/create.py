@@ -51,6 +51,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         currency = request.POST.get('currency')
         description = request.POST.get('description')
         clone_from = request.POST.get('clone_from')
+        clone_service_name = request.POST.get('service_name_hidden')
 
         body = {
             'service_group_id': service_group_id,
@@ -82,7 +83,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 message=data
             )
             choices, success = self._get_service_group_and_currency_choices()
-            context = {'choices': choices, 'body': body}
+            context = {'choices': choices, 'body': body, 'clone_service_name': clone_service_name}
             return render(request, self.template_name, context)
 
     def _create_service(self, data):
