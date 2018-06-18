@@ -2,9 +2,22 @@
 {% load static %}
 
 {% block content %}
+    <style>
+    .btn-arrow-down  {
+        background-color: white;
+        position: absolute;
+        width: 33px;
+        height: 30px;
+        border-radius: 15px;
+        right: 0;
+    }
+    .collapsible {
+        margin-bottom: 10px;
+    }
+    </style>
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3 class="not_in_review">Commission And Payment Method</h3>
+            <h3 class="not_in_review">Balance Movement</h3>
             <h3 class="in_review" style="display:none">Review Page</h3>
         </div>
 
@@ -48,44 +61,103 @@
                 </div>
             </div>
 
-            <div class="panel-heading not_in_review">
-                <h4>I. Fee & Bonus</h4>
+            <div class="panel-heading row col-sm-12">
+                <h4 class="not_in_review">Tier Configuration</h4>
             </div>
 
-            <div class="form-inline not_in_review">
-                <label class="col-sm-2 control-label">Fee:</label>
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <input value="{{ fee_tier_detail.fee_type }}" type="text" class="form-control"
-                               name="service_name" id="txt_fee" disabled/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <input type="text" value="{{ fee_tier_detail.fee_amount }}" class="form-control" name="command"
-                               id="txt_fee_value" disabled/>
-                    </div>
+            {% if valid_tiers_conf %}
+            <div id="main-tiers" class="not_in_review col-sm-8">
+            <div class="form-inline not_in_review row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <div class="form-group col-sm-4">Type</div>
+                    <div class="form-group col-sm-4">From</div>
+                    <div class="form-group col-sm-4">Amount</div>
                 </div>
             </div>
             <br/>
-            <div class="form-inline not_in_review">
-                <label class="col-sm-2 control-label">Bonus:</label>
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <input value="{{ fee_tier_detail.bonus_type }}" type="text" class="form-control"
-                               name="service_name" id="txt_bonus" disabled/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <input type="text" value="{{ fee_tier_detail.bonus_amount }}" class="form-control"
-                               name="command" id="txt_bonus_value" disabled/>
-                    </div>
-                </div>
-            </div>
 
-            <div class="panel-heading">
-                <h4 class="not_in_review">II. Setting Payment, Fee & Bonus Structure</h4>
+
+            {% for conf in valid_tiers_conf %}
+                {% if forloop.counter < 3 %}
+                    {% if conf|length == 2 %}
+                        <div class="form-inline not_in_review row">
+                            <label class="col-sm-2 control-label">Fee:</label>
+                            <div class="col-sm-10">
+                                <div class="col-sm-4">
+                                    <input value="{{ conf.type }}" type="text" class="form-control" id="txt_fee" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input class="form-control" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" value="{{ conf.amount }}" class="form-control" id="txt_fee_value" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    {% elif conf|length == 3 %}
+                        <div class="form-inline not_in_review row">
+                            <label class="col-sm-2 control-label">Bonus:</label>
+                            <div class="col-sm-10">
+                                <div class="col-sm-4">
+                                    <input value="{{ conf.type }}" type="text" class="form-control" id="txt_bonus" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" id="txt_amount_type" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" value="{{ conf.amount }}" class="form-control" id="txt_bonus_value" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    {% else %}
+                        <div class="form-inline not_in_review row" id="tier_conf">
+                            <label class="col-sm-2 control-label">{{ conf.label }}:</label>
+                            <div class="col-sm-10">
+                                <div class="col-sm-4">
+                                    <input value="{{ conf.type }}" type="text" class="form-control" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" disabled/>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" value="{{ conf.amount }}" class="form-control" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    {% endif %}
+                {% endif %}
+                {% if forloop.counter == 2 and valid_tiers_conf|length > 2 %}
+                    <div class="not_in_review row col-sm-12">
+                        <button class="btn-arrow-down" onclick="table_toggle()" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-down fa-2x" id="toggle-button"></i></span></button>
+                    </div><br/><br/>
+                {% endif %}
+                {% if forloop.counter >= 3 %}
+                    <div class="form-inline not_in_review row collapsible" id="tier_conf_more" hidden>
+                        <label class="col-sm-2 control-label">{{ conf.label }}:</label>
+                        <div class="col-sm-10">
+                            <div class="col-sm-4">
+                                <input value="{{ conf.type }}" type="text" class="form-control" disabled/>
+                            </div>
+                            <div class="col-sm-4">
+                                <input value="{{ conf.from|default_if_none:'' }}" type="text" class="form-control" disabled/>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" value="{{ conf.amount }}" class="form-control" disabled/>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            </div>
+            {% endif %}
+
+            <div class="panel-heading row col-sm-12">
+                <h4 class="not_in_review">Balance Movement Configuration</h4>
                 <h4 style="display: none" class="in_review">Setting Payment, Fee & Bonus Structure</h4>
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
             </div>
@@ -153,18 +225,25 @@
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
                                     {% endfor %}
                                 </select>
-                            <td>
-                                <select name="specific_actor_id" id="ddl_setting_payment_fee_structure_specific_id" class="form-control"
-                                    {% if choices.actor_types.0.actor_type != 'Specific ID' %}
-                                        disabled
-                                    {% endif %}
-                                    onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)" type="number" autocomplete="off" >
-                                        <option value=""></option>
-                                        {% for id in specific_ids %}
-                                            <option value="{{ id }}">{{ id }}</option>
-                                        {% endfor %}
-                                </select>
                             </td>
+
+                            <td>
+                                <input onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)"
+                                id="ddl_setting_payment_fee_structure_specific_id" type='number' class="form-control" name="specific_actor_id" list="specific_ids" autocomplete="off"
+                                {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                    disabled
+                                {% endif %}>
+                                <datalist id="specific_ids">
+{#                                    {% with '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' as list%}#}
+{#                                    {% for i in list.split %}#}
+                                    {% for id in specific_ids %}
+                                        <option value="{{ id }}">
+                                    {% endfor %}
+{#                                    {% endfor %}#}
+{#                                    {% endwith %}#}
+                                </datalist>
+                            </td>
+
                             <td>
                                 <select class="form-control" name="sof_type_id"
                                         id="ddl_setting_payment_fee_structure_source_of_fund" onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)">
@@ -363,9 +442,15 @@
         function getSOF(actor, specific_id, sof, specific_sof,selected_value) {
             var cTr = $(selected_value).closest("tr");
             var actor = cTr.find("#" + actor + " option:selected").text();
-            var specific_id = cTr.find("#" + specific_id + " option:selected").text();
+{#            var specific_id = cTr.find("#" + specific_id + " option:selected").text();#}
+            var specific_id = cTr.find("#" + specific_id).val();
             var sof = cTr.find("#" + sof + " option:selected").val();
             var specific_sof = cTr.find("#" + specific_sof);
+
+            if (sof === '3') {
+                specific_sof.empty();
+                return;
+            }
 
             if (actor !== 'Specific ID') {
                 return;
@@ -829,6 +914,19 @@
                     eRate.value = num;
                 }
             };
+        }
+
+        function table_toggle(){
+            if ($( "#toggle-button" ).hasClass("fa-angle-down")){
+                $("#toggle-button").removeClass("fa-angle-down");
+                $("#toggle-button").addClass("fa-angle-up");
+                $(".collapsible").show();
+            }
+            else{
+                $("#toggle-button").removeClass("fa-angle-up");
+                $("#toggle-button").addClass("fa-angle-down");
+                $(".collapsible").hide();
+            }
         }
 
         function onClickSaveBtn() {

@@ -49,14 +49,13 @@ class ListView(GroupRequiredMixin, TemplateView):
         self.logger.info("========== Start searching system user ==========")
         username = request.GET.get('username')
         email = request.GET.get('email')
-        params = {}
-        if username:
-            params['username'] = username
-        if email:
-            params['email'] = email
+        status = request.GET.get('status')
+        if not status:
+            status = 'All'
 
         status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
-                                                                                self.logger, username, email, None)
+                                                                                self.logger, username, email,
+                                                                                None, status)
         if (status_code == "access_token_expire") or \
                 (status_code == 'authentication_fail') or \
                 (status_code == 'invalid_access_token'):
@@ -68,6 +67,8 @@ class ListView(GroupRequiredMixin, TemplateView):
         is_permission_delete = check_permissions_by_user(self.request.user, 'SYS_DELETE_SYSTEM_USER')
         is_permission_change_pwd = check_permissions_by_user(self.request.user, 'SYS_CHANGE_SYSTEM_USER_PASSWORD')
         is_permission_change_role = check_permissions_by_user(self.request.user, 'CAN_CHANGE_ROLE_FOR_USER')
+        is_permission_suspend_user = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_SYSTEM_USER')
+        is_permission_activate_user = check_permissions_by_user(self.request.user, 'CAN_ACTIVATE_SYSTEM_USER')
 
         for i in data:
             i['is_permission_detail'] = is_permission_detail
@@ -75,10 +76,13 @@ class ListView(GroupRequiredMixin, TemplateView):
             i['is_permission_delete'] = is_permission_delete
             i['is_permission_change_pwd'] = is_permission_change_pwd
             i['is_permission_change_role'] = is_permission_change_role
+            i['is_permission_suspend_user'] = is_permission_suspend_user
+            i['is_permission_activate_user'] = is_permission_activate_user
 
         context['data'] = data
         context['username'] = username
         context['email'] = email
+        context['status'] = status
         self.logger.info("========== Finish searching system user ==========")
         return render(request, self.template_name, context)
 

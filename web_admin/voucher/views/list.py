@@ -9,6 +9,7 @@ from django.shortcuts import render
 import logging
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
+from web_admin.utils import calculate_page_range_from_page_info
 
 
 logger = logging.getLogger(__name__)
@@ -46,6 +47,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'hold_status_list': self._get_hold_status_list(),
             'cash_in_user_type_list': self._get_user_type_cash_in_list(),
             'cash_in_user_type' : '',
+            'cancel_status_list': self._get_cancel_status_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -62,7 +64,14 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         hold_status = request.POST.get('hold_status')
         cash_in_user_type = request.POST.get('user_type_cash_in')
 
+        opening_page_index = request.POST.get('current_page_index')
+
+        cash_in_order_id = request.POST.get('cash_in_order_id')
+        cash_out_order_id = request.POST.get('cash_out_order_id')
+        issuer_user_id = request.POST.get('issuer_user_id')
+        cancel_status = request.POST.get('cancel_status')
         body = {}
+        body['page_index'] = int(opening_page_index)
         if cash_in_user_type != '':
             body['cash_in_user_type'] = cash_in_user_type
         if cash_in_id:
@@ -77,6 +86,14 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['is_used'] = False
         if hold_status != '':
             body['is_on_hold'] = True if hold_status == 'True' else False
+        if cash_in_order_id:
+            body['cash_in_order_id'] = int(cash_in_order_id)
+        if cash_out_order_id:
+            body['cash_out_order_id'] = int(cash_out_order_id)
+        if issuer_user_id:
+            body['issuer_user_id'] = int(issuer_user_id)
+        if cancel_status != '':
+            body['is_cancelled'] = True if cancel_status == 'True' else False
 
         if from_date:
             new_from_created_timestamp = datetime.strptime(from_date, "%Y-%m-%d")
@@ -111,8 +128,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
         permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
+
+        page = data['page']
         context = {
-            'data': data,
+            'data': data['vouchers'],
+            'paginator': page,
+			'search_count': page['total_elements'],
+			'page_range': calculate_page_range_from_page_info(page),
             'voucher_id': voucher_id,
             'claim_status_list': self._get_status_list(),
             'selected_status': claim_status,
@@ -127,7 +149,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'hold_status': hold_status,
             'cash_in_user_type_list': self._get_user_type_cash_in_list(),
             'cash_in_user_type' : cash_in_user_type,
-
+            'cancel_status_list': self._get_cancel_status_list(),
+            'cash_out_order_id': cash_out_order_id,
+            'cash_in_order_id': cash_in_order_id,
+            'issuer_user_id': issuer_user_id,
+            'cancel_status': cancel_status,
         }
         return render(request, self.template_name, context)
 
@@ -153,6 +179,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "Customer", "value": "customer"},
         ]
 
+    def _get_cancel_status_list(self):
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Yes", "value": "True"},
+            {"name": "No", "value": "False"},
+        ]
     def _search_for_vouchers(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_VOUCHERS,
                                                                            headers=self._get_headers(),

@@ -88,6 +88,79 @@
                                     Not Equal to
                                     {%elif condition.comparison_list.0.operator == 'contains' %}
                                     Contains
+                                    {%elif condition.comparison_list.0.operator == 'in_list' %}
+                                    Is Part of
+                                    {%elif condition.comparison_list.0.operator == 'not_in_list' %}
+                                    Is Not Part of
+                                    {%endif%}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value:</div>
+                            <div>
+                                {% if condition.comparison_list.0.operator != 'in_list' and condition.comparison_list.0.operator != 'not_in_list' %}
+                                    <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
+                                {% else %}
+                                    <div class="list-key-value" id="list_comparison_key_value">
+                                        {% for value in condition.comparison_list.0.key_value|split:',' %}
+                                            <div>
+                                                <span class="item">{{ value }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% elif  condition.filter_type == 'profile_details' %}
+                        <div class="info-group">
+                            <div>Condition Type:</div>
+                            <div>
+                                <span id="lbl_condition_type">Profile Details</span>
+                            </div>
+                        </div>
+                        {% if condition.profile_detail_actor %}
+                        <div class="info-group">
+                            <div>Actor:</div>
+                            <div>
+                                <span id="lbl_actor">{{condition.profile_detail_actor|title}}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="info-group">
+                            <div>Detail Name:</div>
+                            <div>
+                                {% for item in profile_detail_names %}
+                                    {% if condition.comparison_list.0.key_name == item.value %}
+                                        <span id="lbl_comparison_key_name">{{item.text}}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Key Value Type:</div>
+                            <div>
+                                <span id="lbl_comparison_key_value_type">{{condition.comparison_list.0.key_value_type}}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Operator:</div>
+                            <div>
+                                <span id="lbl_operator">
+                                    {%if condition.comparison_list.0.operator == '=' %}
+                                    Equal to
+                                    {%elif condition.comparison_list.0.operator == '>' %}
+                                    More Than
+                                    {%elif condition.comparison_list.0.operator == '>=' %}
+                                    More than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '<' %}
+                                    Less Than
+                                    {%elif condition.comparison_list.0.operator == '<=' %}
+                                    Less than or Equal to
+                                    {%elif condition.comparison_list.0.operator == '!=' %}
+                                    Not Equal to
+                                    {%elif condition.comparison_list.0.operator == 'contains' %}
+                                    Contains
                                     {%endif%}
                                 </span>
                             </div>
@@ -158,7 +231,9 @@
                                 {%elif condition.count_key_name == 'executed_order' %}
                                     <span id="lbl_count_key_name">Payment</span>
                                 {%elif condition.count_key_name == 'created_sof' %}
-                                    <span id="lbl_count_key_name">Link Bank</span>
+                                    <span id="lbl_count_key_name">Create SOF</span>
+                                {%elif condition.count_key_name == 'update_profile' %}
+                                    <span id="lbl_count_key_name">Profile Update</span>
                                 {% else %}
                                     <span id="lbl_count_key_name">{{ condition.count_key_name }}</span>
                                 {% endif %}
@@ -245,7 +320,9 @@
                                 {%elif condition.filter_event_name.key_value == 'executed_order' %}
                                     <span id="lbl_count_key_name">Payment</span>
                                 {%elif condition.filter_event_name.key_value == 'created_sof' %}
-                                    <span id="lbl_count_key_name">Link Bank</span>
+                                    <span id="lbl_count_key_name">Create SOF</span>
+                                {%elif condition.filter_event_name.key_value == 'update_profile' %}
+                                    <span id="lbl_count_key_name">Profile Update</span>
                                 {% else %}
                                     <span id="lbl_count_key_name">{{ condition.filter_event_name.key_value }}</span>
                                 {% endif %}
@@ -726,4 +803,20 @@
             });
     }
 </script>
+<style>
+.list-key-value {
+    max-height: 710px;
+    overflow-y: auto;
+}
+.list-key-value .item {
+    display: inline-block;
+    line-height: 30px;
+    border: 1px solid #c0c0c0;
+    padding: 0px 10px;
+    background-color: #ffffff;
+    min-width: 100px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+</style>
 {% endblock %}

@@ -64,4 +64,4 @@ class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
-        return data
+        return data['vouchers']

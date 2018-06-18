@@ -50,6 +50,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         citizen_card_id = None
         email = None
         mobile_number = None
+        mobile_device_unique_reference = None
         opening_page_index = 1
 
         to_created_timestamp = datetime.now()
@@ -62,6 +63,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             unique_reference = self.request.session.pop('customer_unique_reference', None)
             email = self.request.session.pop('customer_email', None)
             mobile_number = self.request.session.pop('customer_primary_mobile_number', None)
+            mobile_device_unique_reference = self.request.session.pop('customer_primary_mobile_unique_reference', None)
             kyc_status = self.request.session.pop('customer_kyc_status', None)
             citizen_card_id = self.request.session.pop('citizen_card_id', None)
             saved_from_created_timestamp = self.request.session.pop('customer_from', None)
@@ -94,6 +96,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             citizen_card_id = request.GET.get('citizen_card_id')
             email = request.GET.get('email')
             mobile_number = request.GET.get('mobile_number')
+            mobile_device_unique_reference = request.GET.get('mobile_device_unique_reference')
             from_created_timestamp = request.GET.get('from_created_timestamp')
             to_created_timestamp = request.GET.get('to_created_timestamp')
 
@@ -138,7 +141,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if customer_id is None and unique_reference is None \
            and kyc_status is None and citizen_card_id is None \
-           and email is None and mobile_number is None:
+           and email is None and mobile_number is None and mobile_device_unique_reference is None:
            customers = {}
            context['search_count'] = 0
         else:
@@ -163,6 +166,9 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if mobile_number:
                 params['mobile_number'] = mobile_number
                 context['mobile_number'] = mobile_number
+            if mobile_device_unique_reference:
+                params['mobile_device_unique_reference'] = mobile_device_unique_reference
+                context['mobile_device_unique_reference'] = mobile_device_unique_reference
 
             is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= url,
@@ -183,6 +189,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             is_permission_suspend = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_CUSTOMER')
             is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_CUSTOMER')
             has_permission_individual_wallet = check_permissions_by_user(self.request.user, 'CAN_VIEW_CUSTOMER_INDIVIDUAL_WALLET')
+            is_permission_management = check_permissions_by_user(self.request.user, 'CAN_VIEW_CUSTOMER_MANAGEMENT')
             for i in data['customers']:
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_update'] = is_permission_update
@@ -191,6 +198,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 i['is_permission_suspend'] = is_permission_suspend
                 i['is_permission_delete'] = is_permission_delete
                 i['has_permission_individual_wallet'] = has_permission_individual_wallet
+                i['is_permission_management'] = is_permission_management
 
             context.update({'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
             context['search_count'] = page['total_elements']
@@ -202,19 +210,20 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         context['data'] = customers
         self.update_session(request, customer_id, unique_reference, email,
-                            mobile_number, kyc_status, citizen_card_id,
+                            mobile_number, mobile_device_unique_reference, kyc_status, citizen_card_id,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
                             to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"), False)
         self.logger.info('========== Finished searching Customer ==========')
         return render(request, 'member_customer_list.html', context)
 
 
-    def update_session(self, request, customer_id=None, unique_reference=None, email=None, mobile_number=None,
+    def update_session(self, request, customer_id=None, unique_reference=None, email=None, mobile_number=None, mobile_unique_reference=None,
                        kyc=None, citizen_card_id=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_wallet_view=False):
         request.session['customer_id'] = customer_id
         request.session['customer_unique_reference'] = unique_reference
         request.session['customer_email'] = email
         request.session['customer_primary_mobile_number'] = mobile_number
+        request.session['customer_primary_mobile_unique_reference'] = mobile_unique_reference
         request.session['customer_kyc_status'] = kyc
         request.session['citizen_card_id'] = citizen_card_id
         request.session['customer_from'] = from_created_timestamp

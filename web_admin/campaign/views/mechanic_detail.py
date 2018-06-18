@@ -1,4 +1,6 @@
 from django.views.generic.base import TemplateView
+
+from campaign.utils import get_profile_details_event_list
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.shortcuts import render
 from web_admin.utils import build_logger
@@ -16,6 +18,10 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         '@@payer_user_id@@':'Actor that paid for the transaction',
         '@@payee_user_id@@':'Actor that received the transaction',
         '@@initiator_user_id@@':'Actor that created the transaction'
+    }
+
+    person_1 = {
+        '@@user_id@@': 'Actor whose profile is updated'
     }
 
     def dispatch(self, request, *args, **kwargs):
@@ -36,6 +42,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
         success, data = self.get_mechanic(campaign_id, mechanic_id)
         if not success:
             return render(request, self.template_name, context)
+        event_name = data['event_name']
 
         success, cons = self.get_condition_list(campaign_id, mechanic_id)
         if not success:
@@ -56,7 +63,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
             condition['filter'] = list_filter
 
-        data['action_list'] = self.build_action_list(campaign_id, mechanic_id)
+        data['action_list'] = self.build_action_list(campaign_id, mechanic_id, event_name)
 
         # Get result for Count Of
         for con in data.get('condition_list'):
@@ -74,6 +81,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
         context.update({
             'mechanic': data,
+            'profile_detail_names': get_profile_details_event_list(),
         })
 
         return render(request, self.template_name, context)
@@ -124,7 +132,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 return filter
         return None
 
-    def build_action_list(self, campaign_id, mechanic_id):
+    def build_action_list(self, campaign_id, mechanic_id, event_name):
         ret = []
         success, action_list = self.get_rewards_list(campaign_id, mechanic_id)
 
@@ -137,7 +145,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
             if action_type_id == 1:
                 reward_to = self.get_action_data_value(action_data, 'payee_user.user_id')
-                reward_to = self.get_person_name(reward_to)
+                reward_to = self.get_person_name(reward_to, event_name)
                 action['reward_to'] = reward_to
                 action['recipient'] = self.get_action_data_value(action_data, 'payee_user.user_type')
                 action['amount'] = self.get_action_data_value(action_data, 'amount')
@@ -152,7 +160,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 continue
             elif action_type_id == 4:
                 reward_to = self.get_action_data_value(action_data, 'user_id')
-                reward_to = self.get_person_name(reward_to)
+                reward_to = self.get_person_name(reward_to, event_name)
                 action['reward_to'] = reward_to
                 action['recipient'] = self.get_action_data_value(action_data, 'user_type').title()
 
@@ -165,7 +173,7 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
                 limitation_data = limitation['filters']
                 reward_to = self.get_limitation_data_value(limitation_data, 'user_id')
-                reward_to = self.get_person_name(reward_to)
+                reward_to = self.get_person_name(reward_to, event_name)
                 limitation['reward_to'] = reward_to
                 limitation['recipient'] = self.get_limitation_data_value(limitation_data, 'user_type')
                 action['limitation_list'].append(limitation)
@@ -184,9 +192,14 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 return data['key_value']
         return None
 
-    def get_person_name(self, key):
-        if key in self.person.keys():
-            return self.person[key]
+    def get_person_name(self, key, event_name):
+        if event_name == 'update_profile':
+            if key in self.person_1.keys():
+                return self.person_1[key]
+        else:
+            if key in self.person.keys():
+                return self.person[key]
+
         return None
 
     def get_mechanic(self, campaign_id, mechanic_id):

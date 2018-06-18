@@ -3,35 +3,11 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'vendor/chosen_v1.4.0/chosen.min.css' %}?{% now "U" %}">
-<style>
-    .chosen-container {
-        position: absolute;
-    }
-
-    .chosen-choices {
-        max-height: 191px !important;
-        overflow-y: scroll !important;
-    }
-
-    .custom-multiple-select .chosen-container {
-        position: relative !important;
-    }
-
-    .custom-multiple-select .chosen-choices {
-        max-height: 100px !important;
-        overflow-y: scroll !important;
-    }
-
-    .select-service .chosen-drop {
-        width: 175%;
-        border-top: 0.5px solid grey;
-    }
-
-</style>
 <div class="panel mb25" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
     <div class="panel-heading border">
         <h3>Payment Order</h3>
     </div>
+    {% include "message.html" %}
     <div class="panel-body">
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
             {% csrf_token %}
@@ -44,17 +20,11 @@
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
                 </div>
-                <label class="col-sm-1 control-label">Error Code</label>
-                <div class="col-sm-3 select-error-code" id="select-error-code-area" style="position: relative;">
-                    <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
-                        {% for item in error_list %}
-                            {% if item.name in error_code_id %}
-                                <option value="{{item.name}}" selected>{{ item.title }}</option>
-                            {%else%}
-                                <option value="{{item.name}}">{{ item.title }}</option>
-                            {%endif%}
-                        {% endfor %}
-                    </select>
+                <div class="col-sm-4">
+                    <label class="col-sm-5 control-label">Reference Order ID</label>
+                    <div class="col-sm-7">
+                        <input type="number" class="form-control input-rounded" name="ref_order_id" id="txt_ref_order_id" value="{{ ref_order_id }}">
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -82,6 +52,20 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="col-sm-4">
+                    <label class="col-sm-5 control-label">Error Code</label>
+                    <div class="col-sm-7 select-error-code" id="select-error-code-area" style="position: relative;">
+                        <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
+                            {% for item in error_list %}
+                                {% if item.name in error_code_id %}
+                                    <option value="{{item.name}}" selected>{{ item.title }}</option>
+                                {%else%}
+                                    <option value="{{item.name}}">{{ item.title }}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">User type</label>
@@ -95,6 +79,22 @@
                 <label class="col-sm-2 control-label">User ID</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Product Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="product_name"
+                           value="{{ product_name|default_if_none:'' }}"
+                           id="txt_product_name">
+                </div>
+                <label class="col-sm-2 control-label">Product Ref</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           value="{{ product_ref|default_if_none:'' }}"
+                           name="product_ref" id="txt_product_ref">
                 </div>
             </div>
 
@@ -115,6 +115,25 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-2 control-label">Creation Channel Type</label>
+                <div class="col-xs-2">
+                    <select class="form-control" id="ddl_creation_channel_type" name="creation_channel_type">
+                        <option value='' {% if creation_channel_type == '' %}selected="selected"{% endif %}>All</option>
+                        <option value='EDC' {% if creation_channel_type == 'EDC' %}selected="selected"{% endif %}>EDC</option>
+                        <option value='Web portal' {% if creation_channel_type == 'Web portal' %}selected="selected"{% endif %}>Web portal</option>
+                        <option value='Mobile' {% if creation_channel_type == 'Mobile' %}selected="selected"{% endif %}>Mobile</option>
+                        <option value='POS' {% if creation_channel_type == 'POS' %}selected="selected"{% endif %}>POS</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">Creation Unique Device Reference</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="creation_device_unique_reference"
+                           value="{{ creation_device_unique_reference|default_if_none:'' }}"
+                           id="txt_creation_device_unique_reference">
+                </div>
+            </div>
+            <div class="form-group">
                     <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
@@ -130,6 +149,11 @@
                                id="dtp_to_date">
                     </div>
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                                <input id="export-type" type="text" name="export-type" value="" />
+                                <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                                       value="Download">
+                    </div>
                     {% if permissions.is_perm_order_search %}
                     <div class="col-xs-1 col-xs-offset-3">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
@@ -138,7 +162,17 @@
                     {% endif %}
                 </div>
             <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-            <label class="pull-right" >Total Orders found:&nbsp;</label>
+            <label class="pull-right">Total Orders found:&nbsp;</label>
+            {% if is_show_export and permissions.is_perm_order_export%}
+            <div class="pull-right dropdown export-file-dropdown">
+                <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                <ul class="dropdown-menu" aria-labelledby="button_export">
+                    <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                    <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                </ul>
+            </div>
+            {% endif %}
         </form>
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_order_list">
@@ -154,6 +188,8 @@
                     <th id="balance">Payment Method</th>
                     <th id="last_modify_date">Last Modify Date</th>
                     <th id="initiator_id">Initiator (ID)</th>
+                    <th id="initiator_id">Creation Channel Type</th>
+                    <th id="initiator_id">Creation Unique Device Reference</th>
                     <th id="payer_id">Payer (ID)</th>
                     <th id="payee_id">Payee (ID)</th>
                     <th id="user">Ext Transaction ID</th>
@@ -182,6 +218,8 @@
                             <td class="col-sm-2">{{ order.payment_method.name }}</td>
                             <td class="col-sm-2">{{ order.last_updated_timestamp }}</td>
                             <td class="col-sm-2">{{ order.initiator.user_type_name }} ({{ order.initiator.user_id }})</td>
+                            <td class="col-sm-2">{% if order.created_channel_type == 'DNE' %}UNKNOWN{% else %}{{ order.created_channel_type}}{% endif %}</td>
+                            <td class="col-sm-2">{{ order.created_device_unique_reference }}</td>
                             <td class="col-sm-2">{{ order.payer.user_type_name }} ({{ order.payer.user_id }})</td>
                             <td class="col-sm-2">{{ order.payee.user_type_name }} ({{ order.payee.user_id }})</td>
                             <td class="col-sm-2">{{ order.ext_transaction_id }}</td>
@@ -252,6 +290,15 @@
     $('#ddl_status').on("chosen:showing_dropdown", function () {
         selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')
     });
+
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
 
 </script>
 {% endblock %}

@@ -27,6 +27,23 @@
                     {% csrf_token %}
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Clone from Tier</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_clone_from" name="clone_from"
+                                    onchange="setClone(this)">
+                                <option value=""></option>
+                                {% for fee_tier in fee_tiers %}
+                                    {% if fee_tier.fee_tier_id|slugify == body.clone_from|slugify %}
+                                        <option value="{{ fee_tier.fee_tier_id }}" selected>{% if fee_tier.fee_tier_condition == 'unlimit' %}{{ fee_tier.fee_tier_condition }}{% else %}{{ fee_tier.fee_tier_condition }} {{ fee_tier.condition_amount }}{% endif %}</option>
+                                    {% else %}
+                                        <option value="{{ fee_tier.fee_tier_id }}">{% if fee_tier.fee_tier_condition == 'unlimit' %}{{ fee_tier.fee_tier_condition }}{% else %}{{ fee_tier.fee_tier_condition }} {{ fee_tier.condition_amount }}{% endif %}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Service Name</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="service_name" id="txt_service_name"
@@ -1259,6 +1276,196 @@ txt_bonus_amount.onkeyup = validateBonusValue;
 txt_fee_amount.onkeyup = validateFeeValue;
 condition_amount.onkeyup = validateConditionAmount;
 
+var csrf_token = "{{ csrf_token }}";
+
+function setClone(e) {
+    var clone_fee_tier = e.value;
+    if (clone_fee_tier !== '') {
+        {# url of update_service #}
+        url = "{% url 'services:fee_tier_list' service_id command_id service_command_id %}" + clone_fee_tier + "/delete/";
+        $.ajax({
+            url: url,
+            type: "PUT",
+            data: {},
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            },
+            success: function (response) {
+                if (!response.fee_tier.fee_tier_id) {
+                    location.reload();
+                }
+                if (response.fee_tier) {
+                    $('#txt_service_name').val('{{ service_name }}');
+                    $('#txt_command').val('{{ command_name }}');
+                    $('#ddl_condition').val($("#ddl_condition option:first").val()).trigger('change');
+                    $('#txt_amount').val('');
+                    if (response.fee_tier.fee_type == 'NON') {
+                        response.fee_tier.fee_type = '';
+                    }
+                    $('#ddl_fee_type').val(response.fee_tier.fee_type).trigger('change');
+                    $('#txt_fee_amount').val(response.fee_tier.fee_amount);
+                    if (response.fee_tier.bonus_type == 'NON') {
+                        response.fee_tier.bonus_type = '';
+                    }
+                    $('#ddl_bonus_type').val(response.fee_tier.bonus_type).trigger('change');
+                    $('#ddl_from').val(response.fee_tier.amount_type);
+                    $('#txt_bonus_amount').val(response.fee_tier.bonus_amount);
+                    if (response.fee_tier.a == 'NON') {
+                        response.fee_tier.a = '';
+                    }
+                    $('#ddl_a').val(response.fee_tier.a).trigger('change');
+                    $('#ddl_a_from').val(response.fee_tier.a_from);
+                    $('#txt_a_amount').val(response.fee_tier.a_amount);
+                    if (response.fee_tier.b == 'NON') {
+                        response.fee_tier.b = '';
+                    }
+                    $('#ddl_b').val(response.fee_tier.b).trigger('change');
+                    $('#ddl_b_from').val(response.fee_tier.b_from);
+                    $('#txt_b_amount').val(response.fee_tier.b_amount);
+                    if (response.fee_tier.c == 'NON') {
+                        response.fee_tier.c = '';
+                    }
+                    $('#ddl_c').val(response.fee_tier.c).trigger('change');
+                    $('#ddl_c_from').val(response.fee_tier.c_from);
+                    $('#txt_c_amount').val(response.fee_tier.c_amount);
+                    if (response.fee_tier.d == 'NON') {
+                        response.fee_tier.d = '';
+                    }
+                    $('#ddl_d').val(response.fee_tier.d).trigger('change');
+                    $('#ddl_d_from').val(response.fee_tier.d_from);
+                    $('#txt_d_amount').val(response.fee_tier.d_amount);
+                    if (response.fee_tier.e == 'NON') {
+                        response.fee_tier.e = '';
+                    }
+                    $('#ddl_e').val(response.fee_tier.e).trigger('change');
+                    $('#ddl_e_from').val(response.fee_tier.e_from);
+                    $('#txt_e_amount').val(response.fee_tier.e_amount);
+                    if (response.fee_tier.f == 'NON') {
+                        response.fee_tier.f = '';
+                    }
+                    $('#ddl_f').val(response.fee_tier.f).trigger('change');
+                    $('#ddl_f_from').val(response.fee_tier.f_from);
+                    $('#txt_f_amount').val(response.fee_tier.f_amount);
+                    if (response.fee_tier.g == 'NON') {
+                        response.fee_tier.g = '';
+                    }
+                    $('#ddl_g').val(response.fee_tier.g).trigger('change');
+                    $('#ddl_g_from').val(response.fee_tier.g_from);
+                    $('#txt_g_amount').val(response.fee_tier.g_amount);
+                    if (response.fee_tier.h == 'NON') {
+                        response.fee_tier.h = '';
+                    }
+                    $('#ddl_h').val(response.fee_tier.h).trigger('change');
+                    $('#ddl_h_from').val(response.fee_tier.h_from);
+                    $('#txt_h_amount').val(response.fee_tier.h_amount);
+                    if (response.fee_tier.i == 'NON') {
+                        response.fee_tier.i = '';
+                    }
+                    $('#ddl_i').val(response.fee_tier.i).trigger('change');
+                    $('#ddl_i_from').val(response.fee_tier.i_from);
+                    $('#txt_i_amount').val(response.fee_tier.i_amount);
+                    if (response.fee_tier.j == 'NON') {
+                        response.fee_tier.j = '';
+                    }
+                    $('#ddl_j').val(response.fee_tier.j).trigger('change');
+                    $('#ddl_j_from').val(response.fee_tier.j_from);
+                    $('#txt_j_amount').val(response.fee_tier.j_amount);
+                    if (response.fee_tier.k == 'NON') {
+                        response.fee_tier.k = '';
+                    }
+                    $('#ddl_k').val(response.fee_tier.k).trigger('change');
+                    $('#ddl_k_from').val(response.fee_tier.k_from);
+                    $('#txt_k_amount').val(response.fee_tier.k_amount);
+                    if (response.fee_tier.l == 'NON') {
+                        response.fee_tier.l = '';
+                    }
+                    $('#ddl_l').val(response.fee_tier.l).trigger('change');
+                    $('#ddl_l_from').val(response.fee_tier.l_from);
+                    $('#txt_l_amount').val(response.fee_tier.l_amount);
+                    if (response.fee_tier.m == 'NON') {
+                        response.fee_tier.m = '';
+                    }
+                    $('#ddl_m').val(response.fee_tier.m).trigger('change');
+                    $('#ddl_m_from').val(response.fee_tier.m_from);
+                    $('#txt_m_amount').val(response.fee_tier.m_amount);
+                    if (response.fee_tier.n == 'NON') {
+                        response.fee_tier.n = '';
+                    }
+                    $('#ddl_n').val(response.fee_tier.n).trigger('change');
+                    $('#ddl_n_from').val(response.fee_tier.n_from);
+                    $('#txt_n_amount').val(response.fee_tier.n_amount);
+                    if (response.fee_tier.o == 'NON') {
+                        response.fee_tier.o = '';
+                    }
+                    $('#ddl_o').val(response.fee_tier.o).trigger('change');
+                    $('#ddl_o_from').val(response.fee_tier.o_from);
+                    $('#txt_o_amount').val(response.fee_tier.o_amount);
+                }
+
+            },
+            error: function (err) {
+                console.log(err);
+                location.reload();
+            }
+        });
+    } else {
+        $('#txt_service_name').val('{{ service_name }}');
+        $('#txt_command').val('{{ command_name }}');
+        $('#ddl_condition').val($("#ddl_condition option:first").val()).trigger('change');
+        $('#txt_amount').val('');
+        $('#ddl_fee_type').val($("#ddl_fee_type option:first").val()).trigger('change');
+        $('#txt_fee_amount').val('');
+        $('#ddl_bonus_type').val($("#ddl_bonus_type option:first").val()).trigger('change');
+        $('#ddl_from').val($("#ddl_from option:first").val());
+        $('#txt_bonus_amount').val('');
+        $('#ddl_a').val($("#ddl_a option:first").val()).trigger('change');
+        $('#ddl_a_from').val($("#ddl_a_from option:first").val());
+        $('#txt_a_amount').val('');
+        $('#ddl_b').val($("#ddl_b option:first").val()).trigger('change');
+        $('#ddl_b_from').val($("#ddl_b_from option:first").val());
+        $('#txt_b_amount').val('');
+        $('#ddl_c').val($("#ddl_c option:first").val()).trigger('change');
+        $('#ddl_c_from').val($("#ddl_c_from option:first").val());
+        $('#txt_c_amount').val('');
+        $('#ddl_d').val($("#ddl_d option:first").val()).trigger('change');
+        $('#ddl_d_from').val($("#ddl_d_from option:first").val());
+        $('#txt_d_amount').val('');
+        $('#ddl_e').val($("#ddl_e option:first").val()).trigger('change');
+        $('#ddl_e_from').val($("#ddl_e_from option:first").val());
+        $('#txt_e_amount').val('');
+        $('#ddl_f').val($("#ddl_f option:first").val()).trigger('change');
+        $('#ddl_f_from').val($("#ddl_f_from option:first").val());
+        $('#txt_f_amount').val('');
+        $('#ddl_g').val($("#ddl_g option:first").val()).trigger('change');
+        $('#ddl_g_from').val($("#ddl_g_from option:first").val());
+        $('#txt_g_amount').val('');
+        $('#ddl_h').val($("#ddl_h option:first").val()).trigger('change');
+        $('#ddl_h_from').val($("#ddl_h_from option:first").val());
+        $('#txt_h_amount').val('');
+        $('#ddl_i').val($("#ddl_i option:first").val()).trigger('change');
+        $('#ddl_i_from').val($("#ddl_i_from option:first").val());
+        $('#txt_i_amount').val('');
+        $('#ddl_j').val($("#ddl_j option:first").val()).trigger('change');
+        $('#ddl_j_from').val($("#ddl_j_from option:first").val());
+        $('#txt_j_amount').val('');
+        $('#ddl_k').val($("#ddl_k option:first").val()).trigger('change');
+        $('#ddl_k_from').val($("#ddl_k_from option:first").val());
+        $('#txt_k_amount').val('');
+        $('#ddl_l').val($("#ddl_l option:first").val()).trigger('change');
+        $('#ddl_l_from').val($("#ddl_l_from option:first").val());
+        $('#txt_l_amount').val('');
+        $('#ddl_m').val($("#ddl_m option:first").val()).trigger('change');
+        $('#ddl_m_from').val($("#ddl_m_from option:first").val());
+        $('#txt_m_amount').val('');
+        $('#ddl_n').val($("#ddl_n option:first").val()).trigger('change');
+        $('#ddl_n_from').val($("#ddl_n_from option:first").val());
+        $('#txt_n_amount').val('');
+        $('#ddl_o').val($("#ddl_o option:first").val()).trigger('change');
+        $('#ddl_o_from').val($("#ddl_o_from option:first").val());
+        $('#txt_o_amount').val('');
+    }
+}
 
 </script>
 {%  endblock %}

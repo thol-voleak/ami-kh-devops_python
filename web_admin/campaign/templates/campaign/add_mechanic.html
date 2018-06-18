@@ -97,6 +97,7 @@
                                             <option value= "sum_of">Sum of</option>
                                             <option value= "count_of">Count of</option>
                                             <option value= "count_consecutive_of">Count consecutive instances of</option>
+                                            <option value= "profile_details">Profile Details</option>
                                         </select>
                                     </div>
                                 </div>
@@ -118,7 +119,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Key Value Type *</label>
                                         <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_1" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">
                                                 {% for type in key_value_types %}
                                                     <option value= "{{ type }}">{{ type }}</option>
                                                 {% endfor %}
@@ -128,8 +129,8 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Operator *</label>
                                         <div class="col-xs-3">
-                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">
-                                                {% for oper in operations %}
+                                            <select class="form-control" id="ddl_operator" name="operator_1" onchange="listenOperator(this, this.options[this.selectedIndex].value)">
+                                                {% for oper in numeric_ops %}
                                                     <option value= "{{ oper }}">{{ oper }}</option>
                                                 {% endfor %}
                                             </select>
@@ -147,6 +148,7 @@
                                 <div id="count_of_area">
                                 </div>
                                 <div id="count_consecutive_of_area"></div>
+                                <div id="profile_details_area"></div>
                             <br>
                             </div>
                         </div>
@@ -328,43 +330,34 @@
             }
         }
 
-        function listenKeyValType(ele, type, fullOps, filterOps) {
+        function listenKeyValType(ele, type, numericOps, freeTextOps, datetimeOps) {
             var keyValue = $(ele).parent().parent().nextAll('div').find('input');
             var operator = $(ele).parent().parent().next('div').find('select');
             var currentOperator = getCurrentOps(operator);
             keyValue.val('');
             if (type === 'Freetext') {
-                if (JSON.stringify(currentOperator) !== JSON.stringify(filterOps)) {
-                    setDDL(operator, filterOps);
+                if (JSON.stringify(currentOperator) !== JSON.stringify(freeTextOps)) {
+                    setDDL(operator, freeTextOps);
                 }
                 keyValue.attr('type', 'text');
-            } else {
-                setDDL(operator, fullOps);
-                if (type === 'Numeric') {
-                    keyValue.attr('type', 'number');
-                } else if (type === 'Timestamp') {
-                    keyValue.attr('type', 'datetime-local');
-                }
+            } else if (type === 'Numeric') {
+                setDDL(operator, numericOps);
+                keyValue.attr('type', 'number');
+            } else if (type === 'Timestamp') {
+                setDDL(operator, datetimeOps);
+                keyValue.attr('type', 'datetime-local');
             }
 
             operator.selectedIndex = 0;
         }
 
-        function listenOperator(ele, type, operation, fullOps, filterOps) {
-            return;
-
-            var keyValueType = $(ele).parent().parent().prev('div').find('select');
-            var keyValue = $(ele).parent().parent().next('div').find('input');
-            var currentKVType = getCurrentOps(keyValueType);
-            if (type === "Equal to" || type === "Not Equal to" || type === "Contains") {
-                if (currentKVType.length === 2) {
-                    keyValueType.find('[value="Numeric"]').after('<option value="Freetext">Freetext</option>');
-                }
-            } else {
-                if (currentKVType.length === 3) {
-                    keyValueType.find('[value="Freetext"]').remove();
-                }
-            }
+        function listenOperator(ele, currentOperator) {
+            var keyValueObj = $(ele).parent().parent().next('div').find('input');
+            var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
+            if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of"))
+                keyValueObj.attr('type', 'text');
+            else if (currentKVType === "Numeric")
+                keyValueObj.attr('type', 'number');
         }
 
         var _counter = 1;
@@ -380,6 +373,7 @@
                                             <option value= "sum_of">Sum of</option>\
                                             <option value= "count_of">Count of</option>\
                                             <option value= "count_consecutive_of">Count consecutive instances of</option>\
+                                            <option value= "profile_details">Profile Details</option>\
                                         </select>\
                                     </div>\
                                 </div>\
@@ -401,7 +395,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + counter + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -411,8 +405,8 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + counter + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -430,6 +424,7 @@
                                 <div id="count_of_area">\
                                 </div>\
                                 <div id="count_consecutive_of_area"></div>\
+                                <div id="profile_details_area"></div>\
                             <br>\
                             </div></div>';
             return defaultConditionHtml;
@@ -474,12 +469,32 @@
         };
 
         function listenTrigger() {
+            toggleProfileActor();
+
             var ddl_give_reward_to = $("#ddl_give_reward_to");
             var triggerValue = $("#ddl_trigger").val();
             var ddl_limitation_give_reward = $("#ddl_limitation_give_reward");
             var rewardTypeSelectedValue = $("#ddl_reward_type").val();
 
-            if (triggerValue === 'register_customer' || triggerValue === 'login') {
+            if (triggerValue == 'update_profile') {
+                $("#lbl_paid_amount").prop('hidden', true);
+                ddl_give_reward_to.empty();
+                ddl_give_reward_to.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+                ddl_limitation_give_reward.empty();
+                ddl_limitation_give_reward.append($("<option>")
+                    .val("@@user_id@@")
+                    .html("Actor whose profile is updated")
+                )
+
+                if ($("#ddl_reward_type").find('[value="fixed_cashback"]').length == 0) {
+                    $("#ddl_reward_type").find('[value="send_notification"]').before('<option value="fixed_cashback">Fixed Cashback</option>');
+                    $("#ddl_reward_type").val("fixed_cashback");
+                    this.listenRewardType("fixed_cashback");
+                }
+            } else if (triggerValue === 'register_customer' || triggerValue === 'login') {
                 $("#lbl_paid_amount").prop('hidden', true);
                 ddl_give_reward_to.empty();
                 ddl_give_reward_to.append($("<option>")
@@ -829,13 +844,7 @@
             var key_value_type_id = 'ddl_filter_key_value_type';
             var operator_id = 'ddl_filter_operator';
             var key_value = 'txt_filter_key_value';
-            if(filterCount == 'consecutive') {
-                detail_name_id = 'ddl_count_consecutive_key_detail_name';
-                key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
-                operator_id = 'ddl_count_consecutive_key_detail_operator';
-                key_value = 'txt_count_consecutive_key_detail_value';
-            }
-             var filterAreaHtml = '<div><div class="form-group">\
+            var filterAreaHtml = '<div><div class="form-group">\
                                     <label class="col-sm-3 control-label">Detail Name *</label>\
                                     <div class="col-xs-3">\
                                         <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
@@ -852,7 +861,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ numeric_ops }}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -862,8 +871,8 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -896,7 +905,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{numeric_ops}}, {{ freetext_ops_2 }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -906,8 +915,8 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
-                                                {% for oper in operations %}\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in numeric_ops %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
                                             </select>\
@@ -920,6 +929,56 @@
                                         </div>\
                                     </div>';
             return eventdetailareaHtml;
+        };
+
+        var getProfileDetailAreaHtml = function(conditionNumber) {
+            var profiledetailareaHtml =     '<div class="form-group profile-actor">\
+                                        <label class="col-sm-3 control-label">Actor *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_actor" name="actor_' + conditionNumber + '" >\
+                                                <option value= "payer">Payer</option>\
+                                                <option value= "initiator">Initiator</option>\
+                                                <option value= "payee">Payee</option>\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Detail Name *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_detail_name" name="detail_name_' + conditionNumber + '" >\
+                                                {% for item in profile_detail_names %}\
+                                                    <option value= "{{ item.value }}">{{ item.text }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_key_value_type" name="key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ profile_details_numeric_ops }}, {{ profile_details_freetext_ops }}, {{ operations }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_operator" name="operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in profile_details_numeric_ops %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="txt_key_value" class="form-control input-rounded" name="key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div>';
+            return profiledetailareaHtml;
         };
 
         // Count of
@@ -1059,7 +1118,8 @@
                                         <option value="login">Log-in</option>\
                                         <option value="create_order">Create order</option>\
                                         <option value="executed_order">Payment</option>\
-                                        <option value="created_sof">Link Bank</option>\
+                                        <option value="created_sof">Create SOF</option>\
+                                        <option value="update_profile">Profile Update</option>\
                                 </select>\
                             </div>\
                         </div>\
@@ -1095,8 +1155,53 @@
         };
 
         var getConsecutiveKeyDetailHtml = function(conditionNumber) {
-          var consecutiveKeyDetailHtml = '<div class="form-group"><label class="col-sm-3 control-label" style="font-weight: bold;">Consecutive key detail</label></div>';
-          consecutiveKeyDetailHtml += getFilterAreaHtml(conditionNumber, 'consecutive');
+            var detail_name_id = 'ddl_count_consecutive_key_detail_name';
+            var key_value_type_id = 'ddl_count_consecutive_key_detail_value_type';
+            var operator_id = 'ddl_count_consecutive_key_detail_operator';
+            var key_value = 'txt_count_consecutive_key_detail_value';
+            var filterCount = 'consecutive';
+
+            var consecutiveKeyDetailHtml = '<div><div class="form-group">\
+                                    <label class="col-sm-3 control-label">Consecutive key detail *</label>\
+                                    <div class="col-xs-3">\
+                                        <select class="form-control" id="' + detail_name_id + '" name="' + filterCount + '_detail_name_' + conditionNumber + '">\
+                                            {% for item in detail_names %}\
+                                                {% if item.description != "" %}\
+                                                <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                {% else %}\
+                                                <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                {% endif %}\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="' + key_value_type_id + '" name="' + filterCount + '_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
+                                                {% for type in key_value_types %}\
+                                                    <option value= "{{ type }}">{{ type }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Operator *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="' + operator_id + '" name="'+ filterCount + '_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
+                                                {% for oper in operations %}\
+                                                    <option value= "{{ oper }}">{{ oper }}</option>\
+                                                {% endfor %}\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div class="form-group" id="last_form_group">\
+                                        <label class="col-sm-3 control-label">Key Value *</label>\
+                                        <div class="col-xs-3">\
+                                            <input id="' + key_value + '" class="form-control input-rounded" name="' + filterCount + '_key_value_' + conditionNumber + '" type="number" required>\
+                                        </div>\
+                                    </div></div>';
+
           return consecutiveKeyDetailHtml;
         };
 
@@ -1130,7 +1235,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Key Value Type *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }})">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_key_value_type" name="' + resetfilterCount + '_reset_filter_key_value_type_' + conditionNumber + '" onchange="listenKeyValType(this, this.options[this.selectedIndex].value, {{ operations }}, {{ freetext_ops }}, {{ operations }})">\
                                                 {% for type in key_value_types %}\
                                                     <option value= "{{ type }}">{{ type }}</option>\
                                                 {% endfor %}\
@@ -1140,7 +1245,7 @@
                                     <div class="form-group">\
                                         <label class="col-sm-3 control-label">Operator *</label>\
                                         <div class="col-xs-3">\
-                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value, {{ filter_ops }}, {{ key_value_types }}, {{ filter_key_value_types }})">\
+                                            <select class="form-control" id="ddl_condition_reset_filter_operator" name="'+ resetfilterCount + '_reset_filter_operator_' + conditionNumber + '" onchange="listenOperator(this, this.options[this.selectedIndex].value)">\
                                                 {% for oper in operations %}\
                                                     <option value= "{{ oper }}">{{ oper }}</option>\
                                                 {% endfor %}\
@@ -1170,13 +1275,31 @@
                   return firstConditionResetHtml;
         };
 
+        function toggleProfileActor() {
+            var trigger = $("#ddl_trigger").val();
+            if (trigger == "create_order" || trigger == "executed_order") {
+                $(".profile-actor").show();
+                $(".profile-actor select").prop('disabled', false);
+            } else {
+                $(".profile-actor").hide();
+                $(".profile-actor select").prop('disabled', true);
+            }
+        }
+
+        function clearConditionArea(conditionElem) {
+            conditionElem.querySelector('#event_detail_area').innerHTML = '';
+            conditionElem.querySelector('#sum_of_area').innerHTML = '';
+            conditionElem.querySelector('#count_of_area').innerHTML = '';
+            conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+            conditionElem.querySelector('#profile_details_area').innerHTML = '';
+        }
+
         var selectConditionType = function(selectedValue, elem) {
             var conditionNumber = parseInt($(elem).attr('counter'), 10);
             var conditionElem = document.getElementById('div_condition_' + conditionNumber);
             if(selectedValue == 'sum_of') {
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var sumOfArea = conditionElem.querySelector('#sum_of_area');
                 var sumKeyDiv = document.createElement('div');
                 sumKeyDiv.innerHTML = getSumOfKeyValueHtml(conditionNumber);
@@ -1192,18 +1315,26 @@
                 var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
                 sumOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'event_detail') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var eventDetailArea = conditionElem.querySelector('#event_detail_area');
                 var eventDetailDiv = document.createElement('div');
                 eventDetailDiv.innerHTML = getEventDetailAreaHtml(conditionNumber);
                 var eventDetailDivElem  = eventDetailDiv.cloneNode(true);
                 eventDetailArea.appendChild(eventDetailDivElem);
+            } else if(selectedValue == 'profile_details') {
+                clearConditionArea(conditionElem);
+
+                var profileDetailArea = conditionElem.querySelector('#profile_details_area');
+                var profileDetailDiv = document.createElement('div');
+                profileDetailDiv.innerHTML = getProfileDetailAreaHtml(conditionNumber);
+                var profileDetailDivElem  = profileDetailDiv.cloneNode(true);
+                profileDetailArea.appendChild(profileDetailDivElem);
+
+                toggleProfileActor();
             } else if(selectedValue == 'count_of') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_consecutive_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var countOfArea = conditionElem.querySelector('#count_of_area');
                 var countOfDiv = document.createElement('div');
                 countOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_of');
@@ -1224,9 +1355,8 @@
                 var filterButtonDivElem  = filterButtonDiv.cloneNode(true);
                 countOfArea.appendChild(filterButtonDivElem);
             } else if(selectedValue == 'count_consecutive_of') {
-                conditionElem.querySelector('#sum_of_area').innerHTML = '';
-                conditionElem.querySelector('#event_detail_area').innerHTML = '';
-                conditionElem.querySelector('#count_of_area').innerHTML = '';
+                clearConditionArea(conditionElem);
+
                 var countConsecutiveOfArea = conditionElem.querySelector('#count_consecutive_of_area');
                 var countConsecutiveOfDiv = document.createElement('div');
                 countConsecutiveOfDiv.innerHTML = getCountOfOrCountConsecutiveOfHtml(conditionNumber, 'count_consecutive_of');

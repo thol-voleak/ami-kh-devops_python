@@ -107,13 +107,29 @@
                     </div>
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-1">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">
                     </div>
                     <div class="col-xs-1">
                         <input id="btn_back" class="btn text-left mb15" type="button" value="Back" onclick="location.href='{% url 'customers:customer-list' %}'"/>
                     </div>
                     <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                     <label class="pull-right" >Total transactions found:&nbsp;</label>
+
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                            <input id="export-type" type="text" name="export-type" value="" />
+                            <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                                   value="Download">
+                    </div>
+                    {% if is_show_export %}
+                    <div class="pull-right dropdown export-file-dropdown">
+                        <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                        <ul class="dropdown-menu" aria-labelledby="button_export">
+                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <div class="table-responsive">
@@ -130,10 +146,11 @@
                                 <th id="sof_id">Sof ID</th>
                                 <th id="service_name">Service Name</th>
                                 <th id="from_amount">From Amount</th>
+                                <th id="pre_balance">Pre-Balance</th>
                                 <th id="debit">Debit (-)</th>
                                 <th id="credit">Credit (+)</th>
-                                <th id="currency">Currency</th>
                                 <th id="post_balance">Post-Balance</th>
+                                <th id="currency">Currency</th>
                                 <th id="created_date">Created Date</th>
                                 <th id="action">Action</th>
                             </tr>
@@ -151,10 +168,11 @@
                                     <td>{{ row.sof_id|default_if_none:'' }}</td>
                                     <td>{{ row.service_name|default_if_none:'' }}</td>
                                     <td>{{ row.amount_type|default_if_none:'' }}</td>
+                                    <td>{{ row.pre_balance|default_if_none:'' }}</td>
                                     <td>{% if row.action_type|lower == 'debit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
                                     <td>{% if row.action_type|lower == 'credit'%}{{ row.amount|default_if_none:'' }}{% endif %}</td>
-                                    <td>{{ row.currency|default_if_none:'' }}</td>
                                     <td>{{ row.post_balance|default_if_none:'' }}</td>
+                                    <td>{{ row.currency|default_if_none:'' }}</td>
                                     <td>{{ row.created_timestamp|default_if_none:'' }}</td>
                                     <td class="col-sm-3">
                                         {% if row.has_permission_view_payment_order_detail %}
@@ -179,5 +197,14 @@
         </div>
     </div>
 </div>
-
+<script>
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
+</script>
 {% endblock %}

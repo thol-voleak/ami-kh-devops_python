@@ -20,9 +20,9 @@
                     <span>Home</span>
                 </a>
             </li>
-            {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS,CAN_MANAGE_PASSWORD_CENTER" %}
+            {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE,CAN_MANAGE_GW_API,CAN_MANAGE_CLIENTS,CAN_MANAGE_PASSWORD_CENTER,CAN_MANAGE_OTP_REPORT" %}
                 {% with request.resolver_match.app_name as app_name %}
-                <li class="menu-accordion {% if app_name == "channel_gateway_service" %} open{% elif app_name == "channel_gateway_api" %} open{% elif app_name == "clients" %} open{% elif app_name == "password_center" %} open {% endif %}">
+                <li class="menu-accordion {% if app_name == "channel_gateway_service" or app_name == "channel_gateway_api" or app_name == "clients" or app_name == "password_center" or app_name == "one_time_password_report" %} open {% endif %}">
                     <a href="javascript:;"> <i class="fa fa-male"></i> <span>Authentication</span> </a>
                     <ul class="sub-menu">
                     {% if request|has_any_permission:"CAN_MANAGE_GW_SERVICE" %}
@@ -45,6 +45,11 @@
                             <a href="{% url 'password_center:list' %}"> <span>Password Center</span> </a>
                     </li>
                      {% endif %}
+                    {% if request|has_any_permission:"CAN_MANAGE_OTP_REPORT"%}
+                    <li class="{% if app_name == "one_time_password_report" %} active{% endif %}">
+                        <a href="{% url 'one_time_password_report:list' %}"> <span>One Time Password Report</span> </a>
+                    </li>
+                    {% endif %}
                     </ul>
                 </li>
                 {% endwith %}
@@ -523,6 +528,19 @@
                     <li class="{% if url_name == 'rule_engine'%}active{% endif %}">
                         <a href="{% url 'rule_configuration:rule_engine' %}">
                             <span>Rule List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
+            {% if request.user|has_permission_name:"CAN_SEARCH_UPLOAD"%}
+            {% check_valid_url url_name 'upload_management' as is_upload_management_url %}
+            <li class="menu-accordion {% if is_upload_management_url %}open{% endif %}">
+                <a href="javascript:;"> <i class="fa fa-history"></i> <span>Bulk Operation</span> </a>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'uploads'%}active{% endif %}">
+                        <a href="{% url 'upload_management:list' %}">
+                            <span>Upload Management</span>
                         </a>
                     </li>
                 </ul>

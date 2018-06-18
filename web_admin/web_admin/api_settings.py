@@ -1,4 +1,4 @@
-API_VERSION = 'v3.3'
+API_VERSION = 'v3.4'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -108,11 +108,13 @@ GET_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{ser
 GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
+SEARCH_SERVICE = 'api-gateway/report/'+API_VERSION+'/payments/services/'
 SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 SERVICE_DELETE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
+SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
 
 # Company Balance
 COMPANY_BALANCE_HISTORY = 'api-gateway/payment/'+API_VERSION+'/admin/companies/sofs/cash/balances/histories/'
@@ -135,7 +137,7 @@ FEE_TIER_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{ser
 ADD_TIER_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-commands/{service_command_id}/fee-tiers/'
 FEE_TIER_CONDITION_URL = 'api-gateway/payment/'+API_VERSION+'/fee-tier-conditions/'
 
-TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels'
+TIER_LEVELS_LIST = 'api-gateway/payment/'+API_VERSION+'/tier-levels'
 TIER_LEVELS_EDIT = 'api-gateway/payment/'+API_VERSION+'/admin/tier-levels/{tier_level_id}'
 TIER_AMOUNT_FROMS = 'api-gateway/payment/'+API_VERSION+'/admin/tier-amount-froms'
 PAYMENT_DECIMAL = 'api-gateway/centralize-configuration/'+API_VERSION+'/admin/scopes/names/payment/configurations/payment.balance-distribution.rate.decimal-digit'
@@ -188,6 +190,15 @@ ACTIVATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/sta
 RESET_IDENTITY_PASSWORD = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/identities/{}/passwords/temporary'
 ADMIN_UPDATE_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
 ADMIN_DELETE_CUSTOMER_URL = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}'
+CUSTOMER_DEVICE_LIST_URL = 'api-gateway/report/'+API_VERSION+'/customers/devices'
+CUSTOMER_CHANNEL_LIST_URL = 'api-gateway/report/'+API_VERSION+'/channels'
+CUSTOMER_DEVICE_STATUS_URL = 'api-gateway/customer/' + API_VERSION + '/admin/devices/{}/status'
+CUSTOMER_DEVICE_DELETE_URL = 'api-gateway/customer/' + API_VERSION + '/admin/devices/{}'
+CUSTOMER_CHANNEL_GRANT_URL = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{}/permissions'
+CUSTOMER_CHANNEL_REVOKE_URL = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{}/permissions/revoke'
+CUSTOMER_CHANNEL_PERMISSION_LIST_URL = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
+CUSTOMER_DEVICE_DETAIL_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
+CUSTOMER_UPDATE_DEVICE_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'
@@ -326,6 +337,17 @@ DELETE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 EDIT_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/{shop_id}'
 CREATE_SHOP = 'api-gateway/agent/' + API_VERSION + '/admin/shops/'
 
+AGENT_DEVICE_URL = 'api-gateway/agent/'+API_VERSION+'/admin/devices/{}'
+
+SEARCH_CHANNEL = 'api-gateway/report/'+API_VERSION+'/channels'
+SEARCH_CHANNEL_PERMISSION = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
+SEARCH_AGENT_DEVICES = 'api-gateway/report/'+API_VERSION+'/agents/devices'
+CHANNEL_GRANT_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions'
+CHANNEL_REVOKE_PERMISSION = 'api-gateway/ami-device-management/' + API_VERSION + '/admin/channels/{channel_id}/permissions/revoke'
+UPDATE_AGENT_DEVICE_STATUS = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}/status'
+DELETE_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices/{device_id}'
+ADD_AGENT_DEVICE = 'api-gateway/agent/' + API_VERSION + '/admin/devices'
+
 # Channel-gateway Service
 CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/admin/services'
 GET_CHANNEL_SERVICE = 'channel-gateway/' + API_VERSION + '/report/services/'
@@ -342,3 +364,15 @@ EDIT_CHANNEL_API = 'channel-gateway/' + API_VERSION + '/admin/apis/{api_id}'
 PASSWORD_CENTER_IDENTITY_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/identity-types'
 PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/report/'+API_VERSION+'/password-rule-configs'
 UPDATE_PASSWORD_CENTER_RULE_CONFIG_URL = 'api-gateway/password-center/'+API_VERSION+'/admin/identity-types/{identity_type_id}/rule-configs'
+
+# Upload management
+SEARCH_UPLOADED_FILE = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/files'
+SEARCH_FUNCTION = 'api-gateway/report/'+API_VERSION+'/bulk-uploads/functions'
+POST_UPLOADED_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/files/post'
+UPLOAD_FILE = 'api-gateway/bulk-upload/'+API_VERSION+'/upload'
+DOWNLOAD_URL='api-gateway/bulk-upload/'+API_VERSION+'/files'
+
+SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/system-users/{}/status'
+
+OTP_URL = 'api-gateway/report/'+ API_VERSION + '/otp-management/otps'
+

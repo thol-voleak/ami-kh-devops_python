@@ -3,12 +3,25 @@
 {% load permissions_filter %}
 
 {% block content %}
+    <style>
+    .suspend-label-custom {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        }
+    </style>
 <div class="panel mb30">
     <div class="panel-heading border mb15">
         <h3>System Users</h3>
     </div>
 
-
+    <div class="col-xs-12 mb5">
+        <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_system_user">
+            <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+            <strong id="alert_msg"></strong>
+        </div>
+    </div>
     {% for message in messages %}
         <div class="col-xs-12">
             <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
@@ -61,13 +74,26 @@
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
                 </div>
-                <div class="col-xs-1">
-                    <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit"  value="Search" name="search">
-                    </a>
+            </div>
+
+            <div class="col-sm-12  form-group">
+                <label class="col-sm-1 control-label">Status</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_status" name="status">
+                        <option value="All" {% if status == 'All' %}selected="selected"{% endif %}>All</option>
+                        <option value="Active" {% if status == 'Active' %}selected="selected"{% endif %}>Active</option>
+                        <option value="Suspended" {% if status == 'Suspended' %}selected="selected"{% endif %}>Suspended</option>
+                    </select>
                 </div>
 
+                <div class="col-sm-1 col-sm-offset-3">
+                    <a href="{% url 'system_user:system-user-list' %}">
+                        <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search"
+                               name="search">
+                    </a>
+                </div>
             </div>
+
         </form>
         {% endif %}
         {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}
@@ -79,12 +105,13 @@
         </div>
         {% endif %}
         <div class="table-responsive" id=system_user_table>
-            <table class="table table-bordered table-striped mb0">
+            <table class="table table-bordered table-striped mb0" id="tbl_system_user">
                 <thead>
                 <tr>
                     <th id="id">ID</th>
                     <th id="username">Username</th>
                     <th id="firstname_lastname">Firstname Lastname</th>
+                    <th id="status">Status</th>
                     <th id="created_date">Created Date</th>
                     <th id="action">Action</th>
                 </tr>
@@ -92,9 +119,7 @@
                 <tbody id="table_body">
                 {% for systemuser in data %}
                     <tr>
-                        <td class="col-sm-1" id="id_{{ systemuser.id }}">
-                            {{ systemuser.id|default_if_none:'' }}
-                        </td>
+                        <td class="col-sm-1" id="id_{{ systemuser.id }}">{{ systemuser.id|default_if_none:'' }}</td>
                         {% if systemuser.is_deleted %}
                             <td class="col-sm-1">
                                 <del>{{ systemuser.username|default_if_none:'' }}</del>
@@ -104,10 +129,12 @@
                         {% endif %}
 
                         <td class="col-sm-3">{{systemuser.firstname|add:" "|add:systemuser.lastname }}</td>
+                        <td class="col-sm-2" id="system-user-status-{{ systemuser.id }}">{% if systemuser.is_suspended %} Suspended {% else %} Active {% endif %}</td>
                         <td class="col-sm-2">{{ systemuser.created_timestamp|default_if_none:'' }}</td>
                         <td class="col-sm-3">
                             <div id="client_btn_group_{{ system_user.id }}">
                                 {% if systemuser.is_deleted == False %}
+
                                     {% if systemuser.is_permission_detail %}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-info mb5"
@@ -153,6 +180,25 @@
                                             <span class="small">ChangeRole</span>
                                         </a>
                                     {% endif %}
+                                    {% if systemuser.is_suspended and systemuser.is_permission_activate_user %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger mb5"
+                                           data-url="{% url 'system_user:system_user_activate' systemuser.id %}"
+                                           data-system_user-id='{{ systemuser.id }}'
+                                           role="button"
+                                           id="btn_system_user_activate" onClick="doSuspendOrActivate(this)">
+                                            <span class="small">Activate</span>
+                                        </a>
+                                    {% elif systemuser.is_suspended == False and systemuser.is_permission_suspend_user and request.user.username != systemuser.username %}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-danger mb5"
+                                           data-url="{% url 'system_user:system_user_suspend' systemuser.id %}"
+                                           data-system_user-id='{{ systemuser.id }}'
+                                           role="button"
+                                           id="btn_system_user_suspend" onClick="doSuspendOrActivate(this)">
+                                             <span class="small">Suspend</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </td>
@@ -169,4 +215,160 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+
+<script>
+    function showErrorMessage(msg) {
+        $("#alert_msg").text(msg);
+        $('#alert_system_user').removeClass("alert-success");
+	    $('#alert_system_user').addClass("alert-danger");
+        $("#alert_system_user").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+    }
+
+    function showSuccessMessage(msg) {
+	    $("#alert_msg").text(msg);
+	    $('#alert_system_user').removeClass("alert-danger");
+	    $('#alert_system_user').addClass("alert-success");
+
+	    $("#alert_system_user").show();
+	    $("html, body").animate({scrollTop: 0}, "slow");
+	}
+
+    function doSuspendOrActivate(e) {
+        var title = e.innerText;
+        if (title === 'Activate') {
+            activate(e);
+        } else {
+            suspend(e);
+        }
+    }
+
+    function activate(e){
+        swal({
+            icon: "warning",
+            title: "Are you sure you want to activate?",
+            buttons: true,
+            closeOnClickOutside: false
+
+        }).then(function(isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var system_user_id = e.getAttribute('data-system_user-id');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/activate/', '/suspend/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Suspend</span>";
+                            e.id = "btn_system_user_suspend";
+
+                            var status_id = 'system-user-status-' + system_user_id;
+                            document.getElementById(status_id).innerText = 'Active';
+
+                            showSuccessMessage('Activate system user successfully');
+                        } else {
+                            // Failed
+                            if (response.server_error_code == 500) {
+                                showErrorMessage('Activate system user failed')
+                            } else {
+                                if(response.msg == 'System user is already deleted') {
+                                    showErrorMessage('Cannot activate the deleted user');
+                                } else {
+                                    showErrorMessage(response.msg);
+                                }
+                            }
+                        }
+                    },
+                    error: function (msg) {
+                        showErrorMessage('Activate system user failed');
+                    }
+                });
+
+            }
+        });
+    }
+
+    function suspend(e) {
+        var suspendContentElem = document.createElement("div");
+        suspendContentElem.innerHTML = '<div id="reason-text-area" class="form-group" style="margin-bottom: 40px;">'
+                                        +'<div class="control-label suspend-label-custom">Suspend Reason Description *'
+                                        +'<div>'
+                                        +'<textarea maxlength="1024" id="txt_input_reason" class="form-control" name="suspend_reason" placeholder="Description"></textarea>'
+                                        +'</div>'
+                                        +'</div>';
+        swal({
+            content: suspendContentElem,
+            icon: "warning",
+            title: "Are you sure you want to suspend?",
+            buttons: true,
+            closeOnClickOutside: false
+        })
+        .then(function(isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var system_user_id = e.getAttribute('data-system_user-id');
+                var reason_suppend = document.getElementById("txt_input_reason").value;
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {"suspend_reason":reason_suppend},
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            location.reload();
+                        } else if (response.status == 2) {
+                            // success
+                            var updatedUrl = url.replace('/suspend/', '/activate/');
+                            e.setAttribute('data-url', updatedUrl);
+                            e.innerHTML = "<span class='small'>Activate</span>";
+                            e.id = "btn_system_user_activate";
+
+                            var status_id = 'system-user-status-' + system_user_id;
+                            document.getElementById(status_id).innerText = 'Suspended';
+
+                            showSuccessMessage('Suspended system user successfully');
+                        } else {
+							if (response.server_error_code == 500) {
+								showErrorMessage('Suspend system user failed')
+                            } else if (response.msg == 'System user is already deleted') {
+								showErrorMessage('Cannot suspend the deleted user');
+							} else {
+								showErrorMessage(response.msg);
+							}
+                        }
+                    },
+                    error: function (msg) {
+                        showErrorMessage('Suspend system user failed');
+                    }
+                });
+
+            }
+        });
+        var okButton = document.getElementsByClassName("swal-button--confirm")[0];
+        okButton.setAttribute("disabled", true);
+        var input_reason = document.getElementById("txt_input_reason");
+
+        input_reason.addEventListener("keyup", function(event) {
+            if(input_reason.value.trim() == '' || input_reason.value.trim().length > 1024){
+                okButton.setAttribute("disabled", true);
+            } else {
+                okButton.removeAttribute("disabled");
+            }
+        })
+    }
+</script>
 {% endblock %}

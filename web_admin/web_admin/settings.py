@@ -74,6 +74,8 @@ INSTALLED_APPS = [
     'channel_gateway.service',
     'channel_gateway.api',
     'password_center',
+    'upload_management',
+    'authentications.one_time_password_report'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -114,7 +116,7 @@ TEMPLATES = [
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
                               'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
                               'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
-                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type', 'password_center')],
+                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type', 'password_center', 'upload_management')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -380,5 +382,18 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'upload_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'one_time_password_report': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     }
 }
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+

@@ -1,3 +1,4 @@
+from balance_adjustment.views.balance_adjustment_upload import upload_form, upload_progress
 from balance_adjustment.views.list import (BalanceAdjustmentListView, BalanceAdjustmentListActionView)
 from balance_adjustment.views.create import BalanceAdjustmentCreateView
 from balance_adjustment.views.detail import BalanceAdjustmentDetailView
@@ -15,4 +16,6 @@ urlpatterns = [
     url(r'^approve/(?P<OrderId>[0-9A-Za-z]+)/$', login_required(BalanceAdjustmentDetailView.as_view(), login_url='authentications:login'), name="balance_adjustment_approve"),
 
     url(r'^process_multi_balance_adjustment/$', login_required(BalanceAdjustmentListActionView.as_view(), login_url='authentications:login'), name="process_multi_balance_adjustments"),
+    url(r'^upload/$', login_required(upload_form, login_url='authentications:login'), name="upload"),
+    url(r'^upload_progress/$', login_required(upload_progress, login_url='authentications:login'), name="upload_progress"),
 ]

@@ -50,16 +50,15 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         });
 
         // Master: Specific ID Dropdown
-        var htmlDDSpecificIDs = '<option value=""></option>';
+        var htmlDDSpecificIDs = '<datalist id="specific_ids_edit">';
+        var htmlValue = '';
         jQuery.each(m_specific_ids, function() {
+            htmlDDSpecificIDs += '<option value="' + this + '"' +'>';
             if (aData[2] == this) {
-                htmlSelected = ' selected=\"selected\" ';
-            } else {
-                htmlSelected = ' ';
+                htmlValue = ' value="' + this + '" ';
             }
-
-            htmlDDSpecificIDs += '<option value="' + this + '"' + htmlSelected + '>' + this + '</option>';
         });
+        htmlDDSpecificIDs += '</datalist>';
 
         // Master: SOFTypes Dropdown
         var htmlDDSOFTypes = '';
@@ -188,7 +187,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\' required>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + ' type=\'number\' class=\'form-control\' name=\'specific_id\'>' + htmlDDSpecificIDs + '</select>';
+        jqTds[2].innerHTML = '<input ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + htmlValue + ' type=\'number\' class=\'form-control\' name=\'specific_id\' list=\'specific_ids\' >' + htmlDDSpecificIDs;
         jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
         jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';

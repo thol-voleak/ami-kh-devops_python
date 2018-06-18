@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from campaign.utils import get_profile_details_event_list
 from web_admin.api_logger import API_Logger
 from django.contrib import messages
 from web_admin.api_settings import CREATE_MECHANIC, CREATE_CONDITION, CREATE_COMPARISON, CREATE_REWARD, CREATE_LIMITATION, CREATE_FILTER, CREATE_RESET_FILTER
@@ -41,13 +42,16 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
         operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         freetext_ops = ["Equal to", "Not Equal to", "Contains"]
-
+        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Contains"]
+        numeric_ops = ["Equal to", "Not Equal to","Is Part of", "Is Not Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
         filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
+        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
+        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -71,10 +75,15 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         ops = {
             'operations': operations,
+            'numeric_ops': numeric_ops,
             'key_value_types': key_value_types,
             'detail_names': detail_names,
+            'profile_detail_names': get_profile_details_event_list(),
             'trigger': trigger,
             'freetext_ops': freetext_ops,
+            'freetext_ops_2': freetext_ops_2,
+            'profile_details_freetext_ops': profile_details_freetext_ops,
+            'profile_details_numeric_ops': profile_details_numeric_ops,
             'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
@@ -134,6 +143,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "Not Equal to": '!=', "Less than or Equal to": '<=',
             "More than or Equal to": '>=',
             "Contains": "contains",
+            "Is Part of": "in_list",
+            "Is Not Part of": "not_in_list"
         }
         kv_type_map = {
             "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
@@ -163,6 +174,35 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if not request.POST.get(key_value):
                     continue
 
+
+                params = {
+                    'key_name': request.POST.get(detail_name),
+                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
+                    'operator': operations_map[request.POST.get(operator)],
+                    'key_value': request.POST.get(key_value),
+                }
+                success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
+            elif condition_type == 'profile_details':
+                params = {'filter_type': condition_type}
+                profile_detail_actor = request.POST.get('actor_' + suffix)
+                if profile_detail_actor:
+                    params['profile_detail_actor'] = profile_detail_actor
+
+                success, data, message = self.create_condition(campaign_id, mechanic_id, params)
+                if not success:
+                    return JsonResponse({"status": 3, "msg": message})
+
+                condition_id = data['id']
+                key_value_type = 'key_value_type_' + suffix
+                detail_name = 'detail_name_' + suffix
+                operator = 'operator_' + suffix
+                key_value = 'key_value_' + suffix
+
+                if not request.POST.get(key_value):
+                    continue
 
                 params = {
                     'key_name': request.POST.get(detail_name),
@@ -505,10 +545,11 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     def _filter_trigger(self, data):
         filtered = [v for v in data if
                     ((v.term == 'register_customer') or (v.term == 'executed_order') or (v.term == 'login'))]
-        link_bank = {'term': 'created_sof', 'description': 'Link Bank'}
+        link_bank = {'term': 'created_sof', 'description': 'Create SOF'}
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
-        filtered.extend([link_bank, created_order, limit_reached])
+        profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
+        filtered.extend([link_bank, created_order, limit_reached, profile_update])
         return filtered
 
     def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):

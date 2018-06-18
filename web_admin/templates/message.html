@@ -7,6 +7,14 @@
             </div>
      </div>
     {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+     <div class="col-xs-12">
+            <div class="alert alert-warning alert-dismissable" id="msg-warning">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <strong>{{ message }}</strong>
+            </div>
+     </div>
+    {% endif %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
      <div class="col-xs-12">
             <div class="alert alert-danger alert-dismissable" id="msg-error">
