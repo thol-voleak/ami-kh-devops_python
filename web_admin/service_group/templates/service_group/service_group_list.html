@@ -4,9 +4,22 @@
 
 {% block content %}
     <div class="panel mb25">
-        <div class="panel-heading border">
-            <h3>Service Groups</h3>
+        <div class="panel-heading border mb15">
+            <div>
+                <div class="pull-left"><h3>Service Groups</h3></div>
+                {% if request.user|has_permission_name:"CAN_ADD_SERVICE_GROUP"%}
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'service_group:add_service_group' %}">
+                        <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15"
+                               type="button"
+                               value="+ Add New Service Group"/>
+                    </a>
+                </div>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
         </div>
+
         {% for message in messages %}
             <div class="col-xs-12">
                 <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
@@ -15,15 +28,6 @@
                 </div>
             </div>
         {% endfor %}
-        {% if request.user|has_permission_name:"CAN_ADD_SERVICE_GROUP"%}
-        <div class="pull-right mr15 text-right">
-            <a href="{% url 'service_group:add_service_group' %}">
-                <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15"
-                       type="button"
-                       value="Add"/>
-            </a>
-        </div>
-        {% endif %}
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0">
