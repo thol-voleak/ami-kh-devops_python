@@ -299,6 +299,7 @@
                             <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td>
+                                <button id="btn_refund" class="btn btn-outline mb5 btn-xs btn-info">Refund</button>
                                 {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
                                 <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
                                 {% endif %}
