@@ -102,6 +102,9 @@
                                 {% if condition.comparison_list.0.operator != 'in_list' and condition.comparison_list.0.operator != 'not_in_list' %}
                                     <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
                                 {% else %}
+                                    <div align="right"> List Count:
+                                        <span id="lbl_comparison_key_value_length">{{condition.comparison_list.0.key_value|split:','|length}}</span>
+                                    </div>
                                     <div class="list-key-value" id="list_comparison_key_value">
                                         {% for value in condition.comparison_list.0.key_value|split:',' %}
                                             <div>
