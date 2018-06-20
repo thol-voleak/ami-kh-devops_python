@@ -403,9 +403,9 @@
             var mainId = $ele.data('relationship-main-id');
             var subId = $ele.data('relationship-sub-id');
             var url = $ele.data('url');
-            var title = "Are you sure you want to share agent " + subId + " benefits and agent " + mainId + "?";
+            var title = "Are you sure you want to share agent " + subId + " benefits to agent " + mainId + "?";
             if(!isSharing) {
-                title =  "Are you sure you want to stop sharing agent " + subId + " benefits  and agent " + mainId + "?";
+                title =  "Are you sure you want to stop sharing agent " + subId + " benefits to agent " + mainId + "?";
             }
             swal({
                 title: title,
@@ -429,7 +429,7 @@
                                 var subId = $ele.data('relationship-sub-id');
                                 var truncatedUrl = url.substring(0, url.indexOf("relationships") + "relationships".length);
                                 var changedUrl = truncatedUrl + '/stop-share-benefit/' + relationshipId;
-                                var successMsg = "Sharing agent " + subId + " benefits and agent " + mainId + " success.";
+                                var successMsg = "Sharing agent " + subId + " benefits to agent " + mainId + " success.";
                                 var button = '<button id="button_stop_share_benefit" data-url="' + changedUrl + '"' +
                                                     ' data-relationship.id="' + changedUrl +  '" ' +
                                                     ' data-relationship-main-id="'+ mainId + '"' +
@@ -438,7 +438,7 @@
                                                                     'Stop Share Benefit </button>';
                                 if(!isSharing) {
                                     changedUrl = truncatedUrl + '/share-benefit/' + relationshipId;
-                                    successMsg = "Stop sharing agent " + subId + " benefits  and agent " + mainId + " success.";
+                                    successMsg = "Stop sharing agent " + subId + " benefits to agent " + mainId + " success.";
                                     button = '<button id="button_share_benefit" data-url="' + changedUrl +'"' +
                                                     ' data-relationship.id="' + relationshipId +  '" ' +
                                                     ' data-relationship-main-id="'+ mainId + '"' +
