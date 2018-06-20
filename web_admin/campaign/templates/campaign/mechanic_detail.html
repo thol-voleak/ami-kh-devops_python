@@ -509,21 +509,25 @@
                                     <div>Operator:</div>
                                     <div>
                                         <span id="lbl_filter_operator">
-                                            {%if filter.operator == '=' %}
-                                            Equal to
-                                            {%elif filter.operator == '>' %}
-                                            More Than
-                                            {%elif filter.operator == '>=' %}
-                                            More than or Equal to
-                                            {%elif filter.operator == '<' %}
-                                            Less Than
-                                            {%elif filter.operator == '<=' %}
-                                            Less than or Equal to
-                                            {%elif filter.operator == '!=' %}
-                                            Not Equal to
-                                            {%elif filter.operator == 'contains' %}
-                                            Contains
-                                            {%endif%}
+                                            {% if filter.operator == '=' %}
+                                                Equal to
+                                            {% elif filter.operator == '>' %}
+                                                More Than
+                                            {% elif filter.operator == '>=' %}
+                                                More than or Equal to
+                                            {% elif filter.operator == '<' %}
+                                                Less Than
+                                            {% elif filter.operator == '<=' %}
+                                                Less than or Equal to
+                                            {% elif filter.operator == '!=' %}
+                                                Not Equal to
+                                            {% elif filter.operator == 'contains' %}
+                                                Contains
+                                            {% elif filter.operator == 'in_list' %}
+                                                Is Part of
+                                            {% elif filter.operator == 'not_in_list' %}
+                                                Is Not Part of
+                                            {% endif %}
                                         </span>
                                     </div>
                                 </div>
@@ -536,7 +540,17 @@
                                 <div class="info-group">
                                     <div>Key Value:</div>
                                     <div>
-                                        <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                        {% if filter.operator != 'in_list' and filter.operator != 'not_in_list' %}
+                                            <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                        {% else %}
+                                            <div class="list-key-value" id="lbl_filter_key_value">
+                                                {% for value in filter.key_value|split:',' %}
+                                                    <div>
+                                                        <span class="item">{{ value }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
