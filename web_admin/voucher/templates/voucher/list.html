@@ -481,7 +481,21 @@
     }
 
     var showRefundDialog = function(voucher_id) {
-        var url = '{% url 'voucher:refund' %}'
+        $("#refundModal #confirm_voucher_id").val("");
+        $("#refundModal #confirm_prod_ref3").val("");
+        $("#refundModal #confirm_prod_ref4").val("");
+        $("#refundModal #confirm_prod_ref5").val("");
+        $("#refundModal #confirm_fee").val("");
+        $("#refundModal #confirm_amount").val("");
+        $("#refundModal #id").val("");
+        $("#refundModal #currency").val("");
+        $("#refundModal #txt_prod_ref2").val("");
+        $("#refundModal #txt_prod_ref3").val("");
+        $("#refundModal #txt_prod_ref4").val("");
+        $("#refundModal #txt_prod_ref5").val("");
+        $("#refundModal #txt_reason_for_refund").val("");
+
+        var url = '{% url 'voucher:refund' %}';
         $.ajax({
             url : url,
             type : "POST",
