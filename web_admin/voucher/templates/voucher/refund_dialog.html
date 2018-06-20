@@ -35,6 +35,7 @@
         border: 1px solid black;
         padding: 10px;
         padding-right: 32px;
+        padding-bottom: 20px;
     }
 
     #input_body {
@@ -56,7 +57,10 @@
                                id="confirm_voucher_id"
                                readonly>
                         <input type="text" style="display:none" class="form-control input-rounded sub-input"
-                               id="original_voucher_id"
+                               id="id"
+                               readonly>
+                        <input type="text" style="display:none" class="form-control input-rounded sub-input"
+                               id="currency"
                                readonly>
                     </div>
                     <div style="clear:both;">
@@ -113,6 +117,13 @@
                 <div style="clear:both;">
                     <label class="sub-label">Prod_ref5</label>
                     <input type="text" class="form-control input-rounded sub-input" name="prod_ref5" id="txt_prod_ref5">
+                </div>
+                <div style="clear:both;">
+                    <label class="parent-label">Confirm Refund to Proceed</label>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Confirm refund</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="reason_for_refund" id="txt_reason_for_refund">
                 </div>
             </div>
             <div style="clear:both; margin-bottom:60px; padding-right:40px">
