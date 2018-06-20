@@ -9,8 +9,8 @@ def delete_relationship(request, relationship_id):
     logger = logging.getLogger(__name__)
     correlation_id = get_correlation_id_from_username(request.user)
     logger = setup_logger(request, logger, correlation_id)
-    logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_DELETE_RELATIONSHIP'))
-    if not check_permissions_by_user(request.user, 'CAN_DELETE_RELATIONSHIP'):
+    logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_DELETE_AGENT_RELATIONSHIP'))
+    if not check_permissions_by_user(request.user, 'CAN_DELETE_AGENT_RELATIONSHIP'):
         return {"status": 1, "msg": ''}
     logger.info('========== Start delete relationship ==========')
     url = settings.DOMAIN_NAMES + api_settings.DELETE_RELATIONSHIP.format(relationship_id)
