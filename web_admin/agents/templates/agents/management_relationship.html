@@ -261,7 +261,7 @@
                                                         <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
                                                         <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
                                                         <td>
-                                                            {% if permissions.CAN_DELETE_RELATIONSHIP %}
+                                                            {% if permissions.CAN_DELETE_AGENT_RELATIONSHIP %}
                                                                 <button id="button_delete"
                                                                         data-url="{% url 'agents:relationship_delete' relationship.id %}"
                                                                         data-relationship-type="{{ relationship.relationship_type.name | default_if_none:'' }}"

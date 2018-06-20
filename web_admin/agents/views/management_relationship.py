@@ -41,7 +41,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
             return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
-        permissions['CAN_DELETE_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_RELATIONSHIP'])
+        permissions['CAN_DELETE_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_AGENT_RELATIONSHIP'])
 
         relationship_type_id = []
         context.update(
