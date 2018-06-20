@@ -152,18 +152,11 @@
                                                 <div class="col-sm-6">
                                                     <select class="form-control" id="ddl_relationship_partner_role"
                                                             name="partner_role">
-                                                        <option value=0
-                                                                {% if partner_role == '0' %}selected="selected"{% endif %}>
-                                                            -
-                                                        </option>
+                                                        <option value=0 {% if partner_role == '0' %}selected="selected"{% endif %}>-</option>
                                                         <option value=1
-                                                                {% if partner_role == '1' %}selected="selected"{% endif %}>
-                                                            Main ID
-                                                        </option>
+                                                                {% if partner_role == '1' %}selected="selected"{% endif %}>Main ID</option>
                                                         <option value=2
-                                                                {% if partner_role == '2' %}selected="selected"{% endif %}>
-                                                            Sub ID
-                                                        </option>
+                                                                {% if partner_role == '2' %}selected="selected"{% endif %}>Sub ID</option>
                                                     </select>
                                                 </div>
                                             </div>
