@@ -36,11 +36,12 @@ class DeleteView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(DeleteView, self).get_context_data(**kwargs)
         system_user_id = context['system_user_id']
 
-        status_code, status_message, data = SystemUserClient.search_system_user(headers=self._get_headers(),
+        is_success, status_code, status_message, data = SystemUserClient.search_system_user(headers=self._get_headers(),
                                                                                 logger=self.logger,
                                                                                 user_id=system_user_id)
+        system_users = data.get('system_users', [])
         context = {
-            'system_user_info': data[0]
+            'system_user_info': system_users[0]
         }
 
         return render(request, self.template_name, context)

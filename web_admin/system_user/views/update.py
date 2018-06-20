@@ -36,10 +36,11 @@ class SystemUserUpdateForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = super(SystemUserUpdateForm, self).get_context_data(**kwargs)
         system_user_id = context['systemUserId']
 
-        status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
+        is_success, status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
                                                                                 self.logger, None, None, system_user_id)
+        system_users = data.get('system_users', [])
         context = {
-            'system_user_info': data[0],
+            'system_user_info': system_users[0],
             'msg': self.request.session.pop('system_user_update_msg', None)
         }
         self.logger.info("Finish getting system user detail")

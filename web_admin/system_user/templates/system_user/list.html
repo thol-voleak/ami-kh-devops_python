@@ -16,6 +16,15 @@
         <h3>System Users</h3>
     </div>
 
+    {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}
+        <div class="pull-right mr15 text-right">
+            <a href="{% url 'system_user:create-system-user' %}">
+                <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
+                       value="Add"/>
+            </a>
+        </div>
+    {% endif %}
+
     <div class="col-xs-12 mb5">
         <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_system_user">
             <button type="button" class="close" onclick="$('.alert').hide()">×</button>
@@ -65,19 +74,20 @@
     <div class="panel-body">
         {% if request.user|has_permission_name:"SYS_SEARCH_SYSTEM_USER"%}
         <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'system_user:system-user-list' %}">
-            <div class="col-sm-12  form-group">
-                <label class="col-sm-1">Username</label>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Username</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username }}"/>
+                    <input type="text" class="form-control input-rounded" name="username" id="username_search" value="{{ username|default_if_none:'' }}"/>
                 </div>
-                <label class="col-sm-1">Email</label>
+                <label class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email }}">
+                    <input type="text" class="form-control input-rounded" name="email" id="email_search" value="{{ email|default_if_none:'' }}">
                 </div>
             </div>
 
-            <div class="col-sm-12  form-group">
-                <label class="col-sm-1 control-label">Status</label>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Status</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="ddl_status" name="status">
                         <option value="All" {% if status == 'All' %}selected="selected"{% endif %}>All</option>
@@ -86,24 +96,22 @@
                     </select>
                 </div>
 
-                <div class="col-sm-1 col-sm-offset-3">
-                    <a href="{% url 'system_user:system-user-list' %}">
-                        <input id="search_btn" class="btn btn-success btn-block" type="submit" value="Search"
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-2">
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <a href="{% url 'system_user:system-user-list' %}" class="col-sm-8 pull-right" style="right: -10px;">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search"
                                name="search">
                     </a>
                 </div>
-            </div>
 
+
+            </div>
+            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+            <label class="pull-right" >Total:&nbsp;</label>
         </form>
         {% endif %}
-        {% if request.user|has_permission_name:"SYS_CREATE_SYSTEM_USER"%}
-        <div class="pull-right mr15 text-right">
-            <a href="{% url 'system_user:create-system-user' %}">
-                <input id="system_user_btn_add" class="btn btn-success btn-block text-left no-print mb15" type="button"
-                       value="Add"/>
-            </a>
-        </div>
-        {% endif %}
+
         <div class="table-responsive" id=system_user_table>
             <table class="table table-bordered table-striped mb0" id="tbl_system_user">
                 <thead>
@@ -207,7 +215,9 @@
                 </tbody>
             </table>
         </div>
+        {% include "pagination.html" %}
     </div>
+    <div class="loader" style="display:none" id="loader-indicator"></div>
     <div class="col-xs-12" id="search-result-notification" style="display:none">
         <div class="alert alert-danger alert-dismissable">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -279,7 +289,7 @@
                             var status_id = 'system-user-status-' + system_user_id;
                             document.getElementById(status_id).innerText = 'Active';
 
-                            showSuccessMessage('Activate system user successfully');
+                            refreshPageAfterActiveSuspend('Activate system user successfully');
                         } else {
                             // Failed
                             if (response.server_error_code == 500) {
@@ -340,7 +350,7 @@
                             var status_id = 'system-user-status-' + system_user_id;
                             document.getElementById(status_id).innerText = 'Suspended';
 
-                            showSuccessMessage('Suspended system user successfully');
+                            refreshPageAfterActiveSuspend('Suspended system user successfully');
                         } else {
 							if (response.server_error_code == 500) {
 								showErrorMessage('Suspend system user failed')
@@ -369,6 +379,33 @@
                 okButton.removeAttribute("disabled");
             }
         })
+    }
+
+    function refreshPageAfterActiveSuspend(sucessMessage) {
+        var suspendActiveSearch = document.getElementById('ddl_status').value;
+        var rows = document.getElementById('tbl_system_user').getElementsByTagName("tr").length - 1;
+        var currentLocation = window.location.href;
+        var url = new URL(window.location.href);
+        var currentPage = url.searchParams.get("current_page_index");
+        if (!currentPage)
+            currentPage = 1;
+
+        if (suspendActiveSearch != 'All') {
+            if (rows == 1) {
+                if (currentPage > 1) {
+                    // Go to last recent pages
+                    var lastRecentPage = currentPage - 1;
+                    var redirectPage = currentLocation.replace("current_page_index=" + currentPage, "current_page_index=" + lastRecentPage);
+                    window.location.href = redirectPage;
+                } else {
+                    location.reload();
+                }
+            } else {
+                location.reload();
+            }
+        } else {
+            showSuccessMessage(sucessMessage);
+        }
     }
 </script>
 {% endblock %}
