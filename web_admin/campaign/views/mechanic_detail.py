@@ -67,14 +67,17 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
 
         # Get result for Count Of
         for con in data.get('condition_list'):
+            # set flag to get only first event_name (in case there are multiple event_names)
+            flag = 0
             if con.get('filter_type') != 'count_of':
                 continue
             if not con.get('filter'):
                 continue
             for filter in con['filter'][::]:
-                if filter.get('key_name') == 'event_name':
+                if flag == 0 and filter.get('key_name') == 'event_name':
                     con['count_key_name'] = filter.get('key_value')
                     con['filter'].remove(filter)
+                    flag = 1
                 elif filter.get('key_name') == 'event_created_timestamp':
                     self.build_within_from_filter(con, filter)
                     con['filter'].remove(filter)
