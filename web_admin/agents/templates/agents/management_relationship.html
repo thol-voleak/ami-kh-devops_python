@@ -251,6 +251,27 @@
                                                         <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
                                                         <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
                                                         <td>
+                                                            {% if permissions.CAN_SHARE_AGENT_BENEFIT and relationship.sub_user.user_id  == agent_id %}
+                                                                {%  if relationship.is_sharing_benefit %}
+                                                                    <button id="button_stop_share_benefit"
+                                                                        data-url="{% url 'agents:stop_share_benefit_relationship' relationship.id %}"
+                                                                        data-relationship-id="{{ relationship.id | default_if_none:'' }}"
+                                                                        data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                        data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                        type="button" class="btn btn-link text-warning">
+                                                                    Stop Share Benefit
+                                                                    </button>
+                                                                {% else %}
+                                                                      <button id="button_share_benefit"
+                                                                        data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
+                                                                        data-relationship-id="{{ relationship.id | default_if_none:'' }}"
+                                                                        data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                        data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                        type="button" class="btn btn-link text-primary">
+                                                                     Share Benefit
+                                                                    </button>
+                                                                {% endif %}
+                                                            {% endif %}
                                                             {% if permissions.CAN_DELETE_AGENT_RELATIONSHIP %}
                                                                 <button id="button_delete"
                                                                         data-url="{% url 'agents:relationship_delete' relationship.id %}"
@@ -261,6 +282,7 @@
                                                                     Delete
                                                                 </button>
                                                             {% endif %}
+
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
@@ -343,7 +365,6 @@
             var url = $ele.data('url');
             var title = "Are you sure you want to delete the " + relationShipType
                 + " relationship between Agent " + mainId + " and Agent " + subId + "?";
-            console.log(url);
             swal({
                 title: title,
                 icon: "info",
@@ -366,6 +387,70 @@
                                 $ele.closest('tr').remove();
                             } else {
                                 showErrorMessage('Error delete relationship');
+
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+        };
+
+         var shareBenefit = function (ele, isSharing) {
+            var $ele = $(ele);
+            var mainId = $ele.data('relationship-main-id');
+            var subId = $ele.data('relationship-sub-id');
+            var url = $ele.data('url');
+            var title = "Are you sure you want to share agent " + subId + " benefits and agent " + mainId + "?";
+            if(!isSharing) {
+                title =  "Are you sure you want to stop sharing agent " + subId + " benefits  and agent " + mainId + "?";
+            }
+            swal({
+                title: title,
+                icon: "info",
+                buttons: true,
+                closeOnClickOutside: false
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                                window.location.replace(url);
+                            } else if (response.status == 2) {
+                                var url =  $ele.data('url');
+                                var relationshipId = $ele.data('relationship-id');
+                                var mainId = $ele.data('relationship-main-id');
+                                var subId = $ele.data('relationship-sub-id');
+                                var truncatedUrl = url.substring(0, url.indexOf("relationships") + "relationships".length);
+                                var changedUrl = truncatedUrl + '/stop-share-benefit/' + relationshipId;
+                                var successMsg = "Sharing agent " + subId + " benefits and agent " + mainId + " success.";
+                                var button = '<button id="button_stop_share_benefit" data-url="' + changedUrl + '"' +
+                                                    ' data-relationship.id="' + changedUrl +  '" ' +
+                                                    ' data-relationship-main-id="'+ mainId + '"' +
+                                                    ' data-relationship-sub-id="' + subId + '"' +
+                                                    ' type="button" class="btn btn-link text-warning">' +
+                                                                    'Stop Share Benefit </button>';
+                                if(!isSharing) {
+                                    changedUrl = truncatedUrl + '/share-benefit/' + relationshipId;
+                                    successMsg = "Stop sharing agent " + subId + " benefits  and agent " + mainId + " success.";
+                                    button = '<button id="button_share_benefit" data-url="' + changedUrl +'"' +
+                                                    ' data-relationship.id="' + relationshipId +  '" ' +
+                                                    ' data-relationship-main-id="'+ mainId + '"' +
+                                                    ' data-relationship-sub-id="' + subId + '"' +
+                                                    ' type="button" class="btn btn-link text-primary">' +
+                                                                    'Share Benefit </button>';
+                                }
+                                showSuccessMessage(successMsg);
+                                $ele.closest('td').prepend(button);
+                                $ele.remove();
+                            } else {
+                                showErrorMessage('Error sharing benefit relationship');
 
                             }
                         },
@@ -413,6 +498,12 @@
 
             $('#tbl_relationship_management').on('click', '#button_delete', function (ele) {
                 deleteRelationship(this);
+            });
+            $('#tbl_relationship_management').on('click', '#button_share_benefit', function (ele) {
+                shareBenefit(this, true);
+            });
+            $('#tbl_relationship_management').on('click', '#button_stop_share_benefit', function (ele) {
+                shareBenefit(this, false);
             });
         });
 
