@@ -89,8 +89,14 @@
             <div class="row no-margin">
                 <div class="col-lg-12">
                     <div id="exTab1" class="container">
-                        {% include "agents/management_tab_menu.html" with active_tab='relationship'%}
+                        {% include "agents/management_tab_menu.html" with active_tab='relationship' %}
                         <br>
+                        <div class="col-xs-12">
+                            <div class="alert alert-dismissable" id="alert-relationship">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                <strong id="alert-msg">{{ msg }}</strong>
+                            </div>
+                        </div>
                         <div style="border-bottom: 1px solid #ece6e6;margin-top: -20px;margin-bottom: 20px;"></div>
                         <div class="tab-content clearfix">
                             {% if permissions.CAN_ACCESS_RELATIONSHIP_TAB %}
@@ -144,10 +150,13 @@
                                                     </span>
                                                 </label>
                                                 <div class="col-sm-6">
-                                                    <select class="form-control" id="ddl_relationship_partner_role" name="partner_role">
+                                                    <select class="form-control" id="ddl_relationship_partner_role"
+                                                            name="partner_role">
                                                         <option value=0 {% if partner_role == '0' %}selected="selected"{% endif %}>-</option>
-                                                        <option value=1 {% if partner_role == '1' %}selected="selected"{% endif %}>Main ID</option>
-                                                        <option value=2 {% if partner_role == '2' %}selected="selected"{% endif %}>Sub ID</option>
+                                                        <option value=1
+                                                                {% if partner_role == '1' %}selected="selected"{% endif %}>Main ID</option>
+                                                        <option value=2
+                                                                {% if partner_role == '2' %}selected="selected"{% endif %}>Sub ID</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -184,47 +193,99 @@
                                                     <th id="main_id">
                                                         <span class="info-tooltip">
                                                         Main ID<i class="fa fa-info pop" data-container="body"
-                                                           data-toggle="popover" data-placement="right"
-                                                           data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
-                                                           data-original-title="" title=""></i>
+                                                                  data-toggle="popover" data-placement="right"
+                                                                  data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
+                                                                  data-original-title="" title=""></i>
                                                     </span>
                                                     </th>
                                                     <th id="main_name">Main Name</th>
                                                     <th id="sub_id">
                                                         <span class="info-tooltip">
                                                         Sub ID<i class="fa fa-info pop" data-container="body"
-                                                           data-toggle="popover" data-placement="right"
-                                                           data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
-                                                           data-original-title="" title=""></i>
+                                                                 data-toggle="popover" data-placement="right"
+                                                                 data-content="<div class='custom-popover'><div class='role-des'>Main role is the role on the left and sub role is the role on the right of a relationship type</div><div style='text-decoration: underline; margin-bottom: 10px;'>For example:</div><div><strong>Relationship Type</strong>: Parent-Child</div><div><strong>Main</strong>: Parent</div><div><strong>Sub</strong>: Child</div></div>"
+                                                                 data-original-title="" title=""></i>
                                                     </span>
                                                     </th>
                                                     <th id="sub_name">Sub Name</th>
                                                     <th id="created_date">Created Date</th>
                                                     <th id="modified_date">Modified Date</th>
+                                                    <th id="action">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="agent_table_body">
-                                                   {% for relationship in relationships %}
-                                                        <tr>
-                                                            <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
-                                                            {%if agent_id == relationship.main_user.user_id %}
-                                                                <td><b><a id="{{ relationship.main_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{relationship.main_user.user_id|default_if_none:'' }})</a></b></td>
-                                                                <td><b>{{relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name}}</b></td>
-                                                            {%else%}
-                                                                <td><a id="{{ relationship.main_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{relationship.main_user.user_id|default_if_none:'' }})</a></td>
-                                                                <td>{{relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name}}</td>
-                                                            {%endif%}
-                                                            {%if agent_id == relationship.sub_user.user_id%}
-                                                                <td><b><a id="{{ relationship.sub_user.user_id }}" style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a></b></td>
-                                                                <td><b>{{relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name}}</b></td>
-                                                            {%else%}
-                                                                <td><a id="{{ relationship.sub_user.user_id }}"  style="text-decoration:underline;" href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{relationship.sub_user.user_id|default_if_none:'' }})</a></td>
-                                                                <td>{{relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name}}</td>
-                                                            {%endif%}
-                                                            <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
-                                                            <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
-                                                        </tr>
-                                                    {% endfor %}
+                                                {% for relationship in relationships %}
+                                                    <tr>
+                                                        <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
+                                                        {% if agent_id == relationship.main_user.user_id %}
+                                                            <td><b><a id="{{ relationship.main_user.user_id }}"
+                                                                      style="text-decoration:underline;"
+                                                                      href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{ relationship.main_user.user_id|default_if_none:'' }})</a></b>
+                                                            </td>
+                                                            <td>
+                                                                <b>{{ relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name }}</b>
+                                                            </td>
+                                                        {% else %}
+                                                            <td>
+                                                                <a id="{{ relationship.main_user.user_id }}"
+                                                                   style="text-decoration:underline;"
+                                                                   href="{% url 'agents:agent_management_summary' relationship.main_user.user_id %}">agent ({{ relationship.main_user.user_id|default_if_none:'' }})</a>
+                                                            </td>
+                                                            <td>{{ relationship.main_user.first_name|add:" "|add:relationship.main_user.last_name }}</td>
+                                                        {% endif %}
+                                                        {% if agent_id == relationship.sub_user.user_id %}
+                                                            <td><b><a id="{{ relationship.sub_user.user_id }}"
+                                                                      style="text-decoration:underline;"
+                                                                      href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{ relationship.sub_user.user_id|default_if_none:'' }})</a></b>
+                                                            </td>
+                                                            <td>
+                                                                <b>{{ relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name }}</b>
+                                                            </td>
+                                                        {% else %}
+                                                            <td><a id="{{ relationship.sub_user.user_id }}"
+                                                                   style="text-decoration:underline;"
+                                                                   href="{% url 'agents:agent_management_summary' relationship.sub_user.user_id %}">agent ({{ relationship.sub_user.user_id|default_if_none:'' }})</a>
+                                                            </td>
+                                                            <td>{{ relationship.sub_user.first_name|add:" "|add:relationship.sub_user.last_name }}</td>
+                                                        {% endif %}
+                                                        <td>{{ relationship.created_timestamp|default_if_none:'' }}</td>
+                                                        <td>{{ relationship.last_updated_timestamp|default_if_none:'' }}</td>
+                                                        <td>
+                                                            {% if permissions.CAN_SHARE_AGENT_BENEFIT and relationship.sub_user.user_id  == agent_id %}
+                                                                {%  if relationship.is_sharing_benefit %}
+                                                                    <button id="button_stop_share_benefit"
+                                                                        data-url="{% url 'agents:stop_share_benefit_relationship' relationship.id %}"
+                                                                        data-relationship-id="{{ relationship.id | default_if_none:'' }}"
+                                                                        data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                        data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                        type="button" class="btn btn-link text-warning">
+                                                                    Stop Share Benefit
+                                                                    </button>
+                                                                {% else %}
+                                                                      <button id="button_share_benefit"
+                                                                        data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
+                                                                        data-relationship-id="{{ relationship.id | default_if_none:'' }}"
+                                                                        data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                        data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                        type="button" class="btn btn-link text-primary">
+                                                                     Share Benefit
+                                                                    </button>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                            {% if permissions.CAN_DELETE_AGENT_RELATIONSHIP %}
+                                                                <button id="button_delete"
+                                                                        data-url="{% url 'agents:relationship_delete' relationship.id %}"
+                                                                        data-relationship-type="{{ relationship.relationship_type.name | default_if_none:'' }}"
+                                                                        data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                        data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                        type="button" class="btn btn-link text-danger">
+                                                                    Delete
+                                                                </button>
+                                                            {% endif %}
+
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -248,23 +309,25 @@
     <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
     <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
     <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
     <script>
-        $(".pop").popover({trigger: "manual", html: true, animation: false})
-            .on("mouseenter", function () {
-                var _this = this;
-                $(this).popover("show");
-                $(".popover").on("mouseleave", function () {
-                    $(_this).popover('hide');
-                });
-            }).on("mouseleave", function () {
-            var _this = this;
-            setTimeout(function () {
-                if (!$(".popover:hover").length) {
-                    $(_this).popover("hide");
-                }
-            }, 300);
-        });
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-relationship')
+                .removeClass("alert-success")
+                .addClass("alert-danger")
+                .fadeIn(700);
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-relationship').removeClass("alert-danger");
+            $('#alert-relationship').addClass("alert-success");
+
+            $("#alert_agent").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
 
         var isAllSelected = function (selectedValues) {
             for (var i = 0; i < selectedValues.length; i++) {
@@ -294,20 +357,155 @@
                 });
             }
         };
-        $('#ddl_relationship_type').on("chosen:showing_dropdown", function () {
-            selectMultipleItems('ddl_relationship_type', 'select-relationship-code', 'select-relationship-code-area')
-        });
-        if ($('#ddl_relationship_partner_role').val() != 0) {
-            $('#txt_relationship_partner_id').removeAttr('disabled');
-        }
-        $('#ddl_relationship_partner_role').on('change', function () {
+        var deleteRelationship = function (ele) {
+            var $ele = $(ele);
+            var relationShipType = $ele.data('relationship-type');
+            var mainId = $ele.data('relationship-main-id');
+            var subId = $ele.data('relationship-sub-id');
+            var url = $ele.data('url');
+            var title = "Are you sure you want to delete the " + relationShipType
+                + " relationship between Agent " + mainId + " and Agent " + subId + "?";
+            swal({
+                title: title,
+                icon: "info",
+                buttons: true,
+                closeOnClickOutside: false
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                                window.location.replace(url);
+                            } else if (response.status == 2) {
+                                var successMsg = "The " + relationShipType
+                                    + " relationship between Agent " + mainId + " and Agent " + subId + " was deleted";
+                                showSuccessMessage(successMsg);
+                                $ele.closest('tr').remove();
+                            } else {
+                                showErrorMessage('Error delete relationship');
+
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+        };
+
+         var shareBenefit = function (ele, isSharing) {
+            var $ele = $(ele);
+            var mainId = $ele.data('relationship-main-id');
+            var subId = $ele.data('relationship-sub-id');
+            var url = $ele.data('url');
+            var title = "Are you sure you want to share agent " + subId + " benefits to agent " + mainId + "?";
+            if(!isSharing) {
+                title =  "Are you sure you want to stop sharing agent " + subId + " benefits to agent " + mainId + "?";
+            }
+            swal({
+                title: title,
+                icon: "info",
+                buttons: true,
+                closeOnClickOutside: false
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        success: function (response) {
+                            if (response.status == 1) {
+                                // Logout
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                                window.location.replace(url);
+                            } else if (response.status == 2) {
+                                var url =  $ele.data('url');
+                                var relationshipId = $ele.data('relationship-id');
+                                var mainId = $ele.data('relationship-main-id');
+                                var subId = $ele.data('relationship-sub-id');
+                                var truncatedUrl = url.substring(0, url.indexOf("relationships") + "relationships".length);
+                                var changedUrl = truncatedUrl + '/stop-share-benefit/' + relationshipId;
+                                var successMsg = "Sharing agent " + subId + " benefits to agent " + mainId + " success.";
+                                var button = '<button id="button_stop_share_benefit" data-url="' + changedUrl + '"' +
+                                                    ' data-relationship.id="' + changedUrl +  '" ' +
+                                                    ' data-relationship-main-id="'+ mainId + '"' +
+                                                    ' data-relationship-sub-id="' + subId + '"' +
+                                                    ' type="button" class="btn btn-link text-warning">' +
+                                                                    'Stop Share Benefit </button>';
+                                if(!isSharing) {
+                                    changedUrl = truncatedUrl + '/share-benefit/' + relationshipId;
+                                    successMsg = "Stop sharing agent " + subId + " benefits to agent " + mainId + " success.";
+                                    button = '<button id="button_share_benefit" data-url="' + changedUrl +'"' +
+                                                    ' data-relationship.id="' + relationshipId +  '" ' +
+                                                    ' data-relationship-main-id="'+ mainId + '"' +
+                                                    ' data-relationship-sub-id="' + subId + '"' +
+                                                    ' type="button" class="btn btn-link text-primary">' +
+                                                                    'Share Benefit </button>';
+                                }
+                                showSuccessMessage(successMsg);
+                                $ele.closest('td').prepend(button);
+                                $ele.remove();
+                            } else {
+                                showErrorMessage('Error sharing benefit relationship');
+
+                            }
+                        },
+                        error: function (msg) {
+                            showErrorMessage(JSON.stringify(msg));
+                        }
+                    });
+                }
+            });
+        };
+        $(function () {
+            $(".pop").popover({trigger: "manual", html: true, animation: false})
+                .on("mouseenter", function () {
+                    var _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function () {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function () {
+                var _this = this;
+                setTimeout(function () {
+                    if (!$(".popover:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+
+
+            $('#ddl_relationship_type').on("chosen:showing_dropdown", function () {
+                selectMultipleItems('ddl_relationship_type', 'select-relationship-code', 'select-relationship-code-area')
+            });
             if ($('#ddl_relationship_partner_role').val() != 0) {
                 $('#txt_relationship_partner_id').removeAttr('disabled');
             }
-            else {
-                $('#txt_relationship_partner_id').attr('disabled', 'disabled');
-                $('#txt_relationship_partner_id').val('');
-            }
+            $('#ddl_relationship_partner_role').on('change', function () {
+                if ($('#ddl_relationship_partner_role').val() != 0) {
+                    $('#txt_relationship_partner_id').removeAttr('disabled');
+                }
+                else {
+                    $('#txt_relationship_partner_id').attr('disabled', 'disabled');
+                    $('#txt_relationship_partner_id').val('');
+                }
+            });
+
+
+            $('#tbl_relationship_management').on('click', '#button_delete', function (ele) {
+                deleteRelationship(this);
+            });
+            $('#tbl_relationship_management').on('click', '#button_share_benefit', function (ele) {
+                shareBenefit(this, true);
+            });
+            $('#tbl_relationship_management').on('click', '#button_stop_share_benefit', function (ele) {
+                shareBenefit(this, false);
+            });
         });
+
     </script>
 {% endblock %}
