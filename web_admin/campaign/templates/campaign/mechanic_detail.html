@@ -543,6 +543,9 @@
                                         {% if filter.operator != 'in_list' and filter.operator != 'not_in_list' %}
                                             <span id="lbl_filter_key_value">{{filter.key_value}}</span>
                                         {% else %}
+                                            <div align="right"> List Count:
+                                                <span id="lbl_filter_key_value_length">{{ filter.key_value|split:','|length }}</span>
+                                            </div>
                                             <div class="list-key-value" id="lbl_filter_key_value">
                                                 {% for value in filter.key_value|split:',' %}
                                                     <div>
