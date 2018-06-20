@@ -3,6 +3,7 @@ from braces.views import GroupRequiredMixin
 from authentications.utils import get_correlation_id_from_username, get_auth_header, check_permissions_by_user
 from authentications.apps import InvalidAccessToken
 from web_admin import setup_logger
+from web_admin.utils import calculate_page_range_from_page_info
 from .system_user_client import SystemUserClient
 
 from django.shortcuts import render
@@ -43,19 +44,29 @@ class ListView(GroupRequiredMixin, TemplateView):
                 'system_user_change_password_msg', None)
         })
 
-        if not request.GET.get('search'):
-            return render(request, self.template_name)
-
         self.logger.info("========== Start searching system user ==========")
         username = request.GET.get('username')
         email = request.GET.get('email')
         status = request.GET.get('status')
+        current_page_index = request.GET.get('current_page_index')
+
+        if current_page_index:
+            context['current_page_index'] = int(current_page_index)
+
         if not status:
             status = 'All'
 
-        status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
+        success, status_code, status_message, data = SystemUserClient.search_system_user(self._get_headers(),
                                                                                 self.logger, username, email,
-                                                                                None, status)
+                                                                                None, status, True, current_page_index)
+        if not success:
+            context['search_count'] = 0
+        else:
+            page = data.get("page", {})
+            context.update(
+                {'search_count': page.get('total_elements', 0), 'paginator': page,
+                 'page_range': calculate_page_range_from_page_info(page)})
+
         if (status_code == "access_token_expire") or \
                 (status_code == 'authentication_fail') or \
                 (status_code == 'invalid_access_token'):
@@ -69,8 +80,9 @@ class ListView(GroupRequiredMixin, TemplateView):
         is_permission_change_role = check_permissions_by_user(self.request.user, 'CAN_CHANGE_ROLE_FOR_USER')
         is_permission_suspend_user = check_permissions_by_user(self.request.user, 'CAN_SUSPEND_SYSTEM_USER')
         is_permission_activate_user = check_permissions_by_user(self.request.user, 'CAN_ACTIVATE_SYSTEM_USER')
+        system_users = data.get('system_users', [])
 
-        for i in data:
+        for i in system_users:
             i['is_permission_detail'] = is_permission_detail
             i['is_permission_edit'] = is_permission_edit
             i['is_permission_delete'] = is_permission_delete
@@ -79,7 +91,7 @@ class ListView(GroupRequiredMixin, TemplateView):
             i['is_permission_suspend_user'] = is_permission_suspend_user
             i['is_permission_activate_user'] = is_permission_activate_user
 
-        context['data'] = data
+        context['data'] = system_users
         context['username'] = username
         context['email'] = email
         context['status'] = status
