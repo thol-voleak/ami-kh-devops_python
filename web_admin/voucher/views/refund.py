@@ -33,7 +33,7 @@ class VoucherRefundView(TemplateView, GetHeaderMixin):
         voucher_id = request.POST.get('voucher_id')
         data = self._get_voucher_detail(voucher_id)
         self.logger.info('========== Fisnish get Vouchers details ==========')
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return JsonResponse({ "data": data  })
 
     def _get_voucher_detail(self, voucher_id):
         url = GET_VOUCHER_DETAIL
@@ -56,4 +56,7 @@ class VoucherRefundView(TemplateView, GetHeaderMixin):
                 status_message
             )
             data = []
-        return data['vouchers']
+        data = data['vouchers']
+        if data[0]["is_cancelled"]:
+            data = [{'id': -1, "code": "voucher_was_cancelled"}]
+        return data

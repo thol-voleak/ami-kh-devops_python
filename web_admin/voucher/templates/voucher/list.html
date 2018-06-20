@@ -508,20 +508,32 @@
                     var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
                     window.location.replace(url);
                     location.reload();
-                }
-                else {
-                    $("#refundModal #confirm_voucher_id").val(response[0].voucher_id);
-                    $("#refundModal #confirm_prod_ref3").val(response[0].product.product_ref3);
-                    $("#refundModal #confirm_prod_ref4").val(response[0].product.product_ref4);
-                    $("#refundModal #confirm_prod_ref5").val(response[0].product.product_ref5);
-                    $("#refundModal #confirm_fee").val(response[0].fee);
-                    $("#refundModal #confirm_amount").val(response[0].amount);
-                    $("#refundModal #id").val(response[0].id);
-                    $("#refundModal #currency").val(response[0].currency);
+                } else {
+                    var data = response.data;
+                    if(-1 == data[0].id) {
+                        if("voucher_was_cancelled" == data[0].code) {
+                            swal({
+                                title: 'Cannot refund cancelled voucher',
+                                type: "error",
+                                confirmButtonColor: "#2ECC71",
+                                confirmButtonText: "Close",
+                                closeOnConfirm: true
+                            });
+                        }
+                    } else {
+                        $("#refundModal #confirm_voucher_id").val(data[0].voucher_id);
+                        $("#refundModal #confirm_prod_ref3").val(data[0].product.product_ref3);
+                        $("#refundModal #confirm_prod_ref4").val(data[0].product.product_ref4);
+                        $("#refundModal #confirm_prod_ref5").val(data[0].product.product_ref5);
+                        $("#refundModal #confirm_fee").val(data[0].fee);
+                        $("#refundModal #confirm_amount").val(data[0].amount);
+                        $("#refundModal #id").val(data[0].id);
+                        $("#refundModal #currency").val(data[0].currency);
+                        $("#refundModal").modal("show");
+                    }
                 }
             }
         });
-        $("#refundModal").modal("show");
     }
 </script>
 {% endblock %}
