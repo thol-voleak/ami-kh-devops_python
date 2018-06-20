@@ -1,0 +1,126 @@
+<style type="text/css">
+    .parent-label {
+        font-weight: bold;
+        font-size: 20px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .sub-label {
+        width: 130px;
+        margin-right: 15px;
+        margin-top: 10px;
+        float: left;
+        text-align: right;
+        font-size: 15px;
+        vertical-align: middle;
+    }
+
+    .sub-input {
+        width: 185px;
+        float: left;
+        margin-top: 5px;
+    }
+
+    .large-modal-dialog {
+        width: 800px;
+    }
+
+    #confirmation_body {
+        padding: 25px;
+        padding-right: 0px;
+    }
+
+    .confirmation_border {
+        border: 1px solid black;
+        padding: 10px;
+        padding-right: 32px;
+    }
+
+    #input_body {
+        padding: 35px;
+    }
+</style>
+
+<div class="modal" tabindex="-1" role="dialog" id="refundModal" style="vertical-align: middle; padding-top: 150px;">
+    <div class="modal-dialog large-modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="confirmation_body" class="col-sm-6">
+                <div class="confirmation_border pull-left">
+                    <div>
+                        <label class="parent-label">Confirmation Details</label>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Voucher ID</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_voucher_id"
+                               readonly>
+                        <input type="text" style="display:none" class="form-control input-rounded sub-input"
+                               id="original_voucher_id"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Voucher Amount</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_amount"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Voucher Fee</label>
+                        <input type="text" class="form-control input-rounded sub-input" id="confirm_fee"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="parent-label">Product references</label>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref3</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_prod_ref3"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref4</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref4"
+                               id="confirm_prod_ref4"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref5</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_prod_ref5"
+                               readonly>
+                    </div>
+                </div>
+            </div>
+            <div id="input_body" style="padding-left: 30px;" class="col-sm-6">
+                <label class="parent-label">Input Refund Details</label>
+                <div style="clear:both;">
+                    <label class="sub-label">New passcode</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref2" id="txt_prod_ref2">
+                </div>
+                <div style="clear:both;">
+                    <label class="parent-label">Product references</label>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref3</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref3" id="txt_prod_ref3">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref4</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref4" id="txt_prod_ref4">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref5</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref5" id="txt_prod_ref5">
+                </div>
+            </div>
+            <div style="clear:both; margin-bottom:60px; padding-right:40px">
+                <input type="button" class="btn btn-success pull-right col-sm-2 input-rounded" value="Next">
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+</div>
+
+
