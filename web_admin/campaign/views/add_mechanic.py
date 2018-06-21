@@ -549,7 +549,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
-        filtered.extend([link_bank, created_order, limit_reached, profile_update])
+        profile_update_request = {'term': 'update_profile_request', 'description': 'Profile Update Request'}
+        filtered.extend([link_bank, created_order, limit_reached, profile_update, profile_update_request])
         return filtered
 
     def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):
