@@ -378,3 +378,5 @@ SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/syste
 
 OTP_URL = 'api-gateway/report/'+ API_VERSION + '/otp-management/otps'
 
+# Trust Management
+SEARCH_TRUST = 'api-gateway/report/'+ API_VERSION + '/token-management/tokens'

@@ -75,7 +75,8 @@ INSTALLED_APPS = [
     'channel_gateway.api',
     'password_center',
     'upload_management',
-    'authentications.one_time_password_report'
+    'authentications.one_time_password_report',
+    'trust_management'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -116,7 +117,8 @@ TEMPLATES = [
                               'configuration', 'system_user', 'service_group', 'services', 'agents', 'customers',
                               'cards', 'card_type', 'cash_sofs', 'payments', 'bank', 'sof', 'card_design', 'card_provider',
                               'reconcile', 'permissions', 'card_sofs', 'balance_adjustment','campaign', 'fraud_prevention',
-                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type', 'password_center', 'upload_management')],
+                              'rule_configuration', 'report_configuration','product', 'category', 'shop_type',
+                              'password_center', 'upload_management', 'trust_management')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -392,6 +394,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'trust_management': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
     }
 }
 

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <h3>Trust Management</h3>
+        </div>
+
+        {#        {% if permissions.CAN_ADD_SERVICE %}#}
+        {#            <div class="pull-right mr15 text-right">#}
+        {#                <a href="{% url 'services:service_create' %}">#}
+        {#                    <input id="btn_add" class="btn btn-success btn-block mb15" type="button" value="Add"/>#}
+        {#                </a>#}
+        {#            </div>#}
+        {#        {% endif %}#}
+
+        {% include "message.html" %}
+
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id"
+                           value="{{ user_id|default_if_none:'' }}">
+                </div>
+                <label class="col-sm-2 control-label">Trust Role</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_trust_role" name="trust_role">
+                        <option value='all' {% if trust_role == 'all' %}selected="selected"{% endif %}>ALL</option>
+                        <option value='truster' {% if trust_role == 'truster' %} selected="selected"{% endif %}>
+                            Truster
+                        </option>
+                        <option value='trusted' {% if trust_role == 'trusted' %}selected="selected"{% endif %}>Trusted
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User Type</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_user_type" name="user_type">
+                        <option value='all' {% if user_type == 'all' %} selected="selected"{% endif %}>ALL</option>
+                        <option value='2' {% if user_type == '2' %} selected="selected"{% endif %}>Agent</option>
+                        <option value='1' {% if user_type == '1' %} selected="selected"{% endif %}>Customer</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-2">
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="col-sm-8 pull-right" style="right: -10px;">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+            <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
+            <label class="pull-right">Total found: &nbsp;</label>
+        </form>
+
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_trust">
+                    <thead>
+                    <tr>
+                        <th id="lbl_truster_id">Truster Id</th>
+                        <th id="lbl_truster_name">Truster Name</th>
+                        <th id="lbl_trusted_id">Trusted Id</th>
+                        <th id="lbl_trusted_name">Trusted Name</th>
+                        <th id="lbl_relationship_type">Relationship Type</th>
+                        <th id="lbl_created_date">Created Date</th>
+                        <th id="lbl_created_by">Created By</th>
+                        <th id="lbl_expiry_date">Expiry Date</th>
+                        <th id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for trust in trusts %}
+                        <tr>
+                            <td class="col-sm-1">
+                                {{ trust.truster.user_type.name|title }} ({{ trust.truster.id }})
+                            </td>
+                            <td class="col-sm-3">{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-1">
+                                {{ trust.trusted.user_type.name|title }} ({{ trust.trusted.id }})
+                                {#                                {% if trust.trusted.user_type.id == 1 %}#}
+                                {#                                    Customer ({{ trust.trusted.id }})#}
+                                {#                                {% elif trust.trusted.user_type.id == 2 %}#}
+                                {#                                    Agent ({{ trust.trusted.id }})#}
+                                {#                                {% else %}#}
+                                {#                                {% endif %} #}
+                            </td>
+                            <td class="col-sm-3">{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.relationship_type.name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.created_user.name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.expired_date|default_if_none:'' }}</td>
+                            <td class="col-sm-1">
+                                <div id="service_btn_group">
+                                    <div class="btn-group">
+                                        {#                                        {% if permissions.CAN_VIEW_SERVICE %}#}
+                                        <a type="button"
+                                           class="btn btn-outline btn-xs btn-info"
+                                           role="button"
+                                           id="btn_remove"
+                                           href="">
+                                            <span class="small">Remove</span>
+                                        </a>
+                                        {#                                        {% endif %}#}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
+        </div>
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -90,6 +90,10 @@
                         </ul>
                     </li>
                     {% endif %}
+
+                    <li class="{% if 'trust-management' in request.path %}active{% endif %}">
+                        <a href="{% url 'trust_management:trust_list' %}"><span>Trust Management</span> </a>
+                    </li>
                 </ul>
             </li>
             {% endif %}
