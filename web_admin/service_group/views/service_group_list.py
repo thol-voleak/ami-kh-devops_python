@@ -1,6 +1,9 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
+from django.shortcuts import render
 
 from braces.views import GroupRequiredMixin
 
@@ -30,24 +33,51 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start get Service Group List ==========')
-        data = self.get_service_group_list()
+        data, is_success = self.get_service_group_list({})
         self.logger.info('========== Finished get Service Group List ==========')
-        result = {'data': data}
+        if is_success:
+            result = {'data': data.get('service_groups')}
+        else:
+            result = {'data': []}
         return result
 
-    def get_service_group_list(self):
-        url = api_settings.SERVICE_GROUP_LIST_URL
-        data, success = self._get_method(url, "service group list", logger, True)
+    def post(self, request, *args, **kwargs):
+        service_group_id = request.POST.get('service_group_id')
+
+        body = {}
+        context = {}
+        if service_group_id:
+            body['service_group_id'] = service_group_id
+            context['service_group_id'] = service_group_id
+
+        self.logger.info('========== Start get Service Group List ==========')
+        data, is_success = self.get_service_group_list(body)
+        self.logger.info('========== Finished get Service Group List ==========')
+        if is_success:
+            context['data'] = data.get('service_groups')
+        else:
+            context['data'] = []
+        return render(request, self.template_name, context)
+
+    def get_service_group_list(self, body):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SERVICE_GROUP_LIST_PATH,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
         is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_SERVICE_GROUP')
         is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_SERVICE_GROUP')
         is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_SERVICE_GROUP')
 
-        if success:
+        if is_success:
             self.logger.info('========== Finished get get bank list ==========')
-            for i in data:
+            for i in data.get('service_groups'):
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
-        return data
+
+        API_Logger.get_logging(loggers=self.logger,
+                               response=data,
+                               status_code=status_code)
+        return data, is_success
 
 

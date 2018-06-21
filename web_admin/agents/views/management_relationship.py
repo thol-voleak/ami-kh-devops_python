@@ -9,7 +9,7 @@ from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from agents.utils import check_permission_agent_management
-
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,26 +36,37 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(AgentManagementRelationship, self).get_context_data(**kwargs)
         body = {}
         body['user_id'] = int(context['agent_id'])
-
         permissions = check_permission_agent_management(self)
         if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
             return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         permissions['CAN_DELETE_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_AGENT_RELATIONSHIP'])
         permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
+        permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_type_id = []
+        msg_add = self.request.session.pop('msg_add', None)
+        if msg_add:
+            msg_add = json.loads(msg_add)
         context.update(
             {'agent_id': int(context['agent_id']),
              'permissions': permissions,
              'relationship_types': self._get_relationship_types(),
-             'relationship_type_id': relationship_type_id
+             'relationship_type_id': relationship_type_id,
+             'msg_add': msg_add
              })
-
+        print('aaaaaaaaffafdsfdsfsdfsdfsdfdsfdsfdsfsdfsdfsdf')
+        print(msg_add)
         self.logger.info('========== Start getting Relationships list ==========')
         data, success, status_message = self._get_relationships(params=body)
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+            relationship_shared = -1
+            for relationship in relationships_list:
+                if relationship['is_sharing_benefit']:
+                    relationship_shared = relationship['id']
+                    break
+
             summary_relationships = list(relationships_list)
             if len(relationships_list) > 10:
                 summary_relationships = relationships_list[:10]
@@ -64,8 +75,10 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             context.update(
                 {'search_count': len(relationships_list),
                  'relationships': relationships_list,
+                 'relationship_shared': relationship_shared,
                  'summary_relationships': summary_relationships,
-                 'relationship_list_length': len(relationships_list)
+                 'relationship_list_length': len(relationships_list),
+                 'msg_add': msg_add
                  })
 
         self.logger.info('========== Finish getting Relationships list ==========')

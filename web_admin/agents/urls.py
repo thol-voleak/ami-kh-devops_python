@@ -24,6 +24,7 @@ from .views.link_agent_to_shop import LinkAgentToShop
 from .views.unlink_shop_from_agent import UnLinkAgentToShop
 from .views.relationship_ajax_action import delete_relationship, share_benefit_relationship
 from .views.relationship_ajax_action import stop_share_benefit_relationship
+from .views.relationship_ajax_action import add_agent_relationship
 
 app_name = 'agents'
 
@@ -51,6 +52,7 @@ urlpatterns = [
     url(r'^relationships/delete/(?P<relationship_id>[0-9A-Za-z]+)$', login_required(delete_relationship, login_url='authentications:login'), name="relationship_delete"),
     url(r'^relationships/share-benefit/(?P<relationship_id>[0-9A-Za-z]+)$', login_required(share_benefit_relationship, login_url='authentications:login'), name="share_benefit_relationship"),
     url(r'^relationships/stop-share-benefit/(?P<relationship_id>[0-9A-Za-z]+)$', login_required(stop_share_benefit_relationship, login_url='authentications:login'), name="stop_share_benefit_relationship"),
+    url(r'^relationships/add/(?P<agent_id>[0-9A-Za-z]+)',login_required(add_agent_relationship, login_url='authentications:login'),name="add_agent_relationship"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/link-shop', login_required(AgentLinkShop.as_view(), login_url='authentications:login'), name="agent_link_shop"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/shop/(?P<shop_id>[0-9A-Za-z]+)/link',
         login_required(LinkAgentToShop.as_view(), login_url='authentications:login'), name="link_agent_shop"),

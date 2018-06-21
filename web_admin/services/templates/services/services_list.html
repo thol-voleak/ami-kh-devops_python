@@ -38,7 +38,8 @@
         </div>
     </div>
 
-    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="post">
+        {% csrf_token %}
         <div class="form-group">
             <label class="col-sm-2 control-label">Service ID</label>
             <div class="col-sm-2">
@@ -343,6 +344,15 @@
 	    $("#alert_service").show();
 	    $("html, body").animate({scrollTop: 0}, "slow");
 	}
+
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
 
 </script>
 {% endblock %}

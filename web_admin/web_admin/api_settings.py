@@ -60,6 +60,7 @@ RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationsh
 GET_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/identity-types'
 DELETE_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}'
 SHARE_BENEFIT_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}/sharing-benefit'
+ADD_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -101,7 +102,7 @@ SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spi_url_i
 SPI_CALL_METHOD_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-call-methods'
 
 # Service Group
-SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+SERVICE_GROUP_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
@@ -111,6 +112,7 @@ GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
 SEARCH_SERVICE = 'api-gateway/report/'+API_VERSION+'/payments/services/'
+SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
 SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
@@ -290,6 +292,7 @@ DELETE_ACTION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/m
 GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
 SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
 UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{voucher_id}/status'
+CREATE_REFUND_REQUEST = 'api-gateway/workflow/'+API_VERSION+'/admin/vouchers/refund'
 
 #Report Configuration
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
