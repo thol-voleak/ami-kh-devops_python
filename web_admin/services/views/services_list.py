@@ -8,6 +8,7 @@ from django.shortcuts import render
 from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
+from django.contrib import messages
 
 import logging
 
@@ -40,22 +41,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         # Search with default status is activated - '1'
         params['status'] = 1
 
-        success, data = self.get_services_list(params)
-
-        service_list = data.get('services') if success else []
-        page = data.get("page", {})
-        context['search_count'] = page.get('total_elements', 0)
-        service_group_list = self.get_service_group_list()
-        service_groups = []
-        for i in service_list:
-            for j in service_group_list:
-                if i['service_group_id'] == j['service_group_id']:
-                    i['service_group_name'] = j['service_group_name']
-                    break
-
-        for i in service_group_list:
-            service_groups.append({'id': str(i['service_group_id']), 'name': i['service_group_name']})
-
         permissions = {
             'CAN_VIEW_SERVICE': check_permissions_by_user(self.request.user, 'CAN_VIEW_SERVICE'),
             'CAN_EDIT_SERVICE': check_permissions_by_user(self.request.user, 'CAN_EDIT_SERVICE'),
@@ -64,12 +49,37 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'CAN_ADD_SERVICE': check_permissions_by_user(self.request.user, 'CAN_ADD_SERVICE')
         }
 
-        context['paginator'] = page
-        context['page_range'] = calculate_page_range_from_page_info(page)
-        context['data'] = service_list
-        context['service_groups'] = service_groups
-        context['permissions'] = permissions
-        return context
+        success, data = self.get_services_list(params)
+
+        if not success:
+            context['data'] = []
+            context['service_groups'] = []
+            context['search_count'] = 0
+            context['permissions'] = permissions
+            context['is_show_export'] = False
+            return  context
+        else:
+            service_list = data.get('services') if success else []
+            page = data.get("page", {})
+            context['search_count'] = page.get('total_elements', 0)
+            service_group_list = self.get_service_group_list()
+            service_groups = []
+            for i in service_list:
+                for j in service_group_list:
+                    if i['service_group_id'] == j['service_group_id']:
+                        i['service_group_name'] = j['service_group_name']
+                        break
+
+            for i in service_group_list:
+                service_groups.append({'id': str(i['service_group_id']), 'name': i['service_group_name']})
+
+            context['paginator'] = page
+            context['page_range'] = calculate_page_range_from_page_info(page)
+            context['data'] = service_list
+            context['service_groups'] = service_groups
+            context['permissions'] = permissions
+            context['is_show_export'] = success
+            return context
 
     def post(self, request, *args, **kwargs):
         params = {}
@@ -119,21 +129,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             else:
                 params['page_index']= 1
 
-            success, data = self.get_services_list(params)
-            service_list = data.get('services') if success else []
-            page = data.get("page", {})
-            context['search_count'] = page.get('total_elements', 0)
-            service_group_list = self.get_service_group_list()
-            service_groups = []
-            for i in service_list:
-                for j in service_group_list:
-                    if i['service_group_id'] == j['service_group_id']:
-                        i['service_group_name'] = j['service_group_name']
-                        break
-
-            for i in service_group_list:
-                service_groups.append({'id': str(i['service_group_id']), 'name': i['service_group_name']})
-
             permissions = {
                 'CAN_VIEW_SERVICE': check_permissions_by_user(self.request.user, 'CAN_VIEW_SERVICE'),
                 'CAN_EDIT_SERVICE': check_permissions_by_user(self.request.user, 'CAN_EDIT_SERVICE'),
@@ -142,16 +137,49 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'CAN_ADD_SERVICE': check_permissions_by_user(self.request.user, 'CAN_ADD_SERVICE')
             }
 
-            context['paginator'] = page
-            context['page_range'] = calculate_page_range_from_page_info(page)
-            context['data'] = service_list
-            context['service_groups'] = service_groups
-            context['permissions'] = permissions
-            return render(request, self.template_name, context)
+            success, data = self.get_services_list(params)
+            if not success:
+                context['data'] = []
+                context['service_groups'] = []
+                context['search_count'] = 0
+                context['permissions'] = permissions
+                context['is_show_export'] = False
+                return render(request, self.template_name, context)
+            else:
+                service_list = data.get('services') if success else []
+                page = data.get("page", {})
+                context['search_count'] = page.get('total_elements', 0)
+                service_groups = []
+                if success:
+                    service_group_list = self.get_service_group_list()
+
+                    for i in service_list:
+                        for j in service_group_list:
+                            if i['service_group_id'] == j['service_group_id']:
+                                i['service_group_name'] = j['service_group_name']
+                                break
+
+                    for i in service_group_list:
+                        service_groups.append({'id': str(i['service_group_id']), 'name': i['service_group_name']})
+
+                context['paginator'] = page
+                context['page_range'] = calculate_page_range_from_page_info(page)
+                context['data'] = service_list
+                context['service_groups'] = service_groups
+                context['permissions'] = permissions
+                context['is_show_export'] = True
+                return render(request, self.template_name, context)
 
     def get_services_list(self, params):
         url = SEARCH_SERVICE
         success, status_code, status_message, data = RestfulHelper.send("POST", url, params, self.request, "searching service", "data.services")
+
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
         return success, data
 
     def get_service_group_list(self):

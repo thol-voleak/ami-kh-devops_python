@@ -36,7 +36,10 @@ class RestfulHelper:
             for field in log_count_field.split('.'):
                 if field == "data":
                     continue
-                log_data = log_data.get(field, {})
+                if log_data:
+                    log_data = log_data.get(field, {})
+                else:
+                    log_data = {}
 
             count = len(log_data)
             loggers.info('Response count: {}'.format(count))
