@@ -92,5 +92,6 @@ class EditMechanicView(TemplateView, GetHeaderMixin):
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
-        trigger_names = [register_customer, executed_order, login, link_bank, created_order, limit_reached, profile_update]
+        profile_update_request = {'term': 'update_profile_request', 'description': 'Profile Update Request'}
+        trigger_names = [register_customer, executed_order, login, link_bank, created_order, limit_reached, profile_update, profile_update_request]
         return trigger_names
