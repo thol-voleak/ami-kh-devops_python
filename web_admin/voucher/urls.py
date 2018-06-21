@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from voucher.views.refund import VoucherRefundView
+from voucher.views.refund import VoucherRefundView, VoucherRefundRequestView
 from .views.list import VoucherList
 from .views.detail import VoucherDetail
 from .views.transit import Transit
@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^create/$', login_required(Transit.as_view(), login_url='authentications:login'), name="create_new_voucher"),
     url(r'^hold$', login_required(HoldVoucher.as_view(), login_url='authentications:login'), name="hold_voucher"),
     url(r'^unhold$', login_required(UnholdVoucher.as_view(), login_url='authentications:login'), name="unhold_voucher"),
-    url(r'^refund', login_required(VoucherRefundView.as_view(), login_url='authentications:login'), name="refund")
+    url(r'^refund', login_required(VoucherRefundView.as_view(), login_url='authentications:login'), name="refund"),
+    url(r'^request/refund$', login_required(VoucherRefundRequestView.as_view(), login_url='authentications:login'), name="refund_request")
 ]
