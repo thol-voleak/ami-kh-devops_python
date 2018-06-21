@@ -323,7 +323,7 @@
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
                                                                         data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
                                                                         type="button" class="button_stop_share_benefit btn btn-outline mb5 btn-xs btn-warning">
-                                                                    Stop Share Benefit
+                                                                    Stop Sharing Benefit
                                                                     </button>
                                                                 {% else %}
                                                                     {% if relationship.id  != relationship_shared and relationship_shared != -1 %}
@@ -665,7 +665,7 @@
                                                     ' data-relationship-main-id="'+ mainId + '"' +
                                                     ' data-relationship-sub-id="' + subId + '"' +
                                                     ' type="button" class="button_stop_share_benefit btn btn-outline mb5 btn-xs btn-warning">' +
-                                                                    'Stop Share Benefit </button>';
+                                                                    'Stop Sharing Benefit </button>';
                                 if(!isSharing) {
                                     changedUrl = truncatedUrl + '/share-benefit/' + relationshipId;
                                     successMsg = "Stop sharing agent " + subId + " benefits to agent " + mainId + " success.";
@@ -691,7 +691,6 @@
                                         ' data-relationship-sub-id="' + subId + '"' +
                                         ' type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary" disabled="disabled">' +
                                         'Share Benefit </button>';
-                                        console.log('ok');
                                         return buttonDisabled
                                     });
                                 } else {
@@ -705,7 +704,6 @@
                                         ' data-relationship-sub-id="' + subId + '"' +
                                         ' type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary">' +
                                         'Share Benefit </button>';
-                                        console.log('ok');
                                         return buttonDisabled
                                     });
                                 }
