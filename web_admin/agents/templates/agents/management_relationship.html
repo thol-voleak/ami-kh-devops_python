@@ -322,18 +322,29 @@
                                                                         data-relationship-id="{{ relationship.id | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
                                                                         data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
-                                                                        type="button" class="btn btn-link text-warning">
+                                                                        type="button" class="button_stop_share_benefit btn btn-outline mb5 btn-xs btn-warning">
                                                                     Stop Share Benefit
                                                                     </button>
                                                                 {% else %}
-                                                                      <button id="button_share_benefit"
+                                                                    {% if relationship.id  != relationship_shared and relationship_shared != -1 %}
+                                                                          <button id="button_share_benefit"
+                                                                            data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
+                                                                            data-relationship-id="{{ relationship.id | default_if_none:'' }}"
+                                                                            data-relationship-main-id="{{ relationship.main_user.user_id }}"
+                                                                            data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
+                                                                            type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary" disabled="disabled">
+                                                                         Share Benefit
+                                                                        </button>
+                                                                    {% else %}
+                                                                           <button id="button_share_benefit"
                                                                         data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                         data-relationship-id="{{ relationship.id | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
                                                                         data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
-                                                                        type="button" class="btn btn-link text-primary">
+                                                                        type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary">
                                                                      Share Benefit
                                                                     </button>
+                                                                    {% endif %}
                                                                 {% endif %}
                                                             {% endif %}
                                                             {% if permissions.CAN_DELETE_AGENT_RELATIONSHIP %}
@@ -342,7 +353,7 @@
                                                                         data-relationship-type="{{ relationship.relationship_type.name | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
                                                                         data-relationship-sub-id="{{ relationship.sub_user.user_id }}"
-                                                                        type="button" class="btn btn-link text-danger">
+                                                                        type="button" class="button_delete btn btn-outline mb5 btn-xs btn-danger">
                                                                     Delete
                                                                 </button>
                                                             {% endif %}
@@ -653,7 +664,7 @@
                                                     ' data-relationship.id="' + changedUrl +  '" ' +
                                                     ' data-relationship-main-id="'+ mainId + '"' +
                                                     ' data-relationship-sub-id="' + subId + '"' +
-                                                    ' type="button" class="btn btn-link text-warning">' +
+                                                    ' type="button" class="button_stop_share_benefit btn btn-outline mb5 btn-xs btn-warning">' +
                                                                     'Stop Share Benefit </button>';
                                 if(!isSharing) {
                                     changedUrl = truncatedUrl + '/share-benefit/' + relationshipId;
@@ -662,12 +673,43 @@
                                                     ' data-relationship.id="' + relationshipId +  '" ' +
                                                     ' data-relationship-main-id="'+ mainId + '"' +
                                                     ' data-relationship-sub-id="' + subId + '"' +
-                                                    ' type="button" class="btn btn-link text-primary">' +
+                                                    ' type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary">' +
                                                                     'Share Benefit </button>';
                                 }
+
                                 showSuccessMessage(successMsg);
-                                $ele.closest('td').prepend(button);
-                                $ele.remove();
+                                var $tbody = $ele.closest('tbody');
+                                $ele.replaceWith(button);
+                                if(isSharing) {
+                                    $tbody.find('.button_share_benefit').replaceWith(function(){
+                                        var relationshipId = $(this).data('relationship-id');
+                                        var mainId = $(this).data('relationship-main-id');
+                                        var subId = $(this).data('relationship-sub-id');
+                                        var buttonDisabled = '<button id="button_share_benefit" data-url="' + changedUrl + '"' +
+                                        ' data-relationship.id="' + relationshipId + '" ' +
+                                        ' data-relationship-main-id="' + mainId + '"' +
+                                        ' data-relationship-sub-id="' + subId + '"' +
+                                        ' type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary" disabled="disabled">' +
+                                        'Share Benefit </button>';
+                                        console.log('ok');
+                                        return buttonDisabled
+                                    });
+                                } else {
+                                     $tbody.find('.button_share_benefit').replaceWith(function(){
+                                        var relationshipId = $(this).data('relationship-id');
+                                        var mainId = $(this).data('relationship-main-id');
+                                        var subId = $(this).data('relationship-sub-id');
+                                        var buttonDisabled = '<button id="button_share_benefit" data-url="' + changedUrl + '"' +
+                                        ' data-relationship.id="' + relationshipId + '" ' +
+                                        ' data-relationship-main-id="' + mainId + '"' +
+                                        ' data-relationship-sub-id="' + subId + '"' +
+                                        ' type="button" class="button_share_benefit btn btn-outline mb5 btn-xs btn-primary">' +
+                                        'Share Benefit </button>';
+                                        console.log('ok');
+                                        return buttonDisabled
+                                    });
+                                }
+
                             } else {
                                 showErrorMessage('Error sharing benefit relationship');
 
@@ -715,13 +757,13 @@
             });
 
 
-            $('#tbl_relationship_management').on('click', '#button_delete', function (ele) {
+            $('#tbl_relationship_management').on('click', '.button_delete', function (ele) {
                 deleteRelationship(this);
             });
-            $('#tbl_relationship_management').on('click', '#button_share_benefit', function (ele) {
+            $('#tbl_relationship_management').on('click', '.button_share_benefit:enabled', function (ele) {
                 shareBenefit(this, true);
             });
-            $('#tbl_relationship_management').on('click', '#button_stop_share_benefit', function (ele) {
+            $('#tbl_relationship_management').on('click', '.button_stop_share_benefit', function (ele) {
                 shareBenefit(this, false);
             });
         });

@@ -57,6 +57,12 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+            relationship_shared = -1
+            for relationship in relationships_list:
+                if relationship['is_sharing_benefit']:
+                    relationship_shared = relationship['id']
+                    break
+
             summary_relationships = list(relationships_list)
             if len(relationships_list) > 10:
                 summary_relationships = relationships_list[:10]
@@ -65,6 +71,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             context.update(
                 {'search_count': len(relationships_list),
                  'relationships': relationships_list,
+                 'relationship_shared': relationship_shared,
                  'summary_relationships': summary_relationships,
                  'relationship_list_length': len(relationships_list)
                  })
