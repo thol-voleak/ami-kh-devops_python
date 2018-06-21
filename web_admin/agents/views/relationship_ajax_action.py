@@ -68,28 +68,56 @@ def add_agent_relationship(request, agent_id):
     array_data = request.POST['relationship']
     data = json.loads(array_data)
     url = settings.DOMAIN_NAMES + api_settings.ADD_RELATIONSHIP
-    if isinstance(data['main_id'], str):
-        params = {
-            "relationship_type_id": data['relationship_type_id'],
-            "main_user": {
-                "user_type": {
-                    "id": 2,
-                    "name": "agent"
-                }
-            },
-            "sub_user": {
-                "user_type": {
-                    "id": 2,
-                    "name": "agent"
-                }
+    params = {
+        "relationship_type_id": data['relationship_type_id'],
+        "main_user": {
+            "user_type": {
+                "id": 2,
+                "name": "agent"
+            }
+        },
+        "sub_user": {
+            "user_type": {
+                "id": 2,
+                "name": "agent"
             }
         }
+    }
+    if isinstance(data['main_id'], str):
         result_fail = []
+        result_success = []
         params['main_user']['user_id'] = data['main_id']
         for sub_user in data['sub_id']:
             params['sub_user']['user_id'] = sub_user
-            result = ajax_functions._post_method(request, url, "", logger, params)
+            result = ajax_functions._post_method_return_error_if_error(request, url, "", logger, params)
             if result.status_code == 400:
                 result_fail.append(sub_user)
-    context = {'msg': 'test abcd', 'agent_id' : agent_id}
+            else:
+                result_success.append(sub_user)
+    else:
+        result_fail = []
+        result_success = []
+        params['sub_user']['user_id'] = data['sub_id']
+        for main_user in data['main_id']:
+            params['main_user']['user_id'] = main_user
+            result = ajax_functions._post_method_return_error_if_error(request, url, "", logger, params)
+            if result.status_code == 400:
+                result_fail.append(main_user)
+            else:
+                result_success.append(main_user)
+
+    msg_add = {'success': [], 'error': []}
+    for success_id in result_success:
+        if isinstance(data['main_id'], str):
+            msg_add['success'].append('Add agent relationship between agent('+data['main_id']+') and agent('+success_id+') successfully')
+        else:
+            msg_add['success'].append('Add agent relationship between agent(' + data['sub_id'] + ') and agent(' + success_id + ') successfully')
+    for error_id in result_fail:
+        if isinstance(data['main_id'], str):
+            msg_add['error'].append('Add agent relationship between agent('+data['main_id']+') and agent('+error_id+') fail')
+        else:
+            msg_add['error'].append('Add agent relationship between agent(' + data['sub_id'] + ') and agent(' + error_id + ') fail')
+
+    request.session['msg_add'] = msg_add
+    context = {'msg_add': msg_add, 'agent_id': agent_id}
     return render(request, 'agents/management_relationship.html', context)

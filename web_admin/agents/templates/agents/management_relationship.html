@@ -151,6 +151,22 @@
                                 <div class="tab-pane active"
                                      id="div_relationships">
                                     <div class="panel-heading">
+                                        {% for msg_error in msg_add.error %}
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-dismissable alert-success">
+                                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                                    <strong>{{msg_error}}</strong>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        {% for msg_success in msg_add.success %}
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-dismissable alert-danger">
+                                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                                    <strong>{{msg_success}}</strong>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
                                         <div class="col-xs-12 delete-message" hidden>
                                             <div class="alert alert-dismissable" id="alert-relationship">
                                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>

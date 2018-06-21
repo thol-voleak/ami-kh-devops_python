@@ -36,7 +36,6 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(AgentManagementRelationship, self).get_context_data(**kwargs)
         body = {}
         body['user_id'] = int(context['agent_id'])
-
         permissions = check_permission_agent_management(self)
         if not permissions['CAN_ACCESS_RELATIONSHIP_TAB']:
             return redirect('agents:agent_management_summary', agent_id=int(context['agent_id']))
@@ -45,13 +44,16 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
         permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_type_id = []
+        msg_add = [];
+        if 'msg_add' in context:
+            msg_add = context['msg_add']
         context.update(
             {'agent_id': int(context['agent_id']),
              'permissions': permissions,
              'relationship_types': self._get_relationship_types(),
-             'relationship_type_id': relationship_type_id
+             'relationship_type_id': relationship_type_id,
+             'msg_add': msg_add
              })
-
         self.logger.info('========== Start getting Relationships list ==========')
         data, success, status_message = self._get_relationships(params=body)
         if success:
@@ -73,7 +75,8 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
                  'relationships': relationships_list,
                  'relationship_shared': relationship_shared,
                  'summary_relationships': summary_relationships,
-                 'relationship_list_length': len(relationships_list)
+                 'relationship_list_length': len(relationships_list),
+                 'msg_add': msg_add
                  })
 
         self.logger.info('========== Finish getting Relationships list ==========')
