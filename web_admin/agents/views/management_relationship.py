@@ -9,7 +9,7 @@ from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
 from agents.utils import check_permission_agent_management
-
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -44,9 +44,9 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
         permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_type_id = []
-        msg_add = [];
-        if 'msg_add' in context:
-            msg_add = context['msg_add']
+        msg_add = self.request.session.pop('msg_add', None)
+        if msg_add:
+            msg_add = json.loads(msg_add)
         context.update(
             {'agent_id': int(context['agent_id']),
              'permissions': permissions,
@@ -54,6 +54,8 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
              'relationship_type_id': relationship_type_id,
              'msg_add': msg_add
              })
+        print('aaaaaaaaffafdsfdsfsdfsdfsdfdsfdsfdsfsdfsdfsdf')
+        print(msg_add)
         self.logger.info('========== Start getting Relationships list ==========')
         data, success, status_message = self._get_relationships(params=body)
         if success:

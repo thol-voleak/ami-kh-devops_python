@@ -118,6 +118,6 @@ def add_agent_relationship(request, agent_id):
         else:
             msg_add['error'].append('Add agent relationship between agent(' + data['sub_id'] + ') and agent(' + error_id + ') fail')
 
-    request.session['msg_add'] = msg_add
-    context = {'msg_add': msg_add, 'agent_id': agent_id}
+    request.session['msg_add'] = json.dumps(msg_add)
+    context = {'agent_id': agent_id}
     return render(request, 'agents/management_relationship.html', context)
