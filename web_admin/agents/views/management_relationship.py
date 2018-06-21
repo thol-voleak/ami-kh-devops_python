@@ -43,6 +43,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         permissions['CAN_DELETE_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_AGENT_RELATIONSHIP'])
         permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
+        permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_type_id = []
         context.update(
             {'agent_id': int(context['agent_id']),
@@ -56,6 +57,12 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+            relationship_shared = -1
+            for relationship in relationships_list:
+                if relationship['is_sharing_benefit']:
+                    relationship_shared = relationship['id']
+                    break
+
             summary_relationships = list(relationships_list)
             if len(relationships_list) > 10:
                 summary_relationships = relationships_list[:10]
@@ -64,6 +71,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             context.update(
                 {'search_count': len(relationships_list),
                  'relationships': relationships_list,
+                 'relationship_shared': relationship_shared,
                  'summary_relationships': summary_relationships,
                  'relationship_list_length': len(relationships_list)
                  })

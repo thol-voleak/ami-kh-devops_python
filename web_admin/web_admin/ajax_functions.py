@@ -86,6 +86,8 @@ def _post_method(request, api_path, func_description, logger, params={}, timeout
     else:
         code = 3
 
+    if response.status_code == 400:
+        return JsonResponse({'status': 'false', 'message': message}, status=400)
     return JsonResponse({"status": code, "msg": message, "data": response_json.get('data', {})})
 
 
