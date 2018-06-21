@@ -33,10 +33,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start get Service Group List ==========')
-        data, is_success = self.get_service_group_list({})
+
+        body = {'is_deleted': False}
+        data, is_success = self.get_service_group_list(body)
         self.logger.info('========== Finished get Service Group List ==========')
         if is_success:
             result = {'data': data.get('service_groups')}
+            page = data.get("page", {})
+            result['search_count'] = page.get('total_elements', 0)
         else:
             result = {'data': []}
         return result
@@ -46,6 +50,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         body = {}
         context = {}
+
+        body['is_deleted'] = False
         if service_group_id:
             body['service_group_id'] = service_group_id
             context['service_group_id'] = service_group_id
@@ -55,8 +61,11 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Finished get Service Group List ==========')
         if is_success:
             context['data'] = data.get('service_groups')
+            page = data.get("page", {})
+            context['search_count'] = page.get('total_elements', 0)
         else:
             context['data'] = []
+
         return render(request, self.template_name, context)
 
     def get_service_group_list(self, body):
