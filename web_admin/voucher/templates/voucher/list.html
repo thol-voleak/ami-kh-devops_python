@@ -510,16 +510,30 @@
                     location.reload();
                 } else {
                     var data = response.data;
-                    if(-1 == data[0].id) {
-                        if("voucher_was_cancelled" == data[0].code) {
-                            swal({
-                                title: 'Cannot refund cancelled voucher',
-                                type: "error",
-                                confirmButtonColor: "#2ECC71",
-                                confirmButtonText: "Close",
-                                closeOnConfirm: true
-                            });
-                        }
+                    if (data[0]['is_deleted'] != null && data[0]['is_deleted']) {
+                        swal({
+                            title: 'Cannot refund deleted voucher',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    } else if (data[0]['is_cancelled'] != null && data[0]['is_cancelled']) {
+                        swal({
+                            title: 'Cannot refund cancelled voucher',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    } else if (data[0]['is_used'] != null && data[0]['is_used']) {
+                        swal({
+                            title: 'Cannot refund claimed voucher',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
                     } else {
                         $("#refundModal #confirm_voucher_id").val(data[0].voucher_id);
                         $("#refundModal #confirm_prod_ref3").val(data[0].product.product_ref3);

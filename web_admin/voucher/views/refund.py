@@ -57,6 +57,4 @@ class VoucherRefundView(TemplateView, GetHeaderMixin):
             )
             data = []
         data = data['vouchers']
-        if data[0]["is_cancelled"]:
-            data = [{'id': -1, "code": "voucher_was_cancelled"}]
         return data
