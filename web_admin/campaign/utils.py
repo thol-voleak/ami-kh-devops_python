@@ -76,4 +76,6 @@ def get_profile_details_event_list():
             {'value': 'profile_last_updated_timestamp', 'text': 'Profile Last Updated Timestamp'},
             {'value': 'unique_reference', 'text': 'Unique Reference'},
             {'value': 'user_id', 'text': 'User ID'},
-            {'value': 'user_is_suspend', 'text': 'User Is suspended'}]
+            {'value': 'user_is_suspend', 'text': 'User Is suspended'},
+            {'value': 'with_linked_bank_sof', 'text': 'With Linked Bank SOF'},
+            {'value': 'with_linked_card_sof', 'text': 'With Linked Card SOF'}]
