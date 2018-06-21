@@ -14,7 +14,9 @@
             <div class="col-lg-12">
                 <form class="form-horizontal" role="form">
                     {% include "shop/form-content.html" with is_readonly=True %}
-                    {% include "shop/device_list.html" with is_readonly=True %}
+                    {% if form.agent_id %}
+                        {% include "shop/device_list.html" with is_readonly=True %}
+                    {% endif %}
 
                     <div class="pull-right">
                         {% url 'shop:shop_list' as shop_list_url %}
