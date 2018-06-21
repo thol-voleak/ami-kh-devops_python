@@ -43,6 +43,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
         permissions['CAN_DELETE_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_AGENT_RELATIONSHIP'])
         permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
+        permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_type_id = []
         context.update(
             {'agent_id': int(context['agent_id']),
