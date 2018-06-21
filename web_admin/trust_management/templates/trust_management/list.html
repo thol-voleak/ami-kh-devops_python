@@ -22,18 +22,14 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">User ID</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id"
-                           value="{{ user_id|default_if_none:'' }}">
+                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id|default_if_none:'' }}">
                 </div>
                 <label class="col-sm-2 control-label">Trust Role</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="ddl_trust_role" name="trust_role">
                         <option value='all' {% if trust_role == 'all' %}selected="selected"{% endif %}>ALL</option>
-                        <option value='truster' {% if trust_role == 'truster' %} selected="selected"{% endif %}>
-                            Truster
-                        </option>
-                        <option value='trusted' {% if trust_role == 'trusted' %}selected="selected"{% endif %}>Trusted
-                        </option>
+                        <option value='truster' {% if trust_role == 'truster' %} selected="selected"{% endif %}>Truster</option>
+                        <option value='trusted' {% if trust_role == 'trusted' %}selected="selected"{% endif %}>Trusted</option>
                     </select>
                 </div>
             </div>
@@ -77,19 +73,9 @@
                     <tbody>
                     {% for trust in trusts %}
                         <tr>
-                            <td class="col-sm-1">
-                                {{ trust.truster.user_type.name|title }} ({{ trust.truster.id }})
-                            </td>
+                            <td class="col-sm-1">{{ trust.truster.user_type.name|title }} ({{ trust.truster.id }})</td>
                             <td class="col-sm-3">{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}</td>
-                            <td class="col-sm-1">
-                                {{ trust.trusted.user_type.name|title }} ({{ trust.trusted.id }})
-                                {#                                {% if trust.trusted.user_type.id == 1 %}#}
-                                {#                                    Customer ({{ trust.trusted.id }})#}
-                                {#                                {% elif trust.trusted.user_type.id == 2 %}#}
-                                {#                                    Agent ({{ trust.trusted.id }})#}
-                                {#                                {% else %}#}
-                                {#                                {% endif %} #}
-                            </td>
+                            <td class="col-sm-1">{{ trust.trusted.user_type.name|title }} ({{ trust.trusted.id }})</td>
                             <td class="col-sm-3">{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ trust.relationship_type.name|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ trust.created_timestamp|default_if_none:'' }}</td>
