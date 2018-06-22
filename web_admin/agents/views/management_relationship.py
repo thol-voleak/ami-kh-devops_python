@@ -123,6 +123,9 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         permissions = {}
         permissions = check_permission_agent_management(self)
         permissions['CAN_SEARCH_RELATIONSHIP'] = self.check_membership(['CAN_SEARCH_RELATIONSHIP'])
+        permissions['CAN_DELETE_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_DELETE_AGENT_RELATIONSHIP'])
+        permissions['CAN_SHARE_AGENT_BENEFIT'] = self.check_membership(['CAN_SHARE_AGENT_BENEFIT'])
+        permissions['CAN_ADD_AGENT_RELATIONSHIP'] = self.check_membership(['CAN_ADD_AGENT_RELATIONSHIP'])
         relationship_types = self._get_relationship_types()
         self.logger.info('========== start getting relationship ==========')
         agent_id = int(kwargs.get('agent_id'))
@@ -152,6 +155,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+            relationship_shared = -1
             page = data.get("page", {})
 
             context = {
@@ -159,6 +163,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
                 'permissions': permissions,
                 'search_count': len(relationships_list),
                 'relationships': relationships_list,
+                'relationship_shared': relationship_shared,
                 'relationship_type_id': list_relationship_type,
                 'relationship_types': relationship_types,
                 'default_tab': 1,
