@@ -117,7 +117,7 @@
                         <div class="panel-body">
                             <div class="pull-right">
                                 <a href="{% url 'trust_management:list_trust' %}">
-                                    <input id="btn_cancel" class="btn text-left mb15" type="button"
+                                    <input id="btn_back" class="btn text-left mb15" type="button"
                                            value="Back"/>
                                 </a>
 
@@ -163,14 +163,16 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        window.location.reload();
+                        var login_url = '{% url "authentications:login" %}?next=/admin-portal/trust-management/add/'
+                        window.location.replace(login_url);
                     } else if (response.status == 2) {
                         if (response.data.page.total_elements == 0) {
                             showErrorMessage("User not found");
                         } else {
                             var firstName = response.data.agents[0].firstname;
                             var lastName = response.data.agents[0].lastname;
-                            $("#" + eName).val(firstName != null ? (firstName + " ") : "" + lastName != null ? lastName : "");
+                            var fullName = (firstName != null ? (firstName + " ") : "") + (lastName != null ? lastName : "");
+                            $('#' + eName).attr('value', fullName);
                         }
                     } else {
                         // Failed

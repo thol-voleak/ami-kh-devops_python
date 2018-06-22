@@ -78,7 +78,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context['data'] = service_list
             context['service_groups'] = service_groups
             context['permissions'] = permissions
-            context['is_show_export'] = success
+            context['is_show_export'] = check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE')
             return context
 
     def post(self, request, *args, **kwargs):
@@ -167,7 +167,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context['data'] = service_list
                 context['service_groups'] = service_groups
                 context['permissions'] = permissions
-                context['is_show_export'] = True
+                context['is_show_export'] = check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE')
                 return render(request, self.template_name, context)
 
     def get_services_list(self, params):
