@@ -383,3 +383,4 @@ OTP_URL = 'api-gateway/report/'+ API_VERSION + '/otp-management/otps'
 
 # Trust Management
 SEARCH_TRUST = 'api-gateway/report/'+ API_VERSION + '/token-management/tokens'
+ADD_TRUST = 'api-gateway/trust-management/'+ API_VERSION + '/admin/tokens'

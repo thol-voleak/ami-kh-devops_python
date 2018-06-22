@@ -5,13 +5,12 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from web_admin.restful_helper import RestfulHelper
-from datetime import date
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class TrustList(TemplateView):
+class ListTrust(TemplateView):
     template_name = "trust_management/list.html"
     logger = logger
 
@@ -23,10 +22,10 @@ class TrustList(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(TrustList, self).dispatch(request, *args, **kwargs)
+        return super(ListTrust, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        context = super(TrustList, self).get_context_data(**kwargs)
+        context = super(ListTrust, self).get_context_data(**kwargs)
         body = {
             "paging": True,
             "page_index": 1,

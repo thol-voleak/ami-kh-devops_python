@@ -5,16 +5,16 @@
 
     <div class="panel mb25">
         <div class="panel-heading border mb15">
-            <h3>Trust Management</h3>
+            <div>
+                <div class="pull-left"><h3>Trust Management</h3></div>
+                    <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                        <a id="btn_add_new_service" class="btn btn-success btn-block btn-md mb15" href="{% url 'trust_management:add_trust' %}">
+                            <strong>+</strong> <span>Add New Trust</span>
+                        </a>
+                    </div>
+                <div class="clearfix"></div>
+            </div>
         </div>
-
-        {#        {% if permissions.CAN_ADD_SERVICE %}#}
-        {#            <div class="pull-right mr15 text-right">#}
-        {#                <a href="{% url 'services:service_create' %}">#}
-        {#                    <input id="btn_add" class="btn btn-success btn-block mb15" type="button" value="Add"/>#}
-        {#                </a>#}
-        {#            </div>#}
-        {#        {% endif %}#}
 
         {% include "message.html" %}
 
@@ -43,11 +43,13 @@
                     </select>
                 </div>
                 <label class="col-sm-2 control-label"></label>
-                <div class="col-sm-2">
-                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                    <div class="col-sm-8 pull-right" style="right: -10px;">
-                        <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
-                    </div>
+                <div class="col-sm-2"></div>
+            </div>
+
+            <div class="form-group">
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                <div class="col-sm-1 pull-right">
+                    <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                 </div>
             </div>
             <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
@@ -76,15 +78,15 @@
                             <td class="col-sm-1">{{ trust.truster.user_type.name|capfirst }} ({{ trust.truster.id }})
                             </td>
                             {% if trust.truster.is_deleted %}
-                                <td class="col-sm-3"><del>{{ trust.truster.firstname|default_if_none:'' }}{{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role is not None %}({{ trust.truster.relationship_role }}){% endif %}</del></td>
+                                <td class="col-sm-3"><del>{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role is not None %} ({{ trust.truster.relationship_role }}){% endif %}</del></td>
                             {% else %}
-                                <td class="col-sm-3">{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role is not None %}({{ trust.truster.relationship_role }}){% endif %}</td>
+                                <td class="col-sm-3">{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role is not None %} ({{ trust.truster.relationship_role }}){% endif %}</td>
                             {% endif %}
                             <td class="col-sm-1">{{ trust.trusted.user_type.name|capfirst }} ({{ trust.trusted.id }})</td>
                             {% if  trust.trusted.is_deleted %}
-                                <td class="col-sm-3"><del>{{ trust.trusted.firstname|default_if_none:'' }}{{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role is not None %}({{ trust.trusted.relationship_role }}){% endif %}</del></td>
+                                <td class="col-sm-3"><del>{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role is not None %} ({{ trust.trusted.relationship_role }}){% endif %}</del></td>
                             {% else %}
-                                <td class="col-sm-3">{{ trust.trusted.firstname|default_if_none:'' }}{{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role is not None %}({{ trust.trusted.relationship_role }}){% endif %}</td>
+                                <td class="col-sm-3">{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role is not None %} ({{ trust.trusted.relationship_role }}){% endif %}</td>
                             {% endif %}
                             <td class="col-sm-1">{{ trust.relationship_type.name|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ trust.created_timestamp|default_if_none:'' }}</td>
