@@ -54,8 +54,6 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
              'relationship_type_id': relationship_type_id,
              'msg_add': msg_add
              })
-        print('aaaaaaaaffafdsfdsfsdfsdfsdfdsfdsfdsfsdfsdfsdf')
-        print(msg_add)
         self.logger.info('========== Start getting Relationships list ==========')
         data, success, status_message = self._get_relationships(params=body)
         if success:
