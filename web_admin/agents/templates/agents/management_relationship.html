@@ -512,12 +512,17 @@
         function addRelationship(button){
             var url = $(button).data('url');
             var param = {};
-            var main_id = $('#select_main_id').val()[0];
-            if(main_id == null){
+
+            var main_id = $('#select_main_id').val();
+            if(main_id != null){
+                main_id = main_id[0]
+            } else {
                 main_id = $( '.input_multiple_main_id' ).tagsInput()[0].value.split(',')
             }
             var sub_id = $('#select_sub_id').val();
-            if(sub_id == null){
+            if(sub_id != null){
+                sub_id = sub_id[0]
+            } else {
                 sub_id = $( '.input_multiple_sub_id' ).tagsInput()[0].value.split(',')
             }
             param.main_id = main_id;
