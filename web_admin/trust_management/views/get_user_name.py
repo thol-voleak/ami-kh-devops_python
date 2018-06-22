@@ -11,8 +11,6 @@ def get_user_name(request):
     logger.info('========== Start get user name ==========')
     user_id = request.POST.get('id')
     user_type = request.POST.get('type')
-    print("user_type=",user_type)
-    print("user_id=",user_id)
     if user_type == "2":
         url = api_settings.SEARCH_AGENT
     else:
