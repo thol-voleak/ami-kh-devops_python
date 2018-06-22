@@ -163,7 +163,8 @@
                 success: function (response) {
                     if (response.status == 1) {
                         // Logout
-                        window.location.reload();
+                        var login_url = '{% url "authentications:login" %}?next=/admin-portal/trust-management/add/'
+                        window.location.replace(login_url);
                     } else if (response.status == 2) {
                         if (response.data.page.total_elements == 0) {
                             showErrorMessage("User not found");
