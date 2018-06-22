@@ -50,7 +50,7 @@
                                 <input type="text" class="form-control input-rounded" name="truster_user_id"
                                        id="txt_truster_user_id"
                                        value="{{ truster_user_id|default_if_none:'' }}" data-name="txt_truster_name"
-                                       data-type='ddl_truster_user_type_id' onblur="listenId(this)">
+                                       data-type='ddl_truster_user_type_id' onblur="listenId(this)" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -79,7 +79,7 @@
                                 <input type="text" class="form-control input-rounded" name="trusted_user_id"
                                        id="txt_trusted_user_id"
                                        value="{{ trusted_user_id|default_if_none:'' }}" data-name="txt_trusted_name"
-                                       data-type='ddl_trusted_user_type_id' onblur="listenId(this)">
+                                       data-type='ddl_trusted_user_type_id' onblur="listenId(this)" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -110,7 +110,7 @@
                             <div class="col-sm-6">
                                 <input type="number" min="1" class="form-control input-rounded" name="expired_duration"
                                        id="txt_expired_duration"
-                                       value="{{ expired_duration|default_if_none:"" }}">
+                                       value="{{ expired_duration|default_if_none:"" }}" required>
                             </div>
                         </div>
 
