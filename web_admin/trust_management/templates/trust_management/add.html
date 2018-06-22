@@ -171,7 +171,7 @@
                         } else {
                             var firstName = response.data.agents[0].firstname;
                             var lastName = response.data.agents[0].lastname;
-                            $("#" + eName).val(firstName != null ? (firstName + " ") : "" + lastName != null ? lastName : "");
+                            $('#' + eName).attr('value',firstName != null ? (firstName + " ") : "" + lastName != null ? lastName : "");
                         }
                     } else {
                         // Failed
