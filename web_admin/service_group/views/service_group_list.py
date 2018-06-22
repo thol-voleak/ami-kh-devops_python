@@ -3,7 +3,9 @@ from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
+from web_admin.utils import calculate_page_range_from_page_info
 from django.shortcuts import render
+from django.contrib import messages
 
 from braces.views import GroupRequiredMixin
 
@@ -34,12 +36,19 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start get Service Group List ==========')
 
-        body = {'is_deleted': False}
+        body = {
+            'is_deleted': False,
+            'paging': True,
+            'page_index': 1
+        }
+
         data, is_success = self.get_service_group_list(body)
         self.logger.info('========== Finished get Service Group List ==========')
         if is_success:
-            result = {'data': data.get('service_groups')}
             page = data.get("page", {})
+            result = {'data': data.get('service_groups')}
+            result['paginator'] = page
+            result['page_range'] = calculate_page_range_from_page_info(page)
             result['search_count'] = page.get('total_elements', 0)
         else:
             result = {'data': []}
@@ -47,9 +56,16 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         service_group_id = request.POST.get('service_group_id')
+        page_index = request.POST.get('current_page_index')
 
         body = {}
         context = {}
+
+        if page_index:
+            body['page_index'] = int(page_index)
+            context['current_page_index'] = int(page_index)
+        else:
+            body['page_index']= 1
 
         body['is_deleted'] = False
         if service_group_id:
@@ -60,8 +76,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, is_success = self.get_service_group_list(body)
         self.logger.info('========== Finished get Service Group List ==========')
         if is_success:
-            context['data'] = data.get('service_groups')
             page = data.get("page", {})
+            context['data'] = data.get('service_groups')
+            context['paginator'] = page
+            context['page_range'] = calculate_page_range_from_page_info(page)
             context['search_count'] = page.get('total_elements', 0)
         else:
             context['data'] = []
@@ -78,11 +96,17 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_SERVICE_GROUP')
 
         if is_success:
-            self.logger.info('========== Finished get get bank list ==========')
+            self.logger.info('========== Finished get service group list ==========')
             for i in data.get('service_groups'):
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
+        else:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
 
         API_Logger.get_logging(loggers=self.logger,
                                response=data,
