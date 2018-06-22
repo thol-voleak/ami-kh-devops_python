@@ -67,6 +67,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching service groups list ==========')
 
         service_group_id = request.POST.get('service_group_id')
+        service_group_name = request.POST.get('service_group_name')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         from_time = request.POST.get('from_time')
@@ -77,6 +78,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         if service_group_id:
             body['service_group_id'] = service_group_id
+        if service_group_name:
+            body['service_group_name'] = service_group_name
         if from_created_timestamp:
             body['from_created_timestamp'] = self.convertStringToDateTime(from_created_timestamp, from_time)
         if to_created_timestamp:
@@ -89,6 +92,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         context.update({
             'service_group_id': service_group_id,
+            'service_group_name': service_group_name,
             'from_date': from_created_timestamp,
             'to_date': to_created_timestamp,
             'from_time': from_time,
