@@ -29,8 +29,9 @@ class TrustList(TemplateView):
         context = super(TrustList, self).get_context_data(**kwargs)
         body = {
             "paging": True,
-            "page_index": 1
-            # "is_deleted": False
+            "page_index": 1,
+            "is_deleted": False,
+            "is_expired": False
         }
 
         trust_role = request.GET.get('trust_role')
