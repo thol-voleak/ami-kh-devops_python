@@ -219,7 +219,7 @@
                                 {% endif %}
 {#                                {% if agent.has_permission_sofbank %}#}
                                     <button id="btn_trust" class="btn mb5 btn-outline btn-xs btn-primary"
-                                            onclick="location.href='{% url 'trust_management:trust_list' %}?user_id={{ agent.id }}&user_type=2'">Trust</button>
+                                            onclick="location.href='{% url 'trust_management:list_trust' %}?user_id={{ agent.id }}&user_type=2'">Trust</button>
 {#                                {% endif %}#}
                                 {% if agent.has_permission_suspend %}
                                     {% if not agent.is_suspended %}
