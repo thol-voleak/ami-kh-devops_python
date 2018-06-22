@@ -15,6 +15,18 @@
                 <div class="clearfix"></div>
             </div>
         </div>
+        <div class="col-xs-12">
+        <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+            <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+            <strong id="alert-msg"></strong>
+        </div>
+        </div>
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_agent">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert_msg"></strong>
+            </div>
+        </div>
 
         {% include "message.html" %}
 
@@ -93,15 +105,20 @@
                             <td class="col-sm-1">{{ trust.created_user.name|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ trust.expired_date|default_if_none:'' }}</td>
                             <td class="col-sm-1">
-                                <div id="service_btn_group">
+                                <div id="token_btn_group">
                                     <div class="btn-group">
                                         {#                                        {% if permissions.CAN_VIEW_SERVICE %}#}
                                         <a type="button"
                                            class="btn btn-outline btn-xs btn-info"
                                            role="button"
                                            id="btn_remove"
-                                           href="">
-                                            <span class="small">Remove</span>
+                                           data-truster-id='{{ trust.truster.id }}'
+                                           data-truster-type='{{ trust.truster.user_type.name }}'
+                                           data-trusted-id='{{ trust.trusted.id }}'
+                                           data-trusted-type='{{ trust.trusted.user_type.name }}'
+                                           data-token-id='{{ trust.id }}'
+                                           data-url="{% url 'trust_management:trust_remove' trust.id %}"
+                                           onClick="remove(this)"><span class="small">Remove</span>
                                         </a>
                                         {#                                        {% endif %}#}
                                     </div>
@@ -122,4 +139,74 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script>
+     function showErrorMessage(msg) {
+        $("#alert-msg").text(msg)
+        $("#msg-error").fadeIn(700);
+    }
+
+    function showSuccessMessage(msg) {
+          $("#alert_msg").text(msg);
+          $('#alert_agent').removeClass("alert-danger");
+          $('#alert_agent').addClass("alert-success");
+
+          $("#alert_agent").show();
+          $("html, body").animate({scrollTop: 0}, "slow");
+      }
+
+
+    function remove(e) {
+        var removeContentElem = document.createElement("div");
+        removeContentElem.innerHTML = '<div class="form-group row">'
+                                        +'<table border="0" style=" margin-left: 40px;">'
+                                        +'<tr><td class="col-sm-1" align="left" >Truster ID: '+ e.getAttribute('data-truster-id')+'</td>'
+                                        +'<td class="col-sm-1" align="left" >Trusted ID: '+ e.getAttribute('data-trusted-id')+'</td> </tr>'
+                                        +'<tr><td class="col-sm-1" align="left">Truster Type: '+ e.getAttribute('data-truster-type')+'</td>'
+                                        +'<td class="col-sm-1" align="left" >Trusted Type: '+ e.getAttribute('data-trusted-type')+'</td> </tr>'
+                                        +'</table>'
+                                        +'</div>';
+        swal({
+            content: removeContentElem,
+            icon: "warning",
+            title: "Confirm Remove Trust ?",
+            buttons: ['Cancel', 'Confirm'],
+            closeOnClickOutside: false
+        })
+        .then(function(isConfirm) {
+            if (isConfirm) {
+                var url = e.getAttribute('data-url');
+                var token_id = e.getAttribute('data-token-id');
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (response) {
+                        if (response.status == 1) {
+                            location.reload();
+                        } else if (response.status == 2) {
+                            var row = $(e).closest("tr");
+                            row.remove();
+                            showSuccessMessage('Removed trust token successfully');
+                        } else {
+                            // Failed
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('Error occur removing trust token' + token_id + msg);
+                        showErrorMessage(JSON.stringify(msg));
+                    }
+                });
+            }
+        });
+    }
+
+</script>
 {% endblock %}
