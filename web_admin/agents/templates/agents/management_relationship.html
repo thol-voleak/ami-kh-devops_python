@@ -367,7 +367,7 @@
                                                                          Share Benefit
                                                                         </button>
                                                                     {% else %}
-                                                                     data, success, status_message = self._get_relationships(params=params)       <button id="button_share_benefit"
+                                                                     <button id="button_share_benefit"
                                                                         data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                         data-relationship-id="{{ relationship.id | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
