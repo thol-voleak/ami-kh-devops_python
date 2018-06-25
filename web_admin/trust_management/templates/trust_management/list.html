@@ -193,6 +193,8 @@
                         } else if (response.status == 2) {
                             var row = $(e).closest("tr");
                             row.remove();
+                            var currentTotal = parseInt($("#lbl_total").text()) - 1;
+                            $("#lbl_total").text(currentTotal);
                             showSuccessMessage('Removed trust token successfully');
                         } else {
                             // Failed
