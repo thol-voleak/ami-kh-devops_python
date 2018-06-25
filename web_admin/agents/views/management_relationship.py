@@ -139,7 +139,9 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         list_relationship_type = request.POST.getlist('list_relationship_type')
         partner_role = request.POST.get('partner_role')
         relationship_partner_id = request.POST.get('relationship_partner_id')
-
+        msg_add = self.request.session.pop('msg_add', None)
+        if msg_add:
+            msg_add = json.loads(msg_add)
         if list_relationship_type:
             list_relationship_type = [int(i) for i in list_relationship_type]
             params['relationship_type_ids'] = list_relationship_type
@@ -185,6 +187,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
                     'default_tab': 1,
                     'partner_role': partner_role,
                     'relationship_partner_id': relationship_partner_id or None,
+                    'msg_add': msg_add
                 }
 
         self.logger.info('========== finish search relationship ==========')
