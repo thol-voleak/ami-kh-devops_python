@@ -1,9 +1,8 @@
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger, api_settings
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, build_logger, check_permissions
 from django.views.generic.base import TemplateView
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from web_admin.restful_helper import RestfulHelper
 import logging
 
@@ -14,14 +13,9 @@ class ListTrust(TemplateView):
     template_name = "trust_management/list.html"
     logger = logger
 
-    # def check_membership(self, permission):
-    #     self.logger.info(
-    #         "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-    #     return check_permissions_by_user(self.request.user, permission[0])
-
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        check_permissions(request, "CAN_SEARCH_TRUST")
+        self.logger = build_logger(request, __name__)
         return super(ListTrust, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -34,7 +28,6 @@ class ListTrust(TemplateView):
         }
 
         trust_role = request.GET.get('trust_role')
-        # if trust_role ====== if trust_role != None, != 0, != (), != [], != {}, defined
         if trust_role and trust_role != "all":
             body['role'] = trust_role
             context['trust_role'] = trust_role
@@ -74,21 +67,3 @@ class ListTrust(TemplateView):
             return success, data
         else:
             return success, status_message
-
-    # def post(self, request, *args, **kwargs):
-    #     context = super(TrustList, self).get_context_data(**kwargs)
-    #     opening_page_index = request.POST.get('current_page_index')
-    #
-    #     body = {}
-    #     body['paging'] = True
-    #     body['page_index'] = int(opening_page_index)
-    #
-    #     shop_types = self.get_shop_type(body)
-    #     page = shop_types.get("page", {})
-    #
-    #     context.update({
-    #         'shop_types': shop_types['shop_types'],
-    #         'paginator': page,
-    #         'page_range': calculate_page_range_from_page_info(page)
-    #     })
-    #     return render(request, self.template_name, context)
