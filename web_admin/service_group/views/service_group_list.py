@@ -6,6 +6,7 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from django.shortcuts import render
 from django.contrib import messages
 
@@ -64,7 +65,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
 
-        self.logger.info('========== Start searching service groups list ==========')
+        self.logger.info('========== Start {} service groups list =========='.format("downloading" if 'download' in request.POST else "searching"))
 
         service_group_id = request.POST.get('service_group_id')
         service_group_name = request.POST.get('service_group_name')
@@ -93,30 +94,40 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if modified_to_date:
             body['to_last_updated_timestamp'] = self.convertStringToDateTime(modified_to_date, modified_to_time)
 
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
-        data, is_success = self.get_service_group_list(body)
-        page = data.get("page", {})
+        if 'download' in request.POST:
+            file_type = request.POST.get('export-type')
+            body['file_type'] = file_type
+            body['row_number'] = 5000
+            is_success, data = export_file(self, body=body, url_download=api_settings.SERVICE_GROUP_LIST_PATH, api_logger=API_Logger)
+            if is_success:
+                response = make_download_file(data, file_type)
+                self.logger.info('========== Finish exporting payment service ==========')
+                return response
+        else:
+            body['paging'] = True
+            body['page_index'] = int(opening_page_index)
+            data, is_success = self.get_service_group_list(body)
+            page = data.get("page", {})
 
-        context.update({
-            'service_group_id': service_group_id,
-            'service_group_name': service_group_name,
-            'created_from_date': created_from_date,
-            'created_to_date': created_to_date,
-            'created_from_time': created_from_time,
-            'created_to_time': created_to_time,
-            'modified_from_date': modified_from_date,
-            'modified_to_date': modified_to_date,
-            'modified_from_time': modified_from_time,
-            'modified_to_time': modified_to_time,
-            'search_count': page.get('total_elements', 0),
-            'data': data['service_groups'],
-            'paginator': page,
-            'page_range': calculate_page_range_from_page_info(page),
-        })
+            context.update({
+                'service_group_id': service_group_id,
+                'service_group_name': service_group_name,
+                'created_from_date': created_from_date,
+                'created_to_date': created_to_date,
+                'created_from_time': created_from_time,
+                'created_to_time': created_to_time,
+                'modified_from_date': modified_from_date,
+                'modified_to_date': modified_to_date,
+                'modified_from_time': modified_from_time,
+                'modified_to_time': modified_to_time,
+                'search_count': page.get('total_elements', 0),
+                'data': data['service_groups'],
+                'paginator': page,
+                'page_range': calculate_page_range_from_page_info(page),
+            })
 
-        self.logger.info('========== Finish searching service groups list ==========')
-        return render(request, self.template_name, context)
+            self.logger.info('========== Finish searching service groups list ==========')
+            return render(request, self.template_name, context)
 
     def get_service_group_list(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SERVICE_GROUP_LIST_PATH,
@@ -128,7 +139,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_SERVICE_GROUP')
 
         if is_success:
-            self.logger.info('========== Finished get service group list ==========')
+            self.logger.info('Finished get service group list')
             for i in data.get('service_groups'):
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_edit'] = is_permission_edit
