@@ -49,6 +49,11 @@
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
                     </div>
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                        <input id="export-type" type="text" name="export-type" value="" />
+                        <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                               value="Download">
+                    </div>
                 </div>
 
                 <label class="pull-right" id="lbl_total">{{ search_count }}</label>
@@ -105,4 +110,23 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
+</script>
 {% endblock %}
