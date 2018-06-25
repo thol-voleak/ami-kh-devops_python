@@ -55,29 +55,35 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
              'msg_add': msg_add
              })
         self.logger.info('========== Start getting Relationships list ==========')
+        body['is_sharing_benefit'] = bool('true')
         data, success, status_message = self._get_relationships(params=body)
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
-            relationship_shared = -1
+            relationship_shared = []
             for relationship in relationships_list:
                 if relationship['is_sharing_benefit']:
-                    relationship_shared = relationship['id']
-                    break
+                    relationship_shared.append(relationship['id'])
 
-            summary_relationships = list(relationships_list)
-            if len(relationships_list) > 10:
-                summary_relationships = relationships_list[:10]
+            del body['is_sharing_benefit']
+            data, success, status_message = self._get_relationships(params=body)
+            if success:
+                relationships_list = data.get("relationships", [])
+                relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
 
-            page = data.get("page", {})
-            context.update(
-                {'search_count': len(relationships_list),
-                 'relationships': relationships_list,
-                 'relationship_shared': relationship_shared,
-                 'summary_relationships': summary_relationships,
-                 'relationship_list_length': len(relationships_list),
-                 'msg_add': msg_add
-                 })
+                summary_relationships = list(relationships_list)
+                if len(relationships_list) > 10:
+                    summary_relationships = relationships_list[:10]
+
+                page = data.get("page", {})
+                context.update(
+                    {'search_count': len(relationships_list),
+                     'relationships': relationships_list,
+                     'relationship_shared': relationship_shared,
+                     'summary_relationships': summary_relationships,
+                     'relationship_list_length': len(relationships_list),
+                     'msg_add': msg_add
+                     })
 
         self.logger.info('========== Finish getting Relationships list ==========')
 
@@ -148,26 +154,35 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             params['user_id'] = agent_id
 
         self.logger.info("Params: {} ".format(params))
+        params['is_sharing_benefit'] = bool('true')
         data, success, status_message = self._get_relationships(params=params)
-
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
-            relationship_shared = -1
-            page = data.get("page", {})
+            relationship_shared = []
+            for relationship in relationships_list:
+                if relationship['is_sharing_benefit']:
+                    relationship_shared.append(relationship['id'])
 
-            context = {
-                'agent_id': agent_id,
-                'permissions': permissions,
-                'search_count': len(relationships_list),
-                'relationships': relationships_list,
-                'relationship_shared': relationship_shared,
-                'relationship_type_id': list_relationship_type,
-                'relationship_types': relationship_types,
-                'default_tab': 1,
-                'partner_role': partner_role,
-                'relationship_partner_id': relationship_partner_id or None,
-            }
+            del params['is_sharing_benefit']
+            data, success, status_message = self._get_relationships(params=params)
+            if success:
+                relationships_list = data.get("relationships", [])
+                relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+                page = data.get("page", {})
+
+                context = {
+                    'agent_id': agent_id,
+                    'permissions': permissions,
+                    'search_count': len(relationships_list),
+                    'relationships': relationships_list,
+                    'relationship_shared': relationship_shared,
+                    'relationship_type_id': list_relationship_type,
+                    'relationship_types': relationship_types,
+                    'default_tab': 1,
+                    'partner_role': partner_role,
+                    'relationship_partner_id': relationship_partner_id or None,
+                }
 
         self.logger.info('========== finish search relationship ==========')
 

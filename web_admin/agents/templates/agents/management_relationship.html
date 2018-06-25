@@ -342,7 +342,7 @@
                                                                     Stop Sharing Benefit
                                                                     </button>
                                                                 {% else %}
-                                                                    {% if relationship.id  != relationship_shared and relationship_shared != -1 %}
+                                                                    {% if relationship_shared|length > 0 and relationship.id in relationship_shared %}
                                                                           <button id="button_share_benefit"
                                                                             data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                             data-relationship-id="{{ relationship.id | default_if_none:'' }}"
@@ -352,7 +352,7 @@
                                                                          Share Benefit
                                                                         </button>
                                                                     {% else %}
-                                                                           <button id="button_share_benefit"
+                                                                     data, success, status_message = self._get_relationships(params=params)       <button id="button_share_benefit"
                                                                         data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                         data-relationship-id="{{ relationship.id | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
