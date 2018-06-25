@@ -375,7 +375,7 @@
         } else {
             grant = false;
             url = e.getAttribute('data-url-revoke');
-            title = 'Are you sure you want to block this user from using ' + channelName + ' Channel';
+            title = '\'Are you sure you want to revoke customer access to ' + channelName + ' channel?';
         }
 
         swal({
@@ -406,7 +406,7 @@
                                 if (grant) {
                                     showSuccessMessage('Customer is now granted access to ' + channelName + ' Channel');
                                 } else {
-                                    showSuccessMessage('Customer is now revoked access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Revoke customer access to ' + channelName + ' channel successfully');
                                 }
                             } else {
                                 // Failed
