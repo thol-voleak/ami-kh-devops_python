@@ -163,7 +163,7 @@ class AddAction(TemplateView, GetHeaderMixin):
                 data_type = request.POST.get(reward_data_type)
                 if not data_type:
                     continue
-                if data_type == 'from_database':
+                if data_type == 'from_event':
                     reward_detail_name = 'reward_detail_name' + suffix
                     detail_name = request.POST.get(reward_detail_name)
                     reward_key_value_type = ''
