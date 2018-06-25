@@ -104,7 +104,8 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'from_created_timestamp': from_created_timestamp,
                      'to_created_timestamp': to_created_timestamp,
                      'bank_sof_list': [],
-                     'search_by': body
+                     'search_by': body,
+                     'is_show_export': False
                      }
                 )
 
