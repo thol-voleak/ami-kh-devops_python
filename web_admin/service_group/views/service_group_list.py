@@ -110,7 +110,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['paging'] = True
             body['page_index'] = int(opening_page_index)
             data, is_success = self.get_service_group_list(body)
-            page = data.get("page", {})
 
             context.update({
                 'service_group_id': service_group_id,
@@ -123,12 +122,21 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'modified_to_date': modified_to_date,
                 'modified_from_time': modified_from_time,
                 'modified_to_time': modified_to_time,
-                'search_count': page.get('total_elements', 0),
-                'data': data['service_groups'],
-                'paginator': page,
-                'page_range': calculate_page_range_from_page_info(page),
-                'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
             })
+
+            if is_success:
+                page = data.get("page", {})
+                context.update({
+                    'search_count': page.get('total_elements', 0),
+                    'data': data['service_groups'],
+                    'paginator': page,
+                    'page_range': calculate_page_range_from_page_info(page),
+                    'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
+                })
+            else:
+                context.update({
+                    'data': []
+                })
 
             self.logger.info('========== Finish searching service groups list ==========')
             return render(request, self.template_name, context)
@@ -152,6 +160,9 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             if status_code == "Timeout":
                 self.logger.error('Search service group list request timeout')
                 status_message = 'Search timeout, please try again or contact technical support'
+            else:
+                self.logger.error('Search service group list request failed')
+                status_message = 'Search failed, please try again or contact support'
 
             messages.add_message(
                 self.request,
