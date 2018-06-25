@@ -41,8 +41,7 @@ class UpdateView(TemplateView, RESTfulMethods):
         self.logger.info('========== Finish get service detail ==========')
         tier_amount_froms, status7 = self._get_tier_amount_froms()
         self.logger.info('========== Finish get tier amount froms ==========')
-        payment_decimals, status8 = self._get_payment_decimal()
-        self.logger.info('========== Finish get payment decimal ==========')
+
         currencies = self._get_currencies_list()
 
         if service_detail and currencies:
@@ -50,53 +49,20 @@ class UpdateView(TemplateView, RESTfulMethods):
             if currency_name in currencies.keys():
                 decimal = currencies[currency_name]
 
-        payment_decimal = payment_decimals['value']
-
-        a_label = self.get_label_detail('A')
-        b_label = self.get_label_detail('B')
-        c_label = self.get_label_detail('C')
-        d_label = self.get_label_detail('D')
-        e_label = self.get_label_detail('E')
-        f_label = self.get_label_detail('F')
-        g_label = self.get_label_detail('G')
-        h_label = self.get_label_detail('H')
-        i_label = self.get_label_detail('I')
-        j_label = self.get_label_detail('J')
-        k_label = self.get_label_detail('K')
-        l_label = self.get_label_detail('L')
-        m_label = self.get_label_detail('M')
-        n_label = self.get_label_detail('N')
-        o_label = self.get_label_detail('O')
-
         command_name, status6 = self._get_command_name(command_id)
-        if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
+        if status1 and status2 and status3 and status4 and status5 and status6 and status7:
             context.update({
                 'conditions': tier_conditions,
                 'fee_types':  fee_types,
                 'bonus_types': bonus_types,
                 'tier_amount_froms': tier_amount_froms,
                 'amount_types': amount_types,
-                'payment_decimal': payment_decimal,
                 'service_name': service_detail.get('service_name', 'unknown'),
                 'command_name': command_name,
                 'update_tier': tier_to_update,
-                'a_label': a_label,
-                'b_label': b_label,
-                'c_label': c_label,
-                'd_label': d_label,
-                'e_label': e_label,
-                'f_label': f_label,
-                'g_label': g_label,
-                'h_label': h_label,
-                'i_label': i_label,
-                'j_label': j_label,
-                'k_label': k_label,
-                'l_label': l_label,
-                'm_label': m_label,
-                'n_label': n_label,
-                'o_label': o_label,
                 'decimal': int(decimal),
             })
+            context = self._update_context(context)
         self.logger.info('========== Finish Loading updating Tier Page==========')
         return render(request, self.template_name, context)
 
@@ -363,6 +329,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                         'decimal': int(decimal),
                         'update_tier': params
                     })
+                    context = self._update_context(context)
                 return render(request, self.template_name, context)
 
         data, success = self._edit_tier(fee_tier_id, params)
@@ -388,23 +355,6 @@ class UpdateView(TemplateView, RESTfulMethods):
             amount_types, status4 = self._get_amount_types()
             service_detail, status5 = self._get_service_detail(service_id)
             tier_amount_froms, status7 = self._get_tier_amount_froms()
-            payment_decimals, status8 = self._get_payment_decimal()
-            payment_decimal = payment_decimals['value']
-            a_label = self.get_label_detail('A')
-            b_label = self.get_label_detail('B')
-            c_label = self.get_label_detail('C')
-            d_label = self.get_label_detail('D')
-            e_label = self.get_label_detail('E')
-            f_label = self.get_label_detail('F')
-            g_label = self.get_label_detail('G')
-            h_label = self.get_label_detail('H')
-            i_label = self.get_label_detail('I')
-            j_label = self.get_label_detail('J')
-            k_label = self.get_label_detail('K')
-            l_label = self.get_label_detail('L')
-            m_label = self.get_label_detail('M')
-            n_label = self.get_label_detail('N')
-            o_label = self.get_label_detail('O')
             currencies = self._get_currencies_list()
             if service_detail and currencies:
                 currency_name = service_detail['currency']
@@ -422,24 +372,51 @@ class UpdateView(TemplateView, RESTfulMethods):
                     'decimal': int(decimal),
                     'update_tier': params,
                     'tier_amount_froms': tier_amount_froms,
-                    'payment_decimal': payment_decimal,
-                    'a_label': a_label,
-                    'b_label': b_label,
-                    'c_label': c_label,
-                    'd_label': d_label,
-                    'e_label': e_label,
-                    'f_label': f_label,
-                    'g_label': g_label,
-                    'h_label': h_label,
-                    'i_label': i_label,
-                    'j_label': j_label,
-                    'k_label': k_label,
-                    'l_label': l_label,
-                    'm_label': m_label,
-                    'n_label': n_label,
-                    'o_label': o_label,
                 })
+                context = self._update_context(context)
             return render(request, self.template_name, context)
+
+    def _update_context(self, context):
+        a_label = self.get_label_detail('A')
+        b_label = self.get_label_detail('B')
+        c_label = self.get_label_detail('C')
+        d_label = self.get_label_detail('D')
+        e_label = self.get_label_detail('E')
+        f_label = self.get_label_detail('F')
+        g_label = self.get_label_detail('G')
+        h_label = self.get_label_detail('H')
+        i_label = self.get_label_detail('I')
+        j_label = self.get_label_detail('J')
+        k_label = self.get_label_detail('K')
+        l_label = self.get_label_detail('L')
+        m_label = self.get_label_detail('M')
+        n_label = self.get_label_detail('N')
+        o_label = self.get_label_detail('O')
+
+        payment_decimals, status = self._get_payment_decimal()
+        self.logger.info('========== Finish get payment decimal ==========')
+        payment_decimal = payment_decimals['value']
+
+        context.update({
+            'a_label': a_label,
+            'b_label': b_label,
+            'c_label': c_label,
+            'd_label': d_label,
+            'e_label': e_label,
+            'f_label': f_label,
+            'g_label': g_label,
+            'h_label': h_label,
+            'i_label': i_label,
+            'j_label': j_label,
+            'k_label': k_label,
+            'l_label': l_label,
+            'm_label': m_label,
+            'n_label': n_label,
+            'o_label': o_label,
+            'payment_decimal': payment_decimal,
+        })
+
+        return context
 
     def _edit_tier(self, fee_tier_id, data):
         return self._put_method(api_path=api_settings.TIER_PATH.format(fee_tier_id),
