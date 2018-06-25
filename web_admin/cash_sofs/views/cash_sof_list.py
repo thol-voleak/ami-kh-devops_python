@@ -64,22 +64,33 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 return response
         else:
             self.logger.info('========== Start search cash source of fund ==========')
-            data = self.get_cash_sof_list(body, opening_page_index)
+            data, success = self.get_cash_sof_list(body, opening_page_index)
 
-            if data is not None:
-                data = self.format_data(data)
-            result_data = data.get('cash_sofs', [])
-            page = data.get("page", {})
-            self.logger.info('Page: {}'.format(page))
-            context = {'sof_list': result_data,
-                       'user_id': user_id,
-                       'user_type_id': user_type_id,
-                       'currency': currency,
-                       'search_count': page.get('total_elements', 0),
-                       'paginator': page,
-                       'page_range': calculate_page_range_from_page_info(page),
-                       'is_show_export': True
-                       }
+            if not success:
+                context = {'sof_list': [],
+                           'user_id': user_id,
+                           'user_type_id': user_type_id,
+                           'currency': currency,
+                           'search_count': 0,
+                           'is_show_export': False
+                           }
+
+                return render(request, self.template_name, context)
+            else:
+                if data is not None:
+                    data = self.format_data(data)
+                result_data = data.get('cash_sofs', [])
+                page = data.get("page", {})
+                self.logger.info('Page: {}'.format(page))
+                context = {'sof_list': result_data,
+                           'user_id': user_id,
+                           'user_type_id': user_type_id,
+                           'currency': currency,
+                           'search_count': page.get('total_elements', 0),
+                           'paginator': page,
+                           'page_range': calculate_page_range_from_page_info(page),
+                           'is_show_export': True
+                           }
             self.logger.info('========== End search cash source of fund ==========')
             return render(request, self.template_name, context)
 
@@ -96,8 +107,7 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             status_code=status_code,
             is_getting_list=True
         )
-
-        return data
+        return data, success
 
     def format_data(self, data):
         for i in data['cash_sofs']:
