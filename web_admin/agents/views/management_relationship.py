@@ -1,3 +1,5 @@
+from builtins import print
+
 from braces.views import GroupRequiredMixin
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
@@ -8,6 +10,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
+from django.http import JsonResponse
 from agents.utils import check_permission_agent_management
 import json
 import logging
@@ -188,6 +191,34 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
 
         return render(request, self.template_name, context)
 
+    def put(self, request, *args, **kwargs):
+        response = request.body.decode('utf-8').replace('\0', '')
+        data_json = json.loads(response);
 
+        api_path = api_settings.GRANT_TRUST_URL
+        success, status_code, status_message, response_data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=data_json)
 
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            return JsonResponse({"invalid_access_token": True})
+        response_data = response_data or {}
 
+        # API_Logger.post_logging(loggers=self.logger, params=data_json, response=response_data.get('data', []),
+        #                         status_code=status_code, is_getting_list=True)
+
+        token_count = len(response_data)
+
+        jsonResponse = JsonResponse(
+                {
+                    "status":{
+                        "status_code":status_code,
+                        "status_message":status_message
+                    } ,
+                    "data":token_count,
+                    "invalid_access_token": False
+                }
+        )
+        return jsonResponse
