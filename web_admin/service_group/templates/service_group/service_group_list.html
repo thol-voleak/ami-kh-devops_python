@@ -18,14 +18,8 @@
             </div>
         </div>
 
-        {% for message in messages %}
-            <div class="col-xs-12">
-                <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ message|capfirst }}</strong>
-                </div>
-            </div>
-        {% endfor %}
+        {% include "message.html" %}
+
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'service_group:service_group_list' %}">
                 {% csrf_token %}

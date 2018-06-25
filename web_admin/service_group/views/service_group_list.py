@@ -149,6 +149,10 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
         else:
+            if status_code == "Timeout":
+                self.logger.error('Search service group list request timeout')
+                status_message = 'Search timeout, please try again or contact technical support'
+
             messages.add_message(
                 self.request,
                 messages.ERROR,
