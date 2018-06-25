@@ -46,9 +46,7 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
-        body = {}
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
+        body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0' and user_type_id is not None:
@@ -83,9 +81,11 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'from_created_timestamp': from_created_timestamp,
                  'to_created_timestamp': to_created_timestamp,
                  'bank_sof_list': cards_list,
-                 'search_by': body
+                 'search_by': body,
+                 'is_show_export': True
                  }
             )
+
         else:
             context.update(
                 {'search_count': 0,
