@@ -61,7 +61,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         else:
             context.update({
                 'data': [],
-                'is_show_export': True
+                'is_show_export': False
             })
         return context
 
@@ -135,7 +135,8 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 })
             else:
                 context.update({
-                    'data': []
+                    'data': [],
+                    'is_show_export': False
                 })
 
             self.logger.info('========== Finish searching service groups list ==========')
