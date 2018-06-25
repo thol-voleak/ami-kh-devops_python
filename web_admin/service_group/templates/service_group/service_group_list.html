@@ -108,28 +108,17 @@
                 <div class="form-group col-md-12">
                     <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                     <label class="pull-right" >Total records found:&nbsp;</label>
-                    <div class="pull-right dropdown export-file-dropdown">
-                        <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
-                        <ul class="dropdown-menu" aria-labelledby="button_export">
-                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
-                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
-                        </ul>
-                    </div>
-                    <div class="pull-right dropdown export-file-dropdown">
-                        <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
-                        <ul class="dropdown-menu" aria-labelledby="button_export">
-                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
-                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
-                        </ul>
-                        <div class="col-xs-1 col-xs-offset-3" hidden>
-                            <input id="export-type" type="text" name="export-type" value="" />
-                            <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
-                                   value="Download">
-                        </div>
-                    </div>
 
+                    {% if is_show_export %}
+                    <div class="pull-right dropdown export-file-dropdown">
+                        <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                        <ul class="dropdown-menu" aria-labelledby="button_export">
+                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
             </form>
             <div class="table-responsive">

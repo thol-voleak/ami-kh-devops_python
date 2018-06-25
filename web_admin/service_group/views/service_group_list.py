@@ -5,7 +5,6 @@ from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
-from web_admin.utils import calculate_page_range_from_page_info
 from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from django.shortcuts import render
 from django.contrib import messages
@@ -56,10 +55,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'data': data.get('service_groups'),
                 'paginator': page,
                 'page_range': calculate_page_range_from_page_info(page),
-                'search_count': page.get('total_elements', 0)
+                'search_count': page.get('total_elements', 0),
+                'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
             })
         else:
-            context['data'] = []
+            context.update({
+                'data': [],
+                'is_show_export': True
+            })
         return context
 
     def post(self, request, *args, **kwargs):
@@ -124,6 +127,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'data': data['service_groups'],
                 'paginator': page,
                 'page_range': calculate_page_range_from_page_info(page),
+                'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
             })
 
             self.logger.info('========== Finish searching service groups list ==========')
