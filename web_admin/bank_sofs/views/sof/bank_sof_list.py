@@ -6,7 +6,7 @@ from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from web_admin import api_settings, setup_logger, RestFulClient
 import logging
 
@@ -37,7 +37,7 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start searching bank SOF ==========')
+        self.logger.info('========== Start {} bank SOF =========='.format("downloading" if 'download' in request.POST else "searching"))
 
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
@@ -66,41 +66,50 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['to_created_timestamp'] = new_to_created_timestamp
 
         context = {}
-        data, success, status_message = self._get_bank_sof_list(body=body)
-        body['from_created_timestamp'] = from_created_timestamp
-        body['to_created_timestamp'] = to_created_timestamp
-        if success:
-            cards_list = data.get("bank_sofs", [])
-            page = data.get("page", {})
-            self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 #'user_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp,
-                 'bank_sof_list': cards_list,
-                 'search_by': body,
-                 'is_show_export': True
-                 }
-            )
-
+        if 'download' in request.POST:
+            file_type = request.POST.get('export-type')
+            body['file_type'] = file_type
+            body['row_number'] = 5000
+            is_success, data = export_file(self, body=body, url_download=self.search_banks_sof, api_logger=API_Logger)
+            if is_success:
+                response = make_download_file(data, file_type)
+                self.logger.info('========== Finish exporting bank SOF ==========')
+                return response
         else:
-            context.update(
-                {'search_count': 0,
-                 'paginator': {},
-                 # 'user_id': user_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp,
-                 'bank_sof_list': [],
-                 'search_by': body,
-                 'is_show_export': False
-                 }
-            )
+            data, success, status_message = self._get_bank_sof_list(body=body)
+            body['from_created_timestamp'] = from_created_timestamp
+            body['to_created_timestamp'] = to_created_timestamp
+            if success:
+                cards_list = data.get("bank_sofs", [])
+                page = data.get("page", {})
+                self.logger.info("Page: {}".format(page))
+                context.update(
+                    {'search_count': page.get('total_elements', 0),
+                     'paginator': page,
+                     'page_range': calculate_page_range_from_page_info(page),
+                     #'user_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp,
+                     'bank_sof_list': cards_list,
+                     'search_by': body,
+                     'is_show_export': True
+                     }
+                )
 
-        self.logger.info('========== End searching bank SOF ==========')
-        return render(request, self.template_name, context)
+            else:
+                context.update(
+                    {'search_count': 0,
+                     'paginator': {},
+                     # 'user_id': user_id,
+                     'from_created_timestamp': from_created_timestamp,
+                     'to_created_timestamp': to_created_timestamp,
+                     'bank_sof_list': [],
+                     'search_by': body
+                     }
+                )
+
+            self.logger.info('========== End searching bank SOF ==========')
+            return render(request, self.template_name, context)
 
     def _get_bank_sof_list(self, body):
         success, status_code, status_message, data = RestFulClient.post(url=self.search_banks_sof,
