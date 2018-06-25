@@ -68,10 +68,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         service_group_id = request.POST.get('service_group_id')
         service_group_name = request.POST.get('service_group_name')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
-        from_time = request.POST.get('from_time')
-        to_time = request.POST.get('to_time')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
+        modified_from_date = request.POST.get('modified_from_date')
+        modified_to_date = request.POST.get('modified_to_date')
+        modified_from_time = request.POST.get('modified_from_time')
+        modified_to_time = request.POST.get('modified_to_time')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {'is_deleted': False}
@@ -80,10 +84,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['service_group_id'] = service_group_id
         if service_group_name:
             body['service_group_name'] = service_group_name
-        if from_created_timestamp:
-            body['from_created_timestamp'] = self.convertStringToDateTime(from_created_timestamp, from_time)
-        if to_created_timestamp:
-            body['to_created_timestamp'] = self.convertStringToDateTime(to_created_timestamp, to_time)
+        if created_from_date:
+            body['from_created_timestamp'] = self.convertStringToDateTime(created_from_date, created_from_time)
+        if created_to_date:
+            body['to_created_timestamp'] = self.convertStringToDateTime(created_to_date, created_to_time)
+        if modified_from_date:
+            body['from_last_updated_timestamp'] = self.convertStringToDateTime(modified_from_date, modified_from_time)
+        if modified_to_date:
+            body['to_last_updated_timestamp'] = self.convertStringToDateTime(modified_to_date, modified_to_time)
 
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
@@ -93,10 +101,14 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context.update({
             'service_group_id': service_group_id,
             'service_group_name': service_group_name,
-            'from_date': from_created_timestamp,
-            'to_date': to_created_timestamp,
-            'from_time': from_time,
-            'to_time': to_time,
+            'created_from_date': created_from_date,
+            'created_to_date': created_to_date,
+            'created_from_time': created_from_time,
+            'created_to_time': created_to_time,
+            'modified_from_date': modified_from_date,
+            'modified_to_date': modified_to_date,
+            'modified_from_time': modified_from_time,
+            'modified_to_time': modified_to_time,
             'search_count': page.get('total_elements', 0),
             'data': data['service_groups'],
             'paginator': page,
@@ -137,10 +149,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         today = date.today()
         yesterday = today - timedelta(1)
         tomorrow = today + timedelta(1)
-        context['from_date'] = yesterday.strftime('%Y-%m-%d')
-        context['to_date'] = tomorrow.strftime('%Y-%m-%d')
-        context['from_time'] = "00:00:00"
-        context['to_time'] = "00:00:00"
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
+        context['modified_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['modified_from_time'] = "00:00:00"
+        context['modified_to_time'] = "00:00:00"
+
 
     def convertStringToDateTime(self, date_str, time_str):
         _date = datetime.strptime(date_str, "%Y-%m-%d")

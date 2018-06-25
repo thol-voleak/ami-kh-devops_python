@@ -1,3 +1,5 @@
+from builtins import print
+
 from braces.views import GroupRequiredMixin
 from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
@@ -8,6 +10,7 @@ from web_admin.api_logger import API_Logger
 from web_admin.api_settings import SEARCH_RELATIONSHIP, RELATIONSHIP_TYPES_LIST
 from web_admin.get_header_mixins import GetHeaderMixin
 from authentications.apps import InvalidAccessToken
+from django.http import JsonResponse
 from agents.utils import check_permission_agent_management
 import json
 import logging
@@ -55,29 +58,35 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
              'msg_add': msg_add
              })
         self.logger.info('========== Start getting Relationships list ==========')
+        body['is_sharing_benefit'] = bool('true')
         data, success, status_message = self._get_relationships(params=body)
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
-            relationship_shared = -1
+            relationship_shared = []
             for relationship in relationships_list:
                 if relationship['is_sharing_benefit']:
-                    relationship_shared = relationship['id']
-                    break
+                    relationship_shared.append(relationship['id'])
 
-            summary_relationships = list(relationships_list)
-            if len(relationships_list) > 10:
-                summary_relationships = relationships_list[:10]
+            del body['is_sharing_benefit']
+            data, success, status_message = self._get_relationships(params=body)
+            if success:
+                relationships_list = data.get("relationships", [])
+                relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
 
-            page = data.get("page", {})
-            context.update(
-                {'search_count': len(relationships_list),
-                 'relationships': relationships_list,
-                 'relationship_shared': relationship_shared,
-                 'summary_relationships': summary_relationships,
-                 'relationship_list_length': len(relationships_list),
-                 'msg_add': msg_add
-                 })
+                summary_relationships = list(relationships_list)
+                if len(relationships_list) > 10:
+                    summary_relationships = relationships_list[:10]
+
+                page = data.get("page", {})
+                context.update(
+                    {'search_count': len(relationships_list),
+                     'relationships': relationships_list,
+                     'relationship_shared': relationship_shared,
+                     'summary_relationships': summary_relationships,
+                     'relationship_list_length': len(relationships_list),
+                     'msg_add': msg_add
+                     })
 
         self.logger.info('========== Finish getting Relationships list ==========')
 
@@ -148,31 +157,68 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             params['user_id'] = agent_id
 
         self.logger.info("Params: {} ".format(params))
+        params['is_sharing_benefit'] = bool('true')
         data, success, status_message = self._get_relationships(params=params)
-
         if success:
             relationships_list = data.get("relationships", [])
             relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
-            relationship_shared = -1
-            page = data.get("page", {})
+            relationship_shared = []
+            for relationship in relationships_list:
+                if relationship['is_sharing_benefit']:
+                    relationship_shared.append(relationship['id'])
 
-            context = {
-                'agent_id': agent_id,
-                'permissions': permissions,
-                'search_count': len(relationships_list),
-                'relationships': relationships_list,
-                'relationship_shared': relationship_shared,
-                'relationship_type_id': list_relationship_type,
-                'relationship_types': relationship_types,
-                'default_tab': 1,
-                'partner_role': partner_role,
-                'relationship_partner_id': relationship_partner_id or None,
-            }
+            del params['is_sharing_benefit']
+            data, success, status_message = self._get_relationships(params=params)
+            if success:
+                relationships_list = data.get("relationships", [])
+                relationships_list = [relationship for relationship in relationships_list if not relationship['is_deleted']]
+                page = data.get("page", {})
+
+                context = {
+                    'agent_id': agent_id,
+                    'permissions': permissions,
+                    'search_count': len(relationships_list),
+                    'relationships': relationships_list,
+                    'relationship_shared': relationship_shared,
+                    'relationship_type_id': list_relationship_type,
+                    'relationship_types': relationship_types,
+                    'default_tab': 1,
+                    'partner_role': partner_role,
+                    'relationship_partner_id': relationship_partner_id or None,
+                }
 
         self.logger.info('========== finish search relationship ==========')
 
         return render(request, self.template_name, context)
 
+    def put(self, request, *args, **kwargs):
+        response = request.body.decode('utf-8').replace('\0', '')
+        data_json = json.loads(response);
 
+        api_path = api_settings.GRANT_TRUST_URL
+        success, status_code, status_message, response_data = RestFulClient.post(
+            url=api_path,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=data_json)
 
+        if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+            return JsonResponse({"invalid_access_token": True})
+        response_data = response_data or {}
 
+        # API_Logger.post_logging(loggers=self.logger, params=data_json, response=response_data.get('data', []),
+        #                         status_code=status_code, is_getting_list=True)
+
+        token_count = len(response_data)
+
+        jsonResponse = JsonResponse(
+                {
+                    "status":{
+                        "status_code":status_code,
+                        "status_message":status_message
+                    } ,
+                    "data":token_count,
+                    "invalid_access_token": False
+                }
+        )
+        return jsonResponse

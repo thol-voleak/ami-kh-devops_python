@@ -211,7 +211,7 @@
 
     function activate(e) {
         swal({
-                title: "Are you sure you want to active device?",
+                title: "Are you sure you want to enable device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -259,7 +259,7 @@
 
     function inactive(e) {
         swal({
-                title: "Are you sure you want to inactive device?",
+                title: "Are you sure you want to disable device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -308,7 +308,7 @@
 
     function deleteDevice(e) {
         swal({
-                title: "Are you sure you want to delete device?",
+                title: "Are you sure you want to unbind device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -341,7 +341,7 @@
                                 if(currentTotal <= 0) {
                                     $("#div_devices_management").remove();
                                 }
-                                showSuccessMessage('Delete device successfully');
+                                showSuccessMessage('Unbind device successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
@@ -367,7 +367,7 @@
         } else {
             grant = false;
             url = e.getAttribute('data-url-revoke');
-            title = 'Are you sure you want to block this user from using ' + channelName + ' Channel';
+             title = 'Are you sure you want to revoke customer access to ' + channelName + ' channel?';
         }
 
         swal({
@@ -376,7 +376,7 @@
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
-                closeOnClickOutside: false,
+                closeOnClickOutside: false,want
                 closeOnConfirm: true,
                 closeOnCancel: true
             }, function (isConfirm) {
@@ -398,7 +398,7 @@
                                 if (grant) {
                                     showSuccessMessage('Customer is now granted access to ' + channelName + ' Channel');
                                 } else {
-                                    showSuccessMessage('Customer is now revoked access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Revoke customer access to ' + channelName + ' channel successfully');
                                 }
                             } else {
                                 // Failed

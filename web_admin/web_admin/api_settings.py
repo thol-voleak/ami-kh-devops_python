@@ -61,6 +61,7 @@ GET_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/identity-types'
 DELETE_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}'
 SHARE_BENEFIT_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}/sharing-benefit'
 ADD_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships'
+GRANT_TRUST_URL = 'api-gateway/trust-management/' + API_VERSION + '/admin/tokens'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'

@@ -67,8 +67,9 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                    'currency': currency,
                    'search_count': page.get('total_elements', 0),
                    'paginator': page,
-                   'page_range': calculate_page_range_from_page_info(page)
-                    }
+                   'page_range': calculate_page_range_from_page_info(page),
+                   'is_show_export': True
+                   }
         self.logger.info('========== End search cash source of fund ==========')
         return render(request, self.template_name, context)
 

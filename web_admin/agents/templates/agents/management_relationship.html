@@ -260,15 +260,25 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-                                        <label class="pull-right">Total Relationships Found:&nbsp;</label>
                                     </form>
                                     <div class="panel-body">
+
+                                        <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
+                                            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Action <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a onclick="grantTrust()">Grant Trust</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                                        <label class="pull-right">Total Relationships Found:&nbsp;</label>
+
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped mb0"
                                                    id="tbl_relationship_management">
                                                 <thead>
                                                 <tr>
+                                                    <th><input type="checkbox" name="select-all" id="select-all" />
                                                     <th id="relationship_type">Relationship Type</th>
                                                     <th id="main_id">
                                                         <span class="info-tooltip">
@@ -295,7 +305,12 @@
                                                 </thead>
                                                 <tbody id="agent_table_body">
                                                 {% for relationship in relationships %}
-                                                    <tr>
+                                                    <tr class="checkboxlist">
+                                                        <td>
+                                                            <input type="checkbox" name="relationship_checkbox" id="chk_relationship_{{ relationship.id }}" value="{{ relationship.id }}" data-main-agent="{{ relationship.main_user.user_id }}" data-sub-agent = {{ relationship.sub_user.user_id }} />
+                                                            <input type="hidden" name="main_agent_id_{{ relationship.id}}" value="{{ relationship.main_user.user_id }}"/>
+                                                            <input type="hidden" name="sub_agent_id_{{ relationship.id}}" value="{{ relationship.sub_user.user_id }}"/>
+                                                        </td>
                                                         <td>{{ relationship.relationship_type.name|default_if_none:'' }}</td>
                                                         {% if agent_id == relationship.main_user.user_id %}
                                                             <td><b><a id="{{ relationship.main_user.user_id }}"
@@ -342,7 +357,7 @@
                                                                     Stop Sharing Benefit
                                                                     </button>
                                                                 {% else %}
-                                                                    {% if relationship.id  != relationship_shared and relationship_shared != -1 %}
+                                                                    {% if relationship_shared|length > 0 and relationship.id in relationship_shared %}
                                                                           <button id="button_share_benefit"
                                                                             data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                             data-relationship-id="{{ relationship.id | default_if_none:'' }}"
@@ -352,7 +367,7 @@
                                                                          Share Benefit
                                                                         </button>
                                                                     {% else %}
-                                                                           <button id="button_share_benefit"
+                                                                     data, success, status_message = self._get_relationships(params=params)       <button id="button_share_benefit"
                                                                         data-url="{% url 'agents:share_benefit_relationship' relationship.id %}"
                                                                         data-relationship-id="{{ relationship.id | default_if_none:'' }}"
                                                                         data-relationship-main-id="{{ relationship.main_user.user_id }}"
@@ -561,6 +576,77 @@
 
         }
 
+        function grantTrust(){
+
+            var arr = [];
+            var url = '{% url 'agents:agent_management_relationship' agent_id %}';
+
+            var selectedPair = $('input[name="relationship_checkbox"]:checkbox:checked').length
+            if(selectedPair == 0 ){
+                return ;
+            }
+
+            swal({
+                icon: "warning",
+                title: "User selected :"+ selectedPair,
+                text: "Do you wish to Grant Trust ?",
+                buttons: true,
+                dangerMode: true,
+                closeOnClickOutside: false
+            })
+            .then(function(isConfirm) {
+                if (isConfirm) {
+                    $('input[name="relationship_checkbox"]:checkbox:checked').each(function () {
+                        var relationshipId = $(this).val();
+                        var trusterId = {{ agent_id }};
+                        var trustedId ;
+                        var mainAgentId = $(this)[0].getAttribute("data-main-agent");
+                        var subAgentId =  $(this)[0].getAttribute("data-sub-agent");
+                        trustedId = trusterId != mainAgentId ? mainAgentId : subAgentId;
+
+                        var trustObject = {};
+                        trustObject.truster_user_id =trusterId;
+                        trustObject.truster_user_type_id =2;
+                        trustObject.trusted_user_id =parseInt(trustedId);
+                        trustObject.trusted_user_type_id =2;
+                        trustObject.expired_unit='year';
+                        trustObject.expired_duration=10;
+
+                        arr.push(trustObject);
+
+                    });
+
+                    $.ajax({
+                        url : url,
+                        type : "PUT",
+                        dataType:"json",
+                        data: JSON.stringify({"trusts":arr}),
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: function (response) {
+
+                            console.log(response);
+                            if(response.invalid_access_token){
+                                var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/agents/{{agent_id}}/management/relationship";
+                                window.location.replace(url);
+                                location.reload();
+                            }
+                            else {
+                                if(response.status.status_code == "success"){
+                                    showSuccessMessage("Generate "+response.data + " token(s) successfully")
+                                }else{
+                                    showErrorMessage(response.status.status_message)
+                                }
+                            }
+                        },
+                        error: function (response) {
+                            console.log(response)
+                        }
+                    });
+                }
+            })
+        }
         function showErrorMessage(msg) {
             $("#alert-msg").text(msg);
             $('#alert-relationship')
@@ -568,6 +654,7 @@
                 .addClass("alert-danger")
                 .fadeIn(700);
             $(".delete-message").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
         }
 
         function showSuccessMessage(msg) {
@@ -784,6 +871,15 @@
             });
             $('#tbl_relationship_management').on('click', '.button_stop_share_benefit', function (ele) {
                 shareBenefit(this, false);
+            });
+
+            $('#select-all').on('change', function() {
+                $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+            });
+
+            $('.checkboxlist input[type="checkbox"]').on('change', function () {
+                var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
+                $('#select-all').prop('checked', allChecked);
             });
         });
 

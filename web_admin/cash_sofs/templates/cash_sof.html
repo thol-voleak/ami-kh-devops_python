@@ -33,6 +33,18 @@
                                value="Search">
                     </div>
                 </div>
+
+                {% if is_show_export %}
+                    <div class="pull-right dropdown export-file-dropdown">
+                        <label class="dropdown-toggle" title="Export this filter" id="button_export"
+                               data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                        <ul class="dropdown-menu" aria-labelledby="button_export">
+                            <li id="download_excel_option">Export Excel (All Fields) - 5,000 results</li>
+                            <li id="download_csv_option">Export CSV (All Fields) - 5,000 results</li>
+                        </ul>
+                    </div>
+                {% endif %}
             </form>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_cash_sof_list">
