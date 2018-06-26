@@ -67,14 +67,14 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             data, success = self.get_cash_sof_list(body, opening_page_index)
 
             if not success:
-                context = {'sof_list': [],
-                           'user_id': user_id,
-                           'user_type_id': user_type_id,
-                           'currency': currency,
-                           'search_count': 0,
-                           'is_show_export': False
-                           }
-
+                context = {
+                    'sof_list': [],
+                    'user_id': user_id,
+                    'user_type_id': user_type_id,
+                    'currency': currency,
+                    'search_count': 0,
+                    'is_show_export': False
+                }
                 return render(request, self.template_name, context)
             else:
                 if data is not None:
@@ -82,15 +82,16 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 result_data = data.get('cash_sofs', [])
                 page = data.get("page", {})
                 self.logger.info('Page: {}'.format(page))
-                context = {'sof_list': result_data,
-                           'user_id': user_id,
-                           'user_type_id': user_type_id,
-                           'currency': currency,
-                           'search_count': page.get('total_elements', 0),
-                           'paginator': page,
-                           'page_range': calculate_page_range_from_page_info(page),
-                           'is_show_export': True
-                           }
+                context = {
+                    'sof_list': result_data,
+                    'user_id': user_id,
+                    'user_type_id': user_type_id,
+                    'currency': currency,
+                    'search_count': page.get('total_elements', 0),
+                    'paginator': page,
+                    'page_range': calculate_page_range_from_page_info(page),
+                    'is_show_export': check_permissions_by_user(self.request.user,"CAN_EXPORT_CASH_SOF_INFORMATION")
+                }
             self.logger.info('========== End search cash source of fund ==========')
             return render(request, self.template_name, context)
 
