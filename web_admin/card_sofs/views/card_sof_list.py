@@ -69,7 +69,6 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         context = {}
         data, success, status_message = self._get_card_sof_list(body=body)
-        #self.logger.info('Response_content_count: {}'.format(len(responses)))
         body['from_created_timestamp'] = from_created_timestamp
         body['to_created_timestamp'] = to_created_timestamp
 
@@ -83,7 +82,7 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 'page_range': calculate_page_range_from_page_info(page),
                 'card_sof_list': cards_list,
                 'search_by': body,
-                'is_show_export': True
+                'is_show_export': check_permissions_by_user(self.request.user,"CAN_EXPORT_CARD_SOF_INFORMATION")
             })
         else:
             context.update({
