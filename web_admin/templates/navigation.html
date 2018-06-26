@@ -56,7 +56,8 @@
             {% endif %}
             {% if request|has_any_permission:"SYS_MANAGE_PERMISSION_ENTITIES,CAN_MANAGE_ROLE,CAN_SEARCH_TRUST"%}
             {% check_valid_url url_name 'authentications' as is_authen_url %}
-            <li class="menu-accordion {% if is_authen_url %}open{% endif %}">
+            {% check_valid_url url_name 'trust_management' as is_trust_url %}
+            <li class="menu-accordion {% if is_authen_url or is_trust_url%}open{% endif %}">
                 <a href="javascript:;"> <i class="fa fa-sign-in"></i> <span>Authorizations</span> </a>
                 <ul class="sub-menu">
                     {% if request.user|has_permission_name:"SYS_MANAGE_PERMISSION_ENTITIES"%}
