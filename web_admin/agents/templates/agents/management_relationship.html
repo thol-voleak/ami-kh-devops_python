@@ -273,7 +273,9 @@
                                         <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                                             <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Action <span class="caret"></span></button>
                                             <ul class="dropdown-menu">
+                                                {% if request|has_any_permission:"CAN_CREATE_TRUST"%}
                                                 <li><a onclick="grantTrust()">Grant Trust</a></li>
+                                                {% endif %}
                                             </ul>
                                         </div>
 
@@ -607,8 +609,7 @@
                 title: "User selected :"+ selectedPair,
                 text: "Do you wish to Grant Trust ?",
                 buttons: true,
-                dangerMode: true,
-                closeOnClickOutside: false
+                closeOnClickOutside: true
             })
             .then(function(isConfirm) {
                 if (isConfirm) {
@@ -643,7 +644,7 @@
                         success: function (response) {
 
                             console.log(response);
-                            if(response.invalid_access_token){
+                            if(response.invalid){
                                 var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/agents/{{agent_id}}/management/relationship";
                                 window.location.replace(url);
                                 location.reload();

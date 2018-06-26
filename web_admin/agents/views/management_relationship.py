@@ -195,6 +195,9 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
         return render(request, self.template_name, context)
 
     def put(self, request, *args, **kwargs):
+        logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_CREATE_TRUST'))
+        if not check_permissions_by_user(request.user, 'CAN_CREATE_TRUST'):
+            return JsonResponse({"invalid": True})
         response = request.body.decode('utf-8').replace('\0', '')
         data_json = json.loads(response);
 
@@ -206,7 +209,7 @@ class AgentManagementRelationship(GroupRequiredMixin, TemplateView, GetHeaderMix
             params=data_json)
 
         if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
-            return JsonResponse({"invalid_access_token": True})
+            return JsonResponse({"invalid": True})
         response_data = response_data or {}
 
         # API_Logger.post_logging(loggers=self.logger, params=data_json, response=response_data.get('data', []),

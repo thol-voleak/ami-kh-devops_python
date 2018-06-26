@@ -675,6 +675,36 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+                    {% if action.action_type.id == 3 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Response</div>
+                        </div>
+                        {%for action_data in action.action_data %}
+                                <div class="info-group">
+                                    <div>Data to be sent</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Name:</div>
+                                    <div>
+                                        <span id="lbl_key_name">{{action_data.key_name|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_key_value_type">{{action_data.key_value_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_key_value">{{action_data.key_value|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                        {% endfor %}
+                    {% endif %}
                     {% if action.action_type.id == 4 %}
                         <div class="info-group">
                             <div>Action Type:</div>
