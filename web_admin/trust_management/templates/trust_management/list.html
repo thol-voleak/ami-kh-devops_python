@@ -7,7 +7,7 @@
         <div class="panel-heading border mb15">
             <div>
                 <div class="pull-left"><h3>Trust Management</h3></div>
-                {% if request.user|has_permission_name:"CAN_CREATE_TRUST"%}
+                {% if request.user|has_permission_name:"CAN_CREATE_TRUST" %}
                     <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                         <a id="btn_add_new_trust" class="btn btn-success btn-block btn-md mb15" href="{% url 'trust_management:add_trust' %}">
                             <strong>+</strong> <span>Add New Trust</span>
@@ -18,10 +18,10 @@
             </div>
         </div>
         <div class="col-xs-12">
-        <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
-            <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
-            <strong id="alert-msg"></strong>
-        </div>
+            <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+                <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
         </div>
         <div class="col-xs-12 mb5">
             <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_agent">
@@ -36,7 +36,8 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">User ID</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id|default_if_none:'' }}">
+                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id"
+                           value="{{ user_id|default_if_none:'' }}">
                 </div>
                 <label class="col-sm-2 control-label">Trust Role</label>
                 <div class="col-sm-2">
@@ -107,23 +108,23 @@
                             <td class="col-sm-1">{{ trust.created_user.name|default_if_none:'' }}</td>
                             <td class="col-sm-1">{{ trust.expired_date|default_if_none:'' }}</td>
                             <td class="col-sm-1">
-                                <div id="token_btn_group">
-                                    <div class="btn-group">
-                                        {#                                        {% if permissions.CAN_VIEW_SERVICE %}#}
-                                        <button type="button"
-                                           class="btn btn-danger btn-xs  btn-outline"
-                                           id="btn_remove"
-                                           data-truster-id='{{ trust.truster.id }}'
-                                           data-truster-type='{{ trust.truster.user_type.name }}'
-                                           data-trusted-id='{{ trust.trusted.id }}'
-                                           data-trusted-type='{{ trust.trusted.user_type.name }}'
-                                           data-token-id='{{ trust.id }}'
-                                           data-url="{% url 'trust_management:trust_remove' trust.id %}"
-                                           onClick="remove(this)"><span class="small">Remove</span>
-                                        </button>
-                                        {#                                        {% endif %}#}
+                                {% if request.user|has_permission_name:"CAN_REMOVE_TRUST" %}
+                                    <div id="token_btn_group">
+                                        <div class="btn-group">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-xs  btn-outline"
+                                                    id="btn_remove"
+                                                    data-truster-id='{{ trust.truster.id }}'
+                                                    data-truster-type='{{ trust.truster.user_type.name }}'
+                                                    data-trusted-id='{{ trust.trusted.id }}'
+                                                    data-trusted-type='{{ trust.trusted.user_type.name }}'
+                                                    data-token-id='{{ trust.id }}'
+                                                    data-url="{% url 'trust_management:trust_remove' trust.id %}"
+                                                    onClick="remove(this)"><span class="small">Remove</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
@@ -142,75 +143,75 @@
     </div>
 {% endblock %}
 {% block body_js %}
-<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
-<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
-<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
-<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
-<script>
-     function showErrorMessage(msg) {
-        $("#alert-msg").text(msg)
-        $("#msg-error").fadeIn(700);
-    }
+    <script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+    <script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+    <script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <script>
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg)
+            $("#msg-error").fadeIn(700);
+        }
 
-    function showSuccessMessage(msg) {
-          $("#alert_msg").text(msg);
-          $('#alert_agent').removeClass("alert-danger");
-          $('#alert_agent').addClass("alert-success");
+        function showSuccessMessage(msg) {
+            $("#alert_msg").text(msg);
+            $('#alert_agent').removeClass("alert-danger");
+            $('#alert_agent').addClass("alert-success");
 
-          $("#alert_agent").show();
-          $("html, body").animate({scrollTop: 0}, "slow");
-      }
+            $("#alert_agent").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
 
 
-    function remove(e) {
-        var removeContentElem = document.createElement("div");
-        removeContentElem.innerHTML = '<div class="form-group row">'
-                                        +'<table border="0" style=" margin-left: 40px;">'
-                                        +'<tr><td class="col-sm-1" align="left" >Truster ID: '+ e.getAttribute('data-truster-id')+'</td>'
-                                        +'<td class="col-sm-1" align="left" >Trusted ID: '+ e.getAttribute('data-trusted-id')+'</td> </tr>'
-                                        +'<tr><td class="col-sm-1" align="left">Truster Type: '+ e.getAttribute('data-truster-type')+'</td>'
-                                        +'<td class="col-sm-1" align="left" >Trusted Type: '+ e.getAttribute('data-trusted-type')+'</td> </tr>'
-                                        +'</table>'
-                                        +'</div>';
-        swal({
-            content: removeContentElem,
-            icon: "warning",
-            title: "Confirm Remove Trust ?",
-            buttons: ['Cancel', 'Confirm'],
-            dangerMode: true,
-            closeOnClickOutside: false
-        })
-        .then(function(isConfirm) {
-            if (isConfirm) {
-                var url = e.getAttribute('data-url');
-                var token_id = e.getAttribute('data-token-id');
-                $.ajax({
-                    url: url,
-                    type: "GET",
-                    success: function (response) {
-                        if (response.status == 1) {
-                            location.reload();
-                        } else if (response.status == 2) {
-                            var row = $(e).closest("tr");
-                            row.remove();
-                            var currentTotal = parseInt($("#lbl_total").text()) - 1;
-                            $("#lbl_total").text(currentTotal);
-                            showSuccessMessage('Removed trust token successfully');
-                        } else {
-                            // Failed
-                            showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        console.log('Error occur removing trust token' + token_id + msg);
-                        showErrorMessage(JSON.stringify(msg));
+        function remove(e) {
+            var removeContentElem = document.createElement("div");
+            removeContentElem.innerHTML = '<div class="form-group row">'
+                + '<table border="0" style=" margin-left: 40px;">'
+                + '<tr><td class="col-sm-1" align="left" >Truster ID: ' + e.getAttribute('data-truster-id') + '</td>'
+                + '<td class="col-sm-1" align="left" >Trusted ID: ' + e.getAttribute('data-trusted-id') + '</td> </tr>'
+                + '<tr><td class="col-sm-1" align="left">Truster Type: ' + e.getAttribute('data-truster-type') + '</td>'
+                + '<td class="col-sm-1" align="left" >Trusted Type: ' + e.getAttribute('data-trusted-type') + '</td> </tr>'
+                + '</table>'
+                + '</div>';
+            swal({
+                content: removeContentElem,
+                icon: "warning",
+                title: "Confirm Remove Trust ?",
+                buttons: ['Cancel', 'Confirm'],
+                dangerMode: true,
+                closeOnClickOutside: false
+            })
+                .then(function (isConfirm) {
+                    if (isConfirm) {
+                        var url = e.getAttribute('data-url');
+                        var token_id = e.getAttribute('data-token-id');
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            success: function (response) {
+                                if (response.status == 1) {
+                                    location.reload();
+                                } else if (response.status == 2) {
+                                    var row = $(e).closest("tr");
+                                    row.remove();
+                                    var currentTotal = parseInt($("#lbl_total").text()) - 1;
+                                    $("#lbl_total").text(currentTotal);
+                                    showSuccessMessage('Removed trust token successfully');
+                                } else {
+                                    // Failed
+                                    showErrorMessage(response.msg);
+                                }
+                            },
+                            error: function (msg) {
+                                console.log('Error occur removing trust token' + token_id + msg);
+                                showErrorMessage(JSON.stringify(msg));
+                            }
+                        });
                     }
                 });
-            }
-        });
-    }
+        }
 
-</script>
+    </script>
 {% endblock %}
