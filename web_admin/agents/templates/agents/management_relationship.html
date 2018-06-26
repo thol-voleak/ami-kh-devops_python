@@ -11,6 +11,13 @@
     {% csrf_token %}
     <div class="panel mb25">
         <style type="text/css">
+            .hidden-input{
+                position: absolute;
+                opacity: 0;
+                height: 50px;
+                width: 1px;
+                margin-left: -5px;
+            }
             .select_main_id_containter, .select_sub_id_containter {
                 height: 50px;
             }
@@ -411,10 +418,11 @@
                                   <div class="modal-body">
                                       <div class="row">
                                           <div style="margin-bottom: 15px" class="col-xs-12">Agent {{ agent_id }} must be one of the IDs.</div>
-                                          <form class="form-horizontal" role="form">
+                                          <form class="form-horizontal" id="add_agent_relationship_form" role="form" method="post">
                                               <div class="col-xs-12">
                                                   <div class="form-group row">
                                                       <div class="col-xs-3">
+                                                          <input name="mainId" class="hidden-input input-main-id"required />
                                                           <div class="select_main_id_containter">
                                                               <select id="select_main_id" disabled data-placeholder="Main Id" multiple class="form-control chosen">
                                                                   <option value="{{agent_id}}">{{agent_id}}</option>
@@ -434,6 +442,7 @@
                                                           </select>
                                                       </div>
                                                       <div class="col-xs-3 sub_id">
+                                                          <input name="mainId" class="hidden-input input-sub-id"required />
                                                           <div class="select_sub_id_containter">
                                                               <select id="select_sub_id" disabled data-placeholder="Sub Id" multiple class="form-control chosen" >
                                                                   <option value="{{agent_id}}">{{agent_id}}</option>
@@ -445,12 +454,14 @@
                                                       </div>
                                                   </div>
                                               </div>
+                                              <button hidden class="submit-add-relationship" type="submit"></button>
                                           </form>
                                       </div>
                                   </div>
                                   <div class="modal-footer">
+
                                       <button type="button" id="btn_no" onclick="cancelAddRelationship(this)" class="btn btn-default" data-dismiss="modal">No</button>
-                                      <button type="button"  id="btn_yes" onclick="addRelationship(this)" data-url="{% url 'agents:add_agent_relationship' agent_id %}" class="btn btn-success" data-dismiss="modal">Yes</button>
+                                      <button type="button"  id="btn_yes" onclick="addRelationship(this)" data-url="{% url 'agents:add_agent_relationship' agent_id %}" class="btn btn-success">Yes</button>
                                   </div>
                             </div>
 
@@ -543,8 +554,10 @@
             param.main_id = main_id;
             param.sub_id = sub_id;
             param.relationship_type_id = $('#select_agent_relationship_type').val();
-            if(false){
-
+            if(param.main_id[0] == "" || param.sub_id[0] == "") {
+                $('.input-main-id').val(param.main_id[0]);
+                $('.input-sub-id').val(param.sub_id[0]);
+                $('.submit-add-relationship').trigger('click');
             } else {
                 $.ajax({
                     url: url,
@@ -567,11 +580,14 @@
                             showSuccessMessage(successMsg);
                             $ele.closest('tr').remove();
                         }
+                        $('#add_agent_relationship_modal').modal('hide');
                     },
                     error: function (msg) {
                         showErrorMessage(JSON.stringify(msg));
+                        $('#add_agent_relationship_modal').modal('hide');
                     }
                 });
+
             }
 
         }
@@ -723,6 +739,7 @@
                                     + " relationship between Agent " + mainId + " and Agent " + subId + " was deleted";
                                 showSuccessMessage(successMsg);
                                 $ele.closest('tr').remove();
+                                $('#lbl_total').html($('#lbl_total').html() -1);
                             } else {
                                 showErrorMessage('Error delete relationship');
 

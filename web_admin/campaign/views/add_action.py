@@ -207,6 +207,72 @@ class AddAction(TemplateView, GetHeaderMixin):
                 ]
             }
 
+        elif reward_type == 'response':
+            detail_type_mapping = {
+                "text": ["id", "user_type", "device_id", "device_description",
+                         "event_name", "order_id", "ext_transaction_id",
+                         "payment_method_name", "payment_method_ref",
+                         "service_name", "command_name", "initiator_user_type",
+                         "payer_user_type", "payer_user_ref_type",
+                         "payer_user_ref_value", "payee_user_type",
+                         "payee_user_ref_type", "payee_user_ref_value",
+                         "currency", "ref_order_id", "product_name",
+                         "product_ref1", "product_ref2", "product_ref3",
+                         "product_ref4", "product_ref5", "state", "is_deleted",
+                         "created_client_id", "executed_client_id",
+                         "description", "client_id", "bank_account_name",
+                         "ext_bank_reference", "sof_type", "channel"],
+                "numeric": ["user_id", "command_id", "service_id",
+                            "service_command_id", "initiator_user_id",
+                            "initiator_sof_id", "initiator_sof_type_id",
+                            "payer_user_id", "payer_sof_id",
+                            "payer_sof_type_id", "payee_user_id",
+                            "payee_sof_id", "payee_sof_type_id", "amount",
+                            "fee", "bonus", "settlement_amount", "status",
+                            "notification_status", "bank_id", "sof_id"],
+                "timestamp": ["order_created_timestamp",
+                              "order_last_updated_timestamp",
+                              "created_timestamp", "register_timestamp",
+                              "login_timestamp", "event_created_timestamp"]
+            }
+
+            params = {
+                "action_type_id": 3,
+                "data": []
+            }
+            counter = request.POST.get('data_counter') or 1
+            for i in range(int(counter)):
+                suffix = '' if i == 0 else str(i + 1)
+                reward_data_type = 'reward_data_type' + suffix
+                data_type = request.POST.get(reward_data_type)
+                if not data_type:
+                    continue
+                if data_type == 'from_event':
+                    reward_detail_name = 'reward_detail_name' + suffix
+                    detail_name = request.POST.get(reward_detail_name)
+                    reward_key_value_type = ''
+                    for type in detail_type_mapping:
+                        if detail_name in detail_type_mapping[type]:
+                            reward_key_value_type = type
+                            break
+                    if not reward_key_value_type:
+                        self.logger.error('>>>>>>>>>> Cannot find detail type for [{}] from detail mapping <<<<<<<<<<'.format(detail_name))
+
+                    params['data'].append({
+                        "key_name": detail_name,
+                        "key_value": '@@' + detail_name + '@@',
+                        "key_value_type": reward_key_value_type
+                    })
+                elif data_type == 'user_defined':
+                    reward_key_name = 'reward_key_name' + suffix
+                    reward_key_value_type = 'reward_key_value_type' + suffix
+                    reward_key_value = 'reward_key_value' + suffix
+                    params['data'].append({
+                        "key_name": request.POST.get(reward_key_name),
+                        "key_value": request.POST.get(reward_key_value),
+                        "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
+                    })
+
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
 
         if not success:
