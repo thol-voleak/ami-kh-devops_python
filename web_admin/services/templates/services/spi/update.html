@@ -14,16 +14,11 @@
         </div>
     </div>
     {% endif %}
-    {% if spi_update_msg is not None %}
-    <div class="col-xs-12 mb5">
-        <div class="alert alert-success alert-dismissable" id="msg-update-client">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-            <strong>{{ spi_update_msg }}</strong>
-        </div>
-    </div>
-    {% endif %}
+
+    {% include 'message.html' %}
+
     <div class="panel-body">
-        <form class="form-horizontal col-sm-12" role="form" method="Post" action="#">
+        <form class="form-horizontal col-sm-12" role="form" method="Post">
             {% csrf_token %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">ID</label>
@@ -109,19 +104,19 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Created Timestamp</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="txt_created_timestamp"
+                    <input type="text" class="form-control" id="txt_created_timestamp" name="created_timestamp"
                            value="{{data.created_timestamp}}" readonly/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Last Updated Timestamp</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="txt_last_updated_timestamp"
+                    <input type="text" class="form-control" id="txt_last_updated_timestamp" name="last_updated_timestamp"
                            value="{{data.last_updated_timestamp}}" readonly/>
                 </div>
             </div>
             <div class="form-group pull-right">
-                <a href="{{request.META.HTTP_REFERER}}">
+                <a href="{% url 'services:spi_list' service command service_command %}">
                     <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
                 </a>
                 <a>
