@@ -38,6 +38,10 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(CashSOFView, self).dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        context = {"search_count": 0}
+        return render(request, self.template_name, context)
+
     def post(self, request, *args, **kwargs):
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
