@@ -92,7 +92,7 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'to_created_timestamp': to_created_timestamp,
                      'bank_sof_list': cards_list,
                      'search_by': body,
-                     'is_show_export': True
+                     'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_BANK_SOF_INFORMATION')
                      }
                 )
 
