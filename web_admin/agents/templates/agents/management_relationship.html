@@ -604,13 +604,16 @@
             }
 
             swal({
-                icon: "warning",
                 title: "User selected :"+ selectedPair,
-                text: "Do you wish to Grant Trust ?",
-                buttons: true,
-                closeOnClickOutside: true
-            })
-            .then(function(isConfirm) {
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "OK",
+                closeOnClickOutside: false,
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                closeOnClickOutside: false
+            }, function(isConfirm) {
                 if (isConfirm) {
                     $('input[name="relationship_checkbox"]:checkbox:checked').each(function () {
                         var relationshipId = $(this).val();
@@ -722,7 +725,7 @@
             var title = "Are you sure you want to delete the " + relationShipType
                 + " relationship between Agent " + mainId + " and Agent " + subId + "?";
             swal({
-               title: title,
+                title: title,
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
