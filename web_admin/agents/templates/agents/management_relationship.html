@@ -606,13 +606,13 @@
             swal({
                 title: "User selected :"+ selectedPair,
                 type: "warning",
+                text: "Do you wish to Grant Trust ?",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
-                closeOnClickOutside: false,
+                allowOutsideClick: true,
                 closeOnConfirm: true,
-                closeOnCancel: true,
-                closeOnClickOutside: false
+                closeOnCancel: true
             }, function(isConfirm) {
                 if (isConfirm) {
                     $('input[name="relationship_checkbox"]:checkbox:checked').each(function () {
@@ -730,7 +730,6 @@
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
-                closeOnClickOutside: false,
                 closeOnConfirm: true,
                 closeOnCancel: true,
                 closeOnClickOutside: false
@@ -778,7 +777,6 @@
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
                 confirmButtonText: "OK",
-                closeOnClickOutside: false,
                 closeOnConfirm: true,
                 closeOnCancel: true,
                 closeOnClickOutside: false
