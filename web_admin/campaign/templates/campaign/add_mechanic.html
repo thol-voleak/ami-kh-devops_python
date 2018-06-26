@@ -176,6 +176,7 @@
                                     <option value= "fixed_cashback">Fixed Cashback</option>
                                     <option value= "send_notification">Send Notification</option>
                                     <option value= "suspend_account">Suspend Account</option>
+                                    <option value= "response">Response</option>
                                 </select>
                             </div>
                         </div>
@@ -195,7 +196,7 @@
                         <div class="form-group" id="div_reward_recipient">
                             <label class="col-sm-3 control-label"><b>Reward Recipient</b></label>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="div_reward_recipient_label">
                             <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_reward_recipient" name="reward_recipient" onchange="rewardRecipientShouldBe()">
@@ -204,7 +205,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="div_give_rewards">
                             <label class="col-sm-3 control-label">Give Rewards to *</label>
                             <div class="col-xs-3">
                                 <select class="form-control" id="ddl_give_reward_to" name="give_reward_to" onchange="giveRewardsTo()">
@@ -242,6 +243,7 @@
                             </div>
                         </div>
                         <div id="div_send_notification"></div>
+                        <div id="div_response"></div>
                         <div class="panel-heading">
                             <h5><b>Set Limitations</b></h5>
                         </div>
@@ -652,6 +654,76 @@
                                 </div>\
                             </div>';
 
+
+        var div_response = document.getElementById('div_response');
+        var div_response_html = '\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label"><b>Data to be sent</b></label>\
+                            </div>\
+                            <div id="data_send_group">\
+                                <div id="data_tobe_send_1">\
+                                    <div class="form-group">\
+                                        <label class="col-sm-3 control-label">Data type *</label>\
+                                        <div class="col-xs-3">\
+                                            <select class="form-control" id="ddl_reward_data_type" name="reward_data_type" onchange="listenDataType(this, this.options[this.selectedIndex].value)">\
+                                                <option value= "user_defined">User Defined</option>\
+                                                <option value= "from_event">From Event</option>\
+                                            </select>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_from_event" hidden>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Detail Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_detail_name" name="reward_detail_name">\
+                                                    {% for item in detail_names %}\
+                                                        {% if item.description != "" %}\
+                                                        <option value= "{{ item.term }}">{{ item.description }}</option>\
+                                                        {% else %}\
+                                                        <option value= "{{ item.term }}">{{ item.term }}</option>\
+                                                        {% endif %}\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div id="div_user_defined">\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Name *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_name" class="form-control input-rounded" name="reward_key_name" type="text" required>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value Type *</label>\
+                                            <div class="col-xs-3">\
+                                                <select class="form-control" id="ddl_reward_key_value_type" name="reward_key_value_type" onchange="listenRewardKeyValType(this, this.options[this.selectedIndex].value)">\
+                                                    {% for type in key_value_types %}\
+                                                        <option value= "{{ type }}">{{ type }}</option>\
+                                                    {% endfor %}\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                        <div class="form-group">\
+                                            <label class="col-sm-3 control-label">Key Value *</label>\
+                                            <div class="col-xs-3">\
+                                                <input id="txt_reward_key_value" class="form-control input-rounded" name="reward_key_value" type="number" required>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <input type="hidden" name="data_counter" id="txt_data_counter">\
+                            <div class="form-group">\
+                                <label class="col-sm-3 control-label"></label>\
+                                <div class="col-xs-3">\
+                                    <button type="button" class="btn btn-primary btn-block" id="btn_add_data_to_be_sent" onclick="addDataToSend()">\
+                                      <span class="glyphicon glyphicon-plus"></span> Add Data To Be Sent\
+                                    </button>\
+                                </div>\
+                            </div>';
+
+
         var reward_recipient_should_be_elem = document.getElementById('ddl_reward_recipient');
         var give_rewards_to_elem = document.getElementById('ddl_give_reward_to');
 
@@ -691,12 +763,15 @@
                 setNotRequired('txt_amount');
                 resetValue('txt_amount');
                 hideElement('div_reward_recipient');
+                showElement('div_reward_recipient_label');
+                showElement('div_give_rewards');
                 div_fixed_cashback.innerHTML = '';
 
                 showElement('div_send_to');
                 setRequired('txt_send_to');
 
                 div_send_notification.innerHTML = div_send_notification_html;
+                div_response.innerHTML = '';
                 sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
 
             }   else if (rType === 'fixed_cashback') {
@@ -709,7 +784,10 @@
                 hideElement('div_send_to');
                 setNotRequired('txt_send_to');
                 resetValue('txt_send_to');
+                showElement('div_reward_recipient_label');
+                showElement('div_give_rewards');
                 div_send_notification.innerHTML = '';
+                div_response.innerHTML = '';
 
                 showElement('div_amount');
                 setRequired('txt_amount');
@@ -727,14 +805,38 @@
                 hideElement('div_send_to');
                 setNotRequired('txt_send_to');
                 resetValue('txt_send_to');
+                showElement('div_reward_recipient_label');
+                showElement('div_give_rewards');
                 div_send_notification.innerHTML = '';
+                div_response.innerHTML = '';
                 div_fixed_cashback.innerHTML = '';
+            } else if (rType === 'response' ) {
+                $("#lbl_paid_amount").prop('hidden', true);
+
+                resetRewardRecipient();
+                hideElement('div_reward_recipient');
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                hideElement('div_reward_recipient_label');
+                hideElement('div_give_rewards');
+
+                div_fixed_cashback.innerHTML = '';
+                div_send_notification.innerHTML = '';
+                div_response.innerHTML = div_response_html;
+                sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
             }
         }
 
         function listenDataType (ele, dType) {
             var div_from_event = $(ele).parent().parent().next('div');
             var div_user_defined = $(div_from_event).next('div');
+            console.log('hello' + dType + div_from_event + div_user_defined);
+
             if (dType === 'from_event') {
                 hideElement(div_user_defined.attr('id'));
                 showElement(div_from_event.attr('id'));

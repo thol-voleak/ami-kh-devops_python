@@ -5,7 +5,7 @@ from datetime import datetime
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 
@@ -37,7 +37,7 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start search card SOF ==========')
+        self.logger.info('========== Start {} card SOF =========='.format('download' if 'download' in request.POST else 'search'))
 
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
@@ -68,33 +68,42 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['to_created_timestamp'] = new_to_created_timestamp
 
         context = {}
-        data, success, status_message = self._get_card_sof_list(body=body)
-        #self.logger.info('Response_content_count: {}'.format(len(responses)))
-        body['from_created_timestamp'] = from_created_timestamp
-        body['to_created_timestamp'] = to_created_timestamp
-
-        if success:
-            cards_list = data.get("card_sofs", [])
-            page = data.get("page", {})
-            self.logger.info("Page: {}".format(page))
-            context.update({
-                'search_count': page.get('total_elements', 0),
-                'paginator': page,
-                'page_range': calculate_page_range_from_page_info(page),
-                'card_sof_list': cards_list,
-                'search_by': body,
-                'is_show_export': True
-            })
+        if 'download' in request.POST:
+            file_type = request.POST.get('export-type')
+            body['file_type'] = file_type
+            body['row_number'] = 5000
+            is_success, data = export_file(self, body=body, url_download=CARD_SOFS_URL, api_logger=API_Logger)
+            if is_success:
+                response = make_download_file(data, file_type)
+                self.logger.info('========== End export card source of fund ==========')
+                return response
         else:
-            context.update({
-                'search_count': 0,
-                'paginator': {},
-                'card_sof_list': [],
-                'search_by': body,
-                'is_show_export': False
-            })
-        self.logger.info('========== End search card SOF ==========')
-        return render(request, self.template_name, context)
+            data, success, status_message = self._get_card_sof_list(body=body)
+            body['from_created_timestamp'] = from_created_timestamp
+            body['to_created_timestamp'] = to_created_timestamp
+
+            if success:
+                cards_list = data.get("card_sofs", [])
+                page = data.get("page", {})
+                self.logger.info("Page: {}".format(page))
+                context.update({
+                    'search_count': page.get('total_elements', 0),
+                    'paginator': page,
+                    'page_range': calculate_page_range_from_page_info(page),
+                    'card_sof_list': cards_list,
+                    'search_by': body,
+                    'is_show_export': check_permissions_by_user(self.request.user,"CAN_EXPORT_CARD_SOF_INFORMATION")
+                })
+            else:
+                context.update({
+                    'search_count': 0,
+                    'paginator': {},
+                    'card_sof_list': [],
+                    'search_by': body,
+                    'is_show_export': False
+                })
+            self.logger.info('========== End search card SOF ==========')
+            return render(request, self.template_name, context)
 
 
     def _get_card_sof_list(self, body):
