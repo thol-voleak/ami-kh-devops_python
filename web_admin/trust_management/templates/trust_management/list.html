@@ -108,9 +108,8 @@
                                 <div id="token_btn_group">
                                     <div class="btn-group">
                                         {#                                        {% if permissions.CAN_VIEW_SERVICE %}#}
-                                        <a type="button"
-                                           class="btn btn-outline btn-xs btn-info"
-                                           role="button"
+                                        <button type="button"
+                                           class="btn btn-danger btn-xs  btn-outline"
                                            id="btn_remove"
                                            data-truster-id='{{ trust.truster.id }}'
                                            data-truster-type='{{ trust.truster.user_type.name }}'
@@ -119,7 +118,7 @@
                                            data-token-id='{{ trust.id }}'
                                            data-url="{% url 'trust_management:trust_remove' trust.id %}"
                                            onClick="remove(this)"><span class="small">Remove</span>
-                                        </a>
+                                        </button>
                                         {#                                        {% endif %}#}
                                     </div>
                                 </div>
@@ -178,6 +177,7 @@
             icon: "warning",
             title: "Confirm Remove Trust ?",
             buttons: ['Cancel', 'Confirm'],
+            dangerMode: true,
             closeOnClickOutside: false
         })
         .then(function(isConfirm) {
