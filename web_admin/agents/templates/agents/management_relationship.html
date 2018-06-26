@@ -607,8 +607,7 @@
                 title: "User selected :"+ selectedPair,
                 text: "Do you wish to Grant Trust ?",
                 buttons: true,
-                dangerMode: true,
-                closeOnClickOutside: false
+                closeOnClickOutside: true
             })
             .then(function(isConfirm) {
                 if (isConfirm) {
