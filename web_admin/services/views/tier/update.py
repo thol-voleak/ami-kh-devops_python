@@ -361,7 +361,7 @@ class UpdateView(TemplateView, RESTfulMethods):
                 if currency_name in currencies.keys():
                     decimal = currencies[currency_name]
             command_name, status6 = self._get_command_name(command_id)
-            if status1 and status2 and status3 and status4 and status5 and status6 and status7 and status8:
+            if status1 and status2 and status3 and status4 and status5 and status6 and status7:
                 context.update({
                     'conditions': tier_conditions,
                     'fee_types': fee_types,
