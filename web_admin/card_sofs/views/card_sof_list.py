@@ -1,7 +1,7 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.api_logger import API_Logger
+from web_admin.api_settings import CARD_SOFS_URL
 from datetime import datetime
-from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
@@ -25,7 +25,6 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "sof/card_sof.html"
-    search_card_sof_path = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/cards/sofs"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -78,30 +77,28 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             cards_list = data.get("card_sofs", [])
             page = data.get("page", {})
             self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 #'user_id': user_id,
-                 'card_sof_list': cards_list,
-                 'search_by': body,
-                 }
-            )
+            context.update({
+                'search_count': page.get('total_elements', 0),
+                'paginator': page,
+                'page_range': calculate_page_range_from_page_info(page),
+                'card_sof_list': cards_list,
+                'search_by': body,
+                'is_show_export': True
+            })
         else:
-            context.update(
-                {'search_count': 0,
-                 'paginator': {},
-                 # 'user_id': user_id,
-                 'card_sof_list': [],
-                 'search_by': body,
-                 }
-            )
+            context.update({
+                'search_count': 0,
+                'paginator': {},
+                'card_sof_list': [],
+                'search_by': body,
+                'is_show_export': False
+            })
         self.logger.info('========== End search card SOF ==========')
         return render(request, self.template_name, context)
 
 
     def _get_card_sof_list(self, body):
-        success, status_code, status_message, data = RestFulClient.post(url=self.search_card_sof_path,
+        success, status_code, status_message, data = RestFulClient.post(url=CARD_SOFS_URL,
                                                                            headers=self._get_headers(),
                                                                            loggers=self.logger,
                                                                            params=body)
