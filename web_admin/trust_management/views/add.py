@@ -1,11 +1,9 @@
-from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin.utils import build_logger, check_permissions
 from web_admin import setup_logger, api_settings
-from web_admin.utils import calculate_page_range_from_page_info
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from web_admin.restful_helper import RestfulHelper
-from django.http import JsonResponse
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,14 +13,9 @@ class AddTrust(TemplateView):
     template_name = "trust_management/add.html"
     logger = logger
 
-    # def check_membership(self, permission):
-    #     self.logger.info(
-    #         "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
-    #     return check_permissions_by_user(self.request.user, permission[0])
-
     def dispatch(self, request, *args, **kwargs):
-        correlation_id = get_correlation_id_from_username(self.request.user)
-        self.logger = setup_logger(self.request, logger, correlation_id)
+        check_permissions(request, "CAN_CREATE_TRUST")
+        self.logger = build_logger(request, __name__)
         return super(AddTrust, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

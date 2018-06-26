@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load permissions_filter %}
 {% block content %}
 
     <div class="panel mb25">
         <div class="panel-heading border mb15">
             <div>
                 <div class="pull-left"><h3>Trust Management</h3></div>
+                {% if request.user|has_permission_name:"CAN_CREATE_TRUST"%}
                     <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
                         <a id="btn_add_new_trust" class="btn btn-success btn-block btn-md mb15" href="{% url 'trust_management:add_trust' %}">
                             <strong>+</strong> <span>Add New Trust</span>
                         </a>
                     </div>
+                {% endif %}
                 <div class="clearfix"></div>
             </div>
         </div>
