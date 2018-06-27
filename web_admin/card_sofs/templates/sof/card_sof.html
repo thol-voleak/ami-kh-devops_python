@@ -7,6 +7,8 @@
             <h3>Card Source of Fund</h3>
         </div>
 
+        {% include 'message.html' %}
+
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'card_sofs:card_sof' %}">
                 {% csrf_token %}
@@ -105,6 +107,13 @@
                 </table>
             </div>
             {% include "pagination.html" %}
+        </div>
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
         </div>
     </div>
 

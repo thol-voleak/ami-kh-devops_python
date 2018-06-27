@@ -8,6 +8,7 @@ from braces.views import GroupRequiredMixin
 from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
+from django.contrib import messages
 
 import logging
 
@@ -114,5 +115,19 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         data = data or {}
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('card_sofs', []),
                                 status_code=status_code, is_getting_list=True)
+
+        if not success:
+            if status_code == "Timeout":
+                self.logger.error('Search service group list request timeout')
+                status_message = 'Search timeout, please try again or contact technical support'
+            else:
+                self.logger.error('Search service group list request failed')
+                status_message = 'Search failed, please try again or contact support'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
 
         return data, success, status_message
