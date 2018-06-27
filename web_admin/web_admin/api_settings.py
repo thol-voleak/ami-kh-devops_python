@@ -187,7 +187,7 @@ ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{
 
 CASH_TRANSACTIONS_URL = 'api-gateway/report/'+API_VERSION+'/cash/transactions'
 CASH_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
-BANK_SOFS_URL = 'report/'+API_VERSION+'/banks/sofs'
+BANK_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/banks/sofs'
 CARD_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cards/sofs'
 LIST_BANK_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/banks/sofs'
 CUSTOMER_IDENTITIES_LIST = 'api-gateway/report/'+API_VERSION+'/customers/identities'
