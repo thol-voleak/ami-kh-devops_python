@@ -7,6 +7,7 @@ import datetime
 import logging
 import urllib
 import cgi
+from datetime import datetime
 from django.http import HttpResponse
 from web_admin.restful_client import RestFulClient
 from web_admin.exceptions import PermissionDeniedException
@@ -170,3 +171,18 @@ def export_file(self, body, url_download, api_logger):
     api_logger.post_logging(loggers=self.logger, params=body, response={},
                             status_code=status_code)
     return is_success, data
+
+def convert_string_to_date_time(date_str, time_str):
+    _date = datetime.strptime(date_str, "%Y-%m-%d")
+    if time_str is None or time_str is '':
+        return _date.strftime('%Y-%m-%dT%H:%M:%SZ')
+    time_split = time_str.split(":")
+    if len(time_split) == 3:
+        return _date.replace(hour=int(time_str.split(":")[0]),
+                             minute=int(time_str.split(":")[1]),
+                             second=int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
+    else:
+        return _date.replace(hour=int(time_str.split(":")[0]),
+                             minute=int(time_str.split(":")[1]),
+                             second=0).strftime('%Y-%m-%dT%H:%M:%SZ')
+

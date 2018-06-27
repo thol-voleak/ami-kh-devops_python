@@ -1,12 +1,11 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_logger import API_Logger
-from datetime import datetime
-from django.conf import settings
+from datetime import date, timedelta
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file, convert_string_to_date_time
 from web_admin import api_settings, setup_logger, RestFulClient
 import logging
 
@@ -24,7 +23,6 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "sof/bank_sof.html"
-    search_banks_sof = settings.DOMAIN_NAMES + "report/"+api_settings.API_VERSION+"/banks/sofs"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -33,7 +31,9 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(BankSOFView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        # type: (object, object, object) -> object
         context = {"search_count": 0}
+        self.initSearchDateTime(context)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -42,8 +42,10 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
         currency = request.POST.get('currency')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {'paging': True, 'page_index': int(opening_page_index)}
@@ -53,67 +55,57 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = int(0 if user_type_id is None else user_type_id)
         if currency is not '' and currency is not None:
             body['currency'] = currency
-
-        if from_created_timestamp is not '' and to_created_timestamp is not None:
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-
-        if to_created_timestamp is not '' and to_created_timestamp is not None:
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
+        if created_from_date:
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
+        if created_to_date:
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
 
         context = {}
         if 'download' in request.POST:
             file_type = request.POST.get('export-type')
             body['file_type'] = file_type
             body['row_number'] = 5000
-            is_success, data = export_file(self, body=body, url_download=self.search_banks_sof, api_logger=API_Logger)
+            is_success, data = export_file(self, body=body, url_download=api_settings.BANK_SOFS_URL, api_logger=API_Logger)
             if is_success:
                 response = make_download_file(data, file_type)
                 self.logger.info('========== Finish exporting bank SOF ==========')
                 return response
         else:
             data, success, status_message = self._get_bank_sof_list(body=body)
-            body['from_created_timestamp'] = from_created_timestamp
-            body['to_created_timestamp'] = to_created_timestamp
+
+            context.update({
+                'created_from_date': created_from_date,
+                'created_to_date': created_to_date,
+                'created_from_time': created_from_time,
+                'created_to_time': created_to_time,
+                'search_by': body
+            })
+
             if success:
                 cards_list = data.get("bank_sofs", [])
                 page = data.get("page", {})
                 self.logger.info("Page: {}".format(page))
-                context.update(
-                    {'search_count': page.get('total_elements', 0),
+                context.update({
+                     'search_count': page.get('total_elements', 0),
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
-                     #'user_id': user_id,
-                     'from_created_timestamp': from_created_timestamp,
-                     'to_created_timestamp': to_created_timestamp,
                      'bank_sof_list': cards_list,
-                     'search_by': body,
                      'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_BANK_SOF_INFORMATION')
-                     }
-                )
+                })
 
             else:
-                context.update(
-                    {'search_count': 0,
+                context.update({
+                     'search_count': 0,
                      'paginator': {},
-                     # 'user_id': user_id,
-                     'from_created_timestamp': from_created_timestamp,
-                     'to_created_timestamp': to_created_timestamp,
                      'bank_sof_list': [],
-                     'search_by': body,
                      'is_show_export': False
-                     }
-                )
+                })
 
             self.logger.info('========== End searching bank SOF ==========')
             return render(request, self.template_name, context)
 
     def _get_bank_sof_list(self, body):
-        success, status_code, status_message, data = RestFulClient.post(url=self.search_banks_sof,
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.BANK_SOFS_URL,
                                                                         headers=self._get_headers(),
                                                                         loggers=self.logger,
                                                                         params=body)
@@ -122,3 +114,11 @@ class BankSOFView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                 status_code=status_code, is_getting_list=True)
         return data, success, status_message
 
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
