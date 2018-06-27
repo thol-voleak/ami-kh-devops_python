@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from datetime import date, timedelta, datetime
 from web_admin.api_logger import API_Logger
 from web_admin.api_settings import CARD_SOFS_URL
 from datetime import datetime
@@ -45,6 +46,8 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         currency = request.POST.get('currency')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
+        from_created_time = request.POST.get('from_created_time')
+        to_created_time = request.POST.get('to_created_time')
         opening_page_index = request.POST.get('current_page_index')
 
         body = {}
@@ -57,16 +60,10 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if currency is not '' and currency is not None:
             body['currency'] = currency
 
-        if from_created_timestamp is not '' and to_created_timestamp is not None:
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-
-        if to_created_timestamp is not '' and to_created_timestamp is not None:
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
+        if from_created_timestamp:
+            body['from_created_timestamp'] = self.convertStringToDateTime(from_created_timestamp, from_created_time)
+        if to_created_timestamp:
+            body['to_created_timestamp'] = self.convertStringToDateTime(to_created_timestamp, to_created_time)
 
         context = {}
         if 'download' in request.POST:
@@ -88,6 +85,13 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 page = data.get("page", {})
                 self.logger.info("Page: {}".format(page))
                 context.update({
+                    'search_by.user_id':  user_id,
+                    'search_by.currency': currency,
+                    'search_by.user_type_id': user_type_id,
+                    'search_by.from_created_timestamp': from_created_timestamp,
+                    'from_created_time': from_created_time,
+                    'search_by.to_created_timestamp': to_created_timestamp,
+                    'to_created_time': to_created_time,
                     'search_count': page.get('total_elements', 0),
                     'paginator': page,
                     'page_range': calculate_page_range_from_page_info(page),
@@ -131,3 +135,17 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
 
         return data, success, status_message
+
+    def convertStringToDateTime(self, date_str, time_str):
+        _date = datetime.strptime(date_str, "%Y-%m-%d")
+        if time_str is None or time_str is '':
+            return _date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        time_split = time_str.split(":")
+        if len(time_split) == 3:
+            return _date.replace(hour = int(time_str.split(":")[0]),
+                                 minute = int(time_str.split(":")[1]),
+                                 second = int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            return _date.replace(hour=int(time_str.split(":")[0]),
+                                        minute=int(time_str.split(":")[1]),
+                                        second= 0).strftime('%Y-%m-%dT%H:%M:%SZ')
