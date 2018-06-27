@@ -1,11 +1,11 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
-from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file, convert_string_to_date_time
 from django.shortcuts import render
 from django.contrib import messages
 
@@ -89,13 +89,13 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         if service_group_name:
             body['service_group_name'] = service_group_name
         if created_from_date:
-            body['from_created_timestamp'] = self.convertStringToDateTime(created_from_date, created_from_time)
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
         if created_to_date:
-            body['to_created_timestamp'] = self.convertStringToDateTime(created_to_date, created_to_time)
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
         if modified_from_date:
-            body['from_last_updated_timestamp'] = self.convertStringToDateTime(modified_from_date, modified_from_time)
+            body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
         if modified_to_date:
-            body['to_last_updated_timestamp'] = self.convertStringToDateTime(modified_to_date, modified_to_time)
+            body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
 
         if 'download' in request.POST:
             file_type = request.POST.get('export-type')
@@ -188,19 +188,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
         context['modified_from_time'] = "00:00:00"
         context['modified_to_time'] = "00:00:00"
-
-
-    def convertStringToDateTime(self, date_str, time_str):
-        _date = datetime.strptime(date_str, "%Y-%m-%d")
-        time_split = time_str.split(":")
-        if len(time_split) == 3:
-            return _date.replace(hour = int(time_str.split(":")[0]),
-                                 minute = int(time_str.split(":")[1]),
-                                 second = int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return _date.replace(hour=int(time_str.split(":")[0]),
-                                        minute=int(time_str.split(":")[1]),
-                                        second= 0).strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 

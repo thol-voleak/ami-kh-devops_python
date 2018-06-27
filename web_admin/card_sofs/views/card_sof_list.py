@@ -1,12 +1,11 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from web_admin.api_logger import API_Logger
 from web_admin.api_settings import CARD_SOFS_URL
-from datetime import datetime
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file, convert_string_to_date_time
 from web_admin import api_settings, setup_logger, RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from django.contrib import messages
@@ -50,9 +49,7 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         to_created_time = request.POST.get('to_created_time')
         opening_page_index = request.POST.get('current_page_index')
 
-        body = {}
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
+        body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not '0' and user_type_id is not None:
@@ -61,9 +58,9 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['currency'] = currency
 
         if from_created_timestamp:
-            body['from_created_timestamp'] = self.convertStringToDateTime(from_created_timestamp, from_created_time)
+            body['from_created_timestamp'] = convert_string_to_date_time(from_created_timestamp, from_created_time)
         if to_created_timestamp:
-            body['to_created_timestamp'] = self.convertStringToDateTime(to_created_timestamp, to_created_time)
+            body['to_created_timestamp'] = convert_string_to_date_time(to_created_timestamp, to_created_time)
 
         context = {}
         if 'download' in request.POST:
@@ -135,17 +132,3 @@ class CardSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
 
         return data, success, status_message
-
-    def convertStringToDateTime(self, date_str, time_str):
-        _date = datetime.strptime(date_str, "%Y-%m-%d")
-        if time_str is None or time_str is '':
-            return _date.strftime('%Y-%m-%dT%H:%M:%SZ')
-        time_split = time_str.split(":")
-        if len(time_split) == 3:
-            return _date.replace(hour = int(time_str.split(":")[0]),
-                                 minute = int(time_str.split(":")[1]),
-                                 second = int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return _date.replace(hour=int(time_str.split(":")[0]),
-                                        minute=int(time_str.split(":")[1]),
-                                        second= 0).strftime('%Y-%m-%dT%H:%M:%SZ')
