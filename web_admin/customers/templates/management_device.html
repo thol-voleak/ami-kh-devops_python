@@ -363,7 +363,7 @@
         if ($(e).is(':checked')){
             grant = true;
             url = e.getAttribute('data-url-grant');
-            title = 'Are you sure you want to give this user access to ' + channelName + ' Channel';
+            title = 'Are you sure you want to grant customer access to ' + channelName + ' channel?';
         } else {
             grant = false;
             url = e.getAttribute('data-url-revoke');
@@ -396,7 +396,7 @@
                             } else if (response.status == 2) {
                                 // success
                                 if (grant) {
-                                    showSuccessMessage('Customer is now granted access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Grant customer  access to ' + channelName + ' channel successfully');
                                 } else {
                                     showSuccessMessage('Revoke customer access to ' + channelName + ' channel successfully');
                                 }

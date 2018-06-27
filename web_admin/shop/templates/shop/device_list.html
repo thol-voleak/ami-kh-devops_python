@@ -157,7 +157,7 @@
         if ($(e).is(':checked')){
             grant = true;
             url = e.getAttribute('data-url-grant');
-            title = 'Are you sure you want to give this user access to ' + channelName + ' Channel';
+            title = 'Are you sure you want to grant shop access to ' + channelName + ' channel?';
         } else {
             grant = false;
             url = e.getAttribute('data-url-revoke');
@@ -190,7 +190,7 @@
                             } else if (response.status == 2) {
                                 // success
                                 if (grant) {
-                                    showSuccessMessage('Shop is now granted access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Grant shop access to ' + channelName + ' channel successfully');
                                 } else {
                                     showSuccessMessage('Revoke shop access to  ' + channelName + ' channel successfully');
                                 }
