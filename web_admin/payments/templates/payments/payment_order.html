@@ -12,13 +12,27 @@
         <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'payments:payment_order' %}">
             {% csrf_token %}
             <div class="form-group">
+                <label class="col-sm-2 control-label">User Phone No.</label>
+                <div class=" col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control br0" name="phone_num" id="txt_phone_num" value="{{ phone_num }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-info" type="button" id="search_icon" disabled="true">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Order ID</label>
                 <div class="col-sm-2">
                     <input type="number" class="form-control input-rounded" name="order_id" id="txt_order_id" value="{{ order_id }}">
                 </div>
                 <label class="col-sm-2 control-label">Ext Transaction ID</label>
                 <div class="col-sm-2">
-                    <input type="number" class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
+                    <input class="form-control input-rounded" name="ext_transaction_id" id="txt_ext_transaction_id" value="{{ ext_transaction_id }}">
                 </div>
                 <div class="col-sm-4">
                     <label class="col-sm-5 control-label">Reference Order ID</label>
@@ -299,6 +313,20 @@
         }
         $('#download_button').click();
     }
+
+    $( document ).ready(function() {
+       var searchBtn = document.getElementById("search_icon");
+       var input_phone_no = document.getElementById("txt_phone_num");
+
+       input_phone_no.addEventListener("keyup", function(event) {
+           if (input_phone_no.value.trim().length >= 4) {
+                    searchBtn.removeAttribute("disabled");
+                } else {
+                    searchBtn.setAttribute("disabled", true);
+           }
+       })
+    });
+
 
 </script>
 {% endblock %}
