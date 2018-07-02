@@ -149,12 +149,14 @@
                 </div>
                 <div style="width: 60%; margin-top: 20px; display: inline-block; background-color: #eee;">
                     <span id="refundRequestId" style="font-size: 15px; font-weight: bold;"></span>
+                    <input type="hidden" id="refund_request_id_value">
                 </div>
             </div>
             <div style="text-align: center; margin-top: 80px; margin-bottom: 40px">
                 <button id="btn_dialog_done" type="button" class="btn btn-default"
                         style="font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;"
                         data-dismiss="modal">Done</button>
+                <button id="btn_dialog_approve_voucher_refund" type="button" class="btn btn-success" style="margin-left: 10px; font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;">Approve</button>
             </div>
         </div>
     </div>
@@ -194,6 +196,7 @@
                 },
                 success: function (response) {
                     $("#refundRequestId").text("#" + response.voucher_refund_id);
+                    $("#refund_request_id_value").val(response.voucher_refund_id);
                 }
             });
 

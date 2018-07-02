@@ -549,5 +549,44 @@
             }
         });
     }
+
+    bindApproveRefundVoucher = function () {
+        var refundRequestPopup = $("#refundRequestModal");
+        $(refundRequestPopup).find("#btn_dialog_approve_voucher_refund").click(function (event) {
+            var refundRequestId = $(refundRequestPopup).find("#refund_request_id_value").val();
+            var refundRequestIds = [];
+            refundRequestIds.push(refundRequestId);
+            console.log(refundRequestIds)
+            var url = "{% url 'voucher:approve_voucher_refunds'%}";
+            var data = {
+                "refundRequestIds": JSON.stringify(refundRequestIds),
+            }
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.is_success) {
+                        location.reload();
+                    } else {
+                        //process fail case of approve voucher refund
+                    }
+                    $("#refundRequestModal").modal('hide');
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    showErrorMessage("approve error!");
+                }
+            });
+        })
+    }
+    $(document).ready(function () {
+        bindApproveRefundVoucher();
+    })
 </script>
 {% endblock %}
