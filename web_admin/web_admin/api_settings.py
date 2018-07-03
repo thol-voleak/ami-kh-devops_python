@@ -240,6 +240,7 @@ DELETE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/ticket
 
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
+GET_USER_BY_PHONE_URL = "api-gateway/report/" + API_VERSION + "/users"
 
 #Market Campaign
 GET_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'

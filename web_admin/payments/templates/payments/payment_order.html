@@ -15,9 +15,9 @@
                 <label class="col-sm-2 control-label">User Phone No.</label>
                 <div class=" col-sm-2">
                     <div class="input-group">
-                        <input class="form-control br0" name="phone_num" id="txt_phone_num" value="{{ phone_num }}">
+                        <input class="form-control br0" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-info" type="button" id="search_icon" disabled="true">
+                            <button class="btn btn-info" type="button" id="search_icon" onclick = "searchUser('{% url 'payments:search_user' %}')" disabled="true">
                                 <i class="glyphicon glyphicon-search"></i>
                             </button>
                         </span>
@@ -260,6 +260,15 @@
             Something wrong happened.
         </div>
     </div>
+
+    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" id="divModalDialog">
+            <div class="modal-content" id="divModalContent">
+
+            </div>
+        </div>
+    </div>
+
 </div>
 <script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
 <script src="/admin-portal/static/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -267,7 +276,19 @@
 <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
 <script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
 <script src="{% static 'scripts/pages/form-custom.js' %}"></script>
+<script src="/admin-portal/static/js/search_user.js"></script>
+
 <script>
+    $(document).ready(function() {
+      initSearchIconVisible();
+      $(window).keydown(function(event){
+        if(event.keyCode == 13 && event.target.id == 'txt_mobile_number') {
+          event.preventDefault();
+          searchUser('{% url 'payments:search_user' %}');
+        }
+      });
+    });
+
     var isAllSelected = function(selectedValues) {
         for(var i = 0; i < selectedValues.length; i++) {
             if(selectedValues[i] == 'All') {
@@ -313,21 +334,6 @@
         }
         $('#download_button').click();
     }
-
-    $( document ).ready(function() {
-       var searchBtn = document.getElementById("search_icon");
-       var input_phone_no = document.getElementById("txt_phone_num");
-
-       input_phone_no.addEventListener("keyup", function(event) {
-           if (input_phone_no.value.trim().length >= 4) {
-                    searchBtn.removeAttribute("disabled");
-                } else {
-                    searchBtn.setAttribute("disabled", true);
-           }
-       })
-    });
-
-
 </script>
 {% endblock %}
 

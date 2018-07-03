@@ -221,3 +221,8 @@
 .export-file-dropdown li:hover {
     color: #16319c;
 }
+
+#divModalDialog {
+    max-height: 500px;
+    overflow-y: auto;
+}
