@@ -295,6 +295,7 @@ GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
 SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
 UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{voucher_id}/status'
 CREATE_REFUND_REQUEST = 'api-gateway/workflow/'+API_VERSION+'/admin/vouchers/refund'
+SEARCH_VOUCHER_ADJUSTMENT = 'api-gateway/report/'+API_VERSION+'/workflows/voucher-refunds'
 
 #Report Configuration
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'

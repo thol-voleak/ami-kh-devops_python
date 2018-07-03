@@ -35,3 +35,16 @@ SOF_TYPE = {
     2:'Cash',
     3:'Card'
 }
+
+REFUND_STATUS = {
+    '1':'CREATING',
+    '2':'CREATE_FAIL',
+    '3':'CREATED',
+    '4':'APPROVING',
+    '5':'APPROVE_FAIL',
+    '6':'APPROVED',
+    '7':'REJECTING',
+    '8':'REJECT_FAIL',
+    '9':'REJECTED',
+    '10':'TIMEOUT'
+}

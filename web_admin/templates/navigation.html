@@ -490,6 +490,11 @@
                         <a href="{% url 'voucher:voucher' %}"> <span>Voucher List</span> </a>
                     </li>
                 </ul>
+                <ul class="sub-menu">
+                    <li class="{% if url_name == 'voucher_adjustment' %}active{% endif %}">
+                        <a href="{% url 'voucher:voucher_adjustment' %}"> <span>Voucher Adjustment</span> </a>
+                    </li>
+                </ul>
             </li>
             {% endif %}
             {% if request.user|has_permission_name:"CAN_VIEW_CAMPAIGNS"%}
