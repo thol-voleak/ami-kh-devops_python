@@ -165,13 +165,14 @@
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-1 col-xs-offset-3" hidden>
                         <input id="export-type" type="text" name="export-type" value="" />
-                        <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
-                               value="Download">
+
                     </div>
                     {% if permissions.is_perm_order_search %}
                     <div class="col-xs-1 col-xs-offset-3">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
+                        <input id="download_button" style="display: none;" class="btn btn-success btn-block" type="submit" name="download"
+                               value="Download">
                     </div>
                     {% endif %}
                 </div>
