@@ -156,7 +156,9 @@
                 <button id="btn_dialog_done" type="button" class="btn btn-default"
                         style="font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;"
                         data-dismiss="modal">Done</button>
-                <button id="btn_dialog_approve_voucher_refund" type="button" class="btn btn-success" style="margin-left: 10px; font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;">Approve</button>
+                {% if request|has_any_permission:"CAN_APPROVE_VOUCHER_ADJUSTMENT" %}
+                    <button id="btn_dialog_approve_voucher_refund" type="button" class="btn btn-success" style="margin-left: 10px; font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;">Approve</button>
+                {% endif %}
             </div>
         </div>
     </div>

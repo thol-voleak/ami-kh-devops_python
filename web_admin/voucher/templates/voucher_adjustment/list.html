@@ -134,8 +134,10 @@
                 <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS <span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        <li id="aprove_multi_voucher_refund"><a>Approve</a></li>
-                        <li><a onclick="#">Reject</a></li>
+                        {% if request|has_any_permission:"CAN_APPROVE_VOUCHER_ADJUSTMENT" %}
+                            <li id="aprove_multi_voucher_refund"><a>Approve</a></li>
+                            <li><a onclick="#">Reject</a></li>
+                        {% endif %}
                     </ul>
                 </div>
 
