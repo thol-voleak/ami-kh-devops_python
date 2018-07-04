@@ -131,7 +131,7 @@
                     </div>
                     <div class="form-group">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped mb0" id="tbl_agent_transaction_history">
+                            <table class="table table-bordered table-striped mb0" id="tbl_agent_transaction_history" style="border-collapse: separate;">
                                 <thead>
                                     <tr>
                                         <th id="order_id">Order ID</th>
@@ -186,6 +186,25 @@
                                         </tr>
                                     {% endfor %}
                                     </tbody>
+                                    <tfoot>
+                                        {% for row in summaries %}
+                                            {% if forloop.last %}
+                                                <tr>
+                                                    <td colspan="11" style="text-align:right;border: 1px solid black;border-right: none">Total SUM of all search result in {{ row.currency }}</td>
+                                                    <td style="border: 1px solid black;border-right: none">{{ row.total_debit_amount|default_if_none:'0' }}</td>
+                                                    <td style="border: 1px solid black;border-right: none;">{{ row.total_credit_amount|default_if_none:'0' }}</td>
+                                                    <td colspan="4" style="border: 1px solid black;"></td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="11" style="text-align:right;border: 1px solid black;border-right: none;border-bottom: none">Total SUM of all search result in {{ row.currency }}</td>
+                                                    <td style="border: 1px solid black;border-right: none;border-bottom: none">{{ row.total_debit_amount|default_if_none:'0' }}</td>
+                                                    <td style="border: 1px solid black;border-right: none;border-bottom: none">{{ row.total_credit_amount|default_if_none:'0' }}</td>
+                                                    <td colspan="4" style="border: 1px solid black;border-bottom: none"></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tfoot>
                             </table>
                         </div>
                     </div>

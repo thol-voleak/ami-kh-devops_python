@@ -182,6 +182,7 @@ MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 BALANCE_MOVEMENT_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/orders/balance-movements'
+BALANCE_MOVEMENT_SUMMARY_PATH = 'api-gateway/report/'+API_VERSION+'/payments/summaries/orders/balance-movements'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{card_id}/status'
 

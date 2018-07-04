@@ -88,10 +88,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = UserType.AGENT.value
             body['user_id'] = user_id
 
-            data, success, status_message = self._get_transaction_history_list(body)
+            order_balance_movements, page, summaries, success = self._get_transaction_history(body)
             if success:
-                order_balance_movements = data.get("order_balance_movements", [])
-
                 if order_balance_movements is not None:
                     result_data = self.format_data(order_balance_movements)
                     has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
@@ -100,12 +98,11 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
                 else:
                     result_data = order_balance_movements
-
-                page = data.get("page", {})
                 self.logger.info("Page: {}".format(page))
                 context.update(
                     {'search_count': page.get('total_elements', 0),
                      'list': result_data,
+                     'summaries': summaries,
                      'choices': choices,
                      'cash_sof_list': cash_sof_list,
                      'paginator': page,
@@ -123,7 +120,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'is_show_export': False
                      }
                 )
-        else :
+        else:
             user_type = UserType.AGENT.value
             cash_sof_list = self._get_cash_sof_list(user_id, user_type).get('cash_sofs', [])
             choices = self._get_choices_types()
@@ -150,6 +147,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
@@ -174,6 +172,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
@@ -199,6 +198,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
@@ -226,17 +226,15 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 file_type = request.GET.get('export_type')
                 body['file_type'] = file_type
                 body['row_number'] = 5000
-                is_success, data = export_file(self, body=body, url_download = api_settings.BALANCE_MOVEMENT_LIST_PATH, api_logger = API_Logger)
+                is_success, order_balance_movements = export_file(self, body=body, url_download = api_settings.BALANCE_MOVEMENT_LIST_PATH, api_logger = API_Logger)
                 if is_success:
-                    response = make_download_file(data, file_type)
+                    response = make_download_file(order_balance_movements, file_type)
                     self.logger.info('Export agent transaction history success')
                     return response
             else:
                 self.logger.info('Searching customer transaction history')
-                data, success, status_message = self._get_transaction_history_list(body)
+                order_balance_movements, page, summaries, success = self._get_transaction_history(body)
                 if success:
-                    order_balance_movements = data.get("order_balance_movements", [])
-
                     if order_balance_movements is not None:
                         result_data = self.format_data(order_balance_movements)
                         has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
@@ -245,12 +243,11 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                             i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
                     else:
                         result_data = order_balance_movements
-
-                    page = data.get("page", {})
                     self.logger.info("Page: {}".format(page))
                     context.update(
                         {'search_count': page.get('total_elements', 0),
                          'list': result_data,
+                         'summaries': summaries,
                          'choices': choices,
                          'sof_type_id': sof_type_id,
                          'sof_id': sof_id,
@@ -307,14 +304,21 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         return data
 
-    def _get_transaction_history_list(self, body):
-        api_path = api_settings.BALANCE_MOVEMENT_LIST_PATH
-        success, status_code, status_message, data = RestFulClient.post(url=api_path,
-                                                                        headers=self._get_headers(),
-                                                                        loggers=self.logger,
-                                                                        params=body,
-                                                                        timeout=settings.GLOBAL_TIMEOUT)
+    def _get_transaction_history(self, body):
+        order_balance_movements, page, success, status_message = self._get_transaction_history_list(body)
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            return order_balance_movements, page, [], success
 
+        summary_body = body.copy()
+        summary_body.pop('paging')
+        summary_body.pop('page_index')
+
+        summaries, success, status_message = self._get_transaction_history_summary(summary_body)
         if not success:
             messages.add_message(
                 self.request,
@@ -322,11 +326,34 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 status_message
             )
 
+        return order_balance_movements, page, summaries, success
+
+    def _get_transaction_history_list(self, body):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_MOVEMENT_LIST_PATH,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body,
+                                                                        timeout=settings.GLOBAL_TIMEOUT)
         data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('order_balance_movements', []),
+        order_balance_movements = data.get('order_balance_movements', [])
+        page = data.get("page", {})
+        API_Logger.post_logging(loggers=self.logger, params=body, response=order_balance_movements,
+                                status_code=status_code, is_getting_list=True)
+        return order_balance_movements, page, success, status_message
+
+    def _get_transaction_history_summary(self, body):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_MOVEMENT_SUMMARY_PATH,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body,
+                                                                        timeout=settings.GLOBAL_TIMEOUT)
+        data = data or {}
+        summaries = data.get('summaries', [])
+        summaries = sorted(summaries, key=lambda value: value.get('currency'), reverse=False)
+        API_Logger.post_logging(loggers=self.logger, params=body, response=summaries,
                                 status_code=status_code, is_getting_list=True)
 
-        return data, success, status_message
+        return summaries, success, status_message
 
     def format_data(self, data):
         for i in data:
