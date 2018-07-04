@@ -135,7 +135,7 @@
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         {% if request|has_any_permission:"CAN_APPROVE_VOUCHER_ADJUSTMENT" %}
-                            <li id="aprove_multi_voucher_refund"><a>Approve</a></li>
+                            <li id="approve_multi_voucher_refund"><a>Approve</a></li>
                             <li id="reject_multi_voucher_refund"><a>Reject</a></li>
                         {% endif %}
                     </ul>
@@ -238,7 +238,7 @@
     });
 
     bindSelectApproveAction = function () {
-        $("#ddl_select_action").find("#aprove_multi_voucher_refund").click(function (e) {
+        $("#ddl_select_action").find("#approve_multi_voucher_refund").click(function (e) {
             $("#approveVoucherRefundModal #txt_approve_refund_reason").val('');
             $("#approveVoucherRefundModal").modal('show');
         });
