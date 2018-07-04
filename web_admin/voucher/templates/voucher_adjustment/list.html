@@ -136,12 +136,13 @@
                     <ul class="dropdown-menu">
                         {% if request|has_any_permission:"CAN_APPROVE_VOUCHER_ADJUSTMENT" %}
                             <li id="aprove_multi_voucher_refund"><a>Approve</a></li>
-                            <li><a onclick="#">Reject</a></li>
+                            <li id="reject_multi_voucher_refund"><a>Reject</a></li>
                         {% endif %}
                     </ul>
                 </div>
 
                 {% include "voucher_adjustment/approve_voucher_refund_dialog.html" %}
+                {% include "voucher_adjustment/reject_voucher_refund_dialog.html" %}
                 <div style="margin-right: +20px; margin-top: -15px;">
                     <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                     <label class="pull-right">Total records found:&nbsp;</label>
@@ -242,8 +243,15 @@
             $("#approveVoucherRefundModal").modal('show');
         });
     }
+    bindSelectRejectAction = function () {
+        $("#ddl_select_action").find("#reject_multi_voucher_refund").click(function (e) {
+            $("#rejectVoucherRefundModal #txt_reject_refund_reason").val('');
+            $("#rejectVoucherRefundModal").modal('show');
+        });
+    }
     bindSelectActionsEvent = function () {
         bindSelectApproveAction();
+        bindSelectRejectAction();
     }
 
     getSelectedVoucherRefunds = function () {
@@ -253,7 +261,7 @@
         });
         return selectedIds;
     }
-
+    
     bindApproveMultiVoucherRefundsEvent = function () {
         $("#approveVoucherRefundModal #btn_approve_voucher_refund_confirm").click(function (e) {
             var selectedIds = getSelectedVoucherRefunds();
@@ -285,14 +293,49 @@
                     addErrorMessage("approve error!");
                 }
             });
-
             $("#approveVoucherRefundModal").modal('hide');
         })
     }
-
+    
+    bindRejectMultiVoucherRefundsEvent = function () {
+        $("#rejectVoucherRefundModal #btn_reject_voucher_refund_confirm").click(function (e) {
+            var selectedIds = getSelectedVoucherRefunds();
+            var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
+            var url = "{% url 'voucher:reject_voucher_refunds'%}";
+            var data = {
+                "refundRequestIds": JSON.stringify(selectedIds),
+                "reason": rejectReason
+            }
+            
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.is_success) {
+                        location.reload();
+                    } else {
+//                        process fail case of reject voucher refunds
+                    }
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    addErrorMessage("reject error!");
+                }
+            });
+            $("#rejectVoucherRefundModal").modal('hide');
+        })
+    }
+    
     $(document).ready(function () {
         bindSelectActionsEvent();
         bindApproveMultiVoucherRefundsEvent();
+        bindRejectMultiVoucherRefundsEvent();
     })
 
 
