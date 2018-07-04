@@ -30,7 +30,7 @@ function searchUser(url) {
 }
 
 function initSearchIconVisible() {
-    var searchBtn = document.getElementById("search_icon");
+    var searchBtn = document.getElementById("btn_search_icon");
     var input_phone_no = document.getElementById("txt_mobile_number");
 
     input_phone_no.addEventListener("keyup", function (event) {
