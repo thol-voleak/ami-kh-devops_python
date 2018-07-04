@@ -8,6 +8,7 @@ from .views.transit import Transit
 from .views.hold import HoldVoucher, UnholdVoucher
 from .views.approve_voucher_refund import ApproveVoucherRefundView
 from voucher.views.adjustment import VoucherAdjustmentList
+from voucher.views.voucher_adjustment.detail import VoucherAdjustmentDetailView
 
 
 app_name = 'voucher'
@@ -22,4 +23,5 @@ urlpatterns = [
     url(r'^request/refund$', login_required(VoucherRefundRequestView.as_view(), login_url='authentications:login'), name="refund_request"),
     url(r'^approve_voucher_refunds$', login_required(ApproveVoucherRefundView.as_view(), login_url='authentications:login'), name="approve_voucher_refunds"),
     url(r'^adjustment$', login_required(VoucherAdjustmentList.as_view(), login_url='authentications:login'), name="voucher_adjustment"),
+    url(r'^adjustment/detail/(?P<voucher_refund_id>[0-9]+)/$', login_required(VoucherAdjustmentDetailView.as_view(), login_url='authentications:login'), name="voucher_adjustment_detail"),
 ]

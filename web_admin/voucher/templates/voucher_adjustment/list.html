@@ -160,7 +160,13 @@
                             <td>{{ i.approved_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td>
-                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info">Detail</button>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-info"
+                                   role="button"
+                                   id="btn_detail"
+                                   href="{% url 'voucher:voucher_adjustment_detail' i.id %}">
+                                    <span class="small">Detail</span>
+                                </a>
                             </td>
 
                         </tr>
