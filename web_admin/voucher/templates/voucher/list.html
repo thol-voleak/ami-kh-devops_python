@@ -556,7 +556,6 @@
             var refundRequestId = $(refundRequestPopup).find("#refund_request_id_value").val();
             var refundRequestIds = [];
             refundRequestIds.push(refundRequestId);
-            console.log(refundRequestIds)
             var url = "{% url 'voucher:approve_voucher_refunds'%}";
             var data = {
                 "refundRequestIds": JSON.stringify(refundRequestIds),
