@@ -152,6 +152,7 @@
                         <th id="ddl_requested_action">Requested action</th>
                         <th id="ddl_affected_vouchers">Affected vouchers</th>
                         <th id="ddl_amount">Amount</th>
+                        <th id="ddl_currency">Currency</th>
                         <th id="ddl_status">Status</th>
                         <th id="ddl_requested_by">Requested by</th>
                         <th id="ddl_request_date">Request date</th>
@@ -169,6 +170,7 @@
                             <td>Refund</td>
                             <td>1</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
+                            <td>{{ i.currency|default_if_none:'' }}</td>
                             <td>{{ i.status|default_if_none:'' }}</td>
                             <td>{{ i.requested_username|default_if_none:'' }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
