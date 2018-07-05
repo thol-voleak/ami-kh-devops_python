@@ -2,14 +2,14 @@
 {% block content %}
 {% csrf_token %}
 <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" id="btnCloseModal">&times;</button>
-        <h4 class="modal-title">Select User</h4>
+    <button type="button" class="close" data-dismiss="modal" id="btnCloseModal">&times;</button>
+    <h4 class="modal-title">Select User</h4>
 </div>
 <div class="panel-body" style="overflow-x: auto">
     <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'payments:search_user' %}">
-        <div class="form-group col-md-12">
-            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-            <label class="pull-right" >Total records found:&nbsp;</label>
+        <div class="pull-right mb10">
+            <label>Total records found:&nbsp;</label>
+            <label id="lbl_total">{{ search_count }}</label>
         </div>
         <button id="btn_search" style="display: none" />
     <div class="table-responsive">
@@ -29,9 +29,9 @@
             <tbody>
             {% for user in user_list %}
             <tr>
-                <td class="col-sm-2" id="id_{{ user.user_type_id }}_{{ user.user_id }}">
+                <td id="id_{{ user.user_type_id }}_{{ user.user_id }}" style="min-width: 100px;">
                     {% if user.user_type_id == 1 %}Customer{%elif user.user_type_id == 2 %} Agent {% endif %}
-                   ({{ user.user_id }})
+                    ({{ user.user_id }})
                 </td>
                 <td class="col-sm-1" >{{ user.firstname }} </td>
                 <td class="col-sm-2" >{{ user.lastname }}</td>
@@ -40,7 +40,7 @@
                 <td class="col-sm-2" >{{ user.tertiary_mobile_number }}</td>
                 <td class="col-sm-2" >{{ user.email }}</td>
                 <td class="col-sm-1">
-                    <button type="button" style="border-radius: 6px" class="btn btn-success" onclick="selectUser('{{ user.user_id }}', '{{ user.user_type_id }}')">Choose</button>
+                    <button type="button" style="border-radius: 6px" class="btn-sm btn-success" onclick="selectUser('{{ user.user_id }}', '{{ user.user_type_id }}')">Choose</button>
                 </td>
             </tr>
             {% endfor %}
