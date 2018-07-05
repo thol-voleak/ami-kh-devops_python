@@ -164,6 +164,13 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                 reward_to = self.get_person_name(reward_to, event_name)
                 action['reward_to'] = reward_to
                 action['recipient'] = self.get_action_data_value(action_data, 'user_type').title()
+            elif action_type_id == 5:
+                action['voucher_group'] = self.get_action_data_value(action_data, 'voucher_group')
+                action['expiration_date'] = self.get_action_data_value(action_data, 'expiration_date')
+                reward_to = self.get_action_data_value(action_data, 'user_id')
+                reward_to = self.get_person_name(reward_to, event_name)
+                action['reward_to'] = reward_to
+                action['recipient'] = self.get_action_data_value(action_data, 'user_type').title()
 
             success, limitation_list = self.get_limitation_list(campaign_id, mechanic_id, action['id'])
 

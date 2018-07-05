@@ -723,6 +723,38 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if action.action_type.id == 5 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Give Voucher</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Action Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{ action.recipient|default_if_none:'' }}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Do action to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{ action.reward_to|default_if_none:'' }}</span>
+                            </div>
+                        </div>
+                            <div class="info-group">
+                                <div>Voucher Group:</div>
+                                <div>
+                                    <span id="lbl_voucher_group">{{ action.voucher_group|default_if_none:'' }}</span>
+                                </div>
+                            </div>
+                        {% if action.expiration_date != None %}
+                            <div class="info-group">
+                                <div>Voucher Expiration:</div>
+                                <div>
+                                    <span id="lbl_expiration_date">{{ action.expiration_date }} minutes after distributed</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                     <div class="sub-list">
                         {% for limitation in action.limitation_list %}
                             <div class="sub-section">
