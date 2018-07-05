@@ -47,6 +47,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         user_type_id = request.POST.get('user_type_id')
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
+        order_detail_id = request.POST.get('order_detail_id')
         action_id = request.POST.get('action_id')
         status_id = request.POST.get('status_id')
         opening_page_index = request.POST.get('current_page_index')
@@ -65,6 +66,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['sof_id'] = int(sof_id)
         if order_id is not '':
             body['order_id'] = order_id
+        if order_detail_id is not '':
+            body['order_detail_id'] = order_detail_id
         if action_id is not '':
             body['action_id'] = int(action_id)
         if status_id is not '':
@@ -98,6 +101,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'transaction_list': cards_list,
                  'sof_id': sof_id,
                  'order_id': order_id,
+                 'order_detail_id': order_detail_id,
                  'action_id': action_id,
                  'status_id': status_id,
                  'from_created_timestamp': from_created_timestamp,
@@ -114,6 +118,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'transaction_list': [],
                  'sof_id': sof_id,
                  'order_id': order_id,
+                 'order_detail_id': order_detail_id,
                  'action_id': action_id,
                  'status_id': status_id,
                  'from_created_timestamp': from_created_timestamp,
