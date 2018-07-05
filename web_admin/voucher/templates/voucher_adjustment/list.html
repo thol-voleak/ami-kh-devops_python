@@ -143,6 +143,26 @@
 
                 {% include "voucher_adjustment/approve_voucher_refund_dialog.html" %}
                 {% include "voucher_adjustment/reject_voucher_refund_dialog.html" %}
+
+                <div class="modal" tabindex="-1" role="dialog" id="listRejectErrorModal" style="margin-top: 150px;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div style="font-size:5em; color:Red;" class="text-center">
+                                    <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                                </div>
+                                <h3 class="modal-title">Unable to approve some rows in the request</h3>
+                            </div>
+                            <div id=listError class="modal-body"></div>
+                            <div class="modal-footer">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="margin-right: +20px; margin-top: -15px;">
                     <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                     <label class="pull-right">Total records found:&nbsp;</label>
@@ -168,7 +188,7 @@
                     <tbody>
                     {% for i in data %}
                         <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
-                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}"/></td>
+                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
                             <td>{{ i.id|default_if_none:'' }}</td>
                             <td>Refund</td>
                             <td>1</td>
@@ -261,7 +281,71 @@
         });
         return selectedIds;
     }
-    
+
+    buildRejectRefundStatusError = function (statusList) {
+        var statusMap = {};
+        $.each(statusList, function (index, statusElemt) {
+            if (statusMap[statusElemt.status] == undefined) {
+                statusMap[statusElemt.status] = 1;
+            } else {
+                statusMap[statusElemt.status]++;
+            }
+        })
+        return statusMap;
+    }
+
+    buildTableErrorHtml = function (statusMap, type) {
+        var successLable = "";
+        switch (type) {
+            case 'Approve':
+                successLable = "Being approved";
+                break;
+            case 'Reject':
+                successLable = "Being rejected";
+                break;
+
+            default:
+                break;
+        }
+        var table = $('<table>');
+        //build success infor first
+        if (statusMap["Success"] != undefined) {
+            var successRow = $('<tr>');
+            var tdLable = $('<td>').attr({
+                class: "text-right",
+                style: "font-size: 15px;"
+            }).text(successLable + ":").appendTo(successRow);
+            var tdValue = $('<td>').attr({style: "padding: 5px 10px;"}).text(statusMap["Success"]).appendTo(successRow);
+            table.append(successRow)
+        }
+
+        $.each(statusMap, function (key, value) {
+            if (key != "Success") {
+                var errorRow = $('<tr>');
+                var tdLable = $('<td>').attr({
+                    class: "text-right",
+                    style: "font-size: 15px;"
+                }).text(key + ":").appendTo(errorRow);
+                var tdValue = $('<td>').attr({style: "padding: 5px 10px;"}).text(statusMap[key]).appendTo(errorRow);
+                table.append(errorRow)
+            }
+        })
+        return table;
+    }
+
+    uncheckValidateSuccessRow = function (statusList) {
+        var successList = $.map(statusList, function (statusElement, index) {
+            return (statusElement.status == "Success") ? statusElement : null;
+        })
+        if (successList.length == 0) {
+            return;
+        }
+
+        $.each(successList, function (index, ele) {
+            $("#tbl_voucher_adjustment").find("#chk_voucher_adjustment_" + ele.refund_request_id).prop('checked', false);
+        })
+    }
+
     bindApproveMultiVoucherRefundsEvent = function () {
         $("#approveVoucherRefundModal #btn_approve_voucher_refund_confirm").click(function (e) {
             var selectedIds = getSelectedVoucherRefunds();
@@ -285,7 +369,7 @@
                     if (response.is_success) {
                         location.reload();
                     } else {
-//                        process fail case of approve voucher refunds
+                        //                        process fail case of approve voucher refunds
                     }
                 },
                 error: function (err) {
@@ -321,6 +405,20 @@
                         location.reload();
                     } else {
 //                        process fail case of reject voucher refunds
+                        var status_code = response.status_code;
+                        if (status_code == "invalid_request") {
+                            if (response.data != null) {
+                                var statusMap = buildRejectRefundStatusError(response.data);
+                                var tableHtmlError = buildTableErrorHtml(statusMap,"Reject");
+                                $("#listRejectErrorModal #listError").empty().append(tableHtmlError);
+                                uncheckValidateSuccessRow(response.data);
+                                $("#listRejectErrorModal").modal("show");
+                            } else {
+                                addErrorMessage(response.status_message);
+                            }
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
                     }
                 },
                 error: function (err) {
