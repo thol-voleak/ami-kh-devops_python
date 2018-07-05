@@ -299,6 +299,9 @@ UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{vouche
 CREATE_REFUND_REQUEST = 'api-gateway/workflow/'+API_VERSION+'/admin/vouchers/refund'
 SEARCH_VOUCHER_ADJUSTMENT = 'api-gateway/report/'+API_VERSION+'/workflows/voucher-refunds'
 
+#Third Party
+GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/voucher-groups'
+
 #Report Configuration
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
 ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
