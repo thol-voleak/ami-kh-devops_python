@@ -151,6 +151,25 @@
                                 <div style="font-size:5em; color:Red;" class="text-center">
                                     <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
                                 </div>
+                                <h3 class="modal-title">Unable to reject some rows in the request</h3>
+                            </div>
+                            <div id=listError class="modal-body"></div>
+                            <div class="modal-footer">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" tabindex="-1" role="dialog" id="listApproveErrorModal" style="margin-top: 150px;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div style="font-size:5em; color:Red;" class="text-center">
+                                    <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                                </div>
                                 <h3 class="modal-title">Unable to approve some rows in the request</h3>
                             </div>
                             <div id=listError class="modal-body"></div>
@@ -283,7 +302,7 @@
         });
         return selectedIds;
     }
-    buildRejectRefundStatusError = function (statusList) {
+    buildRefundStatusError = function (statusList) {
         var statusMap = {};
         $.each(statusList, function (index, statusElemt) {
             if (statusMap[statusElemt.status] == undefined) {
@@ -394,6 +413,21 @@
                         location.reload();
                     } else {
 //                        process fail case of approve voucher refunds
+                        var status_code = response.status_code;
+                        if (status_code == "invalid_request") {
+                            if (response.data != null) {
+                                var statusMap = buildRefundStatusError(response.data);
+                                var tableHtmlError = buildTableErrorHtml(statusMap,"Approve");
+                                $("#listApproveErrorModal #listError").empty().append(tableHtmlError);
+                                uncheckValidateSuccessRow(response.data);
+                                $("#listApproveErrorModal").modal("show");
+                            } else {
+                                addErrorMessage(response.status_message);
+                            }
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
+
                     }
                 },
                 error: function (err) {
@@ -432,7 +466,7 @@
                         var status_code = response.status_code;
                         if (status_code == "invalid_request") {
                             if (response.data != null) {
-                                var statusMap = buildRejectRefundStatusError(response.data);
+                                var statusMap = buildRefundStatusError(response.data);
                                 var tableHtmlError = buildTableErrorHtml(statusMap,"Reject");
                                 $("#listRejectErrorModal #listError").empty().append(tableHtmlError);
                                 uncheckValidateSuccessRow(response.data);
