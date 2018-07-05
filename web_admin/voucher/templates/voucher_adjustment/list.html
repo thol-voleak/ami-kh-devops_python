@@ -188,12 +188,12 @@
                     <tbody>
                     {% for i in data %}
                         <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
-                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
+                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}"/></td>
                             <td>{{ i.id|default_if_none:'' }}</td>
                             <td>Refund</td>
                             <td>1</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
-                            <td>{{ i.currency|default_if_none:'' }}</td>
+                            <td id="voucher_adjustment_currency">{{ i.currency|default_if_none:'' }}</td>
                             <td>{{ i.status|default_if_none:'' }}</td>
                             <td>{{ i.requested_username|default_if_none:'' }}</td>
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
@@ -259,12 +259,14 @@
 
     bindSelectApproveAction = function () {
         $("#ddl_select_action").find("#approve_multi_voucher_refund").click(function (e) {
+            if (!validateCurrencies()) return false;
             $("#approveVoucherRefundModal #txt_approve_refund_reason").val('');
             $("#approveVoucherRefundModal").modal('show');
         });
     }
     bindSelectRejectAction = function () {
         $("#ddl_select_action").find("#reject_multi_voucher_refund").click(function (e) {
+            if (!validateCurrencies()) return false;
             $("#rejectVoucherRefundModal #txt_reject_refund_reason").val('');
             $("#rejectVoucherRefundModal").modal('show');
         });
@@ -281,7 +283,6 @@
         });
         return selectedIds;
     }
-
     buildRejectRefundStatusError = function (statusList) {
         var statusMap = {};
         $.each(statusList, function (index, statusElemt) {
@@ -346,6 +347,29 @@
         })
     }
 
+    var validateCurrencies = function () {
+        var firstCurrency = "";
+        var currentCurrency = "";
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked");
+        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_adjustment_currency").text() : "";
+        $(checkedInput).each(function (index, value) {
+            currentCurrency = $(value).parent().parent().find("#voucher_adjustment_currency").text();
+            if (firstCurrency != currentCurrency) {
+                swal({
+                    title: 'Multiple currencies are not allowed',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
+
     bindApproveMultiVoucherRefundsEvent = function () {
         $("#approveVoucherRefundModal #btn_approve_voucher_refund_confirm").click(function (e) {
             var selectedIds = getSelectedVoucherRefunds();
@@ -369,7 +393,7 @@
                     if (response.is_success) {
                         location.reload();
                     } else {
-                        //                        process fail case of approve voucher refunds
+//                        process fail case of approve voucher refunds
                     }
                 },
                 error: function (err) {
