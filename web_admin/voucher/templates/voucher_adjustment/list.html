@@ -188,7 +188,7 @@
                     <tbody>
                     {% for i in data %}
                         <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
-                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}"/></td>
+                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
                             <td>{{ i.id|default_if_none:'' }}</td>
                             <td>Refund</td>
                             <td>1</td>
