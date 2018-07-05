@@ -133,7 +133,7 @@
                 </div>
                 <div class="form-group">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped mb0" id="tbl_customer_transaction_history" style="border-collapse: separate;">
+                        <table class="table table-bordered table-striped mb0" id="tbl_customer_transaction_history">
                             <thead>
                             <tr>
                                 <th id="order_id">Order ID</th>
@@ -190,21 +190,12 @@
                             </tbody>
                             <tfoot>
                                 {% for row in summaries %}
-                                    {% if forloop.last %}
-                                        <tr>
-                                            <td colspan="11" style="text-align:right;border: 1px solid black;border-right: none">Total SUM of all search result in {{ row.currency }}</td>
-                                            <td style="border: 1px solid black;border-right: none">{{ row.total_debit_amount|default_if_none:'0' }}</td>
-                                            <td style="border: 1px solid black;border-right: none;">{{ row.total_credit_amount|default_if_none:'0' }}</td>
-                                            <td colspan="4" style="border: 1px solid black;"></td>
-                                        </tr>
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="11" style="text-align:right;border: 1px solid black;border-right: none;border-bottom: none">Total SUM of all search result in {{ row.currency }}</td>
-                                            <td style="border: 1px solid black;border-right: none;border-bottom: none">{{ row.total_debit_amount|default_if_none:'0' }}</td>
-                                            <td style="border: 1px solid black;border-right: none;border-bottom: none">{{ row.total_credit_amount|default_if_none:'0' }}</td>
-                                            <td colspan="4" style="border: 1px solid black;border-bottom: none"></td>
-                                        </tr>
-                                    {% endif %}
+                                    <tr>
+                                        <td colspan="11" style="text-align:right">Total SUM of all search result in {{ row.currency }}</td>
+                                        <td>{{ row.total_debit_amount|default_if_none:'0' }}</td>
+                                        <td>{{ row.total_credit_amount|default_if_none:'0' }}</td>
+                                        <td colspan="4"></td>
+                                    </tr>
                                 {% endfor %}
                             </tfoot>
                         </table>
