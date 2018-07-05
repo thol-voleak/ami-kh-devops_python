@@ -44,6 +44,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start search cash transaction ==========')
 
         user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
         action_id = request.POST.get('action_id')
@@ -58,6 +59,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body['page_index'] = int(opening_page_index)
         if user_id is not '':
             body['user_id'] = int(user_id)
+        if user_type_id is not '' and user_type_id is not '0':
+            body['user_type_id'] = int(0 if user_type_id is None else user_type_id)
         if sof_id is not '':
             body['sof_id'] = int(sof_id)
         if order_id is not '':
@@ -90,6 +93,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page),
                  'user_id': user_id,
+                 'user_type_id': user_type_id,
                  'search_by': body,
                  'transaction_list': cards_list,
                  'sof_id': sof_id,
@@ -105,6 +109,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': 0,
                  'paginator': {},
                  'user_id': user_id,
+                 'user_type_id': user_type_id,
                  'search_by': body,
                  'transaction_list': [],
                  'sof_id': sof_id,
