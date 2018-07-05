@@ -43,6 +43,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start search cash transaction ==========')
 
+        user_id = request.POST.get('user_id')
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
         action_id = request.POST.get('action_id')
@@ -55,6 +56,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {}
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
+        if user_id is not '':
+            body['user_id'] = int(user_id)
         if sof_id is not '':
             body['sof_id'] = int(sof_id)
         if order_id is not '':
@@ -67,15 +70,11 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['from_created_timestamp'] = new_from_created_timestamp
-            #self.logger.info("from_created_timestamp [{}]".format(new_from_created_timestamp))
         if to_created_timestamp is not '' and to_created_timestamp is not None:
             new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
             new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_timestamp'] = new_to_created_timestamp
-            #self.logger.info("to_created_timestamp [{}]".format(new_to_created_timestamp))
-
-        #self.logger.info("keyword for search is [{}]".format(body))
 
         context = {}
         data, success, status_message = self.get_cash_transaction_list(body)
@@ -90,7 +89,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': page.get('total_elements', 0),
                  'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page),
-                 # 'user_id': user_id,
+                 'user_id': user_id,
                  'search_by': body,
                  'transaction_list': cards_list,
                  'sof_id': sof_id,
@@ -105,7 +104,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context.update(
                 {'search_count': 0,
                  'paginator': {},
-                 # 'user_id': user_id,
+                 'user_id': user_id,
                  'search_by': body,
                  'transaction_list': [],
                  'sof_id': sof_id,
