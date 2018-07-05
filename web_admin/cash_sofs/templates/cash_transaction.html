@@ -17,7 +17,7 @@
                         <div class="input-group">
                             <input class="form-control br0" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
                             <span class="input-group-btn">
-                                <button class="btn btn-info" type="button" id="btn_search_icon" onclick = "searchUser('{% url 'payments:search_user' %}')" disabled="true">
+                                <button class="btn btn-info" type="button" id="btn_search_icon" onclick = "searchUser('{% url 'cash_sofs:search_user' %}')" disabled="true">
                                     <i class="glyphicon glyphicon-search"></i>
                                 </button>
                             </span>
@@ -154,7 +154,7 @@
       $(window).keydown(function(event){
         if(event.keyCode == 13 && event.target.id == 'txt_mobile_number') {
           event.preventDefault();
-          searchUser('{% url 'payments:search_user' %}');
+          searchUser('{% url 'cash_sofs:search_user' %}');
         }
       });
     });
