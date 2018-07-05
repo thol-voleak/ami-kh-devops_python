@@ -12,7 +12,24 @@
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Type</label>
+                    <label class="col-sm-2 control-label">User Phone No.</label>
+                    <div class=" col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control br0" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" type="button" id="btn_search_icon" onclick = "searchUser('{% url 'payments:search_user' %}')" disabled="true">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label">Currency</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_currency" name="currency">
+                            <option value='0'>All</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">Debit/Credit</label>
                     <div class="col-xs-2">
                         <select class="form-control" id="ddl_type" name="action_id">
                             <option value='' {% if action_id == "" %}selected="selected"{% endif %}>All</option>
@@ -43,7 +60,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">ORDER ID</label>
+                    <label class="col-sm-2 control-label">Order ID</label>
                     <div class="col-sm-2">
                         <input type="number" class="form-control input-rounded" name="order_id" value="{{ order_id }}" id="txt_order_id"/>
                     </div>
@@ -115,5 +132,28 @@
             {% include "pagination.html" %}
         </div>
     </div>
+
+    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" id="divModalDialog">
+            <div class="modal-content" id="divModalContent">
+
+            </div>
+        </div>
+    </div>
+
+<script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
+<script src="{% static 'js/search_user.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      initSearchIconVisible();
+      $(window).keydown(function(event){
+        if(event.keyCode == 13 && event.target.id == 'txt_mobile_number') {
+          event.preventDefault();
+          searchUser('{% url 'payments:search_user' %}');
+        }
+      });
+    });
+</script>
 
 {% endblock %}
