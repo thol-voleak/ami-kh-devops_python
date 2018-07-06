@@ -10,6 +10,7 @@ from datetime import datetime
 from campaign.models import terms_mapping
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
+from web_admin.api_settings import GET_VOUCHER_GROUP_LIST
 
 import logging
 
@@ -40,11 +41,13 @@ class AddAction(TemplateView, GetHeaderMixin):
         is_login_success = {'term': 'is_login_success', 'description': ''}
         is_suspend = {'term': 'is_suspend', 'description': ''}
         detail_names.extend((username, is_login_success, is_suspend))
+        voucher_group_list = self.get_voucher_group_list()
 
         ops = {
             'key_value_types': key_value_types,
             'detail_names': detail_names,
-            'trigger_type': mechanic.get('event_name')
+            'trigger_type': mechanic.get('event_name'),
+            'voucher_group_list': voucher_group_list
         }
 
         context.update(ops)
@@ -272,6 +275,34 @@ class AddAction(TemplateView, GetHeaderMixin):
                         "key_value": request.POST.get(reward_key_value),
                         "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
                     })
+        elif reward_type == 'give_voucher':
+            params = {
+                "action_type_id": 5,
+                'user_id':  request.POST.get('give_reward_to'),
+                'user_type': request.POST.get('reward_recipient'),
+                "data": [
+                    {
+                        'key_name': 'user_id',
+                        'key_value': request.POST.get('give_reward_to'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'user_type',
+                        'key_value': request.POST.get('reward_recipient'),
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'voucher_group',
+                        'key_value': request.POST.get('voucher_group'),
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'expiration_date',
+                        'key_value': request.POST.get('voucher_expiration'),
+                        'key_value_type': 'numeric'
+                    },
+                ]
+            }
 
         success, data, message = self.create_reward(campaign_id, mechanic_id, params)
 
@@ -338,3 +369,22 @@ class AddAction(TemplateView, GetHeaderMixin):
         url = api_settings.GET_MECHANIC_DETAIL.format(bak_rule_id=campaign_id, mechanic_id=mechanic_id)
         success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting mechanic detail")
         return success, data
+
+    def get_voucher_group_list(self):
+        url = GET_VOUCHER_GROUP_LIST
+
+        is_success, status_code, data = RestFulClient.get(url=url,
+                                                          headers=self._get_headers(),
+                                                          loggers=self.logger)
+
+        API_Logger.post_logging(loggers=self.logger, response=data,
+                                status_code=status_code, is_getting_list=False)
+
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
+            data = []
+        return data

@@ -45,6 +45,7 @@
                         <option value= "send_notification">Send Notification</option>
                         <option value= "suspend_account">Suspend Account</option>
                         <option value= "response">Response</option>
+                        <option value= "give_voucher">Give Voucher</option>
                     </select>
                 </div>
             </div>
@@ -114,6 +115,7 @@
             </div>
             <div id="div_send_notification"></div>
             <div id="div_response_type"></div>
+            <div id="div_give_voucher"></div>
             <div id="limitation-group" class="sub-box" style="margin-top: 30px;">
                 <div id="div_condition_1">
                     <div class="form-group">
@@ -331,6 +333,31 @@
             }
         }
 
+        var div_give_voucher = document.getElementById('div_give_voucher');
+        var div_give_voucher_html = '\
+            <div class="form-group">\
+                <label class="col-sm-3 control-label sub-title">Get Voucher From</label>\
+                <div></div>\
+            </div>\
+            <div class="form-group" id="div_voucher_group">\
+                <label class="col-sm-3 control-label">Voucher Group *</label>\
+                <div class="col-xs-3">\
+                    <select class="form-control" id="ddl_voucher_group" name="voucher_group">\
+                        {% for voucher_group in voucher_group_list %}\
+                            <option value= "{{ voucher_group }}">{{ voucher_group }}</option>\
+                        {% endfor %}\
+                     </select>\
+                </div>\
+            </div>\
+            <div class="form-group" id="div_voucher_expiration">\
+                <label class="col-sm-3 control-label">Voucher Expiration</label>\
+                <div></div>\
+                <div class="col-xs-3">\
+                    <input min="0" id="txt_voucher_expiration" class="form-control input-rounded" style="width: 200px; display: inline-block" name="voucher_expiration" type="number">\
+                    <span class="recipient-mechanic" style="position: relative; top: 0px;">minutes after distributed</span>\
+                </div>\
+            </div>';
+
         var div_fixed_cashback = document.getElementById('div_fixed_cashback');
         var div_fixed_cashback_html = '\
             <div class="form-group">\
@@ -541,6 +568,7 @@
                 div_fixed_cashback.innerHTML = '';
                 div_response_type.innerHTML = '';
                 div_send_notification.innerHTML = div_send_notification_html;
+                div_give_voucher.innerHTML = '';
                 sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
 
             }   else if (rType === 'fixed_cashback') {
@@ -564,7 +592,7 @@
                 div_fixed_cashback.innerHTML = div_fixed_cashback_html;
                 div_response_type.innerHTML = '';
                 div_send_notification.innerHTML = '';
-
+                div_give_voucher.innerHTML = '';
             } else if (rType === 'suspend_account') {
                 hideElement("lbl_paid_amount");
                 resetRewardRecipient();
@@ -581,6 +609,7 @@
                 div_send_notification.innerHTML = '';
                 div_fixed_cashback.innerHTML = '';
                 div_response_type.innerHTML = '';
+                div_give_voucher.innerHTML = '';
             } else if (rType === 'response') {
                 hideElement("lbl_paid_amount");
                 resetRewardRecipient();
@@ -598,6 +627,24 @@
                 sampleData = document.getElementById("data_tobe_send_1").cloneNode(true);
                 div_send_notification.innerHTML = '';
                 div_fixed_cashback.innerHTML = '';
+                div_give_voucher.innerHTML = '';
+            } else if (rType === 'give_voucher') {
+                hideElement("lbl_paid_amount");
+                resetRewardRecipient();
+                showElement('div_reward_recipient');
+                showElement('div_reward_recipient_should_be');
+                showElement('div_give_reward_to');
+                hideElement('div_amount');
+                setNotRequired('txt_amount');
+                resetValue('txt_amount');
+                hideElement('div_send_to');
+                setNotRequired('txt_send_to');
+                resetValue('txt_send_to');
+                hideElement('btn_add_data');
+                div_send_notification.innerHTML = '';
+                div_fixed_cashback.innerHTML = '';
+                div_response_type.innerHTML = '';
+                div_give_voucher.innerHTML = div_give_voucher_html;
             }
         }
 
@@ -719,7 +766,7 @@
             });
 
             $("#ddl_reward_type").change(function () {
-                if($(this).val() == "fixed_cashback") {
+                if($(this).val() == "fixed_cashback" || $(this).val() == "give_voucher") {
                     $(".btn_remove_limitation").hide();
                 } else {
                     $(".btn_remove_limitation").show();
