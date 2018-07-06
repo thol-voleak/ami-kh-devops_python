@@ -96,7 +96,7 @@ class VoucherAdjustmentList(TemplateView, GetHeaderMixin):
     
     def _get_requested_action_list(self):
         return [
-            {"name": "REFUND", "value": "REFUND"},
+            {"name": "Refund", "value": "Refund"},
         ]
     
     def _format_data(self, data):
