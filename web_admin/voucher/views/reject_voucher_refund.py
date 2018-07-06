@@ -8,6 +8,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 
 from web_admin import api_settings
 from web_admin import setup_logger, RestFulClient
+from web_admin.utils import check_permissions
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class RejectVoucherRefundView(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        # TODO check permision of approve voucher refund
+        check_permissions(request, 'CAN_APPROVE_VOUCHER_ADJUSTMENT')
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(RejectVoucherRefundView, self).dispatch(request, *args, **kwargs)
