@@ -32,8 +32,7 @@
                     <label class="col-sm-2 control-label">Debit/Credit</label>
                     <div class="col-xs-2">
                         <select class="form-control" id="ddl_type" name="action_id">
-                            <option value='' {% if action_id == "" %}selected="selected"{% endif %}>All</option>
-                            <option value='0' {% if action_id == '0' %}selected="selected"{% endif %}>Initiate</option>
+                            <option value='' {% if action_id == '' %}selected="selected"{% endif %}>All</option>
                             <option value='2' {% if action_id == '2' %}selected="selected"{% endif %}>Debit</option>
                             <option value='1' {% if action_id == '1' %}selected="selected"{% endif %}>Credit</option>
                         </select>
@@ -113,7 +112,7 @@
                         <th id="owner">User Type (User ID)</th>
                         <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
-                        <th id="balance">Type</th>
+                        <th id="balance" class="text-center">Debit/Credit</th>
                         <th id="currency">Amount</th>
                         <th id="created_date">Created Date</th>
                     </tr>
@@ -121,12 +120,12 @@
                     <tbody>
                     {% for transaction in transaction_list %}
                         <tr>
-                            <td class="col-sm-2">{{ transaction.sof.id }}</td>
+                            <td class="col-sm-1">{{ transaction.sof.id }}</td>
                             <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
-                            <td class="col-sm-2">{{ transaction.action.name }}</td>
-                            <td class="col-sm-2">{{ transaction.amount }}</td>
+                            <td class="col-sm-1 text-center">{{ transaction.action.name }}</td>
+                            <td>{{ transaction.amount }}</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}

@@ -30,7 +30,7 @@
             {% for user in user_list %}
             <tr>
                 <td id="id_{{ user.user_type_id }}_{{ user.user_id }}" style="min-width: 100px;">
-                    {% if user.user_type_id == 1 %}Customer{%elif user.user_type_id == 2 %} Agent {% endif %}
+                    {% if user.user_type_id == 1 %} Customer {%else %} Agent {% endif %}
                     ({{ user.user_id }})
                 </td>
                 <td class="col-sm-1" >{{ user.firstname }} </td>

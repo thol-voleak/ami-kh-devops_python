@@ -55,9 +55,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
 
-        body = {}
-        body['paging'] = True
-        body['page_index'] = int(opening_page_index)
+        body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '':
             body['user_id'] = int(user_id)
         if user_type_id is not '' and user_type_id is not '0':
@@ -91,40 +89,32 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             cards_list = self.format_data(cards_list)
             page = data.get("page", {})
             self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 'user_id': user_id,
-                 'user_type_id': user_type_id,
-                 'search_by': body,
-                 'transaction_list': cards_list,
-                 'sof_id': sof_id,
-                 'order_id': order_id,
-                 'order_detail_id': order_detail_id,
-                 'action_id': action_id,
-                 'status_id': status_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
+
+            context.update({
+                'search_count': page.get('total_elements', 0),
+                'paginator': page,
+                'page_range': calculate_page_range_from_page_info(page),
+                'transaction_list': cards_list
+            })
         else:
-            context.update(
-                {'search_count': 0,
-                 'paginator': {},
-                 'user_id': user_id,
-                 'user_type_id': user_type_id,
-                 'search_by': body,
-                 'transaction_list': [],
-                 'sof_id': sof_id,
-                 'order_id': order_id,
-                 'order_detail_id': order_detail_id,
-                 'action_id': action_id,
-                 'status_id': status_id,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
+            context.update({
+                'search_count': 0,
+                'paginator': {},
+                'transaction_list': []
+            })
+
+        context.update({
+            'user_id': user_id,
+            'user_type_id': user_type_id,
+            'search_by': body,
+            'sof_id': sof_id,
+            'order_id': order_id,
+            'order_detail_id': order_detail_id,
+            'action_id': action_id,
+            'status_id': status_id,
+            'from_created_timestamp': from_created_timestamp,
+            'to_created_timestamp': to_created_timestamp
+        })
 
         self.logger.info('========== End search cash transaction ==========')
         return render(request, self.template_name, context)
