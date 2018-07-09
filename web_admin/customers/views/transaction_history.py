@@ -24,6 +24,16 @@ from web_admin.utils import calculate_page_range_from_page_info, export_file
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
+status_list = [
+    {"id": '', "name": "All"},
+    {"id": 0, "name": "Created"},
+    {"id": 2, "name": "Executed"},
+    {"id": -1, "name": "Fail"},
+    {"id": 1, "name": "Locking"},
+    {"id": 3, "name": "Rolled back"},
+    {"id": 4, "name": "Time out"},
+]
+
 class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_CUSTOMER_INDIVIDUAL_WALLET"
     login_url = 'web:permission_denied'
@@ -64,6 +74,9 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         opening_page_index = request.GET.get('current_page_index')
         from_created_timestamp = request.GET.get('from_created_timestamp')
         to_created_timestamp = request.GET.get('to_created_timestamp')
+        status_id = request.GET.get('status_id')
+        if status_id is not '' and status_id is not None:
+            status_id = int(status_id)
 
         if sof_id is None and sof_type_id is None and opening_page_index is None and from_created_timestamp is None and to_created_timestamp is None:
             # Set first load default time for Context
@@ -102,6 +115,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'summaries': summaries,
                      'choices': choices,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
                      'user_id': user_id,
@@ -112,6 +127,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'data': [],
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'is_show_export': False
@@ -127,6 +144,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 body['sof_type_id'] = int(sof_type_id)
             body['user_type_id'] = UserType.CUSTOMER.value
             body['user_id'] = user_id
+            if status_id is not '' and status_id is not None:
+                body['status_id_list'] = [status_id]
 
             context = {}
             # validate required search date criteria
@@ -145,6 +164,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -171,6 +192,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -197,6 +220,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -249,6 +274,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                          'sof_type_id': sof_type_id,
                          'sof_id': sof_id,
                          'cash_sof_list': cash_sof_list,
+                         'status_list': status_list,
+                         'status_id': status_id,
                          'paginator': page,
                          'page_range': calculate_page_range_from_page_info(page),
                          'user_id': user_id,
@@ -261,6 +288,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     context.update(
                         {'search_count': 0,
                          'data': [],
+                         'status_list': status_list,
+                         'status_id': status_id,
                          'paginator': {},
                          'user_id': user_id,
                          'is_show_export': False
