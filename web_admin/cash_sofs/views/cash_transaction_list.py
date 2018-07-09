@@ -57,6 +57,10 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         created_to_date = request.POST.get('created_to_date')
         created_from_time = request.POST.get('created_from_time')
         created_to_time = request.POST.get('created_to_time')
+        modified_from_date = request.POST.get('modified_from_date')
+        modified_to_date = request.POST.get('modified_to_date')
+        modified_from_time = request.POST.get('modified_from_time')
+        modified_to_time = request.POST.get('modified_to_time')
 
         body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '':
@@ -77,6 +81,10 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
         if created_to_date:
             body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
+        if modified_from_date:
+            body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
+        if modified_to_date:
+            body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
 
         context = {}
         data, success, status_message = self.get_cash_transaction_list(body)
@@ -111,7 +119,11 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'created_from_date': created_from_date,
             'created_to_date': created_to_date,
             'created_from_time': created_from_time,
-            'created_to_time': created_to_time
+            'created_to_time': created_to_time,
+            'modified_from_date': modified_from_date,
+            'modified_to_date': modified_to_date,
+            'modified_from_time': modified_from_time,
+            'modified_to_time': modified_to_time
         })
 
         self.logger.info('========== End search cash transaction ==========')
@@ -140,3 +152,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
         context['created_from_time'] = "00:00:00"
         context['created_to_time'] = "00:00:00"
+        context['modified_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['modified_from_time'] = "00:00:00"
+        context['modified_to_time'] = "00:00:00"
