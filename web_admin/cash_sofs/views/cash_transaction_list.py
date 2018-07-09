@@ -4,10 +4,10 @@ from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_logger import API_Logger
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from datetime import datetime
+from datetime import date, timedelta
 from braces.views import GroupRequiredMixin
 from web_admin import api_settings, setup_logger, RestFulClient
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, convert_string_to_date_time
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
+        self.initSearchDateTime(context)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -52,8 +53,10 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         status_id = request.POST.get('status_id')
         opening_page_index = request.POST.get('current_page_index')
 
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
 
         body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '':
@@ -70,20 +73,13 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['action_id'] = int(action_id)
         if status_id is not '':
             body['status_id'] = int(status_id)
-        if from_created_timestamp is not '' and to_created_timestamp is not None:
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-        if to_created_timestamp is not '' and to_created_timestamp is not None:
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
+        if created_from_date:
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
+        if created_to_date:
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
 
         context = {}
         data, success, status_message = self.get_cash_transaction_list(body)
-        body['from_created_timestamp'] = from_created_timestamp
-        body['to_created_timestamp'] = to_created_timestamp
         if success:
             cards_list = data.get("cash_sof_transactions", [])
             cards_list = self.format_data(cards_list)
@@ -112,8 +108,10 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'order_detail_id': order_detail_id,
             'action_id': action_id,
             'status_id': status_id,
-            'from_created_timestamp': from_created_timestamp,
-            'to_created_timestamp': to_created_timestamp
+            'created_from_date': created_from_date,
+            'created_to_date': created_to_date,
+            'created_from_time': created_from_time,
+            'created_to_time': created_to_time
         })
 
         self.logger.info('========== End search cash transaction ==========')
@@ -133,3 +131,12 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         for i in data:
             i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
         return data
+
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
