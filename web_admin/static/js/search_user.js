@@ -12,7 +12,9 @@ function searchUser(url) {
         },
         type: "GET",
         success: function (response) {
-            if(response.no_record == 'true') {
+            if(response.no_record === 'true') {
+                $('#divUserSearchMessage').css({'display':'block'});
+                $('#lb_user_search_message').text('Cannot find user you are trying to search');
             } else if(response.user_id !== undefined) {
                 $('#txt_user_id').val(response.user_id);
                 $('#ddl_user_type').val(response.user_type_id);
