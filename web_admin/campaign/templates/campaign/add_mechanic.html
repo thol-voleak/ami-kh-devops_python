@@ -572,10 +572,14 @@
             <div class="form-group" id="div_voucher_group">\
                 <label class="col-sm-3 control-label">Voucher Group *</label>\
                 <div class="col-xs-3">\
-                    <select class="form-control" id="ddl_voucher_group" name="voucher_group">\
-                        {% for voucher_group in voucher_group_list %}\
-                            <option value= "{{ voucher_group }}">{{ voucher_group }}</option>\
-                        {% endfor %}\
+                    <select class="form-control" id="ddl_voucher_group" name="voucher_group" required>\
+                         {% if voucher_group_list|length == 0 %}\
+                            <option value= "">No Groups Found. Create Groups First</option>\
+                        {% else %}\
+                            {% for voucher_group in voucher_group_list %}\
+                                <option value= "{{ voucher_group }}">{{ voucher_group }}</option>\
+                            {% endfor %}\
+                        {% endif %}\
                      </select>\
                 </div>\
             </div>\
