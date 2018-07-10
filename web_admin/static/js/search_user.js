@@ -25,8 +25,11 @@ function searchUser(url) {
                 });
             }
         },
-        error: function (msg) {
-            alert('Search user failed');
+        error: function (request) {
+            if(request.status === 504) {
+              $('#divUserSearchMessage').css({'display': 'block'});
+              $('#lb_user_search_message').text('Search timed out, please try again or contact support');
+            }
         }
     });
 }
