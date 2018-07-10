@@ -47,6 +47,50 @@ class AgentAPIService(RESTfulMethods):
         }
         return context, success
 
+    def get_agent_classification(self, agent_classification_id):
+        body = {'id': agent_classification_id}
+        data, success = self._post_method(api_path=api_settings.GET_AGENT_CLASSIFICATION_URL,
+                                          func_description="Get agent classification",
+                                          logger=logger,
+                                          params=body)
+        context = {
+            'agent_classifications': data['classifications']
+        }
+        return context, success
+
+    def get_mm_card_type(self, mm_card_type_id):
+        body = {'id': mm_card_type_id}
+        data, success = self._post_method(api_path=api_settings.GET_MM_CARD_TYPES,
+                                          func_description="Get agent mm card type",
+                                          logger=logger,
+                                          params=body)
+        context = {
+            'mm_card_type': data
+        }
+        return context, success
+
+    def get_mm_card_type_level(self, mm_card_type_level_id):
+        body = {'id': mm_card_type_level_id}
+        data, success = self._post_method(api_path=api_settings.GET_MM_CARD_TYPE_LEVELS,
+                                          func_description="Get agent mm card type levels",
+                                          logger=logger,
+                                          params=body)
+        context = {
+            'mm_card_type_level': data
+        }
+        return context, success
+
+    def get_accreditation_status(self, accreditation_status_id):
+        body = {'id': accreditation_status_id}
+        data, success = self._post_method(api_path=api_settings.GET_ACCREDITATION_STATUS,
+                                          func_description="Get agent accreditation status",
+                                          logger=logger,
+                                          params=body)
+        context = {
+            'accreditation_status': data
+        }
+        return context, success
+
     def get_currencies(self, agent_id):
         url = api_settings.GET_REPORT_AGENT_BALANCE
         body = {

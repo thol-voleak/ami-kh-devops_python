@@ -60,10 +60,12 @@ RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationsh
 GET_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/identity-types'
 GET_MM_CARD_TYPES = 'api-gateway/report/' + API_VERSION + '/agents/mm-card-types'
 GET_MM_CARD_TYPE_LEVELS = 'api-gateway/report/' + API_VERSION + '/agents/mm-card-type-levels'
+GET_ACCREDITATION_STATUS = 'api-gateway/report/' + API_VERSION + '/agents/accreditation-status'
 DELETE_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}'
 SHARE_BENEFIT_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}/sharing-benefit'
 ADD_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships'
 GRANT_TRUST_URL = 'api-gateway/trust-management/' + API_VERSION + '/admin/tokens'
+GET_AGENT_CLASSIFICATION_URL = 'api-gateway/report/'+API_VERSION+'/agents/classifications'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'

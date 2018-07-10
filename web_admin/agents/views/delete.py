@@ -64,13 +64,15 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
             request.session['agent_redirect_from_delete'] = True
         return redirect('agents:agent-list')
 
+
+
     def get_context_data(self, **kwargs):
         self.logger.info('========== Start showing Delete Agent page ==========')
         context = super(AgentDelete, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
-
         context, status = self.get_agent_detail(agent_id)
         agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
+
         currencies, status_get_currency = self.get_currencies(agent_id)
         if status and status_get_agent_identity and status_get_currency:
             agent_type_name, status = self.get_agent_type_name(context['agent']['agent_type_id'])
@@ -88,7 +90,62 @@ class AgentDelete(GroupRequiredMixin, TemplateView, AgentAPIService):
                 context.update({
                     'agent_type_name': context.agent.agent_type_id
                 })
+            if context['agent']['mm_card_type_id']:
+                mm_card_type_data, status = self.get_mm_card_type(
+                    context['agent']['mm_card_type_id'])
+                if status:
+                    context.update({
+                        'mm_card_type_name': mm_card_type_data['mm_card_type'][0]['name']
+                    })
+                else:
+                    context.update({
+                        'mm_card_type_name': context['agent']['mm_card_type_id']
+                    })
+
+            if context['agent']['mm_card_level_id']:
+                mm_card_type_level, status = self.get_mm_card_type_level(
+                    context['agent']['mm_card_level_id'])
+                if status:
+                    context.update({
+                        'mm_card_type_level_name': mm_card_type_level['mm_card_type_level'][0]['level']
+                    })
+                else:
+                    context.update({
+                        'mm_card_type_level_name': context['agent']['mm_card_level_id']
+                    })
+            if context['agent']['accreditation']['status_id']:
+                accreditation_status, status = self.get_accreditation_status(
+                    context['agent']['accreditation']['status_id'])
+                if status:
+                    context.update({
+                        'accreditation_status_name': accreditation_status['accreditation_status'][0]['status']
+                    })
+                else:
+                    context.update({
+                        'accreditation_status_name': context['agent']['accreditation']['status_id']
+                    })
+            if context['agent']['agent_classification_id']:
+                agent_classification_data, status = self.get_agent_classification(context['agent']['agent_classification_id'])
+                if status:
+                    context.update({
+                        'agent_classification_name': agent_classification_data['agent_classifications'][0]['name']
+                    })
+                else:
+                    context.update({
+                        'agent_classification_name': context.agent.agent_classification_id
+                    })
+            if context['agent']['referrer_user_type_id']:
+                referrer_agent_type_name, status = self.get_agent_type_name(context['agent']['referrer_user_type_id'])
+                if status:
+                    context.update({
+                        'referrer_agent_type_name': referrer_agent_type_name
+                    })
+                else:
+                    context.update({
+                        'referrer_agent_type_name': context.agent.referrer_user_type_id
+                    })
         else:
             context = {'agent': {}}
+
         self.logger.info('========== Finished showing Delete Agent page ==========')
         return context
