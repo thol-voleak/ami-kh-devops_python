@@ -45,25 +45,25 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         currencies, get_currency_status = self.get_currencies(agent_id)
         agent_profile = self.get_agent_profile(agent_id)
 
-        if agent_profile['date_of_birth'] is not None:
-            date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
-            agent_profile['date_of_birth'] = date_of_birth
-
-        if agent_profile['primary_issue_date'] is not None:
-            primary_issue_date = dateparse.parse_datetime(agent_profile['primary_issue_date'])
-            agent_profile['primary_issue_date'] = primary_issue_date
-
-        if agent_profile['primary_expire_date'] is not None:
-            primary_expire_date = dateparse.parse_datetime(agent_profile['primary_expire_date'])
-            agent_profile['primary_expire_date'] = primary_expire_date
-
-        if agent_profile['secondary_issue_date'] is not None:
-            secondary_issue_date = dateparse.parse_datetime(agent_profile['secondary_issue_date'])
-            agent_profile['secondary_issue_date'] = secondary_issue_date
-
-        if agent_profile['secondary_expire_date'] is not None:
-            secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
-            agent_profile['secondary_expire_date'] = secondary_expire_date
+        # if agent_profile['date_of_birth'] is not None:
+        #     date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
+        #     agent_profile['date_of_birth'] = date_of_birth
+        #
+        # if agent_profile['primary_issue_date'] is not None:
+        #     primary_issue_date = dateparse.parse_datetime(agent_profile['primary_issue_date'])
+        #     agent_profile['primary_issue_date'] = primary_issue_date
+        #
+        # if agent_profile['primary_expire_date'] is not None:
+        #     primary_expire_date = dateparse.parse_datetime(agent_profile['primary_expire_date'])
+        #     agent_profile['primary_expire_date'] = primary_expire_date
+        #
+        # if agent_profile['secondary_issue_date'] is not None:
+        #     secondary_issue_date = dateparse.parse_datetime(agent_profile['secondary_issue_date'])
+        #     agent_profile['secondary_issue_date'] = secondary_issue_date
+        #
+        # if agent_profile['secondary_expire_date'] is not None:
+        #     secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
+        #     agent_profile['secondary_expire_date'] = secondary_expire_date
 
         agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
 
