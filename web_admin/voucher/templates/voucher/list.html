@@ -244,7 +244,7 @@
             </form>
             {% include "voucher/refund_dialog.html" %}
             <div class="no-more-tables" style="position: absolute;">
-                {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION %}
+                {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS"%}
                 <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
                     <ul class="dropdown-menu">
@@ -254,7 +254,9 @@
                         {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                         <li><a onclick="unHold()">Unhold</a></li>
                         {%endif%}
+                        {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
                         <li id="upload_vouchers"><a>Upload Vouchers</a></li>
+                        {%endif%}
                     </ul>
                 </div>
                 <div style="margin-right: +20px; margin-top: -15px;">
