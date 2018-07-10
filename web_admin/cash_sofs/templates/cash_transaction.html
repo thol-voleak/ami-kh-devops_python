@@ -23,12 +23,17 @@
                             </span>
                         </div>
                     </div>
-                    <label class="col-sm-2 control-label">Currency</label>
-                    <div class="col-xs-2">
+
+                    <label class="col-sm-2 control-label">Currency:</label>
+                    <div class="col-sm-2">
                         <select class="form-control" id="ddl_currency" name="currency">
-                            <option value='0'>All</option>
+                            <option value="">All</option>
+                            {% for currency in currencies %}
+                                <option value="{{ currency }}" {% if selected_currency == currency %}selected{% endif %}>{{ currency }}</option>
+                            {% endfor %}
                         </select>
                     </div>
+
                     <label class="col-sm-2 control-label">Debit/Credit</label>
                     <div class="col-xs-2">
                         <select class="form-control" id="ddl_type" name="action_id">
@@ -143,6 +148,7 @@
                 <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                 <label class="pull-right" >Total:&nbsp;</label>
             </form>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_cash_transaction_list">
                     <thead>
@@ -152,7 +158,8 @@
                         <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="balance" class="text-center">Debit/Credit</th>
-                        <th id="currency">Amount</th>
+                        <th id="amount">Amount</th>
+                        <th id="currency">Currency</th>
                         <th id="created_date">Created Date</th>
                         <th id="modified_date">Modified Date</th>
                     </tr>
@@ -166,6 +173,7 @@
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
                             <td class="col-sm-1 text-center">{{ transaction.action.name }}</td>
                             <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.sof.currency }}</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.last_updated_timestamp|default_if_none:'' }}</td>
                         </tr>

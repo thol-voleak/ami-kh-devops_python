@@ -1,5 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin.api_settings import CASH_TRANSACTIONS_URL
+from web_admin.api_settings import CASH_TRANSACTIONS_URL, GET_ALL_CURRENCY_URL
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_logger import API_Logger
 from django.shortcuts import render
@@ -39,6 +39,10 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
         self.initSearchDateTime(context)
+        currencies = self.get_currencies_list()
+        context.update({
+            'currencies': currencies
+        })
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +55,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         order_detail_id = request.POST.get('order_detail_id')
         action_id = request.POST.get('action_id')
         status_id = request.POST.get('status_id')
-        opening_page_index = request.POST.get('current_page_index')
+        currency = request.POST.get('currency')
 
         created_from_date = request.POST.get('created_from_date')
         created_to_date = request.POST.get('created_to_date')
@@ -62,6 +66,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         modified_from_time = request.POST.get('modified_from_time')
         modified_to_time = request.POST.get('modified_to_time')
 
+        opening_page_index = request.POST.get('current_page_index')
         body = {'paging': True, 'page_index': int(opening_page_index)}
         if user_id is not '':
             body['user_id'] = int(user_id)
@@ -77,6 +82,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['action_id'] = int(action_id)
         if status_id is not '':
             body['status_id'] = int(status_id)
+        if currency is not '':
+            body['currency'] = currency
         if created_from_date:
             body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
         if created_to_date:
@@ -107,6 +114,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'transaction_list': []
             })
 
+        currencies = self.get_currencies_list()
         context.update({
             'user_id': user_id,
             'user_type_id': user_type_id,
@@ -116,6 +124,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'order_detail_id': order_detail_id,
             'action_id': action_id,
             'status_id': status_id,
+            'selected_currency': currency,
+            'currencies': currencies,
             'created_from_date': created_from_date,
             'created_to_date': created_to_date,
             'created_from_time': created_from_time,
@@ -138,6 +148,17 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('cash_sof_transactions', []),
                                 status_code=status_code, is_getting_list=True)
         return data, success, status_message
+
+    def get_currencies_list(self):
+        data, success = self._get_method(api_path=GET_ALL_CURRENCY_URL,
+                                         func_description="get currency list",
+                                         is_getting_list=True)
+        if success:
+            value = data.get('value', None)
+            if value is not None:
+                currencies = [i.split('|')[0] for i in value.split(',')]
+                return currencies
+        return []
 
     def format_data(self, data):
         for i in data:
