@@ -6,10 +6,9 @@ import logging
 from web_admin.restful_client import RestFulClient
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.api_settings import GET_USER_BY_PHONE_URL
-from django.contrib import messages
 from authentications.utils import check_permissions_by_user, get_correlation_id_from_username
 from web_admin.api_logger import API_Logger
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from web_admin.utils import calculate_page_range_from_page_info
 
 logger = logging.getLogger(__name__)
@@ -39,25 +38,29 @@ class UserList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         opening_page_index = request.GET.get('current_page_index')
         body = {'paging': True, 'page_index': int(opening_page_index), 'mobile_number': mobile_number}
 
-        data = self.search_user_list(body=body)
-        page = data.get("page", {})
-        user_list = data['users']
-        total_elements = page.get('total_elements', 0)
-        if total_elements == 0:
-            return JsonResponse({
-                'no_record': 'true'
-            })
-        elif total_elements == 1:
-            user = data['users'][0]
-            return JsonResponse(user)
+        is_success, status_code, status_message, data = self.search_user_list(body=body)
+        if is_success:
+            page = data.get("page", {})
+            user_list = data['users']
+            total_elements = page.get('total_elements', 0)
+            if total_elements == 0:
+                return JsonResponse({
+                    'no_record': 'true'
+                })
+            elif total_elements == 1:
+                user = data['users'][0]
+                return JsonResponse(user)
+            else:
+                page_range = calculate_page_range_from_page_info(page)
+                context.update({'user_list': user_list,
+                           'paginator': page,
+                           'search_count': page.get('total_elements', 0),
+                           'page_range': page_range
+                           })
         else:
-            page_range = calculate_page_range_from_page_info(page)
-            context.update({'user_list': user_list,
-                       'paginator': page,
-                       'search_count': page.get('total_elements', 0),
-                       'page_range': page_range
-                       })
-
+            if status_code == 'Timeout':
+                return HttpResponse(status=504)
+            return HttpResponse(status=500)
         self.logger.info('========== End getting user list ==========')
         return render(request, self.template_name, context)
 
@@ -70,11 +73,4 @@ class UserList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         API_Logger.post_logging(loggers=self.logger, response=data,
                                 status_code=status_code, is_getting_list=False)
 
-        if not is_success:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                "Something went wrong"
-            )
-            data = []
-        return data
+        return is_success, status_code, status_message, data
