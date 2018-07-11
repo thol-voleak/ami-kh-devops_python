@@ -260,9 +260,9 @@
                         {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                         <li><a onclick="unHold()">Unhold</a></li>
                         {%endif%}
-{#                        {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}#}
+                        {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
                         <li id="upload_vouchers"><a>Upload Vouchers</a></li>
-{#                        {%endif%}#}
+                        {%endif%}
                     </ul>
                 </div>
                 <div style="margin-right: +20px; margin-top: -15px;">
