@@ -179,7 +179,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         htmlIDBtnCancel += '\'';
 
         // set disabled, required for specific ID & specific SOF according to Actor Types
-        if (aData[1] === "Specific ID") {
+        if (aData[1] === "Specific ID" || aData[1] === "Specific ID's Beneficiary") {
             setSpecificIDDisabled = '';
             setSpecificIDRequired = 'required';
         } else {
