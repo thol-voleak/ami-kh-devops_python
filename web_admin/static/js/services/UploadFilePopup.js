@@ -55,7 +55,7 @@ bindFileInputEvent = function (popupContainer) {
     })
 }
 
-processUpload = function (popupContainer) {
+processUpload = function (popupContainer, uploadDelegateFunction) {
     resetUploadProgress(popupContainer)
     if (uploadDelegateFunction != undefined && uploadDelegateFunction != null) {
         uploadDelegateFunction(popupContainer);
@@ -63,7 +63,7 @@ processUpload = function (popupContainer) {
 }
 bindUploadButtonEvent = function (popupContainer, uploadDelegateFunction) {
     $(popupContainer).find("#btn_upload").click(function (event) {
-        processUpload(popupContainer)
+        processUpload(popupContainer, uploadDelegateFunction)
     })
 }
 
