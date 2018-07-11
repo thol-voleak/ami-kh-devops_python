@@ -240,6 +240,22 @@
                             </select>
                         </div>
                  </div>
+                <div class="form-group">
+                    <div class="col-sm-5">
+                    </div>
+                    <label class="col-sm-3 control-label">Voucher Type</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_voucher_type" name="voucher_type">
+                            {% for item in voucher_type_list %}
+                                {% if item.value == voucher_type %}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
                  <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
                             <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                             <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
@@ -277,7 +293,9 @@
                         <th id="ddl_voucher_id">Voucher ID</th>
                         <th id="ddl_issuer_user_id">Issuer User ID</th>
                         <th id="ddl_voucher_type">Voucher Type</th>
+                        <th id="ddl_voucher_group">Voucher Group</th>
                         <th id="ddl_voucher_amount">Voucher Amount</th>
+                        <th id="ddl_distributed_status">Distributed status</th>
                         <th id="ddl_voucher_fee">Voucher Fee</th>
                         <th id="ddl_status">Claim Status</th>
                         <th id="ddl_hold_status">Hold Status</th>
@@ -298,7 +316,9 @@
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
                             <td>{{ i.issuer_user_id|default_if_none:'' }}</td>
                             <td id="voucher-type" >{{ i.voucher_type|default_if_none:'' }}</td>
+                            <td>{{ i.voucher_group|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
+                            <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
                             <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
