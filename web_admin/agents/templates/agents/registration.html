@@ -93,8 +93,17 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_referrer_user_type"
                                             name="referrer_user_type_id">
-                                        {% for agent_type in agent_types_list %}
-                                            <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                        {% if not agent_profile.referrer_user_type.id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for user_type in user_type_list %}
+                                            {% if agent_profile.referrer_user_type.id == user_type.id %}
+                                                <option value="{{ user_type.id }}" selected>{{ user_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ user_type.id }}">{{ user_type.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -131,7 +140,11 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_agent_type" name="agent_type_id" required>
                                         {% for agent_type in agent_types_list %}
-                                            <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                            {% if agent_profile.agent_type_id == agent_type.id %}
+                                                <option value="{{ agent_type.id }}" selected>{{ agent_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -139,10 +152,13 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">User Name Type *</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="ddl_identity_type" name="identity_type_id"
-                                            required>
+                                    <select class="form-control" id="ddl_identity_type" name="identity_type_id" required>
                                         {% for identity_type in identity_type_list %}
-                                            <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
+                                            {% if identity.identity_type_id == identity_type.id %}
+                                                <option value="{{ identity_type.id }}" selected>{{ identity_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -211,8 +227,7 @@
                                     <select class="form-control" id="ddl_currency" name="currency" required>
                                         {% for currency in currencies %}
                                             {% if currency == context_currency %}
-                                                <option value="{{ currency }}" selected>{{ currency }}
-                                                </option>
+                                                <option value="{{ currency }}" selected>{{ currency }}</option>
                                             {% else %}
                                                 <option value="{{ currency }}">{{ currency }}</option>
                                             {% endif %}
@@ -247,9 +262,19 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">MM Card Type</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="ddl_mm_card_type" name="mm_card_type_id">
-                                        {% for agent_type in agent_types_list %}
-                                            <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                    <select class="form-control" id="ddl_mm_card_type" name="mm_card_type_id" onchange="loadMMCardLevel()"
+                                            data-url="{% url 'agents:get_mm_card_level' %}">
+                                        {% if not agent_profile.mm_card_type_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for card_type in mm_card_type_list %}
+                                            {% if agent_profile.mm_card_type_id == card_type.id %}
+                                                <option value="{{ card_type.id }}" selected>{{ card_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ card_type.id }}">{{ card_type.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -258,9 +283,6 @@
                                 <label class="col-sm-4 control-label">MM Card Level</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_mm_card_level" name="mm_card_level_id">
-                                        {% for identity_type in identity_type_list %}
-                                            <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
-                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -287,9 +309,12 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Model Type</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="model_type"
-                                           id="txt_model_type"
-                                           value="{{ agent_profile.model_type|default_if_none:'' }}"/>
+                                    <select class="form-control" id="ddl_model_type" name="model_type">
+                                        <option value="" {%if not agent_profile.model_type %}selected{%endif%}>-</option>
+                                        <option value="1" {%if agent_profile.model_type == '1' %}selected{%endif%}>1</option>
+                                        <option value="2" {%if agent_profile.model_type == '2' %}selected{%endif%}>2</option>
+                                        <option value="3" {%if agent_profile.model_type == '3' %}selected{%endif%}>3</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -320,8 +345,17 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_agent_classification"
                                             name="agent_classification_id">
-                                        {% for agent_type in agent_types_list %}
-                                            <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                        {% if not agent_profile.agent_classification_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for agent_classification in agent_classification_list %}
+                                            {% if agent_profile.agent_classification_id == agent_classification.id %}
+                                                <option value="{{ agent_classification.id }}" selected>{{ agent_classification.name }}</option>
+                                            {% else %}
+                                                <option value="{{ agent_classification.id }}">{{ agent_classification.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -373,7 +407,7 @@
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="first_name"
                                            id="txt_first_name"
-                                           value="{{ agent_profile.first_name|default_if_none:'' }}"/>
+                                           value="{{ agent_profile.first_name|default_if_none:'' }}" required/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -392,7 +426,7 @@
                                 <label class="col-sm-4 control-label">Last Name *</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="last_name"
-                                           id="txt_last_name" value="{{ agent_profile.last_name|default_if_none:'' }}"/>
+                                           id="txt_last_name" value="{{ agent_profile.last_name|default_if_none:'' }}" required/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -437,8 +471,15 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Ethnicity</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="ethnicity"
-                                           id="txt_ethnicity" value="{{ agent_profile.ethnicity|default_if_none:'' }}"/>
+                                    <select class="form-control" id="ddl_ethnicity" name="ethnicity">
+                                        <option value="" {% if not agent_profile.ethnicity%}selected{% endif %}>-</option>
+                                        <option value="Other" {% if agent_profile.ethnicity == 'Other' %}selected{% endif %}>Other</option>
+                                        <option value="Ethnicity Unknown" {% if agent_profile.ethnicity == 'Ethnicity Unknown' %}selected{% endif %}>Ethnicity Unknown</option>
+                                        <option value="Asian" {% if agent_profile.ethnicity == 'Asian' %}selected{% endif %}>Asian</option>
+                                        <option value="Black or African American" {% if agent_profile.ethnicity == 'Black or African American' %}selected{% endif %}>Black or African American</option>
+                                        <option value="Hispanic/Latino" {% if agent_profile.ethnicity == 'Hispanic/Latino' %}selected{% endif %}>Hispanic/Latino</option>
+                                        <option value="White" {% if agent_profile.ethnicity == 'White' %}selected{% endif %}>White</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -911,8 +952,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_bank_account_status"
                                             name="bank_account_status">
-                                        <option value="1">Active</option>
-                                        <option value="0">In-active</option>
+                                        <option value="" {%if not agent_profile.bank.account_status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.bank.account_status == 0 %}selected{%endif%}>In-Active</option>
+                                        <option value="1" {%if agent_profile.bank.account_status == 1 %}selected{%endif%}>Active</option>
                                     </select>
                                 </div>
                             </div>
@@ -985,8 +1027,8 @@
                                 <label class="col-sm-4 control-label">Verify Status</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_bank_verify_status" name="bank_is_verified">
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="" {%if not agent_profile.bank.is_verified %}selected{%endif%}>No</option>
+                                        <option value="1" {%if agent_profile.bank.is_verified %}selected{%endif%}>Yes</option>
                                     </select>
                                 </div>
                             </div>
@@ -994,7 +1036,6 @@
                                 <label class="col-sm-4 control-label">End Date</label>
                                 <div class="col-sm-8">
                                     <input type="date" class="form-control input-rounded" name="bank_end_date"
-                                           onchange="VerifyDate(this)"
                                            id="dtp_bank_end_date"
                                            value="{{ context_date.bank_end_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
@@ -1179,9 +1220,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_primary_identity_status"
                                             name="primary_identity_status">
-                                        <option value="">-</option>
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="" {%if not agent_profile.primary_identity.status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.accreditation.primary_identity.status == 0 %}selected{%endif%}>In-Active</option>
+                                        <option value="1" {%if agent_profile.accreditation.primary_identity.status == 1 %}selected{%endif%}>Active</option>
                                     </select>
                                 </div>
                             </div>
@@ -1280,9 +1321,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_secondary_identity_status"
                                             name="secondary_identity_status">
-                                        <option value="">-</option>
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="" {%if not agent_profile.accreditation.secondary_identity.status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.accreditation.secondary_identity.status == 0 %}selected{%endif%}>In-Active</option>
+                                        <option value="1" {%if agent_profile.accreditation.secondary_identity.status == 1 %}selected{%endif%}>Active</option>
                                     </select>
                                 </div>
                             </div>
@@ -1362,9 +1403,18 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_accreditation_status"
                                             name="accreditation_status_id">
-                                        <option value="">-</option>
-                                        <option value="1">ha</option>
-                                        <option value="0">ho</option>
+                                        {% if not agent_profile.accreditation.status_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for accreditation_status in agent_accreditation_status_list %}
+                                            {% if agent_profile.accreditation.status_id == accreditation_status.id %}
+                                                <option value="{{ accreditation_status.id }}" selected>{{ accreditation_status.status }}</option>
+                                            {% else %}
+                                                <option value="{{ accreditation_status.id }}">{{ accreditation_status.status }}</option>
+                                            {% endif %}
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -1385,13 +1435,8 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Verify Date</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control input-rounded"
-                                           name="accreditation_verify_date"
-                                           id="dtp_accreditation_verify_date"
-                                           value="{{ context_date.accreditation_verify_date|date:'Y-m-d'|default_if_none:'' }}"/>
-                                </div>
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
                             </div>
                         </div>
                         <!-- End section 9 - row 2 -->
@@ -1410,10 +1455,10 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_accreditation_risk_level"
                                             name="accreditation_risk_level">
-                                        <option value="">-</option>
-                                        <option value="1">Low</option>
-                                        <option value="2">Medium</option>
-                                        <option value="3">High</option>
+                                        <option value="" {%if not agent_profile.accreditation.risk_level %}selected{%endif%}>-</option>
+                                        <option value="low" {%if agent_profile.accreditation.risk_level == 'low' %}selected{%endif%}>Low</option>
+                                        <option value="medium" {%if agent_profile.accreditation.risk_level == 'medium' %}selected{%endif%}>Medium</option>
+                                        <option value="high" {%if agent_profile.accreditation.risk_level == 'high' %}selected{%endif%}>High</option>
                                     </select>
                                 </div>
                             </div>
@@ -1807,6 +1852,44 @@
             }
             return true;
         }
+
+        function loadMMCardLevel() {
+            var $ele = $('#ddl_mm_card_type');
+            var cardTypeId = $ele.val();
+            var url = $ele.data('url');
+            $('#ddl_mm_card_level').empty();
+            if (cardTypeId) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        card_type_id: cardTypeId
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                            window.location.replace(url);
+                        } else if (response.status == 2) {
+                            var data = response.data;
+                            if(typeof data.length !== 'undefined') {
+                                $.each(data, function(key, value) {
+                                    $('#ddl_mm_card_level').append('<option value="' + value.id + '">' + value.level + '</option>');
+;
+                                });
+                            }
+                        } else {
+                        }
+                    },
+                    error: function (msg) {
+                    }
+                });
+            }
+        }
+        loadMMCardLevel();
 
         function check_system_password() {
             var pwd = document.getElementById('txt_password');

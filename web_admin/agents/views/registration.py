@@ -24,6 +24,8 @@ from web_admin.utils import encrypt_text_agent, setup_logger
 from web_admin.restful_client import RestFulClient
 from authentications.apps import InvalidAccessToken
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin import ajax_functions
+from django.conf import settings
 
 from web_admin.api_logger import API_Logger
 
@@ -72,6 +74,56 @@ class AgentTypeAndCurrenciesAndIdentityTypeDropDownList(TemplateView, RESTfulMet
                                 status_code=status_code, is_getting_list=True)
         return data.get('identity_types', [])
 
+    def _get_user_type_list(self):
+        return [{'id': 3, 'name': 'system-user'}, {'id': 2, 'name': 'agent'}, {'id': 1, 'name': 'customer'}]
+
+    def _get_mm_card_type_list(self):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_MM_CARD_TYPES,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={})
+        return data
+
+    def _get_agent_classification_list(self):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_AGENT_CLASSIFICATION_URL,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={"paging": False})
+        return data.get('classifications', [])
+
+    def _get_country_code(self):
+        url = api_settings.CONFIGURATION_DETAIL_URL.format(scope='global',
+                                                           key='country')
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if success:
+            return data.get("value")
+        else:
+            return None
+
+    def _get_accreditation_status(self):
+        country_code = self._get_country_code()
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_ACCREDITATION_STATUS,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={"country_code": country_code})
+        return data
+
+def get_mm_card_level(request):
+    logger = logging.getLogger(__name__)
+    correlation_id = get_correlation_id_from_username(request.user)
+    logger = setup_logger(request, logger, correlation_id)
+    logger.info("Checking permission for [{}] username with [{}] permission".format(request.user, 'CAN_PERFORM_AGENT_REGISTRATION'))
+    if not check_permissions_by_user(request.user, 'CAN_PERFORM_AGENT_REGISTRATION'):
+        return {"status": 1, "msg": ''}
+    logger.info('========== Start get mm card level by card type ==========')
+    card_type_id = request.POST['card_type_id']
+    url = settings.DOMAIN_NAMES + api_settings.GET_MM_CARD_TYPE_LEVELS
+    params = {
+        "mm_card_type_id": card_type_id
+    }
+    result = ajax_functions._post_method(request, url, "", logger, params)
+    logger.info('========== Finish get mm card level by card type ==========')
+    return result
 
 class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTypeDropDownList, GetHeaderMixin):
     group_required = "CAN_PERFORM_AGENT_REGISTRATION"
@@ -97,12 +149,20 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         currencies = self._get_currencies_dropdown()
         agent_types_list = self._get_agent_types_list()
         identity_type_list = self._get_identity_type_list()
+        user_type_list = self._get_user_type_list()
+        mm_card_type_list = self._get_mm_card_type_list()
+        agent_classification_list = self._get_agent_classification_list()
+        agent_accreditation_status_list = self._get_accreditation_status()
 
         result = {
             'permanent_address_check':True,
             'currencies': currencies,
             'agent_types_list': agent_types_list,
             'identity_type_list': identity_type_list,
+            'user_type_list': user_type_list,
+            'mm_card_type_list' : mm_card_type_list,
+            'agent_classification_list': agent_classification_list,
+            'agent_accreditation_status_list': agent_accreditation_status_list,
             'msg': self.request.session.pop('agent_registration_msg', None)
         }
         self.logger.info('========== Finished showing Create Agent page ==========')
@@ -115,6 +175,10 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         agent_types_list = self._get_agent_types_list()
         currencies = self._get_currencies_dropdown()
         identity_type_list = self._get_identity_type_list()
+        user_type_list = self._get_user_type_list()
+        mm_card_type_list = self._get_mm_card_type_list()
+        agent_classification_list = self._get_agent_classification_list()
+        agent_accreditation_status_list = self._get_accreditation_status()
         check_or_not = True
         date_exist_on_context = {}
 
@@ -175,7 +239,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "country": current_address_country,
                 "landmark": current_address_landmark,
                 "longitude": current_address_longitude,
-                "latitude": current_address_longitude
+                "latitude": current_address_latitude
             },
             "permanent_address": {
                 "citizen_association": permanent_address_citizen_association,
@@ -189,13 +253,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "country": permanent_address_country,
                 "landmark": permanent_address_landmark,
                 "longitude": permanent_address_longitude,
-                "latitude": permanent_address_longitude
+                "latitude": permanent_address_latitude
             }
         }
 
         # Bank Details Section
         bank_name = request.POST.get('bank_name')
-        bank_account_status = request.POST.get('bank_account_status')
+        bank_account_status = int(request.POST.get('bank_account_status')) if request.POST.get("bank_account_status") else None
         bank_account_name = request.POST.get('bank_account_name')
         bank_account_number = request.POST.get('bank_account_number')
         bank_branch_area = request.POST.get('bank_branch_area')
@@ -206,7 +270,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             bank_register_date = new_bank_register_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             date_exist_on_context['bank_register_date'] = new_bank_register_date
         bank_register_source = request.POST.get('bank_register_source')
-        bank_is_verified = bool (request.POST.get('bank_is_verified'))
+        bank_is_verified = bool(request.POST.get('bank_is_verified'))
         bank_end_date = request.POST.get('bank_end_date')
         if bank_end_date != '':
             new_bank_end_date = datetime.strptime(bank_end_date, "%Y-%m-%d")
@@ -247,7 +311,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             contract_expired_date = new_contract_expired_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             date_exist_on_context['contract_expired_date'] = new_contract_expired_date
         contract_notification_alert = request.POST.get('contract_notification_alert')
-        contract_day_of_period_reconciliation = request.POST.get('contract_day_of_period_reconciliation')
+        contract_day_of_period_reconciliation = int(request.POST.get('contract_day_of_period_reconciliation')) if request.POST.get("contract_day_of_period_reconciliation") else None
         contract_file_url = request.POST.get('contract_file_url')
         contract_assessment_information_url = request.POST.get('contract_assessment_information_url')
 
@@ -268,7 +332,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         # Profile Accreditation Section
         # Primary Identity Section
         primary_identity_type = request.POST.get('primary_identity_type')
-        primary_identity_status = request.POST.get('primary_identity_status')
+        primary_identity_status = int(request.POST.get('primary_identity_status')) if request.POST.get("primary_identity_status") else None
         primary_identity_id = request.POST.get('primary_identity_id')
         primary_identity_place_of_issue = request.POST.get('primary_identity_place_of_issue')
         primary_identity_issue_date = request.POST.get('primary_identity_issue_date')
@@ -287,7 +351,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         # Secondary Identity Section
         secondary_identity_type = request.POST.get('secondary_identity_type')
-        secondary_identity_status = request.POST.get('secondary_identity_status')
+        secondary_identity_status = int(request.POST.get('secondary_identity_status')) if request.POST.get("secondary_identity_status") else None
         secondary_identity_id = request.POST.get('secondary_identity_id')
         secondary_identity_place_of_issue = request.POST.get('secondary_identity_place_of_issue')
         secondary_identity_issue_date = request.POST.get('secondary_identity_issue_date')
@@ -304,13 +368,13 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         secondary_identity_front_url = request.POST.get('secondary_identity_front_url')
         secondary_identity_back_url = request.POST.get('secondary_identity_back_url')
 
-        accreditation_status_id = request.POST.get('accreditation_status_id')
+        accreditation_status_id = int(request.POST.get('accreditation_status_id')) if request.POST.get("accreditation_status_id") else None
         accreditation_verify_by = request.POST.get('accreditation_verify_by')
-        accreditation_verify_date = request.POST.get('accreditation_verify_date')
-        if accreditation_verify_date != '':
-            new_accreditation_verify_date = datetime.strptime(accreditation_verify_date, "%Y-%m-%d")
-            accreditation_verify_date = new_accreditation_verify_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-            date_exist_on_context['accreditation_verify_date'] = new_accreditation_verify_date
+        # accreditation_verify_date = request.POST.get('accreditation_verify_date')
+        # if accreditation_verify_date != '':
+        #     new_accreditation_verify_date = datetime.strptime(accreditation_verify_date, "%Y-%m-%d")
+        #     accreditation_verify_date = new_accreditation_verify_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        #     date_exist_on_context['accreditation_verify_date'] = new_accreditation_verify_date
         accreditation_remark = request.POST.get('accreditation_remark')
         accreditation_risk_level = request.POST.get('accreditation_risk_level')
 
@@ -338,7 +402,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             "status_id": accreditation_status_id,
             "remark": accreditation_remark,
             "verify_by": accreditation_verify_by,
-            "verify_date": accreditation_verify_date,
+            # "verify_date": accreditation_verify_date,
             "risk_level": accreditation_risk_level
         }
 
@@ -397,12 +461,12 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         # Account Basics Section
         is_testing_account = bool(request.POST.get("is_testing_account"))
-        is_system_account = bool (request.POST.get("is_system_account"))
+        is_system_account = bool(request.POST.get("is_system_account"))
         acquisition_source = request.POST.get("acquisition_source")
-        referrer_user_type_id = request.POST.get("referrer_user_type_id")
-        referrer_user_id = request.POST.get("referrer_user_id")
-        agent_type_id = request.POST.get('agent_type_id')
-        identity_type_id = request.POST.get('identity_type_id')
+        referrer_user_type_id = int(request.POST.get("referrer_user_type_id")) if request.POST.get("referrer_user_type_id") else None
+        referrer_user_id = int(request.POST.get("referrer_user_id")) if request.POST.get("referrer_user_id") else None
+        agent_type_id = int(request.POST.get('agent_type_id'))
+        identity_type_id = int(request.POST.get('identity_type_id'))
         username = request.POST.get('username')
         password = ''
         auto_generate_password = 'false'
@@ -413,12 +477,12 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             password = encrypt_text_agent(request.POST.get('password'))
         currency = request.POST.get('currency')
         unique_reference = request.POST.get('unique_reference')
-        mm_card_type_id = request.POST.get('mm_card_type_id')
-        mm_card_level_id = request.POST.get('mm_card_level_id')
+        mm_card_type_id = int(request.POST.get('mm_card_type_id')) if request.POST.get('mm_card_type_id') else None
+        mm_card_level_id = int(request.POST.get('mm_card_level_id')) if request.POST.get('mm_card_level_id') else None
         mm_factory_card_number = request.POST.get('mm_factory_card_number')
         model_type = request.POST.get('model_type')
-        is_require_otp = bool (request.POST.get('is_require_otp'))
-        agent_classification_id = request.POST.get('agent_classification_id')
+        is_require_otp = bool(request.POST.get('is_require_otp'))
+        agent_classification_id = int(request.POST.get('agent_classification_id')) if request.POST.get('agent_classification_id') else None
 
         # Personal Details Section
         tin_number = request.POST.get('tin_number')
@@ -449,14 +513,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         secondary_mobile_number = request.POST.get('secondary_mobile_number')
         tertiary_mobile_number = request.POST.get('tertiary_mobile_number')
 
+        referrer_user_type = None
+        if referrer_user_type_id is not None:
+            referrer_user_type_name = [user['name'] for user in user_type_list if user['id'] == referrer_user_type_id][0]
+            referrer_user_type = {
+                "id": referrer_user_type_id,
+                "name": referrer_user_type_name
+            }
+
         profile = {
             "is_testing_account": is_testing_account,
             "is_system_account": is_system_account,
             "acquisition_source": acquisition_source,
-            "referrer_user_type": {
-                "id": referrer_user_type_id,
-                "name": "agent"
-            },
+            "referrer_user_type": referrer_user_type,
             "referrer_user_id": referrer_user_id,
             "agent_type_id": agent_type_id,
             "unique_reference": unique_reference,
@@ -510,7 +579,8 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                                                     headers=self._get_headers(),
                                                     loggers=self.logger,
                                                     params=body)
-        identity = {'username':username}
+        identity = {'username': username,
+                    'identity_type_id': identity_type_id}
         body = {
             'profile': profile,
             'identity': identity
@@ -522,6 +592,10 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             'context_date':date_exist_on_context,
             'currencies': currencies,
             'identity_type_list': identity_type_list,
+            'user_type_list': user_type_list,
+            'mm_card_type_list': mm_card_type_list,
+            'agent_classification_list': agent_classification_list,
+            'agent_accreditation_status_list': agent_accreditation_status_list,
             'agent_profile': profile,
             'identity': identity,
             'context_currency':currency,

@@ -25,6 +25,7 @@ from .views.unlink_shop_from_agent import UnLinkAgentToShop
 from .views.relationship_ajax_action import delete_relationship, share_benefit_relationship
 from .views.relationship_ajax_action import stop_share_benefit_relationship
 from .views.relationship_ajax_action import add_agent_relationship
+from .views.registration import get_mm_card_level
 
 app_name = 'agents'
 
@@ -58,4 +59,5 @@ urlpatterns = [
         login_required(LinkAgentToShop.as_view(), login_url='authentications:login'), name="link_agent_shop"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/shop/(?P<shop_id>[0-9A-Za-z]+)/unlink',
         login_required(UnLinkAgentToShop.as_view(), login_url='authentications:login'), name="unlink_agent_shop"),
+    url(r'^mm-card-level', login_required(get_mm_card_level, login_url='authentications:login'), name="get_mm_card_level"),
 ]
