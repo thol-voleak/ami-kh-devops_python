@@ -13,7 +13,7 @@ from io import BytesIO
 
 import json
 
-from authentications.utils import get_auth_header, get_correlation_id_from_username
+from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
 from web_admin import RestFulClient
 from web_admin import settings
 from web_admin import setup_logger
@@ -115,6 +115,8 @@ def upload_progress(request):
 
 @csrf_exempt
 def upload_form(request):
+    if not check_permissions_by_user(request.user, 'CAN_UPLOAD_BALANCE_ADJUSTMENT'):
+        return HttpResponse(json.dumps({'id': -1, "code": "permission_denied"}))
     request.upload_handlers.insert(0, ProgressUploadHandler(request))  # place our custom upload in first position
     return _upload_file_view(request)
 
