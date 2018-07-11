@@ -59,6 +59,7 @@ class UserList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                            })
         else:
             if status_code == 'Timeout':
+                self.logger.error("Call API search user got timeout")
                 return HttpResponse(status=504)
             return HttpResponse(status=500)
         self.logger.info('========== End getting user list ==========')

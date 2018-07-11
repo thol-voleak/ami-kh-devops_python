@@ -2,7 +2,11 @@
 {% load static %}
 {% load permissions_filter %}
 {% block content %}
+
 <style>
+    .modal-dialog {
+            top: 30% !important;
+    }
     #btn_add_new_voucher {
         background-color: #337ab7;
         border-color: #337ab7;
@@ -242,7 +246,9 @@
                                    onclick="searchVouchers()" value="Search">
                  </div>
             </form>
+            {% include "uploadFile.html" with modelHeader="Upload 3rd Party Voucher" acceptedFileTypes=".csv"%}
             {% include "voucher/refund_dialog.html" %}
+
             <div class="no-more-tables" style="position: absolute;">
                 {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS"%}
                 <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
@@ -291,7 +297,7 @@
                             <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
                             <td>{{ i.issuer_user_id|default_if_none:'' }}</td>
-                            <td>{{ i.voucher_type|default_if_none:'' }}</td>
+                            <td id="voucher-type" >{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
@@ -324,6 +330,8 @@
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
+<script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
+
 <script>
     var searchVouchers = function(){
         var from_date = $('#dtp_create_date_from').val();
@@ -360,7 +368,29 @@
         $('#select-all').prop('checked', allChecked);
     });
 
+    var validateVouchersType = function () {
+            var isOk = true;
+            var voucherType = "";
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                voucherType = $(value).parent().parent().find("#voucher-type").text();
+                if ("REMITTANCE" != voucherType) {
+                    swal({
+                        title: 'This voucher type cannot be hold/un-hold',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
+                }
+            });
+            return isOk;
+    };
+
     function hold(){
+        if (!validateVouchersType()) return false;
         $("#msg-add-client").hide();
         $("#msg-update-client").hide();
         $("#msg-add-service").hide();
@@ -406,6 +436,7 @@
         });
     }
     function unHold(){
+        if (!validateVouchersType()) return false;
         $("#msg-add-client").hide();
         $("#msg-update-client").hide();
         $("#msg-add-service").hide();
@@ -537,6 +568,14 @@
                             confirmButtonText: "Close",
                             closeOnConfirm: true
                         });
+                    }  else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {
+                        swal({
+                            title: 'This voucher type cannot be refunded',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
                     } else {
                         $("#refundModal #confirm_voucher_id").val(data[0].voucher_id);
                         $("#refundModal #confirm_prod_ref3").val(data[0].product.product_ref3);
@@ -587,8 +626,156 @@
             });
         })
     }
+
+    validateUploadFileSize = function (popupContainer) {
+        var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+        //8MB = 1024 * 1024 * 8 = 8388608
+        if ($(uploadFileInput)[0].files[0].size > 8388608) {
+            swal({
+                title: 'Upload exceeded max 8MB file size limit',
+                type: "error",
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "Close",
+                closeOnConfirm: true
+            });
+            return false;
+        }
+        return true;
+    }
+
+    validateUploadFileType = function (popupContainer) {
+        //Validate csv file type
+        if (!validateFileType(popupContainer, ['csv'])) {
+            swal({
+                title: 'Upload must be in csv format',
+                type: "error",
+                confirmButtonColor: "#2ECC71",
+                confirmButtonText: "Close",
+                closeOnConfirm: true
+            });
+            return false;
+        }
+        return true;
+    }
+
+    uploadDelegateFunction = function (popupContainer) {
+        if (!validateRequireInputFile(popupContainer)) {
+            return false;
+        }
+        //Validate csv file type
+        if (!validateUploadFileType(popupContainer)) {
+            return false;
+        }
+
+        if (!commonUploadValidation(popupContainer)) {
+            return false;
+        }
+
+        if (!validateUploadFileSize(popupContainer)) {
+            return false;
+        }
+        upload(popupContainer);
+    }
+
+    function gen_uuid(functionId) {
+        var uuid = functionId;
+        for (var i = 0; i < 32; i++) {
+            uuid += Math.floor(Math.random() * 16).toString(16);
+        }
+        return uuid
+    }
+
+    upload = function(popupContainer) {
+        var uuid = gen_uuid(2); // id for this upload so we can fetch progress info.
+        var file = $(popupContainer).find('input[name="file_data"]').get(0).files[0];
+        var formData = new FormData();
+        formData.append('file_data', file);
+        var url = "{% url 'voucher:upload'%}"
+        var freq = 100; // freqency of update in ms
+        var progress_url = '{% url 'voucher:upload_progress' %}';
+        var progressContainer = $(popupContainer).find($('#progress_container'))
+        // Update progress bar
+        function update_progress_info() {
+            $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
+                if (data) {
+                    var progress = parseInt(data.uploaded) / parseInt(data.length);
+                    progress = progress > 1 ? 1 : progress;
+                    var width = $(popupContainer).find('input[name="file_data_mask"]').width()
+                    var progress_width = width * progress;
+                    progressContainer.find('#progress').width(progress_width);
+                    var uploadPercent = parseInt(progress * 100);
+                    progressContainer.find('#progress_info').text('Uploading ' + uploadPercent + '%');
+                    window.setTimeout(update_progress_info, freq);
+                } else {
+                    progressContainer.find('#progress').width($(popupContainer).find('input[name="file_data_mask"]').width());
+                    progressContainer.find('#progress_info').text("Upload successfully")
+                    progressContainer.find('#dlg_icon_ok').show()
+                }
+            });
+        };
+        window.setTimeout(update_progress_info, 300);
+        $.ajax({
+            type: "POST",
+            url: url + "?X-Progress-ID=" + uuid,
+            data: formData,
+            contentType: false,
+            processData: false,
+            cache: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                xhr.setRequestHeader("X-Progress-ID", uuid);
+                progressContainer.show();
+            },
+            success: function (data) {
+                var uploadData = JSON.parse(data);
+                if (null != uploadData &&  uploadData.id >=0) {
+                    popupContainer.find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                    popupContainer.find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
+                    popupContainer.find($('#progress_info')).hide();
+                    popupContainer.find($('#download_link')).show();
+                    popupContainer.find($('#btn_dialog_done')).show();
+                    popupContainer.find($('#btn_dialog_cancel')).hide();
+                } else if (uploadData.id == -1 && "file_exceeded_max_size" == uploadData.code) {
+                    popupContainer.find($('#progress_container')).hide();
+                    swal({
+                        title: 'Upload exceeded max 8MB file size limit',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                }else if (uploadData.id == -1 && "Upload must be in csv format" == uploadData.code) {
+                    popupContainer.find($('#progress_container')).hide();
+                    swal({
+                        title: 'Upload must be in csv format',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                }
+            }
+        });
+    }
+
+    bindSelectUploadAction = function (popupContainer) {
+        $("#ddl_select_action").find("#upload_vouchers").click(function (e) {
+            popupContainer.find("#progress_container").hide();
+            popupContainer.modal('show');
+            popupContainer.find("#progress_container").find("#progress").width(0);
+            popupContainer.find("#progress_container").find("#progress_info").width("0%");
+        });
+    }
+
+    initUploadPopup = function () {
+        var popupContainer = $("#uploadFileModal");
+        initUploadFilePopup(popupContainer, undefined, uploadDelegateFunction);
+        bindSelectUploadAction(popupContainer);
+    }
+
     $(document).ready(function () {
         bindApproveRefundVoucher();
+        initUploadPopup();
     })
 </script>
 {% endblock %}
