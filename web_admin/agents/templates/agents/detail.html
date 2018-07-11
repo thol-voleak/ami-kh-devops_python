@@ -32,418 +32,14 @@
     <div class="panel-body">
         <div class="row no-margin">
             <div class="col-lg-12">
-                <form id="submit-form" class="form-horizontal" role="form" method="post" 
-                        action="">
-                    {% csrf_token %}
+                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                          action="">
+                        {% csrf_token %}
 
-                    <!-- Begin section 1 -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Status *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="status" id="txt_status"
-                                       value="{{ agent.is_suspended|yesno:'Suspended,Active'}}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label" id="lbl_agent_id">Agent ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_id" id="txt_agent_id"
-                                       value="{{ agent.id|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Suspend Reason</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="status" id="txt_suspend_reason"
-                                       value="{{ agent.active_suspend_reason|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 1 - row 1 -->
-                    <hr/>
-
-                    <!-- Begin section 2 [Agent Type] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Basic Setup</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 2 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Agent Type *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="agent_type_id" id="txt_agent_type"
-                                       value="{{ agent_type_name|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">User Name Type *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="user_name"
-                                       id="txt_identity_type" value="{{status_get_agent_identity.identity_type.name|default_if_none:''}}" disabled />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 2 - row 2 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Parent ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="parent_id"
-                                       id="txt_parent_id" value="{{ agent.parent_id|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">User Name *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="user_name"
-                                       id="txt_user_name" value="{{status_get_agent_identity.username}}" disabled />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 2 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Grand Parent ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="grand_parent_id"
-                                       id="txt_grand_parent_id" value="{{ agent.grand_parent_id | default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Password *</label>
-                            <div class="col-sm-8">
-                                <input type="password" class="form-control input-rounded" name="password"
-                                       id="txt_password" value="******" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 2 - row 4 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Currency *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="currency"
-                                       id="txt_currency" value="{{ currencies | default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Re-password *</label>
-                            <div class="col-sm-8">
-                                <input type="password" class="form-control input-rounded" name="re_password"
-                                       id="txt_re_password" value="******" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Unique Reference *</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="unique_reference"
-                                       id="txt_unique_reference" value="{{ agent.unique_reference|default_if_none:'' }}" required disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 2 - row 5 -->
-                    <hr/>
-
-                    <!-- Begin section 5 [Agent Info] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Personal Details</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 5 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Last Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="lastname"
-                                       id="txt_last_name" value="{{ agent.lastname|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">First Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="firstname"
-                                       id="txt_first_name" value="{{ agent.firstname|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 5 - row 2 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Date of Birth</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="date_of_birth"
-                                       id="dtp_birth_date" value="{{agent.date_of_birth | default_if_none:''}}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Gender</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="gender"
-                                       id="txt_gender" value="{{ agent.gender|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 5 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">National</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="national"
-                                       id="txt_national" value="{{ agent.national|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 5 - row 4 -->
-
-                    <!-- Begin section 6 [Primary Identify] -->
-                    <hr/>
-                      <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>KYC Details</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 6 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Identify Type</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_identify_type"
-                                       id="txt_primary_identify_type" value="{{ agent.primary_identify_type|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 6 - row 2 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Identify ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_identify_id"
-                                       id="txt_primary_identify_id" value="{{ agent.primary_identify_id|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Place of Issue</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
-                                       id="txt_primary_place_issue" value="{{ agent.primary_place_of_issue|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 6 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Issue Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_issue_date"
-                                       id="dtp_primary_issue_date" value="{{ agent.primary_issue_date|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Expire Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="primary_expire_date"
-                                       id="dtp_primary_expire_date" value="{{ agent.primary_expire_date|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 6 - row 4 -->
-                    <br>
-                    <!-- Begin section 7 [Secondary Identify] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 7 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Identify Type</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_identify_type"
-                                       id="txt_secondary_identify_type" value="{{ agent.secondary_identify_type|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 7 - row 2 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Identify ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_identify_id"
-                                       id="txt_secondary_identify_id" value="{{ agent.secondary_identify_id|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Place of Issue</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_place_of_issue"
-                                       id="txt_secondary_place_issue" value="{{ agent.secondary_place_of_issue|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 7 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Issue Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_issue_date"
-                                       id="dtp_secondary_issue_date" value="{{ agent.secondary_issue_date|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Expire Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="secondary_expire_date"
-                                       id="dtp_secondary_expire_date" value="{{ agent.secondary_expire_date|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">KYC Status</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="kyc_status"
-                                       id="txt_kyc_status" value="{{ agent.kyc_status|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 7 - row 4 -->
-                    <hr/>
-
-                    <!-- Begin section 8 [Contact Info] -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"><strong>Contact Details</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <!-- End section 8 - row 1 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Nationality</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="nationality"
-                                       id="txt_nationality" value="{{ agent.nationality|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-
-                    <!-- End section 8 - row 3 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Primary Mobile Number</label>
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="primary_mobile_number"
-                                       id="txt_primary_mobile_number" value="{{ agent.primary_mobile_number|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Email</label>
-                            <div class="col-sm-8">
-                                <input type="email" class="form-control input-rounded" name="email"
-                                       id="txt_email" value="{{ agent.email|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 8 - row 5 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Secondary Mobile Number</label>
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="secondary_mobile_number"
-                                       id="txt_secondary_mobile_number" value="{{ agent.secondary_mobile_number|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End section 8 - row 6 -->
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Tertiary Mobile Number</label>
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control input-rounded" name="tertiary_mobile_number"
-                                       id="txt_tertiary_mobile_number" value="{{ agent.tertiary_mobile_number|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
-                    <!-- End section 8 - row 7 -->
-                    <div id="current-address-area">
+                        <!-- Begin section 1 [Account Basics] -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Current Address</strong></label>
+                                <label class="col-sm-4 control-label"><strong>Account Basics</strong></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
@@ -453,74 +49,75 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Address</label>
+                                <label class="col-sm-4 control-label" id="lbl_agent_id">Agent ID</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="address"
-                                           id="txt_current_address" value="{{ agent.address|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">District</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="district"
-                                           id="txt_current_district" value="{{ agent.district|default_if_none:'' }}" disabled/>
+                                    <input type="text" class="form-control input-rounded" name="username"
+                                           id="txt_agent_id" value="{{ agent_id | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Province</label>
+                                <label class="col-sm-4 control-label">Testing Account *</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="province"
-                                           id="txt_current_province" value="{{ agent.province|default_if_none:'' }}" disabled/>
+                                    <input type="checkbox" id="chk_testing_account" name="is_testing_account"
+                                           {% if agent.is_testing_account %}checked{% endif %} disabled>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Commune</label>
+                                <label class="col-sm-4 control-label">System Account *</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="commune"
-                                           id="txt_current_commune" value="{{ agent.commune|default_if_none:'' }}" disabled/>
+                                    <input type="checkbox" id="chk_system_account" name="is_system_account"
+                                           {% if agent.is_system_account %}checked{% endif %} disabled>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Country</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="country"
-                                           id="txt_current_country" value="{{ agent.country|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Land Mark</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="landmark"
-                                           id="txt_current_land_mark" value="{{ agent.landmark|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Longitude</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="longitude"
-                                           id="txt_current_longitude" value="{{ agent.longitude|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Latitude</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="latitude"
-                                           id="txt_current_latitude" value="{{ agent.latitude|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="permanent-address-area">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Permanent Address</strong></label>
+                                <label class="col-sm-4 control-label">Status *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="status" id="txt_status"
+                                           value="{{ agent.is_suspended|yesno:'Suspended,Active' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Acquisition Source</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="acquisition_source"
+                                           id="txt_acquisition_source"
+                                           value="{{ agent.acquisition_source|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Referrer User Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="txt_agent_type"
+                                           value="{{ referrer_agent_type_name | default_if_none:'' }}"
+                                           class="form-control input-rounded" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Referrer User ID</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control input-rounded" name="referrer_user_id"
+                                           id="txt_referrer_user_id"
+                                           value="{{ agent.referrer_user_id|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End section 1 - row 1 -->
+                        <hr/>
+
+                        <!-- Begin section 2 [Agent Type] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Basic Setup</strong></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
@@ -528,224 +125,1564 @@
                                 <div class="col-sm-8"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Address</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_address"
-                                           id="txt_permanent_address" value="{{ agent.permanent_address|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">District</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_district"
-                                           id="txt_permanent_district" value="{{ agent.permanent_district|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Province</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_province"
-                                           id="txt_permanent_province" value="{{ agent.permanent_province|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Commune</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_commune"
-                                           id="txt_permanent_commune" value="{{ agent.permanent_commune|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Country</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_country"
-                                           id="txt_permanent_country" value="{{ agent.permanent_country|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Land Mark</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_landmark"
-                                           id="txt_permanent_land_mark" value="{{ agent.permanent_landmark|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Longitude</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_longitude"
-                                           id="txt_permanent_longitude" value="{{ agent.permanent_longitude|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Latitude</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="permanent_latitude"
-                                           id="txt_permanent_latitude" value="{{ agent.permanent_latitude|default_if_none:'' }}" disabled/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label current-address-label"><strong>Bank Details</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Bank Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="bank_name"
-                                       id="txt_bank_name" value="{{ agent.bank.name|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Bank Branch City</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="bank_branch_city"
-                                       id="txt_bank_branch_city" value="{{ agent.bank.branch_city|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Bank Branch Area</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="bank_branch_area"
-                                       id="txt_bank_branch_area" value="{{ agent.bank.branch_area|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Bank Account Number</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="bank_account_number"
-                                       id="txt_bank_account_number" value="{{ agent.bank.account_number|default_if_none:'' }}" disabled/>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
+                        <!-- End section 2 - row 1 -->
 
-                    <hr/>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label current-address-label"><strong>Contract Details</strong></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Contract Type</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="contract_type"
-                                       id="txt_contract_type" value="{{ agent.contract.type|default_if_none:'' }}" disabled/>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Agent Type *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="txt_agent_type"
+                                           value="{{ agent_type_name | default_if_none:'' }}"
+                                           class="form-control input-rounded" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">User Name *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="username"
+                                           id="txt_user_name"
+                                           value="{{ status_get_agent_identity.username | default_if_none:'' }}"
+                                           disabled/>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Contract Sign Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="contract_sign_date"
-                                       id="txt_contract_sign_date" value="{{ agent.contract.sign_date|default_if_none:'' }}" disabled/>
+                        <!-- End section 2 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Password *</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control input-rounded" name="password"
+                                           id="txt_password" value="******" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Re-password *</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control input-rounded" name="re_password"
+                                           id="txt_re_password" value="******" disabled/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Contract Number</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="contract_number"
-                                       id="txt_contract_number" value="{{ agent.contract.number|default_if_none:'' }}" disabled/>
+                        <!-- End section 2 - row 4 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Currency *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="currency"
+                                           id="txt_currency" value="{{ currencies | default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Unique Reference *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="unique_reference"
+                                           id="txt_unique_reference"
+                                           value="{{ agent.unique_reference|default_if_none:'' }}" disabled/>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Contract Issue Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="contract_issue_date"
-                                       id="txt_contract_issue_date" value="{{ agent.contract.issue_date|default_if_none:'' }}" disabled/>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">MM Card Type</label>
+                                <div class="col-sm-8">
+
+                                    <input type="text" class="form-control input-rounded" name="mm_card_type_id"
+                                           id="txt_mm_card_type_id"
+                                           value="{{ mm_card_type_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">MM Card Level</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="mm_card_level_id"
+                                           id="txt_mm_card_level_id"
+                                           value="{{ mm_card_type_level_name|default_if_none:'' }}" disabled/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Extension Type</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="extension_type"
-                                       id="txt_extension_type" value="{{ agent.contract.extended_type|default_if_none:'' }}" disabled/>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">MM Factory Card Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="mm_factory_card_number"
+                                           id="txt_mm_factory_card_number"
+                                           value="{{ agent.mm_factory_card_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Model Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="model_type"
+                                           id="txt_model_type"
+                                           value="{{ agent.model_type|default_if_none:'' }}" disabled/>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Contract Expiry Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="contract_expiry_date"
-                                       id="txt_contract_expiry_date" value="{{ agent.contract.expired_date|default_if_none:'' }}" disabled/>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Always require OTP *</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" id="chk_require_otp" name="is_require_otp"
+                                           {% if agent.is_require_otp %}checked{% endif %} disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Classification</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="agent_classification"
+                                           id="txt_agent_classification"
+                                           value="{{ agent_classification_name|default_if_none:'' }}" disabled/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label">Notification Alert</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="notification_alert"
-                                       id="txt_notification_alert" value="{{ agent.contract.day_of_period_reconciliation|default_if_none:'' }}" disabled/>
+                        <!-- End section 2 - row 5 -->
+                        <hr/>
+
+                        <!-- Begin section 5 [Agent Info] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Personal Details</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="col-sm-4 control-label"></label>
-                            <div class="col-sm-8"></div>
+                        <!-- End section 5 - row 1 -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Personal TIN Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="tin_number"
+                                           id="txt_tin_number"
+                                           value="{{ agent.tin_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Title</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="title"
+                                           id="txt_title" value="{{ agent.title|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <!-- End section 8 - row 8 -->
-                    <div class="pull-right">
-                        <a href="{% url 'agents:agent-list' %}">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
-                        </a>
-                        {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
-                            <a href="{% url 'agents:agent_delete' agent.id %}">
-                                <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                        <div class="row">
+
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">First Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="firstname"
+                                           id="txt_first_name" value="{{ agent.first_name | default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Middle Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="middle_name"
+                                           id="txt_middle_name"
+                                           value="{{ agent.middle_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Last Name *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="last_name"
+                                           id="txt_last_name" value="{{ agent.last_name|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Suffix</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="suffix"
+                                           id="txt_suffix" value="{{ agent.suffix|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 5 - row 2 -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Date of Birth</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                           id="dtp_birth_date" value="{{ agent.date_of_birth | default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Place Of Birth</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="place_of_birth"
+                                           id="txt_place_of_birth"
+                                           value="{{ agent.place_of_birth|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Gender</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="gender"
+                                           id="txt_gender" value="{{ agent.gender|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Ethnicity</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="ethnicity"
+                                           id="txt_ethnicity" value="{{ agent.ethnicity|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Nationality</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="nationality"
+                                           id="txt_nationality"
+                                           value="{{ agent.nationality|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Occupation</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="occupation"
+                                           id="txt_occupation"
+                                           value="{{ agent.occupation|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Nationality</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="occupation_title"
+                                           id="txt_occupation_title"
+                                           value="{{ agent.occupation_title|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Township Code</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="township_code"
+                                           id="txt_township_code"
+                                           value="{{ agent.township_code|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Township Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="township_name"
+                                           id="txt_township_name"
+                                           value="{{ agent.township_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">National ID Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="national_id_number"
+                                           id="txt_national_id_number"
+                                           value="{{ agent.national_id_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Mother's Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="mother_name"
+                                           id="txt_mother_name"
+                                           value="{{ agent.mother_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <!-- Begin section 4 [Contact Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Contact Details</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 4 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Email</label>
+                                <div class="col-sm-8">
+                                    <input type="email" class="form-control input-rounded" name="email"
+                                           id="txt_email" value="{{ agent.email|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Primary Phone Number</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control input-rounded" name="primary_mobile_number"
+                                           id="txt_primary_mobile_number"
+                                           value="{{ agent.primary_mobile_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 4 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Secondary Phone Number</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="secondary_mobile_number"
+                                           id="txt_secondary_mobile_number"
+                                           value="{{ agent.secondary_mobile_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Tertiary Phone Number</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="tertiary_mobile_number"
+                                           id="txt_tertiary_mobile_number"
+                                           value="{{ agent.tertiary_mobile_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div id="current-address-area">
+                            <!-- Begin section 5 [Current Address] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label current-address-label"><strong>Current
+                                        Address</strong></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Title -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Citizen Association</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_citizen_association"
+                                               id="txt_current_address_citizen_association"
+                                               value="{{ agent.address.current_address.citizen_association|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Neighbourhood Association</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_neighbourhood_association"
+                                               id="txt_current_address_neighbourhood_association"
+                                               value="{{ agent.address.current_address.neighbourhood_association|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 1 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_address"
+                                               id="txt_current_address_address"
+                                               value="{{ agent.address.current_address.address|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Commune</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_commune"
+                                               id="txt_current_address_commune"
+                                               value="{{ agent.address.current_address.commune|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 2 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">District</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_district"
+                                               id="txt_current_address_district"
+                                               value="{{ agent.address.current_address.district|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">City</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_city"
+                                               id="txt_current_address_city"
+                                               value="{{ agent.address.current_address.city|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 3 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Province</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_province"
+                                               id="txt_current_address_province"
+                                               value="{{ agent.address.current_address.province|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Postal Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_postal_code"
+                                               id="txt_current_address_postal_code"
+                                               value="{{ agent.address.current_address.postal_code|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 4 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_country"
+                                               id="txt_current_address_country"
+                                               value="{{ agent.address.current_address.country|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Land Mark</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_landmark"
+                                               id="txt_current_address_landmark"
+                                               value="{{ agent.address.current_address.landmark|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 5 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Longitude</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_longitude"
+                                               id="txt_current_address_longitude"
+                                               value="{{ agent.address.current_address.longitude|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Latitude</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_latitude"
+                                               id="txt_current_address_latitude"
+                                               value="{{ agent.address.current_address.latitude|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Row 6 -->
+                        </div>
+
+                        <div id="permanent-address-area">
+                            <!-- Begin section 6 [Permanent Address] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label current-address-label"><strong>Permanent
+                                        Address</strong></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Title -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Citizen Association</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_citizen_association"
+                                               id="txt_permanent_address_citizen_association"
+                                               value="{{ agent.address.permanent_address.citizen_association|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Neighbourhood Association</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_neighbourhood_association"
+                                               id="txt_permanent_address_neighbourhood_association"
+                                               value="{{ agent.address.permanent_address.neighbourhood_association|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 1 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Address</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_address"
+                                               id="txt_permanent_address_address"
+                                               value="{{ agent.address.permanent_address.address|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Commune</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_commune"
+                                               id="txt_permanent_address_commune"
+                                               value="{{ agent.address.permanent_address.commune|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 2 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">District</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_district"
+                                               id="txt_permanent_address_district"
+                                               value="{{ agent.address.permanent_address.district|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">City</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_city"
+                                               id="txt_permanent_address_city"
+                                               value="{{ agent.address.permanent_address.city|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 3 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Province</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_province"
+                                               id="txt_permanent_address_province"
+                                               value="{{ agent.address.permanent_address.province|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Postal Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_postal_code"
+                                               id="txt_permanent_address_postal_code"
+                                               value="{{ agent.address.permanent_address.postal_code|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 4 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_country"
+                                               id="txt_permanent_address_country"
+                                               value="{{ agent.address.permanent_address.country|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Land Mark</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_landmark"
+                                               id="txt_permanent_address_landmark"
+                                               value="{{ agent.address.permanent_address.landmark|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 5 -->
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Longitude</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_longitude"
+                                               id="txt_permanent_address_longitude"
+                                               value="{{ agent.address.permanent_address.longitude|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label">Latitude</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_latitude"
+                                               id="txt_permanent_address_latitude"
+                                               value="{{ agent.address.permanent_address.latitude|default_if_none:'' }}"
+                                               disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Row 6 -->
+                        </div>
+                        <!-- End section 4 - row 2 -->
+
+                        <!-- Begin section 7 [Bank Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label current-address-label"><strong>Bank
+                                    Details</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_name"
+                                           id="txt_bank_name" value="{{ agent.bank.name|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Account Status</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_account_status"
+                                           id="txt_bank_account_status"
+                                           value="{{ agent.bank.account_status|yesno:'Active,In-active' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Account Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_account_name"
+                                           id="txt_bank_account_name"
+                                           value="{{ agent.bank.account_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Account Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_account_number"
+                                           id="txt_bank_account_number"
+                                           value="{{ agent.bank.account_number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Branch Area</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_area"
+                                           id="txt_bank_branch_area"
+                                           value="{{ agent.bank.branch_area|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Bank Branch City</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_city"
+                                           id="txt_bank_branch_city"
+                                           value="{{ agent.bank.branch_city|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Row 3-->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Register Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_register_date"
+                                           id="dtp_bank_register_date"
+                                           value="{{ agent.bank.register_date|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Register Source</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_register_source"
+                                           id="txt_bank_register_source"
+                                           value="{{ agent.bank.register_source|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Row 4 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Verify Status</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_is_verified"
+                                           id="bank_is_verified"
+                                           value="{{ agent.bank.is_verified|yesno:'Yes,No' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">End Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="bank_end_date"
+                                           id="dtp_bank_end_date"
+                                           value="{{ agent.bank.end_date |default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Row 5 -->
+
+                        <hr/>
+
+                        <!-- Begin section 8 [Contract Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label current-address-label"><strong>Contract
+                                    Details</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Release</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_release"
+                                           id="txt_contract_release"
+                                           value="{{ agent.contract.release|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_type"
+                                           id="txt_contract_type"
+                                           value="{{ agent.contract.type|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract Number</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_number"
+                                           id="txt_contract_number"
+                                           value="{{ agent.contract.number|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Extension Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_extension_type"
+                                           id="txt_extension_type"
+                                           value="{{ agent.contract.extension_type|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract Sign Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_sign_date"
+                                           id="dtp_contract_sign_date"
+                                           value="{{ agent.contract.sign_date|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Row 3 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract Issue Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_issue_date"
+                                           id="dtp_contract_issue_date"
+                                           value="{{ agent.contract.issue_date|date:'Y-m-d'|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract Expiry Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_expired_date"
+                                           id="dtp_contract_expired_date"
+                                           value="{{ agent.contract.expired_date|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Row 4 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Notification Alert</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="contract_notification_alert"
+                                           id="txt_contract_notification_alert"
+                                           value="{{ agent.contract.notification_alert|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Reconciliation Period (Days)</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="contract_day_of_period_reconciliation"
+                                           id="txt_contract_day_of_period_reconciliation"
+                                           value="{{ agent.contract.day_of_period_reconciliation|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - row 5 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Contract File</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="contract_file_url"
+                                           id="txt_contract_file_url"
+                                           value="{{ agent.contract.file_url|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Assessment Information</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="contract_assessment_information_url"
+                                           id="txt_contract_assessment_information_url"
+                                           value="{{ agent.contract.assessment_information_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - row 6 -->
+                        <!-- Begin section 9 [Profile Accreditation Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Profile Accreditation
+                                    Details</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+
+                        <!-- Begin section 9-1 [Primary Identity] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Primary Identity</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 9-1 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Identity Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_type"
+                                           id="txt_primary_identity_type"
+                                           value="{{ agent.accreditation.primary_identity.type|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Status</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_status"
+                                           id="txt_primary_identity_status"
+                                           value="{{ agent.accreditation.primary_identity.status|yesno:'Yes,No'|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-1 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Identity ID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_id"
+                                           id="txt_primary_identity_id"
+                                           value="{{ agent.accreditation.primary_identity.identity_id|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Place of Issue</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_place_of_issue"
+                                           id="txt_primary_identity_place_of_issue"
+                                           value="{{ agent.accreditation.primary_identity.place_of_issue|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-1 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Issue Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_issue_date"
+                                           id="dtp_primary_identity_issue_date"
+                                           value="{{ agent.accreditation.primary_identity.issue_date|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Expiry Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_expired_date"
+                                           id="dtp_primary_identity_expired_date"
+                                           value="{{ agent.accreditation.primary_identity.expired_date|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-1 - Row 3 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Front Identity Attachment</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_front_url"
+                                           id="txt_primary_identity_front_url"
+                                           value="{{ agent.accreditation.primary_identity.front_identity_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Back Identity Attachment</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_back_url"
+                                           id="txt_primary_identity_back_url"
+                                           value="{{ agent.accreditation.primary_identity.back_identity_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-1 - row 4 -->
+
+                        <!-- Begin section 9-2 [Secondary Identity] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Secondary Identity</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 9-2 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Identity Type</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_type"
+                                           id="txt_secondary_identity_type"
+                                           value="{{ agent.accreditation.secondary_identity.type|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Status</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_status"
+                                           id="txt_secondary_identity_status"
+                                           value="{{ agent.accreditation.secondary_identity.status|yesno:'Yes,No'|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-2 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Identity ID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_id"
+                                           id="txt_secondary_identity_id"
+                                           value="{{ agent.accreditation.secondary_identity.identity_id|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Place of Issue</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_place_of_issue"
+                                           id="txt_secondary_identity_place_of_issue"
+                                           value="{{ agent.accreditation.secondary_identity.place_of_issue|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-2 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Issue Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_issue_date"
+                                           id="dtp_secondary_identity_issue_date"
+                                           value="{{ agent.accreditation.secondary_identity.issue_date|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Expiry Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_expired_date"
+                                           id="dtp_secondary_identity_expired_date"
+                                           value="{{ agent.accreditation.secondary_identity.expired_date|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-2 - Row 3 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Front Identity Attachment</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_front_url"
+                                           id="txt_secondary_identity_front_url"
+                                           value="{{ agent.accreditation.secondary_identity.front_identity_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Back Identity Attachment</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_back_url"
+                                           id="txt_secondary_identity_back_url"
+                                           value="{{ agent.accreditation.secondary_identity.back_identity_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9-2 - row 4 -->
+
+                        <br/>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Profile Accreditation Status</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_status"
+                                           id="txt_accreditation_status"
+                                           value="{{ accreditation_status_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 9 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Verify By</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_verify_by"
+                                           id="txt_accreditation_verify_by"
+                                           value="{{ agent.accreditation.verify_by|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Verify Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="accreditation_verify_date"
+                                           id="dtp_accreditation_verify_date"
+                                           value="{{ agent.accreditation.verify_date|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Profile Accreditation Remark</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_remark"
+                                           id="txt_accreditation_remark"
+                                           value="{{ agent.accreditation.remark|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Risk Level</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="accreditation_risk_level"
+                                           id="txt_accreditation_risk_level"
+                                           value="{{ agent.accreditation.risk_level|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9 - row 3 -->
+
+                        <hr/>
+                        <!-- Begin section 10 [Additionals] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Additionals</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Acquiring Sales Executive Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_acquiring_sale_executive_name"
+                                           id="txt_additional_acquiring_sale_executive_name"
+                                           value="{{ agent.additional.acquiring_sale_executive_name|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Acquiring Sales Executive ID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_acquiring_sale_executive_id"
+                                           id="txt_additional_acquiring_sale_executive_id"
+                                           value="{{ agent.additional.acquiring_sale_executive_id|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Relationship Manager Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_relationship_manager_name"
+                                           id="txt_additional_relationship_manager_name"
+                                           value="{{ agent.additional.relationship_manager_name|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Relationship Manager ID</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_relationship_manager_id"
+                                           id="txt_additional_relationship_manager_id"
+                                           value="{{ agent.additional.relationship_manager_id|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Sales Region</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_sale_region"
+                                           id="txt_additional_sale_region"
+                                           value="{{ agent.additional.sale_region|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Commercial Account Manager</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_commercial_account_manager"
+                                           id="txt_additional_commercial_account_manager"
+                                           value="{{ agent.additional.commercial_account_manager|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - row 3 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Profile Picture</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_profile_picture_url"
+                                           id="txt_additional_profile_picture_url"
+                                           value="{{ agent.additional.profile_picture_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">National ID Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_national_id_photo_url"
+                                           id="txt_additional_national_id_photo_url"
+                                           value="{{ agent.additional.national_id_photo_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - row 4 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Tax ID Card Photo</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_tax_id_card_photo_url"
+                                           id="txt_additional_tax_id_card_photo_url"
+                                           value="{{ agent.additional.tax_id_card_photo_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - row 5 -->
+
+                        <hr/>
+
+                        <!-- Begin section 11 [Custom Fields] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"><strong>Custom Fields</strong></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - Title -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 1 Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_1_name"
+                                           id="txt_additional_field_1_name"
+                                           value="{{ agent.additional.field_1_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 1 Value</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_1_value"
+                                           id="txt_additional_field_1_value"
+                                           value="{{ agent.additional.field_1_value|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 1 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 2 Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_2_name"
+                                           id="txt_additional_field_2_name"
+                                           value="{{ agent.additional.field_2_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 2 Value</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_2_value"
+                                           id="txt_additional_field_2_value"
+                                           value="{{ agent.additional.field_2_value|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 2 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 3 Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_3_name"
+                                           id="txt_additional_field_3_name"
+                                           value="{{ agent.additional.field_3_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 3 Value</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_3_value"
+                                           id="txt_additional_field_3_value"
+                                           value="{{ agent.additional.field_3_value|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 3 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 4 Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_4_name"
+                                           id="txt_additional_field_4_name"
+                                           value="{{ agent.additional.field_4_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 4 Value</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_4_value"
+                                           id="txt_additional_field_4_value"
+                                           value="{{ agent.additional.field_4_value|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 4 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 5 Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_5_name"
+                                           id="txt_additional_field_5_name"
+                                           value="{{ agent.additional.field_5_name|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Field 5 Value</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_5_value"
+                                           id="txt_additional_field_5_value"
+                                           value="{{ agent.additional.field_5_value|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 5 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Supporting File 1</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_1_url"
+                                           id="txt_additional_supporting_file_1_url"
+                                           value="{{ agent.additional.supporting_file_1_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 6 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Supporting File 2</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_2_url"
+                                           id="txt_additional_supporting_file_2_url"
+                                           value="{{ agent.additional.supporting_file_2_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 7 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Supporting File 3</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_3_url"
+                                           id="txt_additional_supporting_file_3_url"
+                                           value="{{ agent.additional.supporting_file_3_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 8 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Supporting File 4</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_4_url"
+                                           id="txt_additional_supporting_file_4_url"
+                                           value="{{ agent.additional.supporting_file_4_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - row 9 -->
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Supporting File 5</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_5_url"
+                                           id="txt_additional_supporting_file_5_url"
+                                           value="{{ agent.additional.supporting_file_5_url|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - row 8 -->
+                        <hr/>
+                        <input name="previous_page" value="{{ request.META.HTTP_REFERER }}" hidden/>
+
+                           <!-- End section 8 - row 8 -->
+                        <div class="pull-right">
+                            <a href="{% url 'agents:agent-list' %}">
+                                <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
                             </a>
-                        {% endif %}
-                        {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS"%}
-                            <a href="{% url 'agents:agent_update' agent.id %}">
-                                <input id="btn_edit" class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Edit"/>
-                            </a>
-                        {% endif %}
-                    </div>
-                </form>
+                            {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                                <a href="{% url 'agents:agent_delete' agent.id %}">
+                                    <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                                </a>
+                            {% endif %}
+                            {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS"%}
+                                <a href="{% url 'agents:agent_update' agent.id %}">
+                                    <input id="btn_edit" class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Edit"/>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </form>
             </div>
         </div>
     </div>
