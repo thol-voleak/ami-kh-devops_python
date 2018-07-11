@@ -130,7 +130,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         mm_card_level_id = request.POST.get('mm_card_levels')
         mm_factory_card_number = request.POST.get('mm_factory_card_number')
         model_type = request.POST.get('model_type')
-        is_require_otp = request.POST.get('is_require_otp')
+        is_require_otp = bool(request.POST.get('is_require_otp'))
 
         # Personal Details
         tin_number = request.POST.get('tin_number')
@@ -262,7 +262,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             primary_expire_date = primary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         primary_identity = {
             'type': request.POST.get('primary_identify_type'),
-            'identify_id': request.POST.get('primary_identify_id'),
+            'identity_id': request.POST.get('primary_identify_id'),
             'status': request.POST.get('primary_identity_status'),
             'place_of_issue': request.POST.get('primary_place_of_issue'),
             'issue_date': primary_issue_date,
@@ -281,7 +281,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             secondary_expire_date = secondary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         secondary_identity = {
             'type': request.POST.get('secondary_identify_type'),
-            'identify_id': request.POST.get('secondary_identify_id'),
+            'identity_id': request.POST.get('secondary_identify_id'),
             'status': request.POST.get('secondary_identity_status'),
             'place_of_issue': request.POST.get('secondary_place_of_issue'),
             'issue_date': secondary_issue_date,
