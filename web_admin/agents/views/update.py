@@ -45,25 +45,58 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         currencies, get_currency_status = self.get_currencies(agent_id)
         agent_profile = self.get_agent_profile(agent_id)
 
-        # if agent_profile['date_of_birth'] is not None:
-        #     date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
-        #     agent_profile['date_of_birth'] = date_of_birth
-        #
-        # if agent_profile['primary_issue_date'] is not None:
-        #     primary_issue_date = dateparse.parse_datetime(agent_profile['primary_issue_date'])
-        #     agent_profile['primary_issue_date'] = primary_issue_date
-        #
-        # if agent_profile['primary_expire_date'] is not None:
-        #     primary_expire_date = dateparse.parse_datetime(agent_profile['primary_expire_date'])
-        #     agent_profile['primary_expire_date'] = primary_expire_date
-        #
-        # if agent_profile['secondary_issue_date'] is not None:
-        #     secondary_issue_date = dateparse.parse_datetime(agent_profile['secondary_issue_date'])
-        #     agent_profile['secondary_issue_date'] = secondary_issue_date
-        #
-        # if agent_profile['secondary_expire_date'] is not None:
-        #     secondary_expire_date = dateparse.parse_datetime(agent_profile['secondary_expire_date'])
-        #     agent_profile['secondary_expire_date'] = secondary_expire_date
+        if agent_profile['created_timestamp'] is not None:
+            created_date = dateparse.parse_datetime(agent_profile['created_timestamp'])
+            agent_profile['created_date'] = created_date
+
+        if agent_profile['last_updated_timestamp'] is not None:
+            created_date = dateparse.parse_datetime(agent_profile['last_updated_timestamp'])
+            agent_profile['last_updated_date'] = created_date
+
+        if agent_profile['bank']['end_date'] is not None:
+            bank_end_date = dateparse.parse_datetime(agent_profile['bank']['end_date'])
+            agent_profile['bank_end_date'] = bank_end_date
+
+        if agent_profile['bank']['register_date'] is not None:
+            bank_register_date = dateparse.parse_datetime(agent_profile['bank']['register_date'])
+            agent_profile['bank_register_date'] = bank_register_date
+
+        if agent_profile['contract']['sign_date'] is not None:
+            contract_sign_date = dateparse.parse_datetime(agent_profile['contract']['sign_date'])
+            agent_profile['contract_sign_date'] = contract_sign_date
+
+        if agent_profile['contract']['issue_date'] is not None:
+            contract_issue_date = dateparse.parse_datetime(agent_profile['contract']['issue_date'])
+            agent_profile['contract_issue_date'] = contract_issue_date
+
+        if agent_profile['contract']['expired_date'] is not None:
+            contract_expired_date = dateparse.parse_datetime(agent_profile['contract']['expired_date'])
+            agent_profile['contract_expired_date'] = contract_expired_date
+
+        if agent_profile['date_of_birth'] is not None:
+            date_of_birth = dateparse.parse_datetime(agent_profile['date_of_birth'])
+            agent_profile['date_of_birth'] = date_of_birth
+
+        if agent_profile['accreditation']['verify_date'] is not None:
+            accreditation_verify_date = dateparse.parse_datetime(agent_profile['accreditation']['verify_date'])
+            agent_profile['accreditation_verify_date'] = accreditation_verify_date
+
+        if agent_profile['accreditation']['primary_identity']['issue_date'] is not None:
+            primary_issue_date = dateparse.parse_datetime(agent_profile['accreditation']['primary_identity']['issue_date'])
+            agent_profile['primary_issue_date'] = primary_issue_date
+
+        if agent_profile['accreditation']['primary_identity']['expired_date'] is not None:
+            primary_expire_date = dateparse.parse_datetime(agent_profile['accreditation']['primary_identity']['expired_date'])
+            agent_profile['primary_expire_date'] = primary_expire_date
+
+
+        if agent_profile['accreditation']['secondary_identity']['issue_date'] is not None:
+            secondary_issue_date = dateparse.parse_datetime(agent_profile['accreditation']['secondary_identity']['issue_date'])
+            agent_profile['secondary_issue_date'] = secondary_issue_date
+
+        if agent_profile['accreditation']['primary_identity']['expired_date'] is not None:
+            secondary_expire_date = dateparse.parse_datetime(agent_profile['accreditation']['secondary_identity']['expired_date'] )
+            agent_profile['secondary_expire_date'] = secondary_expire_date
 
         agent_identity, status_get_agent_identity = self.get_agent_identity(agent_id)
 
