@@ -219,7 +219,7 @@
                             <td>
                                 <select class="form-control" name="actor_type"
                                         id="ddl_setting_payment_fee_structure_actor"
-                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund',this)">
+                                        onchange="changeSpecificActorType('#ddl_setting_payment_fee_structure_actor', '#ddl_setting_payment_fee_structure_specific_id', '#ddl_setting_payment_fee_structure_specific_source_of_fund', '#ddl_setting_payment_fee_structure_source_of_fund', this)">
                                     <option value="" selected="selected"></option>
                                     {% for actor_type in choices.actor_types %}
                                         <option value="{{ actor_type.actor_type }}">{{ actor_type.actor_type }}</option>
@@ -230,7 +230,7 @@
                             <td>
                                 <input onchange="getSOF('ddl_setting_payment_fee_structure_actor', 'ddl_setting_payment_fee_structure_specific_id','ddl_setting_payment_fee_structure_source_of_fund','ddl_setting_payment_fee_structure_specific_source_of_fund', this)"
                                 id="ddl_setting_payment_fee_structure_specific_id" type='number' class="form-control" name="specific_actor_id" list="specific_ids" autocomplete="off"
-                                {% if choices.actor_types.0.actor_type != 'Specific ID' %}
+                                {% if choices.actor_types.0.actor_type != "Specific ID" or choices.actor_types.0.actor_type != "Specific ID's Beneficiary" %}
                                     disabled
                                 {% endif %}>
                                 <datalist id="specific_ids">
@@ -643,17 +643,33 @@
                 '</div>')
         }
 
-        function changeSpecificActorType(actorType, specificActorId, specificSoFId,selectObject) {
-            if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID") {
+        function changeSpecificActorType(actorType, specificActorId, specificSoFId,sofType, selectObject) {
+            if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID" || $(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID's Beneficiary") {
                 $(selectObject).closest("tr").find(specificActorId).prop('disabled', false);
                 $(selectObject).closest("tr").find(specificActorId).prop('required', true);
-                $(selectObject).closest("tr").find(specificSoFId).prop('disabled', false);
-                $(selectObject).closest("tr").find(specificSoFId).prop('required', true);
+                if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID's Beneficiary") {
+                    $(selectObject).closest("tr").find(specificSoFId).prop('disabled', true);
+                    $(selectObject).closest("tr").find(specificSoFId).prop('required', false);
+                    $(selectObject).closest("tr").find(sofType).prop('disabled', true);
+                    $(selectObject).closest("tr").find(sofType).val("2");
+                } else {
+                    $(selectObject).closest("tr").find(specificSoFId).prop('disabled', false);
+                    $(selectObject).closest("tr").find(specificSoFId).prop('required', true);
+                    $(selectObject).closest("tr").find(sofType).prop('disabled', false);
+                    $(selectObject).closest("tr").find(sofType).val("1");
+                }
             } else {
                 $(selectObject).closest("tr").find(specificActorId).prop('disabled', true);
                 $(selectObject).closest("tr").find(specificActorId).val("");
                 $(selectObject).closest("tr").find(specificSoFId).prop('disabled', true);
                 $(selectObject).closest("tr").find(specificSoFId).val("");
+                if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Payer's Beneficiary" || $(selectObject).closest("tr").find(actorType).find(":selected").html() == "Payee's Beneficiary") {
+                    $(selectObject).closest("tr").find(sofType).prop('disabled', true);
+                    $(selectObject).closest("tr").find(sofType).val("2");
+                } else {
+                    $(selectObject).closest("tr").find(sofType).prop('disabled', false);
+                    $(selectObject).closest("tr").find(sofType).val("1");
+                }
             }
             
             $("#ddl_setting_payment_fee_structure_specific_id").prop('required', false);

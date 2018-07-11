@@ -30,6 +30,10 @@ function searchUser(url) {
               $('#divUserSearchMessage').css({'display': 'block'});
               $('#lb_user_search_message').text('Search timed out, please try again or contact support');
             }
+            else {
+                $('#divUserSearchMessage').css({'display': 'block'});
+                $('#lb_user_search_message').text('Search failed, please try again or contact support');
+            }
         }
     });
 }
