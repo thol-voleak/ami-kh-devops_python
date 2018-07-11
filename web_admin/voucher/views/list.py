@@ -74,6 +74,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cancel_status = request.POST.get('cancel_status')
         voucher_type = request.POST.get('voucher_type')
         distributed_status = request.POST.get('distributed_status')
+        voucher_group = request.POST.get('voucher_group')
+
         body = {}
         body['page_index'] = int(opening_page_index)
         if cash_in_user_type != '':
@@ -125,6 +127,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['voucher_type'] = voucher_type
         if distributed_status != '':
             body['distributed_status'] = True if distributed_status == 'True' else False
+        if voucher_group != '':
+            body['voucher_group'] = voucher_group
 
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
@@ -167,6 +171,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_type': voucher_type,
             'distributed_status_list': self._get_distributed_status_list(),
             'distributed_status': distributed_status,
+            'voucher_group': voucher_group,
         }
         return render(request, self.template_name, context)
 
