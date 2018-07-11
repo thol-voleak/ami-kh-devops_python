@@ -291,7 +291,7 @@
                             <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
                             <td>{{ i.issuer_user_id|default_if_none:'' }}</td>
-                            <td>{{ i.voucher_type|default_if_none:'' }}</td>
+                            <td id="voucher-type" >{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
                             <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
@@ -360,7 +360,29 @@
         $('#select-all').prop('checked', allChecked);
     });
 
+    var validateVouchersType = function () {
+            var isOk = true;
+            var voucherType = "";
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                voucherType = $(value).parent().parent().find("#voucher-type").text();
+                if ("REMITTANCE" != voucherType) {
+                    swal({
+                        title: 'This voucher type cannot be hold/un-hold',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
+                }
+            });
+            return isOk;
+    };
+
     function hold(){
+        if (!validateVouchersType()) return false;
         $("#msg-add-client").hide();
         $("#msg-update-client").hide();
         $("#msg-add-service").hide();
@@ -406,6 +428,7 @@
         });
     }
     function unHold(){
+        if (!validateVouchersType()) return false;
         $("#msg-add-client").hide();
         $("#msg-update-client").hide();
         $("#msg-add-service").hide();
@@ -532,6 +555,14 @@
                     } else if (data[0]['is_used'] != null && data[0]['is_used']) {
                         swal({
                             title: 'Cannot refund claimed voucher',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    }  else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {
+                        swal({
+                            title: 'This voucher type cannot be refunded',
                             type: "error",
                             confirmButtonColor: "#2ECC71",
                             confirmButtonText: "Close",
