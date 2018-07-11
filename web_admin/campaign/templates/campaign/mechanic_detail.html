@@ -746,14 +746,16 @@
                                     <span id="lbl_voucher_group">{{ action.voucher_group|default_if_none:'' }}</span>
                                 </div>
                             </div>
-                        {% if action.expiration_date != None %}
                             <div class="info-group">
                                 <div>Voucher Expiration:</div>
                                 <div>
-                                    <span id="lbl_expiration_date">{{ action.expiration_date }} minutes after distributed</span>
+                                    {% if action.expiration_date == ''  %}
+                                        <span id="lbl_expiration_date">(not set) minutes after distributed</span>
+                                    {% else %}
+                                        <span id="lbl_expiration_date">{{ action.expiration_date }} minutes after distributed</span>
+                                    {% endif %}
                                 </div>
                             </div>
-                        {% endif %}
                     {% endif %}
                     <div class="sub-list">
                         {% for limitation in action.limitation_list %}
