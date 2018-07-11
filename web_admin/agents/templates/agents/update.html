@@ -67,16 +67,16 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Testing Account *</label>
                                 <input type="checkbox" style="margin: 10px;" id="chk_testing_account"
-                                       name="is-testing-account"
+                                       name="is_testing_account"
                                         {% if agent_profile.is_testing_account == True %} checked{% endif %}
-                                       value="{{ agent_profile.is_testing_account|default_if_none:'' }}">
+                                       value="{{ agent_profile.is_testing_account|default_if_none:'' }}" disabled>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">System Account *</label>
                                 <input type="checkbox" style="margin: 10px;" id="chk_system_account"
-                                       name="is-system-account"
+                                       name="is_system_account"
                                            {% if agent_profile.is_system_account == True %} checked{% endif %}
-                                       value="{{ agent_profile.is_system_account|default_if_none:'' }}">
+                                       value="{{ agent_profile.is_system_account|default_if_none:'' }}" disabled>
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@
                                     <input type="date" class="form-control input-rounded" name="created_date"
                                            onchange="VerifyDate(this)"
                                            id="dtp_created_date"
-                                           value="{{ agent_profile.created_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                           value="{{ agent_profile.created_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -151,7 +151,7 @@
                                     <input type="date" class="form-control input-rounded" name="last_updated_date"
                                            onchange="VerifyDate(this)"
                                            id="dtp_last_updated_date"
-                                           value="{{ agent_profile.last_updated_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                           value="{{ agent_profile.last_updated_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +251,7 @@
                                 <label class="col-sm-4 control-label">System password *</label>
                                 <input type="checkbox" style="margin: 10px;" id="chk_system_password"
                                        name="is_system_password"
-                                       value="{{ agent_profile.is_system_password|default_if_none:'' }}">
+                                       value="{{ agent_profile.is_system_password|default_if_none:'' }}" disabled>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
@@ -302,10 +302,10 @@
                                 <label class="col-sm-4 control-label">Model Type</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_model_type" name="model_type">
-                                        <option value="3" {% if agent_profile.model_type == 3 %} selected{% endif %}>3</option>
-                                        <option value="2" {% if agent_profile.model_type == 2 %} selected{% endif %}>2</option>
-                                        <option value="1" {% if agent_profile.model_type == 1 %} selected{% endif %}>1</option>
-                                        <option value="" {% if agent_profile.model_type == "" %} selected{% endif %}></option>
+                                        <option value="" {%if not agent_profile.model_type %}selected{%endif%}>-</option>
+                                        <option value="1" {%if agent_profile.model_type == '1' %}selected{%endif%}>1</option>
+                                        <option value="2" {%if agent_profile.model_type == '2' %}selected{%endif%}>2</option>
+                                        <option value="3" {%if agent_profile.model_type == '3' %}selected{%endif%}>3</option>
                                     </select>
                                 </div>
                             </div>
@@ -320,7 +320,7 @@
                                 <label class="col-sm-4 control-label">Always require OTP *</label>
                                 <input type="checkbox" style="margin: 10px;" id="chk_require_otp"
                                        name="is_require_otp"
-                                        {% if agent_profile.is_require_otp == True %} checked{% endif %}
+                                        {% if agent_profile.is_require_otp %}checked{% endif %}
                                        value="{{ agent_profile.is_require_otp|default_if_none:'' }}">
                             </div>
                             <div class="form-group col-md-6">
@@ -430,12 +430,12 @@
                                 <label class="col-sm-4 control-label">Ethnicity</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_ethnicity" name="ethnicity">
-                                        <option value="White" {% if agent_profile.model_type == "White" %} selected{% endif %}>White</option>
-                                        <option value="Hispanic/Latino" {% if agent_profile.model_type == "Hispanic/Latino" %} selected{% endif %}>Hispanic/Latino</option>
-                                        <option value="Black or African American" {% if agent_profile.model_type == "Black or African American" %} selected{% endif %}>Black or African American</option>
-                                        <option value="Asian" {% if agent_profile.model_type == "Asian" %} selected{% endif %}>Asian</option>
-                                        <option value="Ethnicity Unknown" {% if agent_profile.model_type == "Ethnicity Unknown" %} selected{% endif %}>Ethnicity Unknown</option>
-                                        <option value="Other" {% if agent_profile.model_type == "Other" %} selected{% endif %}>Other</option>
+                                        <option value="White" {% if agent_profile.ethnicity == "White" %} selected{% endif %}>White</option>
+                                        <option value="Hispanic/Latino" {% if agent_profile.ethnicity == "Hispanic/Latino" %} selected{% endif %}>Hispanic/Latino</option>
+                                        <option value="Black or African American" {% if agent_profile.ethnicity == "Black or African American" %} selected{% endif %}>Black or African American</option>
+                                        <option value="Asian" {% if agent_profile.ethnicity == "Asian" %} selected{% endif %}>Asian</option>
+                                        <option value="Ethnicity Unknown" {% if agent_profile.ethnicity == "Ethnicity Unknown" %} selected{% endif %}>Ethnicity Unknown</option>
+                                        <option value="Other" {% if agent_profile.ethnicity == "Other" %} selected{% endif %}>Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -584,7 +584,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-sm-4 control-label">Citizen Association</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control input-rounded" name="citizen_association"
+                                        <input type="text" class="form-control input-rounded" name="current_citizen_association"
                                                id="txt_citizen_association"
                                                value="{{ agent_profile.address.current_address.citizen_association|default_if_none:'' }}"/>
                                     </div>
@@ -593,7 +593,7 @@
                                     <label class="col-sm-4 control-label">Neighbourhood Association</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control input-rounded"
-                                               name="neighbourhood_association"
+                                               name="current_neighbourhood_association"
                                                id="txt_neighbourhood_association"
                                                value="{{ agent_profile.address.current_address.neighbourhood_association|default_if_none:'' }}"/>
                                     </div>
@@ -631,7 +631,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-sm-4 control-label">City</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control input-rounded" name="city"
+                                        <input type="text" class="form-control input-rounded" name="current_city"
                                                id="txt_city" value="{{ agent_profile.address.current_address.city|default_if_none:'' }}"/>
                                     </div>
                                 </div>
@@ -649,7 +649,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-sm-4 control-label">Postal Code</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control input-rounded" name="postal_code"
+                                        <input type="text" class="form-control input-rounded" name="current_postal_code"
                                                id="txt_postal_code"
                                                value="{{ agent_profile.address.current_address.postal_code|default_if_none:'' }}"/>
                                     </div>
@@ -668,7 +668,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-sm-4 control-label">Land Mark</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control input-rounded" name="current_land_mark"
+                                        <input type="text" class="form-control input-rounded" name="current_landmark"
                                                id="txt_current_land_mark"
                                                value="{{ agent_profile.address.current_address.landmark|default_if_none:'' }}"/>
                                     </div>
@@ -805,7 +805,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="col-sm-4 control-label">Land Mark</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control input-rounded" name="permanent_land_mark"
+                                        <input type="text" class="form-control input-rounded" name="permanent_landmark"
                                                id="txt_permanent_land_mark"
                                                value="{{ agent_profile.address.permanent_address.landmark|default_if_none:'' }}"/>
                                     </div>
@@ -856,9 +856,9 @@
                                 <label class="col-sm-4 control-label">Bank Account Status</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_bank_account_status" name="bank_account_status">
-                                        <option value="0" {% if agent_profile.bank.account_status == True %} selected{% endif %}>Active</option>
-                                        <option value="1" {% if agent_profile.bank.account_status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=""  {% if agent_profile.bank.account_status is None %} selected{% endif %}></option>
+                                        <option value=1 {% if agent_profile.bank.account_status == True %} selected{% endif %}>Active</option>
+                                        <option value=0 {% if agent_profile.bank.account_status == False %} selected{% endif %}>Inactive</option>
+                                        <option value=  {% if agent_profile.bank.account_status is None %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>
@@ -906,7 +906,7 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Register Date</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control input-rounded" name="register_date"
+                                    <input type="date" class="form-control input-rounded" name="bank_register_date"
                                            onchange="VerifyDate(this)"
                                            id="dtp_register_date"
                                            value="{{ agent_profile.bank_register_date|date:'Y-m-d'|default_if_none:'' }}"/>
@@ -915,7 +915,7 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Register Source</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="register_source"
+                                    <input type="text" class="form-control input-rounded" name="bank_register_source"
                                            id="txt_register_source"
                                            value="{{ agent_profile.bank.register_source|default_if_none:'' }}"/>
                                 </div>
@@ -927,16 +927,16 @@
                                 <label class="col-sm-4 control-label">Verify Status</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_verify_status" name="bank_verify_status">
-                                        <option value="1" {% if agent_profile.bank.is_verified == True %} selected{% endif %}>Yes</option>
-                                        <option value="0" {% if agent_profile.bank.is_verified == False %} selected{% endif %}>No</option>
-                                        <option value=""  {% if agent_profile.bank.is_verified is None %} selected{% endif %}></option>
+                                        <option value=True {% if agent_profile.bank.is_verified == True %} selected{% endif %}>Yes</option>
+                                        <option value=False {% if agent_profile.bank.is_verified == False %} selected{% endif %}>No</option>
+                                        <option value=None  {% if agent_profile.bank.is_verified is None %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">End Date</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control input-rounded" name="end_date"
+                                    <input type="date" class="form-control input-rounded" name="bank_end_date"
                                            onchange="VerifyDate(this)"
                                            id="dtp_end_date"
                                            value="{{ agent_profile.bank_end_date|date:'Y-m-d'|default_if_none:'' }}"/>
@@ -992,7 +992,7 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Extension Type</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="extension_type"
+                                    <input type="text" class="form-control input-rounded" name="contract_extension_type"
                                            id="txt_extension_type"
                                            value="{{ agent_profile.contract.extension_type|default_if_none:'' }}"/>
                                 </div>
@@ -1111,9 +1111,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_primary_identity_status"
                                             name="primary_identity_status">
-                                        <option value="1" {% if agent_profile.accreditation.primary_identity.status == True %} selected{% endif %}>Active</option>
-                                        <option value="0" {% if agent_profile.accreditation.primary_identity.status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=""  {% if agent_profile.accreditation.primary_identity.status is None %} selected{% endif %}></option>
+                                        <option value=1 {% if agent_profile.accreditation.primary_identity.status == True %} selected{% endif %}>Active</option>
+                                        <option value=0 {% if agent_profile.accreditation.primary_identity.status == False %} selected{% endif %}>Inactive</option>
+                                        <option value=  {% if agent_profile.accreditation.primary_identity.status is None %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>
@@ -1125,7 +1125,7 @@
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="primary_identify_id"
                                            id="txt_primary_identify_id"
-                                           value="{{ agent_profile.accreditation.primary_identity.identify_id|default_if_none:'' }}"/>
+                                           value="{{ agent_profile.accreditation.primary_identity.identity_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -1203,9 +1203,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_secondary_identity_status"
                                             name="secondary_identity_status">
-                                        <option value="1" {% if agent_profile.accreditation.secondary_identity.status == True %} selected{% endif %}>Active</option>
-                                        <option value="0" {% if agent_profile.accreditation.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=""  {% if agent_profile.accreditation.secondary_identity.status is None %} selected{% endif %}></option>
+                                        <option value=1 {% if agent_profile.accreditation.secondary_identity.status == True %} selected{% endif %}>Active</option>
+                                        <option value=0 {% if agent_profile.accreditation.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
+                                        <option value=  {% if agent_profile.accreditation.secondary_identity.status is None %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>
@@ -1217,7 +1217,7 @@
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="secondary_identify_id"
                                            id="txt_secondary_identify_id"
-                                           value="{{ agent_profile.accreditation.secondary_identity.identify_id|default_if_none:'' }}"/>
+                                           value="{{ agent_profile.accreditation.secondary_identity.identity_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
