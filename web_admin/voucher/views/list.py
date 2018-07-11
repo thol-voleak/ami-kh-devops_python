@@ -49,6 +49,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_in_user_type' : '',
             'cancel_status_list': self._get_cancel_status_list(),
             'voucher_type_list': self._get_voucher_type_list(),
+            'distributed_status_list': self._get_distributed_status_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -72,6 +73,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         issuer_user_id = request.POST.get('issuer_user_id')
         cancel_status = request.POST.get('cancel_status')
         voucher_type = request.POST.get('voucher_type')
+        distributed_status = request.POST.get('distributed_status')
         body = {}
         body['page_index'] = int(opening_page_index)
         if cash_in_user_type != '':
@@ -121,6 +123,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if voucher_type != '':
             body['voucher_type'] = voucher_type
+        if distributed_status != '':
+            body['distributed_status'] = True if distributed_status == 'True' else False
 
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
@@ -161,6 +165,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cancel_status': cancel_status,
             'voucher_type_list': self._get_voucher_type_list(),
             'voucher_type': voucher_type,
+            'distributed_status_list': self._get_distributed_status_list(),
+            'distributed_status': distributed_status,
         }
         return render(request, self.template_name, context)
 
@@ -216,4 +222,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "All", "value": ""},
             {"name": "REMITTANCE", "value": "REMITTANCE"},
             {"name": "3rd Party Vouchers", "value": "3rd Party Vouchers"}
+        ]
+
+    @staticmethod
+    def _get_distributed_status_list():
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Yes", "value": "True"},
+            {"name": "No", "value": "False"}
         ]
