@@ -7,6 +7,8 @@
             <h3>Card Source of Fund</h3>
         </div>
 
+        {% include 'message.html' %}
+
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'card_sofs:card_sof' %}">
                 {% csrf_token %}
@@ -15,7 +17,7 @@
                     <div class="col-sm-2">
                         <input id="txt_user_id" type="number" class="form-control input-rounded" name="user_id" value="{{search_by.user_id}}">
                     </div>
-                    <label class="col-sm-1 control-label">User Type</label>
+                    <label class="col-sm-2 control-label">User Type</label>
                     <div class="col-xs-2">
                         <select class="form-control" id="ddl_user_type" name="user_type_id">
                             <option value=0 {% if search_by.user_type_id == 0 %}selected="selected"{% endif %}>All</option>
@@ -37,21 +39,51 @@
                                value="{{ search_by.from_created_timestamp|default_if_none:'' }}"
                                id="dtp_date_from">
                     </div>
-                    <label class="col-sm-1 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               step="1" value="{{ from_created_time|default_if_none:'' }}"
+                               name="from_created_time"
+                               id="from_created_time">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="to_created_timestamp"
                                value="{{ search_by.to_created_timestamp|default_if_none:'' }}"
                                id="dtp_date_to">
                     </div>
-                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                    <div class="col-xs-1">
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               name="to_created_time" step="1" value="{{ to_created_time|default_if_none:'' }}"
+                               id="to_created_time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1 col-xs-offset-11">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search"
                                value="Search">
+                    </div>
+                    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                        <input id="export-type" type="text" name="export-type" value=""/>
+                        <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                               value="Download">
                     </div>
                 </div>
                 <label class="pull-right" id="lbl_total">{{ search_count }}</label>
                 <label class="pull-right" >Total:&nbsp;</label>
+
+                {% if is_show_export %}
+                    <div class="pull-right dropdown export-file-dropdown">
+                        <label class="dropdown-toggle" title="Export this filter" id="button_export"
+                               data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                        <ul class="dropdown-menu" aria-labelledby="button_export">
+                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                        </ul>
+                    </div>
+                {% endif %}
             </form>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped mb0" id="tbl_card_sof">
@@ -89,6 +121,30 @@
             </div>
             {% include "pagination.html" %}
         </div>
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
+        </div>
     </div>
 
+{% endblock %}
+
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script>
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
+
+</script>
 {% endblock %}

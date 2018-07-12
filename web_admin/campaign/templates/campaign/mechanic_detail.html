@@ -102,6 +102,9 @@
                                 {% if condition.comparison_list.0.operator != 'in_list' and condition.comparison_list.0.operator != 'not_in_list' %}
                                     <span id="lbl_comparison_key_value">{{condition.comparison_list.0.key_value}}</span>
                                 {% else %}
+                                    <div align="right"> List Count:
+                                        <span id="lbl_comparison_key_value_length">{{condition.comparison_list.0.key_value|split:','|length}}</span>
+                                    </div>
                                     <div class="list-key-value" id="list_comparison_key_value">
                                         {% for value in condition.comparison_list.0.key_value|split:',' %}
                                             <div>
@@ -506,21 +509,25 @@
                                     <div>Operator:</div>
                                     <div>
                                         <span id="lbl_filter_operator">
-                                            {%if filter.operator == '=' %}
-                                            Equal to
-                                            {%elif filter.operator == '>' %}
-                                            More Than
-                                            {%elif filter.operator == '>=' %}
-                                            More than or Equal to
-                                            {%elif filter.operator == '<' %}
-                                            Less Than
-                                            {%elif filter.operator == '<=' %}
-                                            Less than or Equal to
-                                            {%elif filter.operator == '!=' %}
-                                            Not Equal to
-                                            {%elif filter.operator == 'contains' %}
-                                            Contains
-                                            {%endif%}
+                                            {% if filter.operator == '=' %}
+                                                Equal to
+                                            {% elif filter.operator == '>' %}
+                                                More Than
+                                            {% elif filter.operator == '>=' %}
+                                                More than or Equal to
+                                            {% elif filter.operator == '<' %}
+                                                Less Than
+                                            {% elif filter.operator == '<=' %}
+                                                Less than or Equal to
+                                            {% elif filter.operator == '!=' %}
+                                                Not Equal to
+                                            {% elif filter.operator == 'contains' %}
+                                                Contains
+                                            {% elif filter.operator == 'in_list' %}
+                                                Is Part of
+                                            {% elif filter.operator == 'not_in_list' %}
+                                                Is Not Part of
+                                            {% endif %}
                                         </span>
                                     </div>
                                 </div>
@@ -533,7 +540,20 @@
                                 <div class="info-group">
                                     <div>Key Value:</div>
                                     <div>
-                                        <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                        {% if filter.operator != 'in_list' and filter.operator != 'not_in_list' %}
+                                            <span id="lbl_filter_key_value">{{filter.key_value}}</span>
+                                        {% else %}
+                                            <div align="right"> List Count:
+                                                <span id="lbl_filter_key_value_length">{{ filter.key_value|split:','|length }}</span>
+                                            </div>
+                                            <div class="list-key-value" id="lbl_filter_key_value">
+                                                {% for value in filter.key_value|split:',' %}
+                                                    <div>
+                                                        <span class="item">{{ value }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -655,6 +675,36 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+                    {% if action.action_type.id == 3 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Response</div>
+                        </div>
+                        {%for action_data in action.action_data %}
+                                <div class="info-group">
+                                    <div>Data to be sent</div>
+                                    <div></div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Name:</div>
+                                    <div>
+                                        <span id="lbl_key_name">{{action_data.key_name|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value Type:</div>
+                                    <div>
+                                        <span id="lbl_key_value_type">{{action_data.key_value_type|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div>Key Value:</div>
+                                    <div>
+                                        <span id="lbl_key_value">{{action_data.key_value|default_if_none:''}}</span>
+                                    </div>
+                                </div>
+                        {% endfor %}
+                    {% endif %}
                     {% if action.action_type.id == 4 %}
                         <div class="info-group">
                             <div>Action Type:</div>
@@ -672,6 +722,40 @@
                                 <span id="lbl_give_reward_to">{{action.reward_to|default_if_none:''}}</span>
                             </div>
                         </div>
+                    {% endif %}
+                    {% if action.action_type.id == 5 %}
+                        <div class="info-group">
+                            <div>Action Type:</div>
+                            <div id='lbl_reward_type'>Give Voucher</div>
+                        </div>
+                        <div class="info-group">
+                            <div>Action Recipient should be:</div>
+                            <div>
+                                <span id="lbl_reward_recipient">{{ action.recipient|default_if_none:'' }}</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div>Do action to:</div>
+                            <div>
+                                <span id="lbl_give_reward_to">{{ action.reward_to|default_if_none:'' }}</span>
+                            </div>
+                        </div>
+                            <div class="info-group">
+                                <div>Voucher Group:</div>
+                                <div>
+                                    <span id="lbl_voucher_group">{{ action.voucher_group|default_if_none:'' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div>Voucher Expiration:</div>
+                                <div>
+                                    {% if action.expiration_date == ''  %}
+                                        <span id="lbl_expiration_date">(not set) minutes after distributed</span>
+                                    {% else %}
+                                        <span id="lbl_expiration_date">{{ action.expiration_date }} minutes after distributed</span>
+                                    {% endif %}
+                                </div>
+                            </div>
                     {% endif %}
                     <div class="sub-list">
                         {% for limitation in action.limitation_list %}

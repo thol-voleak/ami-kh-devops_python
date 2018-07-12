@@ -48,6 +48,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_in_user_type_list': self._get_user_type_cash_in_list(),
             'cash_in_user_type' : '',
             'cancel_status_list': self._get_cancel_status_list(),
+            'voucher_type_list': self._get_voucher_type_list(),
+            'distributed_status_list': self._get_distributed_status_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -70,6 +72,10 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cash_out_order_id = request.POST.get('cash_out_order_id')
         issuer_user_id = request.POST.get('issuer_user_id')
         cancel_status = request.POST.get('cancel_status')
+        voucher_type = request.POST.get('voucher_type')
+        distributed_status = request.POST.get('distributed_status')
+        voucher_group = request.POST.get('voucher_group')
+
         body = {}
         body['page_index'] = int(opening_page_index)
         if cash_in_user_type != '':
@@ -117,6 +123,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             new_to_expire_timestamp = new_to_expire_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_expire_date_timestamp'] = new_to_expire_timestamp
 
+        if voucher_type != '':
+            body['voucher_type'] = voucher_type
+        if distributed_status != '':
+            body['distributed_status'] = True if distributed_status == 'True' else False
+        if voucher_group != '':
+            body['voucher_group'] = voucher_group
+
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
         self.logger.info('========== Finished searching Vouchers ==========')
@@ -154,6 +167,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_in_order_id': cash_in_order_id,
             'issuer_user_id': issuer_user_id,
             'cancel_status': cancel_status,
+            'voucher_type_list': self._get_voucher_type_list(),
+            'voucher_type': voucher_type,
+            'distributed_status_list': self._get_distributed_status_list(),
+            'distributed_status': distributed_status,
+            'voucher_group': voucher_group,
         }
         return render(request, self.template_name, context)
 
@@ -202,3 +220,19 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
             data = []
         return data
+
+    @staticmethod
+    def _get_voucher_type_list():
+        return [
+            {"name": "All", "value": ""},
+            {"name": "REMITTANCE", "value": "REMITTANCE"},
+            {"name": "3rd Party Vouchers", "value": "3rd Party Vouchers"}
+        ]
+
+    @staticmethod
+    def _get_distributed_status_list():
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Yes", "value": "True"},
+            {"name": "No", "value": "False"}
+        ]

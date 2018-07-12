@@ -13,7 +13,9 @@
             <div class="col-lg-12">
                 <form id="submit-form" class="form-horizontal" role="form" method="post">
                     {% include "shop/form-content.html" with is_readonly=True %}
-                    {% include "shop/device_list.html" with is_readonly=True %}
+                    {% if form.agent_id %}
+                        {% include "shop/device_list.html" with is_readonly=True %}
+                    {% endif %}
 
                     <div class="pull-right">
                         <a id="btn_cancel" class="btn" href="{% url 'shop:shop_list' %}">Cancel</a>

@@ -13,7 +13,7 @@ from io import BytesIO
 
 import json
 
-from authentications.utils import get_auth_header, get_correlation_id_from_username
+from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
 from web_admin import RestFulClient
 from web_admin import settings
 from web_admin import setup_logger
@@ -115,6 +115,8 @@ def upload_progress(request):
 
 @csrf_exempt
 def upload_form(request):
+    if not check_permissions_by_user(request.user, 'CAN_UPLOAD_BALANCE_ADJUSTMENT'):
+        return HttpResponse(json.dumps({'id': -1, "code": "permission_denied"}))
     request.upload_handlers.insert(0, ProgressUploadHandler(request))  # place our custom upload in first position
     return _upload_file_view(request)
 
@@ -139,7 +141,7 @@ def _upload_file_view(request):
         if upload_file.size > 8388608:
             data = {'id': -1, "code": "file_exceeded_max_size"}
         else:
-            data = _upload_via_api(request, upload_file)
+            data = _upload_via_api(request, upload_file, 1, logger)
         return HttpResponse(json.dumps(data))
 
 def _get_cache_key(request):
@@ -149,23 +151,20 @@ def _get_cache_key(request):
         progress_id = request.META['X-Progress-ID']
     return progress_id
 
-def _upload_via_api(request, file):
+def _upload_via_api(request, file, function_id, logger):
     myHeader = get_auth_header(request.user)
     #
-    logger = logging.getLogger(__name__)
-    correlation_id = get_correlation_id_from_username(request.user)
-    logger = setup_logger(request, logger, correlation_id)
-    
+
     myHeader["content-type"] = None
     myHeader["content-type"] = None
     myHeader["Content-Type"] = None
     is_success, status_code, status_message, data = RestFulClient.upload(url=UPLOAD_FILE, files={'file_data': file},
                                                                          headers=myHeader,
                                                                          loggers=logger,
-                                                                         params={'function_id': 1},
+                                                                         params={'function_id': function_id},
                                                                          timeout=settings.GLOBAL_TIMEOUT)
     
-    API_Logger.post_logging(loggers=logger, params={'file_data': file._name}, response=data,
+    API_Logger.post_logging(loggers=logger, params={'file_data': file._name, 'function_id': function_id}, response=data,
                             status_code=status_code, is_getting_list=True)
     
     if not is_success:

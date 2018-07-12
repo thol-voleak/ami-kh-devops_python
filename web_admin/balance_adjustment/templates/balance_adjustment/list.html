@@ -839,7 +839,7 @@
             return true;
         }
 
-        validateUploadBalanceAdjustmentFileType = function (popupContainer) {
+        validateUploadFileType = function (popupContainer) {
             //Validate csv file type
             if (!validateFileType(popupContainer, ['csv'])) {
                 swal({
@@ -859,7 +859,7 @@
                 return false;
             }
             //Validate csv file type
-            if (!validateUploadBalanceAdjustmentFileType(popupContainer)) {
+            if (!validateUploadFileType(popupContainer)) {
                 return false;
             }
 
@@ -870,7 +870,7 @@
             if (!validateUploadFileSize(popupContainer)) {
                 return false;
             }
-            upload();
+            upload(popupContainer);
         }
 
         initUploadPopup = function () {
@@ -878,37 +878,37 @@
             initUploadFilePopup(uploadPopup, undefined, uploadDelegateFunction);
         }
 
-        function gen_uuid() {
-            var uuid = ""
+        function gen_uuid(functionId) {
+            var uuid = functionId;
             for (var i = 0; i < 32; i++) {
                 uuid += Math.floor(Math.random() * 16).toString(16);
             }
             return uuid
         }
 
-        upload = function() {
-            var uuid = gen_uuid(); // id for this upload so we can fetch progress info.
-            var file = $("#uploadFileModal").find('input[name="file_data"]').get(0).files[0];
+        upload = function(popupContainer) {
+            var uuid = gen_uuid(1); // id for this upload so we can fetch progress info.
+            var file = popupContainer.find('input[name="file_data"]').get(0).files[0];
             var formData = new FormData();
             formData.append('file_data', file);
             var url = "{% url 'balance_adjustment:upload'%}"
             var freq = 100; // freqency of update in ms
             var progress_url = '{% url 'balance_adjustment:upload_progress' %}';
-            var $progress = $("#uploadFileModal").find($('#progress_container'))
+            var $progress = popupContainer.find($('#progress_container'))
             // Update progress bar
             function update_progress_info() {
                 $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
                     if (data) {
                         var progress = parseInt(data.uploaded) / parseInt(data.length);
                         progress = progress > 1 ? 1 : progress;
-                        var width = $("#uploadFileModal").find('input[name="file_data_mask"]').width()
+                        var width = popupContainer.find('input[name="file_data_mask"]').width()
                         var progress_width = width * progress;
                         $progress.find('#progress').width(progress_width);
                         var uploadPercent = parseInt(progress * 100);
                         $progress.find('#progress_info').text('Uploading ' + uploadPercent + '%');
                         window.setTimeout(update_progress_info, freq);
                     } else {
-                        $progress.find('#progress').width($("#uploadFileModal").find('input[name="file_data_mask"]').width());
+                        $progress.find('#progress').width(popupContainer.find('input[name="file_data_mask"]').width());
                         $progress.find('#progress_info').text("Upload successfully")
                         $progress.find('#dlg_icon_ok').show()
                     }
@@ -930,14 +930,14 @@
                 success: function (data) {
                     var uploadData = JSON.parse(data);
                     if (null != uploadData &&  uploadData.id >=0) {
-                        $("#uploadFileModal").find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
-                        $("#uploadFileModal").find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
-                        $("#uploadFileModal").find($('#progress_info')).hide();
-                        $("#uploadFileModal").find($('#download_link')).show();
-                        $("#uploadFileModal").find($('#btn_dialog_done')).show();
-                        $("#uploadFileModal").find($('#btn_dialog_cancel')).hide();
+                        popupContainer.find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                        popupContainer.find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
+                        popupContainer.find($('#progress_info')).hide();
+                        popupContainer.find($('#download_link')).show();
+                        popupContainer.find($('#btn_dialog_done')).show();
+                        popupContainer.find($('#btn_dialog_cancel')).hide();
                     } else if (uploadData.id == -1 && "file_exceeded_max_size" == uploadData.code) {
-                        $("#uploadFileModal").find($('#progress_container')).hide();
+                        popupContainer.find($('#progress_container')).hide();
                         swal({
                             title: 'Upload exceeded max 8MB file size limit',
                             type: "error",
@@ -946,7 +946,7 @@
                             closeOnConfirm: true
                         });
                     }else if (uploadData.id == -1 && "Upload must be in csv format" == uploadData.code) {
-                        $("#uploadFileModal").find($('#progress_container')).hide();
+                        popupContainer.find($('#progress_container')).hide();
                         swal({
                             title: 'Upload must be in csv format',
                             type: "error",
@@ -954,7 +954,16 @@
                             confirmButtonText: "Close",
                             closeOnConfirm: true
                         });
-                    }
+                    } else if (uploadData.id == -1 && "permission_denied" == uploadData.code) {
+                    popupContainer.find($('#progress_container')).hide();
+                    swal({
+                        title: 'permission denied',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                }
                 }
             });
         }

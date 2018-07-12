@@ -24,6 +24,16 @@ from web_admin.utils import calculate_page_range_from_page_info, export_file
 logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
+status_list = [
+    {"id": '', "name": "All"},
+    {"id": 0, "name": "Created"},
+    {"id": 2, "name": "Executed"},
+    {"id": -1, "name": "Fail"},
+    {"id": 1, "name": "Locking"},
+    {"id": 3, "name": "Rolled back"},
+    {"id": 4, "name": "Time out"},
+]
+
 class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_CUSTOMER_INDIVIDUAL_WALLET"
     login_url = 'web:permission_denied'
@@ -64,6 +74,9 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         opening_page_index = request.GET.get('current_page_index')
         from_created_timestamp = request.GET.get('from_created_timestamp')
         to_created_timestamp = request.GET.get('to_created_timestamp')
+        status_id = request.GET.get('status_id')
+        if status_id is not '' and status_id is not None:
+            status_id = int(status_id)
 
         if sof_id is None and sof_type_id is None and opening_page_index is None and from_created_timestamp is None and to_created_timestamp is None:
             # Set first load default time for Context
@@ -85,11 +98,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = UserType.CUSTOMER.value
             body['user_id'] = user_id
 
-            data, success, status_message = self._get_transaction_history_list(body)
+            order_balance_movements, page, summaries, success = self._get_transaction_history(body)
             if success:
-
-                order_balance_movements = data.get("order_balance_movements", [])
-
                 if order_balance_movements is not None:
                     result_data = self.format_data(order_balance_movements)
                     has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
@@ -98,14 +108,15 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
                 else:
                     result_data = order_balance_movements
-
-                page = data.get("page", {})
                 self.logger.info("Page: {}".format(page))
                 context.update(
                     {'search_count': page.get('total_elements', 0),
                      'list': result_data,
+                     'summaries': summaries,
                      'choices': choices,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': page,
                      'page_range': calculate_page_range_from_page_info(page),
                      'user_id': user_id,
@@ -116,6 +127,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'data': [],
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'is_show_export': False
@@ -123,7 +136,7 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 )
             permissions = {
             }
-        else :
+        else:
             if sof_id is not '' and sof_id is not None:
                 sof_id = int(sof_id)
                 body['sof_id'] = sof_id
@@ -131,6 +144,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 body['sof_type_id'] = int(sof_type_id)
             body['user_type_id'] = UserType.CUSTOMER.value
             body['user_id'] = user_id
+            if status_id is not '' and status_id is not None:
+                body['status_id_list'] = [status_id]
 
             context = {}
             # validate required search date criteria
@@ -144,10 +159,13 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -169,10 +187,13 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -194,10 +215,13 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 context.update(
                     {'search_count': 0,
                      'list': [],
+                     'summaries': [],
                      'choices': choices,
                      'sof_type_id': sof_type_id,
                      'sof_id': sof_id,
                      'cash_sof_list': cash_sof_list,
+                     'status_list': status_list,
+                     'status_id': status_id,
                      'paginator': {},
                      'user_id': user_id,
                      'from_created_timestamp': from_created_timestamp,
@@ -231,11 +255,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             if 'search' in request.GET:
                 self.logger.info('Searching customer transaction history')
-                data, success, status_message = self._get_transaction_history_list(body)
+                order_balance_movements, page, summaries, success = self._get_transaction_history(body)
                 if success:
-
-                    order_balance_movements = data.get("order_balance_movements", [])
-
                     if order_balance_movements is not None:
                         result_data = self.format_data(order_balance_movements)
                         has_permission_view_payment_order_detail = check_permissions_by_user(self.request.user,
@@ -244,16 +265,17 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                             i['has_permission_view_payment_order_detail'] = has_permission_view_payment_order_detail
                     else:
                         result_data = order_balance_movements
-
-                    page = data.get("page", {})
                     self.logger.info("Page: {}".format(page))
                     context.update(
                         {'search_count': page.get('total_elements', 0),
                          'list': result_data,
+                         'summaries': summaries,
                          'choices': choices,
                          'sof_type_id': sof_type_id,
                          'sof_id': sof_id,
                          'cash_sof_list': cash_sof_list,
+                         'status_list': status_list,
+                         'status_id': status_id,
                          'paginator': page,
                          'page_range': calculate_page_range_from_page_info(page),
                          'user_id': user_id,
@@ -266,6 +288,8 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     context.update(
                         {'search_count': 0,
                          'data': [],
+                         'status_list': status_list,
+                         'status_id': status_id,
                          'paginator': {},
                          'user_id': user_id,
                          'is_show_export': False
@@ -302,16 +326,22 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         )
         self.logger.info('========== Finish getting cash sof list ==========')
         return data
-    
-    def _get_transaction_history_list(self, body):
-        # Mountebank URL for test call api fail
-        # api_path = 'http://localhost:1237/payments/orders/balance-movements'
-        api_path = api_settings.BALANCE_MOVEMENT_LIST_PATH
-        success, status_code, status_message, data = RestFulClient.post(url=api_path,
-                                                                        headers=self._get_headers(),
-                                                                        loggers=self.logger,
-                                                                        params=body,
-                                                                        timeout=settings.GLOBAL_TIMEOUT)
+
+    def _get_transaction_history(self, body):
+        order_balance_movements, page, success, status_message = self._get_transaction_history_list(body)
+        if not success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+            return order_balance_movements, page, [], success
+
+        summary_body = body.copy()
+        summary_body.pop('paging')
+        summary_body.pop('page_index')
+
+        summaries, success, status_message = self._get_transaction_history_summary(summary_body)
         if not success:
             messages.add_message(
                 self.request,
@@ -319,11 +349,34 @@ class TransactionHistoryView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 status_message
             )
 
+        return order_balance_movements, page, summaries, success
+
+    def _get_transaction_history_list(self, body):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_MOVEMENT_LIST_PATH,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body,
+                                                                        timeout=settings.GLOBAL_TIMEOUT)
         data = data or {}
-        API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('order_balance_movements', []),
+        order_balance_movements = data.get('order_balance_movements', [])
+        page = data.get("page", {})
+        API_Logger.post_logging(loggers=self.logger, params=body, response=order_balance_movements,
+                                status_code=status_code, is_getting_list=True)
+        return order_balance_movements, page, success, status_message
+
+    def _get_transaction_history_summary(self, body):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.BALANCE_MOVEMENT_SUMMARY_PATH,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=body,
+                                                                        timeout=settings.GLOBAL_TIMEOUT)
+        data = data or {}
+        summaries = data.get('summaries', [])
+        summaries = sorted(summaries, key=lambda value: value.get('currency'), reverse=False)
+        API_Logger.post_logging(loggers=self.logger, params=body, response=summaries,
                                 status_code=status_code, is_getting_list=True)
 
-        return data, success, status_message
+        return summaries, success, status_message
 
     def format_data(self, data):
         for i in data:

@@ -1,13 +1,13 @@
 from web_admin import setup_logger, RestFulClient, api_settings
 from authentications.utils import get_auth_header, get_correlation_id_from_username, check_permissions_by_user
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, convert_string_to_date_time
 from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from web_admin.restful_client import RestFulClient
 from web_admin.api_logger import API_Logger
 from braces.views import GroupRequiredMixin
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 
 import logging
 
@@ -44,9 +44,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
 
         self.initSearchDateTime(context)
 
-        body= {}
-        body['paging'] = True
-        body['page_index'] = 1
+        body= {'paging': True, 'page_index': 1}
         otp_list, is_success = self.get_otp_list(body)
         page = otp_list.get("page", {})
         context.update({
@@ -107,10 +105,10 @@ class OTPList(GroupRequiredMixin, TemplateView):
             body['user_type'] = user_type
 
         if from_created_timestamp:
-            body['from'] = self.convertStringToDateTime(from_created_timestamp, from_time)
+            body['from'] = convert_string_to_date_time(from_created_timestamp, from_time)
 
         if to_created_timestamp:
-            body['to'] = self.convertStringToDateTime(to_created_timestamp, to_time)
+            body['to'] = convert_string_to_date_time(to_created_timestamp, to_time)
 
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
@@ -145,8 +143,7 @@ class OTPList(GroupRequiredMixin, TemplateView):
                                                                            loggers=self.logger,
                                                                            params=body)
         if not is_success:
-            data = {}
-            data['otps'] = []
+            data = {'otps': []}
 
             messages.add_message(
                 self.request,
@@ -166,15 +163,3 @@ class OTPList(GroupRequiredMixin, TemplateView):
         context['to_date'] = tomorrow.strftime('%Y-%m-%d')
         context['from_time'] = "00:00:00"
         context['to_time'] = "00:00:00"
-
-    def convertStringToDateTime(self, date_str, time_str):
-        _date = datetime.strptime(date_str, "%Y-%m-%d")
-        time_split = time_str.split(":")
-        if len(time_split) == 3:
-            return _date.replace(hour = int(time_str.split(":")[0]),
-                                 minute = int(time_str.split(":")[1]),
-                                 second = int(time_str.split(":")[2])).strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return _date.replace(hour=int(time_str.split(":")[0]),
-                                        minute=int(time_str.split(":")[1]),
-                                        second= 0).strftime('%Y-%m-%dT%H:%M:%SZ')

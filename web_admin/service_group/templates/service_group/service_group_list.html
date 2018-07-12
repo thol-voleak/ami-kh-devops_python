@@ -4,29 +4,119 @@
 
 {% block content %}
     <div class="panel mb25">
-        <div class="panel-heading border">
-            <h3>Service Groups</h3>
-        </div>
-        {% for message in messages %}
-            <div class="col-xs-12">
-                <div class='alert alert-success alert-dismissable' id="msg-create-system-user">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ message|capfirst }}</strong>
+        <div class="panel-heading border no-padding">
+            <div>
+                <div class="pull-left"><h3>Service Groups</h3></div>
+                {% if request.user|has_permission_name:"CAN_ADD_SERVICE_GROUP"%}
+                <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                    <a href="{% url 'service_group:add_service_group' %}">
+                        <button id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15">+ Add New Service Group</button>
+                    </a>
                 </div>
+                {% endif %}
+                <div class="clearfix"></div>
             </div>
-        {% endfor %}
-        {% if request.user|has_permission_name:"CAN_ADD_SERVICE_GROUP"%}
-        <div class="pull-right mr15 text-right">
-            <a href="{% url 'service_group:add_service_group' %}">
-                <input id="btn_service_group_add" class="btn btn-success btn-block text-left no-print mb15"
-                       type="button"
-                       value="Add"/>
-            </a>
         </div>
-        {% endif %}
+
+        {% include "message.html" %}
+
         <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'service_group:service_group_list' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">ID</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control input-rounded" name="service_group_id" id="txt_service_group_id" value="{{ service_group_id }}">
+                    </div>
+                    <label class="col-sm-2 col-md-offset-2 control-label">Name</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="service_group_name" id="txt_service_group_name" value="{{ service_group_name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Created Date: Form</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="created_from_date"
+                               value="{{ created_from_date|default_if_none:'' }}"
+                               id="dtp_created_from_date">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               step="1" value="{{ created_from_time|default_if_none:'' }}"
+                               name="created_from_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                               id="created_from_time">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="created_to_date"
+                               value="{{ created_to_date|default_if_none:'' }}"
+                               id="dtp_created_to_date">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               name="created_to_time" step="1" value="{{ created_to_time|default_if_none:'' }}"
+                               id="created_to_time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Modified Date: Form</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="modified_from_date"
+                               value="{{ modified_from_date|default_if_none:'' }}"
+                               id="dtp_modified_from_date">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               step="1" value="{{ modified_from_time|default_if_none:'' }}"
+                               name="modified_from_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                               id="modified_from_time">
+                    </div>
+                    <label class="col-sm-2 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="modified_to_date"
+                               value="{{ modified_to_date|default_if_none:'' }}"
+                               id="dtp_modified_to_date">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               name="modified_to_time" step="1" value="{{ modified_to_time|default_if_none:'' }}"
+                               id="modified_to_time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1 col-sm-offset-11">
+                        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="Search">
+                    </div>
+                    <div class="col-xs-1 col-xs-offset-3" hidden>
+                        <input id="export-type" type="text" name="export-type" value="" />
+                        <input id="download_button" class="btn btn-success btn-block" type="submit" name="download"
+                               value="Download">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                    <label class="pull-right" >Total records found:&nbsp;</label>
+
+                    {% if is_show_export %}
+                    <div class="pull-right dropdown export-file-dropdown">
+                        <label class="dropdown-toggle" title="Export this filter" id="button_export" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="true"><i class="glyphicon glyphicon-download-alt"></i></label>
+                        <ul class="dropdown-menu" aria-labelledby="button_export">
+                            <li id="download_excel_option" onclick="exportFile('excel')">Export Excel (All Fields) - 5,000 results</li>
+                            <li id="download_csv_option" onclick="exportFile('csv')">Export CSV (All Fields) - 5,000 results</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </form>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped mb0">
+                <table class="table table-bordered table-striped mb0" id="tbl_system_group_list">
                     <thead>
                     <tr>
                         <th id="lbl_id">ID</th>
@@ -91,7 +181,34 @@
                     </tbody>
                 </table>
             </div>
+            {% include "pagination.html" %}
+        </div>
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
         </div>
     </div>
 
+{% endblock %}
+
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    var exportFile = function(type) {
+        if(type == 'excel') {
+            $('#export-type').val('excel');
+        } else if (type == 'csv'){
+            $('#export-type').val('csv');
+        }
+        $('#download_button').click();
+    }
+</script>
 {% endblock %}

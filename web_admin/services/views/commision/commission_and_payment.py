@@ -63,7 +63,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         #fee, success = self._get_agent_fee_distribution_list(tier_id)
         self.logger.info('========== Start getting options for Setting Payment, Fee & Bonus Structure ==========')
-        choices = self._get_choices()
+        choices = self._get_choices(command_id)
         specific_ids = self._get_specific_ids()
         self.logger.info('========== Finish getting options for Setting Payment, Fee & Bonus Structure ==========')
         #agents = self._get_agents()
@@ -140,7 +140,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
             if balance_distribution['amount_type'] == 'Parent Fee Rate':
                 balance_distribution['amount_type'] = None
 
-    def _get_choices(self):
+    def _get_choices(self, command_id):
         url_list = [api_settings.ACTION_TYPES_URL, api_settings.AMOUNT_TYPES_URL,
                     api_settings.SOF_TYPES_URL, api_settings.ACTOR_TYPES_URL]
         pool = ThreadPool(processes=1)
@@ -148,6 +148,10 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
         async_list = map(lambda url: pool.apply_async(lambda: self._get_choices_types(url)),
                          url_list)
         result_list = list(map(lambda x: x.get(), async_list))
+
+        if command_id == '2':
+            result_list[3] = [i for i in result_list[3] if 'Beneficiary' not in i['actor_type']]
+
         return {
             'action_types': result_list[0],
             'amount_types': result_list[1],

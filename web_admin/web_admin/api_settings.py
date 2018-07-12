@@ -1,4 +1,4 @@
-API_VERSION = 'v3.4'
+API_VERSION = 'v3.5'
 API_GATEWAY_PATH = 'api-gateway'
 
 # Authentication
@@ -58,6 +58,10 @@ AGENT_STATUS_URL = 'api-gateway/agent/'+ API_VERSION + '/admin/agents/{}/status'
 SEARCH_RELATIONSHIP = 'api-gateway/report/'+API_VERSION+'/agents/relationships'
 RELATIONSHIP_TYPES_LIST = 'api-gateway/agent/'+ API_VERSION + '/admin/relationship-types'
 GET_IDENTITY_TYPES = 'api-gateway/report/' + API_VERSION + '/identity-types'
+DELETE_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}'
+SHARE_BENEFIT_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships/{}/sharing-benefit'
+ADD_RELATIONSHIP = 'api-gateway/agent/' + API_VERSION + '/admin/relationships'
+GRANT_TRUST_URL = 'api-gateway/trust-management/' + API_VERSION + '/admin/tokens'
 
 GET_AGENT_IDENTITY_URL = 'api-gateway/report/'+API_VERSION+'/agents/identities'
 AGENT_IDENTITY_RESET_PASSWORD = 'api-gateway/agent/' + API_VERSION + '/admin/agents/{}/identities/{}/passwords/temporary'
@@ -99,7 +103,7 @@ SPI_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/spi-urls/{spi_url_i
 SPI_CALL_METHOD_PATH = 'api-gateway/payment/'+API_VERSION+'/spi-url-call-methods'
 
 # Service Group
-SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
+SERVICE_GROUP_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/service-groups'
 SERVICE_GROUP_UPDATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
 SERVICE_GROUP_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups/{}'
 ADD_SERVICE_GROUP_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
@@ -109,6 +113,7 @@ GET_ALL_SERVICE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 
 # Service
 SEARCH_SERVICE = 'api-gateway/report/'+API_VERSION+'/payments/services/'
+SERVICE_GROUP_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/service-groups'
 SERVICE_LIST_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/'
 SERVICE_CREATE_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services'
 SERVICE_DETAIL_URL = 'api-gateway/payment/'+API_VERSION+'/admin/services/{}'
@@ -177,12 +182,14 @@ MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 BALANCE_MOVEMENT_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/orders/balance-movements'
+BALANCE_MOVEMENT_SUMMARY_PATH = 'api-gateway/report/'+API_VERSION+'/payments/summaries/orders/balance-movements'
 CARD_HISTORY_PATH = 'api-gateway/report/'+API_VERSION+'/cards/histories'
 ACTIVATE_CARD_PATH = 'api-gateway/prepaid-card/' + API_VERSION + '/admin/cards/{card_id}/status'
 
 CASH_TRANSACTIONS_URL = 'api-gateway/report/'+API_VERSION+'/cash/transactions'
 CASH_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cash/sofs'
-BANK_SOFS_URL = 'report/'+API_VERSION+'/banks/sofs'
+BANK_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/banks/sofs'
+CARD_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/cards/sofs'
 LIST_BANK_SOFS_URL = 'api-gateway/report/'+API_VERSION+'/banks/sofs'
 CUSTOMER_IDENTITIES_LIST = 'api-gateway/report/'+API_VERSION+'/customers/identities'
 SUSPEND_CUSTOMER = 'api-gateway/customer/'+API_VERSION+'/admin/customers/{}/status'
@@ -234,6 +241,7 @@ DELETE_FRAUD_TICKET = 'api-gateway/fraud-consultant/'+API_VERSION+'/admin/ticket
 
 #Payment
 GET_PAYMENT_DETAIL = 'api-gateway/payment/'+API_VERSION+'/orders/{order_id}'
+GET_USER_BY_PHONE_URL = "api-gateway/report/" + API_VERSION + "/users"
 
 #Market Campaign
 GET_CAMPAIGNS = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules'
@@ -288,6 +296,11 @@ DELETE_ACTION = 'api-gateway/rule-engine/'+API_VERSION+'/admin/rules/{rule_id}/m
 GET_VOUCHER_DETAIL = 'api-gateway/report/'+API_VERSION+'/vouchers'
 SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
 UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{voucher_id}/status'
+CREATE_REFUND_REQUEST = 'api-gateway/workflow/'+API_VERSION+'/admin/vouchers/refund'
+SEARCH_VOUCHER_ADJUSTMENT = 'api-gateway/report/'+API_VERSION+'/workflows/voucher-refunds'
+
+#Third Party
+GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/voucher-groups'
 
 #Report Configuration
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
@@ -376,3 +389,8 @@ SYSTEM_USER_STATUS_URL = 'api-gateway/system-user/'+ API_VERSION + '/admin/syste
 
 OTP_URL = 'api-gateway/report/'+ API_VERSION + '/otp-management/otps'
 
+# Trust Management
+SEARCH_TRUST = 'api-gateway/report/'+ API_VERSION + '/token-management/tokens'
+ADD_TRUST = 'api-gateway/trust-management/'+ API_VERSION + '/admin/tokens'
+DELETE_TRUST_TOKEN_API = 'api-gateway/trust-management/' + API_VERSION + '/admin/tokens/{}'
+VOUCHER_REFUND_APPROVE_PATH = 'api-gateway/workflow/'+API_VERSION+'/admin/voucher-refunds'

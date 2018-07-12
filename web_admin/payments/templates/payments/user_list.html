@@ -1,0 +1,68 @@
+{% load static %}
+{% block content %}
+{% csrf_token %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" id="btnCloseModal">&times;</button>
+    <h4 class="modal-title">Select User</h4>
+</div>
+<div class="panel-body" style="overflow-x: auto">
+    <form id="submit-form" class="form-horizontal" role="form" method="get" action="{% url 'payments:search_user' %}">
+        <div class="pull-right mb10">
+            <label>Total records found:&nbsp;</label>
+            <label id="lbl_total">{{ search_count }}</label>
+        </div>
+        <button id="btn_search" style="display: none" />
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mb0" id="tbl_list_user">
+            <thead>
+            <tr>
+                <th>User Type (User ID)</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Primary Phone No</th>
+                <th>Secondary Phone No</th>
+                <th>Tertiary Phone No</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in user_list %}
+            <tr>
+                <td id="id_{{ user.user_type_id }}_{{ user.user_id }}" style="min-width: 100px;">
+                    {% if user.user_type_id == 1 %}Customer{%elif user.user_type_id == 2 %} Agent {% endif %}
+                    ({{ user.user_id }})
+                </td>
+                <td class="col-sm-1" >{{ user.firstname }} </td>
+                <td class="col-sm-2" >{{ user.lastname }}</td>
+                <td class="col-sm-2" >{{ user.primary_mobile_number }}</td>
+                <td class="col-sm-2" >{{ user.secondary_mobile_number }}</td>
+                <td class="col-sm-2" >{{ user.tertiary_mobile_number }}</td>
+                <td class="col-sm-2" >{{ user.email }}</td>
+                <td class="col-sm-1">
+                    <button type="button" style="border-radius: 6px" class="btn-sm btn-success" onclick="selectUser('{{ user.user_id }}', '{{ user.user_type_id }}')">Choose</button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+    {% include "pagination_modal.html" %}
+    </form>
+</div>
+
+<script>
+    selectUser = function(userId, userTypeId) {
+        $('#txt_user_id').val(userId);
+        $('#ddl_user_type').val(userTypeId);
+        $('#modalUser').modal('hide');
+    };
+
+    $('#modalUser').on('hidden.bs.modal', function (e) {
+        $(this).removeData('bs.modal');
+        $('#current_page_index').val(1);
+    });
+</script>
+
+{% endblock %}

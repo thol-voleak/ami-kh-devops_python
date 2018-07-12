@@ -1,0 +1,499 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block content %}
+<style>
+    #btn_add_new_voucher {
+        background-color: #337ab7;
+        border-color: #337ab7;
+        font-size: 14px;
+        border-radius: 3px;
+        position: relative;
+        top: 15px;
+        right: -20px;
+        hover: red !important;
+    }
+    .layout-fixed-header {
+         background-color: white;
+    }
+
+    .main-panel {
+        background-color: white;
+    }
+
+    #btn_add_new_voucher strong {
+        font-weight: bold !important;
+        font-size: 20px;
+    }
+
+    #btn_add_new_voucher span {
+        position: relative;
+        top: -1px;
+    }
+
+</style>
+    <div class="col-md-12">
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+           <div>
+               <div class="pull-left"><h3>Voucher Adjustment</h3></div>
+               </div>
+               <div class="clearfix"></div>
+           </div>
+        </div>
+
+        <div id="ajax-messages">
+            {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" id="msg-success">
+                    <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="msg-error">
+                    <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ message }}</strong>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="panel-body">
+            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'voucher:voucher_adjustment' %}">
+            {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Request ID</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control input-rounded" name="request_id" id="txt_request_id" value="{{ request_id }}">
+                    </div>
+                    <label class="col-sm-3 control-label">Requested by</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="requested_by" id="txt_requested_by" value="{{ requested_by }}">
+                    </div>
+                </div>
+                 <div class="form-group">
+                     <label class="col-sm-3 control-label">Request Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_request_status" name="request_status" >
+                            <option value="" selected>All</option>
+                            {% for key,value in request_status_list %}
+                                {%if key == selected_status%}
+                                <option value="{{ key }}" selected>{{ value }}</option>
+                                {% else %}
+                                <option value="{{ key }}">{{ value }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="col-sm-3 control-label">Request Action</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_request_action" name="request_action" >
+                            <option value="" selected>All</option>
+                            {% for item in request_action_list %}
+                                {% if item.value == selected_action%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                 </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Requested Date From</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="requested_date_from"
+                               value="{{ requested_date_from|default_if_none:'' }}"
+                               id="dtp_requested_date_from">
+                    </div>
+                    <label class="col-sm-3 control-label">To</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control input-rounded"
+                               name="requested_date_to"
+                               value="{{ requested_date_to|default_if_none:'' }}"
+                               id="dtp_requested_date_to">
+                    </div>
+                </div>
+                 <div class="form-group">
+                     <label class="col-sm-3 control-label">Original voucher ID</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control input-rounded" name="original_voucher_id" id="txt_original_voucher_id" value="{{ original_voucher_id }}">
+                    </div>
+                 </div>
+                 <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
+                            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                                   onclick="searchVoucherAdjustment()" value="Search">
+                 </div>
+            </form>
+            <div class="no-more-tables" style="position: absolute;">
+                <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">ACTIONS<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        {% if request|has_any_permission:"CAN_APPROVE_VOUCHER_ADJUSTMENT" %}
+                            <li id="approve_multi_voucher_refund"><a>Approve</a></li>
+                            <li id="reject_multi_voucher_refund"><a>Reject</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                {% include "voucher_adjustment/approve_voucher_refund_dialog.html" %}
+                {% include "voucher_adjustment/reject_voucher_refund_dialog.html" %}
+
+                <div class="modal" tabindex="-1" role="dialog" id="listRejectErrorModal" style="margin-top: 150px;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div style="font-size:5em; color:Red;" class="text-center">
+                                    <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                                </div>
+                                <h3 class="modal-title">Unable to reject some rows in the request</h3>
+                            </div>
+                            <div id=listError class="modal-body"></div>
+                            <div class="modal-footer">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" tabindex="-1" role="dialog" id="listApproveErrorModal" style="margin-top: 150px;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div style="font-size:5em; color:Red;" class="text-center">
+                                    <i class="fa fa-exclamation-circle" style="text-align:center;"></i>
+                                </div>
+                                <h3 class="modal-title">Unable to approve some rows in the request</h3>
+                            </div>
+                            <div id=listError class="modal-body"></div>
+                            <div class="modal-footer">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-right: +20px; margin-top: -15px;">
+                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                    <label class="pull-right">Total records found:&nbsp;</label>
+                </div>
+                <table id='tbl_voucher_adjustment' class="table table-bordered table-striped mb0">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" name="select-all" id="select-all" /></th>
+                        <th id="ddl_request_id">Request ID</th>
+                        <th id="ddl_requested_action">Requested action</th>
+                        <th id="ddl_affected_vouchers">Affected vouchers</th>
+                        <th id="ddl_amount">Amount</th>
+                        <th id="ddl_currency">Currency</th>
+                        <th id="ddl_status">Status</th>
+                        <th id="ddl_requested_by">Requested by</th>
+                        <th id="ddl_request_date">Request date</th>
+                        <th id="ddl_approved_by">Approved by</th>
+                        <th id="ddl_approve_date">Approve date</th>
+                        <th id="ddl_update_date">Update date</th>
+                        <th id="ddl_action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
+                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
+                            <td>{{ i.id|default_if_none:'' }}</td>
+                            <td>Refund</td>
+                            <td>1</td>
+                            <td>{{ i.amount|default_if_none:'' }}</td>
+                            <td id="voucher_adjustment_currency">{{ i.currency|default_if_none:'' }}</td>
+                            <td>{{ i.status|default_if_none:'' }}</td>
+                            <td>{{ i.requested_username|default_if_none:'' }}</td>
+                            <td>{{ i.created_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.approved_username|default_if_none:'' }}</td>
+                            <td>{{ i.approved_timestamp|default_if_none:'' }}</td>
+                            <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                            <td>
+                                <a type="button"
+                                   class="btn btn-outline btn-xs btn-info"
+                                   role="button"
+                                   id="btn_detail"
+                                   href="{% url 'voucher:voucher_adjustment_detail' i.id %}">
+                                    <span class="small">Detail</span>
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% include "pagination.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block body_js %}
+{{ block.super }}
+<script>
+
+    function addErrorMessage(message) {
+        $("#ajax-messages").empty().append(
+            '<div class="col-xs-12">' +
+            '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+            '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+            '<strong>' + message + '</strong>' +
+            '</div>' +
+            '</div>')
+    }
+
+    var searchVoucherAdjustment = function(){
+        var from_date = $('#dtp_requested_date_from').val();
+        var to_date = $('#dtp_requested_date_to').val();
+        if(from_date != '' && to_date != '') {
+            var date_from = new Date(from_date);
+            var date_to = new Date(to_date);
+            if(date_from > date_to) {
+                addErrorMessage('Request Date To cannot be less than Request Date From');
+                return;
+            }
+        }
+        document.getElementById("submit-form").submit();
+    };
+
+
+    $('#select-all').on('change', function() {
+        $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+    });
+    $('.checkboxlist input[type="checkbox"]').on('change', function () {
+        var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
+        $('#select-all').prop('checked', allChecked);
+    });
+
+    bindSelectApproveAction = function () {
+        $("#ddl_select_action").find("#approve_multi_voucher_refund").click(function (e) {
+            if (!validateCurrencies()) return false;
+            $("#approveVoucherRefundModal #txt_approve_refund_reason").val('');
+            $("#approveVoucherRefundModal").modal('show');
+        });
+    }
+    bindSelectRejectAction = function () {
+        $("#ddl_select_action").find("#reject_multi_voucher_refund").click(function (e) {
+            if (!validateCurrencies()) return false;
+            $("#rejectVoucherRefundModal #txt_reject_refund_reason").val('');
+            $("#rejectVoucherRefundModal").modal('show');
+        });
+    }
+    bindSelectActionsEvent = function () {
+        bindSelectApproveAction();
+        bindSelectRejectAction();
+    }
+
+    getSelectedVoucherRefunds = function () {
+        var selectedIds = [];
+        $("#tbl_voucher_adjustment .checkboxlist input[name='voucher_adjustment_checkbox']:checked").each(function (index, checkBox) {
+            selectedIds.push($(checkBox).val());
+        });
+        return selectedIds;
+    }
+    buildRefundStatusError = function (statusList) {
+        var statusMap = {};
+        $.each(statusList, function (index, statusElemt) {
+            if (statusMap[statusElemt.status] == undefined) {
+                statusMap[statusElemt.status] = 1;
+            } else {
+                statusMap[statusElemt.status]++;
+            }
+        })
+        return statusMap;
+    }
+
+    buildTableErrorHtml = function (statusMap, type) {
+        var successLable = "";
+        switch (type) {
+            case 'Approve':
+                successLable = "Being approved";
+                break;
+            case 'Reject':
+                successLable = "Being rejected";
+                break;
+
+            default:
+                break;
+        }
+        var table = $('<table>');
+        //build success infor first
+        if (statusMap["Success"] != undefined) {
+            var successRow = $('<tr>');
+            var tdLable = $('<td>').attr({
+                class: "text-right",
+                style: "font-size: 15px;"
+            }).text(successLable + ":").appendTo(successRow);
+            var tdValue = $('<td>').attr({style: "padding: 5px 10px;"}).text(statusMap["Success"]).appendTo(successRow);
+            table.append(successRow)
+        }
+
+        $.each(statusMap, function (key, value) {
+            if (key != "Success") {
+                var errorRow = $('<tr>');
+                var tdLable = $('<td>').attr({
+                    class: "text-right",
+                    style: "font-size: 15px;"
+                }).text(key + ":").appendTo(errorRow);
+                var tdValue = $('<td>').attr({style: "padding: 5px 10px;"}).text(statusMap[key]).appendTo(errorRow);
+                table.append(errorRow)
+            }
+        })
+        return table;
+    }
+
+    uncheckValidateSuccessRow = function (statusList) {
+        var successList = $.map(statusList, function (statusElement, index) {
+            return (statusElement.status == "Success") ? statusElement : null;
+        })
+        if (successList.length == 0) {
+            return;
+        }
+
+        $.each(successList, function (index, ele) {
+            $("#tbl_voucher_adjustment").find("#chk_voucher_adjustment_" + ele.refund_request_id).prop('checked', false);
+        })
+    }
+
+    var validateCurrencies = function () {
+        var firstCurrency = "";
+        var currentCurrency = "";
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked");
+        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_adjustment_currency").text() : "";
+        $(checkedInput).each(function (index, value) {
+            currentCurrency = $(value).parent().parent().find("#voucher_adjustment_currency").text();
+            if (firstCurrency != currentCurrency) {
+                swal({
+                    title: 'Multiple currencies are not allowed',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
+
+    bindApproveMultiVoucherRefundsEvent = function () {
+        $("#approveVoucherRefundModal #btn_approve_voucher_refund_confirm").click(function (e) {
+            var selectedIds = getSelectedVoucherRefunds();
+            var approveReason = $("#approveVoucherRefundModal #txt_approve_refund_reason").val();
+            var url = "{% url 'voucher:approve_voucher_refunds'%}";
+            var data = {
+                "refundRequestIds": JSON.stringify(selectedIds),
+                "reason": approveReason
+            }
+
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.is_success) {
+                        location.reload();
+                    } else {
+//                        process fail case of approve voucher refunds
+                        var status_code = response.status_code;
+                        if (status_code == "invalid_request") {
+                            if (response.data != null) {
+                                var statusMap = buildRefundStatusError(response.data);
+                                var tableHtmlError = buildTableErrorHtml(statusMap,"Approve");
+                                $("#listApproveErrorModal #listError").empty().append(tableHtmlError);
+                                uncheckValidateSuccessRow(response.data);
+                                $("#listApproveErrorModal").modal("show");
+                            } else {
+                                addErrorMessage(response.status_message);
+                            }
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
+
+                    }
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    addErrorMessage("approve error!");
+                }
+            });
+            $("#approveVoucherRefundModal").modal('hide');
+        })
+    }
+    
+    bindRejectMultiVoucherRefundsEvent = function () {
+        $("#rejectVoucherRefundModal #btn_reject_voucher_refund_confirm").click(function (e) {
+            var selectedIds = getSelectedVoucherRefunds();
+            var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
+            var url = "{% url 'voucher:reject_voucher_refunds'%}";
+            var data = {
+                "refundRequestIds": JSON.stringify(selectedIds),
+                "reason": rejectReason
+            }
+            
+            // Request to server
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.is_success) {
+                        location.reload();
+                    } else {
+//                        process fail case of reject voucher refunds
+                        var status_code = response.status_code;
+                        if (status_code == "invalid_request") {
+                            if (response.data != null) {
+                                var statusMap = buildRefundStatusError(response.data);
+                                var tableHtmlError = buildTableErrorHtml(statusMap,"Reject");
+                                $("#listRejectErrorModal #listError").empty().append(tableHtmlError);
+                                uncheckValidateSuccessRow(response.data);
+                                $("#listRejectErrorModal").modal("show");
+                            } else {
+                                addErrorMessage(response.status_message);
+                            }
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
+                    }
+                },
+                error: function (err) {
+                    var json = JSON.stringify(err);
+                    addErrorMessage("reject error!");
+                }
+            });
+            $("#rejectVoucherRefundModal").modal('hide');
+        })
+    }
+    
+    $(document).ready(function () {
+        bindSelectActionsEvent();
+        bindApproveMultiVoucherRefundsEvent();
+        bindRejectMultiVoucherRefundsEvent();
+    })
+
+
+</script>
+{% endblock %}

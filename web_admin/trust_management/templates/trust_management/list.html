@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+{% load permissions_filter %}
+{% block content %}
+
+    <div class="panel mb25">
+        <div class="panel-heading border mb15">
+            <div>
+                <div class="pull-left"><h3>Trust Management</h3></div>
+                {% if request.user|has_permission_name:"CAN_CREATE_TRUST" %}
+                    <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                        <a id="btn_add_new_trust" class="btn btn-success btn-block btn-md mb15" href="{% url 'trust_management:add_trust' %}">
+                            <strong>+</strong> <span>Add New Trust</span>
+                        </a>
+                    </div>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
+                <button type="button" class="close" onclick="$('#msg-error').hide()">×</button>
+                <strong id="alert-msg"></strong>
+            </div>
+        </div>
+        <div class="col-xs-12 mb5">
+            <div class="alert alert-success alert-dismissable" style="display: none;" id="alert_agent">
+                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                <strong id="alert_msg"></strong>
+            </div>
+        </div>
+
+        {% include "message.html" %}
+
+        <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id"
+                           value="{{ user_id|default_if_none:'' }}">
+                </div>
+                <label class="col-sm-2 control-label">Trust Role</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_trust_role" name="trust_role">
+                        <option value='all' {% if trust_role == 'all' %}selected="selected"{% endif %}>ALL</option>
+                        <option value='truster' {% if trust_role == 'truster' %} selected="selected"{% endif %}>Truster</option>
+                        <option value='trusted' {% if trust_role == 'trusted' %}selected="selected"{% endif %}>Trusted</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">User Type</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="ddl_user_type" name="user_type">
+                        <option value='all' {% if user_type == 'all' %} selected="selected"{% endif %}>ALL</option>
+                        <option value='2' {% if user_type == '2' %} selected="selected"{% endif %}>Agent</option>
+                        <option value='1' {% if user_type == '1' %} selected="selected"{% endif %}>Customer</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-2"></div>
+            </div>
+
+            <div class="form-group">
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                <div class="col-sm-1 pull-right">
+                    <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
+                </div>
+            </div>
+            <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
+            <label class="pull-right">Total found: &nbsp;</label>
+        </form>
+
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped mb0" id="tbl_trust">
+                    <thead>
+                    <tr>
+                        <th id="lbl_truster_id">Truster Id</th>
+                        <th id="lbl_truster_name">Truster Name</th>
+                        <th id="lbl_trusted_id">Trusted Id</th>
+                        <th id="lbl_trusted_name">Trusted Name</th>
+                        <th id="lbl_relationship_type">Relationship Type</th>
+                        <th id="lbl_created_date">Created Date (UTC)</th>
+                        <th id="lbl_created_by">Created By</th>
+                        <th id="lbl_expiry_date">Expiry Date (UTC)</th>
+                        <th id="action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for trust in trusts %}
+                        <tr>
+                            <td class="col-sm-1">{{ trust.truster.user_type.name|capfirst }} ({{ trust.truster.id }})
+                            </td>
+                            {% if trust.truster.is_deleted %}
+                                <td class="col-sm-3"><del>{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role %} ({{ trust.truster.relationship_role }}){% endif %}</del></td>
+                            {% else %}
+                                <td class="col-sm-3">{{ trust.truster.firstname|default_if_none:'' }} {{ trust.truster.lastname|default_if_none:'' }}{% if trust.truster.relationship_role %} ({{ trust.truster.relationship_role }}){% endif %}</td>
+                            {% endif %}
+                            <td class="col-sm-1">{{ trust.trusted.user_type.name|capfirst }} ({{ trust.trusted.id }})</td>
+                            {% if  trust.trusted.is_deleted %}
+                                <td class="col-sm-3"><del>{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role %} ({{ trust.trusted.relationship_role }}){% endif %}</del></td>
+                            {% else %}
+                                <td class="col-sm-3">{{ trust.trusted.firstname|default_if_none:'' }} {{ trust.trusted.lastname|default_if_none:'' }}{% if trust.trusted.relationship_role %} ({{ trust.trusted.relationship_role }}){% endif %}</td>
+                            {% endif %}
+                            <td class="col-sm-1">{% if trust.relationship_type.name  %} {{  trust.relationship_type.name }}{% else %} none {% endif %}</td>
+                            <td class="col-sm-1">{{ trust.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.created_user.name|default_if_none:'' }}</td>
+                            <td class="col-sm-1">{{ trust.expired_date|default_if_none:'' }}</td>
+                            <td class="col-sm-1">
+                                {% if request.user|has_permission_name:"CAN_REMOVE_TRUST" %}
+                                    <div id="token_btn_group">
+                                        <div class="btn-group">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-xs  btn-outline"
+                                                    id="btn_remove"
+                                                    data-truster-id='{{ trust.truster.id }}'
+                                                    data-truster-type='{{ trust.truster.user_type.name }}'
+                                                    data-trusted-id='{{ trust.trusted.id }}'
+                                                    data-trusted-type='{{ trust.trusted.user_type.name }}'
+                                                    data-token-id='{{ trust.id }}'
+                                                    data-url="{% url 'trust_management:trust_remove' trust.id %}"
+                                                    onClick="remove(this)"><span class="small">Remove</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include "pagination.html" %}
+        </div>
+        <div class="loader" style="display:none" id="loader-indicator"></div>
+        <div class="col-xs-12" id="search-result-notification" style="display:none">
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Something wrong happened.
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block body_js %}
+    <script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+    <script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+    <script src="{% static 'vendor/sweetalert/sweetalert.2.0.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <script>
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg)
+            $("#msg-error").fadeIn(700);
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert_msg").text(msg);
+            $('#alert_agent').removeClass("alert-danger");
+            $('#alert_agent').addClass("alert-success");
+
+            $("#alert_agent").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+
+
+        function remove(e) {
+            var removeContentElem = document.createElement("div");
+            removeContentElem.innerHTML = '<div class="form-group row">'
+                + '<table border="0" style=" margin-left: 40px;">'
+                + '<tr><td class="col-sm-1" align="left" >Truster ID: ' + e.getAttribute('data-truster-id') + '</td>'
+                + '<td class="col-sm-1" align="left" >Trusted ID: ' + e.getAttribute('data-trusted-id') + '</td> </tr>'
+                + '<tr><td class="col-sm-1" align="left">Truster Type: ' + e.getAttribute('data-truster-type') + '</td>'
+                + '<td class="col-sm-1" align="left" >Trusted Type: ' + e.getAttribute('data-trusted-type') + '</td> </tr>'
+                + '</table>'
+                + '</div>';
+            swal({
+                content: removeContentElem,
+                icon: "warning",
+                title: "Confirm Remove Trust ?",
+                buttons: ['Cancel', 'Confirm'],
+                dangerMode: true,
+                closeOnClickOutside: false
+            })
+                .then(function (isConfirm) {
+                    if (isConfirm) {
+                        var url = e.getAttribute('data-url');
+                        var token_id = e.getAttribute('data-token-id');
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            success: function (response) {
+                                if (response.status == 1) {
+                                    location.reload();
+                                } else if (response.status == 2) {
+                                    var row = $(e).closest("tr");
+                                    row.remove();
+                                    var currentTotal = parseInt($("#lbl_total").text()) - 1;
+                                    $("#lbl_total").text(currentTotal);
+                                    showSuccessMessage('Removed trust token successfully');
+                                } else {
+                                    // Failed
+                                    showErrorMessage(response.msg);
+                                }
+                            },
+                            error: function (msg) {
+                                console.log('Error occur removing trust token' + token_id + msg);
+                                showErrorMessage(JSON.stringify(msg));
+                            }
+                        });
+                    }
+                });
+        }
+
+    </script>
+{% endblock %}

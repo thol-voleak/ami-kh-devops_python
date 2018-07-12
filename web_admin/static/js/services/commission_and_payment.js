@@ -98,9 +98,17 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlIDAmount = 'id=\'';
 
         // For SpecificID changing according to Actor Types.
-        var setDisabled = '';
+        var setSpecificIDDisabled = '';
         var htmlActorEventJS = "";
-        var setRequired = '';
+        var setSpecificIDRequired = '';
+
+        // For SourceOfFund changing according to Actor Types
+        var setSOFDisabled = '';
+        var setSOFRequired = '';
+
+        // For SpecificSourceOfFund changing according to Actor Types
+        var setSpecificSOFDisabled = '';
+        var setSpecificSOFRequired = '';
 
         // For Specific SOF changing according to SpecificID & SOF Type.
         var htmlgetSOFEventJS = "";
@@ -126,7 +134,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
             htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit', this)\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit',this)\"";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit','#ddl_setting_payment_fee_structure_source_of_fund_edit',this)\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit', this)\"";
 
         } else if (tableId == 'tbl_setting_bonus') {
@@ -171,11 +179,25 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         htmlIDBtnCancel += '\'';
 
         // set disabled, required for specific ID & specific SOF according to Actor Types
-        if (aData[1] === 'Specific ID') {
-            setDisabled = '';
-            setRequired = 'required';
+        if (aData[1] === "Specific ID" || aData[1] === "Specific ID's Beneficiary") {
+            setSpecificIDDisabled = '';
+            setSpecificIDRequired = 'required';
         } else {
-            setDisabled = 'disabled';
+            setSpecificIDDisabled = 'disabled';
+        }
+
+        // set disabled, required for Specific SOF according to Actor Types
+        if (aData[1] === "Specific ID's Beneficiary") {
+            setSpecificSOFDisabled = 'disabled';
+//            setSpecificSOFRequired = '';
+        }
+
+        // set disabled, required for SourceOfFund according to Actor Types
+        if (aData[1] === "Specific ID's Beneficiary" || aData[1] === "Payer's Beneficiary" || aData[1] === "Payee's Beneficiary") {
+            setSOFDisabled = 'disabled';
+            setSOFRequired = 'required';
+        } else {
+            setSOFDisabled = '';
         }
 
         // set disabled, required for Rate according to AmountType
@@ -187,9 +209,9 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\' required>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '<input ' + htmlgetSOFEventJS + ' ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificID + htmlValue + ' type=\'number\' class=\'form-control\' name=\'specific_id\' list=\'specific_ids\' >' + htmlDDSpecificIDs;
-        jqTds[3].innerHTML = '<select ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
+        jqTds[2].innerHTML = '<input ' + htmlgetSOFEventJS + ' ' + ' ' + setSpecificIDRequired + ' ' + setSpecificIDDisabled + ' ' + htmlIDSpecificID + htmlValue + ' type=\'number\' class=\'form-control\' name=\'specific_id\' list=\'specific_ids\' >' + htmlDDSpecificIDs;
+        jqTds[3].innerHTML = '<select ' + ' ' + setSOFRequired + ' ' + setSOFDisabled + ' ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[4].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
         jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
         jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\' ' + 'onkeypress="if (event.key.replace(/[^\\w\\.\\,]/g,\'\')==\'\') event.preventDefault();" ' + 'onChangesRate(this.id)' + '>';
         jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' value=\'' + aData[7] + '\'>';
@@ -234,7 +256,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                             });
                         }
                         if(jqTds[4].innerHTML.indexOf("select") !== -1) {
-                            jqTds[4].innerHTML = '<select ' + ' ' + setRequired + ' ' + setDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
+                            jqTds[4].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
                         }
                     }
                 }
@@ -545,7 +567,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     }
 
     function onBindingButtonsDeleteEvent() {
-
         $('#' + tableId).on('click', 'button.delete', function (e) {
             e.preventDefault();
 
@@ -596,7 +617,6 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
     }
 
     function onBindingButtonsEditEvent() {
-
         $('#' + tableId).on('click', 'button.edit', function (e) {
             e.preventDefault();
 

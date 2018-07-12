@@ -211,7 +211,7 @@
 
     function activate(e) {
         swal({
-                title: "Are you sure you want to active device?",
+                title: "Are you sure you want to enable device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -259,7 +259,7 @@
 
     function inactive(e) {
         swal({
-                title: "Are you sure you want to inactive device?",
+                title: "Are you sure you want to disable device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -308,7 +308,7 @@
 
     function deleteDevice(e) {
         swal({
-                title: "Are you sure you want to delete device?",
+                title: "Are you sure you want to unbind device?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#2ECC71",
@@ -341,7 +341,7 @@
                                 if(currentTotal <= 0) {
                                     $("#div_devices_management").remove();
                                 }
-                                showSuccessMessage('Delete device successfully');
+                                showSuccessMessage('Unbind device successfully');
                             } else {
                                 // Failed
                                 showErrorMessage(response.msg);
@@ -363,11 +363,11 @@
         if ($(e).is(':checked')){
             grant = true;
             url = e.getAttribute('data-url-grant');
-            title = 'Are you sure you want to give this user access to ' + channelName + ' Channel';
+            title = 'Are you sure you want to grant customer access to ' + channelName + ' channel?';
         } else {
             grant = false;
             url = e.getAttribute('data-url-revoke');
-            title = 'Are you sure you want to block this user from using ' + channelName + ' Channel';
+             title = 'Are you sure you want to revoke customer access to ' + channelName + ' channel?';
         }
 
         swal({
@@ -396,9 +396,9 @@
                             } else if (response.status == 2) {
                                 // success
                                 if (grant) {
-                                    showSuccessMessage('Customer is now granted access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Grant customer  access to ' + channelName + ' channel successfully');
                                 } else {
-                                    showSuccessMessage('Customer is now revoked access to ' + channelName + ' Channel');
+                                    showSuccessMessage('Revoke customer access to ' + channelName + ' channel successfully');
                                 }
                             } else {
                                 // Failed

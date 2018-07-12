@@ -1,6 +1,13 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from datetime import date, timedelta
+
 from web_admin import api_settings, setup_logger
 from web_admin.restful_methods import RESTfulMethods
+from web_admin.restful_client import RestFulClient
+from web_admin.api_logger import API_Logger
+from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file, convert_string_to_date_time
+from django.shortcuts import render
+from django.contrib import messages
 
 from braces.views import GroupRequiredMixin
 
@@ -29,25 +36,158 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return super(ListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
         self.logger.info('========== Start get Service Group List ==========')
-        data = self.get_service_group_list()
-        self.logger.info('========== Finished get Service Group List ==========')
-        result = {'data': data}
-        return result
 
-    def get_service_group_list(self):
-        url = api_settings.SERVICE_GROUP_LIST_URL
-        data, success = self._get_method(url, "service group list", logger, True)
+        self.initSearchDateTime(context)
+
+        body = {
+            'is_deleted': False,
+            'paging': True,
+            'page_index': 1
+        }
+
+        data, is_success = self.get_service_group_list(body)
+        self.logger.info('========== Finished get Service Group List ==========')
+        if is_success:
+            page = data.get("page", {})
+            context.update({
+                'data': data.get('service_groups'),
+                'paginator': page,
+                'page_range': calculate_page_range_from_page_info(page),
+                'search_count': page.get('total_elements', 0),
+                'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
+            })
+        else:
+            context.update({
+                'data': [],
+                'is_show_export': False
+            })
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+
+        self.logger.info('========== Start {} service groups list =========='.format("downloading" if 'download' in request.POST else "searching"))
+
+        service_group_id = request.POST.get('service_group_id')
+        service_group_name = request.POST.get('service_group_name')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
+        modified_from_date = request.POST.get('modified_from_date')
+        modified_to_date = request.POST.get('modified_to_date')
+        modified_from_time = request.POST.get('modified_from_time')
+        modified_to_time = request.POST.get('modified_to_time')
+        opening_page_index = request.POST.get('current_page_index')
+
+        body = {'is_deleted': False}
+
+        if service_group_id:
+            body['service_group_id'] = service_group_id
+        if service_group_name:
+            body['service_group_name'] = service_group_name
+        if created_from_date:
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
+        if created_to_date:
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
+        if modified_from_date:
+            body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
+        if modified_to_date:
+            body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
+
+        if 'download' in request.POST:
+            file_type = request.POST.get('export-type')
+            body['file_type'] = file_type
+            body['row_number'] = 5000
+            is_success, data = export_file(self, body=body, url_download=api_settings.SERVICE_GROUP_LIST_PATH, api_logger=API_Logger)
+            if is_success:
+                response = make_download_file(data, file_type)
+                self.logger.info('========== Finish exporting payment service ==========')
+                return response
+        else:
+            body['paging'] = True
+            body['page_index'] = int(opening_page_index)
+            data, is_success = self.get_service_group_list(body)
+
+            context.update({
+                'service_group_id': service_group_id,
+                'service_group_name': service_group_name,
+                'created_from_date': created_from_date,
+                'created_to_date': created_to_date,
+                'created_from_time': created_from_time,
+                'created_to_time': created_to_time,
+                'modified_from_date': modified_from_date,
+                'modified_to_date': modified_to_date,
+                'modified_from_time': modified_from_time,
+                'modified_to_time': modified_to_time,
+            })
+
+            if is_success:
+                page = data.get("page", {})
+                context.update({
+                    'search_count': page.get('total_elements', 0),
+                    'data': data['service_groups'],
+                    'paginator': page,
+                    'page_range': calculate_page_range_from_page_info(page),
+                    'is_show_export': check_permissions_by_user(self.request.user, 'CAN_EXPORT_SERVICE_GROUP')
+                })
+            else:
+                context.update({
+                    'data': [],
+                    'is_show_export': False
+                })
+
+            self.logger.info('========== Finish searching service groups list ==========')
+            return render(request, self.template_name, context)
+
+    def get_service_group_list(self, body):
+        is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SERVICE_GROUP_LIST_PATH,
+                                                                           headers=self._get_headers(),
+                                                                           loggers=self.logger,
+                                                                           params=body)
         is_permission_detail = check_permissions_by_user(self.request.user, 'CAN_VIEW_SERVICE_GROUP')
         is_permission_edit = check_permissions_by_user(self.request.user, 'CAN_EDIT_SERVICE_GROUP')
         is_permission_delete = check_permissions_by_user(self.request.user, 'CAN_DELETE_SERVICE_GROUP')
 
-        if success:
-            self.logger.info('========== Finished get get bank list ==========')
-            for i in data:
+        if is_success:
+            self.logger.info('Finished get service group list')
+            for i in data.get('service_groups'):
                 i['is_permission_detail'] = is_permission_detail
                 i['is_permission_edit'] = is_permission_edit
                 i['is_permission_delete'] = is_permission_delete
-        return data
+        else:
+            if status_code == "Timeout":
+                self.logger.error('Search service group list request timeout')
+                status_message = 'Search timeout, please try again or contact technical support'
+            else:
+                self.logger.error('Search service group list request failed')
+                status_message = 'Search failed, please try again or contact support'
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                status_message
+            )
+
+        API_Logger.get_logging(loggers=self.logger,
+                               response=data,
+                               status_code=status_code)
+        return data, is_success
+
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
+        context['modified_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['modified_from_time'] = "00:00:00"
+        context['modified_to_time'] = "00:00:00"
+
 
 

@@ -11,6 +11,7 @@ from datetime import datetime
 from campaign.models import terms_mapping
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
+from web_admin.api_settings import GET_VOUCHER_GROUP_LIST
 
 import logging
 
@@ -52,6 +53,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
         profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
         profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        voucher_group_list = self.get_voucher_group_list()
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -89,7 +91,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'sum_of_operators': sum_of_operators,
             'count_of_operators': count_of_operators,
             'count_consecutive_of_operators': count_consecutive_of_operators,
-            'sum_key_name': sum_key_name
+            'sum_key_name': sum_key_name,
+            'voucher_group_list': voucher_group_list
         }
 
         context.update(ops)
@@ -423,7 +426,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 data_type = request.POST.get(reward_data_type)
                 if not data_type:
                     continue
-                if data_type == 'from_database':
+                if data_type == 'from_event':
                     reward_detail_name = 'reward_detail_name' + suffix
                     detail_name = request.POST.get(reward_detail_name)
                     reward_key_value_type = ''
@@ -463,6 +466,103 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                         'key_name': 'user_type',
                         'key_value': request.POST.get('reward_recipient'),
                         'key_value_type': 'text'
+                    },
+                ]
+            }
+        elif reward_type == 'response' :
+            detail_type_mapping = {
+                "text": ["id", "user_type", "device_id", "device_description",
+                         "event_name", "order_id", "ext_transaction_id",
+                         "payment_method_name", "payment_method_ref",
+                         "service_name", "command_name", "initiator_user_type",
+                         "payer_user_type", "payer_user_ref_type",
+                         "payer_user_ref_value", "payee_user_type",
+                         "payee_user_ref_type", "payee_user_ref_value",
+                         "currency", "ref_order_id", "product_name",
+                         "product_ref1", "product_ref2", "product_ref3",
+                         "product_ref4", "product_ref5", "state", "is_deleted",
+                         "created_client_id", "executed_client_id",
+                         "description", "client_id", "bank_account_name",
+                         "ext_bank_reference", "sof_type", "channel"],
+                "numeric": ["user_id", "command_id", "service_id",
+                            "service_command_id", "initiator_user_id",
+                            "initiator_sof_id", "initiator_sof_type_id",
+                            "payer_user_id", "payer_sof_id",
+                            "payer_sof_type_id", "payee_user_id",
+                            "payee_sof_id", "payee_sof_type_id", "amount",
+                            "fee", "bonus", "settlement_amount", "status",
+                            "notification_status", "bank_id", "sof_id"],
+                "timestamp": ["order_created_timestamp",
+                              "order_last_updated_timestamp",
+                              "created_timestamp", "register_timestamp",
+                              "login_timestamp", "event_created_timestamp"]
+            }
+
+            params = {
+                "action_type_id": 3,
+                "data": [ ]
+            }
+
+            counter = request.POST.get('data_counter') or 1
+            for i in range(int(counter)):
+                suffix = '' if i == 0 else str(i + 1)
+                reward_data_type = 'reward_data_type' + suffix
+                data_type = request.POST.get(reward_data_type)
+                if not data_type:
+                    continue
+                if data_type == 'from_event':
+                    reward_detail_name = 'reward_detail_name' + suffix
+                    detail_name = request.POST.get(reward_detail_name)
+                    reward_key_value_type = ''
+                    for type in detail_type_mapping:
+                        if detail_name in detail_type_mapping[type]:
+                            reward_key_value_type = type
+                            break
+                    if not reward_key_value_type:
+                        self.logger.error(
+                            '>>>>>>>>>> Cannot find detail type for [{}] from detail mapping <<<<<<<<<<'.format(
+                                detail_name))
+
+                    params['data'].append({
+                        "key_name": detail_name,
+                        "key_value": '@@' + detail_name + '@@',
+                        "key_value_type": reward_key_value_type
+                    })
+                elif data_type == 'user_defined':
+                    reward_key_name = 'reward_key_name' + suffix
+                    reward_key_value_type = 'reward_key_value_type' + suffix
+                    reward_key_value = 'reward_key_value' + suffix
+                    params['data'].append({
+                        "key_name": request.POST.get(reward_key_name),
+                        "key_value": request.POST.get(reward_key_value),
+                        "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
+                    })
+
+        elif reward_type == 'give_voucher':
+            params = {
+                "action_type_id": 5,
+                'user_id':  request.POST.get('give_reward_to'),
+                'user_type': request.POST.get('reward_recipient'),
+                "data": [
+                    {
+                        'key_name': 'user_id',
+                        'key_value': request.POST.get('give_reward_to'),
+                        'key_value_type': 'numeric'
+                    },
+                    {
+                        'key_name': 'user_type',
+                        'key_value': request.POST.get('reward_recipient'),
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'voucher_group',
+                        'key_value': request.POST.get('voucher_group'),
+                        'key_value_type': 'text'
+                    },
+                    {
+                        'key_name': 'expiration_date',
+                        'key_value': request.POST.get('voucher_expiration'),
+                        'key_value_type': 'numeric'
                     },
                 ]
             }
@@ -549,7 +649,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         created_order = {'term': 'create_order', 'description': 'Create Order'}
         limit_reached = {'term': 'limit_reached', 'description': 'Limit Reached'}
         profile_update = {'term': 'update_profile', 'description': 'Profile Update'}
-        filtered.extend([link_bank, created_order, limit_reached, profile_update])
+        profile_update_request = {'term': 'update_profile_request', 'description': 'Profile Update Request'}
+        filtered.extend([link_bank, created_order, limit_reached, profile_update, profile_update_request])
         return filtered
 
     def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):
@@ -671,3 +772,21 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success = True
         return success, condition_id, message
 
+    def get_voucher_group_list(self):
+        url = GET_VOUCHER_GROUP_LIST
+
+        is_success, status_code, data = RestFulClient.get(url=url,
+                                                          headers=self._get_headers(),
+                                                          loggers=self.logger)
+
+        API_Logger.post_logging(loggers=self.logger, response=data,
+                                status_code=status_code, is_getting_list=False)
+
+        if not is_success:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "Something went wrong"
+            )
+            data = []
+        return data
