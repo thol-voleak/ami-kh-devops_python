@@ -213,6 +213,23 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Password *</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control input-rounded" name="password"
+                                           id="txt_password" value="******" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Re-password *</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control input-rounded" name="re_password"
+                                           id="txt_re_password" value="******" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Currency *</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_currency" name="currency" disabled>
@@ -238,26 +255,9 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Password *</label>
-                                <div class="col-sm-8">
-                                    <input type="password" class="form-control input-rounded" name="password"
-                                           id="txt_password" value="******" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Re-password *</label>
-                                <div class="col-sm-8">
-                                    <input type="password" class="form-control input-rounded" name="re_password"
-                                           id="txt_re_password" value="******" disabled/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">MM Card Type</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="ddl_mm_card_types" name="mm_card_types">
+                                    <select class="form-control" id="ddl_mm_card_types" name="mm_card_types" onchange="loadMMCardLevel()" data-url="{% url 'agents:get_mm_card_level' %}">
                                         {% for item in mm_card_types %}
                                             <option value="{{ item.id }}">{{ item.name }}</option>
                                         {% endfor %}
@@ -268,9 +268,6 @@
                                 <label class="col-sm-4 control-label">MM Card Level</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_mm_card_levels" name="mm_card_levels">
-                                        {% for item in mm_card_levels %}
-                                            <option value="{{ item.id }}">{{ item.name }}</option>
-                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -1666,5 +1663,39 @@
             }
             return true;
         }
+
+        function loadMMCardLevel() {
+            var $ele = $('#ddl_mm_card_types');
+            var cardTypeId = $ele.val();
+            var url = $ele.data('url');
+            $('#ddl_mm_card_levels').empty();
+            if (cardTypeId) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        card_type_id: cardTypeId
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                            window.location.replace(url);
+                        } else if (response.status == 2) {
+                            var data = response.data;
+                            if(typeof data.length !== 'undefined') {
+                                $.each(data, function(key, value) {
+                                    $('#ddl_mm_card_levels').append('<option value="' + value.id + '">' + value.level + '</option>');
+                            });}
+                        } else {}
+                    },
+                    error: function (msg) {}
+                });
+            }
+        }
+        loadMMCardLevel();
     </script>
 {% endblock %}

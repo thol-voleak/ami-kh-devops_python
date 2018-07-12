@@ -11,6 +11,8 @@ from datetime import datetime
 from django.utils import dateparse
 from django.http import HttpResponseRedirect
 from web_admin.restful_client import RestFulClient
+from django.conf import settings
+from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
@@ -66,6 +68,15 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             return data.get("value")
         else:
             return None
+
+    def get_mm_card_level(request):
+        card_type_id = request.POST['card_type_id']
+        url = settings.DOMAIN_NAMES + api_settings.GET_MM_CARD_TYPE_LEVELS
+        params = {
+            "mm_card_type_id": card_type_id
+        }
+        result = ajax_functions._post_method(request, url, "", logger, params)
+        return result
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start showing Update Agent page ==========')
