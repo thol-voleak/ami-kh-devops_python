@@ -111,6 +111,36 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Suspend Reason</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="suspend_reason"
+                                           id="txt_suspend_reason"
+                                           value="{{ agent.suspend_reason|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Profile Created Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="created_date"
+                                           id="txt_created_date"
+                                           value="{{ agent.created_timestamp|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Profile Updated Date</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="last_updated_date"
+                                           id="text_last_updated_date"
+                                           value="{{ agent.last_updated_timestamp|default_if_none:'' }}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- End section 1 - row 1 -->
                         <hr/>
 
@@ -136,6 +166,11 @@
                                            class="form-control input-rounded" disabled/>
                                 </div>
                             </div>
+
+                        </div>
+                        <!-- End section 2 - row 2 -->
+
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">User Name *</label>
                                 <div class="col-sm-8">
@@ -145,10 +180,6 @@
                                            disabled/>
                                 </div>
                             </div>
-                        </div>
-                        <!-- End section 2 - row 2 -->
-
-                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">User Name Type *</label>
                                 <div class="col-sm-8">
@@ -158,6 +189,10 @@
                                            disabled/>
                                 </div>
                             </div>
+
+                        </div>
+                        <!-- End section 2 - row 4 -->
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Password *</label>
                                 <div class="col-sm-8">
@@ -165,9 +200,14 @@
                                            id="txt_password" value="******" disabled/>
                                 </div>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Re-Password *</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control input-rounded" name="re-password"
+                                           id="txt_re_password" value="******" disabled/>
+                                </div>
+                            </div>
                         </div>
-                        <!-- End section 2 - row 4 -->
-
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Currency *</label>
@@ -176,6 +216,8 @@
                                            id="txt_currency" value="{{ currencies | default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Unique Reference *</label>
                                 <div class="col-sm-8">
@@ -191,7 +233,7 @@
                                 <div class="col-sm-8">
 
                                     <input type="text" class="form-control input-rounded" name="mm_card_type_id"
-                                           id="txt_mm_card_type_id"
+                                           id="txt_mm_card_type"
                                            value="{{ mm_card_type_name|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -199,7 +241,7 @@
                                 <label class="col-sm-4 control-label">MM Card Level</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="mm_card_level_id"
-                                           id="txt_mm_card_level_id"
+                                           id="txt_mm_card_level"
                                            value="{{ mm_card_type_level_name|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -213,6 +255,9 @@
                                            value="{{ agent.mm_factory_card_number|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Model Type</label>
                                 <div class="col-sm-8">
@@ -222,7 +267,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Always require OTP *</label>
@@ -231,6 +275,9 @@
                                            {% if agent.is_require_otp %}checked{% endif %} disabled/>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Classification</label>
                                 <div class="col-sm-8">
@@ -316,7 +363,7 @@
                                 <label class="col-sm-4 control-label">Date of Birth</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="date_of_birth"
-                                           id="dtp_birth_date" value="{{ agent.date_of_birth | default_if_none:'' }}"
+                                           id="txt_birth_date" value="{{ agent.date_of_birth | default_if_none:'' }}"
                                            disabled/>
                                 </div>
                             </div>
@@ -357,6 +404,10 @@
                                            value="{{ agent.nationality|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Occupation</label>
                                 <div class="col-sm-8">
@@ -365,17 +416,18 @@
                                            value="{{ agent.occupation|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">Nationality</label>
+                                <label class="col-sm-4 control-label">Occupation Title</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control input-rounded" name="occupation_title"
                                            id="txt_occupation_title"
                                            value="{{ agent.occupation_title|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Township Code</label>
                                 <div class="col-sm-8">
@@ -384,9 +436,6 @@
                                            value="{{ agent.township_code|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Township Name</label>
                                 <div class="col-sm-8">
@@ -395,6 +444,9 @@
                                            value="{{ agent.township_name|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">National ID Number</label>
                                 <div class="col-sm-8">
@@ -403,8 +455,6 @@
                                            value="{{ agent.national_id_number|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Mother's Name</label>
                                 <div class="col-sm-8">
@@ -412,10 +462,6 @@
                                            id="txt_mother_name"
                                            value="{{ agent.mother_name|default_if_none:'' }}" disabled/>
                                 </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"></label>
-                                <div class="col-sm-8"></div>
                             </div>
                         </div>
                         <hr/>
@@ -1043,6 +1089,7 @@
                                 </div>
                             </div>
                         </div>
+                        <hr/>
                         <!-- End section 8 - row 6 -->
                         <!-- Begin section 9 [Profile Accreditation Details] -->
                         <div class="row">
@@ -1670,7 +1717,7 @@
                         <input name="previous_page" value="{{ request.META.HTTP_REFERER }}" hidden/>
 
                         <!-- End section 8 - row 8 -->
-                        <div class="pull-right">
+                       <div class="pull-right">
                             <a href="{% url 'agents:agent-list' %}">
                                 <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button"
                                        value="Cancel"/>
