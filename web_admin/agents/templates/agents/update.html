@@ -103,10 +103,10 @@
                                 <label class="col-sm-4 control-label">Referrer User Type</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_referrer_user_type" name="referrer_user_type">
+                                        <option value="" {% if agent_profile.referrer_user_type_id == "" %} selected{% endif %}>-</option>
                                         <option value="3" {% if agent_profile.referrer_user_type_id == 3 %} selected{% endif %}>System User</option>
                                         <option value="2" {% if agent_profile.referrer_user_type_id == 2 %} selected{% endif %}>Agent</option>
                                         <option value="1" {% if agent_profile.referrer_user_type_id == 1 %} selected{% endif %}>Customer</option>
-                                        <option value="" {% if agent_profile.referrer_user_type_id == "" %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>
@@ -215,8 +215,15 @@
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Currency *</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control input-rounded" name="currency"
-                                           id="ddl_currency" value="{{ currencies | default_if_none:'' }}" disabled/>
+                                    <select class="form-control" id="ddl_currency" name="currency" disabled>
+                                        {% for currency in currencies %}
+                                            {% if currency == context_currency %}
+                                                <option value="{{ currency }}" selected>{{ currency }}</option>
+                                            {% else %}
+                                                <option value="{{ currency }}">{{ currency }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -243,19 +250,6 @@
                                     <input type="password" class="form-control input-rounded" name="re_password"
                                            id="txt_re_password" value="******" disabled/>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label">System password *</label>
-                                <input type="checkbox" style="margin: 10px;" id="chk_system_password"
-                                       name="is_system_password"
-                                       value="{{ agent_profile.is_system_password|default_if_none:'' }}" disabled>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"></label>
-                                <div class="col-sm-8"></div>
                             </div>
                         </div>
 
@@ -320,6 +314,28 @@
                                 <label class="col-sm-4 control-label">Always require OTP *</label>
                                 <input type="checkbox" style="margin: 10px;" id="chk_require_otp" name="is_require_otp"
                                         {% if agent_profile.is_require_otp %}checked{% endif %}>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">Classification</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="ddl_agent_classification"
+                                            name="agent_classification_id">
+                                        {% for agent_classification in agent_classification_list %}
+                                            {% if agent_profile.agent_classification_id == agent_classification.id %}
+                                                <option value="{{ agent_classification.id }}" selected>{{ agent_classification.name }}</option>
+                                            {% else %}
+                                                <option value="{{ agent_classification.id }}">{{ agent_classification.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
@@ -854,9 +870,9 @@
                                 <label class="col-sm-4 control-label">Bank Account Status</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_bank_account_status" name="bank_account_status">
-                                        <option value=1 {% if agent_profile.bank.account_status == True %} selected{% endif %}>Active</option>
-                                        <option value=0 {% if agent_profile.bank.account_status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=  {% if agent_profile.bank.account_status is None %} selected{% endif %}></option>
+                                        <option value=""  {% if agent_profile.bank.account_status is None %} selected{% endif %}>-</option>
+                                        <option value="1" {% if agent_profile.bank.account_status == True %} selected{% endif %}>Active</option>
+                                        <option value="0" {% if agent_profile.bank.account_status == False %} selected{% endif %}>Inactive</option>
                                     </select>
                                 </div>
                             </div>
@@ -925,9 +941,9 @@
                                 <label class="col-sm-4 control-label">Verify Status</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_verify_status" name="bank_verify_status">
-                                        <option value=True {% if agent_profile.bank.is_verified == True %} selected{% endif %}>Yes</option>
-                                        <option value=False {% if agent_profile.bank.is_verified == False %} selected{% endif %}>No</option>
-                                        <option value=None  {% if agent_profile.bank.is_verified is None %} selected{% endif %}></option>
+                                        <option value=""  {% if agent_profile.bank.is_verified is None %} selected{% endif %}>-</option>
+                                        <option value="1" {% if agent_profile.bank.is_verified == True %} selected{% endif %}>Yes</option>
+                                        <option value="0" {% if agent_profile.bank.is_verified == False %} selected{% endif %}>No</option>
                                     </select>
                                 </div>
                             </div>
@@ -1109,9 +1125,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_primary_identity_status"
                                             name="primary_identity_status">
-                                        <option value=1 {% if agent_profile.accreditation.primary_identity.status == True %} selected{% endif %}>Active</option>
-                                        <option value=0 {% if agent_profile.accreditation.primary_identity.status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=  {% if agent_profile.accreditation.primary_identity.status is None %} selected{% endif %}></option>
+                                        <option value=""  {% if agent_profile.accreditation.primary_identity.status is None %} selected{% endif %}>-</option>
+                                        <option value="1" {% if agent_profile.accreditation.primary_identity.status == True %} selected{% endif %}>Active</option>
+                                        <option value="0" {% if agent_profile.accreditation.primary_identity.status == False %} selected{% endif %}>Inactive</option>
                                     </select>
                                 </div>
                             </div>
@@ -1201,9 +1217,9 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_secondary_identity_status"
                                             name="secondary_identity_status">
-                                        <option value=1 {% if agent_profile.accreditation.secondary_identity.status == True %} selected{% endif %}>Active</option>
-                                        <option value=0 {% if agent_profile.accreditation.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
-                                        <option value=  {% if agent_profile.accreditation.secondary_identity.status is None %} selected{% endif %}></option>
+                                        <option value=""  {% if agent_profile.accreditation.secondary_identity.status is None %} selected{% endif %}>-</option>
+                                        <option value="1" {% if agent_profile.accreditation.secondary_identity.status == True %} selected{% endif %}>Active</option>
+                                        <option value="0" {% if agent_profile.accreditation.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
                                     </select>
                                 </div>
                             </div>
@@ -1275,9 +1291,13 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_accreditation_status"
                                             name="accreditation_status">
-{#                                        <option value="1">Active</option>#}
-{#                                        <option value="0">Inactive</option>#}
-{#                                        <option value="" selected></option>#}
+                                        {% for accreditation_status in accreditation_status_list %}
+                                            {% if agent_profile.accreditation.status_id == accreditation_status.id %}
+                                                <option value="{{ accreditation_status.id }}" selected>{{ accreditation_status.status }}</option>
+                                            {% else %}
+                                                <option value="{{ accreditation_status.id }}">{{ accreditation_status.status }}</option>
+                                            {% endif %}
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -1317,10 +1337,10 @@
                                 <div class="col-sm-8">
                                     <select class="form-control" id="ddl_risk_level"
                                             name="accreditation_risk_level">
+                                        <option value="" {% if agent_profile.accreditation.risk_level is None %} selected{% endif %}>-</option>
                                         <option value="Low" {% if agent_profile.accreditation.risk_level == "Low" %} selected{% endif %}>Low</option>
                                         <option value="Medium" {% if agent_profile.accreditation.risk_level == "Medium" %} selected{% endif %}>Medium</option>
                                         <option value="High" {% if agent_profile.accreditation.risk_level == "High" %} selected{% endif %}>High</option>
-                                        <option value="" {% if agent_profile.accreditation.risk_level is None %} selected{% endif %}></option>
                                     </select>
                                 </div>
                             </div>

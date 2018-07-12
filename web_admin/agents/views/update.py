@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 from datetime import datetime
 from django.utils import dateparse
 from django.http import HttpResponseRedirect
-
+from web_admin.restful_client import RestFulClient
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
@@ -36,14 +36,48 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         self.logger = setup_logger(self.request, logger, correlation_id)
         return super(AgentUpdate, self).dispatch(request, *args, **kwargs)
 
+    def get_mm_card_type_list(self):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_MM_CARD_TYPES,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={})
+        return data
+
+    def get_agent_classification_list(self):
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_AGENT_CLASSIFICATION_URL,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={"paging": False})
+        return data.get('classifications', [])
+
+    def get_accreditation_status(self):
+        country_code = self.get_country_code()
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_ACCREDITATION_STATUS,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={"country_code": country_code})
+        return data
+
+    def get_country_code(self):
+        url = api_settings.CONFIGURATION_DETAIL_URL.format(scope='global',
+                                                           key='country')
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if success:
+            return data.get("value")
+        else:
+            return None
+
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start showing Update Agent page ==========')
         context = super(AgentUpdate, self).get_context_data(**kwargs)
         agent_id = context['agent_id']
 
         agent_types_list, agent_type_status = self.get_agent_types(agent_id)
-        currencies, get_currency_status = self.get_currencies(agent_id)
+        currencies = self.get_currencies(agent_id)
         agent_profile = self.get_agent_profile(agent_id)
+        mm_card_types = self.get_mm_card_type_list()
+        agent_classification_list = self.get_agent_classification_list()
+        accreditation_status_list = self.get_accreditation_status()
 
         if agent_profile['created_timestamp'] is not None:
             created_date = dateparse.parse_datetime(agent_profile['created_timestamp'])
@@ -103,6 +137,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'agent_types': agent_types_list,
             'currencies': currencies,
             'agent_profile': agent_profile,
+            'mm_card_types': mm_card_types,
+            'agent_classification_list': agent_classification_list,
+            'accreditation_status_list': accreditation_status_list,
             'msgs': {
                 'update_msg_failed': self.request.session.pop('agent_update_msg_failed', None),
             }
@@ -120,17 +157,18 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
 
         # Account Basic
         acquisition_source = request.POST.get('acquisition_source')
-        referrer_user_type_id = request.POST.get('referrer_user_type')
-        referrer_user_id = request.POST.get('referrer_user_id')
+        referrer_user_type_id = int(request.POST.get("referrer_user_type")) if request.POST.get("referrer_user_type") else None
+        referrer_user_id = int(request.POST.get("referrer_user_id")) if request.POST.get("referrer_user_id") else None
 
         # Basic Setup
-        agent_type_id = request.POST.get('agent_type_id')
+        agent_type_id = int(request.POST.get('agent_type_id'))
         unique_reference = request.POST.get('unique_reference')
-        mm_card_type_id = request.POST.get('mm_card_types')
-        mm_card_level_id = request.POST.get('mm_card_levels')
+        mm_card_type_id = int(request.POST.get('mm_card_types')) if request.POST.get('mm_card_types') else None
+        mm_card_level_id = int(request.POST.get('mm_card_levels')) if request.POST.get('mm_card_levels') else None
         mm_factory_card_number = request.POST.get('mm_factory_card_number')
         model_type = request.POST.get('model_type')
         is_require_otp = bool(request.POST.get('is_require_otp'))
+        agent_classification_id = int(request.POST.get('agent_classification_id')) if request.POST.get('agent_classification_id') else None
 
         # Personal Details
         tin_number = request.POST.get('tin_number')
@@ -212,14 +250,14 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             bank_end_date = bank_end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         bank = {
             'name': request.POST.get('bank_name'),
-            'account_status': request.POST.get('bank_account_status'),
+            'account_status': int(request.POST.get('bank_account_status')) if request.POST.get("bank_account_status") else None,
             'account_name': request.POST.get('bank_account_name'),
             'account_number': request.POST.get('bank_account_number'),
             'branch_area': request.POST.get('bank_branch_area'),
             'branch_city': request.POST.get('bank_branch_city'),
             'register_date': bank_register_date,
             'register_source': request.POST.get('bank_register_source'),
-            'is_verified': request.POST.get('bank_verify_status'),
+            'is_verified': bool(request.POST.get('bank_is_verified')),
             'end_date': bank_end_date,
         }
 
@@ -245,7 +283,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'issue_date': contract_issue_date,
             'expired_date': contract_expiry_date,
             'notification_alert': request.POST.get('notification_alert'),
-            'day_of_period_reconciliation': request.POST.get('reconciliation_period_days'),
+            'day_of_period_reconciliation': int(request.POST.get('reconciliation_period_days')) if request.POST.get("reconciliation_period_days") else None,
             'file_url': request.POST.get('contract_file'),
             'assessment_information_url': request.POST.get('assessment_information')
         }
@@ -263,7 +301,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         primary_identity = {
             'type': request.POST.get('primary_identify_type'),
             'identity_id': request.POST.get('primary_identify_id'),
-            'status': request.POST.get('primary_identity_status'),
+            'status': int(request.POST.get('primary_identity_status')) if request.POST.get("primary_identity_status") else None,
             'place_of_issue': request.POST.get('primary_place_of_issue'),
             'issue_date': primary_issue_date,
             'expired_date': primary_expire_date,
@@ -282,7 +320,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         secondary_identity = {
             'type': request.POST.get('secondary_identify_type'),
             'identity_id': request.POST.get('secondary_identify_id'),
-            'status': request.POST.get('secondary_identity_status'),
+            'status': int(request.POST.get('secondary_identity_status')) if request.POST.get("secondary_identity_status") else None,
             'place_of_issue': request.POST.get('secondary_place_of_issue'),
             'issue_date': secondary_issue_date,
             'expired_date': secondary_expire_date,
@@ -296,7 +334,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         accreditation = {
             'primary_identity': primary_identity,
             'secondary_identity': secondary_identity,
-            'status': request.POST.get('accreditation_status'),
+            'status_id': int(request.POST.get('accreditation_status')) if request.POST.get("accreditation_status") else None,
             'remark': request.POST.get('accreditation_remark'),
             'verify_by': request.POST.get('accreditation_verify_by'),
             'verify_date': verify_date,
