@@ -15,7 +15,7 @@
                     <label class="col-sm-2 control-label">User Phone No.</label>
                     <div class=" col-sm-2">
                         <div class="input-group">
-                            <input class="form-control br0" name="mobile_number" id="txt_mobile_number" value="{{ mobile_number }}">
+                            <input class="form-control br0" name="mobile_number" placeholder="At least 4 digits" id="txt_mobile_number" value="{{ mobile_number }}">
                             <span class="input-group-btn">
                                 <button class="btn btn-info" type="button" id="btn_search_icon" onclick = "searchUser('{% url 'cash_sofs:search_user' %}')" disabled="true">
                                     <i class="glyphicon glyphicon-search"></i>

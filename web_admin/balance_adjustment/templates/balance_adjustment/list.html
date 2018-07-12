@@ -954,7 +954,16 @@
                             confirmButtonText: "Close",
                             closeOnConfirm: true
                         });
-                    }
+                    } else if (uploadData.id == -1 && "permission_denied" == uploadData.code) {
+                    popupContainer.find($('#progress_container')).hide();
+                    swal({
+                        title: 'permission denied',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                }
                 }
             });
         }

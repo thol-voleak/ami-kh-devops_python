@@ -3,12 +3,13 @@ import logging
 
 # class who handles the upload
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 
 import json
 
-from authentications.utils import get_correlation_id_from_username
+from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from balance_adjustment.views import balance_adjustment_upload as common_upload
 from balance_adjustment.views.balance_adjustment_upload import ProgressUploadHandler
 from web_admin import setup_logger
@@ -22,6 +23,8 @@ def upload_progress(request):
 
 @csrf_exempt
 def upload_form(request):
+    if not check_permissions_by_user(request.user, 'CAN_UPLOAD_VOUCHERS'):
+        return HttpResponse(json.dumps({'id': -1, "code": "permission_denied"}))
     request.upload_handlers.insert(0, ThirdPartyUploadHandler(request))  # place our custom upload in first position
     return _upload_file_view(request)
 

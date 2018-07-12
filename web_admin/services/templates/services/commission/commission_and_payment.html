@@ -650,6 +650,7 @@
                 if ($(selectObject).closest("tr").find(actorType).find(":selected").html() == "Specific ID's Beneficiary") {
                     $(selectObject).closest("tr").find(specificSoFId).prop('disabled', true);
                     $(selectObject).closest("tr").find(specificSoFId).prop('required', false);
+                    $(selectObject).closest("tr").find(specificSoFId).val("");
                     $(selectObject).closest("tr").find(sofType).prop('disabled', true);
                     $(selectObject).closest("tr").find(sofType).val("2");
                 } else {
