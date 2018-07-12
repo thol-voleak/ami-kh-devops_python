@@ -2,36 +2,36 @@
 {% load static %}
 {% load permissions_filter %}
 {% block body_stylesheet %}
-{{ block.super }}
+    {{ block.super }}
 {% endblock %}
 
 {% block content %}
-{% csrf_token %}
-<div class="panel mb25">
-    <div class="panel-heading border">
-        <h3>Agent Detail</h3>
-    </div>
+    {% csrf_token %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Agent Detail</h3>
+        </div>
         <!--If success return green notification and return red notification if message is failed-->
-    {% for msg in msgs.values %}
-        {% if msg is not None %}
-            <div class="col-xs-12">
-                <div class="alert
+        {% for msg in msgs.values %}
+            {% if msg is not None %}
+                <div class="col-xs-12">
+                    <div class="alert
                 {% if "successfully" in msg %}
                     alert-success
                 {% else %}
                     alert-danger
                 {% endif %}
                 alert-dismissable" id="msg-update-client">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ msg }}</strong>
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ msg }}</strong>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+        {% endfor %}
 
-    <div class="panel-body">
-        <div class="row no-margin">
-            <div class="col-lg-12">
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
                     <form id="submit-form" class="form-horizontal" role="form" method="post"
                           action="">
                         {% csrf_token %}
@@ -149,6 +149,15 @@
                         <!-- End section 2 - row 2 -->
 
                         <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label">User Name Type *</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control input-rounded" name="user_name"
+                                           id="txt_identity_type"
+                                           value="{{ status_get_agent_identity.identity_type.name|default_if_none:'' }}"
+                                           disabled/>
+                                </div>
+                            </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label">Password *</label>
                                 <div class="col-sm-8">
@@ -1114,7 +1123,8 @@
                                     <input type="text" class="form-control input-rounded"
                                            name="primary_identity_issue_date"
                                            id="dtp_primary_identity_issue_date"
-                                           value="{{ agent.accreditation.primary_identity.issue_date|default_if_none:'' }}" disabled/>
+                                           value="{{ agent.accreditation.primary_identity.issue_date|default_if_none:'' }}"
+                                           disabled/>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -1659,29 +1669,34 @@
                         <hr/>
                         <input name="previous_page" value="{{ request.META.HTTP_REFERER }}" hidden/>
 
-                           <!-- End section 8 - row 8 -->
+                        <!-- End section 8 - row 8 -->
                         <div class="pull-right">
                             <a href="{% url 'agents:agent-list' %}">
-                                <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
+                                <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button"
+                                       value="Cancel"/>
                             </a>
-                            {% if request.user|has_permission_name:"CAN_DELETE_AGENT"%}
+                            {% if request.user|has_permission_name:"CAN_DELETE_AGENT" %}
                                 <a href="{% url 'agents:agent_delete' agent.id %}">
-                                    <input id="btn_delete" class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Delete"/>
+                                    <input id="btn_delete"
+                                           class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                           type="button" value="Delete"/>
                                 </a>
                             {% endif %}
-                            {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS"%}
+                            {% if request.user|has_permission_name:"CAN_EDIT_AGENT_DETAILS" %}
                                 <a href="{% url 'agents:agent_update' agent.id %}">
-                                    <input id="btn_edit" class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}" type="button" value="Edit"/>
+                                    <input id="btn_edit"
+                                           class="btn btn-success text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                           type="button" value="Edit"/>
                                 </a>
                             {% endif %}
                         </div>
                     </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block body_js %}
-{{ block.super }}
+    {{ block.super }}
 {% endblock %}
