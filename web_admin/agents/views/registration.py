@@ -433,10 +433,10 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         additional_supporting_file_5_url = request.POST.get('additional_supporting_file_5_url')
 
         additional = {
-            "acquiring_sale_executive_id": additional_acquiring_sale_executive_name,
-            "acquiring_sale_executive_name": additional_acquiring_sale_executive_id,
-            "relationship_manager_id": additional_relationship_manager_name,
-            "relationship_manager_name": additional_relationship_manager_id,
+            "acquiring_sale_executive_id": additional_acquiring_sale_executive_id,
+            "acquiring_sale_executive_name": additional_acquiring_sale_executive_name,
+            "relationship_manager_id": additional_relationship_manager_id,
+            "relationship_manager_name": additional_relationship_manager_name,
             "sale_region": additional_sale_region,
             "commercial_account_manager": additional_commercial_account_manager,
             "profile_picture_url": additional_profile_picture_url,
