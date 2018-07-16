@@ -7,6 +7,25 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+        .btn-arrow-down  {
+            background-color: white;
+            position: absolute;
+            width: 33px;
+            height: 30px;
+            border-radius: 15px;
+            right: 0;
+        }
+        .collapsible {
+            margin-bottom: 10px;
+        }
+        .form-horizontal .control-title {
+            padding-top: 7px;
+            margin-bottom: 0;
+            padding-left: 15px;
+            text-align: left;
+        }
+    </style>
     {% csrf_token %}
     <div class="panel mb25">
         <div class="panel-heading border">
@@ -39,13 +58,13 @@
                         <!-- Begin section 1: Account Basics -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Account Basics</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Account Basics</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-account-basic')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -144,13 +163,13 @@
                         <!-- Begin section 2 Basic Setup -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Basic Setup</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Basic Setup</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-basic-setup')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -288,13 +307,13 @@
                         <!-- Begin section 3 Personal Details -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Personal Details</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Personal Details</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-personal-detail')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -446,13 +465,13 @@
                         <!-- Begin section 4 Contact Details -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Contact Details</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Contact Details</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-contact-detail')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -496,13 +515,13 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Current Address</strong></label>
+                                <label class="col-sm-4 control-title current-address-label"><h4>Current Address</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-current-address')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -622,13 +641,13 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Permanent Address</strong></label>
-                                <div class="col-sm-8"></div>
+                                <label class="col-sm-6 control-title current-address-label"><h4>Permanent Address</h4></label>
+                                <div class="col-sm-4"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-permanent-address')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -738,13 +757,13 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Bank Details</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Bank Details</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-bank-detail')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -840,13 +859,13 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label current-address-label"><strong>Contract Details</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Contract Details</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-contract-detail')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -947,13 +966,13 @@
                         <!-- Begin section 5 Profile Accreditation Details -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-5 control-label"><strong>Profile Accreditation Details</strong></label>
-                                <div class="col-sm-8"></div>
+                                <label class="col-sm-6 control-title"><h4>Profile Accreditation Details</h4></label>
+                                <div class="col-sm-4"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-accreditation-detail')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -961,12 +980,12 @@
                         <div id="div-accreditation-detail" class="collapsible">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
+                                    <label class="col-sm-4 control-label"><strong>Primary Identity</strong></label>
                                     <div class="col-sm-8"></div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Identify Type</label>
+                                <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="primary_identify_type"
                                            id="txt_primary_identify_type"
@@ -985,7 +1004,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Identify ID</label>
+                                <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="primary_identify_id"
                                            id="txt_primary_identify_id"
@@ -1036,12 +1055,12 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
+                                    <label class="col-sm-4 control-label"><strong>Secondary Identity</strong></label>
                                     <div class="col-sm-8"></div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Identify Type</label>
+                                <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="secondary_identify_type"
                                            id="txt_secondary_identify_type"
@@ -1060,7 +1079,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Identify ID</label>
+                                <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="secondary_identify_id"
                                            id="txt_secondary_identify_id"
@@ -1110,6 +1129,7 @@
                                            value="{{ agent_profile.accreditation.secondary_identity.back_identity_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <br/>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Profile Accreditation Status</label>
                                 <div class="col-sm-7">
@@ -1168,13 +1188,13 @@
                         <!-- Begin section 6 Profile Additionals -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Additional</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Additional</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-additional')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -1262,13 +1282,13 @@
                         <!-- Begin section 7 Custom Fields -->
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label class="col-sm-4 control-label"><strong>Custom Fields</strong></label>
+                                <label class="col-sm-4 control-title"><h4>Custom Fields</h4></label>
                                 <div class="col-sm-8"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="col-sm-4 control-label"></label>
                                 <div class="col-sm-8">
-                                    <button class="btn-arrow-down" onclick="table_toggle(this, 'div-custom-field')" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
                                 </div>
                             </div>
                         </div>
@@ -1356,7 +1376,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Supporting File 1</label>
-                                <div class="col-sm-7`">
+                                <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="supporting_file_1"
                                            id="txt_supporting_file_1"
                                            value="{{ agent_profile.additional.supporting_file_1_url|default_if_none:'' }}"/>
@@ -1480,17 +1500,20 @@
         }
         loadMMCardLevel();
 
-        function table_toggle(e, section){
-            var angle = $(e).find("#toggle-button");
-            if ($(angle).hasClass("fa-angle-down")) {
-                $(angle).removeClass("fa-angle-down");
-                $(angle).addClass("fa-angle-up");
-                $("#" + section).show();
-            } else {
-                $(angle).removeClass("fa-angle-up");
-                $(angle).addClass("fa-angle-down");
-                $("#" + section).hide();
-            }
-        }
+        $(document).ready(function (e) {
+            $('.collapsible-button').on('click', function (e) {
+                var $section = $(this).closest('div.row').next('div.collapsible');
+                var $angle = $(this).find("#toggle-button");
+                if ($angle.hasClass("fa-angle-down")) {
+                    $angle.removeClass("fa-angle-down");
+                    $angle.addClass("fa-angle-up");
+                    $section.show();
+                } else {
+                    $angle.removeClass("fa-angle-up");
+                    $angle.addClass("fa-angle-down");
+                    $section.hide();
+                }
+            });
+        });
     </script>
 {% endblock %}
