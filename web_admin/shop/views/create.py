@@ -46,8 +46,8 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         agent_id = request.GET.get("agent_id")
         if agent_id:
             agent = get_agent_detail(self, int(agent_id))
-            form["representative_first_name"] = agent["firstname"]
-            form["representative_last_name"] = agent["lastname"]
+            form["representative_first_name"] = agent["first_name"]
+            form["representative_last_name"] = agent["last_name"]
             form["representative_mobile_number"] = agent["primary_mobile_number"]
             form["representative_email"] = agent["email"]
             form["shop_mobile_number"] = agent["primary_mobile_number"]
