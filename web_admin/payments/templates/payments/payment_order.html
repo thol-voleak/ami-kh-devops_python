@@ -50,6 +50,12 @@
                 </div>
             </div>
             <div class="form-group">
+
+                <label class="col-sm-2 control-label">Short Order ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded" name="short_order_id" id="txt_short_order_id" value="{{ short_order_id }}">
+                </div>
+
                 <label class="col-sm-2 control-label">Service Name</label>
                 <div class="col-sm-2 custom-multiple-select select-service" id="select-service-area" style="position: relative;">
                     <select style="display:none;" multiple class="chosen" onchange="selectMultipleItems('ddl_service', 'select-service', 'select-service-area')" data-placeholder="All" id="ddl_service" name="service_name">
@@ -62,32 +68,22 @@
                         {% endfor %}
                     </select>
                 </div>
-                <label class="col-sm-2 control-label">Status</label>
-                <div class="col-sm-2 custom-multiple-select select-status-code" id="select-status-code-area" style="position: relative;">
-                    <select style="display:none;" id="ddl_status" onchange="selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')" data-placeholder="All" multiple class="chosen" name="list_status_id">
-                        {% for item in status_list %}
-                            {% if item.id in status_code_id %}
-                                <option value="{{item.id}}" selected>{{ item.name }}</option>
-                            {%else%}
-                                <option value="{{item.id}}">{{ item.name }}</option>
-                            {%endif%}
-                        {% endfor %}
-                    </select>
-                </div>
+
                 <div class="col-sm-4">
-                    <label class="col-sm-5 control-label">Error Code</label>
-                    <div class="col-sm-7 select-error-code" id="select-error-code-area" style="position: relative;">
-                        <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
-                            {% for item in error_list %}
-                                {% if item.name in error_code_id %}
-                                    <option value="{{item.name}}" selected>{{ item.title }}</option>
+                    <label class="col-sm-5 control-label">Status</label>
+                    <div class="col-sm-7 custom-multiple-select select-status-code" id="select-status-code-area" style="position: relative;">
+                        <select style="display:none;" id="ddl_status" onchange="selectMultipleItems('ddl_status', 'select-status-code', 'select-status-code-area')" data-placeholder="All" multiple class="chosen" name="list_status_id">
+                            {% for item in status_list %}
+                                {% if item.id in status_code_id %}
+                                    <option value="{{item.id}}" selected>{{ item.name }}</option>
                                 {%else%}
-                                    <option value="{{item.name}}">{{ item.title }}</option>
+                                    <option value="{{item.id}}">{{ item.name }}</option>
                                 {%endif%}
                             {% endfor %}
                         </select>
                     </div>
                 </div>
+
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">User type</label>
@@ -102,6 +98,22 @@
                 <div class="col-sm-2">
                     <input type="text" class="form-control input-rounded" name="user_id" id="txt_user_id" value="{{ user_id }}">
                 </div>
+
+                <div class="col-sm-4">
+                    <label class="col-sm-5 control-label">Error Code</label>
+                    <div class="col-sm-7 select-error-code" id="select-error-code-area" style="position: relative;">
+                        <select style="display:none;" id="ddl_error_code" onchange="selectMultipleItems('ddl_error_code', 'select-error-code', 'select-error-code-area')" data-placeholder="-" multiple class="chosen" name="error_code_id">
+                            {% for item in error_list %}
+                                {% if item.name in error_code_id %}
+                                    <option value="{{item.name}}" selected>{{ item.title }}</option>
+                                {%else%}
+                                    <option value="{{item.name}}">{{ item.title }}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <div class="form-group">

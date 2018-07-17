@@ -99,6 +99,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def post(self, request, *args, **kwargs):
         order_id = request.POST.get('order_id')
+        short_order_id = request.POST.get('short_order_id')
         searched_services = request.POST.getlist('service_name')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type')
@@ -130,6 +131,8 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         body = {}
         if order_id:
             body['order_id'] = order_id
+        if short_order_id:
+            body['short_order_id'] = short_order_id
         if ref_order_id:
             body['ref_order_id'] = ref_order_id
         if user_id and user_id.isdigit():
@@ -210,6 +213,7 @@ class PaymentOrderView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             context = {'order_list': orders,
                        'order_id': order_id,
+                       'short_order_id':short_order_id,
                        'ref_order_id': ref_order_id,
                        'searched_services': searched_services,
                        'services': services,
