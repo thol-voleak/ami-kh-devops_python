@@ -92,6 +92,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context.update({'msgs':{'delete_failed_msg': self.request.session.pop('agent_message', None)}})
         else:
             # Set first load default time for Context
+            agent_id = request.GET.get('agent_id', None)
             from_created_timestamp = from_created_timestamp.replace(hour=0, minute=0, second=1)
             to_created_timestamp = to_created_timestamp.replace(hour=23, minute=59, second=59)
             new_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")

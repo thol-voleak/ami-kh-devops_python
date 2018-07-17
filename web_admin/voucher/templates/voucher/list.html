@@ -350,7 +350,13 @@
                         <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
                             <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
-                            <td>{{ i.issuer_user_id|default_if_none:'' }}</td>
+                            <td>
+                                {% if i.issuer_user_id %}
+                                    {% if "agent" == i.issuer_user_type %}
+                                        <a style="color: blue;text-decoration: underline;" href="{% url 'agents:agent-list'%}?agent_id={{  i.issuer_user_id }}">{{ i.issuer_user_id }}</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
                             <td id="voucher-type" >{{ i.voucher_type|default_if_none:'' }}</td>
                             <td>{{ i.voucher_group|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
