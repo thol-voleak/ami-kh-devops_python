@@ -246,6 +246,11 @@
                                 <label class="col-sm-3 control-label">MM Card Type</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_mm_card_types" name="mm_card_types" onchange="loadMMCardLevel()" data-url="{% url 'agents:get_mm_card_level' %}">
+                                        {% if not agent_profile.mm_card_type_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
                                         {% for item in mm_card_types %}
                                             <option value="{{ item.id }}">{{ item.name }}</option>
                                         {% endfor %}
@@ -290,6 +295,11 @@
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_agent_classification"
                                             name="agent_classification_id">
+                                        {% if not agent_profile.agent_classification_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
                                         {% for agent_classification in agent_classification_list %}
                                             {% if agent_profile.agent_classification_id == agent_classification.id %}
                                                 <option value="{{ agent_classification.id }}" selected>{{ agent_classification.name }}</option>
@@ -1489,6 +1499,7 @@
                         } else if (response.status == 2) {
                             var data = response.data;
                             if(typeof data.length !== 'undefined') {
+                                $('#ddl_mm_card_levels').append('<option value="">'-'</option>');
                                 $.each(data, function(key, value) {
                                     $('#ddl_mm_card_levels').append('<option value="' + value.id + '">' + value.level + '</option>');
                             });}
