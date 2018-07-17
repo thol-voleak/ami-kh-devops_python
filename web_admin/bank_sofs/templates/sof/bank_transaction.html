@@ -11,10 +11,56 @@
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'bank_sofs:bank_sofs_transaction' %}">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">SOF ID</label>
+                    <label class="col-sm-2 control-label">User Phone No.</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control br0" name="mobile_number" placeholder="At least 4 digits" id="txt_mobile_number" value="{{ mobile_number }}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" type="button" id="btn_search_icon" onclick = "searchUser('{% url 'bank_sofs:search_user' %}')" disabled="true">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                    </div>
+                    <label class="col-sm-2 control-label">Currency:</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_currency" name="currency">
+                            <option value="">All</option>
+                            {% for currency in currencies %}
+                                <option value="{{ currency }}" {% if selected_currency == currency %}selected{% endif %}>{{ currency }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">Type</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" id="ddl_action" name="type">
+                            <option value='' {% if search_by.action_id == 0 %}selected="selected"{% endif %}>All</option>
+                            <option value='2' {% if search_by.action_id == 2 %}selected="selected"{% endif %}>Debit</option>
+                            <option value='1' {% if search_by.action_id == 1 %}selected="selected"{% endif %}>Credit</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">User ID</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control input-rounded" name="user_id" value="{{ user_id }}" id="txt_user_id"/>
+                    </div>
+                    <label class="col-sm-2 control-label">User Type</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_user_type" name="user_type_id">
+                            <option value=0 {% if user_type_id == '0' %}selected="selected"{% endif %}>All</option>
+                            <option value=1 {% if user_type_id == '1' %}selected="selected"{% endif %}>Customer</option>
+                            <option value=2 {% if user_type_id == '2' %}selected="selected"{% endif %}>Agent</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">SOF ID</label>
                     <div class="col-sm-2">
                         <input id="txt_sof_id" type="number" class="form-control input-rounded" name="sof_id" value="{{ search_by.sof_id }}">
                     </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-sm-2 control-label">ORDER ID</label>
                     <div class="col-sm-2">
                         <input id="txt_order_id" type="text" class="form-control input-rounded" name="order_id" value="{{ search_by.order_id }}"/>
@@ -22,16 +68,6 @@
                     <label class="col-sm-2 control-label">SHORT ORDER ID</label>
                     <div class="col-sm-2">
                         <input id="txt_short_order_id" type="text" class="form-control input-rounded" name="short_order_id" value="{{ search_by.short_order_id }}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">Type</label>
-                    <div class="col-xs-2">
-                        <select class="form-control" id="ddl_action" name="type">
-                            <option value='' {% if search_by.action_id == 0 %}selected="selected"{% endif %}>All</option>
-                            <option value='2' {% if search_by.action_id == 2 %}selected="selected"{% endif %}>Debit</option>
-                            <option value='1' {% if search_by.action_id == 1 %}selected="selected"{% endif %}>Credit</option>
-                        </select>
                     </div>
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
@@ -44,7 +80,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">From</label>
+                    <label class="col-sm-2 control-label">From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
                                name="from_created_timestamp"
@@ -104,5 +140,29 @@
             {% include "pagination.html" %}
         </div>
     </div>
+
+    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" id="divModalDialog">
+            <div class="modal-content" id="divModalContent">
+
+            </div>
+        </div>
+    </div>
+
+<script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
+<script src="{% static 'js/search_user.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      initSearchIconVisible();
+      $(window).keydown(function(event){
+        if(event.keyCode == 13 && event.target.id == 'txt_mobile_number') {
+          event.preventDefault();
+          searchUser('{% url 'bank_sofs:search_user' %}');
+        }
+      });
+    });
+</script>
+
 
 {% endblock %}
