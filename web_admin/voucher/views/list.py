@@ -72,6 +72,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cash_in_order_id = request.POST.get('cash_in_order_id')
         cash_out_order_id = request.POST.get('cash_out_order_id')
         issuer_user_id = request.POST.get('issuer_user_id')
+        distributed_user_id = request.POST.get('distributed_user_id')
         cancel_status = request.POST.get('cancel_status')
         voucher_type = request.POST.get('voucher_type')
         distributed_status = request.POST.get('distributed_status')
@@ -100,6 +101,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['cash_out_order_id'] = int(cash_out_order_id)
         if issuer_user_id:
             body['issuer_user_id'] = int(issuer_user_id)
+        if distributed_user_id:
+            body['distributed_user_id'] = int(distributed_user_id)
         if cancel_status != '':
             body['is_cancelled'] = True if cancel_status == 'True' else False
 
@@ -170,6 +173,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_out_order_id': cash_out_order_id,
             'cash_in_order_id': cash_in_order_id,
             'issuer_user_id': issuer_user_id,
+            'distributed_user_id': distributed_user_id,
             'cancel_status': cancel_status,
             'voucher_type_list': self._get_voucher_type_list(),
             'voucher_type': voucher_type,
