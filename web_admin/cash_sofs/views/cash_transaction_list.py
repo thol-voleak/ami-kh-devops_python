@@ -56,6 +56,7 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         action_id = request.POST.get('action_id')
         status_id = request.POST.get('status_id')
         currency = request.POST.get('currency')
+        short_order_id = request.POST.get('short_order_id')
 
         created_from_date = request.POST.get('created_from_date')
         created_to_date = request.POST.get('created_to_date')
@@ -92,6 +93,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
         if modified_to_date:
             body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
+        if short_order_id is not '':
+            body['short_order_id'] = short_order_id
 
         context = {}
         data, success, status_message = self.get_cash_transaction_list(body)
@@ -133,7 +136,8 @@ class CashTransactionView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'modified_from_date': modified_from_date,
             'modified_to_date': modified_to_date,
             'modified_from_time': modified_from_time,
-            'modified_to_time': modified_to_time
+            'modified_to_time': modified_to_time,
+            'short_order_id': short_order_id
         })
 
         self.logger.info('========== End search cash transaction ==========')
