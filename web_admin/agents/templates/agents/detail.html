@@ -994,7 +994,7 @@
                                     <label class="col-sm-3 control-label">Register Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="bank_register_date"
-                                               id="dtp_bank_register_date"
+                                               id="txt_bank_register_date"
                                                value="{{ agent.bank.register_date|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
@@ -1023,7 +1023,7 @@
                                     <label class="col-sm-3 control-label">End Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="bank_end_date"
-                                               id="dtp_bank_end_date"
+                                               id="txt_bank_end_date"
                                                value="{{ agent.bank.end_date |default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
@@ -1098,7 +1098,7 @@
                                     <label class="col-sm-3 control-label">Contract Sign Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="contract_sign_date"
-                                               id="dtp_contract_sign_date"
+                                               id="txt_contract_sign_date"
                                                value="{{ agent.contract.sign_date|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
@@ -1110,7 +1110,7 @@
                                     <label class="col-sm-3 control-label">Contract Issue Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="contract_issue_date"
-                                               id="dtp_contract_issue_date"
+                                               id="txt_contract_issue_date"
                                                value="{{ agent.contract.issue_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
@@ -1120,7 +1120,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="contract_expired_date"
-                                               id="dtp_contract_expired_date"
+                                               id="txt_contract_expired_date"
                                                value="{{ agent.contract.expired_date|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
@@ -1253,7 +1253,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="primary_identity_issue_date"
-                                               id="dtp_primary_identity_issue_date"
+                                               id="txt_primary_identity_issue_date"
                                                value="{{ agent.accreditation.primary_identity.issue_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
@@ -1263,7 +1263,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="primary_identity_expired_date"
-                                               id="dtp_primary_identity_expired_date"
+                                               id="txt_primary_identity_expired_date"
                                                value="{{ agent.accreditation.primary_identity.expired_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
@@ -1358,7 +1358,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="secondary_identity_issue_date"
-                                               id="dtp_secondary_identity_issue_date"
+                                               id="txt_secondary_identity_issue_date"
                                                value="{{ agent.accreditation.secondary_identity.issue_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
@@ -1368,7 +1368,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="secondary_identity_expired_date"
-                                               id="dtp_secondary_identity_expired_date"
+                                               id="txt_secondary_identity_expired_date"
                                                value="{{ agent.accreditation.secondary_identity.expired_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
@@ -1430,7 +1430,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="accreditation_verify_date"
-                                               id="dtp_accreditation_verify_date"
+                                               id="txt_accreditation_verify_date"
                                                value="{{ agent.accreditation.verify_date|default_if_none:'' }}"
                                                disabled/>
                                     </div>
