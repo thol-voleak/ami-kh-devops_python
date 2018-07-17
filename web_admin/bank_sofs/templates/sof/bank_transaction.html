@@ -68,6 +68,7 @@
                     <tr>
                         <th id="sof_id">SOF ID</th>
                         <th id="order_id">Order ID</th>
+                        <th id="short_order_id">Short Order ID</th>
                         <th id="type">Type</th>
                         <th id="bank_name">Bank Name</th>
                         <th id="bank_account_name">Bank Account Name</th>
@@ -82,6 +83,7 @@
                         <tr>
                             <td class="col-sm-1">{{ transaction.sof.id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
+                            <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank.name }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank_account_name|default_if_none:'' }}</td>

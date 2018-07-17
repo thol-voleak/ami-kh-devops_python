@@ -102,7 +102,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Voucher ID</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id" value="{{ voucher_id }}">
+                        <input type="text" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id" value="{{ voucher_id }}">
                     </div>
                     <label class="col-sm-3 control-label">Claim Status</label>
                     <div class="col-sm-2">
@@ -274,6 +274,18 @@
                                value="{{ voucher_group|default_if_none:'' }}"
                                id="txt_voucher_group">
                     </div>
+                    <label class="col-sm-3 control-label">Delete Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_delete_status" name="delete_status" >
+                            {% for item in delete_status_list %}
+                                {%if item.value == delete_status%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                  <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
                             <input id="current_page_index" name="current_page_index" style="display:none" value="1">
@@ -349,7 +361,9 @@
                             <td>{{ i.currency|default_if_none:'' }}</td>
                             <td>
                             {% if request|has_any_permission:"CAN_REFUND_VOUCHER" %}
-                                <button id="btn_refund" onclick="showRefundDialog('{{ i.voucher_id|default_if_none:'' }}')" class="btn btn-outline mb5 btn-xs btn-info">Refund</button>
+                                {% if i.voucher_type != "3rd Party Vouchers" %}
+                                    <button id="btn_refund" onclick="showRefundDialog('{{ i.voucher_id|default_if_none:'' }}')" class="btn btn-outline mb5 btn-xs btn-info">Refund</button>
+                                {% endif %}
                             {% endif %}
                             {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
                                 <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>

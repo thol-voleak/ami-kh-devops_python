@@ -157,6 +157,7 @@
                         <th id="owner">User Type (User ID)</th>
                         <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
+                        <th id="short_order_id">Short Order ID</th>
                         <th id="balance" class="text-center">Debit/Credit</th>
                         <th id="amount">Amount</th>
                         <th id="currency">Currency</th>
@@ -171,6 +172,7 @@
                             <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
+                            <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:''}}</td>
                             <td class="col-sm-1 text-center">{{ transaction.action.name }}</td>
                             <td>{{ transaction.amount }}</td>
                             <td>{{ transaction.sof.currency }}</td>

@@ -202,6 +202,7 @@
                 <thead>
                 <tr>
                     <th id="id">Order ID</th>
+                    <th id="short_order_id">Short Order ID</th>
                     <th id="id">Ref. Order ID</th>
                     <th id="service_name">Service Name</th>
                     <th id="command">Command</th>
@@ -232,6 +233,7 @@
                         {%endif%}
 
                             <td class="col-sm-2">{{ order.order_id }}</td>
+                            <td class="col-sm-2">{{ order.short_order_id }}</td>
                             <td class="col-sm-2">{{ order.ref_order_id|default_if_none:""}}</td>
                             <td class="col-sm-2">{{ order.product_service.name }}</td>
                             <td class="col-sm-2">{{ order.product_command.name }}</td>

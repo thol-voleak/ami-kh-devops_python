@@ -368,6 +368,8 @@
                         <th id="request_date">Request Date</th>
                         <th id="requester">Requester</th>
                         <th id="approved_rejected_by">Approved/Rejected by</th>
+                        <th id="approved_date">Approved Date</th>
+                        <th id="last_updated_date">Last Updated Date</th>
                         <th id="currency">Currency</th>
                         <th id="adjustment_detail">Adjustment Details</th>
                     </tr>
@@ -396,6 +398,8 @@
                             <td class="col-sm-2">{{ order.created_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.created_user.user_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ order.approved_user.user_id|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.approved_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ order.last_updated_timestamp|default_if_none:'' }}</td>
                             <td class="col-sm-2" id="balance_adjustment_currency">{{ order.currency|default_if_none:'' }}</td>
                             <td class="col-sm-3">
                                 <a type="button"
