@@ -87,7 +87,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cash_out_id:
             body['cash_out_user_id'] = int(cash_out_id)
         if voucher_id:
-            body['voucher_id'] = int(voucher_id)
+            body['voucher_id'] = voucher_id
         if claim_status == 'True':
             body['is_used'] = True
         if claim_status == 'False':
