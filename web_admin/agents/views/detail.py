@@ -4,6 +4,7 @@ from web_admin import api_settings, setup_logger
 from django.views.generic.base import TemplateView
 from web_admin.restful_methods import RESTfulMethods
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from agents.views import AgentAPIService
 
 import logging
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 logging.captureWarnings(True)
 
 
-class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
+class DetailView(GroupRequiredMixin, TemplateView, AgentAPIService):
     group_required = "CAN_VIEW_AGENT"
     login_url = 'web:permission_denied'
     raise_exception = False
@@ -62,8 +63,65 @@ class DetailView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                     context.update({
                         'agent_type_name': context.agent.agent_type_id
                     })
+
+                if context['agent']['mm_card_type_id']:
+                    mm_card_type_data, status = self.get_mm_card_type(
+                        context['agent']['mm_card_type_id'])
+                    if status:
+                        context.update({
+                            'mm_card_type_name': mm_card_type_data['mm_card_type'][0]['name']
+                        })
+                    else:
+                        context.update({
+                            'mm_card_type_name': context['agent']['mm_card_type_id']
+                        })
+
+                if context['agent']['mm_card_level_id']:
+                    mm_card_type_level, status = self.get_mm_card_type_level(
+                        context['agent']['mm_card_level_id'])
+                    if status:
+                        context.update({
+                            'mm_card_type_level_name': mm_card_type_level['mm_card_type_level'][0]['level']
+                        })
+                    else:
+                        context.update({
+                            'mm_card_type_level_name': context['agent']['mm_card_level_id']
+                        })
+                if context['agent']['accreditation']['status_id']:
+                    accreditation_status, status = self.get_accreditation_status(
+                        context['agent']['accreditation']['status_id'])
+                    if status:
+                        context.update({
+                            'accreditation_status_name': accreditation_status['accreditation_status'][0]['status']
+                        })
+                    else:
+                        context.update({
+                            'accreditation_status_name': context['agent']['accreditation']['status_id']
+                        })
+                if context['agent']['agent_classification_id']:
+                    agent_classification_data, status = self.get_agent_classification(
+                        context['agent']['agent_classification_id'])
+                    if status:
+                        context.update({
+                            'agent_classification_name': agent_classification_data['agent_classifications'][0]['name']
+                        })
+                    else:
+                        context.update({
+                            'agent_classification_name': context.agent.agent_classification_id
+                        })
+                if context['agent']['referrer_user_type_id']:
+                    referrer_agent_type_name, status = self.get_agent_type_name(
+                        context['agent']['referrer_user_type_id'])
+                    if status:
+                        context.update({
+                            'referrer_agent_type_name': referrer_agent_type_name
+                        })
+                    else:
+                        context.update({
+                            'referrer_agent_type_name': context.agent.referrer_user_type_id
+                        })
         except Exception as ex:
-            logging.info(ex)
+            logging.error(ex)
             context = {'agent': {}}
         self.logger.info('========== Finished showing Agent Detail page ==========')
         return context

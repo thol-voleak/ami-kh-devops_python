@@ -6,14 +6,7 @@
         <div class="panel-heading border">
             <h3>Cash Transaction</h3>
         </div>
-        <div id="divUserSearchMessage" style="display:none">
-            <div class="col-xs-12">
-                <div class="alert alert-danger alert-dismissable" id="msg-error">
-                    <a href="#" class="close" onclick="$('#divUserSearchMessage').css({'display':'none'});" aria-label="close">×</a>
-                    <strong id="lb_user_search_message"></strong>
-                </div>
-            </div>
-        </div>
+
         <div class="panel-body">
             <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'cash_sofs:cash_transaction' %}">
                 {% csrf_token %}

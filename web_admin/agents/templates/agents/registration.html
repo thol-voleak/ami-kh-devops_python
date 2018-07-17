@@ -2,839 +2,1630 @@
 {% load static %}
 
 {% block body_stylesheet %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert/lib/sweet-alert.css' %}">
 {% endblock %}
 
 {% block content %}
-{% csrf_token %}
-<div class="panel mb25">
-    <div class="panel-heading border">
-        <h3>Agent Register</h3>
-    </div>
-    <!--If success return green notification and return red notification if message is failed-->
-    {% for msg in msgs.values %}
-        {% if msg is not None %}
-            <div class="col-xs-12">
-                <div class="alert
+    <style>
+        .btn-arrow-down  {
+            background-color: white;
+            position: absolute;
+            width: 33px;
+            height: 30px;
+            border-radius: 15px;
+            right: 0;
+        }
+        .collapsible {
+            margin-bottom: 10px;
+        }
+        .form-horizontal .control-title {
+            padding-top: 7px;
+            margin-bottom: 0;
+            padding-left: 15px;
+            text-align: left;
+        }
+    </style>
+
+    {% csrf_token %}
+    <div class="panel mb25">
+        <div class="panel-heading border">
+            <h3>Agent Registration</h3>
+        </div>
+        <!--If success return green notification and return red notification if message is failed-->
+        {% for msg in msgs.values %}
+            {% if msg is not None %}
+                <div class="col-xs-12">
+                    <div class="alert
                 {% if "successfully" in msg %}
                     alert-success
                 {% else %}
                     alert-danger
                 {% endif %}
                 alert-dismissable" id="msg-add-service">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                    <strong>{{ msg }}</strong>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-
-    <div class="panel-body">
-        <div class="row no-margin">
-            <div class="col-lg-12">
-                <form id="submit-form" class="form-horizontal" role="form" method="post"
-                      action="{% url 'agents:agent_registration' %}">
-                    {% csrf_token %}
-
-<!-- Begin section 1 -->
-<div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Status *</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="status" id="txt_status"
-                       value="Active" disabled/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 1 - row 1 -->
-    <hr/>
-
-    <!-- Begin section 2 [Agent Type] -->
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"><strong>Basic Setup</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 2 - row 1 -->
-
-    <div class="row">
-            <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Agent Type *</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="ddl_agent_type" name="agent_type_id" required>
-                            {% for agent_type in agent_types_list %}
-                                <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
-                            {% endfor %}
-                        </select>
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ msg }}</strong>
                     </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">User Name Type *</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="ddl_identity_type" name="identity_type_id" required>
-                            {% for identity_type in identity_type_list %}
-                                <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="panel-body">
+            <div class="row no-margin">
+                <div class="col-lg-12">
+                    <form id="submit-form" class="form-horizontal" role="form" method="post"
+                          action="{% url 'agents:agent_registration' %}">
+                        {% csrf_token %}
+
+                        <!-- Begin section 1 [Account Basics] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Account Basics</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 1 - Title -->
+                        <div id="div-account-basic" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Testing Account</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="chk_testing_account" name="is_testing_account"
+                                           {% if agent_profile.is_testing_account %}checked{% endif %}>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">System Account</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="chk_system_account" name="is_system_account"
+                                           {% if agent_profile.is_system_account %}checked{% endif %}>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Status *</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="status" id="txt_status"
+                                           value="Active" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Acquisition Source</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="acquisition_source"
+                                           id="txt_acquisition_source"
+                                           value="{{ agent_profile.acquisition_source|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Referrer User Type</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_referrer_user_type"
+                                            name="referrer_user_type_id">
+                                        {% if not agent_profile.referrer_user_type.id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for user_type in user_type_list %}
+                                            {% if agent_profile.referrer_user_type.id == user_type.id %}
+                                                <option value="{{ user_type.id }}" selected>{{ user_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ user_type.id }}">{{ user_type.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Referrer User ID</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-rounded" name="referrer_user_id"
+                                           id="txt_referrer_user_id"
+                                           value="{{ agent_profile.referrer_user_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 1 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 2 [Basic Setup] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Basic Setup</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 2 - Title -->
+                        <div id="div-basic-setup" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Agent Type *</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_agent_type" name="agent_type_id" required>
+                                        {% for agent_type in agent_types_list %}
+                                            {% if agent_profile.agent_type_id == agent_type.id %}
+                                                <option value="{{ agent_type.id }}" selected>{{ agent_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ agent_type.id }}">{{ agent_type.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">User Name Type *</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_identity_type" name="identity_type_id" required>
+                                        {% for identity_type in identity_type_list %}
+                                            {% if identity.identity_type_id == identity_type.id %}
+                                                <option value="{{ identity_type.id }}" selected>{{ identity_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ identity_type.id }}">{{ identity_type.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">User Name *</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="username"
+                                           id="txt_user_name"
+                                           value="{{ identity.username | default_if_none:'' }}" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" id="lbl_password">Password *</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control input-rounded" name="password"
+                                           id="txt_password" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" id="lbl_re_password">Re-password *</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control input-rounded" name="re_password"
+                                           id="txt_re_password" required onchange="validatePassword(this)"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">System Password</label>
+                                <div class="col-sm-7">
+                                    {% if identity.auto_generate_password %}
+                                        <input type="checkbox" name="system_password" id="chk_system_password"
+                                               onchange="check_system_password()" checked>
+                                    {% else %}
+                                        <input type="checkbox" name="system_password" id="chk_system_password"
+                                               onchange="check_system_password()">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Currency *</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_currency" name="currency" required>
+                                        {% for currency in currencies %}
+                                            {% if currency == context_currency %}
+                                                <option value="{{ currency }}" selected>{{ currency }}</option>
+                                            {% else %}
+                                                <option value="{{ currency }}">{{ currency }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Unique Reference *</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="unique_reference"
+                                           id="txt_unique_reference"
+                                           value="{{ agent_profile.unique_reference|default_if_none:'' }}" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">MM Card Type</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_mm_card_type" name="mm_card_type_id" onchange="loadMMCardLevel()"
+                                            data-url="{% url 'agents:get_mm_card_level' %}">
+                                        {% if not agent_profile.mm_card_type_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for card_type in mm_card_type_list %}
+                                            {% if agent_profile.mm_card_type_id == card_type.id %}
+                                                <option value="{{ card_type.id }}" selected>{{ card_type.name }}</option>
+                                            {% else %}
+                                                <option value="{{ card_type.id }}">{{ card_type.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">MM Card Level</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_mm_card_level" name="mm_card_level_id">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">MM Factory Card Number</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="mm_factory_card_number"
+                                           id="txt_mm_factory_card_number"
+                                           value="{{ agent_profile.mm_factory_card_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Model Type</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_model_type" name="model_type">
+                                        <option value="" {%if not agent_profile.model_type %}selected{%endif%}>-</option>
+                                        <option value="1" {%if agent_profile.model_type == '1' %}selected{%endif%}>1</option>
+                                        <option value="2" {%if agent_profile.model_type == '2' %}selected{%endif%}>2</option>
+                                        <option value="3" {%if agent_profile.model_type == '3' %}selected{%endif%}>3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Always require OTP</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="chk_require_otp" name="is_require_otp"
+                                           {% if not agent_profile or agent_profile.is_require_otp %}checked{% endif %}>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Classification</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_agent_classification"
+                                            name="agent_classification_id">
+                                        {% if not agent_profile.agent_classification_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for agent_classification in agent_classification_list %}
+                                            {% if agent_profile.agent_classification_id == agent_classification.id %}
+                                                <option value="{{ agent_classification.id }}" selected>{{ agent_classification.name }}</option>
+                                            {% else %}
+                                                <option value="{{ agent_classification.id }}">{{ agent_classification.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 2 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 3 [Personal Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Personal Details</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 3 - Title -->
+                        <div id="div-personal-detail" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Personal TIN Number</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="tin_number"
+                                           id="txt_tin_number"
+                                           value="{{ agent_profile.tin_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Title</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="title"
+                                           id="txt_title" value="{{ agent_profile.title|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">First Name *</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="first_name"
+                                           id="txt_first_name"
+                                           value="{{ agent_profile.first_name|default_if_none:'' }}" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Middle Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="middle_name"
+                                           id="txt_middle_name"
+                                           value="{{ agent_profile.middle_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Last Name *</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="last_name"
+                                           id="txt_last_name" value="{{ agent_profile.last_name|default_if_none:'' }}" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Suffix</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="suffix"
+                                           id="txt_suffix" value="{{ agent_profile.suffix|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Date of Birth</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="date_of_birth"
+                                           onchange="VerifyDate(this)"
+                                           id="dtp_birth_date"
+                                           value="{{ context_date.date_of_birth|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Place Of Birth</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="place_of_birth"
+                                           id="txt_place_of_birth"
+                                           value="{{ agent_profile.place_of_birth|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Gender</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="gender"
+                                           id="txt_gender" value="{{ agent_profile.gender|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Ethnicity</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_ethnicity" name="ethnicity">
+                                        <option value="" {% if not agent_profile.ethnicity%}selected{% endif %}>-</option>
+                                        <option value="Other" {% if agent_profile.ethnicity == 'Other' %}selected{% endif %}>Other</option>
+                                        <option value="Ethnicity Unknown" {% if agent_profile.ethnicity == 'Ethnicity Unknown' %}selected{% endif %}>Ethnicity Unknown</option>
+                                        <option value="Asian" {% if agent_profile.ethnicity == 'Asian' %}selected{% endif %}>Asian</option>
+                                        <option value="Black or African American" {% if agent_profile.ethnicity == 'Black or African American' %}selected{% endif %}>Black or African American</option>
+                                        <option value="Hispanic/Latino" {% if agent_profile.ethnicity == 'Hispanic/Latino' %}selected{% endif %}>Hispanic/Latino</option>
+                                        <option value="White" {% if agent_profile.ethnicity == 'White' %}selected{% endif %}>White</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Nationality</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="nationality"
+                                           id="txt_nationality"
+                                           value="{{ agent_profile.nationality|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Occupation</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="occupation"
+                                           id="txt_occupation"
+                                           value="{{ agent_profile.occupation|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Occupation Title</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="occupation_title"
+                                           id="txt_occupation_title"
+                                           value="{{ agent_profile.occupation_title|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Township Code</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="township_code"
+                                           id="txt_township_code"
+                                           value="{{ agent_profile.township_code|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Township Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="township_name"
+                                           id="txt_township_name"
+                                           value="{{ agent_profile.township_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">National ID Number</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="national_id_number"
+                                           id="txt_national_id_number"
+                                           value="{{ agent_profile.national_id_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Mother's Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="mother_name"
+                                           id="txt_mother_name"
+                                           value="{{ agent_profile.mother_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 3 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 4 [Contact Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Contact Details</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 4 - Title -->
+                        <div id="div-contact-detail" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Email</label>
+                                <div class="col-sm-7">
+                                    <input type="email" class="form-control input-rounded" name="email"
+                                           id="txt_email" value="{{ agent_profile.email|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Primary Phone Number</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-rounded" name="primary_mobile_number"
+                                           id="txt_primary_mobile_number"
+                                           value="{{ agent_profile.primary_mobile_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Secondary Phone Number</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="secondary_mobile_number"
+                                           id="txt_secondary_mobile_number"
+                                           value="{{ agent_profile.secondary_mobile_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Tertiary Phone Number</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="tertiary_mobile_number"
+                                           id="txt_tertiary_mobile_number"
+                                           value="{{ agent_profile.tertiary_mobile_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 4 - Content -->
+
+
+                        <hr/>
+
+                        <div id="current-address-area">
+                            <!-- Begin section 5 [Current Address] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-title current-address-label"><h4>Current Address</h4></label>
+                                    <div class="col-sm-8"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Title -->
+                            <div id="div-current-address" class="collapsible">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Citizen Association</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_citizen_association"
+                                               id="txt_current_address_citizen_association"
+                                               value="{{ agent_profile.address.current_address.citizen_association|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Neighbourhood Association</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_neighbourhood_association"
+                                               id="txt_current_address_neighbourhood_association"
+                                               value="{{ agent_profile.address.current_address.neighbourhood_association|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Address</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_address"
+                                               id="txt_current_address_address"
+                                               value="{{ agent_profile.address.current_address.address|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Commune</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_commune"
+                                               id="txt_current_address_commune"
+                                               value="{{ agent_profile.address.current_address.commune|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">District</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_district"
+                                               id="txt_current_address_district"
+                                               value="{{ agent_profile.address.current_address.district|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_city"
+                                               id="txt_current_address_city"
+                                               value="{{ agent_profile.address.current_address.city|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Province</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_province"
+                                               id="txt_current_address_province"
+                                               value="{{ agent_profile.address.current_address.province|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Postal Code</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_postal_code"
+                                               id="txt_current_address_postal_code"
+                                               value="{{ agent_profile.address.current_address.postal_code|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Country</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_country"
+                                               id="txt_current_address_country"
+                                               value="{{ agent_profile.address.current_address.country|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Land Mark</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_landmark"
+                                               id="txt_current_address_landmark"
+                                               value="{{ agent_profile.address.current_address.landmark|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Longitude</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_longitude"
+                                               id="txt_current_address_longitude"
+                                               value="{{ agent_profile.address.current_address.longitude|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Latitude</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_latitude"
+                                               id="txt_current_address_latitude"
+                                               value="{{ agent_profile.address.current_address.latitude|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 5 - Content -->
+                        </div>
+
+                        <div class="checkbox" style="margin-left: 33px;">
+                            <label>
+                                <input type="checkbox" id="chk_permanent_address" name="is-permanent-same-current"
+                                       {% if permanent_address_check %}checked{% endif %}>Permanent Address and Current
+                                Address are the same</label>
+                        </div>
+                        <br/>
+
+                        <div id="permanent-address-area">
+                            <!-- Begin section 6 [Permanent Address] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-6 control-title current-address-label"><h4>Permanent Address</h4></label>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Title -->
+                            <div id="div-permanent-address" class="collapsible">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Citizen Association</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_citizen_association"
+                                               id="txt_permanent_address_citizen_association"
+                                               value="{{ agent_profile.address.permanent_address.citizen_association|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Neighbourhood Association</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_neighbourhood_association"
+                                               id="txt_permanent_address_neighbourhood_association"
+                                               value="{{ agent_profile.address.permanent_address.neighbourhood_association|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Address</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_address"
+                                               id="txt_permanent_address_address"
+                                               value="{{ agent_profile.address.permanent_address.address|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Commune</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_commune"
+                                               id="txt_permanent_address_commune"
+                                               value="{{ agent_profile.address.permanent_address.commune|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">District</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_district"
+                                               id="txt_permanent_address_district"
+                                               value="{{ agent_profile.address.permanent_address.district|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">City</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_city"
+                                               id="txt_permanent_address_city"
+                                               value="{{ agent_profile.address.permanent_address.city|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Province</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_province"
+                                               id="txt_permanent_address_province"
+                                               value="{{ agent_profile.address.permanent_address.province|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Postal Code</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_postal_code"
+                                               id="txt_permanent_address_postal_code"
+                                               value="{{ agent_profile.address.permanent_address.postal_code|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Country</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_country"
+                                               id="txt_permanent_address_country"
+                                               value="{{ agent_profile.address.permanent_address.country|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Land Mark</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_landmark"
+                                               id="txt_permanent_address_landmark"
+                                               value="{{ agent_profile.address.permanent_address.landmark|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Longitude</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_longitude"
+                                               id="txt_permanent_address_longitude"
+                                               value="{{ agent_profile.address.permanent_address.longitude|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Latitude</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="permanent_address_latitude"
+                                               id="txt_permanent_address_latitude"
+                                               value="{{ agent_profile.address.permanent_address.latitude|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End section 6 - Content -->
+                        </div>
+
+                        <hr/>
+
+                        <!-- Begin section 7 [Bank Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Bank Details</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 7 - Title -->
+                        <div id="div-bank-detail", class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_name"
+                                           id="txt_bank_name" value="{{ agent_profile.bank.name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Account Status</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_bank_account_status"
+                                            name="bank_account_status">
+                                        <option value="" {%if not agent_profile.bank.account_status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.bank.account_status == 0 %}selected{%endif%}>Inactive</option>
+                                        <option value="1" {%if agent_profile.bank.account_status == 1 %}selected{%endif%}>Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Account Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_account_name"
+                                           id="txt_bank_account_name"
+                                           value="{{ agent_profile.bank.account_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Account Number</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_account_number"
+                                           id="txt_bank_account_number"
+                                           value="{{ agent_profile.bank.account_number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Branch Area</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_area"
+                                           id="txt_bank_branch_area"
+                                           value="{{ agent_profile.bank.branch_area|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Bank Branch City</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_city"
+                                           id="txt_bank_branch_city"
+                                           value="{{ agent_profile.bank.branch_city|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Register Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="bank_register_date"
+                                           onchange="VerifyDate(this)"
+                                           id="dtp_bank_register_date"
+                                           value="{{ context_date.bank_register_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Register Source</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_register_source"
+                                           id="txt_bank_register_source"
+                                           value="{{ agent_profile.bank.register_source|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Verify Status</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_bank_verify_status" name="bank_is_verified">
+                                        <option value="" {%if not agent_profile.bank.is_verified %}selected{%endif%}>No</option>
+                                        <option value="1" {%if agent_profile.bank.is_verified %}selected{%endif%}>Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">End Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="bank_end_date"
+                                           id="dtp_bank_end_date"
+                                           value="{{ context_date.bank_end_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 8 [Contract Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Contract Details</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Title -->
+                        <div id="div-contract-detail" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Release</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="contract_release"
+                                           id="txt_contract_release"
+                                           value="{{ agent_profile.contract.release|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract Type</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="contract_type"
+                                           id="txt_contract_type"
+                                           value="{{ agent_profile.contract.type|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract Number</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="contract_number"
+                                           id="txt_contract_number"
+                                           value="{{ agent_profile.contract.number|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Extension Type</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="contract_extension_type"
+                                           id="txt_extension_type"
+                                           value="{{ agent_profile.contract.extension_type|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract Sign Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="contract_sign_date"
+                                           id="dtp_contract_sign_date"
+                                           value="{{ context_date.contract_sign_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract Issue Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="contract_issue_date"
+                                           id="dtp_contract_issue_date"
+                                           value="{{ context_date.contract_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract Expiry Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded" name="contract_expired_date"
+                                           id="dtp_contract_expired_date"
+                                           value="{{ context_date.contract_expired_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Notification Alert</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="contract_notification_alert"
+                                           id="txt_contract_notification_alert"
+                                           value="{{ agent_profile.contract.notification_alert|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Reconciliation Period (Days)</label>
+                                <div class="col-sm-7">
+                                    <input type="number" class="form-control input-rounded"
+                                           name="contract_day_of_period_reconciliation"
+                                           id="txt_contract_day_of_period_reconciliation"
+                                           value="{{ agent_profile.contract.day_of_period_reconciliation|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Contract File</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="contract_file_url"
+                                           id="txt_contract_file_url"
+                                           value="{{ agent_profile.contract.file_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Assessment Information</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="contract_assessment_information_url"
+                                           id="txt_contract_assessment_information_url"
+                                           value="{{ agent_profile.contract.assessment_information_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 8 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 9 [Profile Accreditation Details] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-6 control-title"><h4>Profile Accreditation Details</h4></label>
+                                <div class="col-sm-4"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9 - Title -->
+                        <div id="div-accreditation-detail" class="collapsible">
+                            <!-- Begin section 9-1 [Primary Identity] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-6 control-label"><strong>Primary Identity</strong></label>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                            </div>
+                            <!-- End section 9-1 - Title -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Identity Type</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_type"
+                                           id="txt_primary_identity_type"
+                                           value="{{ agent_profile.accreditation.primary_identity.type|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Status</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_primary_identity_status"
+                                            name="primary_identity_status">
+                                        <option value="" {%if not agent_profile.primary_identity.status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.accreditation.primary_identity.status == 0 %}selected{%endif%}>Inactive</option>
+                                        <option value="1" {%if agent_profile.accreditation.primary_identity.status == 1 %}selected{%endif%}>Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Identity ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_id"
+                                           id="txt_primary_identity_id"
+                                           value="{{ agent_profile.accreditation.primary_identity.identity_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Place of Issue</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_place_of_issue"
+                                           id="txt_primary_identity_place_of_issue"
+                                           value="{{ agent_profile.accreditation.primary_identity.place_of_issue|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Issue Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded"
+                                           name="primary_identity_issue_date"
+                                           id="dtp_primary_identity_issue_date"
+                                           value="{{ context_date.primary_identity_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Expiry Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded"
+                                           name="primary_identity_expired_date"
+                                           id="dtp_primary_identity_expired_date"
+                                           value="{{ context_date.primary_identity_expired_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Front Identity Attachment</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_front_url"
+                                           id="txt_primary_identity_front_url"
+                                           value="{{ agent_profile.accreditation.primary_identity.front_identity_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Back Identity Attachment</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="primary_identity_back_url"
+                                           id="txt_primary_identity_back_url"
+                                           value="{{ agent_profile.accreditation.primary_identity.back_identity_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <!-- Begin section 9-2 [Secondary Identity] -->
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="col-sm-6 control-label"><strong>Secondary Identity</strong></label>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                            </div>
+                            <!-- End section 9-2 - Title -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Identity Type</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_type"
+                                           id="txt_secondary_identity_type"
+                                           value="{{ agent_profile.accreditation.secondary_identity.type|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Status</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_secondary_identity_status"
+                                            name="secondary_identity_status">
+                                        <option value="" {%if not agent_profile.accreditation.secondary_identity.status %}selected{%endif%}>-</option>
+                                        <option value="0" {%if agent_profile.accreditation.secondary_identity.status == 0 %}selected{%endif%}>Inactive</option>
+                                        <option value="1" {%if agent_profile.accreditation.secondary_identity.status == 1 %}selected{%endif%}>Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Identity ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_id"
+                                           id="txt_secondary_identity_id"
+                                           value="{{ agent_profile.accreditation.secondary_identity.identity_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Place of Issue</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_place_of_issue"
+                                           id="txt_secondary_identity_place_of_issue"
+                                           value="{{ agent_profile.accreditation.secondary_identity.place_of_issue|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Issue Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded"
+                                           name="secondary_identity_issue_date"
+                                           id="dtp_secondary_identity_issue_date"
+                                           value="{{ context_date.secondary_identity_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Expiry Date</label>
+                                <div class="col-sm-7">
+                                    <input type="date" class="form-control input-rounded"
+                                           name="secondary_identity_expired_date"
+                                           id="dtp_secondary_identity_expired_date"
+                                           value="{{ context_date.secondary_identity_expired_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Front Identity Attachment</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_front_url"
+                                           id="txt_secondary_identity_front_url"
+                                           value="{{ agent_profile.accreditation.secondary_identity.front_identity_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Back Identity Attachment</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_back_url"
+                                           id="txt_secondary_identity_back_url"
+                                           value="{{ agent_profile.accreditation.secondary_identity.back_identity_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Profile Accreditation Status</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_accreditation_status"
+                                            name="accreditation_status_id">
+                                        {% if not agent_profile.accreditation.status_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for accreditation_status in agent_accreditation_status_list %}
+                                            {% if agent_profile.accreditation.status_id == accreditation_status.id %}
+                                                <option value="{{ accreditation_status.id }}" selected>{{ accreditation_status.status }}</option>
+                                            {% else %}
+                                                <option value="{{ accreditation_status.id }}">{{ accreditation_status.status }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Verify By</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_verify_by"
+                                           id="txt_accreditation_verify_by"
+                                           value="{{ agent_profile.accreditation.verify_by|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Profile Accreditation Remark</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_remark"
+                                           id="txt_accreditation_remark"
+                                           value="{{ agent_profile.accreditation.remark|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Risk Level</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="ddl_accreditation_risk_level"
+                                            name="accreditation_risk_level">
+                                        <option value="" {%if not agent_profile.accreditation.risk_level %}selected{%endif%}>-</option>
+                                        <option value="low" {%if agent_profile.accreditation.risk_level == 'low' %}selected{%endif%}>Low</option>
+                                        <option value="medium" {%if agent_profile.accreditation.risk_level == 'medium' %}selected{%endif%}>Medium</option>
+                                        <option value="high" {%if agent_profile.accreditation.risk_level == 'high' %}selected{%endif%}>High</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 9 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 10 [Additionals] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Additionals</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - Title -->
+                        <div id="div-additional" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Acquiring Sales Executive Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_acquiring_sale_executive_name"
+                                           id="txt_additional_acquiring_sale_executive_name"
+                                           value="{{ agent_profile.additional.acquiring_sale_executive_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Acquiring Sales Executive ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_acquiring_sale_executive_id"
+                                           id="txt_additional_acquiring_sale_executive_id"
+                                           value="{{ agent_profile.additional.acquiring_sale_executive_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Relationship Manager Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_relationship_manager_name"
+                                           id="txt_additional_relationship_manager_name"
+                                           value="{{ agent_profile.additional.relationship_manager_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Relationship Manager ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_relationship_manager_id"
+                                           id="txt_additional_relationship_manager_id"
+                                           value="{{ agent_profile.additional.relationship_manager_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Sales Region</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_sale_region"
+                                           id="txt_additional_sale_region"
+                                           value="{{ agent_profile.additional.sale_region|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Commercial Account Manager</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_commercial_account_manager"
+                                           id="txt_additional_commercial_account_manager"
+                                           value="{{ agent_profile.additional.commercial_account_manager|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Profile Picture</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_profile_picture_url"
+                                           id="txt_additional_profile_picture_url"
+                                           value="{{ agent_profile.additional.profile_picture_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">National ID Photo</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_national_id_photo_url"
+                                           id="txt_additional_national_id_photo_url"
+                                           value="{{ agent_profile.additional.national_id_photo_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Tax ID Card Photo</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_tax_id_card_photo_url"
+                                           id="txt_additional_tax_id_card_photo_url"
+                                           value="{{ agent_profile.additional.tax_id_card_photo_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 10 - Content -->
+
+                        <hr/>
+
+                        <!-- Begin section 11 [Custom Fields] -->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-title"><h4>Custom Fields</h4></label>
+                                <div class="col-sm-8"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-sm-4 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button type="button" class="btn-arrow-down collapsible-button" style="outline: none;"><span style="position: relative;"><i class="balance-arrow fa fa-angle-up fa-2x" id="toggle-button"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - Title -->
+                        <div id="div-custom-field" class="collapsible">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 1 Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_1_name"
+                                           id="txt_additional_field_1_name"
+                                           value="{{ agent_profile.additional.field_1_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 1 Value</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_1_value"
+                                           id="txt_additional_field_1_value"
+                                           value="{{ agent_profile.additional.field_1_value|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 2 Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_2_name"
+                                           id="txt_additional_field_2_name"
+                                           value="{{ agent_profile.additional.field_2_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 2 Value</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_2_value"
+                                           id="txt_additional_field_2_value"
+                                           value="{{ agent_profile.additional.field_2_value|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 3 Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_3_name"
+                                           id="txt_additional_field_3_name"
+                                           value="{{ agent_profile.additional.field_3_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 3 Value</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_3_value"
+                                           id="txt_additional_field_3_value"
+                                           value="{{ agent_profile.additional.field_3_value|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 4 Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_4_name"
+                                           id="txt_additional_field_4_name"
+                                           value="{{ agent_profile.additional.field_4_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 4 Value</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_4_value"
+                                           id="txt_additional_field_4_value"
+                                           value="{{ agent_profile.additional.field_4_value|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 5 Name</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="additional_field_5_name"
+                                           id="txt_additional_field_5_name"
+                                           value="{{ agent_profile.additional.field_5_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Field 5 Value</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_field_5_value"
+                                           id="txt_additional_field_5_value"
+                                           value="{{ agent_profile.additional.field_5_value|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Supporting File 1</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_1_url"
+                                           id="txt_additional_supporting_file_1_url"
+                                           value="{{ agent_profile.additional.supporting_file_1_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Supporting File 2</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_2_url"
+                                           id="txt_additional_supporting_file_2_url"
+                                           value="{{ agent_profile.additional.supporting_file_2_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Supporting File 3</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_3_url"
+                                           id="txt_additional_supporting_file_3_url"
+                                           value="{{ agent_profile.additional.supporting_file_3_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Supporting File 4</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_4_url"
+                                           id="txt_additional_supporting_file_4_url"
+                                           value="{{ agent_profile.additional.supporting_file_4_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Supporting File 5</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="additional_supporting_file_5_url"
+                                           id="txt_additional_supporting_file_5_url"
+                                           value="{{ agent_profile.additional.supporting_file_5_url|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End section 11 - Content -->
+
+                        <div class="pull-right">
+                            <a onclick="location.reload();">
+                                <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button"
+                                       value="Cancel"/>
+                            </a>
+
+                            <a href="{% url 'agents:agent_registration' %}">
+                                <input id="btn_create" class="btn btn-success text-left mb15" type="submit"
+                                       value="Create"/>
+                            </a>
+                        </div>
+                    </form>
                 </div>
-    </div>
-    <!-- End section 2 - row 2 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Parent ID</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="parent_id"
-                       id="txt_parent_id" value="{{ agent_profile.parent_id|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">User Name *</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="username"
-                       id="txt_user_name"
-                       value="{{ identity.username | default_if_none:'' }}" required/>
             </div>
         </div>
     </div>
-    <!-- End section 2 - row 3 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Grand Parent ID</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="grand_parent_id"
-                       id="txt_grand_parent_id" value="{{ agent_profile.grand_parent_id | default_if_none:'' }}" />
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label" id="lbl_password">Password *</label>
-            <div class="col-sm-8">
-                <input type="password" class="form-control input-rounded" name="password"
-                       id="txt_password" required/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 2 - row 4 -->
-
-    <div class="row">
-            <div class="form-group col-md-6">
-                    <label class="col-sm-4 control-label">Currency *</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="ddl_currency" name="currency" required>
-                        {% for currency in currencies %}
-                        {% if currency == context_currency %}
-                                <option value="{{ currency }}" selected>{{ currency }}
-                            </option>
-                        {% else %}
-                                <option value="{{ currency }}">{{ currency }}</option>
-                        {% endif %}
-                        {% endfor %}
-                        </select>
-                    </div>
-                </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label" id="lbl_re_password">Re-password *</label>
-            <div class="col-sm-8">
-                <input type="password" class="form-control input-rounded" name="re_password"
-                       id="txt_re_password" required  onchange="validatePassword(this)"/>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Unique Reference *</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="unique_reference"
-                       id="txt_unique_reference" value="{{ agent_profile.unique_reference|default_if_none:'' }}" required/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">System Password</label>
-            <div class="col-sm-8">
-                {% if identity.auto_generate_password %}
-                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="check_system_password()" checked>
-                {%else%}
-                    <input type="checkbox" name="system_password" id="chk_system_password" onchange="check_system_password()">
-                {%endif%}
-            </div>
-        </div>
-    </div>
-    <!-- End section 2 - row 5 -->
-    <hr/>
-
-    <!-- Begin section 5 [Agent Info] -->
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"><strong>Personal Details</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 5 - row 1 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Last Name</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="lastname"
-                       id="txt_last_name" value="{{ agent_profile.lastname|default_if_none:'' }}" />
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">First Name</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="firstname"
-                       id="txt_first_name" value="{{ agent_profile.firstname|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 5 - row 2 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Date of Birth</label>
-            <div class="col-sm-8">
-                <input type="date" class="form-control input-rounded" name="date_of_birth" onchange="VerifyDate(this)"
-                       id="dtp_birth_date" value="{{ context_date.date_of_birth|date:'Y-m-d'|default_if_none:'' }}" />
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Gender</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="gender"
-                       id="txt_gender" value="{{ agent_profile.gender|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 5 - row 3 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">National</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="national"
-                       id="txt_national" value="{{ agent_profile.national|default_if_none:'' }}" />
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 5 - row 4 -->
-
-    <!-- Begin section 6 [Primary Identify] -->
-    <hr/>
-    <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label"><strong>KYC Details</strong></label>
-                <div class="col-sm-8"></div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label"></label>
-                <div class="col-sm-8"></div>
-            </div>
-        </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"><strong>Primary Identify</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 6 - row 1 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Identify Type</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="primary_Identify_type"
-                       id="txt_primary_identify_type" value="{{ agent_profile.primary_Identify_type|default_if_none:'' }}" />
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 6 - row 2 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Identify ID</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="primary_Identify_id"
-                       id="txt_primary_identify_id" value="{{ agent_profile.primary_Identify_id|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Place of Issue</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
-                       id="txt_primary_place_issue" value="{{ agent_profile.primary_place_of_issue|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 6 - row 3 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Issue Date</label>
-            <div class="col-sm-8">
-                <input type="date" class="form-control input-rounded" name="primary_issue_date"
-                       id="dtp_primary_issue_date" value="{{ context_date.primary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Expire Date</label>
-            <div class="col-sm-8">
-                <input type="date" class="form-control input-rounded" name="primary_expire_date"
-                       id="dtp_primary_expire_date" value="{{ context_date.primary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 6 - row 4 -->
-    <!-- Begin section 7 [Secondary Identify] -->
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"><strong>Secondary Identify</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 7 - row 1 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Identify Type</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="secondary_Identify_type"
-                       id="txt_secondary_identify_type" value="{{ agent_profile.secondary_Identify_type|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 7 - row 2 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Identify ID</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="secondary_Identify_id"
-                       id="txt_secondary_identify_id" value="{{ agent_profile.secondary_Identify_id|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Place of Issue</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="secondary_place_of_issue"
-                       id="txt_secondary_place_issue" value="{{ agent_profile.secondary_place_of_issue|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 7 - row 3 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Issue Date</label>
-            <div class="col-sm-8">
-                <input type="date" class="form-control input-rounded" name="secondary_issue_date"
-                       id="dtp_secondary_issue_date" value="{{ context_date.secondary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Expire Date</label>
-            <div class="col-sm-8">
-                <input type="date" class="form-control input-rounded" name="secondary_expire_date"
-                       id="dtp_secondary_expire_date" value="{{ context_date.secondary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">KYC Status</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="kyc_status"
-                       id="txt_kyc_status" value="{{ agent_profile.kyc_status|default_if_none:'' }}" />
-            </div>
-        </div>
-    </div>
-    <!-- End section 7 - row 4 -->
-    <hr/>
-
-    <!-- Begin section 8 [Contact Info] -->
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"><strong>Contact Details</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 8 - row 1 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Nationality</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="nationality"
-                       id="txt_nationality" value="{{ agent_profile.nationality|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-
-    <!-- End section 8 - row 3 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Primary Mobile Number</label>
-            <div class="col-sm-8">
-                <input type="number" class="form-control input-rounded" name="primary_mobile_number"
-                       id="txt_primary_mobile_number" value="{{ agent_profile.primary_mobile_number|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Email</label>
-            <div class="col-sm-8">
-                <input type="email" class="form-control input-rounded" name="email"
-                       id="txt_email" value="{{ agent_profile.email|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 8 - row 5 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Secondary Mobile Number</label>
-            <div class="col-sm-8">
-                <input type="number" class="form-control input-rounded" name="secondary_mobile_number"
-                       id="txt_secondary_mobile_number" value="{{ agent_profile.secondary_mobile_number|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <!-- End section 8 - row 6 -->
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Tertiary Mobile Number</label>
-            <div class="col-sm-8">
-                <input type="number" class="form-control input-rounded" name="tertiary_mobile_number"
-                       id="txt_tertiary_mobile_number" value="{{ agent_profile.tertiary_mobile_number|default_if_none:'' }}" />
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <!-- End section 8 - row 7 -->
-    <div id="current-address-area">
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label current-address-label"><strong>Current Address</strong></label>
-                <div class="col-sm-8"></div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label"></label>
-                <div class="col-sm-8"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Address</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_address"
-                           id="txt_current_address" value="{{ agent_profile.address|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">District</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_district"
-                           id="txt_current_district" value="{{ agent_profile.district|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Province</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_province"
-                           id="txt_current_province" value="{{ agent_profile.province|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Commune</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_commune"
-                           id="txt_current_commune" value="{{ agent_profile.commune|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Country</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_country"
-                           id="txt_current_country" value="{{ agent_profile.country|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Land Mark</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_landmark"
-                           id="txt_current_land_mark" value="{{ agent_profile.landmark|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Longitude</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_longitude"
-                           id="txt_current_longitude" value="{{ agent_profile.longitude|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Latitude</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="current_latitude"
-                           id="txt_current_latitude" value="{{ agent_profile.latitude|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="checkbox" style="margin-left: 33px;">
-        <label>
-          <input type="checkbox" id="chk_permanent_address" name="is-permanent-same-current" {% if permanent_address_check %}checked{% endif %} >Permanent Address and Current Address are the same</label>
-    </div>
-    <div id="permanent-address-area" >
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label current-address-label"><strong>Permanent Address</strong></label>
-                <div class="col-sm-8"></div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label"></label>
-                <div class="col-sm-8"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Address</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_address"
-                           id="txt_permanent_address" value="{{ agent_profile.permanent_address|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">District</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_district"
-                           id="txt_permanent_district" value="{{ agent_profile.permanent_district|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Province</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_province"
-                           id="txt_permanent_province" value="{{ agent_profile.permanent_province|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Commune</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_commune"
-                           id="txt_permanent_commune" value="{{ agent_profile.permanent_commune|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Country</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_country"
-                           id="txt_permanent_country" value="{{ agent_profile.permanent_country|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Land Mark</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_landmark"
-                           id="txt_permanent_land_mark" value="{{ agent_profile.permanent_landmark|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Longitude</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_longitude"
-                           id="txt_permanent_longitude" value="{{ agent_profile.permanent_longitude|default_if_none:'' }}"/>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="col-sm-4 control-label">Latitude</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control input-rounded" name="permanent_latitude"
-                           id="txt_permanent_latitude" value="{{ agent_profile.permanent_latitude|default_if_none:'' }}"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label current-address-label"><strong>Bank Details</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Bank Name</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="bank_name"
-                       id="txt_bank_name" value="{{ agent_profile.bank.name|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Bank Branch City</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="bank_branch_city"
-                       id="txt_bank_branch_city" value="{{ agent_profile.bank.branch_city|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Bank Branch Area</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="bank_branch_area"
-                       id="txt_bank_branch_area" value="{{ agent_profile.bank.branch_area|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Bank Account Number</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="bank_account_number"
-                       id="txt_bank_account_number" value="{{ agent_profile.bank.account_number|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-
-    <hr/>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label current-address-label"><strong>Contract Details</strong></label>
-            <div class="col-sm-8"></div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Contract Type</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="contract_type"
-                       id="txt_contract_type" value="{{ agent_profile.contract.type|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Contract Sign Date</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="contract_sign_date" placeholder="2018-01-17T00:00:00Z"
-                       id="txt_contract_sign_date" value="{{ agent_profile.contract.sign_date|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Contract Number</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="contract_number"
-                       id="txt_contract_number" value="{{ agent_profile.contract.number|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Contract Issue Date</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="contract_issue_date" placeholder="2018-01-17T00:00:00Z"
-                       id="txt_contract_issue_date" value="{{ agent_profile.contract.issue_date|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Extension Type</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="extension_type"
-                       id="txt_extension_type" value="{{ agent_profile.contract.extended_type|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Contract Expiry Date</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="contract_expiry_date" placeholder="2018-01-17T00:00:00Z"
-                       id="txt_contract_expiry_date" value="{{ agent_profile.contract.expired_date|default_if_none:'' }}"/>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label">Notification Alert</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control input-rounded" name="notification_alert"
-                       id="txt_notification_alert" value="{{ agent_profile.contract.day_of_period_reconciliation|default_if_none:'' }}"/>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-8"></div>
-        </div>
-    </div>
-    <!-- End section 8 - row 8 -->
-
-                    
-                    <div class="pull-right">
-                        <a onclick="location.reload();">
-                            <input id="btn_cancel" class="btn btn-cancel text-left mb15" type="button" value="Cancel"/>
-                        </a>
-                        
-                        <a href="{% url 'agents:agent_registration' %}">
-                            <input id="btn_create" class="btn btn-success text-left mb15" type="submit" value="Create"/>
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 {% endblock %}
 
 {% block body_js %}
-{{ block.super }}
-<script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
-<script>
-     {% if permanent_address_check %}
-        $('#permanent-address-area').hide();
-     {% endif %}
-
-    $('#chk_permanent_address').change(function() {
-        if($('#chk_permanent_address').is(':checked')) {
+    {{ block.super }}
+    <script src="{% static 'vendor/sweetalert/lib/sweet-alert.min.js' %}"></script>
+    <script>
+        {% if permanent_address_check %}
             $('#permanent-address-area').hide();
-        } else {
-            $('#permanent-address-area').show();
-        }
-    });
-    var dtp_birth_date = document.getElementById('dtp_birth_date');
-    var password = document.getElementById("txt_password");
-    var confirm_password = document.getElementById("txt_re_password");
-    function VerifyDate(element) {
-        var today = new Date();
-        today.setHours(0,0,0,0);
-        if (new Date(element.value) >= today) {
-            dtp_birth_date.setCustomValidity('Date of birth must be less than current date.');
-              return false;
-        } else {
-             dtp_birth_date.setCustomValidity('');
+        {% endif %}
+
+        $('#chk_permanent_address').change(function () {
+            if ($('#chk_permanent_address').is(':checked')) {
+                $('#permanent-address-area').hide();
+            } else {
+                $('#permanent-address-area').show();
+            }
+        });
+        var dtp_birth_date = document.getElementById('dtp_birth_date');
+        var password = document.getElementById("txt_password");
+        var confirm_password = document.getElementById("txt_re_password");
+
+        function VerifyDate(element) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (new Date(element.value) >= today) {
+                dtp_birth_date.setCustomValidity('Date of birth must be less than current date.');
+                return false;
+            } else {
+                dtp_birth_date.setCustomValidity('');
+                return true;
+            }
             return true;
         }
-         return true;
-    }
-    function validatePassword(repass) {
 
-        if(password.value != repass.value) {
-            repass.setCustomValidity("Password and Re-enter Password don't match");
-            return false;
-        } else {
-            repass.setCustomValidity('');
+        function validatePassword(repass) {
+
+            if (password.value != repass.value) {
+                repass.setCustomValidity("Password and Re-enter Password don't match");
+                return false;
+            } else {
+                repass.setCustomValidity('');
+                return true;
+            }
             return true;
         }
-        return true;
-    }
-    function check_system_password() {
-        var pwd = document.getElementById('txt_password');
-        var rePwd = document.getElementById('txt_re_password');
-        var checkbox = document.getElementById('chk_system_password');
-        var labelPwd = document.getElementById('lbl_password');
-        var labelRePwd = document.getElementById('lbl_re_password');
-        if (checkbox.checked) {
-            pwd.disabled = true;
-            pwd.required = false;
-            rePwd.disabled = true;
-            rePwd.required = false;
-            pwd.value='';
-            rePwd.value='';
-            labelPwd.innerHTML = 'Password';
-            labelRePwd.innerHTML =  'Re-password';
-        } else {
-            pwd.disabled = false;
-            pwd.required = true;
-            rePwd.disabled = false;
-            rePwd.required = true;
-            labelPwd.innerHTML= 'Password *';
-            labelRePwd.innerHTML = 'Re-password *';
+
+        function loadMMCardLevel() {
+            var $ele = $('#ddl_mm_card_type');
+            var cardTypeId = $ele.val();
+            var url = $ele.data('url');
+            $('#ddl_mm_card_level').empty();
+            if (cardTypeId) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        card_type_id: cardTypeId
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.status == 1) {
+                            // Logout
+                            var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname;
+                            window.location.replace(url);
+                        } else if (response.status == 2) {
+                            var data = response.data;
+                            if(typeof data.length !== 'undefined') {
+                                $.each(data, function(key, value) {
+                                    $('#ddl_mm_card_level').append('<option value="' + value.id + '">' + value.level + '</option>');
+;
+                                });
+                            }
+                        } else {
+                        }
+                    },
+                    error: function (msg) {
+                    }
+                });
+            }
         }
-    }
+        loadMMCardLevel();
 
-    check_system_password();
+        function check_system_password() {
+            var pwd = document.getElementById('txt_password');
+            var rePwd = document.getElementById('txt_re_password');
+            var checkbox = document.getElementById('chk_system_password');
+            var labelPwd = document.getElementById('lbl_password');
+            var labelRePwd = document.getElementById('lbl_re_password');
+            if (checkbox.checked) {
+                pwd.disabled = true;
+                pwd.required = false;
+                rePwd.disabled = true;
+                rePwd.required = false;
+                pwd.value = '';
+                rePwd.value = '';
+                labelPwd.innerHTML = 'Password';
+                labelRePwd.innerHTML = 'Re-password';
+            } else {
+                pwd.disabled = false;
+                pwd.required = true;
+                rePwd.disabled = false;
+                rePwd.required = true;
+                labelPwd.innerHTML = 'Password *';
+                labelRePwd.innerHTML = 'Re-password *';
+            }
+        }
 
-</script>
+        check_system_password();
+
+        $(document).ready(function (e) {
+            $('.collapsible-button').on('click', function (e) {
+                var $section = $(this).closest('div.row').next('div.collapsible');
+                var $angle = $(this).find("#toggle-button");
+                if ($angle.hasClass("fa-angle-down")) {
+                    $angle.removeClass("fa-angle-down");
+                    $angle.addClass("fa-angle-up");
+                    $section.show();
+                } else {
+                    $angle.removeClass("fa-angle-up");
+                    $angle.addClass("fa-angle-down");
+                    $section.hide();
+                }
+            });
+        });
+
+    </script>
 {% endblock %}

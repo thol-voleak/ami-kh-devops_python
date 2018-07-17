@@ -159,8 +159,8 @@
                     <tr>
                         {% if agent.is_deleted %}
                             <td class="col-sm-1"><del>{{ agent.id }}</del></td>
-                            <td class="col-sm-3"><del>{{ agent.firstname|default_if_none:'' }}</del></td>
-                            <td class="col-sm-5"><del>{{ agent.lastname|default_if_none:'' }}</del></td>
+                            <td class="col-sm-3"><del>{{ agent.first_name|default_if_none:'' }}</del></td>
+                            <td class="col-sm-5"><del>{{ agent.last_name|default_if_none:'' }}</del></td>
                             <td class="col-sm-5"><del>{{ agent.primary_identify_id|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.primary_mobile_number|default_if_none:'' }}</del></td>
                             <td class="col-sm-2"><del>{{ agent.email|default_if_none:'' }}</del></td>
@@ -173,8 +173,8 @@
                             <td class="col-sm-3"></td>
                         {% else %}
                             <td class="col-sm-1">{{ agent.id }}</td>
-                            <td class="col-sm-3">{{ agent.firstname|default_if_none:'' }}</td>
-                            <td class="col-sm-5">{{ agent.lastname|default_if_none:'' }}</td>
+                            <td class="col-sm-3">{{ agent.first_name|default_if_none:'' }}</td>
+                            <td class="col-sm-5">{{ agent.last_name|default_if_none:'' }}</td>
                             <td class="col-sm-5">{{ agent.primary_identify_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.primary_mobile_number|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ agent.email|default_if_none:'' }}</td>

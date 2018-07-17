@@ -50,6 +50,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cancel_status_list': self._get_cancel_status_list(),
             'voucher_type_list': self._get_voucher_type_list(),
             'distributed_status_list': self._get_distributed_status_list(),
+            'delete_status_list': self._get_delete_status_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -71,10 +72,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cash_in_order_id = request.POST.get('cash_in_order_id')
         cash_out_order_id = request.POST.get('cash_out_order_id')
         issuer_user_id = request.POST.get('issuer_user_id')
+        distributed_user_id = request.POST.get('distributed_user_id')
         cancel_status = request.POST.get('cancel_status')
         voucher_type = request.POST.get('voucher_type')
         distributed_status = request.POST.get('distributed_status')
         voucher_group = request.POST.get('voucher_group')
+        delete_status = request.POST.get('delete_status')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -85,7 +88,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         if cash_out_id:
             body['cash_out_user_id'] = int(cash_out_id)
         if voucher_id:
-            body['voucher_id'] = int(voucher_id)
+            body['voucher_id'] = voucher_id
         if claim_status == 'True':
             body['is_used'] = True
         if claim_status == 'False':
@@ -98,6 +101,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['cash_out_order_id'] = int(cash_out_order_id)
         if issuer_user_id:
             body['issuer_user_id'] = int(issuer_user_id)
+        if distributed_user_id:
+            body['distributed_user_id'] = int(distributed_user_id)
         if cancel_status != '':
             body['is_cancelled'] = True if cancel_status == 'True' else False
 
@@ -129,6 +134,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['distributed_status'] = True if distributed_status == 'True' else False
         if voucher_group != '':
             body['voucher_group'] = voucher_group
+        if delete_status != '':
+            body['is_deleted'] = True if delete_status == 'True' else False
 
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
@@ -166,12 +173,15 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'cash_out_order_id': cash_out_order_id,
             'cash_in_order_id': cash_in_order_id,
             'issuer_user_id': issuer_user_id,
+            'distributed_user_id': distributed_user_id,
             'cancel_status': cancel_status,
             'voucher_type_list': self._get_voucher_type_list(),
             'voucher_type': voucher_type,
             'distributed_status_list': self._get_distributed_status_list(),
             'distributed_status': distributed_status,
             'voucher_group': voucher_group,
+            'delete_status_list': self._get_delete_status_list(),
+            'delete_status': delete_status,
         }
         return render(request, self.template_name, context)
 
@@ -235,4 +245,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "All", "value": ""},
             {"name": "Yes", "value": "True"},
             {"name": "No", "value": "False"}
+        ]
+    
+    @staticmethod
+    def _get_delete_status_list():
+        return [
+            {"name": "All", "value": ""},
+            {"name": "Deleted", "value": "True"},
+            {"name": "None", "value": "False"}
         ]
