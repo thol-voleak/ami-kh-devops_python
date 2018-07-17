@@ -24,7 +24,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return check_permissions_by_user(self.request.user, permission[0])
 
     template_name = "sof/bank_transaction.html"
-    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/"+api_settings.API_VERSION+"/banks/transactions"
+    search_bank_transaction = settings.DOMAIN_NAMES + "api-gateway/report/" + api_settings.API_VERSION + "/banks/transactions"
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
@@ -41,13 +41,15 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
+        short_order_id = request.POST.get('short_order_id')
         status = request.POST.get('status')
         type = request.POST.get('type')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
-        body = self.createSearchBody(from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type)
+        body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
+                                     to_created_timestamp, type)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -63,7 +65,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': page.get('total_elements', 0),
                  'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page),
-                 #'user_id': user_id,
+                 # 'user_id': user_id,
                  'transaction_list': cards_list,
                  'search_by': body,
                  'from_created_timestamp': from_created_timestamp,
@@ -85,12 +87,15 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching bank SOF transaction ==========')
         return render(request, self.template_name, context)
 
-    def createSearchBody(self, from_created_timestamp, order_id, sof_id, status, to_created_timestamp, type):
+    def createSearchBody(self, from_created_timestamp, order_id, short_order_id, sof_id, status, to_created_timestamp,
+                         type):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
         if order_id is not '' and order_id is not None:
             body['order_id'] = order_id
+        if short_order_id is not '' and short_order_id is not None:
+            body['short_order_id'] = short_order_id
         if status is not '' and status is not None:
             body['status_id'] = [int(status)]
         if type is not '' and type is not None:
