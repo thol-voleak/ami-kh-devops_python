@@ -274,6 +274,18 @@
                                value="{{ voucher_group|default_if_none:'' }}"
                                id="txt_voucher_group">
                     </div>
+                    <label class="col-sm-3 control-label">Delete Status</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="ddl_delete_status" name="delete_status" >
+                            {% for item in delete_status_list %}
+                                {%if item.value == delete_status%}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                  <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
                             <input id="current_page_index" name="current_page_index" style="display:none" value="1">
