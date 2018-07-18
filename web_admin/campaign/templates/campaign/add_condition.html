@@ -165,7 +165,7 @@
                 keyValueDiv.attr("style", "display: none;");
             } else {
                 keyValueInput.attr("required", true);
-                keyValueDiv.attr("style", "");
+                keyValueDiv.removeAttr("style");
                 var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
                 if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of"))
                     keyValueInput.attr('type', 'text');
