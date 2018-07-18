@@ -48,9 +48,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
         user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
 
         body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
-                                     to_created_timestamp, type, user_id)
+                                     to_created_timestamp, type, user_id, user_type_id)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -70,7 +71,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'transaction_list': cards_list,
                  'search_by': body,
                  'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
+                 'to_created_timestamp': to_created_timestamp,
+                 'user_type_id': user_type_id
                  }
             )
         else:
@@ -81,7 +83,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'transaction_list': [],
                  'search_by': body,
                  'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
+                 'to_created_timestamp': to_created_timestamp,
+                 'user_type_id': user_type_id
                  }
             )
 
@@ -89,7 +92,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def createSearchBody(self, from_created_timestamp, order_id, short_order_id, sof_id, status, to_created_timestamp,
-                         type,user_id):
+                         type, user_id, user_type_id):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -112,6 +115,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['to_created_timestamp'] = new_to_created_timestamp
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
+        if user_type_id is not '' and user_id is not None and user_type_id is not '0':
+            body['user_type_id'] = int(user_type_id)
         return body
 
     def _get_sof_bank_transaction(self, body):
