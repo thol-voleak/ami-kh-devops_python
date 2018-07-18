@@ -545,7 +545,7 @@
                                 <label class="col-sm-3 control-label">Citizen Association</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_citizen_association"
-                                           id="txt_citizen_association"
+                                           id="txt_current_address_citizen_association"
                                            value="{{ agent_profile.address.current_address.citizen_association|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -554,7 +554,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="current_neighbourhood_association"
-                                           id="txt_neighbourhood_association"
+                                           id="txt_current_address_neighbourhood_association"
                                            value="{{ agent_profile.address.current_address.neighbourhood_association|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -562,7 +562,7 @@
                                 <label class="col-sm-3 control-label">Address</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_address"
-                                           id="txt_current_address"
+                                           id="txt_current_address_address"
                                            value="{{ agent_profile.address.current_address.address|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -570,7 +570,7 @@
                                 <label class="col-sm-3 control-label">Commune</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_commune"
-                                           id="txt_current_commune"
+                                           id="txt_current_address_commune"
                                            value="{{ agent_profile.address.current_address.commune|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -578,7 +578,7 @@
                                 <label class="col-sm-3 control-label">District</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_district"
-                                           id="txt_current_district"
+                                           id="txt_current_address_district"
                                            value="{{ agent_profile.address.current_address.district|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -593,7 +593,7 @@
                                 <label class="col-sm-3 control-label">Province</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_province"
-                                           id="txt_current_province"
+                                           id="txt_current_address_province"
                                            value="{{ agent_profile.address.current_address.province|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -601,7 +601,7 @@
                                 <label class="col-sm-3 control-label">Postal Code</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_postal_code"
-                                           id="txt_postal_code"
+                                           id="txt_current_address_postal_code"
                                            value="{{ agent_profile.address.current_address.postal_code|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -609,15 +609,15 @@
                                 <label class="col-sm-3 control-label">Country</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_country"
-                                           id="txt_current_country"
+                                           id="txt_current_address_country"
                                            value="{{ agent_profile.address.current_address.country|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Land Mark</label>
+                                <label class="col-sm-3 control-label">Landmark</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_landmark"
-                                           id="txt_current_land_mark"
+                                           id="txt_current_address_landmark"
                                            value="{{ agent_profile.address.current_address.landmark|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -625,7 +625,7 @@
                                 <label class="col-sm-3 control-label">Longitude</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_longitude"
-                                           id="txt_current_longitude"
+                                           id="txt_current_address_longitude"
                                            value="{{ agent_profile.address.current_address.longitude|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -633,15 +633,7 @@
                                 <label class="col-sm-3 control-label">Latitude</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_latitude"
-                                           id="txt_current_latitude"
-                                           value="{{ agent_profile.address.current_address.latitude|default_if_none:'' }}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Latitude</label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="current_latitude"
-                                           id="txt_current_latitude"
+                                           id="txt_current_address_latitude"
                                            value="{{ agent_profile.address.current_address.latitude|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -672,7 +664,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="permanent_citizen_association"
-                                           id="txt_permanent_citizen_association"
+                                           id="txt_permanent_address_citizen_association"
                                            value="{{ agent_profile.address.permanent_address.citizen_association|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -681,7 +673,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="permanent_neighbourhood_association"
-                                           id="txt_permanent_neighbourhood_association"
+                                           id="txt_ppermanent_address_neighbourhood_association"
                                            value="{{ agent_profile.address.permanent_address.neighbourhood_association|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -689,7 +681,7 @@
                                 <label class="col-sm-3 control-label">Address</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_address"
-                                           id="txt_permanent_address"
+                                           id="txt_permanent_address_address"
                                            value="{{ agent_profile.address.permanent_address.address|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -697,7 +689,7 @@
                                 <label class="col-sm-3 control-label">Commune</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_commune"
-                                           id="txt_permanent_commune"
+                                           id="txt_permanent_address_commune"
                                            value="{{ agent_profile.address.permanent_address.commune|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -705,7 +697,7 @@
                                 <label class="col-sm-3 control-label">District</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_district"
-                                           id="txt_permanent_district"
+                                           id="txt_permanent_address_district"
                                            value="{{ agent_profile.address.permanent_address.district|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -713,7 +705,7 @@
                                 <label class="col-sm-3 control-label">City</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_city"
-                                           id="txt_permanent_city"
+                                           id="txt_permanent_address_city"
                                            value="{{ agent_profile.address.permanent_address.city|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -721,7 +713,7 @@
                                 <label class="col-sm-3 control-label">Province</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_province"
-                                           id="txt_permanent_province"
+                                           id="txt_permanent_address_province"
                                            value="{{ agent_profile.address.permanent_address.province|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -730,7 +722,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="permanent_postal_code"
-                                           id="txt_permanent_postal_code"
+                                           id="txt_permanent_address_postal_code"
                                            value="{{ agent_profile.address.permanent_address.postal_code|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -738,15 +730,15 @@
                                 <label class="col-sm-3 control-label">Country</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_country"
-                                           id="txt_permanent_country"
+                                           id="txt_permanent_address_country"
                                            value="{{ agent_profile.address.permanent_address.country|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Land Mark</label>
+                                <label class="col-sm-3 control-label">Landmark</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_landmark"
-                                           id="txt_permanent_land_mark"
+                                           id="txt_permanent_address_landmark"
                                            value="{{ agent_profile.address.permanent_address.landmark|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -754,7 +746,7 @@
                                 <label class="col-sm-3 control-label">Longitude</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_longitude"
-                                           id="txt_permanent_longitude"
+                                           id="txt_permanent_address_longitude"
                                            value="{{ agent_profile.address.permanent_address.longitude|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -762,7 +754,7 @@
                                 <label class="col-sm-3 control-label">Latitude</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_latitude"
-                                           id="txt_permanent_latitude"
+                                           id="txt_permanent_address_latitude"
                                            value="{{ agent_profile.address.permanent_address.latitude|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -937,7 +929,7 @@
                                 <label class="col-sm-3 control-label">Contract Expiry Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="contract_expiry_date"
-                                           id="txt_contract_expiry_date"
+                                           id="txt_contract_expired_date"
                                            value="{{ agent_profile.contract_expired_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -945,7 +937,7 @@
                                 <label class="col-sm-3 control-label">Notification Alert</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="notification_alert"
-                                           id="txt_notification_alert"
+                                           id="txt_contract_notification_alert"
                                            value="{{ agent_profile.contract.notification_alert|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -954,7 +946,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="reconciliation_period_days"
-                                           id="txt_reconciliation_period_days"
+                                           id="txt_contract_reconciliation_period_days"
                                            value="{{ agent_profile.contract.day_of_period_reconciliation|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -970,7 +962,7 @@
                                 <label class="col-sm-3 control-label">Assessment Information [File Upload]</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="assessment_information"
-                                           id="txt_assessment_information"
+                                           id="txt_contract_assessment_information"
                                            value="{{ agent_profile.contract.assessment_information_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1002,7 +994,7 @@
                                 <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="primary_identify_type"
-                                           id="txt_primary_identify_type"
+                                           id="txt_primary_identity_type"
                                            value="{{ agent_profile.accreditation.primary_identity.type|default_if_none:'' }}"/>
                                 </div>
                             </div>
