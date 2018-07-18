@@ -252,7 +252,11 @@
                                             <option value="">-</option>
                                         {% endif %}
                                         {% for item in mm_card_types %}
-                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                            {% if agent_profile.mm_card_type_id == item.id %}
+                                                <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                            {% else %}
+                                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -1499,7 +1503,6 @@
                         } else if (response.status == 2) {
                             var data = response.data;
                             if(typeof data.length !== 'undefined') {
-                                $('#ddl_mm_card_levels').append('<option value="">'-'</option>');
                                 $.each(data, function(key, value) {
                                     $('#ddl_mm_card_levels').append('<option value="' + value.id + '">' + value.level + '</option>');
                             });}
