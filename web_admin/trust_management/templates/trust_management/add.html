@@ -169,8 +169,8 @@
                         if (response.data.page.total_elements == 0) {
                             showErrorMessage("User is not found");
                         } else {
-                            var firstName = response.data.agents[0].firstname;
-                            var lastName = response.data.agents[0].lastname;
+                            var firstName = response.data.agents[0].first_name;
+                            var lastName = response.data.agents[0].last_name;
                             var fullName = (firstName != null ? (firstName + " ") : "") + (lastName != null ? lastName : "");
                             $('#' + eName).attr('value', fullName);
                         }
