@@ -44,12 +44,13 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         short_order_id = request.POST.get('short_order_id')
         status = request.POST.get('status')
         type = request.POST.get('type')
+        provider_name = request.POST.get('provider_name')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
         body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
-                                     to_created_timestamp, type)
+                                     to_created_timestamp, type, provider_name)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -57,37 +58,41 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         data, success, status_message = self._get_card_sof_transaction(body=body)
         body['from_created_timestamp'] = from_created_timestamp
         body['to_created_timestamp'] = to_created_timestamp
+
+        context.update({
+            'sof_id': sof_id,
+            'order_id': order_id,
+            'short_order_id': short_order_id,
+            'status': status,
+            'type': type,
+            'provider_name': provider_name,
+            'from_created_timestamp': from_created_timestamp,
+            'to_created_timestamp': to_created_timestamp
+        })
+
         if success:
             cards_list = data.get("card_sof_transactions", [])
             page = data.get("page", {})
             self.logger.info("Page: {}".format(page))
-            context.update(
-                {'search_count': page.get('total_elements', 0),
-                 'paginator': page,
-                 'page_range': calculate_page_range_from_page_info(page),
-                 # 'user_id': user_id,
-                 'transaction_list': cards_list,
-                 'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
+            context.update({
+                'search_count': page.get('total_elements', 0),
+                'paginator': page,
+                'page_range': calculate_page_range_from_page_info(page),
+                # 'user_id': user_id,
+                'transaction_list': cards_list
+            })
         else:
-            context.update(
-                {'search_count': 0,
-                 'paginator': {},
-                 # 'user_id': user_id,
-                 'transaction_list': [],
-                 'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
-                 }
-            )
+            context.update({
+                'search_count': 0,
+                'paginator': {},
+                # 'user_id': user_id,
+                'transaction_list': [],
+            })
         self.logger.info('========== End search card sof transaction ==========')
         return render(request, self.template_name, context)
 
-    def createSearchBody(self, from_created_timestamp, order_id, short_order_id, sof_id, status, to_created_timestamp,
-                         type):
+    def createSearchBody(self, from_created_timestamp, order_id, short_order_id,
+                         sof_id, status, to_created_timestamp, type, provider_name):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -99,6 +104,8 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['status_id'] = [int(status)]
         if type is not '' and type is not None:
             body['action_id'] = int(type)
+        if provider_name is not '' and type is not None:
+            body['provider_name'] = provider_name
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
