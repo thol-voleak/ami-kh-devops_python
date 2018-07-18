@@ -10,7 +10,6 @@ from braces.views import GroupRequiredMixin
 from django.views.generic.base import TemplateView
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -39,7 +38,7 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info( '========== Start creating Fraud Ticket ==========')
+        self.logger.info('========== Start creating Fraud Ticket ==========')
 
         data_type = request.POST.get('data_type')
         key_value = request.POST.get('key_value')
@@ -58,24 +57,31 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "start_active_ticket_timestamp": start_date,
             "end_active_ticket_timestamp": end_date,
             "description": reason if reason != 'Others' else request.POST.get('notes'),
-            "data": {}
+            "data": []
         }
 
+        data = []
+        data_body = {}
         if data_type == 'virtual_card':
             params['action'] = 'unstop card'
-            params['data']['card_id'] = int(key_value) if key_value.isnumeric() else key_value
+            data_body['card_id'] = int(key_value) if key_value.isnumeric() else key_value
         elif data_type == 'device_id':
             params['action'] = 'register customer'
-            params['data']['device_id'] = key_value
+            data_body['device_id'] = key_value
+
+        data.append(data_body)
+        params['data'] = data
 
         success, data, message = self.create_fraud_ticket(params)
         self.logger.info('========== Finish creating Fraud Ticket ==========')
 
         if success:
+            tickets = data.get('tickets', [])
+            ticket_id = tickets[0].get('ticket_id')
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Fraud Ticket #{} is created'.format(data.get('ticket_id')))
+                'Fraud Ticket #{} is created'.format(ticket_id))
         else:
             messages.add_message(
                 request,
