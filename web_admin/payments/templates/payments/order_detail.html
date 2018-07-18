@@ -605,6 +605,8 @@
                             <a href="{{back_wallet_url}}">
                         {% elif page_from == 'order_list' %}
                             <a href="{% url 'payments:payment_order' %}">
+                        {% elif ref_page != None %}
+                            <a href="{{ ref_page_url }}">
                         {% else %}
                             <a href="{% url 'payments:payment_order' %}">
                         {% endif %}

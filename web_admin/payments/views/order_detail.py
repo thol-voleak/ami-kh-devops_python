@@ -100,6 +100,11 @@ class OrderDetailView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context['agent_id'] = agent_id
         context['customer_id'] = customer_id
         context['back_wallet_url'] = back_wallet_url
+        ref_page = self.request.GET.get('ref_page', None)
+        if ref_page:
+            context['ref_page'] = ref_page
+            context['ref_page_url'] = self.request.session.get("ref_page_url", None)
+
         self.logger.info('========== End getting order detail ==========')
         return render(request, self.template_name, context)
 
