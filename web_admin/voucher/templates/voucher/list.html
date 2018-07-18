@@ -312,9 +312,9 @@
                         {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                         <li><a onclick="unHold()">Unhold</a></li>
                         {%endif%}
-{#                        {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}#}
+                        {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
                         <li><a>Cancel</a></li>
-{#                        {%endif%}#}
+                        {%endif%}
                         {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
                         <li id="upload_vouchers"><a>Upload Vouchers</a></li>
                         {%endif%}
