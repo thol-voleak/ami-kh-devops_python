@@ -175,4 +175,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" id="divModalDialog">
+            <div class="modal-content" id="divModalContent">
+
+            </div>
+        </div>
+    </div>
+
+<script src="/admin-portal/static/vendor/jquery/dist/jquery.min.js"></script>
+<script src="{% static 'js/search_user.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      initSearchIconVisible();
+      $(window).keydown(function(event){
+        if(event.keyCode == 13 && event.target.id == 'txt_mobile_number') {
+          event.preventDefault();
+          searchUser('{% url 'card_sofs:search_user' %}');
+        }
+      });
+    });
+</script>
+
 {% endblock %}
