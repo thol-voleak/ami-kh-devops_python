@@ -153,6 +153,7 @@
                             <thead>
                             <tr>
                                 <th id="order_id">Order ID</th>
+                                <th id="short_order_id">Short Order ID</th>
                                 <th id="order_status">Order Status</th>
                                 <th id="external_id">External ID</th>
                                 <th id="command">Command</th>
@@ -175,6 +176,7 @@
                             {% for row in list %}
                                 <tr>
                                     <td>{{ row.order_id|default_if_none:'' }}</td>
+                                    <td>{{ row.short_order_id|default_if_none:'' }}</td>
                                     <td>{{ row.order_status_name|default_if_none:'' }}</td>
                                     <td>{{ row.ext_transaction_id|default_if_none:'' }}</td>
                                     <td>{{ row.command_name|default_if_none:'' }}</td>
