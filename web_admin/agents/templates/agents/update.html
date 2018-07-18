@@ -913,7 +913,7 @@
                                 <label class="col-sm-3 control-label">Extension Type</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="contract_extension_type"
-                                           id="txt_extension_type"
+                                           id="txt_contract_extension_type"
                                            value="{{ agent_profile.contract.extension_type|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1021,7 +1021,7 @@
                                 <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="primary_identify_id"
-                                           id="txt_primary_identify_id"
+                                           id="txt_primary_identity_id"
                                            value="{{ agent_profile.accreditation.primary_identity.identity_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1029,7 +1029,7 @@
                                 <label class="col-sm-3 control-label">Place of Issue</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="primary_place_of_issue"
-                                           id="txt_primary_place_issue"
+                                           id="txt_primary_identity_place_issue"
                                            value="{{ agent_profile.accreditation.primary_identity.place_of_issue|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1037,7 +1037,7 @@
                                 <label class="col-sm-3 control-label">Issue Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="primary_issue_date"
-                                           id="dtp_primary_issue_date"
+                                           id="dtp_primary_identity_issue_date"
                                            value="{{ agent_profile.primary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1045,7 +1045,7 @@
                                 <label class="col-sm-3 control-label">Expire Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="primary_expire_date"
-                                           id="dtp_primary_expire_date"
+                                           id="dtp_primary_identity_expire_date"
                                            value="{{ agent_profile.primary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1054,7 +1054,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="primary_front_identity_attachment"
-                                           id="primary_front_identity_attachment"
+                                           id="txt_primary_identity_front_identity_attachment"
                                            value="{{ agent_profile.accreditation.primary_identity.front_identity_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1063,7 +1063,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="primary_back_identity_attachment"
-                                           id="primary_back_identity_attachment"
+                                           id="txt_primary_identity_back_identity_attachment"
                                            value="{{ agent_profile.accreditation.primary_identity.back_identity_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1077,7 +1077,7 @@
                                 <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="secondary_identify_type"
-                                           id="txt_secondary_identify_type"
+                                           id="txt_secondary_identity_type"
                                            value="{{ agent_profile.accreditation.secondary_identity.type|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1085,7 +1085,7 @@
                                 <label class="col-sm-3 control-label">Status</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_secondary_identity_status"
-                                            name="secondary_identity_status">
+                                            name="ddl_secondary_identity_status">
                                         <option value=""  {% if agent_profile.accreditation.secondary_identity.status is None %} selected{% endif %}>-</option>
                                         <option value="1" {% if agent_profile.accreditation.secondary_identity.status == True %} selected{% endif %}>Active</option>
                                         <option value="0" {% if agent_profile.accreditation.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
@@ -1096,7 +1096,7 @@
                                 <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="secondary_identify_id"
-                                           id="txt_secondary_identify_id"
+                                           id="txt_secondary_identity_id"
                                            value="{{ agent_profile.accreditation.secondary_identity.identity_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1105,7 +1105,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="secondary_place_of_issue"
-                                           id="txt_secondary_place_issue"
+                                           id="txt_secondary_identity_place_issue"
                                            value="{{ agent_profile.accreditation.secondary_identity.place_of_issue|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1113,7 +1113,7 @@
                                 <label class="col-sm-3 control-label">Issue Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="secondary_issue_date"
-                                           id="dtp_secondary_issue_date"
+                                           id="dtp_secondary_identity_issue_date"
                                            value="{{ agent_profile.secondary_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1121,7 +1121,7 @@
                                 <label class="col-sm-3 control-label">Expire Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="secondary_expire_date"
-                                           id="dtp_secondary_expire_date"
+                                           id="dtp_secondary_identity_expire_date"
                                            value="{{ agent_profile.secondary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1130,7 +1130,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="secondary_front_identity_attachment"
-                                           id="secondary_front_identity_attachment"
+                                           id="txt_secondary_identity_front_identity_attachment"
                                            value="{{ agent_profile.accreditation.secondary_identity.front_identity_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1139,7 +1139,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="secondary_back_identity_attachment"
-                                           id="secondary_back_identity_attachment"
+                                           id="txtsecondary_identity_back_identity_attachment"
                                            value="{{ agent_profile.accreditation.secondary_identity.back_identity_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
