@@ -145,34 +145,42 @@
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="order_id">Order Detail ID</th>
+                        <th id="user">User Type (User ID)</th>
+                        <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="short_order_id">Short Order ID</th>
-                        <th id="type">Type</th>
                         <th id="provider_name">Provider Name</th>
+                        <th id="card_design_name">Card Design Number</th>
                         <th id="card_design_name">Card Design Name</th>
                         <th id="card_account_name">Card Account Name</th>
                         <th id="card_account_number">Card Account Number</th>
+                        <th id="type">Debit/Credit</th>
                         <th id="amount">Amount</th>
+                        <th id="status">Currency</th>
                         <th id="status">Status</th>
-                        <th id="create_date">Create Date</th>
+                        <th id="create_date">Created Date</th>
+                        <th id="create_date">Modified Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for transaction in transaction_list %}
                         <tr>
                             <td class="col-sm-1">{{ transaction.sof.id }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:''}}</td>
-                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_design.provider.name }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.card_account_number|slice:":6"|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_design.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_account_name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ transaction.sof.card_account_number|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.card_account_number|slice:"-4:"|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.currency|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.status.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.last_updated_timestamp|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
