@@ -225,7 +225,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 params = {
                     'key_name': 'sum_result',
                     'key_value_type': 'numeric',
-                    'operator': self.operator_map[sum_operator],
+                    'operator': self._operator_map[sum_operator],
                     'key_value': sum_key_value,
                 }
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
@@ -278,7 +278,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 params = {
                     'key_name': consecutive_detail_name,
                     'key_value_type': self._kv_type_map[consecutive_key_value_type],
-                    'operator': self.operator_map[consecutive_operator],
+                    'operator': self._operator_map[consecutive_operator],
                     'key_value': consecutive_key_value,
                     'is_consecutive_key': True
                 }
@@ -647,7 +647,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         params = {
             'key_name': 'count_result',
             'key_value_type': 'numeric',
-            'operator': self.operator_map[count_of_operator],
+            'operator': self._operator_map[count_of_operator],
             'key_value': count_count_of,
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
