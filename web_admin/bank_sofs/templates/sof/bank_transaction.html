@@ -106,28 +106,28 @@
                     <label class="col-sm-2 control-label">Created Date: From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
-                               name="from_created_timestamp"
-                               value="{{ from_created_timestamp|default_if_none:'' }}"
+                               name="created_from_date"
+                               value="{{ created_from_date|default_if_none:'' }}"
                                id="txt_dtp_from">
                     </div>
                     <div class="col-sm-2">
                         <input type="time" class="form-control input-rounded"
-                               step="1" value="{{ modified_from_time|default_if_none:'' }}"
-                               name="from_created_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                               id="txt_time_from">
+                               step="1" value="{{ created_from_time|default_if_none:'' }}"
+                               name="created_from_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                               id="created_from_time">
                     </div>
                     <label class="col-sm-2 control-label">To</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
-                               name="to_created_timestamp"
-                               value="{{ to_created_timestamp|default_if_none:'' }}"
+                               name="created_to_date"
+                               value="{{ created_to_date|default_if_none:'' }}"
                                id="txt_dtp_to">
                     </div>
                     <div class="col-sm-2">
                         <input type="time" class="form-control input-rounded"
-                               step="1" value="{{ modified_from_time|default_if_none:'' }}"
-                               name="to_created_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                               id="txt_time_to">
+                               step="1" value="{{ created_to_time|default_if_none:'' }}"
+                               name="created_to_time" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                               id="created_to_time">
                     </div>
                 </div>
                 <div class="form-group">

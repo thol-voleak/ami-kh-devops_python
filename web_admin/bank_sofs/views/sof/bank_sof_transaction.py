@@ -1,12 +1,12 @@
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_logger import API_Logger
-from datetime import datetime
+from datetime import date, timedelta
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, convert_string_to_date_time
 from web_admin import api_settings, setup_logger, RestFulClient
 import logging
 
@@ -34,6 +34,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
+        self.initSearchDateTime(context)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -44,21 +45,23 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         short_order_id = request.POST.get('short_order_id')
         status = request.POST.get('status')
         type = request.POST.get('type')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
         opening_page_index = request.POST.get('current_page_index')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
 
-        body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
-                                     to_created_timestamp, type, user_id, user_type_id)
+        body = self.createSearchBody(created_from_date, order_id, short_order_id, sof_id, status,
+                                     created_to_date, type, user_id, user_type_id, created_from_time,
+                                     created_to_time)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
         context = {}
         data, success, status_message = self._get_sof_bank_transaction(body=body)
-        body['from_created_timestamp'] = from_created_timestamp
-        body['to_created_timestamp'] = to_created_timestamp
+
         if success:
             cards_list = data.get("bank_sof_transactions", [])
             page = data.get("page", {})
@@ -70,8 +73,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'user_id': user_id,
                  'transaction_list': cards_list,
                  'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp,
+                 'created_from_date': created_from_date,
+                 'created_to_date': created_to_date,
+                 'created_from_time': created_from_time,
+                 'created_to_time': created_to_time,
                  'user_type_id': user_type_id
                  }
             )
@@ -82,8 +87,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'user_id': user_id,
                  'transaction_list': [],
                  'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp,
+                 'created_from_date': created_from_date,
+                 'created_to_date': created_to_date,
+                 'created_from_time': created_from_time,
+                 'created_to_time': created_to_time,
                  'user_type_id': user_type_id
                  }
             )
@@ -91,8 +98,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== Start searching bank SOF transaction ==========')
         return render(request, self.template_name, context)
 
-    def createSearchBody(self, from_created_timestamp, order_id, short_order_id, sof_id, status, to_created_timestamp,
-                         type, user_id, user_type_id):
+    def createSearchBody(self, created_from_date, order_id, short_order_id, sof_id, status, created_to_date,
+                         type, user_id, user_type_id, created_from_time, created_to_time):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -104,15 +111,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['status_id'] = [int(status)]
         if type is not '' and type is not None:
             body['action_id'] = int(type)
-        if from_created_timestamp is not '' and to_created_timestamp is not None:
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-        if to_created_timestamp is not '' and to_created_timestamp is not None:
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
+        if created_from_date is not '' and created_from_date is not None:
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
+        if created_to_date is not '' and created_to_date is not None:
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
         if user_type_id is not '' and user_id is not None and user_type_id is not '0':
@@ -128,3 +130,16 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('bank_sof_transactions', []),
                                 status_code=status_code, is_getting_list=True)
         return data, success, status_message
+
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
+        context['modified_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['modified_from_time'] = "00:00:00"
+        context['modified_to_time'] = "00:00:00"
