@@ -23,6 +23,24 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     login_url = 'web:permission_denied'
     raise_exception = False
 
+    def __init__(self):
+        self.operator_map = {
+            "Less Than": '<', "More Than": '>', "Equal to": '=',
+            "Not Equal to": '!=', "Less than or Equal to": '<=',
+            "More than or Equal to": '>=',
+            "Contains": "contains",
+            "Is Part of": "in_list",
+            "Is Not Part of": "not_in_list",
+            "Is blank": "is_blank",
+            "Is not blank": "is_not_blank",
+        }
+        self._kv_type_map = {
+            "Numeric": "numeric",
+            "Freetext": "text",
+            "Timestamp": "timestamp"
+        }
+        super(AddMechanic, self).__init__()
+
     def check_membership(self, permission):
         self.logger.info(
             "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
@@ -41,18 +59,20 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context = super(AddMechanic, self).get_context_data(**kwargs)
         context['dtp_start_date'] = datetime.now().strftime("%Y-%m-%d")
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
-        operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
-        freetext_ops = ["Equal to", "Not Equal to", "Contains"]
-        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Contains"]
-        numeric_ops = ["Equal to", "Not Equal to","Is Part of", "Is Not Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Is blank", "Is not blank",
+                      "Less than or Equal to", "More than or Equal to"]
+        freetext_ops = ["Equal to", "Not Equal to", "Is blank", "Is not blank", "Contains"]
+        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Is blank", "Is not blank", "Contains"]
+        numeric_ops = ["Equal to", "Not Equal to","Is Part of", "Is Not Part of", "Less Than", "More Than", "Is blank", "Is not blank",
+                       "Less than or Equal to", "More than or Equal to"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
-        filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
         count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
-        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
-        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Is blank", "Is not blank", "Contains"]
+        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Is blank", "Is not blank",
+                                       "Less than or Equal to", "More than or Equal to"]
         voucher_group_list = self.get_voucher_group_list()
         sum_key_name = [{
                 'value': 'amount',
@@ -86,7 +106,6 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'freetext_ops_2': freetext_ops_2,
             'profile_details_freetext_ops': profile_details_freetext_ops,
             'profile_details_numeric_ops': profile_details_numeric_ops,
-            'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
             'count_of_operators': count_of_operators,
@@ -134,24 +153,12 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         }
 
         add_mechanic_url = CREATE_MECHANIC.format(rule_id=campaign_id)
-        success, status_code, message, data = RestfulHelper.send("POST", add_mechanic_url, params, self.request,
-                                                                           " adding Mechanic")
+        success, status_code, message, data = RestfulHelper.send("POST", add_mechanic_url, params, self.request, " adding Mechanic")
         if not success:
             message = 'Required Field. Start date or time cannot be after end date and time. Date and Time cannot be in the past'
             return JsonResponse({"status": 4, "msg": message})
 
         mechanic_id = data['id']
-        operations_map = {
-            "Less Than": '<', "More Than": '>', "Equal to": '=',
-            "Not Equal to": '!=', "Less than or Equal to": '<=',
-            "More than or Equal to": '>=',
-            "Contains": "contains",
-            "Is Part of": "in_list",
-            "Is Not Part of": "not_in_list"
-        }
-        kv_type_map = {
-            "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
-        }
 
         counter = request.POST.get('condition_counter') or 1
         for i in range(1, int(counter) + 1):
@@ -174,16 +181,10 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 operator = 'operator_' + suffix
                 key_value = 'key_value_' + suffix
 
-                if not request.POST.get(key_value):
+                if not request.POST.get(key_value) and not self._is_blank_operator(request, operator):
                     continue
 
-
-                params = {
-                    'key_name': request.POST.get(detail_name),
-                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                    'operator': operations_map[request.POST.get(operator)],
-                    'key_value': request.POST.get(key_value),
-                }
+                params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -204,15 +205,10 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 operator = 'operator_' + suffix
                 key_value = 'key_value_' + suffix
 
-                if not request.POST.get(key_value):
+                if not request.POST.get(key_value) and not self._is_blank_operator(request, operator):
                     continue
 
-                params = {
-                    'key_name': request.POST.get(detail_name),
-                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                    'operator': operations_map[request.POST.get(operator)],
-                    'key_value': request.POST.get(key_value),
-                }
+                params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -229,7 +225,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 params = {
                     'key_name': 'sum_result',
                     'key_value_type': 'numeric',
-                    'operator': operations_map[sum_operator],
+                    'operator': self.operator_map[sum_operator],
                     'key_value': sum_key_value,
                 }
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
@@ -243,14 +239,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     operator = prefix + '_operator_' + suffix
                     key_value = prefix + '_key_value_' + suffix
 
-                    if not request.POST.get(key_value):
+                    if not request.POST.get(key_value) and not self._is_blank_operator(request, operator):
                         continue
-                    params = {
-                        'key_name': request.POST.get(detail_name),
-                        'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                        'operator': operations_map[request.POST.get(operator)],
-                        'key_value': request.POST.get(key_value),
-                    }
+                    params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
                     if not success:
                         return JsonResponse({"status": 3, "msg": message})
@@ -260,12 +251,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('within_' + suffix)
                 event_name_filter_counter = request.POST.get('event_name_' + suffix)
-                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
-                                                                condition_type, operations_map, count_of_operator,
-                                                                count_count_of,
-                                                                within_type, event_name_filter_counter,
-                                                                count_of_filter_counter,
-                                                                kv_type_map)
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id, condition_type,
+                                                                                       count_of_operator, count_count_of, within_type,
+                                                                                       event_name_filter_counter, count_of_filter_counter)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
             else:
@@ -276,10 +264,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 count_of_reset_filter_counter = request.POST.get('reset_filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('consecutive_within_' + suffix)
                 event_name_filter_counter = request.POST.get('consecutive_event_name_' + suffix)
-                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
-                                                     condition_type, operations_map, count_of_operator, count_count_of,
-                                                     within_type, event_name_filter_counter, count_of_filter_counter,
-                                                     kv_type_map)
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id, condition_type,
+                                                                                       count_of_operator, count_count_of, within_type,
+                                                                                       event_name_filter_counter, count_of_filter_counter)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
                 # consecutive key detail
@@ -290,8 +277,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 condition_reset_event = request.POST.get('condition_reset_event_' + suffix)
                 params = {
                     'key_name': consecutive_detail_name,
-                    'key_value_type': kv_type_map[consecutive_key_value_type],
-                    'operator': operations_map[consecutive_operator],
+                    'key_value_type': self._kv_type_map[consecutive_key_value_type],
+                    'operator': self.operator_map[consecutive_operator],
                     'key_value': consecutive_key_value,
                     'is_consecutive_key': True
                 }
@@ -312,14 +299,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     operator = prefix + '_reset_filter_operator_' + suffix
                     key_value = prefix + '_reset_filter_key_value_' + suffix
 
-                    if not request.POST.get(key_value):
+                    if not request.POST.get(key_value) and not self._is_blank_operator(operator):
                         continue
-                    params = {
-                        'key_name': request.POST.get(detail_name),
-                        'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                        'operator': operations_map[request.POST.get(operator)],
-                        'key_value': request.POST.get(key_value),
-                    }
+                    params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
                     success, data, message = self.create_reset_filter(campaign_id, mechanic_id, condition_id, params)
         # add reward
 
@@ -449,7 +431,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     params['data'].append({
                         "key_name": request.POST.get(reward_key_name),
                         "key_value": request.POST.get(reward_key_value),
-                        "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
+                        "key_value_type": self._kv_type_map[request.POST.get(reward_key_value_type)]
                     })
         elif reward_type == 'suspend_account':
             params = {
@@ -535,7 +517,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     params['data'].append({
                         "key_name": request.POST.get(reward_key_name),
                         "key_value": request.POST.get(reward_key_value),
-                        "key_value_type": kv_type_map[request.POST.get(reward_key_value_type)]
+                        "key_value_type": self._kv_type_map[request.POST.get(reward_key_value_type)]
                     })
 
         elif reward_type == 'give_voucher':
@@ -653,7 +635,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         filtered.extend([link_bank, created_order, limit_reached, profile_update, profile_update_request])
         return filtered
 
-    def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):
+    def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, count_of_operator, count_count_of,
+                                         within_type, event_name_filter_counter, count_of_filter_counter):
         params = {'filter_type': condition_type}
         success, data, message = self.create_condition(campaign_id, mechanic_id, params)
         if not success:
@@ -664,7 +647,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         params = {
             'key_name': 'count_result',
             'key_value_type': 'numeric',
-            'operator': operations_map[count_of_operator],
+            'operator': self.operator_map[count_of_operator],
             'key_value': count_count_of,
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
@@ -758,14 +741,9 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             operator = prefix + '_operator_' + suffix
             key_value = prefix + '_key_value_' + suffix
 
-            if not request.POST.get(key_value):
+            if not request.POST.get(key_value) and not self._is_blank_operator(request, operator):
                 continue
-            params = {
-                'key_name': request.POST.get(detail_name),
-                'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                'operator': operations_map[request.POST.get(operator)],
-                'key_value': request.POST.get(key_value),
-            }
+            params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
                 return success, None, message
@@ -790,3 +768,21 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             )
             data = []
         return data
+
+    def _is_blank_operator(self, request, operator_name):
+        operator = self._operator_map[request.POST.get(operator_name)]
+        return operator == "is_blank" or operator == "is_not_blank"
+
+    def _build_create_filter_params(self, request, detail_name, kv_type_name, operator_name, key_value_name):
+        key_name = request.POST.get(detail_name)
+        kv_type = self._kv_type_map[request.POST.get(kv_type_name)]
+        operator = self._operator_map[request.POST.get(operator_name)]
+        key_value = request.POST.get(key_value_name)
+        params = {
+            "key_name": key_name,
+            "key_value_type": kv_type,
+            "operator": operator,
+        }
+        if not self._is_blank_operator(request, operator_name):
+            params["key_value"] = key_value
+        return params
