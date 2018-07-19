@@ -1,0 +1,196 @@
+<style type="text/css">
+    .parent-label {
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .sub-label {
+        width: 130px;
+        margin-right: 15px;
+        margin-top: 9px;
+        float: left;
+        text-align: right;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .sub-input {
+        width: 185px;
+        float: left;
+        margin-top: 5px;
+        height: 30px;
+    }
+
+    .large-modal-dialog {
+        width: 800px;
+    }
+
+    #confirmation_body {
+        padding: 25px;
+        padding-right: 0px;
+    }
+
+    .confirmation_border {
+        border: 1px solid black;
+        padding: 10px;
+        padding-right: 32px;
+        padding-bottom: 20px;
+        background-color: #fcfaf7;
+    }
+
+    #input_body {
+        padding: 35px;
+    }
+</style>
+
+<div class="modal" tabindex="-1" role="dialog" id="cancelModal" style="vertical-align: top; padding-top: 15px;">
+    <div class="modal-dialog large-modal-dialog" role="document">
+        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)">
+        <div class="modal-content">
+            <div id="confirmation_body" class="col-sm-6">
+                <div class="confirmation_border pull-left">
+                    <div>
+                        <label class="parent-label">Confirmation Details</label>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Selected Vouchers</label>
+                        <input type="number" class="form-control input-rounded sub-input"
+                               id="confirm_selected_vouchers"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Total amount of seleted Vouchers</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_total_amount"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Initiator Name</label>
+                        <input type="text" class="form-control input-rounded sub-input" id="confirm_initiator_name"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="parent-label">Payer Information</label>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Issuer User ID</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_issuer_user_id"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Issuer User Name</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_issuer_user_name"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Issuer SOF Type</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_issuer_sof_type"
+                               readonly>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Issuer SOF ID</label>
+                        <input type="text" class="form-control input-rounded sub-input"
+                               id="confirm_issuer_sof_id"
+                               readonly>
+                    </div>
+                </div>
+            </div>
+            <div id="input_body" style="padding-left: 30px;" class="col-sm-6">
+                <label class="parent-label">Select Payment Service</label>
+                <div style="clear:both;">
+                    <label class="sub-label">Payment Service *</label>
+                    <select class="form-control input-rounded sub-input" id="ddl_service_name" name="service_id" required>
+                        <option value="">-</option>
+                        {% for item in service_list %}
+                            {% if item.id|slugify == form.service_id|slugify %}
+                                <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                            {% else %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="parent-label">Input Initiator Information</label>
+                <div style="clear:both;">
+                    <label class="sub-label">User ID *</label>
+                    <input type="number" class="form-control input-rounded sub-input" name="initiator_user_id" id="txt_initiator_user_id" required>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Display Initiator Name</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="initiator_user_name" id="txt_initiator_user_name" disabled>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Cash SOF ID *</label>
+                    <select class="form-control input-rounded sub-input" id="ddl_initiator_sof_id" name="initiator_sof_id" required>
+                        <option value="">-</option>
+                    </select>
+                </div>
+                <label class="parent-label">Input prod references</label>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref1</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref1" id="txt_prod_ref1">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref2</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref2" id="txt_prod_ref2">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref3</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref3" id="txt_prod_ref3">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref4</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref4" id="txt_prod_ref4">
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Prod_ref5</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref5" id="txt_prod_ref5">
+                </div>
+                <div style="clear:both;">
+                    <label class="parent-label">Input Reason for Cancellation</label>
+                </div>
+                <div style="clear:both;">
+                    <textarea rows="2" style="width: 100%;" name="reason_for_cancel" id="txt_reason_for_cancel"></textarea>
+                </div>
+                <div style="clear:both;">
+                    <label class="parent-label">Input Payee information</label>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">User ID *</label>
+                    <input type="number" class="form-control input-rounded sub-input" name="payee_user_id" id="txt_payee_user_id" required>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Display Payee Name</label>
+                    <input type="text" class="form-control input-rounded sub-input" name="payee_user_name" id="txt_payee_user_name" disabled>
+                </div>
+                <div style="clear:both;">
+                    <label class="sub-label">Cash SOF ID *</label>
+                    <select class="form-control input-rounded sub-input" id="ddl_payee_sof_id" name="initiator_payee_id" required>
+                        <option value="">-</option>
+                    </select>
+                </div>
+            </div>
+            <div style="clear:both; margin-bottom:60px; padding-right:40px">
+                <input type="submit" class="btn btn-success pull-right col-sm-2 input-rounded" value="Next">
+                <input type="submit" class="btn pull-right col-sm-2 input-rounded" value="Cancel">
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validate(form) {
+        var dialog = $("#cancelModal");
+        var form = dialog.find('$mForm')[0];
+        return true;
+    }
+</script>
+
+
+

@@ -300,6 +300,7 @@
             </form>
             {% include "uploadFile.html" with modelHeader="Upload 3rd Party Voucher" acceptedFileTypes=".csv"%}
             {% include "voucher/refund_dialog.html" %}
+            {% include "voucher/cancel_dialog.html" %}
 
             <div class="no-more-tables" style="position: absolute;">
                 {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS"%}
@@ -312,8 +313,8 @@
                         {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                         <li><a onclick="unHold()">Unhold</a></li>
                         {%endif%}
+                        <li><a onclick="showCancelDialog()">Cancel</a></li>
                         {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
-                        <li><a>Cancel</a></li>
                         {%endif%}
                         {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
                         <li id="upload_vouchers"><a>Upload Vouchers</a></li>
@@ -657,6 +658,93 @@
                 }
             }
         });
+    }
+
+     var dialog = $("#cancelModal");
+    dialog.modal("show");
+
+    var showCancelDialog = function() {
+        var dialog = $("#cancelModal");
+        dialog.modal("show");
+{#        dialog.find("#confirm_selected_vouchers").val("");#}
+{#        dialog.find("#confirm_total_amount").val("");#}
+{#        dialog.find("#confirm_initiator_name").val("");#}
+{#        dialog.find("#confirm_issuer_user_id").val("");#}
+{#        dialog.find("#confirm_issuer_user_name").val("");#}
+{#        dialog.find("#confirm_issuer_sof_type").val("");#}
+{#        dialog.find("#confirm_issuer_sof_id").val("");#}
+{##}
+{#        dialog.find("#txt_service_name").val("");#}
+{#        dialog.find("#txt_service_id").val("");#}
+{#        dialog.find("#txt_prod_ref1").val("");#}
+{#        dialog.find("#txt_prod_ref2").val("");#}
+{#        dialog.find("#txt_prod_ref3").val("");#}
+{#        dialog.find("#txt_prod_ref4").val("");#}
+{#        dialog.find("#txt_prod_ref5").val("");#}
+{#        dialog.find("#txt_reason_for_cancel").val("");#}
+{#        dialog.find("#txt_payee_user_id").val("");#}
+{#        dialog.find("#txt_payee_user_name").val("");#}
+{##}
+{#        var url = '{% url 'voucher:refund' %}';#}
+{#        $.ajax({#}
+{#            url : url,#}
+{#            type : "POST",#}
+{#            data: {"voucher_id": voucher_id},#}
+{#            beforeSend: function (xhr) {#}
+{#                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');#}
+{#            },#}
+{#            success: function (response) {#}
+{#                if(response.invalid_access_token){#}
+{#                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";#}
+{#                    window.location.replace(url);#}
+{#                    location.reload();#}
+{#                } else {#}
+{#                    var data = response.data;#}
+{#                    if (data[0]['is_deleted'] != null && data[0]['is_deleted']) {#}
+{#                        swal({#}
+{#                            title: 'Cannot refund deleted voucher',#}
+{#                            type: "error",#}
+{#                            confirmButtonColor: "#2ECC71",#}
+{#                            confirmButtonText: "Close",#}
+{#                            closeOnConfirm: true#}
+{#                        });#}
+{#                    } else if (data[0]['is_cancelled'] != null && data[0]['is_cancelled']) {#}
+{#                        swal({#}
+{#                            title: 'Cannot refund cancelled voucher',#}
+{#                            type: "error",#}
+{#                            confirmButtonColor: "#2ECC71",#}
+{#                            confirmButtonText: "Close",#}
+{#                            closeOnConfirm: true#}
+{#                        });#}
+{#                    } else if (data[0]['is_used'] != null && data[0]['is_used']) {#}
+{#                        swal({#}
+{#                            title: 'Cannot refund claimed voucher',#}
+{#                            type: "error",#}
+{#                            confirmButtonColor: "#2ECC71",#}
+{#                            confirmButtonText: "Close",#}
+{#                            closeOnConfirm: true#}
+{#                        });#}
+{#                    }  else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {#}
+{#                        swal({#}
+{#                            title: 'This voucher type cannot be refunded',#}
+{#                            type: "error",#}
+{#                            confirmButtonColor: "#2ECC71",#}
+{#                            confirmButtonText: "Close",#}
+{#                            closeOnConfirm: true#}
+{#                        });#}
+{#                    } else {#}
+{#                        dialog.find("#confirm_selected_vouchers").val(data[0].voucher_id);#}
+{#                        dialog.find("#confirm_total_amount").val(data[0].product.product_ref3);#}
+{#                        dialog.find("#confirm_initiator_name").val(data[0].product.product_ref4);#}
+{#                        dialog.find("#confirm_issuer_user_id").val(data[0].product.product_ref5);#}
+{#                        dialog.find("#confirm_issuer_user_name").val(data[0].fee);#}
+{#                        dialog.find("#confirm_issuer_sof_type").val(data[0].amount);#}
+{#                        dialog.find("#confirm_issuer_sof_id").val(data[0].id);#}
+{#                        dialog.modal("show");#}
+{#                    }#}
+{#                }#}
+{#            }#}
+{#        });#}
     }
 
     bindApproveRefundVoucher = function () {
