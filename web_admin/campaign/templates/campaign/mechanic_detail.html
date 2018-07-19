@@ -92,6 +92,10 @@
                                     Is Part of
                                     {%elif condition.comparison_list.0.operator == 'not_in_list' %}
                                     Is Not Part of
+                                    {%elif condition.comparison_list.0.operator == 'is_blank' %}
+                                    Is blank
+                                    {%elif condition.comparison_list.0.operator == 'is_not_blank' %}
+                                    Is not blank
                                     {%endif%}
                                 </span>
                             </div>
@@ -164,6 +168,10 @@
                                     Not Equal to
                                     {%elif condition.comparison_list.0.operator == 'contains' %}
                                     Contains
+                                    {%elif condition.comparison_list.0.operator == 'is_blank' %}
+                                    Is blank
+                                    {%elif condition.comparison_list.0.operator == 'is_not_blank' %}
+                                    Is not blank
                                     {%endif%}
                                 </span>
                             </div>
