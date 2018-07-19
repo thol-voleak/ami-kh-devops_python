@@ -224,13 +224,7 @@
                                 <label class="col-sm-3 control-label">Currency *</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_currency" name="currency" disabled>
-                                        {% for currency in currencies %}
-                                            {% if currency == context_currency %}
-                                                <option value="{{ currency }}" selected>{{ currency }}</option>
-                                            {% else %}
-                                                <option value="{{ currency }}">{{ currency }}</option>
-                                            {% endif %}
-                                        {% endfor %}
+                                        <option value="{{ currencies }}" selected>{{ currencies }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -944,7 +938,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Reconciliation Period (Days)</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded"
+                                    <input type="number" class="form-control input-rounded"
                                            name="reconciliation_period_days"
                                            id="txt_contract_reconciliation_period_days"
                                            value="{{ agent_profile.contract.day_of_period_reconciliation|default_if_none:'' }}"/>

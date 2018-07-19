@@ -87,7 +87,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         agent_id = context['agent_id']
 
         agent_types_list, agent_type_status = self.get_agent_types(agent_id)
-        currencies = self.get_currencies(agent_id)
+        currencies = self.get_currencies(agent_id)[0]
         agent_profile = self.get_agent_profile(agent_id)
         mm_card_types = self.get_mm_card_type_list()
         agent_classification_list = self.get_agent_classification_list()
