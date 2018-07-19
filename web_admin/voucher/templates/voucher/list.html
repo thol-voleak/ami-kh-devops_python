@@ -373,7 +373,7 @@
                             <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                             <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
-                            <td>{{ i.currency|default_if_none:'' }}</td>
+                            <td id="voucher_currency">{{ i.currency|default_if_none:'' }}</td>
                             <td>
                             {% if request|has_any_permission:"CAN_REFUND_VOUCHER" %}
                                 {% if i.voucher_type != "3rd Party Vouchers" %}
@@ -456,6 +456,30 @@
             });
             return isOk;
     };
+
+    var validateCurrencies = function () {
+        var firstCurrency = "";
+        var currentCurrency = "";
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text() : "";
+        $(checkedInput).each(function (index, value) {
+            currentCurrency = $(value).parent().parent().find("#voucher_currency").text();
+            if (firstCurrency != currentCurrency) {
+                swal({
+                    title: 'Batch cancellation must be the same currency',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
+
 
     function hold(){
         if (!validateVouchersType()) return false;
@@ -664,6 +688,7 @@
     //dialog.modal("show");
 
     var showCancelDialog = function() {
+        if (!validateCurrencies()) return false;
         var dialog = $("#cancelModal");
         dialog.modal("show");
 {#        dialog.find("#confirm_selected_vouchers").val("");#}
