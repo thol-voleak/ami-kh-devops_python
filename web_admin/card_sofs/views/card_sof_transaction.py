@@ -48,12 +48,13 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
         provider_name = request.POST.get('provider_name')
+        card_account_name = request.POST.get('card_account_name')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
         body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, order_detail_id, sof_id, status,
-                                     to_created_timestamp, action_id, user_id, user_type_id, provider_name)
+                                     to_created_timestamp, action_id, user_id, user_type_id, provider_name, card_account_name)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -72,6 +73,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'user_id': user_id,
             'user_type_id': user_type_id,
             'provider_name': provider_name,
+            'card_account_name': card_account_name,
             'from_created_timestamp': from_created_timestamp,
             'to_created_timestamp': to_created_timestamp
         })
@@ -96,7 +98,8 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def createSearchBody(self, from_created_timestamp, order_id, short_order_id, order_detail_id,
-                         sof_id, status, to_created_timestamp, action_id, user_id, user_type_id, provider_name):
+                         sof_id, status, to_created_timestamp, action_id, user_id, user_type_id, provider_name,
+                         card_account_name):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -116,6 +119,8 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_type_id'] = int(user_type_id)
         if provider_name is not '' and provider_name is not None:
             body['provider_name'] = provider_name
+        if card_account_name is not '' and card_account_name is not None:
+            body['card_account_name'] = card_account_name
         if from_created_timestamp is not '' and to_created_timestamp is not None:
             new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
             new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
