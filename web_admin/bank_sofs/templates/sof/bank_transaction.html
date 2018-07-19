@@ -94,14 +94,24 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">SHORT ORDER ID</label>
+                     <label class="col-sm-2 control-label">SHORT ORDER ID</label>
                     <div class="col-sm-2">
                         <input id="txt_short_order_id" type="text" class="form-control input-rounded"
                                name="short_order_id" value="{{ search_by.short_order_id }}"/>
                     </div>
+                    <label class="col-sm-2 control-label">Bank Name</label>
+                    <div class="col-sm-2">
+                        <input id="txt_bank_name" type="text" class="form-control input-rounded" name="bank_name"
+                               value="{{ search_by.bank_name }}"/>
+                    </div>
+                    <label class="col-sm-2 control-label">Account Name</label>
+                    <div class="col-sm-2">
+                        <input id="txt_bank_account_name" type="text" class="form-control input-rounded"
+                               name="bank_account_name" value="{{ search_by.bank_account_name }}"/>
+                    </div>
                 </div>
-
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Created Date: From</label>
                     <div class="col-sm-2">
@@ -176,11 +186,11 @@
                         <th id="user">User (ID)</th>
                         <th id="order_detail_id">Order detail ID</th>
                         <th id="order_id">Order ID</th>
-                        <th id="type">Debit/Credit</th>
                         <th id="short_order_id">Short Order ID</th>
                         <th id="bank_name">Bank Name</th>
                         <th id="bank_account_name">Bank Account Name</th>
                         <th id="bank_account_number">Bank Account Number</th>
+                        <th id="type">Debit/Credit</th>
                         <th id="amount">Amount</th>
                         <th id="currency">Currency</th>
                         <th id="status">Status</th>
@@ -196,11 +206,11 @@
                             </td>
                             <td class="col-sm-2">{{ transaction.order_detail_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank.name }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank_account_name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank_account_number|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.amount|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.bank.currency|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.status.name|default_if_none:'' }}</td>
