@@ -52,10 +52,14 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         opening_page_index = request.POST.get('current_page_index')
         user_id = request.POST.get('user_id')
         user_type_id = request.POST.get('user_type_id')
+        modified_from_date = request.POST.get('modified_from_date')
+        modified_from_time = request.POST.get('modified_from_time')
+        modified_to_date = request.POST.get('modified_to_date')
+        modified_to_time = request.POST.get('modified_to_time')
 
         body = self.createSearchBody(created_from_date, order_id, short_order_id, sof_id, status,
                                      created_to_date, type, user_id, user_type_id, created_from_time,
-                                     created_to_time)
+                                     created_to_time, modified_from_date, modified_from_time, modified_to_date , modified_to_time)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -77,6 +81,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'created_to_date': created_to_date,
                  'created_from_time': created_from_time,
                  'created_to_time': created_to_time,
+                 'modified_from_date': modified_from_date,
+                 'modified_from_time': modified_from_time,
+                 'modified_to_date': modified_to_date,
+                 'modified_to_time': modified_to_time,
                  'user_type_id': user_type_id
                  }
             )
@@ -91,6 +99,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'created_to_date': created_to_date,
                  'created_from_time': created_from_time,
                  'created_to_time': created_to_time,
+                 'modified_from_date': modified_from_date,
+                 'modified_from_time': modified_from_time,
+                 'modified_to_date': modified_to_date,
+                 'modified_to_time': modified_to_time,
                  'user_type_id': user_type_id
                  }
             )
@@ -99,7 +111,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return render(request, self.template_name, context)
 
     def createSearchBody(self, created_from_date, order_id, short_order_id, sof_id, status, created_to_date,
-                         type, user_id, user_type_id, created_from_time, created_to_time):
+                         type, user_id, user_type_id, created_from_time, created_to_time, modified_from_date,
+                         modified_from_time, modified_to_date, modified_to_time):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -115,6 +128,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
         if created_to_date is not '' and created_to_date is not None:
             body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
+        if modified_from_date is not '' and modified_from_date is not None:
+            body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
+        if modified_to_date is not '' and modified_to_date is not None:
+            body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
         if user_id is not '' and user_id is not None:
             body['user_id'] = user_id
         if user_type_id is not '' and user_id is not None and user_type_id is not '0':
