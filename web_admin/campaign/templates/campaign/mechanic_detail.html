@@ -481,11 +481,15 @@
                                             Less Than
                                         {%elif filter.operator == '<=' %}
                                             Less than or Equal to
-                                        {%elif filter.operator == '!=' %}
+                                        {% elif filter.operator == '!=' %}
                                             Not Equal to
-                                        {%elif filter.operator == 'contains' %}
+                                        {% elif filter.operator == 'contains' %}
                                             Contains
-                                        {%endif%}
+                                        {% elif filter.operator == 'is_blank' %}
+                                            Is blank
+                                        {% elif filter.operator == 'is_not_blank' %}
+                                            Is not blank
+                                        {% endif %}
                                     </span>
                                 </div>
                             </div>
