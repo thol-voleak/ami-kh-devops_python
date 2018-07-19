@@ -24,7 +24,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     raise_exception = False
 
     def __init__(self):
-        self.operator_map = {
+        self._operator_map = {
             "Less Than": '<', "More Than": '>', "Equal to": '=',
             "Not Equal to": '!=', "Less than or Equal to": '<=',
             "More than or Equal to": '>=',
