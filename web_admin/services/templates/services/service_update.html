@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="panel mb25">
@@ -80,6 +81,18 @@
                         <div class="col-sm-8">
                             <textarea type="text" class="form-control" name="description" rows="3"
                                       id="txt_description">{{ service_detail.description|default_if_none:'' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Service Image:</label>
+                        <div class="col-sm-8">
+                                <input type="text" class="form-control" id="txt_image_url" name="image_url" value="{{ service_detail.image_url | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8">
+                           <img src="{{ service_detail.image_url }}" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
                         </div>
                     </div>
                     <input id="txt_status" hidden type="text" name="status"  value= "{{service_detail.status}}" />
