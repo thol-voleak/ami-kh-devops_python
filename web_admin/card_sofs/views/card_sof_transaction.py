@@ -42,6 +42,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         sof_id = request.POST.get('sof_id')
         order_id = request.POST.get('order_id')
         short_order_id = request.POST.get('short_order_id')
+        order_detail_id = request.POST.get('order_detail_id')
         status = request.POST.get('status')
         action_id = request.POST.get('action_id')
         user_id = request.POST.get('user_id')
@@ -51,7 +52,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
 
-        body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
+        body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, order_detail_id, sof_id, status,
                                      to_created_timestamp, action_id, user_id, user_type_id, provider_name)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
@@ -65,6 +66,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'sof_id': sof_id,
             'order_id': order_id,
             'short_order_id': short_order_id,
+            'order_detail_id': order_detail_id,
             'status': status,
             'action_id': action_id,
             'user_id': user_id,
@@ -93,7 +95,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         self.logger.info('========== End search card sof transaction ==========')
         return render(request, self.template_name, context)
 
-    def createSearchBody(self, from_created_timestamp, order_id, short_order_id,
+    def createSearchBody(self, from_created_timestamp, order_id, short_order_id, order_detail_id,
                          sof_id, status, to_created_timestamp, action_id, user_id, user_type_id, provider_name):
         body = {}
         if sof_id is not '' and sof_id is not None:
@@ -102,6 +104,8 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['order_id'] = order_id
         if short_order_id is not '' and short_order_id is not None:
             body['short_order_id'] = short_order_id
+        if order_detail_id is not '' and order_detail_id is not None:
+            body['order_detail_id'] = order_detail_id
         if status is not '' and status is not None:
             body['status_id'] = [int(status)]
         if action_id is not '' and action_id is not None and action_id is not '0':
