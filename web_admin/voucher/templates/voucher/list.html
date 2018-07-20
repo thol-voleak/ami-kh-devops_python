@@ -503,6 +503,27 @@
         return isOk;
     };
 
+    var validateClaimStatus = function () {
+        var claimStatus = false;
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+        $(checkedInput).each(function (index, value) {
+            claimStatus = $(value).parent().parent().find("#claim-status").text();
+            if (claimStatus == "Used") {
+                swal({
+                    title: 'Cannot cancel already claimed vouchers',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
+
     function hold(){
         if (!validateVouchersType()) return false;
         $("#msg-add-client").hide();
@@ -710,8 +731,7 @@
     //dialog.modal("show");
 
     var showCancelDialog = function() {
-        if (!validateCurrencies()) return false;
-        if (!validateIssuers()) return false;
+        if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
 
         var dialog = $("#cancelModal");
         dialog.modal("show");
