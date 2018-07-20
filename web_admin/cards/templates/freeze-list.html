@@ -25,7 +25,18 @@
     </div>
 
     <input id="data-no-permission-url"  data-no-permission-url="{% url 'web:permission_denied' %}" style="display:none;"/>
+    <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
+         <div class="form-group">
+                <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+             <div class="col-sm-1 pull-right">
+                    <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
+                </div>
+         </div>
+        <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
+        <label class="pull-right">Total found: &nbsp;</label>
+    </form>
     <div class="panel-body">
+
         <div class="table-responsive">
             <table class="table table-bordered table-striped mb0" id="tbl_card_history">
                 <thead>
@@ -44,8 +55,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for freezeCard in data %}
-                    {% if freezeCard.action == 'unstop card' %}
+                {% for freezeCard in data%}
                            <tr id="row-{{ freezeCard.ticket_id }}">
                             <td class="col-sm-1">{{ freezeCard.ticket_id }}</td>
                             <td class="col-sm-1">{{ freezeCard.rule_action_id }}</td>
@@ -70,10 +80,17 @@
                                 {% endif %}
                            </td>
                         </tr>
-                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    {% include "pagination.html" %}
+    </div>
+    <div class="loader" style="display:none" id="loader-indicator"></div>
+    <div class="col-xs-12" id="search-result-notification" style="display:none">
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            Something wrong happened.
         </div>
     </div>
 </div>
