@@ -354,7 +354,7 @@
                         <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
                             <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
                             <td>{{ i.voucher_id|default_if_none:'' }}</td>
-                            <td>
+                            <td id="voucher_issuer">
                                 {% if i.issuer_user_id %}
                                     {% if "agent" == i.issuer_user_type %}
                                         <a style="color: blue;text-decoration: underline;" href="{% url 'agents:agent-list'%}?agent_id={{  i.issuer_user_id }}">{{ i.issuer_user_id }}</a>
@@ -366,7 +366,7 @@
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
                             <td>{{ i.fee|default_if_none:'' }}</td>
-                            <td>{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
+                            <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
                             <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
                             <td id="cancel-status">{{ i.is_cancelled|yesno:"Yes,No,''"  }}</td>
                             <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
@@ -480,6 +480,28 @@
         return isOk;
     };
 
+    var validateIssuers = function () {
+        var firstIssuer = "";
+        var currentIssuer = "";
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+        firstIssuer = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_issuer").text() : "";
+        $(checkedInput).each(function (index, value) {
+            currentIssuer = $(value).parent().parent().find("#voucher_issuer").text();
+            if (firstIssuer != currentIssuer) {
+                swal({
+                    title: 'Batch cancellation must be the same issuer',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
 
     function hold(){
         if (!validateVouchersType()) return false;
@@ -689,6 +711,8 @@
 
     var showCancelDialog = function() {
         if (!validateCurrencies()) return false;
+        if (!validateIssuers()) return false;
+
         var dialog = $("#cancelModal");
         dialog.modal("show");
 {#        dialog.find("#confirm_selected_vouchers").val("");#}
