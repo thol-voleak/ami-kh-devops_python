@@ -37,9 +37,8 @@
                     <div class="col-sm-2">
                         <select class="form-control" id="ddl_currency" name="currency">
                             <option value="">All</option>
-                            {% for currency in currencies %}
-                                <option value="{{ currency }}"
-                                        {% if selected_currency == currency %}selected{% endif %}>{{ currency }}</option>
+                            {% for currency_et in currencies %}
+                                <option value="{{ currency_et }}" {% if currency_et == currency %}selected="selected"{% endif %}>{{ currency_et }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -183,7 +182,7 @@
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="user">User (ID)</th>
+                        <th id="user">User Type (ID)</th>
                         <th id="order_detail_id">Order detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="short_order_id">Short Order ID</th>

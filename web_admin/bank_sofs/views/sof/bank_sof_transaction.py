@@ -8,6 +8,7 @@ from authentications.utils import get_correlation_id_from_username, check_permis
 from braces.views import GroupRequiredMixin
 from web_admin.utils import calculate_page_range_from_page_info, convert_string_to_date_time
 from web_admin import api_settings, setup_logger, RestFulClient
+from web_admin.api_settings import GET_ALL_CURRENCY_URL
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,10 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
         self.initSearchDateTime(context)
+        currencies = self.get_currencies_list()
+        context.update({
+            'currencies': currencies
+        })
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -59,17 +64,19 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         order_detail_id = request.POST.get('order_detail_id')
         bank_name = request.POST.get('bank_name')
         bank_account_name = request.POST.get('bank_account_name')
+        currency = request.POST.get('currency')
 
         body = self.createSearchBody(created_from_date, order_id, short_order_id, sof_id, status,
                                      created_to_date, type, user_id, user_type_id, created_from_time,
-                                     created_to_time, modified_from_date, modified_from_time, modified_to_date ,
-                                     modified_to_time, order_detail_id, bank_name, bank_account_name)
+                                     created_to_time, modified_from_date, modified_from_time, modified_to_date,
+                                     modified_to_time, order_detail_id, bank_name, bank_account_name, currency)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
         context = {}
         data, success, status_message = self._get_sof_bank_transaction(body=body)
 
+        currencies = self.get_currencies_list()
         if success:
             cards_list = data.get("bank_sof_transactions", [])
             page = data.get("page", {})
@@ -92,7 +99,9 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'user_type_id': user_type_id,
                  'order_detail_id': order_detail_id,
                  'bank_name': bank_name,
-                 'bank_account_name': bank_account_name
+                 'bank_account_name': bank_account_name,
+                 'currencies': currencies,
+                 'currency': currency
                  }
             )
         else:
@@ -113,7 +122,9 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'user_type_id': user_type_id,
                  'order_detail_id': order_detail_id,
                  'bank_name': bank_name,
-                 'bank_account_name': bank_account_name
+                 'bank_account_name': bank_account_name,
+                 'currencies': currencies,
+                 'currency': currency
                  }
             )
 
@@ -123,7 +134,7 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def createSearchBody(self, created_from_date, order_id, short_order_id, sof_id, status, created_to_date,
                          type, user_id, user_type_id, created_from_time, created_to_time, modified_from_date,
                          modified_from_time, modified_to_date, modified_to_time, order_detail_id, bank_name,
-                         bank_account_name):
+                         bank_account_name, currency):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -147,12 +158,14 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['user_id'] = user_id
         if user_type_id is not '' and user_type_id is not None and user_type_id is not '0':
             body['user_type_id'] = int(user_type_id)
-        if order_detail_id is not ''and order_detail_id is not None:
+        if order_detail_id is not '' and order_detail_id is not None:
             body['order_detail_id'] = order_detail_id
-        if bank_name is not ''and bank_name is not None:
+        if bank_name is not '' and bank_name is not None:
             body['bank_name'] = bank_name
-        if bank_account_name is not ''and bank_account_name is not None:
+        if bank_account_name is not '' and bank_account_name is not None:
             body['bank_account_name'] = bank_account_name
+        if currency is not '' and currency is not None:
+            body['currency'] = currency
         return body
 
     def _get_sof_bank_transaction(self, body):
@@ -177,3 +190,14 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
         context['modified_from_time'] = "00:00:00"
         context['modified_to_time'] = "00:00:00"
+
+    def get_currencies_list(self):
+        data, success = self._get_method(api_path=GET_ALL_CURRENCY_URL,
+                                         func_description="get currency list",
+                                         is_getting_list=True)
+        if success:
+            value = data.get('value', None)
+            if value is not None:
+                currencies = [i.split('|')[0] for i in value.split(',')]
+                return currencies
+        return []
