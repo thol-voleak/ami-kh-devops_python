@@ -39,7 +39,7 @@ class BlockedDevicesList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if is_success:
             self.logger.info("Response_content_count:{}".format(len(data)))
-            context['devices'] = [i for i in data if i['is_deleted'] == False]
+            context['devices'] = [i for i in data.get('tickets') if i['is_deleted'] == False]
             context['can_unblock_device'] = self.check_membership(['CAN_DELETE_FRAUD_TICKET'])
             device_count = 0
             for ticket in context['devices']:
