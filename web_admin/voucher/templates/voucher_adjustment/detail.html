@@ -249,7 +249,9 @@
     bindBackButtonEvent = function () {
         $("#btn_back").click(function (event) {
             event.preventDefault();
-            window.history.back();
+//            window.history.back();
+            parent.history.back();
+            return false;
         })
     }
     $(document).ready(function () {

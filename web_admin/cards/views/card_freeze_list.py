@@ -1,4 +1,5 @@
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin.utils import calculate_page_range_from_page_info
 from web_admin import setup_logger, api_settings
 from web_admin.get_header_mixins import GetHeaderMixin
 from web_admin.restful_client import RestFulClient
@@ -7,6 +8,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
 from web_admin import ajax_functions
+from web_admin.restful_helper import RestfulHelper
+
 from web_admin.api_logger import API_Logger
 import logging
 
@@ -43,16 +46,33 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         return super(CardFreezeList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        context = super(CardFreezeList, self).get_context_data(**kwargs)
+
         self.logger.info('========== Start get freeze card ==========')
 
-        data = self.get_freeze_card_list()
-        result_data = _format_data(data)
+        body = {
+            "action": "unstop card",
+            "paging": True,
+            "page_index": 1
 
-        permissions = {}
-        permissions['CAN_DELETE_FRAUD_TICKET'] = self.check_membership(["CAN_DELETE_FRAUD_TICKET"])
-        context = {'data': result_data,
-                   'permissions': permissions,
-                   }
+        }
+        opening_page_index = request.GET.get('current_page_index')
+        if opening_page_index:
+            body['page_index'] = int(opening_page_index)
+            context['current_page_index'] = int(opening_page_index)
+        is_success, data = self.get_freeze_card_list(body)
+        if is_success :
+            result_data = data.get('tickets')
+            self.logger.info(result_data)
+            # result_data = _format_data(data.get('tickets'))
+            page = data.get("page",{})
+            permissions = {}
+            permissions['CAN_DELETE_FRAUD_TICKET'] = self.check_membership(["CAN_DELETE_FRAUD_TICKET"])
+            context.update ({'data': result_data,
+                             'permissions': permissions,
+                             'paginator': page,
+                             'page_range': calculate_page_range_from_page_info(page)
+                             })
 
         self.logger.info('========== End get freeze card ==========')
         return render(request, 'freeze-list.html', context)
@@ -76,15 +96,22 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         self.logger.info('========== End delete freeze card ==========')
         return result
 
-    def get_freeze_card_list(self):
+    def get_freeze_card_list(self, body):
         url = api_settings.SEARCH_TICKET
-        params = {}
-        is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
-                                                                           loggers=self.logger, params=params)
-        API_Logger.post_logging(loggers=self.logger, params=params, response=data,
-                                status_code=status_code, is_getting_list=True)
-        if is_success:
-            if isinstance(data, list):
-                return data
-            else:
-                return []
+
+        # is_success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
+        #                                                                    loggers=self.logger, params=body)
+        # API_Logger.post_logging(loggers=self.logger, params=body, response=data,
+        #                         status_code=status_code, is_getting_list=True)
+        success, status_code, status_message, data = RestfulHelper.send("POST", url, body, self.request,
+                                                                        "searching ticket",
+                                                                        log_count_field='data.tickets')
+        # if success:
+        #     if isinstance(data.get('tickets'), list):
+        #         return success, data
+        #     else:
+        #         return []
+        if success:
+            return success, data
+        else:
+            return success, status_message

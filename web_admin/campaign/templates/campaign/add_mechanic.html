@@ -353,15 +353,25 @@
             }
 
             operator.selectedIndex = 0;
+            listenOperator(operator, operator.val());
         }
 
         function listenOperator(ele, currentOperator) {
-            var keyValueObj = $(ele).parent().parent().next('div').find('input');
-            var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
-            if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of"))
-                keyValueObj.attr('type', 'text');
-            else if (currentKVType === "Numeric")
-                keyValueObj.attr('type', 'number');
+
+            var keyValueDiv = $(ele).parent().parent().next("div")
+            var keyValueInput = keyValueDiv.find("input");
+            if (currentOperator === "Is blank" || currentOperator === "Is not blank") {
+                keyValueInput.removeAttr("required");
+                keyValueDiv.attr("style", "display: none;");
+            } else {
+                keyValueInput.attr("required", true);
+                keyValueDiv.removeAttr("style");
+                var currentKVType = $(ele).parent().parent().prev('div').find('select').val();
+                if (currentKVType === "Numeric" && (currentOperator === "Is Part of" || currentOperator === "Is Not Part of"))
+                    keyValueInput.attr('type', 'text');
+                else if (currentKVType === "Numeric")
+                    keyValueInput.attr('type', 'number');
+            }
         }
 
         var _counter = 1;

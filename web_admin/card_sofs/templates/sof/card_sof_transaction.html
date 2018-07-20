@@ -39,12 +39,12 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <label class="col-sm-2 control-label">Type</label>
+                    <label class="col-sm-2 control-label">Debit/Credit</label>
                     <div class="col-xs-2">
-                        <select class="form-control" id="ddl_action" name="type">
-                            <option value='' {% if type == '' %}selected="selected"{% endif %}>All</option>
-                            <option value='2' {% if type == '2' %}selected="selected"{% endif %}>Debit</option>
-                            <option value='1' {% if type == '1' %}selected="selected"{% endif %}>Credit</option>
+                        <select class="form-control" id="ddl_action" name="action_id">
+                            <option value=0 {% if action_id == '0' %}selected="selected"{% endif %}>All</option>
+                            <option value=2 {% if action_id == '2' %}selected="selected"{% endif %}>Debit</option>
+                            <option value=1 {% if action_id == '1' %}selected="selected"{% endif %}>Credit</option>
                         </select>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                     </div>
                     <label class="col-sm-2 control-label">Card Design Number</label>
                     <div class="col-sm-2">
-                        <input id="txt_card_design_number" type="text" class="form-control input-rounded" name="card_design_number" value="{{ card_design_number }}"/>
+                        <input id="txt_card_design_number" type="number" maxlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control input-rounded" name="card_design_number" value="{{ card_design_number }}"/>
                     </div>
                     <label class="col-sm-2 control-label">Card Design Name</label>
                     <div class="col-sm-2">
@@ -104,7 +104,7 @@
                     </div>
                     <label class="col-sm-2 control-label">Card Account Number</label>
                     <div class="col-sm-2">
-                        <input id="txt_card_account_number" type="text" class="form-control input-rounded" name="account_number" value="{{ account_number }}"/>
+                        <input id="txt_card_account_number" type="number" maxlength="4" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control input-rounded" name="card_account_number" value="{{ card_account_number }}"/>
                     </div>
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
@@ -117,23 +117,39 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">From</label>
+                    <label class="col-sm-2 control-label">Created Date: From</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
-                               name="from_created_timestamp"
-                               value="{{ from_created_timestamp|default_if_none:'' }}"
-                               id="txt_dtp_from">
+                               name="created_from_date"
+                               id="dtp_created_from_date"
+                               value="{{ created_from_date|default_if_none:'' }}">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               step="1"
+                               name="created_from_time"
+                               id="created_from_time"
+                               value="{{ created_from_time|default_if_none:'' }}">
                     </div>
                     <label class="col-sm-2 control-label">To</label>
                     <div class="col-sm-2">
                         <input type="date" class="form-control input-rounded"
-                               name="to_created_timestamp"
-                               value="{{ to_created_timestamp|default_if_none:'' }}"
-                               id="txt_dtp_to">
+                               name="created_to_date"
+                               id="dtp_created_to_date"
+                               value="{{ created_to_date|default_if_none:'' }}">
                     </div>
+                    <div class="col-sm-2">
+                        <input type="time" class="form-control input-rounded"
+                               name="created_to_time" step="1"
+                               id="created_to_time"
+                               value="{{ created_to_time|default_if_none:'' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                     <div class="col-xs-3"></div>
-                    <div class="col-xs-1">
+                    <div class="col-xs-1 pull-right">
                         <input id="btn_search" class="btn btn-success btn-block" type="submit" name="search" value="search">
                     </div>
                 </div>
@@ -145,34 +161,42 @@
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="order_id">Order Detail ID</th>
+                        <th id="user">User Type (User ID)</th>
+                        <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="short_order_id">Short Order ID</th>
-                        <th id="type">Type</th>
                         <th id="provider_name">Provider Name</th>
+                        <th id="card_design_number">Card Design Number</th>
                         <th id="card_design_name">Card Design Name</th>
                         <th id="card_account_name">Card Account Name</th>
                         <th id="card_account_number">Card Account Number</th>
+                        <th id="type">Debit/Credit</th>
                         <th id="amount">Amount</th>
+                        <th id="status">Currency</th>
                         <th id="status">Status</th>
-                        <th id="create_date">Create Date</th>
+                        <th id="create_date">Created Date</th>
+                        <th id="create_date">Modified Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for transaction in transaction_list %}
                         <tr>
                             <td class="col-sm-1">{{ transaction.sof.id }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:''}}</td>
-                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_design.provider.name }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.card_account_number|slice:":6"|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_design.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.sof.card_account_name|default_if_none:'' }}</td>
-                            <td class="col-sm-2">{{ transaction.sof.card_account_number|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.card_account_number|slice:"-4:"|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.action.name }}</td>
                             <td class="col-sm-2">{{ transaction.amount|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.sof.currency|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.status.name|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.created_timestamp|default_if_none:'' }}</td>
+                            <td class="col-sm-2">{{ transaction.last_updated_timestamp|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

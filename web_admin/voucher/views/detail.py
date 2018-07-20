@@ -41,6 +41,8 @@ class VoucherDetail(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         context.update({
             'data': data[0]
         })
+        request.session['ref_page_url'] = request.build_absolute_uri()
+
         return render(request, self.template_name, context)
 
     def get_voucher_detail(self, voucher_id):

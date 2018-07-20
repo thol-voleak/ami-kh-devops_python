@@ -64,7 +64,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlDDSOFTypes = '';
         var sofTypeId = '';
         jQuery.each(m_sof_types, function() {
-            if (aData[3].toLowerCase() == this.sof_type.toLowerCase()) {
+            if (aData[4].toLowerCase() == this.sof_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';
                 sofTypeId = this.sof_type_id;
             } else {
@@ -77,7 +77,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         // Master: AmountTypes Dropdown
         var htmlDDAmountTypes = '<option value="" selected=\"selected\"/>';;
         jQuery.each(m_amount_type, function() {
-            if (aData[5].toLowerCase() == this.amount_type.toLowerCase()) {
+            if (aData[6].toLowerCase() == this.amount_type.toLowerCase()) {
                 htmlSelected = ' selected=\"selected\" ';
             } else {
                 htmlSelected = ' ';
@@ -91,6 +91,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var htmlIDActionTypes = 'id=\'';
         var htmlIDActorTypes = 'id=\'';
         var htmlIDSpecificID = 'id=\'';
+        var htmlIDSpecificActorName = 'id =\'';
         var htmlIDSOFTypes = 'id=\'';
         var htmlIDSpecificSOF = 'id=\'';
         var htmlIDLabel = 'id=\'';
@@ -111,7 +112,10 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         var setSpecificSOFRequired = '';
 
         // For Specific SOF changing according to SpecificID & SOF Type.
+        var fnGetSoFJs = '';
+        var fnGetActorNameJs  = '';
         var htmlgetSOFEventJS = "";
+        var htmlgetSpecificEventJS = "";
 
         // For Amount Types.
         var htmlAmountTypeEventJS = "";
@@ -125,6 +129,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDActionTypes += 'ddl_setting_payment_fee_structure_dc_edit';
             htmlIDActorTypes += 'ddl_setting_payment_fee_structure_actor_edit';
             htmlIDSpecificID += 'ddl_setting_payment_fee_structure_specific_id_edit';
+            htmlIDSpecificActorName +='ddl_setting_payment_fee_structure_specific_actor_name_edit';
             htmlIDSOFTypes += 'ddl_setting_payment_fee_structure_source_of_fund_edit';
             htmlIDSpecificSOF += 'ddl_setting_payment_fee_structure_specific_source_of_fund_edit';
             htmlIDAmount += 'ddl_setting_payment_fee_structure_from_amount_edit';
@@ -133,43 +138,49 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             htmlIDBtnSave += 'btn_setting_payment_fee_structure_save';
             htmlIDBtnCancel += 'btn_setting_payment_fee_structure_cancel';
 
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit', this)\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit','#ddl_setting_payment_fee_structure_source_of_fund_edit',this)\"";
+            fnGetSoFJs = "getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit', this)";
+            fnGetActorNameJs  = "getActorName('ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_specific_actor_name_edit',this)";
+
+            htmlgetSOFEventJS = "onchange=\"" + fnGetSoFJs + "\"";
+            htmlgetSpecificEventJS = "onchange =\" "+ fnGetSoFJs + '; ' + fnGetActorNameJs + " \" ";
+            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_payment_fee_structure_actor_edit', '#ddl_setting_payment_fee_structure_specific_id_edit','#ddl_setting_payment_fee_structure_specific_actor_name_edit', '#ddl_setting_payment_fee_structure_specific_source_of_fund_edit','#ddl_setting_payment_fee_structure_source_of_fund_edit',this)\"";
             htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_payment_fee_structure_from_amount_edit', '#txt_setting_payment_fee_structure_rate_edit', this)\"";
 
-        } else if (tableId == 'tbl_setting_bonus') {
-            htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
-            htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
-            htmlIDSpecificID += 'ddl_setting_bonus_specific_id_edit';
-            htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
-            htmlIDSpecificSOF += 'ddl_setting_bonus_spec_src_fund_edit';
-            htmlIDAmount += 'ddl_setting_bonus_amount_edit';
-            htmlIDRate += 'txt_setting_bonus_rate_edit';
-            htmlIDBtnSave += 'btn_setting_bonus_save';
-            htmlIDBtnCancel += 'btn_setting_bonus_cancel';
-
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit', this)\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#ddl_setting_bonus_specific_id_edit', '#ddl_setting_bonus_spec_src_fund_edit')\"";
-            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
-
-        } else if (tableId == 'tbl_bonus') {
-            htmlIDActionTypes += 'ddl_bonus_dc_edit';
-            htmlIDActorTypes += 'ddl_bonus_actor_edit';
-            htmlIDSpecificID += 'ddl_bonus_specific_id_edit';
-            htmlIDSOFTypes += 'ddl_bonus_source_of_fund_edit';
-            htmlIDSpecificSOF += 'ddl_bonus_specific_source_of_fund_edit';
-            htmlIDAmount += 'ddl_bonus_amount_edit';
-            htmlIDRate += 'txt_bonus_rate_edit';
-            htmlIDBtnSave += 'btn_bonus_save';
-            htmlIDBtnCancel += 'btn_bonus_cancel';
-
-            htmlgetSOFEventJS = "onchange=\"getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit', this)\"";
-            htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#ddl_bonus_specific_id_edit', '#ddl_bonus_specific_source_of_fund_edit')\"";
-            htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_bonus_amount_edit', '#txt_bonus_rate_edit')\"";
         }
+        // else if (tableId == 'tbl_setting_bonus') {
+        //     htmlIDActionTypes += 'ddl_setting_bonus_dc_edit';
+        //     htmlIDActorTypes += 'ddl_setting_bonus_actor_edit';
+        //     htmlIDSpecificID += 'ddl_setting_bonus_specific_id_edit';
+        //     htmlIDSOFTypes += 'ddl_setting_bonus_src_fund_edit';
+        //     htmlIDSpecificSOF += 'ddl_setting_bonus_spec_src_fund_edit';
+        //     htmlIDAmount += 'ddl_setting_bonus_amount_edit';
+        //     htmlIDRate += 'txt_setting_bonus_rate_edit';
+        //     htmlIDBtnSave += 'btn_setting_bonus_save';
+        //     htmlIDBtnCancel += 'btn_setting_bonus_cancel';
+        //
+        //     htmlgetSOFEventJS = "onchange=\"getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit', this)\"";
+        //     htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_setting_bonus_actor_edit', '#ddl_setting_bonus_specific_id_edit', '#ddl_setting_bonus_spec_src_fund_edit')\"";
+        //     htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_setting_bonus_amount_edit', '#txt_setting_bonus_rate_edit')\"";
+        //
+        // } else if (tableId == 'tbl_bonus') {
+        //     htmlIDActionTypes += 'ddl_bonus_dc_edit';
+        //     htmlIDActorTypes += 'ddl_bonus_actor_edit';
+        //     htmlIDSpecificID += 'ddl_bonus_specific_id_edit';
+        //     htmlIDSOFTypes += 'ddl_bonus_source_of_fund_edit';
+        //     htmlIDSpecificSOF += 'ddl_bonus_specific_source_of_fund_edit';
+        //     htmlIDAmount += 'ddl_bonus_amount_edit';
+        //     htmlIDRate += 'txt_bonus_rate_edit';
+        //     htmlIDBtnSave += 'btn_bonus_save';
+        //     htmlIDBtnCancel += 'btn_bonus_cancel';
+        //
+        //     htmlgetSOFEventJS = "onchange=\"getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit', this)\"";
+        //     htmlActorEventJS = "onchange=\"changeSpecificActorType('#ddl_bonus_actor_edit', '#ddl_bonus_specific_id_edit', '#ddl_bonus_specific_source_of_fund_edit')\"";
+        //     htmlAmountTypeEventJS = "onchange=\"changeAmountType('#ddl_bonus_amount_edit', '#txt_bonus_rate_edit')\"";
+        // }
         htmlIDActionTypes += '\'';
         htmlIDActorTypes += '\'';
         htmlIDSpecificID += '\'';
+        htmlIDSpecificActorName += '\'';
         htmlIDSOFTypes += '\'';
         htmlIDSpecificSOF += '\'';
         htmlIDAmount += '\'';
@@ -201,7 +212,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         }
 
         // set disabled, required for Rate according to AmountType
-        if (aData[5].indexOf("Rate") >= 0) {
+        if (aData[6].indexOf("Rate") >= 0) {
             setRateDisabled = '';
         } else {
             setRateDisabled = 'disabled';
@@ -209,12 +220,13 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
 
         jqTds[0].innerHTML = '<select ' + htmlIDActionTypes + ' type=\'text\' class=\'form-control\' name=\'action_type\' >' + htmlDDActionTypes + '</select>';
         jqTds[1].innerHTML = '<select ' + htmlActorEventJS + ' ' + htmlIDActorTypes + ' class=\'form-control\' name=\'actor_type\' required>' + htmlDDActors + '</select>';
-        jqTds[2].innerHTML = '<input ' + htmlgetSOFEventJS + ' ' + ' ' + setSpecificIDRequired + ' ' + setSpecificIDDisabled + ' ' + htmlIDSpecificID + htmlValue + ' type=\'number\' class=\'form-control\' name=\'specific_id\' list=\'specific_ids\' >' + htmlDDSpecificIDs;
-        jqTds[3].innerHTML = '<select ' + ' ' + setSOFRequired + ' ' + setSOFDisabled + ' ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
-        jqTds[4].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
-        jqTds[5].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
-        jqTds[6].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[6] + '\' ' + 'onkeypress="if (event.key.replace(/[^\\w\\.\\,]/g,\'\')==\'\') event.preventDefault();" ' + 'onChangesRate(this.id)' + '>';
-        jqTds[7].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' value=\'' + aData[7] + '\'>';
+        jqTds[2].innerHTML = '<input '  + htmlgetSpecificEventJS + ' ' + ' ' + setSpecificIDRequired + ' ' + setSpecificIDDisabled + ' ' + htmlIDSpecificID + htmlValue + ' type=\'number\' class=\'form-control\' name=\'specific_id\' list=\'specific_ids\' >' + htmlDDSpecificIDs;
+        jqTds[3].innerHTML = '<div '     + htmlIDSpecificActorName  + '>' + aData[3] + '</div>';
+        jqTds[4].innerHTML = '<select ' + ' ' + setSOFRequired + ' ' + setSOFDisabled + ' ' + htmlgetSOFEventJS + ' ' + htmlIDSOFTypes + ' type=\'text\' class=\'form-control\' name=\'sof_type_id\'>' + htmlDDSOFTypes + '</select>';
+        jqTds[5].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'></select>';
+        jqTds[6].innerHTML = '<select ' + htmlAmountTypeEventJS + ' ' + htmlIDAmount + ' type=\'text\' class=\'form-control\' name=\'amount_type\' required>' + htmlDDAmountTypes + '</select>';
+        jqTds[7].innerHTML = '<input ' + ' ' + setRateDisabled + ' ' + htmlIDRate + ' type=\'text\' class=\'form-control\' name=\'rate\' required value=\'' + aData[7] + '\' ' + 'onkeypress="if (event.key.replace(/[^\\w\\.\\,]/g,\'\')==\'\') event.preventDefault();" ' + 'onChangesRate(this.id)' + '>';
+        jqTds[8].innerHTML = '<input ' + htmlIDLabel + ' type=\'text\' class=\'form-control\' name=\'remark\' value=\'' + aData[8] + '\'>';
         
         // Master: Specific SOF
         var htmlDDSpecificSOF = '';
@@ -232,12 +244,12 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         var url = window.location.origin + "/admin-portal/authentications/login/?next=" + window.location.pathname ;
                         window.location.replace(url);
                     } else if (response.status == 2) {
-                        
+
                         // add item
                         var jsonOptions = response.data;
                         if(typeof jsonOptions.length !== 'undefined') {
                             $.each(jsonOptions, function(key, value) {
-                                if (aData[4].toLowerCase() == value.id) {
+                                if (aData[5].toLowerCase() == value.id) {
                                     htmlSelected = ' selected=\"selected\" ';
                                 } else {
                                     htmlSelected = ' ';
@@ -247,7 +259,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                         } else if(typeof jsonOptions.bank_sofs !== 'undefined' && typeof jsonOptions.bank_sofs.length !== 'undefined') {
                             jsonOptions = jsonOptions.bank_sofs;
                             $.each(jsonOptions, function(key, value) {
-                                if (aData[4].toLowerCase() == value.id) {
+                                if (aData[5].toLowerCase() == value.id) {
                                     htmlSelected = ' selected=\"selected\" ';
                                 } else {
                                     htmlSelected = ' ';
@@ -255,8 +267,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                                 htmlDDSpecificSOF += '<option value="' + value.id + '"' + htmlSelected + '>' + value.id + '</option>';
                             });
                         }
-                        if(jqTds[4].innerHTML.indexOf("select") !== -1) {
-                            jqTds[4].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
+                        if(jqTds[5].innerHTML.indexOf("select") !== -1) {
+                            jqTds[5].innerHTML = '<select ' + ' ' + setSpecificSOFRequired + ' ' + setSpecificSOFDisabled + ' ' + htmlIDSpecificSOF + ' type=\'text\' class=\'form-control\' name=\'specific_sof\'>' + htmlDDSpecificSOF + '</select>';
                         }
                     }
                 }
@@ -265,17 +277,19 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
         
         // Master: Specific SOF Dropdown
         var htmlDDSpecificSOFs = '';
-        if (tableId == "tbl_setting_payment_fee_structure")
-            {getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit',aData[4]);}
-        else if (tableId == "tbl_bonus")
-            {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit',aData[4]);}
-        else if (tableId == 'tbl_setting_bonus')
-            {getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit',aData[4]);}
+        if (tableId == "tbl_setting_payment_fee_structure"){
+            getSOF('ddl_setting_payment_fee_structure_actor_edit', 'ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_source_of_fund_edit','ddl_setting_payment_fee_structure_specific_source_of_fund_edit',aData[4]);
+            // getActorName('ddl_setting_payment_fee_structure_specific_id_edit','ddl_setting_payment_fee_structure_specific_actor_name_edit',aData[4]);
+        }
+        // else if (tableId == "tbl_bonus")
+        //     {getSOF('ddl_bonus_actor_edit', 'ddl_bonus_specific_id_edit','ddl_bonus_source_of_fund_edit','ddl_bonus_specific_source_of_fund_edit',aData[4]);}
+        // else if (tableId == 'tbl_setting_bonus')
+        //     {getSOF('ddl_setting_bonus_actor_edit', 'ddl_setting_bonus_specific_id_edit','ddl_setting_bonus_src_fund_edit','ddl_setting_bonus_spec_src_fund_edit',aData[4]);}
 
         // Action Buttons
         var htmlButtonCancel = '<button type=\'button\' ' + htmlIDBtnCancel + ' class=\'btn btn-default btn-outline btn-xs cancel small\'>Cancel</button>';
 
-        jqTds[8].innerHTML = htmlButtonCancel;
+        jqTds[9].innerHTML = htmlButtonCancel;
 
         $("body").find("th").each(function () {
                $(this).removeAttr( "style" );
@@ -584,7 +598,8 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             var data = [
                 $("#ddl_setting_payment_fee_structure_dc").val(),
                 $("#ddl_setting_payment_fee_structure_actor").val(),
-                $("#ddl_setting_payment_fee_structure_specific_id").val(), 
+                $("#ddl_setting_payment_fee_structure_specific_id").val(),
+                $("#ddl_setting_payment_fee_structure_specific_actor_name").html(),
                 $("#ddl_setting_payment_fee_structure_source_of_fund option:selected").text(),
                 $("#ddl_setting_payment_fee_structure_specific_source_of_fund option:selected").text(),
                 $("#ddl_setting_payment_fee_structure_from_amount").val(),
@@ -611,6 +626,7 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
                 }
             });
             $("#tr_row_for_edit").find("#ddl_setting_payment_fee_structure_specific_source_of_fund").val("");
+            $("#tr_row_for_edit").find("#ddl_setting_payment_fee_structure_specific_actor_name").html("");
             $('#txt_setting_payment_fee_structure_rate').removeAttr('required');
             $('#ddl_setting_payment_fee_structure_specific_source_of_fund').removeAttr('required');
         });
@@ -769,11 +785,11 @@ function collectTableDataForSave(tableSelector, m_sof_types) {
                 "action_type": rowData[0],
                 "actor_type": rowData[1],
                 "specific_actor_id": rowData[2],
-                "sof_type_id": getSofTypeValueByName(m_sof_types, rowData[3]),
-                "specific_sof": rowData[4],
-                "amount_type": rowData[5],
-                "rate": rowData[6],
-                "remark": rowData[7]
+                "sof_type_id": getSofTypeValueByName(m_sof_types, rowData[4]),
+                "specific_sof": rowData[5],
+                "amount_type": rowData[6],
+                "rate": rowData[7],
+                "remark": rowData[8]
             };
 
             data.push(rowDataObj);

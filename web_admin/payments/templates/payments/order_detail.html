@@ -601,7 +601,9 @@
                     </div>
 
                     <div class="pull-right">
-                        {% if page_from == 'agent' or page_from == 'customer'  %}
+                        {% if ref_page != None %}
+                            <a href="{{ ref_page_url }}">
+                        {% elif page_from == 'agent' or page_from == 'customer'  %}
                             <a href="{{back_wallet_url}}">
                         {% elif page_from == 'order_list' %}
                             <a href="{% url 'payments:payment_order' %}">

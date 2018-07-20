@@ -1,7 +1,7 @@
 from braces.views import GroupRequiredMixin
 from web_admin.utils import calculate_page_range_from_page_info
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from web_admin import setup_logger
+from web_admin import api_settings, setup_logger
 from web_admin.api_settings import SEARCH_AGENT
 from web_admin.restful_methods import RESTfulMethods
 from datetime import datetime
@@ -55,6 +55,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         agent_id = None
         edc_serial_number = None
         mobile_device_unique_reference = None
+        agent_accreditation_status_list = self._get_accreditation_status()
 
         # Build Body
         body = {}
@@ -68,7 +69,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             unique_reference = self.request.session.pop('agent_unique_reference', None)
             email = self.request.session.pop('agent_email', None)
             primary_mobile_number = self.request.session.pop('agent_primary_mobile_number', None)
-            kyc_status = self.request.session.pop('agent_kyc_status', None)
+            accreditation_status_id = self.request.session.pop('agent_accreditation_status_id', None)
             edc_serial_number = self.request.session.pop('edc_serial_number', None)
             mobile_device_unique_reference = self.request.session.pop('mobile_device_unique_reference', None)
 
@@ -115,12 +116,6 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body.update({'email' : email})
         if primary_mobile_number:
             body.update({'primary_mobile_number' : primary_mobile_number})
-        if kyc_status:
-            if kyc_status and isinstance(kyc_status, str):
-                if kyc_status.lower() == "true":
-                    body.update({'kyc_status': True})
-                else:
-                    body.update({'kyc_status': False})
 
         if edc_serial_number:
             body.update({'edc_serial_number': edc_serial_number})
@@ -133,6 +128,7 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                         'edc_serial_number': edc_serial_number,
                         'mobile_device_unique_reference': mobile_device_unique_reference,
                         'kyc_status': body.get('kyc_status', None),
+                        'agent_accreditation_status_list': agent_accreditation_status_list,
                         'has_permission_search': check_permissions_by_user(self.request.user,"CAN_SEARCH_AGENT")
                         })
 
@@ -166,12 +162,15 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         unique_reference = request.POST.get('unique_reference')
         email = request.POST.get('email')
         primary_mobile_number = request.POST.get('primary_mobile_number')
-        kyc_status = request.POST.get('kyc_status')
+        accreditation_status_id = request.POST.get('accreditation_status_id')
+        is_system_account = request.POST.get('is_system_account')
+        is_testing_account = request.POST.get('is_testing_account')
         from_created_timestamp = request.POST.get('from_created_timestamp')
         to_created_timestamp = request.POST.get('to_created_timestamp')
         opening_page_index = request.POST.get('current_page_index')
         edc_serial_number = request.POST.get('edc_serial_number')
         mobile_device_unique_reference = request.POST.get('mobile_device_unique_reference')
+        agent_accreditation_status_list = self._get_accreditation_status()
 
         # Build Body
         context = {}
@@ -184,17 +183,16 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['unique_reference'] = unique_reference
         if email:
             body['email'] = email
+        if is_testing_account:
+            body['is_testing_account'] = True
+            context['is_testing_account'] = True
+        if is_system_account:
+            body['is_system_account'] = True
+            context['is_system_account'] = True
         if primary_mobile_number:
             body['primary_mobile_number'] = primary_mobile_number
-
-        if kyc_status and isinstance(kyc_status, str):
-            if kyc_status.lower() == "true":
-                new_kyc_status = True
-            else:
-                new_kyc_status = False
-            body['kyc_status'] = new_kyc_status
-            context['kyc_status'] = kyc_status
-
+        if accreditation_status_id:
+            body['accreditation_status_id'] = accreditation_status_id
         if edc_serial_number:
             body['edc_serial_number'] = edc_serial_number
         if mobile_device_unique_reference:
@@ -230,11 +228,34 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             context.update(
                 {'search_count': page.get('total_elements', 0), 'data': agents_list, 'paginator': page, 'page_range': calculate_page_range_from_page_info(page)})
         context['has_permission_search'] = check_permissions_by_user(self.request.user, "CAN_SEARCH_AGENT")
+        context['agent_accreditation_status_list'] = agent_accreditation_status_list
+        if accreditation_status_id:
+            context['accreditation_status_id'] = int(accreditation_status_id)
+
+
         self.update_session(request, None, agent_id, unique_reference, email,
-                            primary_mobile_number, kyc_status, edc_serial_number, mobile_device_unique_reference,
+                            primary_mobile_number, accreditation_status_id, edc_serial_number, mobile_device_unique_reference,
                             new_from_created_timestamp,
                             new_to_created_timestamp, False, False)
         return render(request, self.template_name, context)
+
+    def _get_country_code(self):
+        url = api_settings.CONFIGURATION_DETAIL_URL.format(scope='global',
+                                                           key='country')
+        success, status_code, data = RestFulClient.get(url=url, loggers=self.logger, headers=self._get_headers())
+        if success:
+            return data.get("value")
+        else:
+            return None
+
+    def _get_accreditation_status(self):
+        country_code = self._get_country_code()
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_ACCREDITATION_STATUS,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params={"country_code": country_code})
+        return data
+
 
     def _get_agents(self, params):
         self.logger.info('========== Start searching agent ==========')
@@ -278,13 +299,13 @@ class ListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         return data, success, status_message
 
     def update_session(self, request, message=None,id=None , unique_reference=None, email=None, primary_mobile_number=None,
-                       kyc=None, edc_serial_number=None, mobile_device_unique_reference=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False, redirect_from_wallet_view = False):
+                       agent_accreditation_status_id=None, edc_serial_number=None, mobile_device_unique_reference=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_delete=False, redirect_from_wallet_view = False):
         request.session['agent_message'] = message
         request.session['agent_id'] = id
         request.session['agent_unique_reference'] = unique_reference
         request.session['agent_email'] = email
         request.session['agent_primary_mobile_number'] = primary_mobile_number
-        request.session['agent_kyc_status'] = kyc
+        request.session['accreditation_status_id'] = agent_accreditation_status_id
         request.session['edc_serial_number'] = edc_serial_number
         request.session['mobile_device_unique_reference'] = mobile_device_unique_reference
         request.session['agent_from'] = from_created_timestamp

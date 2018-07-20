@@ -60,6 +60,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
                                                                         params={"country_code": country_code})
         return data
 
+    def _get_user_type_list(self):
+        return [{'id': 3, 'name': 'system-user'}, {'id': 2, 'name': 'agent'}, {'id': 1, 'name': 'customer'}]
+
     def get_country_code(self):
         url = api_settings.CONFIGURATION_DETAIL_URL.format(scope='global',
                                                            key='country')
@@ -84,7 +87,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         agent_id = context['agent_id']
 
         agent_types_list, agent_type_status = self.get_agent_types(agent_id)
-        currencies = self.get_currencies(agent_id)
+        currencies = self.get_currencies(agent_id)[0]
         agent_profile = self.get_agent_profile(agent_id)
         mm_card_types = self.get_mm_card_type_list()
         agent_classification_list = self.get_agent_classification_list()
@@ -165,11 +168,14 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start updating agent ==========')
         agent_id = kwargs['agent_id']
+        user_type_list = self._get_user_type_list()
 
         # Account Basic
         acquisition_source = request.POST.get('acquisition_source')
         referrer_user_type_id = int(request.POST.get("referrer_user_type")) if request.POST.get("referrer_user_type") else None
         referrer_user_id = int(request.POST.get("referrer_user_id")) if request.POST.get("referrer_user_id") else None
+        is_testing_account = bool(request.POST.get('is_testing_account'))
+        is_system_account = bool(request.POST.get('is_system_account'))
 
         # Basic Setup
         agent_type_id = int(request.POST.get('agent_type_id'))
@@ -179,7 +185,6 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         mm_factory_card_number = request.POST.get('mm_factory_card_number')
         model_type = request.POST.get('model_type')
         is_require_otp = bool(request.POST.get('is_require_otp'))
-        agent_classification_id = int(request.POST.get('agent_classification_id')) if request.POST.get('agent_classification_id') else None
 
         # Personal Details
         tin_number = request.POST.get('tin_number')
@@ -380,10 +385,19 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'supporting_file_5_url': request.POST.get('supporting_file_5'),
         }
 
+        referrer_user_type = None
+        if referrer_user_type_id is not None:
+            referrer_user_type_name = [user['name'] for user in user_type_list if user['id'] == referrer_user_type_id][0]
+            referrer_user_type = {
+                "id": referrer_user_type_id,
+                "name": referrer_user_type_name
+            }
         data = {
             'acquisition_source': acquisition_source,
-            'referrer_user_type_id': referrer_user_type_id,
+            'referrer_user_type': referrer_user_type,
             'referrer_user_id': referrer_user_id,
+            'is_system_account': is_system_account,
+            'is_testing_account': is_testing_account,
 
             'agent_type_id': agent_type_id,
             'unique_reference': unique_reference,

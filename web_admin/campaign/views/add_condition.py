@@ -23,6 +23,25 @@ class AddCondition(TemplateView, GetHeaderMixin):
     template_name = "campaign/add_condition.html"
     logger = logger
 
+    def __init__(self):
+        self._operator_map = {
+            "Less Than": '<', "More Than": '>', "Equal to": '=',
+            "Not Equal to": '!=', "Less than or Equal to": '<=',
+            "More than or Equal to": '>=',
+            "Contains": "contains",
+            "Is Part of": "in_list",
+            "Is Not Part of": "not_in_list",
+            "Is blank": "is_blank",
+            "Is not blank": "is_not_blank",
+        }
+
+        self._kv_type_map = {
+            "Numeric": "numeric",
+            "Freetext": "text",
+            "Timestamp": "timestamp"
+        }
+        super(AddCondition, self).__init__()
+
     def dispatch(self, request, *args, **kwargs):
         self.logger = build_logger(self.request, __name__)
         return super(AddCondition, self).dispatch(request, *args, **kwargs)
@@ -32,18 +51,20 @@ class AddCondition(TemplateView, GetHeaderMixin):
         context = super(AddCondition, self).get_context_data(**kwargs)
         context['dtp_start_date'] = datetime.now().strftime("%Y-%m-%d")
         context['dtp_end_date'] = datetime.now().strftime("%Y-%m-%d")
-        operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
-        freetext_ops = ["Equal to", "Not Equal to", "Contains"]
-        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Contains"]
-        numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        operations = ["Equal to", "Not Equal to", "Less Than", "More Than", "Is blank", "Is not blank",
+                      "Less than or Equal to", "More than or Equal to"]
+        freetext_ops = ["Equal to", "Not Equal to", "Is blank", "Is not blank", "Contains"]
+        freetext_ops_2 = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Is blank", "Is not blank", "Contains"]
+        numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Is Not Part of", "Less Than", "More Than", "Is blank", "Is not blank",
+                       "Less than or Equal to", "More than or Equal to"]
         key_value_types = ["Numeric", "Freetext", "Timestamp"]
-        filter_ops = ["Equal to", "Not Equal to"]
         filter_key_value_types = ["Numeric", "Timestamp"]
         sum_of_operators = ["Equal to", "Not Equal to", "Less than or Equal to", "More than or Equal to"]
-        count_of_operators = ["Equal to",  "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
+        count_of_operators = ["Equal to", "Less Than", "More Than", "More than or Equal to", "Less than or Equal to"]
         count_consecutive_of_operators = ["Equal to", "More than or Equal to"]
-        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Contains"]
-        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Less than or Equal to", "More than or Equal to"]
+        profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Is blank", "Is not blank", "Contains"]
+        profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Is blank", "Is not blank",
+                                       "Less than or Equal to", "More than or Equal to"]
         sum_key_name = [{
                 'value': 'amount',
                 'text': 'Amount'
@@ -80,7 +101,6 @@ class AddCondition(TemplateView, GetHeaderMixin):
             'freetext_ops_2': freetext_ops_2,
             'profile_details_freetext_ops': profile_details_freetext_ops,
             'profile_details_numeric_ops': profile_details_numeric_ops,
-            'filter_ops': filter_ops,
             'filter_key_value_types': filter_key_value_types,
             'sum_of_operators': sum_of_operators,
             'count_of_operators': count_of_operators,
@@ -97,17 +117,6 @@ class AddCondition(TemplateView, GetHeaderMixin):
         context = super(AddCondition, self).get_context_data(**kwargs)
         campaign_id = context['campaign_id']
         mechanic_id = context['mechanic_id']
-        operations_map = {
-            "Less Than": '<', "More Than": '>', "Equal to": '=',
-            "Not Equal to": '!=', "Less than or Equal to": '<=',
-            "More than or Equal to": '>=',
-            "Contains": "contains",
-            "Is Part of": "in_list",
-            "Is Not Part of": "not_in_list"
-        }
-        kv_type_map = {
-            "Numeric": "numeric", "Freetext": "text", "Timestamp": "timestamp"
-        }
 
         counter = request.POST.get('condition_counter') or 1
         for i in range(1, int(counter) + 1):
@@ -127,18 +136,13 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 condition_id = data['id']
                 key_value_type = 'key_value_type_' + suffix
                 detail_name = 'detail_name_' + suffix
-                operator = 'operator_' + suffix
-                key_value = 'key_value_' + suffix
+                operator_name = 'operator_' + suffix
+                key_value_name = 'key_value_' + suffix
 
-                if not request.POST.get(key_value):
+                if not request.POST.get(key_value_name) and not self._is_blank_operator(request, operator_name):
                     continue
 
-                params = {
-                    'key_name': request.POST.get(detail_name),
-                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                    'operator': operations_map[request.POST.get(operator)],
-                    'key_value': request.POST.get(key_value),
-                }
+                params = self._build_create_filter_params(request, detail_name, key_value_type, operator_name, key_value_name)
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -156,18 +160,13 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 condition_id = data['id']
                 key_value_type = 'key_value_type_' + suffix
                 detail_name = 'detail_name_' + suffix
-                operator = 'operator_' + suffix
-                key_value = 'key_value_' + suffix
+                operator_name = 'operator_' + suffix
+                key_value_name = 'key_value_' + suffix
 
-                if not request.POST.get(key_value):
+                if not request.POST.get(key_value_name) and not self._is_blank_operator(request, operator_name):
                     continue
 
-                params = {
-                    'key_name': request.POST.get(detail_name),
-                    'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                    'operator': operations_map[request.POST.get(operator)],
-                    'key_value': request.POST.get(key_value),
-                }
+                params = self._build_create_filter_params(request, detail_name, key_value_type, operator_name, key_value_name)
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -183,7 +182,7 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 params = {
                     'key_name': 'sum_result',
                     'key_value_type': 'numeric',
-                    'operator': operations_map[sum_operator],
+                    'operator': self._operator_map[sum_operator],
                     'key_value': sum_key_value,
                 }
                 success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
@@ -194,17 +193,12 @@ class AddCondition(TemplateView, GetHeaderMixin):
                     prefix = str(i)
                     key_value_type = prefix + '_key_value_type_' + suffix
                     detail_name = prefix + '_detail_name_' + suffix
-                    operator = prefix + '_operator_' + suffix
-                    key_value = prefix + '_key_value_' + suffix
+                    operator_name = prefix + '_operator_' + suffix
+                    key_value_name = prefix + '_key_value_' + suffix
 
-                    if not request.POST.get(key_value):
+                    if not request.POST.get(key_value_name) and not self._is_blank_operator(request, operator_name):
                         continue
-                    params = {
-                        'key_name': request.POST.get(detail_name),
-                        'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                        'operator': operations_map[request.POST.get(operator)],
-                        'key_value': request.POST.get(key_value),
-                    }
+                    params = self._build_create_filter_params(request, detail_name, key_value_type, operator_name, key_value_name)
                     success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
                     if not success:
                         return JsonResponse({"status": 3, "msg": message})
@@ -214,12 +208,9 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 count_of_filter_counter = request.POST.get('filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('within_' + suffix)
                 event_name_filter_counter = request.POST.get('event_name_' + suffix)
-                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
-                                                                condition_type, operations_map, count_of_operator,
-                                                                count_count_of,
-                                                                within_type, event_name_filter_counter,
-                                                                count_of_filter_counter,
-                                                                kv_type_map)
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id, condition_type,
+                                                                                       count_of_operator, count_count_of, within_type,
+                                                                                       event_name_filter_counter, count_of_filter_counter)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
             else:
@@ -230,25 +221,26 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 count_of_reset_filter_counter = request.POST.get('reset_filter_count_of_count_' + suffix) or 0
                 within_type = request.POST.get('consecutive_within_' + suffix)
                 event_name_filter_counter = request.POST.get('consecutive_event_name_' + suffix)
-                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id,
-                                                     condition_type, operations_map, count_of_operator, count_count_of,
-                                                     within_type, event_name_filter_counter, count_of_filter_counter,
-                                                     kv_type_map)
+                success, condition_id, message = self.create_common_count_of_condition(request, suffix, campaign_id, mechanic_id, condition_type,
+                                                                                       count_of_operator, count_count_of, within_type,
+                                                                                       event_name_filter_counter, count_of_filter_counter)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
                 # consecutive key detail
                 consecutive_key_value_type = request.POST.get('consecutive_key_value_type_' + suffix)
                 consecutive_detail_name = request.POST.get('consecutive_detail_name_' + suffix)
                 consecutive_operator = request.POST.get('consecutive_operator_' + suffix)
-                consecutive_key_value = request.POST.get('consecutive_key_value_' +suffix)
+                consecutive_key_value = request.POST.get('consecutive_key_value_' + suffix)
                 condition_reset_event = request.POST.get('condition_reset_event_' + suffix)
+                consecutive_operator_value = self._operator_map[consecutive_operator]
                 params = {
                     'key_name': consecutive_detail_name,
-                    'key_value_type': kv_type_map[consecutive_key_value_type],
-                    'operator': operations_map[consecutive_operator],
-                    'key_value': consecutive_key_value,
+                    'key_value_type': self._kv_type_map[consecutive_key_value_type],
+                    'operator': consecutive_operator_value,
                     'is_consecutive_key': True
                 }
+                if not self._is_blank_operator(request, 'consecutive_operator_' + suffix):
+                    params["key_value"] = consecutive_key_value
                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
@@ -268,17 +260,12 @@ class AddCondition(TemplateView, GetHeaderMixin):
                     prefix = str(i)
                     key_value_type = prefix + '_reset_filter_key_value_type_' + suffix
                     detail_name = prefix + '_reset_filter_detail_name_' + suffix
-                    operator = prefix + '_reset_filter_operator_' + suffix
-                    key_value = prefix + '_reset_filter_key_value_' + suffix
+                    operator_name = prefix + '_reset_filter_operator_' + suffix
+                    key_value_name = prefix + '_reset_filter_key_value_' + suffix
 
-                    if not request.POST.get(key_value):
+                    if not request.POST.get(key_value_name) and not self._is_blank_operator(request, operator_name):
                         continue
-                    params = {
-                        'key_name': request.POST.get(detail_name),
-                        'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                        'operator': operations_map[request.POST.get(operator)],
-                        'key_value': request.POST.get(key_value),
-                    }
+                    params = self._build_create_filter_params(request, detail_name, key_value_type, operator_name, key_value_name)
                     success, data, message = self.create_reset_filter(campaign_id, mechanic_id, condition_id, params)
                     if not success:
                         return JsonResponse({"status": 3, "msg": message})
@@ -330,7 +317,8 @@ class AddCondition(TemplateView, GetHeaderMixin):
         success, status_code, status_message, data = RestfulHelper.send("GET", url, {}, self.request, "getting mechanic detail")
         return success, data
 
-    def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, operations_map, count_of_operator, count_count_of, within_type, event_name_filter_counter, count_of_filter_counter, kv_type_map):
+    def create_common_count_of_condition(self, request, suffix, campaign_id, mechanic_id, condition_type, count_of_operator, count_count_of,
+                                         within_type, event_name_filter_counter, count_of_filter_counter):
         params = {'filter_type': condition_type}
         success, data, message = self.create_condition(campaign_id, mechanic_id, params)
         if not success:
@@ -341,7 +329,7 @@ class AddCondition(TemplateView, GetHeaderMixin):
         params = {
             'key_name': 'count_result',
             'key_value_type': 'numeric',
-            'operator': operations_map[count_of_operator],
+            'operator': self._operator_map[count_of_operator],
             'key_value': count_count_of,
         }
         success, data, message = self.create_comparison(campaign_id, mechanic_id, condition_id, params)
@@ -432,19 +420,32 @@ class AddCondition(TemplateView, GetHeaderMixin):
             prefix = str(i)
             key_value_type = prefix + '_key_value_type_' + suffix
             detail_name = prefix + '_detail_name_' + suffix
-            operator = prefix + '_operator_' + suffix
-            key_value = prefix + '_key_value_' + suffix
+            operator_name = prefix + '_operator_' + suffix
+            key_value_name = prefix + '_key_value_' + suffix
 
-            if not request.POST.get(key_value):
+            if not request.POST.get(key_value_name) and not self._is_blank_operator(request, operator_name):
                 continue
-            params = {
-                'key_name': request.POST.get(detail_name),
-                'key_value_type': kv_type_map[request.POST.get(key_value_type)],
-                'operator': operations_map[request.POST.get(operator)],
-                'key_value': request.POST.get(key_value),
-            }
+            params = self._build_create_filter_params(request, detail_name, key_value_type, operator_name, key_value_name)
             success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
             if not success:
                 return success, None, message
         success = True
         return success, condition_id, message
+
+    def _is_blank_operator(self, request, operator_name):
+        operator = self._operator_map[request.POST.get(operator_name)]
+        return operator == "is_blank" or operator == "is_not_blank"
+
+    def _build_create_filter_params(self, request, detail_name, kv_type_name, operator_name, key_value_name):
+        key_name = request.POST.get(detail_name)
+        kv_type = self._kv_type_map[request.POST.get(kv_type_name)]
+        operator = self._operator_map[request.POST.get(operator_name)]
+        key_value = request.POST.get(key_value_name)
+        params = {
+            "key_name": key_name,
+            "key_value_type": kv_type,
+            "operator": operator,
+        }
+        if not self._is_blank_operator(request, operator_name):
+            params["key_value"] = key_value
+        return params

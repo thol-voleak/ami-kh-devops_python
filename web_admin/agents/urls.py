@@ -26,11 +26,13 @@ from .views.relationship_ajax_action import delete_relationship, share_benefit_r
 from .views.relationship_ajax_action import stop_share_benefit_relationship
 from .views.relationship_ajax_action import add_agent_relationship
 from .views.registration import get_mm_card_level
+from .views.agent_info import get_agent_info
 
 app_name = 'agents'
 
 urlpatterns = [
     url(r'^$', login_required(ListView.as_view(), login_url='authentications:login'), name="agent-list"),
+    url(r'^info/(?P<agent_id>[0-9A-Za-z]+)/$', login_required(get_agent_info, login_url='authentications:login'), name="get_agent_info"),
     url(r'^registration/$', login_required(AgentRegistration.as_view(), login_url='authentications:login'), name="agent_registration"),
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/$', login_required(DetailView.as_view(), login_url='authentications:login'), name="agent_detail"),
     url(r'^update/(?P<agent_id>[0-9A-Za-z]+)/$', login_required(AgentUpdate.as_view(), login_url='authentications:login'), name="agent_update"),

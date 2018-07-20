@@ -146,7 +146,8 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
            context['search_count'] = 0
         else:
             params['paging'] = True
-            params['page_index'] = int(opening_page_index)
+            if opening_page_index:
+                params['page_index'] = int(opening_page_index)
             if customer_id:
                 params['id'] = customer_id
                 context['customer_id'] = customer_id

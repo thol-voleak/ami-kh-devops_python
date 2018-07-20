@@ -186,23 +186,34 @@
                         </div>
                     </div>
                     <br>
+
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Cash In Order ID</label>
                             <div class="col-sm-8">
-                                <a href="{% url 'payments:order_detail' data.cash_in_order_id %}">
+                                {% if data.cash_in_order_id %}
+                                    <a href="{% url 'payments:order_detail' data.cash_in_order_id %}?ref_page=voucher_detail">
+                                        <input type="text" class="form-control input-rounded" id="txt_cash_in_order_id"
+                                           style="color: blue;text-decoration: underline;" value="{{ data.cash_in_order_id|default_if_none:'' }}" disabled/>
+                                    </a>
+                                {% else %}
                                     <input type="text" class="form-control input-rounded" id="txt_cash_in_order_id"
-                                       style="color: blue;text-decoration: underline;" value="{{ data.cash_in_order_id|default_if_none:'' }}" disabled/>
-                                </a>
+                                           style="color: blue;text-decoration: underline;" value="{{ data.cash_in_order_id|default_if_none:'' }}" disabled/>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label" id="lbl_agent_id">Cash Out Order ID</label>
                             <div class="col-sm-8">
-                                <a href="{% url 'payments:order_detail' data.cash_out_order_id %}">
+                                {% if data.cash_out_order_id %}
+                                    <a href="{% url 'payments:order_detail' data.cash_out_order_id %}?ref_page=voucher_detail">
+                                        <input type="text" class="form-control input-rounded" id="txt_cash_out_order_id"
+                                           style="color: blue;text-decoration: underline;" value="{{ data.cash_out_order_id|default_if_none:'' }}" disabled/>
+                                    </a>
+                                {% else %}
                                     <input type="text" class="form-control input-rounded" id="txt_cash_out_order_id"
-                                       style="color: blue;text-decoration: underline;" value="{{ data.cash_out_order_id|default_if_none:'' }}" disabled/>
-                                </a>
+                                           style="color: blue;text-decoration: underline;" value="{{ data.cash_out_order_id|default_if_none:'' }}" disabled/>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -210,15 +221,45 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Cash In User ID</label>
                             <div class="col-sm-8">
+                                {% if data.cash_in_user_type %}
+                                    {% if "agent" == data.cash_in_user_type %}
+                                        <a href="{% url 'agents:agent-list'%}?agent_id={{  data.cash_in_user_id }}">
+                                            <input type="text" class="form-control input-rounded" id="txt_cash_in_user_id" style="color: blue;text-decoration: underline;"
+                                                value="{{ data.cash_in_user_id|default_if_none:''}}" disabled/>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'customers:customer-list'%}?customer_id={{  data.cash_in_user_id }}">
+                                            <input type="text" class="form-control input-rounded" id="txt_cash_in_user_id" style="color: blue;text-decoration: underline;"
+                                                value="{{ data.cash_in_user_id|default_if_none:''}}" disabled/>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
                                 <input type="text" class="form-control input-rounded" id="txt_cash_in_user_id"
-                                       value="{{ data.cash_in_user_id|default_if_none:'' }}" disabled/>
+                                                value="{{ data.cash_in_user_id|default_if_none:''}}" disabled/>
+                                {% endif %}
+
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label" id="lbl_agent_id">Cash Out User ID</label>
                             <div class="col-sm-8">
+                                {% if data.cash_out_user_id %}
+                                    {% if "agent" == data.cash_out_user_type %}
+                                        <a href="{% url 'agents:agent-list'%}?agent_id={{  data.cash_out_user_id }}">
+
+                                            <input type="text" class="form-control input-rounded" id="txt_cash_out_user_id" style="color: blue;text-decoration: underline;"
+                                               value="{{ data.cash_out_user_id|default_if_none:'' }}" disabled/>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'customers:customer-list'%}?customer_id={{  data.cash_out_user_id }}">
+                                            <input type="text" class="form-control input-rounded" id="txt_cash_out_user_id" style="color: blue;text-decoration: underline;"
+                                                value="{{ data.cash_out_user_id|default_if_none:'' }}" disabled/>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
                                 <input type="text" class="form-control input-rounded" id="txt_cash_out_user_id"
-                                       value="{{ data.cash_out_user_id|default_if_none:'' }}" disabled/>
+                                                value="{{ data.cash_out_user_id|default_if_none:''}}" disabled/>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -242,8 +283,23 @@
                         <div class="form-group col-md-6">
                             <label class="col-sm-4 control-label">Issuer User ID</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-rounded" name="issuer_user_id" id="txt_issuer_user_id"
-                                       value="{{ data.issuer_user_id|default_if_none:'' }}" disabled/>
+                                {% if data.issuer_user_id %}
+                                    {% if "agent" == data.issuer_user_type %}
+                                        <a href="{% url 'agents:agent-list'%}?agent_id={{  data.issuer_user_id }}">
+
+                                        <input type="text" class="form-control input-rounded" name="issuer_user_id" id="txt_issuer_user_id" style="color: blue;text-decoration: underline;"
+                                               value="{{ data.issuer_user_id|default_if_none:'' }}" disabled/>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'customers:customer-list'%}?customer_id={{  data.issuer_user_id }}">
+                                        <input type="text" class="form-control input-rounded" name="issuer_user_id" id="txt_issuer_user_id" style="color: blue;text-decoration: underline;"
+                                               value="{{ data.issuer_user_id|default_if_none:'' }}" disabled/>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                <input type="text" class="form-control input-rounded" id="txt_issuer_user_id"
+                                                value="{{ data.issuer_user_id|default_if_none:''}}" disabled/>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="form-group col-md-6">

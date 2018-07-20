@@ -1,13 +1,14 @@
 from web_admin.restful_methods import RESTfulMethods
 from web_admin.api_logger import API_Logger
-from datetime import datetime
+from datetime import date, timedelta
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
-from web_admin.utils import calculate_page_range_from_page_info
+from web_admin.utils import calculate_page_range_from_page_info, convert_string_to_date_time
 from web_admin import api_settings, setup_logger, RestFulClient
+from web_admin.api_settings import GET_ALL_CURRENCY_URL
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,11 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
+        self.initSearchDateTime(context)
+        currencies = self.get_currencies_list()
+        context.update({
+            'currencies': currencies
+        })
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -44,19 +50,33 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         short_order_id = request.POST.get('short_order_id')
         status = request.POST.get('status')
         type = request.POST.get('type')
-        from_created_timestamp = request.POST.get('from_created_timestamp')
-        to_created_timestamp = request.POST.get('to_created_timestamp')
+        created_from_date = request.POST.get('created_from_date')
+        created_to_date = request.POST.get('created_to_date')
+        created_from_time = request.POST.get('created_from_time')
+        created_to_time = request.POST.get('created_to_time')
         opening_page_index = request.POST.get('current_page_index')
+        user_id = request.POST.get('user_id')
+        user_type_id = request.POST.get('user_type_id')
+        modified_from_date = request.POST.get('modified_from_date')
+        modified_from_time = request.POST.get('modified_from_time')
+        modified_to_date = request.POST.get('modified_to_date')
+        modified_to_time = request.POST.get('modified_to_time')
+        order_detail_id = request.POST.get('order_detail_id')
+        bank_name = request.POST.get('bank_name')
+        bank_account_name = request.POST.get('bank_account_name')
+        currency = request.POST.get('currency')
 
-        body = self.createSearchBody(from_created_timestamp, order_id, short_order_id, sof_id, status,
-                                     to_created_timestamp, type)
+        body = self.createSearchBody(created_from_date, order_id, short_order_id, sof_id, status,
+                                     created_to_date, type, user_id, user_type_id, created_from_time,
+                                     created_to_time, modified_from_date, modified_from_time, modified_to_date,
+                                     modified_to_time, order_detail_id, bank_name, bank_account_name, currency)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
         context = {}
         data, success, status_message = self._get_sof_bank_transaction(body=body)
-        body['from_created_timestamp'] = from_created_timestamp
-        body['to_created_timestamp'] = to_created_timestamp
+
+        currencies = self.get_currencies_list()
         if success:
             cards_list = data.get("bank_sof_transactions", [])
             page = data.get("page", {})
@@ -65,30 +85,56 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 {'search_count': page.get('total_elements', 0),
                  'paginator': page,
                  'page_range': calculate_page_range_from_page_info(page),
-                 # 'user_id': user_id,
+                 'user_id': user_id,
                  'transaction_list': cards_list,
                  'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
+                 'created_from_date': created_from_date,
+                 'created_to_date': created_to_date,
+                 'created_from_time': created_from_time,
+                 'created_to_time': created_to_time,
+                 'modified_from_date': modified_from_date,
+                 'modified_from_time': modified_from_time,
+                 'modified_to_date': modified_to_date,
+                 'modified_to_time': modified_to_time,
+                 'user_type_id': user_type_id,
+                 'order_detail_id': order_detail_id,
+                 'bank_name': bank_name,
+                 'bank_account_name': bank_account_name,
+                 'currencies': currencies,
+                 'currency': currency
                  }
             )
         else:
             context.update(
                 {'search_count': 0,
                  'paginator': {},
-                 # 'user_id': user_id,
+                 'user_id': user_id,
                  'transaction_list': [],
                  'search_by': body,
-                 'from_created_timestamp': from_created_timestamp,
-                 'to_created_timestamp': to_created_timestamp
+                 'created_from_date': created_from_date,
+                 'created_to_date': created_to_date,
+                 'created_from_time': created_from_time,
+                 'created_to_time': created_to_time,
+                 'modified_from_date': modified_from_date,
+                 'modified_from_time': modified_from_time,
+                 'modified_to_date': modified_to_date,
+                 'modified_to_time': modified_to_time,
+                 'user_type_id': user_type_id,
+                 'order_detail_id': order_detail_id,
+                 'bank_name': bank_name,
+                 'bank_account_name': bank_account_name,
+                 'currencies': currencies,
+                 'currency': currency
                  }
             )
 
         self.logger.info('========== Start searching bank SOF transaction ==========')
         return render(request, self.template_name, context)
 
-    def createSearchBody(self, from_created_timestamp, order_id, short_order_id, sof_id, status, to_created_timestamp,
-                         type):
+    def createSearchBody(self, created_from_date, order_id, short_order_id, sof_id, status, created_to_date,
+                         type, user_id, user_type_id, created_from_time, created_to_time, modified_from_date,
+                         modified_from_time, modified_to_date, modified_to_time, order_detail_id, bank_name,
+                         bank_account_name, currency):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -100,15 +146,26 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['status_id'] = [int(status)]
         if type is not '' and type is not None:
             body['action_id'] = int(type)
-        if from_created_timestamp is not '' and to_created_timestamp is not None:
-            new_from_created_timestamp = datetime.strptime(from_created_timestamp, "%Y-%m-%d")
-            new_from_created_timestamp = new_from_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_created_timestamp'] = new_from_created_timestamp
-        if to_created_timestamp is not '' and to_created_timestamp is not None:
-            new_to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
-            new_to_created_timestamp = new_to_created_timestamp.replace(hour=23, minute=59, second=59)
-            new_to_created_timestamp = new_to_created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_created_timestamp'] = new_to_created_timestamp
+        if created_from_date is not '' and created_from_date is not None:
+            body['from_created_timestamp'] = convert_string_to_date_time(created_from_date, created_from_time)
+        if created_to_date is not '' and created_to_date is not None:
+            body['to_created_timestamp'] = convert_string_to_date_time(created_to_date, created_to_time)
+        if modified_from_date is not '' and modified_from_date is not None:
+            body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
+        if modified_to_date is not '' and modified_to_date is not None:
+            body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
+        if user_id is not '' and user_id is not None:
+            body['user_id'] = user_id
+        if user_type_id is not '' and user_type_id is not None and user_type_id is not '0':
+            body['user_type_id'] = int(user_type_id)
+        if order_detail_id is not '' and order_detail_id is not None:
+            body['order_detail_id'] = order_detail_id
+        if bank_name is not '' and bank_name is not None:
+            body['bank_name'] = bank_name
+        if bank_account_name is not '' and bank_account_name is not None:
+            body['bank_account_name'] = bank_account_name
+        if currency is not '' and currency is not None:
+            body['currency'] = currency
         return body
 
     def _get_sof_bank_transaction(self, body):
@@ -120,3 +177,27 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         API_Logger.post_logging(loggers=self.logger, params=body, response=data.get('bank_sof_transactions', []),
                                 status_code=status_code, is_getting_list=True)
         return data, success, status_message
+
+    def initSearchDateTime(self, context):
+        today = date.today()
+        yesterday = today - timedelta(1)
+        tomorrow = today + timedelta(1)
+        context['created_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['created_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['created_from_time'] = "00:00:00"
+        context['created_to_time'] = "00:00:00"
+        context['modified_from_date'] = yesterday.strftime('%Y-%m-%d')
+        context['modified_to_date'] = tomorrow.strftime('%Y-%m-%d')
+        context['modified_from_time'] = "00:00:00"
+        context['modified_to_time'] = "00:00:00"
+
+    def get_currencies_list(self):
+        data, success = self._get_method(api_path=GET_ALL_CURRENCY_URL,
+                                         func_description="get currency list",
+                                         is_getting_list=True)
+        if success:
+            value = data.get('value', None)
+            if value is not None:
+                currencies = [i.split('|')[0] for i in value.split(',')]
+                return currencies
+        return []
