@@ -58,12 +58,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         currency = request.POST.get('currency')
         description = request.POST.get('description')
         status = request.POST.get('status')
+        display_name_local = request.POST.get('display_name_local')
 
         body = {
             'service_group_id': service_group_id,
             'service_name': service_name,
             'currency': currency,
             'description': description,
+            'display_name_local': display_name_local,
             'status': status
         }
 
