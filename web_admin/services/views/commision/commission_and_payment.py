@@ -14,6 +14,7 @@ from web_admin import ajax_functions
 from authentications.utils import get_correlation_id_from_username
 from services.views.utils import get_payment_decimal, get_currency_by_service_id
 from services.views.tier_levels.utils import get_label_levels
+from agents.views import agent_info
 
 
 logger = logging.getLogger(__name__)
@@ -102,7 +103,10 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
         self._replace_actor_type_items(data)
         self._replace_amount_type_items(data)
-        context['data'] = self._filter_deleted_items(data)
+        data = self._filter_deleted_items(data)
+        data = self._filter_add_specific_user_name( data)
+        context['data'] = data
+
         #context['bonus'] = self._filter_deleted_items(bonus)
         #context['agent_bonus_distribution'] = total_bonus_distribution
         #context['fee'] = self._filter_deleted_items(fee)
@@ -129,6 +133,26 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
     def _filter_deleted_items(self, data):
         return list(filter(lambda x: not x['is_deleted'], data))
+
+    def _filter_add_specific_user_name(self, data):
+        for bal in data:
+            if bal.get('actor_type') == 'Specific ID':
+                self.logger.info('Start to get actor name of specific ID [{}]'.format(bal.get('specific_actor_id')))
+                res_agent = agent_info.get_agent_detail(self.request, bal.get('specific_actor_id'))
+
+                first_name = res_agent.get('first_name')
+                last_name = res_agent.get('last_name')
+                if first_name is None:
+                    first_name = ''
+                if last_name is None:
+                    last_name = ''
+                agent_name = first_name + ' '+ last_name
+                if agent_name == ' ':
+                    agent_name = '-'
+
+                self.logger.info('Specific actor name is [{}]'.format(agent_name))
+                bal['specific_actor_name'] = agent_name
+        return data
 
     def _replace_actor_type_items(self, data):
         for balance_distribution in data:
@@ -245,21 +269,24 @@ class PaymentAndFeeStructureView(TemplateView, GetCommandNameAndServiceNameMixin
 
         data, success = self._get_commission_and_payment_list(tier_id)
 
+
+
+
         bonus, success = self._get_setting_bonus_list(tier_id)
 
-        agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
-        total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
+        # agent_bonus_distribution, success = self._get_agent_bonus_distribution_list(tier_id)
+        # total_bonus_distribution = self._filter_deleted_items(agent_bonus_distribution)
+        # fee, success = self._get_agent_fee_distribution_list(tier_id)
 
-        fee, success = self._get_agent_fee_distribution_list(tier_id)
         choices = self._get_choices()
         specific_ids = self._get_specific_ids()
 
         context['specific_ids'] = specific_ids
         context['fee_tier_detail'] = fee_tier_detail
         context['data'] = self._filter_deleted_items(data)
-        context['bonus'] = self._filter_deleted_items(bonus)
-        context['agent_bonus_distribution'] = total_bonus_distribution
-        context['fee'] = self._filter_deleted_items(fee)
+        # context['bonus'] = self._filter_deleted_items(bonus)
+        # context['agent_bonus_distribution'] = total_bonus_distribution
+        # context['fee'] = self._filter_deleted_items(fee)
         context['choices'] = choices
         self.logger.info('========== Start get command name ==========')
         context['command_name'] = self._get_command_name_by_id(command_id)
